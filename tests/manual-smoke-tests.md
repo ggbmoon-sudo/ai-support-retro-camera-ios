@@ -51,6 +51,50 @@ Manual Xcode check on macOS:
 - [ ] Confirm dark and light mode are readable.
 - [ ] Confirm placeholder CTAs do not start Auth, Camera, Firebase, AI, or StoreKit work.
 
+## Phase 02
+
+Check:
+
+- [x] Confirmed no `.xcodeproj` exists in the current repo during Phase 02 setup.
+- [x] Added Auth UI scaffold under `ios-app/AIPhotoApp/Features/Auth/`.
+- [x] Added mockable Auth service protocol under `ios-app/AIPhotoApp/Services/Auth/`.
+- [x] Added `MockAuthService` for local email/password, Google, Apple, guest, and sign-out state.
+- [x] Added `FirebaseAuthService` placeholder without importing Firebase SDKs.
+- [x] Added visible Google and Apple sign-in rows together.
+- [x] Added guest/try-mode copy and local mock flow.
+- [x] Added Settings sign-out and account deletion placeholders.
+- [x] Added Phase 02 Auth setup TODO notes.
+- [x] Confirmed no Camera implementation was added.
+- [x] Confirmed no Firebase Storage upload implementation was added.
+- [x] Confirmed no AI implementation was added.
+- [x] Confirmed no StoreKit implementation was added.
+- [x] Confirmed no real API keys are committed.
+- [x] Confirmed no real GoogleService-Info.plist is committed.
+
+Manual source review without Mac:
+
+- [ ] Open `ios-app/AIPhotoApp/Features/Auth/AuthView.swift` and confirm email/password, Google, Apple, and guest options are present.
+- [ ] Open `ios-app/AIPhotoApp/Services/Auth/AuthService.swift` and confirm UI depends on a protocol.
+- [ ] Open `ios-app/AIPhotoApp/Services/Auth/MockAuthService.swift` and confirm mock sign-in/sign-out state is local only.
+- [ ] Open `ios-app/AIPhotoApp/Services/Auth/FirebaseAuthService.swift` and confirm it has TODOs but no Firebase imports.
+- [ ] Confirm `GoogleService-Info.plist`, `.env`, `.firebaserc`, production plist files, private keys, OAuth secrets, Firebase project IDs, and API keys were not added.
+- [ ] Confirm source files do not import AVFoundation, PhotosUI, Firebase Storage, AI SDKs, or StoreKit for Phase 02.
+
+Manual Xcode check on macOS later:
+
+- [ ] Follow `ios-app/XCODE_SETUP.md` and create or open a verified `.xcodeproj`.
+- [ ] Add all Phase 02 Auth Swift files to the app target.
+- [ ] Build the target.
+- [ ] Preview `AuthView`.
+- [ ] Run the app and confirm intro can continue to Auth.
+- [ ] Test mock email/password sign-in with a valid email and at least 6 password characters.
+- [ ] Test invalid email and short password error states.
+- [ ] Test mock Google sign-in row.
+- [ ] Test mock Apple sign-in row.
+- [ ] Test guest try mode.
+- [ ] Test Settings mock sign-out returns to Auth.
+- [ ] Confirm account deletion entry is visible but does not claim backend deletion is complete.
+
 ## Phase 01.5
 
 Check:

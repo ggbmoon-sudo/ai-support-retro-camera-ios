@@ -2,11 +2,16 @@ import SwiftUI
 
 struct AppRootView: View {
     @State private var hasFinishedIntro = false
+    @StateObject private var authViewModel = AuthViewModel(service: MockAuthService())
 
     var body: some View {
         Group {
-            if hasFinishedIntro {
-                MainTabShellView()
+            if let currentUser = authViewModel.currentUser {
+                MainTabShellView(authUser: currentUser) {
+                    Task { await authViewModel.signOut() }
+                }
+            } else if hasFinishedIntro {
+                AuthView(viewModel: authViewModel)
             } else {
                 VStack(alignment: .leading, spacing: AppSpacing.xl) {
                     Spacer()
@@ -26,7 +31,9 @@ struct AppRootView: View {
                             hasFinishedIntro = true
                         }
 
-                        PrimaryButton("onboarding.button.auth_placeholder", systemImage: "person.crop.circle", isEnabled: false) {}
+                        PrimaryButton("onboarding.button.auth_placeholder", systemImage: "person.crop.circle") {
+                            hasFinishedIntro = true
+                        }
                     }
                     .padding(.bottom, AppSpacing.xl)
                 }
@@ -34,6 +41,9 @@ struct AppRootView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(AppColors.background)
             }
+        }
+        .task {
+            await authViewModel.refreshSession()
         }
     }
 }

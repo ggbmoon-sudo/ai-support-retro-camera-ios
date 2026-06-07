@@ -1,6 +1,14 @@
 import SwiftUI
 
 struct MainTabShellView: View {
+    let authUser: AuthUser?
+    let onSignOut: () -> Void
+
+    init(authUser: AuthUser? = nil, onSignOut: @escaping () -> Void = {}) {
+        self.authUser = authUser
+        self.onSignOut = onSignOut
+    }
+
     var body: some View {
         TabView {
             NavigationStack {
@@ -18,7 +26,7 @@ struct MainTabShellView: View {
             }
 
             NavigationStack {
-                SettingsView()
+                SettingsView(authUser: authUser, onSignOut: onSignOut)
             }
             .tabItem {
                 Label("tab.settings", systemImage: "gearshape")

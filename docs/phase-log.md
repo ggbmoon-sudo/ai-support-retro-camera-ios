@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 01.5 - Xcode Project Setup  
-Status: Completed with documentation fallback  
-Next phase: Phase 02 - Auth, after Xcode setup is completed or explicitly accepted
+Current phase: Phase 02 - Auth
+Status: Completed as source scaffold / mock-only Auth
+Next phase: Phase 03 - Camera + Photo Picker, after Phase 02 is reviewed and a Mac/Xcode check is completed or explicitly deferred
 
 ---
 
@@ -291,15 +291,107 @@ Do not start Phase 02, Auth, Camera, Firebase upload, AI, or StoreKit from this 
 
 ## Phase 02 - Auth
 
-Status: Not started
+Status: Completed as source scaffold / mock-only Auth
+Date started: 2026-06-07
+Date completed: 2026-06-07
 
 ### Goal
 
 Implement Firebase Auth flow scaffolding for email/password, Google login, and Sign in with Apple.
 
+### Summary
+
+Phase 02 added dependency-free SwiftUI Auth UI scaffolding, mock Auth state, a mockable `AuthService` protocol, provider row placeholders for Google and Apple, guest try mode, Settings sign-out and account deletion placeholders, and Auth setup TODO documentation.
+
+No real Firebase Auth, Google Sign-In, Sign in with Apple capability, Firebase Storage upload, Camera, AI, StoreKit, secrets, API keys, credentials, project IDs, production plist files, or `GoogleService-Info.plist` were added.
+
+### Completed
+
+- Read the required Phase 02 prompt and context documents.
+- Ran `Get-ChildItem -Recurse -Filter '*.xcodeproj'` and confirmed no `.xcodeproj` exists.
+- Added Auth UI scaffold under `ios-app/AIPhotoApp/Features/Auth/`.
+- Added email/password form scaffold with local mock validation.
+- Added Google sign-in row scaffold.
+- Added Apple sign-in row scaffold.
+- Added guest/try-mode copy and mock local state.
+- Added `AuthService` protocol for dependency injection.
+- Added `MockAuthService` for local-only sign-in/sign-out flows.
+- Added `FirebaseAuthService` as a non-operational placeholder without Firebase imports.
+- Connected the app root to the mock Auth flow before entering the existing tab shell.
+- Added Settings mock sign-out and account deletion placeholder entries.
+- Added English and Traditional Chinese Auth localization keys.
+- Added Auth provider setup TODO documentation.
+- Updated iOS README with Phase 02 Auth scaffold notes.
+- Updated manual smoke tests with Phase 02 checks.
+
+### Changed Files
+
+- docs/phase-log.md
+- ios-app/README.md
+- ios-app/AIPhotoApp/App/AppRootView.swift
+- ios-app/AIPhotoApp/App/MainTabShellView.swift
+- ios-app/AIPhotoApp/Features/Auth/AuthView.swift
+- ios-app/AIPhotoApp/Features/Auth/EmailAuthForm.swift
+- ios-app/AIPhotoApp/Features/Auth/AppleSignInButtonRow.swift
+- ios-app/AIPhotoApp/Features/Auth/GoogleSignInButtonRow.swift
+- ios-app/AIPhotoApp/Features/Auth/AuthViewModel.swift
+- ios-app/AIPhotoApp/Features/Auth/AuthMode.swift
+- ios-app/AIPhotoApp/Features/Settings/SettingsView.swift
+- ios-app/AIPhotoApp/Models/AuthUser.swift
+- ios-app/AIPhotoApp/Models/AuthProviderID.swift
+- ios-app/AIPhotoApp/Services/Auth/AuthService.swift
+- ios-app/AIPhotoApp/Services/Auth/MockAuthService.swift
+- ios-app/AIPhotoApp/Services/Auth/FirebaseAuthService.swift
+- ios-app/AIPhotoApp/Services/Auth/AuthSetupTODO.md
+- ios-app/AIPhotoApp/Resources/Localization/en.lproj/Localizable.strings
+- ios-app/AIPhotoApp/Resources/Localization/zh-Hant.lproj/Localizable.strings
+- tests/manual-smoke-tests.md
+
+### Tests / Manual Checks
+
+- [x] Ran `Get-ChildItem -Recurse -Filter '*.xcodeproj'` and found no `.xcodeproj`.
+- [x] Confirmed Phase 02 uses mock-only Auth source files because no verified Xcode project exists.
+- [x] Confirmed `FirebaseAuthService.swift` does not import Firebase modules.
+- [x] Confirmed Google and Apple sign-in rows are both present.
+- [x] Confirmed guest mode is local-only scaffold state.
+- [x] Confirmed account deletion is a Settings placeholder and does not claim backend deletion is complete.
+- [x] Confirmed no `GoogleService-Info.plist` was added.
+- [x] Confirmed no `.env`, `.firebaserc`, production plist, private key, OAuth secret, Firebase project ID, Google key, Apple credential, Gemini key, OpenAI key, or API key was added.
+- [x] Confirmed no Camera, PhotosUI, Firebase Storage upload, AI, StoreKit, or Phase 03 work was added.
+- [ ] Xcode build not run because this environment is Windows without a verified `.xcodeproj`.
+- [ ] Xcode Preview not run because this environment is Windows without a verified `.xcodeproj`.
+- [ ] iOS Simulator not run because this environment is Windows without a verified `.xcodeproj`.
+
+### Known TODOs
+
+- On macOS, complete or verify `ios-app/AIPhotoApp.xcodeproj`.
+- Add Phase 02 Auth Swift files to the real Xcode target.
+- Add Firebase Apple SDK packages only after the Xcode project is verified.
+- Keep `GoogleService-Info.plist` local-only and out of git.
+- Configure Firebase Console Email/Password, Google, and Apple providers outside the repo.
+- Configure Google reversed client ID URL scheme locally in Xcode.
+- Configure Sign in with Apple capability in Apple Developer and Xcode.
+- Implement real Firebase Auth only after dependencies and local config are ready.
+- Implement backend account/data deletion in the later privacy/deletion phase.
+- Confirm Gemini/public consumer 18+ and minors risk before public AI release.
+
+### `.xcodeproj` Status
+
+No `.xcodeproj` exists in the repo.
+
+### Xcode Build / Simulator
+
+Not run.
+
+### Ready for Phase 03
+
+No. Phase 02 source scaffold is complete, but Mac/Xcode target membership and build checks have not been run.
+
 ### Notes
 
 Use placeholders and TODOs for manual Firebase Console / Apple Developer setup. Do not invent real credentials.
+
+Do not mark Phase 03 started from Phase 02.
 
 ---
 

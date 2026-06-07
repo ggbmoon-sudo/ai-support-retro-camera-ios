@@ -1,14 +1,31 @@
 import SwiftUI
 
 struct SettingsView: View {
+    let authUser: AuthUser?
+    let onSignOut: () -> Void
+
+    init(authUser: AuthUser? = nil, onSignOut: @escaping () -> Void = {}) {
+        self.authUser = authUser
+        self.onSignOut = onSignOut
+    }
+
     var body: some View {
         List {
             Section {
                 settingsRow(
                     icon: "person.crop.circle",
                     title: "settings.auth.title",
-                    detail: "settings.auth.placeholder"
+                    detail: authStatusKey
                 )
+
+                Button(action: onSignOut) {
+                    settingsRow(
+                        icon: "rectangle.portrait.and.arrow.right",
+                        title: "settings.auth.sign_out",
+                        detail: "settings.auth.sign_out.placeholder"
+                    )
+                }
+                .disabled(authUser == nil)
             }
 
             Section {
@@ -21,6 +38,11 @@ struct SettingsView: View {
                     icon: "lock.shield",
                     title: "settings.privacy.title",
                     detail: "settings.privacy.placeholder"
+                )
+                settingsRow(
+                    icon: "trash",
+                    title: "settings.privacy.delete_account",
+                    detail: "settings.privacy.delete_account.placeholder"
                 )
             }
 
@@ -58,6 +80,10 @@ struct SettingsView: View {
         }
         .padding(.vertical, AppSpacing.xs)
         .accessibilityElement(children: .combine)
+    }
+
+    private var authStatusKey: LocalizedStringKey {
+        authUser?.isGuest == true ? "settings.auth.guest" : "settings.auth.signed_in"
     }
 }
 

@@ -77,3 +77,38 @@ Use `ios-app/XCODE_SETUP.md` on macOS to:
 - verify `AppRootView` / `MainTabShellView` previews and simulator rendering
 
 Do not start Phase 02 Auth work until the Xcode setup path has been completed or explicitly accepted as a documentation-only fallback.
+
+## Phase 02 Auth Scaffold
+
+Phase 02 adds dependency-free Auth UI and service scaffolding under:
+
+```text
+ios-app/AIPhotoApp/Features/Auth/
+ios-app/AIPhotoApp/Services/Auth/
+```
+
+Current Phase 02 Auth files include:
+
+- `AuthView.swift`
+- `EmailAuthForm.swift`
+- `GoogleSignInButtonRow.swift`
+- `AppleSignInButtonRow.swift`
+- `AuthViewModel.swift`
+- `AuthMode.swift`
+- `AuthService.swift`
+- `MockAuthService.swift`
+- `FirebaseAuthService.swift`
+- `AuthSetupTODO.md`
+
+The current Auth scaffold is intentionally local/mock only:
+
+- Email/password validation is simulated by `MockAuthService`.
+- Google login is a UI row plus mock provider state.
+- Sign in with Apple is a UI row plus mock provider state.
+- Guest try mode is local-only.
+- Settings includes mock sign-out and account deletion placeholders.
+- `FirebaseAuthService` is a non-operational placeholder with TODOs.
+
+There is still no verified `.xcodeproj`, so Xcode build, Preview, Simulator, Firebase Auth, Google Sign-In, and Sign in with Apple have not been verified.
+
+Do not add real `GoogleService-Info.plist`, Firebase keys, Google keys, Apple credentials, API keys, `.env`, or production plist files to git. Complete `ios-app/AIPhotoApp/Services/Auth/AuthSetupTODO.md` and `ios-app/XCODE_SETUP.md` on macOS before wiring real providers.
