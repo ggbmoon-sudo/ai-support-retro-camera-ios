@@ -45,7 +45,13 @@ The current scaffold is intentionally UI-only:
 
 ## Xcode Notes
 
-There is no checked-in `.xcodeproj` yet. On macOS with Xcode, create a new iOS SwiftUI app target and add the files under `ios-app/AIPhotoApp/` to that target.
+There is no checked-in `.xcodeproj` yet. Phase 01.5 documents the manual Xcode setup path in:
+
+```text
+ios-app/XCODE_SETUP.md
+```
+
+On macOS with Xcode, create a new iOS SwiftUI app target and add the files under `ios-app/AIPhotoApp/` to that target.
 
 Suggested target settings:
 
@@ -57,3 +63,17 @@ Suggested target settings:
 Do not add real `GoogleService-Info.plist` to git.
 
 The real Firebase, Auth, Camera, AI, and StoreKit integrations should be added only in their later phases.
+
+## Phase 01.5 Xcode Setup
+
+Phase 01.5 did not generate a `.xcodeproj` from this Windows environment because it could not be reliably verified in Xcode.
+
+Use `ios-app/XCODE_SETUP.md` on macOS to:
+
+- create the real iOS SwiftUI Xcode project
+- place the project at `ios-app/AIPhotoApp.xcodeproj`
+- add the existing `ios-app/AIPhotoApp/` Swift files to the app target
+- add the English and Traditional Chinese localization files to the target resources
+- verify `AppRootView` / `MainTabShellView` previews and simulator rendering
+
+Do not start Phase 02 Auth work until the Xcode setup path has been completed or explicitly accepted as a documentation-only fallback.

@@ -50,3 +50,35 @@ Manual Xcode check on macOS:
 - [ ] Confirm the intro placeholder can enter the Home / History / Settings tab shell.
 - [ ] Confirm dark and light mode are readable.
 - [ ] Confirm placeholder CTAs do not start Auth, Camera, Firebase, AI, or StoreKit work.
+
+## Phase 01.5
+
+Check:
+
+- [x] Confirmed no `.xcodeproj` exists in the current repo.
+- [x] Confirmed the current environment cannot reliably verify an Xcode project.
+- [x] Added `ios-app/XCODE_SETUP.md` instead of generating an unverified `.xcodeproj`.
+- [x] Documented how to create `ios-app/AIPhotoApp.xcodeproj` on macOS.
+- [x] Documented how to add existing `ios-app/AIPhotoApp/` Swift files to the app target.
+- [x] Documented how to add `en.lproj` and `zh-Hant.lproj` localization files to target resources.
+- [x] Confirmed no Auth implementation was added.
+- [x] Confirmed no Camera implementation was added.
+- [x] Confirmed no Firebase upload implementation was added.
+- [x] Confirmed no AI implementation was added.
+- [x] Confirmed no StoreKit implementation was added.
+- [x] Confirmed no real API keys are committed.
+- [x] Confirmed no real GoogleService-Info.plist is committed.
+
+Manual Xcode check on macOS:
+
+- [ ] Follow `ios-app/XCODE_SETUP.md`.
+- [ ] Create or open `ios-app/AIPhotoApp.xcodeproj`.
+- [ ] Confirm all Swift files under `ios-app/AIPhotoApp/` are in the app target.
+- [ ] Confirm `ios-app/AIPhotoApp/AIPhotoApp.swift` is the only `@main` entry.
+- [ ] Confirm localization resources are copied into the app bundle.
+- [ ] Build the target.
+- [ ] Preview `AppRootView`.
+- [ ] Preview `MainTabShellView`.
+- [ ] Run the app in an iOS Simulator.
+- [ ] Confirm Home / History / Settings render.
+- [ ] Confirm placeholder CTAs do not start Auth, Camera, Firebase, AI, or StoreKit work.

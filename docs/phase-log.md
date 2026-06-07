@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 01 - Design System + Navigation  
-Status: Completed  
-Next phase: Phase 02 - Auth
+Current phase: Phase 01.5 - Xcode Project Setup  
+Status: Completed with documentation fallback  
+Next phase: Phase 02 - Auth, after Xcode setup is completed or explicitly accepted
 
 ---
 
@@ -214,6 +214,78 @@ Yes. Phase 02 can begin when explicitly requested.
 ### Notes
 
 Do not implement Auth, Camera, Firebase, AI, or StoreKit in this phase.
+
+---
+
+## Phase 01.5 - Xcode Project Setup
+
+Status: Completed with documentation fallback  
+Date started: 2026-06-07  
+Date completed: 2026-06-07
+
+### Goal
+
+Create or document the setup for a real Xcode-openable iOS SwiftUI project/target that connects the existing `ios-app/AIPhotoApp/` Phase 01 SwiftUI source files, so the Phase 01 UI can be viewed in Xcode Preview and the iOS Simulator.
+
+### Summary
+
+Phase 01.5 verified that the repo still has no `.xcodeproj`. Because this work was performed in a Windows environment without Xcode, no `.xcodeproj` was generated or hand-written. Instead, a clear manual setup guide was added at `ios-app/XCODE_SETUP.md`.
+
+No Auth, Camera, Firebase upload, AI, StoreKit, real secrets, API keys, Apple credentials, Firebase keys, Google keys, provisioning profiles, or `GoogleService-Info.plist` were added.
+
+### Completed
+
+- Read the required Phase 01.5 context documents.
+- Verified the working tree state before editing.
+- Verified no `.xcodeproj` exists in the current repo.
+- Confirmed existing Phase 01 SwiftUI scaffold files under `ios-app/AIPhotoApp/`.
+- Confirmed the current environment cannot reliably generate and verify an Xcode project.
+- Added `ios-app/XCODE_SETUP.md` with manual Xcode project creation steps.
+- Documented how to place the project at `ios-app/AIPhotoApp.xcodeproj`.
+- Documented how to add existing Swift files to the app target.
+- Documented how to add English and Traditional Chinese localization resources.
+- Updated `ios-app/README.md` to reference the Phase 01.5 setup guide.
+- Updated manual smoke tests with Phase 01.5 checks.
+
+### Changed Files
+
+- docs/prompts/phase-01-5-xcode-project-setup.md
+- docs/phase-log.md
+- ios-app/README.md
+- ios-app/XCODE_SETUP.md
+- tests/manual-smoke-tests.md
+
+### Tests / Manual Checks
+
+- [x] Ran `git status --short`.
+- [x] Ran `rg --files`.
+- [x] Ran `Get-ChildItem -Recurse -Filter *.xcodeproj` and found no `.xcodeproj`.
+- [x] Confirmed `ios-app/AIPhotoApp/AIPhotoApp.swift` is the only current `@main` app entry in the Swift source scaffold.
+- [x] Confirmed no app code imports Firebase, Google Sign-In, StoreKit, AVFoundation, PhotosUI, Gemini, OpenAI, or third-party packages.
+- [x] Confirmed no generated `.xcodeproj` was added.
+- [x] Confirmed no real `GoogleService-Info.plist` was added.
+- [ ] Xcode build not run because this environment is Windows without Xcode.
+- [ ] Xcode Preview not run because this environment is Windows without Xcode.
+- [ ] iOS Simulator not run because this environment is Windows without Xcode.
+
+### Known TODOs
+
+- On macOS, follow `ios-app/XCODE_SETUP.md`.
+- Create or verify `ios-app/AIPhotoApp.xcodeproj`.
+- Add all existing `ios-app/AIPhotoApp/` Swift files to the app target.
+- Add localization files to the app target resources.
+- Verify `AppRootView` and `MainTabShellView` in Xcode Preview.
+- Build and run the app in an iOS Simulator.
+- Commit the verified `.xcodeproj` only after it opens and builds correctly.
+- Implement Auth only in Phase 02 after explicit instruction.
+
+### Ready for Phase 02
+
+No. The Phase 01.5 fallback documentation is complete, but the real Xcode project has not yet been created or verified on macOS.
+
+### Notes
+
+Do not start Phase 02, Auth, Camera, Firebase upload, AI, or StoreKit from this phase.
 
 ---
 
