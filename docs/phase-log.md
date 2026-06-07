@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 00 - Repo Setup and Documentation  
+Current phase: Phase 01 - Design System + Navigation  
 Status: Completed  
-Next phase: Phase 01 - Design System + Navigation
+Next phase: Phase 02 - Auth
 
 ---
 
@@ -135,11 +135,81 @@ Yes. Phase 01 can begin when explicitly requested.
 
 ## Phase 01 - Design System + Navigation
 
-Status: Not started
+Status: Completed  
+Date started: 2026-06-07  
+Date completed: 2026-06-07
 
 ### Goal
 
 Create the SwiftUI app shell, root navigation, basic design system, placeholder Home / History / Settings screens, dark mode support, and localization skeleton.
+
+### Summary
+
+Phase 01 created a dependency-free SwiftUI source scaffold under `ios-app/AIPhotoApp/`, expanded the Phase 01 construction prompt, added design system tokens and reusable UI components, added placeholder Home / History / Settings navigation, and added English / Traditional Chinese localization skeleton files.
+
+No Auth, Camera, Firebase upload, AI, or StoreKit implementation was added.
+
+### Completed
+
+- Expanded `docs/prompts/phase-01-design-navigation.md` into a complete implementation prompt.
+- Added SwiftUI app entry and root view scaffold.
+- Added `TabView` + per-tab `NavigationStack` shell.
+- Added placeholder Home / History / Settings views.
+- Added design system tokens for colors, typography, spacing, and corner radius.
+- Added reusable placeholder components: primary button, icon button, quota badge, empty state.
+- Added simple UI preview models for presets, quota status, and history items.
+- Added `en` and `zh-Hant` localization skeleton files.
+- Updated iOS app README with Phase 01 structure and Xcode notes.
+- Updated manual smoke tests with Phase 01 checks.
+
+### Changed Files
+
+- docs/prompts/phase-01-design-navigation.md
+- docs/phase-log.md
+- ios-app/README.md
+- ios-app/AIPhotoApp/AIPhotoApp.swift
+- ios-app/AIPhotoApp/App/AppRootView.swift
+- ios-app/AIPhotoApp/App/MainTabShellView.swift
+- ios-app/AIPhotoApp/DesignSystem/Tokens/AppColors.swift
+- ios-app/AIPhotoApp/DesignSystem/Tokens/AppTypography.swift
+- ios-app/AIPhotoApp/DesignSystem/Tokens/AppSpacing.swift
+- ios-app/AIPhotoApp/DesignSystem/Tokens/AppCornerRadius.swift
+- ios-app/AIPhotoApp/DesignSystem/Components/PrimaryButton.swift
+- ios-app/AIPhotoApp/DesignSystem/Components/IconCircleButton.swift
+- ios-app/AIPhotoApp/DesignSystem/Components/QuotaBadge.swift
+- ios-app/AIPhotoApp/DesignSystem/Components/EmptyStateView.swift
+- ios-app/AIPhotoApp/Features/Home/HomeView.swift
+- ios-app/AIPhotoApp/Features/History/HistoryView.swift
+- ios-app/AIPhotoApp/Features/Settings/SettingsView.swift
+- ios-app/AIPhotoApp/Models/CameraPreset.swift
+- ios-app/AIPhotoApp/Models/QuotaStatus.swift
+- ios-app/AIPhotoApp/Models/HistoryPhotoItem.swift
+- ios-app/AIPhotoApp/Resources/Localization/en.lproj/Localizable.strings
+- ios-app/AIPhotoApp/Resources/Localization/zh-Hant.lproj/Localizable.strings
+- tests/manual-smoke-tests.md
+
+### Tests / Manual Checks
+
+- [x] Confirmed Phase 01 files are limited to prompt, iOS scaffold, iOS README, manual tests, and phase log.
+- [x] Confirmed placeholder UI does not import Firebase, Google Sign-In, StoreKit, AVFoundation, PhotosUI, Gemini, OpenAI, or third-party packages.
+- [x] Confirmed no `.env`, `.firebaserc`, `GoogleService-Info.plist`, or real credential files were added.
+- [x] Confirmed manual test checklist includes Phase 01 checks.
+- [ ] Xcode build / simulator verification not run in this Windows environment.
+
+### Known TODOs
+
+- Create a real Xcode iOS project or target on macOS and add `ios-app/AIPhotoApp/` files.
+- Verify SwiftUI previews and simulator rendering in Xcode.
+- Implement Auth in Phase 02.
+- Implement Camera and photo picker in Phase 03.
+- Implement real filter pipeline in Phase 04.
+- Implement Firebase upload and Firestore metadata in Phase 05.
+- Implement AI Cloud Function and AI UI in later phases.
+- Implement StoreKit subscription flow in Phase 09.
+
+### Ready for Phase 02
+
+Yes. Phase 02 can begin when explicitly requested.
 
 ### Notes
 
