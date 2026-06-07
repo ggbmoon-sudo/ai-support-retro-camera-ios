@@ -1,0 +1,28 @@
+{
+  "parameters": {
+    "ai_provider": {
+      "defaultValue": {
+        "value": "mock"
+      },
+      "description": "Default AI provider. Use mock for local development."
+    },
+    "free_starter_analysis_credits": {
+      "defaultValue": {
+        "value": "20"
+      },
+      "description": "Starter analysis credits for free users."
+    },
+    "daily_login_bonus": {
+      "defaultValue": {
+        "value": "1"
+      },
+      "description": "Daily free analysis credit bonus."
+    },
+    "free_photo_limit": {
+      "defaultValue": {
+        "value": "20"
+      },
+      "description": "Maximum cloud photos for free users."
+    }
+  }
+}
