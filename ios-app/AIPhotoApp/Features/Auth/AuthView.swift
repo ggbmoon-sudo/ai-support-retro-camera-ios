@@ -79,5 +79,5 @@ struct AuthView: View {
 }
 
 #Preview {
-    AuthView(viewModel: AuthViewModel())
+    AuthView(viewModel: AuthViewModel(service: MockAuthService()))
 }

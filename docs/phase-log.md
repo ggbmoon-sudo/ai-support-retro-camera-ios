@@ -10,7 +10,51 @@ Every Codex task must update this file before finishing.
 
 Current phase: Phase 02 - Auth
 Status: Completed as source scaffold / mock-only Auth
-Next phase: Phase 03 - Camera + Photo Picker, after Phase 02 is reviewed and a Mac/Xcode check is completed or explicitly deferred
+Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
+Next phase: Phase 03 - Camera + Photo Picker, ready after this verification commit is pushed
+
+---
+
+## Maintenance - Mac/Xcode Build Error Fix
+
+Status: Completed
+Date completed: 2026-06-09
+
+### Summary
+
+Completed minimal Mac/Xcode build fixes for the Phase 01/02 scaffold. The Mac/Xcode project was detected at `ios-app/AIPhotoApp.xcodeproj`, and the Phase 01 UI scaffold plus Phase 02 Auth scaffold build succeeded on MacBook/Xcode.
+
+### Completed
+
+- Checked `git status --short`.
+- Checked `ios-app/AIPhotoApp/Features/Auth/AuthViewModel.swift`.
+- Searched Swift files under `ios-app/AIPhotoApp/` for `ObservableObject` and `@Published`.
+- Added the missing `import Combine` to `AuthViewModel.swift`.
+- Removed the default `MockAuthService()` argument from `AuthViewModel.init` to avoid actor-isolation errors in synchronous nonisolated contexts.
+- Updated the Auth preview to inject `MockAuthService()` explicitly.
+- Confirmed `ios-app/AIPhotoApp.xcodeproj` exists.
+- Confirmed Phase 01/02 Mac/Xcode build succeeded.
+- Confirmed Auth scaffold build was verified.
+- Did not start Phase 03.
+- Did not implement Camera, Firebase Storage upload, AI, or StoreKit.
+- Did not add secrets, API keys, credentials, or `GoogleService-Info.plist`.
+
+### Changed Files
+
+- .gitignore
+- docs/phase-log.md
+- ios-app/AIPhotoApp/Features/Auth/AuthView.swift
+- ios-app/AIPhotoApp/Features/Auth/AuthViewModel.swift
+- ios-app/AIPhotoApp.xcodeproj/
+- tests/manual-smoke-tests.md
+
+### Tests / Manual Checks
+
+- [x] Confirmed only `AuthViewModel.swift` uses `ObservableObject` / `@Published`.
+- [x] Mac/Xcode build succeeded for Phase 01/02.
+- [x] Phase 01 UI scaffold verified.
+- [x] Phase 02 Auth scaffold verified.
+- [x] Confirmed no Phase 03 work was started.
 
 ---
 
@@ -358,14 +402,13 @@ No real Firebase Auth, Google Sign-In, Sign in with Apple capability, Firebase S
 - [x] Confirmed no `GoogleService-Info.plist` was added.
 - [x] Confirmed no `.env`, `.firebaserc`, production plist, private key, OAuth secret, Firebase project ID, Google key, Apple credential, Gemini key, OpenAI key, or API key was added.
 - [x] Confirmed no Camera, PhotosUI, Firebase Storage upload, AI, StoreKit, or Phase 03 work was added.
-- [ ] Xcode build not run because this environment is Windows without a verified `.xcodeproj`.
-- [ ] Xcode Preview not run because this environment is Windows without a verified `.xcodeproj`.
-- [ ] iOS Simulator not run because this environment is Windows without a verified `.xcodeproj`.
+- [x] Mac/Xcode build succeeded after `ios-app/AIPhotoApp.xcodeproj` was created and verified.
+- [ ] Xcode Preview verification is not recorded in this update.
+- [ ] iOS Simulator verification is not recorded in this update.
 
 ### Known TODOs
 
-- On macOS, complete or verify `ios-app/AIPhotoApp.xcodeproj`.
-- Add Phase 02 Auth Swift files to the real Xcode target.
+- Keep `ios-app/AIPhotoApp.xcodeproj` committed after review.
 - Add Firebase Apple SDK packages only after the Xcode project is verified.
 - Keep `GoogleService-Info.plist` local-only and out of git.
 - Configure Firebase Console Email/Password, Google, and Apple providers outside the repo.
@@ -377,15 +420,15 @@ No real Firebase Auth, Google Sign-In, Sign in with Apple capability, Firebase S
 
 ### `.xcodeproj` Status
 
-No `.xcodeproj` exists in the repo.
+`ios-app/AIPhotoApp.xcodeproj` exists in the repo.
 
 ### Xcode Build / Simulator
 
-Not run.
+Mac/Xcode build succeeded for the Phase 01 UI scaffold and Phase 02 Auth scaffold. Simulator verification is not recorded in this update.
 
 ### Ready for Phase 03
 
-No. Phase 02 source scaffold is complete, but Mac/Xcode target membership and build checks have not been run.
+Yes, after this verification commit is pushed. Phase 03 has not been started.
 
 ### Notes
 

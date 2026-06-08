@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 @MainActor
 final class AuthViewModel: ObservableObject {
@@ -11,7 +12,7 @@ final class AuthViewModel: ObservableObject {
 
     private let service: AuthService
 
-    init(service: AuthService = MockAuthService()) {
+    init(service: AuthService) {
         self.service = service
     }
 

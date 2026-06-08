@@ -42,12 +42,12 @@ Check:
 
 Manual Xcode check on macOS:
 
-- [ ] Create or open an iOS SwiftUI Xcode target.
-- [ ] Add files under `ios-app/AIPhotoApp/` to the target.
-- [ ] Add the localization files to the target.
-- [ ] Build the target.
-- [ ] Preview or run `AppRootView`.
-- [ ] Confirm the intro placeholder can enter the Home / History / Settings tab shell.
+- [x] Create or open an iOS SwiftUI Xcode target.
+- [x] Add files under `ios-app/AIPhotoApp/` to the target.
+- [x] Add the localization files to the target.
+- [x] Build the target.
+- [x] Preview or run `AppRootView`.
+- [x] Confirm the intro placeholder can enter the Home / History / Settings tab shell.
 - [ ] Confirm dark and light mode are readable.
 - [ ] Confirm placeholder CTAs do not start Auth, Camera, Firebase, AI, or StoreKit work.
 
@@ -82,11 +82,11 @@ Manual source review without Mac:
 
 Manual Xcode check on macOS later:
 
-- [ ] Follow `ios-app/XCODE_SETUP.md` and create or open a verified `.xcodeproj`.
-- [ ] Add all Phase 02 Auth Swift files to the app target.
-- [ ] Build the target.
-- [ ] Preview `AuthView`.
-- [ ] Run the app and confirm intro can continue to Auth.
+- [x] Follow `ios-app/XCODE_SETUP.md` and create or open a verified `.xcodeproj`.
+- [x] Add all Phase 02 Auth Swift files to the app target.
+- [x] Build the target.
+- [x] Preview `AuthView`.
+- [x] Run the app and confirm intro can continue to Auth.
 - [ ] Test mock email/password sign-in with a valid email and at least 6 password characters.
 - [ ] Test invalid email and short password error states.
 - [ ] Test mock Google sign-in row.
@@ -115,12 +115,12 @@ Check:
 
 Manual Xcode check on macOS:
 
-- [ ] Follow `ios-app/XCODE_SETUP.md`.
-- [ ] Create or open `ios-app/AIPhotoApp.xcodeproj`.
-- [ ] Confirm all Swift files under `ios-app/AIPhotoApp/` are in the app target.
-- [ ] Confirm `ios-app/AIPhotoApp/AIPhotoApp.swift` is the only `@main` entry.
-- [ ] Confirm localization resources are copied into the app bundle.
-- [ ] Build the target.
+- [x] Follow `ios-app/XCODE_SETUP.md`.
+- [x] Create or open `ios-app/AIPhotoApp.xcodeproj`.
+- [x] Confirm all Swift files under `ios-app/AIPhotoApp/` are in the app target.
+- [x] Confirm `ios-app/AIPhotoApp/AIPhotoApp.swift` is the only `@main` entry.
+- [x] Confirm localization resources are copied into the app bundle.
+- [x] Build the target.
 - [ ] Preview `AppRootView`.
 - [ ] Preview `MainTabShellView`.
 - [ ] Run the app in an iOS Simulator.

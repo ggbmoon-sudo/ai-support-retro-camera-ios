@@ -1,12 +1,18 @@
-# macOS
+# macOS metadata
 .DS_Store
+._*
+.AppleDouble
+.LSOverride
 
-# Xcode
+# Xcode user-specific files
 DerivedData/
 *.xcuserstate
 *.xcworkspace/xcuserdata/
 *.xcodeproj/xcuserdata/
 *.xcodeproj/project.xcworkspace/xcuserdata/
+**/xcuserdata/
+**/*.xcuserstate
+**/*.xcuserdatad/
 
 # Swift Package Manager
 .build/
