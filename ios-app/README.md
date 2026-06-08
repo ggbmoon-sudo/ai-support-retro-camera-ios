@@ -35,23 +35,23 @@ Current Phase 01 files include:
 - `Resources/Localization/en.lproj/Localizable.strings`
 - `Resources/Localization/zh-Hant.lproj/Localizable.strings`
 
-The current scaffold is intentionally UI-only:
+The Phase 01 scaffold started as UI-only:
 
 - Auth is not implemented.
-- Camera is not implemented.
+- Camera is implemented later as a local-only Phase 03 scaffold.
 - Firebase upload is not implemented.
 - AI is not implemented.
 - StoreKit is not implemented.
 
 ## Xcode Notes
 
-There is no checked-in `.xcodeproj` yet. Phase 01.5 documents the manual Xcode setup path in:
+There is a checked-in `.xcodeproj` at:
 
 ```text
-ios-app/XCODE_SETUP.md
+ios-app/AIPhotoApp.xcodeproj
 ```
 
-On macOS with Xcode, create a new iOS SwiftUI app target and add the files under `ios-app/AIPhotoApp/` to that target.
+Phase 01.5 documents the manual Xcode setup path in `ios-app/XCODE_SETUP.md`. The Phase 01/02 Mac/Xcode build succeeded on 2026-06-09, and the Phase 03 command-line Xcode simulator build also succeeded.
 
 Suggested target settings:
 
@@ -62,7 +62,7 @@ Suggested target settings:
 
 Do not add real `GoogleService-Info.plist` to git.
 
-The real Firebase, Auth, Camera, AI, and StoreKit integrations should be added only in their later phases.
+The real Firebase, AI, and StoreKit integrations should be added only in their later phases.
 
 ## Phase 01.5 Xcode Setup
 
@@ -109,6 +109,36 @@ The current Auth scaffold is intentionally local/mock only:
 - Settings includes mock sign-out and account deletion placeholders.
 - `FirebaseAuthService` is a non-operational placeholder with TODOs.
 
-There is still no verified `.xcodeproj`, so Xcode build, Preview, Simulator, Firebase Auth, Google Sign-In, and Sign in with Apple have not been verified.
+The Xcode project now exists and Phase 01/02 build verification has passed. Firebase Auth, Google Sign-In, and Sign in with Apple remain mock/placeholders until real provider setup is explicitly requested.
 
 Do not add real `GoogleService-Info.plist`, Firebase keys, Google keys, Apple credentials, API keys, `.env`, or production plist files to git. Complete `ios-app/AIPhotoApp/Services/Auth/AuthSetupTODO.md` and `ios-app/XCODE_SETUP.md` on macOS before wiring real providers.
+
+## Phase 03 Camera + Photo Picker Scaffold
+
+Phase 03 adds a local-only Camera + Photo Picker scaffold under:
+
+```text
+ios-app/AIPhotoApp/Features/Camera/
+```
+
+Current Phase 03 Camera files include:
+
+- `CameraView.swift`
+- `CameraViewModel.swift`
+- `CameraPermissionState.swift`
+- `CameraCaptureService.swift`
+- `CameraPreviewView.swift`
+- `PhotoPickerView.swift`
+- `SelectedPhotoPreview.swift`
+- `CapturedPhoto.swift`
+
+The current Camera scaffold is intentionally local-only:
+
+- AVFoundation is used for camera permission, preview, and single-photo capture scaffolding.
+- PhotosPicker is used for one-image library import.
+- Captured or imported images are kept in memory only.
+- Home can open the Camera scaffold.
+- Camera and photo-library usage description placeholders are set in the Xcode project.
+- Command-line Xcode simulator build succeeded.
+
+This phase does not add filters, Firebase Storage upload, Firestore metadata, AI analysis, Cloud Functions AI proxy, StoreKit, quota enforcement, history persistence, secrets, credentials, API keys, or `GoogleService-Info.plist`.

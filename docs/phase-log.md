@@ -8,10 +8,11 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 02 - Auth
-Status: Completed as source scaffold / mock-only Auth
+Current phase: Phase 03 - Camera + Photo Picker
+Status: Completed as local-only Camera + Photo Picker scaffold
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
-Next phase: Phase 03 - Camera + Photo Picker, ready after this verification commit is pushed
+Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
+Next phase: Phase 04 - Filter Presets, after Phase 03 is reviewed and simulator/device checks are completed or explicitly deferred
 
 ---
 
@@ -440,11 +441,95 @@ Do not mark Phase 03 started from Phase 02.
 
 ## Phase 03 - Camera + Photo Picker
 
-Status: Not started
+Status: Completed as local-only scaffold
+Date started: 2026-06-09
+Date completed: 2026-06-09
 
 ### Goal
 
 Implement AVFoundation single-photo camera flow and PhotosPicker / PHPicker single-image import flow.
+
+### Summary
+
+Phase 03 added a local-only Camera + Photo Picker scaffold. Home can open the camera flow, camera permission states are represented, AVFoundation preview/capture scaffolding exists, PhotosPicker imports one image, and captured/imported images are previewed from in-memory state only.
+
+No filters, Core Image presets, Firebase Storage upload, Firestore metadata, AI analysis, Cloud Functions AI proxy, StoreKit, subscription/paywall logic, quota enforcement, history persistence, secrets, credentials, API keys, Firebase project IDs, Apple credentials, Google credentials, or `GoogleService-Info.plist` were added.
+
+### Completed
+
+- Read the Phase 03 prompt and required project documents.
+- Confirmed `ios-app/AIPhotoApp.xcodeproj` exists.
+- Added Camera feature scaffold under `ios-app/AIPhotoApp/Features/Camera/`.
+- Added AVFoundation camera session and single still-photo capture scaffold.
+- Added `AVCaptureVideoPreviewLayer` SwiftUI wrapper.
+- Added camera permission states and UI copy.
+- Added PhotosPicker single-image import flow.
+- Added selected/captured image preview with local-only memory state.
+- Wired Home camera and import CTAs to the Camera scaffold.
+- Added placeholder-safe camera and photo library usage descriptions to Xcode build settings.
+- Added English and Traditional Chinese localization keys for Camera / Photo Picker UI.
+- Updated manual smoke tests with Phase 03 checks.
+- Ran command-line Xcode simulator build successfully.
+
+### Changed Files
+
+- docs/phase-log.md
+- docs/prompts/phase-03-camera-picker.md
+- ios-app/README.md
+- ios-app/AIPhotoApp.xcodeproj/project.pbxproj
+- ios-app/AIPhotoApp/Features/Home/HomeView.swift
+- ios-app/AIPhotoApp/Features/Camera/CameraView.swift
+- ios-app/AIPhotoApp/Features/Camera/CameraViewModel.swift
+- ios-app/AIPhotoApp/Features/Camera/CameraPermissionState.swift
+- ios-app/AIPhotoApp/Features/Camera/CameraCaptureService.swift
+- ios-app/AIPhotoApp/Features/Camera/CameraPreviewView.swift
+- ios-app/AIPhotoApp/Features/Camera/PhotoPickerView.swift
+- ios-app/AIPhotoApp/Features/Camera/SelectedPhotoPreview.swift
+- ios-app/AIPhotoApp/Models/CapturedPhoto.swift
+- ios-app/AIPhotoApp/Resources/Localization/en.lproj/Localizable.strings
+- ios-app/AIPhotoApp/Resources/Localization/zh-Hant.lproj/Localizable.strings
+- tests/manual-smoke-tests.md
+
+### Tests / Manual Checks
+
+- [x] Ran `git status --short` before implementation.
+- [x] Confirmed `ios-app/AIPhotoApp.xcodeproj` exists.
+- [x] Ran `xcodebuild -project ios-app/AIPhotoApp.xcodeproj -scheme AIPhotoApp -sdk iphonesimulator -configuration Debug build`.
+- [x] Command-line Xcode simulator build succeeded.
+- [x] Confirmed selected/captured image state is local-only and in memory.
+- [x] Confirmed no filters or Core Image presets were implemented.
+- [x] Confirmed no Firebase Storage upload or Firestore metadata persistence was implemented.
+- [x] Confirmed no AI analysis or Cloud Functions AI proxy was implemented.
+- [x] Confirmed no StoreKit, subscription, paywall, quota enforcement, or history persistence was implemented.
+- [x] Confirmed no secrets, API keys, credentials, Firebase project IDs, Apple credentials, Google credentials, or `GoogleService-Info.plist` were added.
+- [x] User manually checked Phase 03 in Xcode after implementation.
+- [x] User confirmed build / basic UI flow looked acceptable.
+- [x] User reported no obvious major bugs.
+- [ ] Camera capture should still be verified more deeply on a physical iPhone / iPad before production.
+- [ ] Photo picker should still be verified more deeply in Xcode Simulator or on a physical device before production.
+
+### Known TODOs
+
+- Verify camera permission prompt and real capture on a physical iPhone / iPad.
+- Verify PhotosPicker import in Xcode Simulator or on device.
+- Verify Home -> Camera full-screen flow manually.
+- Verify guest/mock-auth users can access the local camera scaffold.
+- Implement filters in Phase 04 only after Phase 03 is reviewed.
+- Implement Firebase Storage / Firestore in Phase 05 only.
+- Implement AI analysis in later phases only.
+- Implement StoreKit in Phase 09 only.
+
+### Xcode Build
+
+Command-line Xcode simulator build was run by Codex and succeeded.
+
+### Camera / Photo Picker Verification
+
+Codex did not perform interactive simulator/device testing. The user manually checked Phase 03 in Xcode and reported that build / basic UI flow looked acceptable with no obvious major bugs. The feature remains a scaffold and is not final product quality yet.
+
+### Ready for Phase 04
+
+Yes, if the build status is confirmed. Phase 03 remains a local-only scaffold; retro filters, AI advice, Firebase upload, Firestore metadata, history persistence, StoreKit, and quota work belong to later phases.
 
 ### Notes
 

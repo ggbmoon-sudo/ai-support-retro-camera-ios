@@ -126,3 +126,53 @@ Manual Xcode check on macOS:
 - [ ] Run the app in an iOS Simulator.
 - [ ] Confirm Home / History / Settings render.
 - [ ] Confirm placeholder CTAs do not start Auth, Camera, Firebase, AI, or StoreKit work.
+
+## Phase 03
+
+Check:
+
+- [x] `ios-app/AIPhotoApp.xcodeproj` exists.
+- [x] Camera scaffold exists under `ios-app/AIPhotoApp/Features/Camera/`.
+- [x] Home has an entry into the Camera / Photo Picker scaffold.
+- [x] Camera permission states are represented.
+- [x] AVFoundation camera preview/capture scaffold exists.
+- [x] PhotosPicker single-image import scaffold exists.
+- [x] Captured/imported image preview is local-only and in memory.
+- [x] Added camera and photo-library usage description placeholders to Xcode build settings.
+- [x] No filters or Core Image presets were implemented.
+- [x] No Firebase Storage upload was implemented.
+- [x] No Firestore metadata persistence was implemented.
+- [x] No AI analysis or Cloud Functions AI proxy was implemented.
+- [x] No StoreKit, subscription, paywall, quota enforcement, or history persistence was implemented.
+- [x] No real secrets, API keys, credentials, Firebase project IDs, Apple credentials, Google credentials, or `GoogleService-Info.plist` were added.
+- [x] Command-line Xcode simulator build succeeded.
+
+Manual Xcode check on simulator:
+
+- [x] User manually checked Phase 03 in Xcode.
+- [x] User confirmed build / basic UI flow looked acceptable.
+- [x] User reported no obvious major bugs.
+- [ ] Build and run `AIPhotoApp` in an iOS Simulator for a full recorded smoke pass.
+- [ ] Sign in with mock Auth or continue as guest.
+- [ ] Open Home.
+- [ ] Tap `Open camera` and confirm the Camera scaffold opens full-screen.
+- [ ] Confirm simulator camera unavailable state is clear and does not crash.
+- [ ] Tap `Choose one photo` and select one image.
+- [ ] Confirm the selected image appears in the local preview.
+- [ ] Tap `Retake or clear` and confirm the preview clears.
+- [ ] Confirm `Continue in later phases` is disabled and does not start filters, upload, AI, StoreKit, quota, or history behavior.
+- [ ] Confirm Auth sign-out still works.
+- [ ] Confirm Home / History / Settings still render.
+
+Manual Xcode check on physical iPhone / iPad:
+
+- [ ] Build and run `AIPhotoApp` on device.
+- [ ] Open the Camera scaffold from Home.
+- [ ] Confirm the camera permission prompt appears when needed.
+- [ ] Grant camera permission.
+- [ ] Confirm camera preview appears.
+- [ ] Capture one still photo.
+- [ ] Confirm captured photo appears in the local preview.
+- [ ] Clear / retake and confirm the app returns to capture state.
+- [ ] Import one library image and confirm it replaces the preview.
+- [ ] Confirm no image is uploaded or persisted.

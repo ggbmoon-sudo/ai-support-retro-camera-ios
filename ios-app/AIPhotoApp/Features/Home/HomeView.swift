@@ -3,6 +3,7 @@ import SwiftUI
 struct HomeView: View {
     private let presets = CameraPreset.samples
     private let quota = QuotaStatus.sample
+    @State private var isCameraPresented = false
 
     var body: some View {
         ScrollView {
@@ -34,8 +35,12 @@ struct HomeView: View {
                 }
 
                 VStack(spacing: AppSpacing.md) {
-                    PrimaryButton("home.button.camera_placeholder", systemImage: "camera", isEnabled: false) {}
-                    PrimaryButton("home.button.import_placeholder", systemImage: "photo.on.rectangle", isEnabled: false) {}
+                    PrimaryButton("home.button.open_camera", systemImage: "camera") {
+                        isCameraPresented = true
+                    }
+                    PrimaryButton("home.button.import_photo", systemImage: "photo.on.rectangle") {
+                        isCameraPresented = true
+                    }
                 }
 
                 Text("home.phase_note")
@@ -47,6 +52,9 @@ struct HomeView: View {
         }
         .background(AppColors.background)
         .navigationTitle(Text("tab.home"))
+        .fullScreenCover(isPresented: $isCameraPresented) {
+            CameraView()
+        }
     }
 
     private func presetRow(_ preset: CameraPreset) -> some View {
