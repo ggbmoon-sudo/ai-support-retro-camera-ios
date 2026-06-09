@@ -314,3 +314,27 @@ The current polish pass is intentionally small and reviewable:
 - Settings copy more clearly states that backend, subscription, AI, quota, and deletion services are not connected.
 
 This phase remains mock/local-only. It does not add Firebase Storage upload, Firestore writes, cloud history, disk persistence, UserDefaults persistence, Core Data, SwiftData, save-to-Photos, export, real Gemini/OpenAI calls, Cloud Functions calls, StoreKit, subscription/paywall logic, quota enforcement, new SDKs, npm dependencies, secrets, credentials, Firebase project IDs, or `GoogleService-Info.plist`.
+
+## Phase 10 MVP Demo QA / Release Readiness
+
+Phase 10 adds documentation and QA readiness notes for the current local/mock MVP. It does not add product features or change Swift code.
+
+New Phase 10 docs:
+
+- `docs/mvp-demo-script.md`
+- `docs/mvp-known-limitations.md`
+- `docs/mvp-readiness-checklist.md`
+
+Use the demo script to walk through:
+
+- Home
+- Camera scaffold
+- Photo Picker import
+- Filter presets
+- Mock save success / failure
+- Mock AI advice
+- Local session history
+- Clear local session history
+- Settings placeholders
+
+The current iOS app remains local/mock-only and is not production-ready. It does not include real Firebase upload, Firestore writes, Storage writes, Cloud Functions calls, real Gemini/OpenAI calls, StoreKit, subscription/paywall logic, quota enforcement, persistence, export/save-to-Photos, secrets, credentials, Firebase project IDs, or `GoogleService-Info.plist`.

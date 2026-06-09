@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 00: Repo Setup and Documentation
+- Phase 10: MVP Demo QA / Release Readiness
 
 Next phase:
 
-- Phase 01: Design System + Navigation
+- Phase 11, only after Phase 10 is reviewed, committed, pushed, and explicitly requested
 
 Before each task, read `AGENTS.md`, the required docs listed there, and the relevant phase prompt in `docs/prompts/`.
 
@@ -93,6 +93,12 @@ After each phase, update `docs/phase-log.md` with status, changed files, checks,
 Product and architecture reports live in `docs/`.
 
 Phase execution prompts live in `docs/prompts/`.
+
+Current MVP demo / QA readiness docs:
+
+- `docs/mvp-demo-script.md`
+- `docs/mvp-known-limitations.md`
+- `docs/mvp-readiness-checklist.md`
 
 Use these docs as the source of truth unless a later decision in `docs/decisions.md` explicitly changes an earlier decision.
 
@@ -108,6 +114,16 @@ Use placeholder files only:
 - Server-side secret management TODOs for AI keys
 
 The iOS app must never contain Gemini or OpenAI API keys.
+
+## Current Mock MVP Status
+
+The current iOS app is a local/mock MVP demo, not a production release.
+
+Completed and manually verified scaffold phases include Camera / Photo Picker, local Core Image filters, mock save, mock AI advice UI, local session history, and MVP UX polish.
+
+Current limitations are documented in `docs/mvp-known-limitations.md`. The demo flow is documented in `docs/mvp-demo-script.md`. Future real-service gates are documented in `docs/mvp-readiness-checklist.md`.
+
+The current app does not include real Firebase upload, Firestore writes, Storage writes, Cloud Functions calls, real Gemini / OpenAI calls, StoreKit, quota enforcement, disk persistence, UserDefaults persistence, export, save-to-Photos, production Firebase config, or real secrets.
 
 ## Phase 00 Status
 

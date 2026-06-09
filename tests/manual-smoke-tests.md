@@ -507,3 +507,40 @@ Manual Xcode check on physical iPhone / iPad:
 - [ ] Open History and confirm the local session card remains readable.
 - [ ] Confirm safe-area and scroll behavior are usable on device.
 - [ ] Confirm no image is uploaded, persisted, exported, saved to Photos, or sent to AI.
+
+## Phase 10
+
+Check:
+
+- [x] Added `docs/prompts/phase-10-mvp-demo-qa-readiness.md`.
+- [x] Added `docs/mvp-demo-script.md`.
+- [x] Added `docs/mvp-known-limitations.md`.
+- [x] Added `docs/mvp-readiness-checklist.md`.
+- [x] Demo script covers Launch app -> guest/mock auth -> Home -> Camera scaffold -> Photo Picker import -> Filter presets -> Mock save success/failure -> Mock AI advice -> Local session history -> Clear history -> Settings placeholders.
+- [x] Known limitations document clearly states save is mock-only, AI is mock-only, History is memory-only, and there is no cloud sync, real Firebase, StoreKit, quota enforcement, export, or save-to-Photos.
+- [x] Readiness checklist covers pre-real Firebase, pre-real AI, pre-StoreKit, privacy/App Store, secrets safety, and device testing.
+- [x] README and iOS README point to the Phase 10 MVP demo / readiness docs.
+- [x] Phase 10 is documentation / QA readiness only.
+- [x] No Swift code was modified.
+- [x] No backend code was modified.
+- [x] Confirmed no Firebase Storage upload, Firestore write, Storage write, Cloud Functions call, real Gemini/OpenAI call, StoreKit, subscription/paywall, quota enforcement, disk persistence, UserDefaults persistence, Core Data, SwiftData, save-to-Photos, export, secret, credential, Firebase config, npm dependency, or Phase 11 work was intentionally added.
+
+Manual documentation review:
+
+- [ ] Run the demo script in `docs/mvp-demo-script.md`.
+- [ ] Confirm the demo script matches the current UI.
+- [ ] Confirm `docs/mvp-known-limitations.md` is accurate after a Simulator pass.
+- [ ] Confirm `docs/mvp-readiness-checklist.md` matches the next real-service priorities.
+- [ ] Confirm no document claims the app is production-ready.
+- [ ] Confirm no document claims real cloud save, real AI, real subscription, or permanent history exists.
+
+Manual Xcode check on simulator:
+
+- [ ] Build and run `AIPhotoApp` in an iOS Simulator if UI code changes in a future Phase 10 follow-up.
+- [ ] For this docs-only Phase 10 pass, Xcode build is not required because no Swift code changed.
+
+Manual Xcode check on physical iPhone / iPad:
+
+- [ ] Optional: run the demo script on a physical device.
+- [ ] Optional: confirm camera capture works on device.
+- [ ] Optional: confirm no image is uploaded, persisted, exported, saved to Photos, or sent to AI.

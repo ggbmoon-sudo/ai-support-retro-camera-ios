@@ -8,8 +8,8 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 09 - MVP Polish / UX Hardening
-Status: Phase 09 MVP polish / UX hardening completed; manually verified by user in Xcode / Simulator
+Current phase: Phase 10 - MVP Demo QA / Release Readiness
+Status: Phase 10 documentation / QA readiness scaffold implemented by Codex; awaiting user review
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -17,7 +17,7 @@ Phase 05 build verification: command-line Xcode simulator build succeeded on 202
 Phase 06 build verification: attempted by Codex; sandboxed command-line builds failed due existing SwiftUI `#Preview` macro / CoreSimulator sandbox environment, not Phase 06 source errors; user Xcode / Simulator build-run accepted on 2026-06-09
 Phase 08 build verification: command-line Xcode simulator build succeeded on 2026-06-09 after the History tab environment object fix; user Xcode / Simulator build-run accepted on 2026-06-09
 Phase 09 build verification: user Xcode / Simulator build-run accepted on 2026-06-09
-Next phase: Phase 10, only after Phase 09 is manually verified, committed, pushed, and explicitly requested
+Next phase: Phase 11, only after Phase 10 is reviewed, committed, pushed, and explicitly requested
 
 ---
 
@@ -1024,6 +1024,65 @@ No. Phase 09 has been manually verified, but Phase 10 should not begin until Pha
 
 ---
 
+## Phase 10 - MVP Demo QA / Release Readiness
+
+Status: Implemented as documentation / QA readiness scaffold; awaiting user review
+
+### Goal
+
+Create a demo script, QA checklist, known limitations document, and readiness gates for the current local/mock MVP without adding product features or connecting production services.
+
+### Completed
+
+- Added `docs/prompts/phase-10-mvp-demo-qa-readiness.md`.
+- Added `docs/mvp-demo-script.md`.
+- Added `docs/mvp-known-limitations.md`.
+- Added `docs/mvp-readiness-checklist.md`.
+- Updated root README with current mock MVP status and links to Phase 10 docs.
+- Updated iOS README with Phase 10 documentation notes.
+- Updated manual smoke tests with Phase 10 documentation and QA readiness checks.
+- Recorded that Phase 10 is docs-only and does not require Xcode build unless UI code changes later.
+
+### Changed Files
+
+- README.md
+- docs/mvp-demo-script.md
+- docs/mvp-known-limitations.md
+- docs/mvp-readiness-checklist.md
+- docs/phase-log.md
+- docs/prompts/phase-10-mvp-demo-qa-readiness.md
+- ios-app/README.md
+- tests/manual-smoke-tests.md
+
+### Safety Notes
+
+No Swift code, backend code, real Firebase setup, `GoogleService-Info.plist`, `.env`, `.firebaserc`, Firebase project ID, Gemini/OpenAI key, private key, OAuth secret, Apple credential, Firebase import, Gemini/OpenAI import, StoreKit import, upload, Firestore write, Storage write, Cloud Functions call, real AI call, StoreKit, subscription/paywall, quota enforcement, disk persistence, UserDefaults persistence, Core Data, SwiftData, export, save-to-Photos, new npm dependency, third-party SDK, production release claim, or Phase 11 work was added.
+
+### Verification
+
+- [x] Pre-check confirmed branch `feat/phase-02-auth`.
+- [x] Pre-check confirmed local branch synchronized with `origin/feat/phase-02-auth`.
+- [x] Pre-check confirmed latest commit was Phase 09 MVP UX polish.
+- [x] Pre-check confirmed `ios-app/AIPhotoApp.xcodeproj` exists.
+- [x] Pre-check confirmed Phase 09 is recorded as completed / manually checked.
+- [x] Source-level safety scan found no forbidden iOS Firebase / Gemini / OpenAI / StoreKit imports.
+- [x] Source-level safety scan found no real persistence, upload, Firestore write, Storage write, Cloud Functions call, real AI call, StoreKit, quota enforcement, or export implementation.
+- [x] Secret/config scan found only `.env.example` placeholders and documentation command references, not real secrets.
+- [x] Xcode build was not run because Phase 10 did not modify Swift code.
+
+### Known TODOs
+
+- User should review the new MVP demo script and readiness docs.
+- User should run the demo script in Xcode / Simulator if a fresh demo rehearsal is desired.
+- Physical iPhone / iPad capture remains optional but recommended before a real demo.
+- Real Firebase, real AI, StoreKit, persistence, export, privacy consent, account deletion, and production App Store readiness remain future phases.
+
+### Ready for Phase 11
+
+No. Phase 10 should be reviewed, committed, pushed, and explicitly approved before Phase 11 starts.
+
+---
+
 ## Deferred - Quota System (Former Phase 08 Plan)
 
 Status: Not started
@@ -1052,7 +1111,7 @@ RevenueCat is not the MVP default. Do not lock basic camera behind VIP.
 
 ---
 
-## Phase 10 - History + Delete + Local Download
+## Deferred - History + Delete + Local Download (Former Phase 10 Plan)
 
 Status: Not started
 
