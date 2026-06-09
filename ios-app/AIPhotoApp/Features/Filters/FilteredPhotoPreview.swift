@@ -10,6 +10,7 @@ struct FilteredPhotoPreview: View {
     let saveState: PhotoSaveState
     let onSelectPreset: (FilterPreset) -> Void
     let onSavePhoto: (Bool) -> Void
+    let onAnalysisCompleted: (PhotoAnalysisResult) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: AppSpacing.md) {
@@ -31,7 +32,8 @@ struct FilteredPhotoPreview: View {
 
             AIAnalysisView(
                 photoId: analysisPhotoId,
-                filterPresetId: selectedPreset.id
+                filterPresetId: selectedPreset.id,
+                onAnalysisCompleted: onAnalysisCompleted
             )
             .id("\(photo.id.uuidString)-\(analysisPhotoId)-\(selectedPreset.id)")
 

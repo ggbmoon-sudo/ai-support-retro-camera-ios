@@ -405,3 +405,59 @@ Manual Xcode check on physical iPhone / iPad:
 - [ ] Trigger mock AI analysis.
 - [ ] Confirm mock result UI appears.
 - [ ] Confirm no real network upload, provider call, Firestore write, Storage write, or persistence occurs.
+
+## Phase 08
+
+Check:
+
+- [x] Added local in-memory session history item model.
+- [x] Added local in-memory session history store.
+- [x] Shared session history state through app-level SwiftUI environment object state.
+- [x] Mock save success can add or update a local session item.
+- [x] Mock AI analysis success can update the same local session item instead of creating a duplicate card.
+- [x] History tab has a local session empty state.
+- [x] History tab shows a scrollable card list when local session items exist.
+- [x] History cards show local-only / mock labels.
+- [x] History cards show created time.
+- [x] History cards show source.
+- [x] History cards show selected filter preset.
+- [x] History cards show mock save status.
+- [x] History cards show mock AI summary when available.
+- [x] Clear local session history action only clears the in-memory store.
+- [x] Updated English and Traditional Chinese localization strings.
+- [x] Confirmed no Firebase Storage upload, Firestore write, cloud history, disk persistence, UserDefaults persistence, Core Data, SwiftData, save-to-Photos, export, Gemini/OpenAI call, Cloud Functions call, StoreKit, subscription/paywall, quota enforcement, secret, credential, Firebase config, npm dependency, or Phase 09 work was intentionally added.
+
+Manual Xcode check on simulator:
+
+- [x] Build and run `AIPhotoApp` in an iOS Simulator.
+- [ ] Sign in with mock Auth or continue as guest.
+- [x] Open History before adding items and confirm the local session empty state appears.
+- [x] Confirm the History tab can be entered normally and no longer freezes.
+- [x] Open Home.
+- [x] Open the Camera scaffold.
+- [x] Import one image with the photo picker.
+- [x] Switch to at least one retro preset.
+- [x] Trigger mock save success.
+- [x] Open History and confirm one local-only session card appears.
+- [x] Confirm the card shows created time, source, filter preset, and mock save status.
+- [x] Return to the photo flow and trigger mock AI analysis success.
+- [x] Open History and confirm the same card shows the mock AI summary.
+- [x] Confirm mock AI success does not create a duplicate card for the same selected photo.
+- [x] Tap clear local session history.
+- [x] Confirm History returns to the empty state.
+- [x] Confirm UI copy says local session history is not cloud-backed and may disappear after closing or restarting the app.
+- [x] Confirm Phase 03 Camera, Phase 04 Filters, Phase 05 Mock Save, and Phase 07 Mock AI UI still behave as before.
+- [x] Confirm Home / History / Settings still render.
+- [x] Confirm no real AI call, Cloud Functions call, upload, Firestore write, Storage write, StoreKit, quota, paywall, export, save-to-Photos, disk persistence, UserDefaults persistence, or cloud history occurs.
+- [x] Confirm no real Firebase config or secrets are present.
+
+Manual Xcode check on physical iPhone / iPad:
+
+- [ ] Build and run `AIPhotoApp` on device.
+- [ ] Capture one still photo.
+- [ ] Apply one filter preset.
+- [ ] Trigger mock save.
+- [ ] Trigger mock AI analysis.
+- [ ] Open History and confirm one local-only session item appears.
+- [ ] Clear local session history.
+- [ ] Confirm no real network upload, provider call, Firestore write, Storage write, export, save-to-Photos, or persistence occurs.

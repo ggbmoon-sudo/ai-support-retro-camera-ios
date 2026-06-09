@@ -38,4 +38,5 @@ struct MainTabShellView: View {
 
 #Preview {
     MainTabShellView()
+        .environmentObject(SessionHistoryStore())
 }

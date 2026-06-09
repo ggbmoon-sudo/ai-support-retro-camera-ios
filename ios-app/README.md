@@ -255,3 +255,34 @@ The current AI result UI scaffold is intentionally mock-only:
 - Analysis state stays in memory for the current selected photo flow only.
 
 This phase does not add Gemini API keys, OpenAI API keys, Firebase project IDs, `GoogleService-Info.plist`, `.env`, `.firebaserc`, private keys, OAuth secrets, Apple credentials, real Gemini calls, real OpenAI calls, Cloud Functions calls or deploys, production Firebase, FirebaseFunctions imports in iOS, real provider SDK imports, uploads, Firestore writes, Storage writes, AI result persistence, history persistence, AI chat, image editing, realtime video AI, StoreKit, subscription/paywall logic, quota enforcement, npm dependencies, or Phase 08 work.
+
+## Phase 08 Local Session History Scaffold
+
+Phase 08 adds a local-only, memory-only session history scaffold under:
+
+```text
+ios-app/AIPhotoApp/Models/
+ios-app/AIPhotoApp/Services/SessionHistory/
+ios-app/AIPhotoApp/Features/History/
+```
+
+Current Phase 08 session history files include:
+
+- `SessionHistoryItem.swift`
+- `SessionHistoryStatus.swift`
+- `SessionHistoryStore.swift`
+- `MockSessionHistoryStore.swift`
+- `HistoryView.swift`
+- `HistoryItemCard.swift`
+- `HistoryEmptyStateView.swift`
+
+The current session history scaffold is intentionally local-only:
+
+- `AppRootView` owns a mock session history store for the current app session.
+- Camera / Filter / Mock Save / Mock AI result UI can update the shared in-memory store.
+- History displays a local session empty state or scrollable local-only cards.
+- Cards show local/mock labels, created time, source, filter preset, mock save status, and mock AI summary when available.
+- Thumbnails are small in-memory UI images only.
+- Clear local session history removes only the in-memory store contents.
+
+This phase does not add Firebase Storage upload, Firestore writes, cloud history, disk persistence, UserDefaults persistence, Core Data, SwiftData, save-to-Photos, export, real Gemini/OpenAI calls, Cloud Functions calls, StoreKit, subscription/paywall logic, quota enforcement, new SDKs, npm dependencies, secrets, credentials, Firebase project IDs, or `GoogleService-Info.plist`.

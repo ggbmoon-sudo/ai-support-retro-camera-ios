@@ -3,6 +3,7 @@ import SwiftUI
 struct AppRootView: View {
     @State private var hasFinishedIntro = false
     @StateObject private var authViewModel = AuthViewModel(service: MockAuthService())
+    @StateObject private var sessionHistoryStore: SessionHistoryStore = MockSessionHistoryStore()
 
     var body: some View {
         Group {
@@ -42,6 +43,7 @@ struct AppRootView: View {
                 .background(AppColors.background)
             }
         }
+        .environmentObject(sessionHistoryStore)
         .task {
             await authViewModel.refreshSession()
         }

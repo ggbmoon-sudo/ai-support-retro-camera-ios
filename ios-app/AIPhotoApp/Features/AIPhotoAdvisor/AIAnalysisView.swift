@@ -3,12 +3,18 @@ import SwiftUI
 struct AIAnalysisView: View {
     let photoId: String
     let filterPresetId: String?
+    let onAnalysisCompleted: (PhotoAnalysisResult) -> Void
 
     @StateObject private var viewModel: AIAnalysisViewModel
 
-    init(photoId: String, filterPresetId: String?) {
+    init(
+        photoId: String,
+        filterPresetId: String?,
+        onAnalysisCompleted: @escaping (PhotoAnalysisResult) -> Void = { _ in }
+    ) {
         self.photoId = photoId
         self.filterPresetId = filterPresetId
+        self.onAnalysisCompleted = onAnalysisCompleted
         _viewModel = StateObject(wrappedValue: AIAnalysisViewModel())
     }
 
@@ -16,10 +22,12 @@ struct AIAnalysisView: View {
         photoId: String,
         filterPresetId: String?,
         analysisService: any PhotoAnalysisService,
-        failingAnalysisService: any PhotoAnalysisService
+        failingAnalysisService: any PhotoAnalysisService,
+        onAnalysisCompleted: @escaping (PhotoAnalysisResult) -> Void = { _ in }
     ) {
         self.photoId = photoId
         self.filterPresetId = filterPresetId
+        self.onAnalysisCompleted = onAnalysisCompleted
         _viewModel = StateObject(
             wrappedValue: AIAnalysisViewModel(
                 analysisService: analysisService,
@@ -86,6 +94,9 @@ struct AIAnalysisView: View {
                     onRetry: {
                         Task {
                             await viewModel.retryLastSuccess()
+                            if let result = viewModel.result {
+                                onAnalysisCompleted(result)
+                            }
                         }
                     },
                     onDismiss: viewModel.dismissResult
@@ -107,6 +118,9 @@ struct AIAnalysisView: View {
             ) {
                 Task {
                     await viewModel.analyze(photoId: photoId, filterPresetId: filterPresetId)
+                    if let result = viewModel.result {
+                        onAnalysisCompleted(result)
+                    }
                 }
             }
 

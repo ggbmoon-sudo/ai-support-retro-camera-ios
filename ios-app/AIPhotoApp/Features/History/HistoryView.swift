@@ -1,23 +1,20 @@
 import SwiftUI
 
 struct HistoryView: View {
-    private let items: [HistoryPhotoItem] = []
+    @EnvironmentObject private var sessionHistoryStore: SessionHistoryStore
 
     var body: some View {
         ScrollView {
-            VStack(spacing: AppSpacing.lg) {
-                QuotaBadge(status: .sample)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+            VStack(alignment: .leading, spacing: AppSpacing.lg) {
+                header
 
-                if items.isEmpty {
-                    EmptyStateView(
-                        systemImage: "photo.stack",
-                        title: "history.empty.title",
-                        message: "history.empty.message"
-                    )
+                if sessionHistoryStore.items.isEmpty {
+                    HistoryEmptyStateView()
                 } else {
-                    ForEach(items) { item in
-                        historyRow(item)
+                    LazyVStack(spacing: AppSpacing.md) {
+                        ForEach(sessionHistoryStore.items) { item in
+                            HistoryItemCard(item: item)
+                        }
                     }
                 }
             }
@@ -27,30 +24,34 @@ struct HistoryView: View {
         .navigationTitle(Text("tab.history"))
     }
 
-    private func historyRow(_ item: HistoryPhotoItem) -> some View {
-        HStack(spacing: AppSpacing.md) {
-            RoundedRectangle(cornerRadius: AppCornerRadius.md)
-                .fill(AppColors.elevatedSurface)
-                .frame(width: 64, height: 64)
-                .overlay {
-                    Image(systemName: "photo")
+    private var header: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.sm) {
+            HStack(alignment: .top) {
+                VStack(alignment: .leading, spacing: AppSpacing.xs) {
+                    Text("history.session.title")
+                        .font(AppTypography.title2)
+                        .foregroundStyle(AppColors.textPrimary)
+
+                    Text("history.session.message")
+                        .font(AppTypography.caption)
                         .foregroundStyle(AppColors.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
 
-            VStack(alignment: .leading, spacing: AppSpacing.xs) {
-                Text(LocalizedStringKey(item.presetNameKey))
-                    .font(AppTypography.bodyEmphasis)
-                    .foregroundStyle(AppColors.textPrimary)
+                Spacer()
 
-                Text(LocalizedStringKey(item.shortAdviceKey))
+                if !sessionHistoryStore.items.isEmpty {
+                    Button("history.action.clear") {
+                        sessionHistoryStore.clear()
+                    }
                     .font(AppTypography.caption)
-                    .foregroundStyle(AppColors.textSecondary)
+                    .foregroundStyle(AppColors.accent)
+                }
             }
-
-            Spacer()
         }
         .padding(AppSpacing.md)
-        .background(AppColors.surface)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(AppColors.elevatedSurface)
         .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.lg))
     }
 }
@@ -59,4 +60,5 @@ struct HistoryView: View {
     NavigationStack {
         HistoryView()
     }
+    .environmentObject(SessionHistoryStore())
 }

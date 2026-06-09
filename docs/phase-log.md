@@ -8,14 +8,15 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 06 - AI Photo Advisor Backend / Service Scaffold
-Status: Phase 06 mock AI analysis scaffold implemented and manually verified by user in Xcode / Simulator
+Current phase: Phase 08 - Local Session History / Timeline Scaffold
+Status: Phase 08 local session history scaffold implemented and manually verified by user in Xcode / Simulator
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 05 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 06 build verification: attempted by Codex; sandboxed command-line builds failed due existing SwiftUI `#Preview` macro / CoreSimulator sandbox environment, not Phase 06 source errors; user Xcode / Simulator build-run accepted on 2026-06-09
-Next phase: Phase 07 - AI Result UI, only after Phase 06 is verified, committed, pushed, and explicitly requested
+Phase 08 build verification: command-line Xcode simulator build succeeded on 2026-06-09 after the History tab environment object fix; user Xcode / Simulator build-run accepted on 2026-06-09
+Next phase: Phase 09, only after Phase 08 is committed, pushed, and explicitly requested
 
 ---
 
@@ -924,11 +925,57 @@ No Gemini API key, OpenAI API key, Firebase project ID, `GoogleService-Info.plis
 
 ### Ready for Phase 08
 
-No. Phase 07 has been manually verified, but Phase 08 should not begin until Phase 07 is committed and pushed.
+Yes. Phase 07 has been manually verified, committed, and pushed; Phase 08 local session history work has now started.
 
 ---
 
-## Phase 08 - Quota System
+## Phase 08 - Local Session History / Timeline Scaffold
+
+Status: Completed; manually verified by user in Xcode / Simulator
+
+### Goal
+
+Add current-session, memory-only History tab items for the local photo flow after mock save or mock AI analysis.
+
+### Completed
+
+- Added `SessionHistoryItem` and `SessionHistoryStatus` model scaffolds.
+- Added an app-level in-memory `SessionHistoryStore` / `MockSessionHistoryStore`.
+- Shared the session history store through SwiftUI environment object state.
+- Updated Camera / Filter / Mock Save / Mock AI flow so mock save or mock AI success can add/update the same local session item.
+- Updated History tab from an honest placeholder to a local-only session timeline scaffold.
+- Added empty state, scrollable local cards, local/mock badges, created time, source, filter preset, mock save status, optional mock AI summary, and clear local session history action.
+- Kept thumbnails as small in-memory UI images only.
+- Updated English and Traditional Chinese localization strings.
+- Updated iOS README notes.
+- Updated manual smoke tests with Phase 08 checks.
+- Fixed a History tab freeze caused by mismatched SwiftUI `EnvironmentObject` injection / lookup types for the session history store.
+
+### Safety Notes
+
+No Firebase Storage upload, Firestore write, cloud history, disk persistence, UserDefaults persistence, Core Data, SwiftData, save-to-Photos, export, real Gemini/OpenAI call, Cloud Functions call, StoreKit, subscription/paywall, quota enforcement, new SDK, npm dependency, real Firebase config, API key, secret, or Phase 09 work was added.
+
+### Manual Verification
+
+- [x] User manually verified app build / run in Xcode / Simulator was acceptable.
+- [x] User manually verified the History tab can be entered normally and no longer freezes.
+- [x] User manually verified the History empty state is usable.
+- [x] User manually verified mock save success adds a local-only session card.
+- [x] User manually verified mock AI analysis success updates the History card with a mock AI summary.
+- [x] User manually verified the History list scrolls.
+- [x] User manually verified clear local session history works.
+- [x] User manually verified cards show local-only / mock labels.
+- [x] User manually verified UI copy does not claim cloud history, permanent history, or sync.
+- [x] User manually verified Home / Camera / Filters / Mock Save / Mock AI / History / Settings still work.
+- [x] User manually verified no upload, Firestore write, Storage write, Cloud Functions call, real AI call, StoreKit, quota, export, disk persistence, UserDefaults persistence, real Firebase config, or secrets were added.
+
+### Ready for Phase 09
+
+No. Phase 08 has been manually verified, but Phase 09 should not begin until Phase 08 is committed, pushed, and explicitly requested.
+
+---
+
+## Deferred - Quota System (Former Phase 08 Plan)
 
 Status: Not started
 

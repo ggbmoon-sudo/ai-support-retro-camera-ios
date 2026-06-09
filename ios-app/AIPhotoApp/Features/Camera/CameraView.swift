@@ -2,6 +2,7 @@ import SwiftUI
 
 struct CameraView: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var sessionHistoryStore: SessionHistoryStore
     @StateObject private var viewModel = CameraViewModel(
         service: CameraCaptureService(),
         photoSaveService: MockPhotoSaveService(),
@@ -172,7 +173,23 @@ struct CameraView: View {
                     onSavePhoto: { shouldFail in
                         Task {
                             await viewModel.saveSelectedPhoto(shouldFail: shouldFail)
+                            guard viewModel.selectedPhoto?.id == photo.id else { return }
+                            sessionHistoryStore.recordMockSave(
+                                photo: photo,
+                                previewImage: viewModel.filteredPreviewImage ?? photo.image,
+                                filterPreset: viewModel.selectedFilterPreset,
+                                saveState: viewModel.photoSaveState
+                            )
                         }
+                    },
+                    onAnalysisCompleted: { result in
+                        guard viewModel.selectedPhoto?.id == photo.id else { return }
+                        sessionHistoryStore.recordMockAnalysis(
+                            photo: photo,
+                            previewImage: viewModel.filteredPreviewImage ?? photo.image,
+                            filterPreset: viewModel.selectedFilterPreset,
+                            result: result
+                        )
                     }
                 )
 
@@ -198,4 +215,5 @@ struct CameraView: View {
 
 #Preview {
     CameraView()
+        .environmentObject(SessionHistoryStore())
 }
