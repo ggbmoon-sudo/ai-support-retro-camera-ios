@@ -8,8 +8,8 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 12B - Filter Preset Schema And Batch 1
-Status: Phase 12B manually verified by user in Xcode / Simulator; ready to commit after review
+Current phase: Phase 13 - Expanded Filter Library - 20 Presets
+Status: Phase 13 manually verified by user in Xcode / Simulator and temporarily accepted; ready to commit after review
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -20,7 +20,131 @@ Phase 09 build verification: user Xcode / Simulator build-run accepted on 2026-0
 Phase 11 build verification: attempted by Codex; generic iOS Simulator build reached Swift compilation but failed due sandbox-exec / CoreSimulator environment restrictions, not a confirmed Phase 11 source error; user Xcode / Simulator run accepted on 2026-06-09
 Phase 11B build verification: attempted by Codex; generic iOS Simulator build reached Swift compilation but failed due existing SwiftUI `#Preview` macro / CoreSimulator tooling issues, not a confirmed Phase 11B source error; user Xcode / Simulator run accepted on 2026-06-09
 Phase 12B build verification: sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec environment restrictions; unsandboxed command-line simulator build succeeded on 2026-06-09; user Xcode / Simulator build-run accepted on 2026-06-09
-Next phase: Phase 13 should not start until Phase 12B is reviewed, committed, pushed, and explicitly requested
+Phase 13 build verification: sandboxed command-line Xcode build failed due CoreSimulator / sandbox environment restrictions; unsandboxed command-line simulator build succeeded on 2026-06-09; user Xcode / Simulator build-run accepted on 2026-06-09
+Next phase: Phase 14 should not start until Phase 13 is reviewed, committed, pushed, and explicitly requested
+
+---
+
+## Phase 13 - Expanded Filter Library - 20 Presets
+
+Status: Manually verified by user in Xcode / Simulator and temporarily accepted; ready to commit after review
+Date completed: 2026-06-09
+
+### Goal
+
+Expand the local filter library to 20 research presets using MVP / Core Image approximation quality only, without starting Phase 14 or adding real services.
+
+### Summary
+
+Phase 13 expands the local filter catalog from the Phase 12B Batch 1 set to 20 research presets. The filter picker now uses filter group chips and a grouped preset grid instead of a single long horizontal row.
+
+Original remains the no-filter option and is not counted as one of the 20 research presets. Classic Film, Warm Vintage, and Faded Chrome remain available as legacy starter filters.
+
+### 20-Preset Catalog
+
+- Soft Warm 400
+- Summer Gold 200
+- Street Chrome
+- Soft Sun Portrait
+- Cinema Flat
+- Silver Gradation
+- Everyday Color 400
+- Amber Night 800
+- Vivid Landscape 100
+- Slide Pop
+- Memory Negative
+- Amber Nostalgia
+- Tri Grit 400
+- Neon Tungsten 800
+- Instant Dream
+- Metro Pop
+- Diana Soft
+- Flash Party
+- CCD Party 2008
+- Editor Classic
+
+### Filter Grouping
+
+Filter picker groups:
+
+- Featured
+- Portrait
+- Daily
+- Street
+- Cinema
+- Black & White
+- Night
+- Camera Looks
+- Starter
+
+### Completed
+
+- Added `FilterPresetGroup` and localized group titles.
+- Added group metadata to `FilterPreset`.
+- Added 14 new research presets.
+- Preserved the 6 Phase 12B Batch 1 hero filters.
+- Preserved Original as no-filter.
+- Preserved Classic Film, Warm Vintage, and Faded Chrome as legacy starter filters.
+- Added a Core Image bloom adjustment for subtle night / instant / soft-camera MVP approximations.
+- Replaced the single horizontal preset list with grouped chips and a preset grid.
+- Updated English and Traditional Chinese localization strings.
+- Updated README / iOS README / manual smoke tests.
+- Kept Camera-first flow, Photo Picker fallback, mock save, mock AI, local session history, History, and Settings in scope.
+
+### Changed Files
+
+- README.md
+- ios-app/README.md
+- docs/phase-log.md
+- tests/manual-smoke-tests.md
+- ios-app/AIPhotoApp/Features/Filters/FilterPreset.swift
+- ios-app/AIPhotoApp/Features/Filters/FilterPresetCatalog.swift
+- ios-app/AIPhotoApp/Features/Filters/FilterPipeline.swift
+- ios-app/AIPhotoApp/Features/Filters/FilterPresetSelectorView.swift
+- ios-app/AIPhotoApp/Resources/Localization/en.lproj/Localizable.strings
+- ios-app/AIPhotoApp/Resources/Localization/zh-Hant.lproj/Localizable.strings
+
+### Build / Verification
+
+- `git diff --check` passed.
+- Forbidden imports scan found no Firebase / Gemini / OpenAI / StoreKit imports in iOS source.
+- Secrets / config scan found no `GoogleService-Info.plist`, `.env`, `.firebaserc`, API keys, Firebase project IDs, private keys, or Apple credentials.
+- Forbidden behavior scan found no Phase 13 additions for real upload, Firestore write, Storage write, Cloud Functions calls, real AI calls, StoreKit, quota, persistence, export, or save-to-Photos behavior. Existing mock/future placeholder references remain documented from earlier phases.
+- Brand-name UI scan found no Kodak, Fujifilm, Leica, Polaroid, CineStill, or similar protected brand names in public filter UI source.
+- Sandboxed CLI `xcodebuild` failed due to CoreSimulator/sandbox environment. Unsandboxed `xcodebuild -project ios-app/AIPhotoApp.xcodeproj -scheme AIPhotoApp -destination 'generic/platform=iOS Simulator' -derivedDataPath /private/tmp/ai-support-phase13-derived CODE_SIGNING_ALLOWED=NO build` completed with `BUILD SUCCEEDED`.
+- User manually verified Phase 13 in Xcode / Simulator and temporarily accepted the current result on 2026-06-09.
+- User confirmed app build/run, camera-first flow, Photo Picker fallback, filter picker/grouping, all 20 research presets, Original no-filter behavior, legacy starter filters, Batch 1 filters, mock save, mock AI, local session history, History, and Settings are acceptable for Phase 13.
+- User confirmed no real Firebase / AI / Cloud Functions / StoreKit / persistence / upload / export / save-to-Photos behavior and no secrets / Firebase config / API keys were added.
+
+### Known TODOs
+
+- Phase 13 filters are Core Image MVP approximations, not final realistic film simulation.
+- Phase 13B can be opened later to adjust individual filter parameters, ordering, grouping, picker UI, or visual differences.
+- True grain overlays, LUT assets, light leaks, dust, frames, accurate halation, Metal/custom shader work, and camera-specific optical simulation remain future phases.
+- Instant Dream, Diana Soft, CCD Party 2008, Flash Party, and other camera looks are color / contrast / vignette / bloom approximations only.
+- CCD / instant camera asset treatment remains future phase work.
+- AI custom filters, reference-image-to-filter, and AI image generation remain future phases.
+- Premium gating remains future monetization work only.
+- Public UI filter names should continue avoiding Kodak, Fujifilm, Leica, Polaroid, CineStill, and similar protected brand names unless legal approval exists.
+
+### Safety Notes
+
+- Did not start Phase 14.
+- Did not add AI live guidance.
+- Did not add AI custom filter generation.
+- Did not add AI reference image analysis.
+- Did not add AI image generation or editing.
+- Did not call Gemini, OpenAI, Cloud Functions, or any external AI API.
+- Did not connect real Firebase.
+- Did not add Firebase, FirebaseFunctions, FirebaseStorage, FirebaseFirestore, Gemini, OpenAI, or StoreKit imports.
+- Did not add `GoogleService-Info.plist`, `.env`, `.firebaserc`, API keys, Firebase project IDs, private keys, OAuth secrets, Apple credentials, signing credentials, provisioning profiles, or production config.
+- Did not add upload, Firestore write, Storage write, persistence, UserDefaults, Core Data, SwiftData, export, save-to-Photos, StoreKit, subscription, paywall, premium gating, quota enforcement, npm dependencies, third-party SDKs, backend changes, commit, or push.
+
+### Ready for Next Phase
+
+Ready to commit Phase 13: Yes, after final status and scan checks are reviewed.
+
+Ready for Phase 14: No. Phase 13 should be committed, pushed, and read-only confirmed before Phase 14 starts.
 
 ---
 

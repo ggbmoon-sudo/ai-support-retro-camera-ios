@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 12B: Filter Preset Schema And Batch 1
+- Phase 13: Expanded Filter Library - 20 Presets
 
 Next phase:
 
-- Phase 13, only after Phase 12B is reviewed, committed, pushed, and explicitly requested
+- Phase 14, only after Phase 13 is reviewed, committed, pushed, and explicitly requested
 
 Before each task, read `AGENTS.md`, the required docs listed there, and the relevant phase prompt in `docs/prompts/`.
 
@@ -166,6 +166,39 @@ Current local filter catalog:
 Original remains the no-filter option. Classic Film, Warm Vintage, and Faded Chrome are retained as legacy starter filters with their existing IDs.
 
 Phase 12B uses only Core Image approximations in the existing local pipeline. It does not add the full 20-filter library, LUTs, grain assets, light leaks, live AI guidance, AI custom filters, real AI, real Firebase, StoreKit, persistence, export, secrets, backend changes, dependencies, or third-party SDKs.
+
+## Phase 13 Expanded Filter Library Status
+
+Phase 13 expands the local research preset catalog to 20 Core Image MVP approximations.
+
+The current 20 research presets are:
+
+- Soft Warm 400
+- Summer Gold 200
+- Street Chrome
+- Soft Sun Portrait
+- Cinema Flat
+- Silver Gradation
+- Everyday Color 400
+- Amber Night 800
+- Vivid Landscape 100
+- Slide Pop
+- Memory Negative
+- Amber Nostalgia
+- Tri Grit 400
+- Neon Tungsten 800
+- Instant Dream
+- Metro Pop
+- Diana Soft
+- Flash Party
+- CCD Party 2008
+- Editor Classic
+
+Original remains the no-filter option and is not counted as one of the 20 research presets. Classic Film, Warm Vintage, and Faded Chrome remain available as legacy starter filters.
+
+The filter picker now groups presets instead of showing one long horizontal row.
+
+Phase 13 remains local/mock-only. It does not add LUT assets, true grain overlays, light leaks, frames, dust, Metal shaders, AI custom filters, real AI, real Firebase, Cloud Functions, StoreKit, persistence, export, save-to-Photos, secrets, backend changes, dependencies, or third-party SDKs.
 
 ## Phase 11B Camera Entry / Camera Shell Status
 

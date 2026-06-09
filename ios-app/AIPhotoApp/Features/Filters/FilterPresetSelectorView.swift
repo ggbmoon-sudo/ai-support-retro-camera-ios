@@ -5,6 +5,23 @@ struct FilterPresetSelectorView: View {
     let selectedPreset: FilterPreset
     let isRendering: Bool
     let onSelectPreset: (FilterPreset) -> Void
+    @State private var selectedGroup: FilterPresetGroup = .featured
+
+    private var availableGroups: [FilterPresetGroup] {
+        FilterPresetGroup.allCases.filter { group in
+            presets.contains { $0.group == group }
+        }
+    }
+
+    private var groupedPresets: [FilterPreset] {
+        presets.filter { $0.group == selectedGroup }
+    }
+
+    private var columns: [GridItem] {
+        [
+            GridItem(.adaptive(minimum: 148), spacing: AppSpacing.sm, alignment: .top)
+        ]
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: AppSpacing.sm) {
@@ -22,21 +39,60 @@ struct FilterPresetSelectorView: View {
                 }
             }
 
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: AppSpacing.sm) {
-                    ForEach(presets) { preset in
-                        Button {
-                            onSelectPreset(preset)
-                        } label: {
-                            presetChip(preset)
-                        }
-                        .buttonStyle(.plain)
-                        .disabled(isRendering && preset.id == selectedPreset.id)
+            groupPicker
+
+            LazyVGrid(columns: columns, alignment: .leading, spacing: AppSpacing.sm) {
+                ForEach(groupedPresets) { preset in
+                    Button {
+                        onSelectPreset(preset)
+                    } label: {
+                        presetChip(preset)
                     }
+                    .buttonStyle(.plain)
+                    .disabled(isRendering && preset.id == selectedPreset.id)
                 }
-                .padding(.vertical, AppSpacing.xs)
             }
+            .animation(.snappy(duration: 0.18), value: selectedGroup)
         }
+        .onAppear {
+            syncSelectedGroup()
+        }
+        .onChange(of: selectedPreset.id) { _, _ in
+            syncSelectedGroup()
+        }
+    }
+
+    private var groupPicker: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: AppSpacing.sm) {
+                ForEach(availableGroups, id: \.self) { group in
+                    Button {
+                        selectedGroup = group
+                    } label: {
+                        groupChip(group)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(.vertical, AppSpacing.xs)
+        }
+    }
+
+    private func groupChip(_ group: FilterPresetGroup) -> some View {
+        let isSelected = group == selectedGroup
+
+        return Text(LocalizedStringKey(group.titleKey))
+            .font(AppTypography.caption)
+            .lineLimit(1)
+            .padding(.vertical, AppSpacing.xs)
+            .padding(.horizontal, AppSpacing.sm)
+            .background(isSelected ? AppColors.accent : AppColors.surface)
+            .foregroundStyle(isSelected ? AppColors.background : AppColors.textPrimary)
+            .clipShape(Capsule())
+            .overlay {
+                Capsule()
+                    .stroke(isSelected ? AppColors.accent : AppColors.textSecondary.opacity(0.24), lineWidth: 1)
+            }
     }
 
     private func presetChip(_ preset: FilterPreset) -> some View {
@@ -58,11 +114,20 @@ struct FilterPresetSelectorView: View {
                 .multilineTextAlignment(.leading)
                 .foregroundStyle(isSelected ? AppColors.background.opacity(0.86) : AppColors.textSecondary)
         }
-        .frame(width: 142, alignment: .leading)
+        .frame(maxWidth: .infinity, minHeight: 86, alignment: .leading)
         .padding(AppSpacing.sm)
         .background(isSelected ? AppColors.accent : AppColors.surface)
         .foregroundStyle(isSelected ? AppColors.background : AppColors.textPrimary)
         .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.md))
         .accessibilityElement(children: .combine)
+    }
+
+    private func syncSelectedGroup() {
+        guard availableGroups.contains(selectedPreset.group) else {
+            selectedGroup = availableGroups.first ?? .featured
+            return
+        }
+
+        selectedGroup = selectedPreset.group
     }
 }

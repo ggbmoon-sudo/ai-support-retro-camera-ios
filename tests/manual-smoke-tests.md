@@ -753,3 +753,108 @@ Known TODOs:
 - [ ] Public UI filter names should continue avoiding Kodak, Fujifilm, Leica, Polaroid, CineStill, and similar protected brand names unless legal approval exists.
 - [ ] Street Chrome may need a future LUT for more accurate slide / chrome color.
 - [ ] Soft Warm 400, Summer Gold 200, and Silver Gradation do not include grain yet.
+
+## Phase 13
+
+Check:
+
+- [x] Expanded the local research preset catalog to 20 presets.
+- [x] Kept Original as the no-filter option outside the 20 research presets.
+- [x] Preserved legacy starter filters: Classic Film, Warm Vintage, and Faded Chrome.
+- [x] Preserved Batch 1 hero filters:
+  - Soft Warm 400
+  - Summer Gold 200
+  - Street Chrome
+  - Soft Sun Portrait
+  - Cinema Flat
+  - Silver Gradation
+- [x] Added 14 Phase 13 filters:
+  - Everyday Color 400
+  - Amber Night 800
+  - Vivid Landscape 100
+  - Slide Pop
+  - Memory Negative
+  - Amber Nostalgia
+  - Tri Grit 400
+  - Neon Tungsten 800
+  - Instant Dream
+  - Metro Pop
+  - Diana Soft
+  - Flash Party
+  - CCD Party 2008
+  - Editor Classic
+- [x] Added filter group metadata and localized group titles.
+- [x] Updated filter picker UI to use group chips plus a preset grid instead of one long horizontal row.
+- [x] Kept all Phase 13 filters as Core Image MVP approximations.
+- [x] Confirmed no public UI filter names intentionally use Kodak, Fujifilm, Leica, Polaroid, CineStill, or other protected brand names.
+- [x] Confirmed no LUT, true grain, light leak, dust, frame, Metal shader, AI custom filter, premium gating, or real-service implementation was intentionally added.
+- [x] Confirmed no backend code was modified.
+
+Build / source checks:
+
+- [x] `git diff --check` passes.
+- [x] Xcode build passes. Sandboxed CLI build hit CoreSimulator/sandbox environment limits, then unsandboxed `xcodebuild` completed with `BUILD SUCCEEDED`.
+- [x] Forbidden imports scan finds no Firebase / Gemini / OpenAI / StoreKit imports in iOS source.
+- [x] Secrets / config scan finds no `GoogleService-Info.plist`, `.env`, `.firebaserc`, API keys, Firebase project IDs, private keys, OAuth secrets, Apple credentials, signing credentials, or provisioning profiles.
+- [x] Forbidden behavior scan finds no real upload, Firestore write, Storage write, Cloud Functions call, real AI call, StoreKit, quota, persistence, export, or save-to-Photos implementation added for Phase 13. Existing mock/future placeholder references remain documented from earlier phases.
+- [x] Brand-name UI scan finds no Kodak, Fujifilm, Leica, Polaroid, CineStill, or similar brand names in public UI source.
+
+Manual Xcode check on simulator:
+
+- [x] User manually verified Phase 13 in Xcode / Simulator and temporarily accepted the current result on 2026-06-09.
+- [x] Launch the app.
+- [x] Confirm app can build / run.
+- [x] Confirm Camera-first flow still opens correctly.
+- [x] Confirm Photo Picker fallback still works.
+- [x] Import one photo.
+- [x] Open the filter picker.
+- [x] Confirm filter groups are visible and usable.
+- [x] Confirm the picker is not one long horizontal row.
+- [x] Confirm Original is available and shows the unfiltered image.
+- [x] Confirm Classic Film, Warm Vintage, and Faded Chrome remain available or clearly mapped.
+- [x] Confirm Batch 1 six hero filters remain available:
+  - Soft Warm 400
+  - Summer Gold 200
+  - Street Chrome
+  - Soft Sun Portrait
+  - Cinema Flat
+  - Silver Gradation
+- [x] Confirm all 20 research presets are available:
+  - Soft Warm 400
+  - Summer Gold 200
+  - Street Chrome
+  - Soft Sun Portrait
+  - Cinema Flat
+  - Silver Gradation
+  - Everyday Color 400
+  - Amber Night 800
+  - Vivid Landscape 100
+  - Slide Pop
+  - Memory Negative
+  - Amber Nostalgia
+  - Tri Grit 400
+  - Neon Tungsten 800
+  - Instant Dream
+  - Metro Pop
+  - Diana Soft
+  - Flash Party
+  - CCD Party 2008
+  - Editor Classic
+- [x] Switch between filters and confirm the app does not freeze.
+- [x] Confirm newly added filters have temporarily acceptable visual differences.
+- [x] Trigger mock save success and failure.
+- [x] Trigger mock AI success and failure.
+- [x] Confirm local session history records the selected filter id.
+- [x] Open History and Settings.
+- [x] Confirm no raw localization keys appear.
+- [x] Confirm no upload, Firestore write, Storage write, Cloud Functions call, real AI call, StoreKit, quota enforcement, persistence, export, or save-to-Photos behavior occurs.
+- [x] Confirm no secrets, Firebase config, or API keys were added.
+
+Known TODOs:
+
+- [ ] Phase 13 filters are Core Image MVP approximations, not final realistic film simulation.
+- [ ] Phase 13B can be opened later to adjust individual filter parameters, ordering, grouping, picker UI, or visual differences.
+- [ ] True grain overlays, LUT assets, halation, light leaks, dust, frames, CCD / instant camera asset treatment, Metal/custom shader work, and camera-specific optical simulation remain future phases.
+- [ ] Instant Dream, Diana Soft, CCD Party 2008, Flash Party, and other camera looks are color / contrast / vignette / bloom approximations only.
+- [ ] AI custom filters, reference-image-to-filter, and AI image generation remain future phases.
+- [ ] Premium gating remains future monetization work only.

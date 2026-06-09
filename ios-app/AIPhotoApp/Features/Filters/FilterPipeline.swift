@@ -95,6 +95,13 @@ nonisolated final class FilterPipeline {
                 ("inputPoint3", CIVector(x: points[3].x, y: points[3].y)),
                 ("inputPoint4", CIVector(x: points[4].x, y: points[4].y))
             ]
+        case let .bloom(intensity, radius):
+            filterName = "CIBloom"
+            values = [
+                (kCIInputImageKey, image),
+                (kCIInputIntensityKey, intensity),
+                (kCIInputRadiusKey, radius)
+            ]
         case let .vignette(intensity, radius):
             filterName = "CIVignette"
             values = [
