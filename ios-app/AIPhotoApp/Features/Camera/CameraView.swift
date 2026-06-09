@@ -19,6 +19,13 @@ struct CameraView: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
 
+                    if let filterErrorMessage = viewModel.filterErrorMessage {
+                        Text(filterErrorMessage)
+                            .font(AppTypography.caption)
+                            .foregroundStyle(AppColors.error)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+
                     Text("camera.local_only_note")
                         .font(AppTypography.caption)
                         .foregroundStyle(AppColors.textSecondary)
@@ -149,7 +156,14 @@ struct CameraView: View {
 
     private func previewContent(_ photo: CapturedPhoto) -> some View {
         VStack(spacing: AppSpacing.lg) {
-            SelectedPhotoPreview(photo: photo)
+            FilteredPhotoPreview(
+                photo: photo,
+                previewImage: viewModel.filteredPreviewImage ?? photo.image,
+                selectedPreset: viewModel.selectedFilterPreset,
+                presets: viewModel.filterPresets,
+                isRendering: viewModel.isFiltering,
+                onSelectPreset: viewModel.selectFilterPreset
+            )
 
             VStack(spacing: AppSpacing.md) {
                 PrimaryButton("camera.action.retake", systemImage: "arrow.counterclockwise") {

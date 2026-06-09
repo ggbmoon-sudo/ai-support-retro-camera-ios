@@ -12,7 +12,7 @@
 "home.button.import_placeholder" = "相簿匯入會在 Phase 03 開始";
 "home.button.open_camera" = "開啟相機";
 "home.button.import_photo" = "匯入一張照片";
-"home.phase_note" = "Phase 03 只把照片保留在本機記憶體。Filters、Firebase upload、AI analysis、StoreKit、quota 和歷史保存都刻意不接線。";
+"home.phase_note" = "Phase 04 只把照片和濾鏡預覽保留在本機記憶體。Firebase upload、AI analysis、StoreKit、quota、export 和歷史保存都刻意不接線。";
 "preset.warm_film.name" = "暖調底片";
 "preset.warm_film.description" = "適合人物與日常場景的柔和暖調。";
 "preset.night_flash.name" = "夜拍閃光";
@@ -54,7 +54,7 @@
 "auth.legal.placeholder" = "TODO: 發佈前加入私隱政策和服務條款連結。";
 "auth.loading" = "正在檢查 mock Auth 狀態";
 "camera.title" = "相機";
-"camera.local_only_note" = "Phase 03 只限本機 scaffold。選取的圖片只留在記憶體，不會上傳、保存、套濾鏡、AI 分析或計入額度。";
+"camera.local_only_note" = "Phase 04 只限本機 scaffold。選取的圖片和濾鏡預覽只留在記憶體，不會上傳、保存、AI 分析、匯出或計入額度。";
 "camera.action.close" = "關閉";
 "camera.action.capture" = "拍攝照片";
 "camera.action.import" = "選擇一張照片";
@@ -76,3 +76,15 @@
 "camera.error.unavailable" = "此裝置或 simulator 無法使用相機。";
 "camera.error.capture_failed" = "相機無法拍攝照片。";
 "camera.error.image_data_unavailable" = "無法載入選取的圖片資料。";
+"filters.selector.title" = "本機底片預設";
+"filters.rendering" = "正在渲染";
+"filters.local_only_note" = "Phase 04 濾鏡只作本機預覽；這裡不會上傳、AI 分析、匯出或保存歷史。";
+"filters.preset.original.name" = "原圖";
+"filters.preset.original.description" = "不套用濾鏡。";
+"filters.preset.classic_film.name" = "Classic Film";
+"filters.preset.classic_film.description" = "柔和對比、微暖色調和輕微暗角。";
+"filters.preset.warm_vintage.name" = "Warm Vintage";
+"filters.preset.warm_vintage.description" = "陽光暖調，加上淡化陰影。";
+"filters.preset.faded_chrome.name" = "Faded Chrome";
+"filters.preset.faded_chrome.description" = "低飽和冷調，帶舊幻燈片感。";
+"filters.error.render_failed" = "無法渲染濾鏡預覽，會顯示原圖。";

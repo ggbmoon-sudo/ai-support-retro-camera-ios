@@ -8,11 +8,12 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 03 - Camera + Photo Picker
-Status: Completed as local-only Camera + Photo Picker scaffold
+Current phase: Phase 04 - Filter Presets
+Status: Phase 04 local filter presets implemented and manually verified by user in Xcode / Simulator
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
-Next phase: Phase 04 - Filter Presets, after Phase 03 is reviewed and simulator/device checks are completed or explicitly deferred
+Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
+Next phase: Phase 05 - Firebase Storage + Firestore, only after Phase 04 is verified, committed, pushed, and explicitly requested
 
 ---
 
@@ -539,11 +540,87 @@ Do not implement Firebase upload, AI analysis, filters, or history in this phase
 
 ## Phase 04 - Filter Presets
 
-Status: Not started
+Status: Implemented as local-only scaffold; command-line build succeeded; manually verified by user in Xcode / Simulator
+Date started: 2026-06-09
+Date completed: 2026-06-09
 
 ### Goal
 
 Implement Core Image filter pipeline and at least 3 local retro film presets.
+
+### Summary
+
+Phase 04 added a local-only Core Image filter pipeline and preset selector for Phase 03 captured/imported images. The app can keep the original image in memory, render a local filtered preview, switch among Original, Classic Film, Warm Vintage, and Faded Chrome, and return to the unfiltered original.
+
+No Firebase Storage upload, Firestore metadata, AI analysis, Cloud Functions, StoreKit, subscription/paywall logic, quota enforcement, history persistence, export/save to Photos, half-frame, double exposure, full camera/lens library, paid presets, secrets, credentials, API keys, Firebase project IDs, Apple credentials, Google credentials, or `GoogleService-Info.plist` were added.
+
+### Completed
+
+- Read the Phase 04 prompt and required project documents.
+- Confirmed branch, latest commit, and `ios-app/AIPhotoApp.xcodeproj` before implementation.
+- Added data-driven filter preset model and catalog.
+- Added Original / None plus Classic Film, Warm Vintage, and Faded Chrome presets.
+- Added local Core Image rendering pipeline.
+- Added filtered preview UI and preset selector UI.
+- Wired Camera / Photo Picker selected image preview to the local filter selector.
+- Preserved Original / None as the unfiltered source image.
+- Kept selected source image and filtered preview state in local memory only.
+- Added orientation normalization for filtered preview rendering.
+- Dispatched filter rendering off the main thread.
+- Updated English and Traditional Chinese localization strings.
+- Updated iOS app notes and manual smoke tests.
+
+### Changed Files
+
+- docs/phase-log.md
+- docs/prompts/phase-04-filters.md
+- ios-app/README.md
+- ios-app/AIPhotoApp/Features/Camera/CameraView.swift
+- ios-app/AIPhotoApp/Features/Camera/CameraViewModel.swift
+- ios-app/AIPhotoApp/Features/Camera/SelectedPhotoPreview.swift
+- ios-app/AIPhotoApp/Features/Filters/FilterPreset.swift
+- ios-app/AIPhotoApp/Features/Filters/FilterPresetCatalog.swift
+- ios-app/AIPhotoApp/Features/Filters/FilterPipeline.swift
+- ios-app/AIPhotoApp/Features/Filters/FilterPreviewView.swift
+- ios-app/AIPhotoApp/Features/Filters/FilterPresetSelectorView.swift
+- ios-app/AIPhotoApp/Features/Filters/FilteredPhotoPreview.swift
+- ios-app/AIPhotoApp/Resources/Localization/en.lproj/Localizable.strings
+- ios-app/AIPhotoApp/Resources/Localization/zh-Hant.lproj/Localizable.strings
+- tests/manual-smoke-tests.md
+
+### Tests / Manual Checks
+
+- [x] Ran `git status --short` before implementation.
+- [x] Confirmed `ios-app/AIPhotoApp.xcodeproj` exists.
+- [x] Confirmed no Firebase Storage upload or Firestore metadata persistence was implemented.
+- [x] Confirmed no AI analysis or Cloud Functions were implemented.
+- [x] Confirmed no StoreKit, subscription, paywall, quota enforcement, history persistence, export/save to Photos, half-frame, double exposure, full camera/lens library, or paid presets were implemented.
+- [x] Confirmed no secrets, API keys, credentials, Firebase project IDs, Apple credentials, Google credentials, or `GoogleService-Info.plist` were added.
+- [x] Ran `xcodebuild -project ios-app/AIPhotoApp.xcodeproj -scheme AIPhotoApp -sdk iphonesimulator -configuration Debug -derivedDataPath /private/tmp/ai-photo-phase04-derived build`.
+- [x] Command-line Xcode simulator build succeeded.
+- [x] User manually verified app build / run in Xcode / Simulator.
+- [x] User manually verified Home -> Camera scaffold flow.
+- [x] User manually verified photo picker can select one image.
+- [x] User manually verified Original, Classic Film, Warm Vintage, and Faded Chrome can be switched.
+- [x] User manually verified filtered preview updates.
+- [x] User manually verified Original returns to the unfiltered image.
+- [x] User manually verified Continue placeholder does not start upload, AI, StoreKit, history persistence, export, or Phase 05 behavior.
+- [x] User manually verified Home / History / Settings still render.
+- [ ] Camera capture plus filter preview physical device verification pending.
+
+### Known TODOs
+
+- If a physical iPhone / iPad is available, manually test capture plus filter preview.
+- Keep Firebase Storage / Firestore for Phase 05 only.
+- Keep AI analysis, StoreKit, quota, history persistence, and export for later phases only.
+
+### Xcode Build
+
+Command-line Xcode simulator build was run by Codex and succeeded. The first sandboxed build attempt failed because of sandbox/CoreSimulator/SwiftUI preview macro environment errors; a non-sandboxed build was then approved and succeeded.
+
+### Ready for Phase 05
+
+No. Phase 04 has command-line build and user manual Simulator verification, but Phase 05 should not begin until Phase 04 is committed, pushed, and explicitly requested.
 
 ### Notes
 

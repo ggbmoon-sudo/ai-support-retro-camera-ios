@@ -142,3 +142,31 @@ The current Camera scaffold is intentionally local-only:
 - Command-line Xcode simulator build succeeded.
 
 This phase does not add filters, Firebase Storage upload, Firestore metadata, AI analysis, Cloud Functions AI proxy, StoreKit, quota enforcement, history persistence, secrets, credentials, API keys, or `GoogleService-Info.plist`.
+
+## Phase 04 Local Filter Presets
+
+Phase 04 adds a local-only Core Image filter scaffold under:
+
+```text
+ios-app/AIPhotoApp/Features/Filters/
+```
+
+Current Phase 04 Filter files include:
+
+- `FilterPreset.swift`
+- `FilterPresetCatalog.swift`
+- `FilterPipeline.swift`
+- `FilterPreviewView.swift`
+- `FilterPresetSelectorView.swift`
+- `FilteredPhotoPreview.swift`
+
+The current Filter scaffold is intentionally local-only:
+
+- Core Image renders basic retro previews on device.
+- Presets are data-driven in `FilterPresetCatalog`.
+- Available presets include Original, Classic Film, Warm Vintage, and Faded Chrome.
+- Captured or imported images remain in memory only.
+- Filtered previews remain in memory only.
+- The Continue placeholder remains disabled and does not start upload, AI, StoreKit, quota, export, or history behavior.
+
+This phase does not add Firebase Storage upload, Firestore metadata, AI analysis, Cloud Functions, StoreKit, subscription/paywall logic, quota enforcement, history persistence, export/save to Photos, half-frame, double exposure, full camera/lens library, paid presets, secrets, credentials, API keys, Firebase project IDs, Apple credentials, Google credentials, or `GoogleService-Info.plist`.

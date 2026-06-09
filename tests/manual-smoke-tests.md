@@ -176,3 +176,51 @@ Manual Xcode check on physical iPhone / iPad:
 - [ ] Clear / retake and confirm the app returns to capture state.
 - [ ] Import one library image and confirm it replaces the preview.
 - [ ] Confirm no image is uploaded or persisted.
+
+## Phase 04
+
+Check:
+
+- [x] Added local Core Image filter pipeline.
+- [x] Added data-driven filter preset model and catalog.
+- [x] Added Original / None plus Classic Film, Warm Vintage, and Faded Chrome presets.
+- [x] Added preset selector UI for selected/captured photos.
+- [x] Added local filtered preview state in memory only.
+- [x] Original / None uses the unfiltered image.
+- [x] Filter rendering is dispatched off the main thread.
+- [x] Added orientation normalization for filtered preview rendering.
+- [x] Updated English and Traditional Chinese localization strings.
+- [x] Command-line Xcode simulator build succeeded.
+- [x] Confirmed no Firebase Storage upload was implemented.
+- [x] Confirmed no Firestore metadata persistence was implemented.
+- [x] Confirmed no AI analysis or Cloud Functions were implemented.
+- [x] Confirmed no StoreKit, subscription, paywall, quota enforcement, history persistence, export/save to Photos, half-frame, double exposure, full camera/lens library, or paid presets were implemented.
+- [x] Confirmed no real secrets, API keys, Firebase project IDs, Apple credentials, Google credentials, or `GoogleService-Info.plist` were added.
+
+Manual Xcode check on simulator:
+
+- [x] Build and run `AIPhotoApp` in an iOS Simulator.
+- [ ] Sign in with mock Auth or continue as guest.
+- [x] Open Home.
+- [x] Open the Camera scaffold.
+- [x] Tap `Choose one photo` and select one image.
+- [ ] Confirm the selected image appears in the local preview.
+- [x] Confirm the preset selector is visible.
+- [x] Switch to Classic Film and confirm the filtered preview updates.
+- [x] Switch to Warm Vintage and confirm the filtered preview updates.
+- [x] Switch to Faded Chrome and confirm the filtered preview updates.
+- [x] Switch back to Original / None and confirm the unfiltered image appears.
+- [ ] Confirm `Retake or clear` clears the preview and local filter state.
+- [x] Confirm `Continue in later phases` is disabled and does not start upload, AI, StoreKit, quota, history, export, or Phase 05 behavior.
+- [x] Confirm Home / History / Settings still render.
+
+Manual Xcode check on physical iPhone / iPad:
+
+- [ ] Build and run `AIPhotoApp` on device.
+- [ ] Open the Camera scaffold from Home.
+- [ ] Capture one still photo.
+- [ ] Confirm captured photo appears in the local preview.
+- [ ] Switch between Original / None and each retro preset.
+- [ ] Confirm filtered previews update without rotated or upside-down output.
+- [ ] Import one library image and confirm it replaces the previous preview.
+- [ ] Confirm no image is uploaded, persisted, exported, saved to Photos, analyzed, or counted toward quota.

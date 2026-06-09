@@ -1,25 +1,16 @@
 import SwiftUI
+import UIKit
 
 struct SelectedPhotoPreview: View {
     let photo: CapturedPhoto
 
     var body: some View {
-        Image(uiImage: photo.image)
-            .resizable()
-            .scaledToFit()
-            .frame(maxWidth: .infinity)
-            .background(Color.black)
-            .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.lg))
-            .overlay(alignment: .topLeading) {
-                Text(sourceTitle)
-                    .font(AppTypography.caption)
-                    .padding(.horizontal, AppSpacing.sm)
-                    .padding(.vertical, AppSpacing.xs)
-                    .background(AppColors.surface.opacity(0.92))
-                    .foregroundStyle(AppColors.textPrimary)
-                    .clipShape(Capsule())
-                    .padding(AppSpacing.sm)
-            }
+        FilterPreviewView(
+            image: photo.image,
+            sourceTitle: sourceTitle,
+            presetTitle: nil,
+            isRendering: false
+        )
     }
 
     private var sourceTitle: LocalizedStringKey {
