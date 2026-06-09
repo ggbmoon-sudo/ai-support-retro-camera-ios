@@ -64,6 +64,65 @@ Do not add real `GoogleService-Info.plist` to git.
 
 The real Firebase, AI, and StoreKit integrations should be added only in their later phases.
 
+## Phase 12A Filter Planning
+
+Phase 12A adds filter research and schema planning documents only. It does not change iOS app source code.
+
+New planning docs:
+
+- `../docs/filter-research-popular-film-looks.md`
+- `../docs/filter-preset-schema.md`
+- `../docs/filter-roadmap.md`
+- `../docs/prompts/phase-12-filter-preset-schema-and-batch1.md`
+
+Planned Phase 12B scope is limited to a data-driven local filter catalog and the first 6 hero filters:
+
+- Soft Warm 400
+- Summer Gold 200
+- Street Chrome
+- Soft Sun Portrait
+- Cinema Flat
+- Silver Gradation
+
+Phase 12B should preserve or map the existing four filters: Original, Classic Film, Warm Vintage, and Faded Chrome.
+
+Do not add real Firebase, real AI, Cloud Functions calls, StoreKit, premium gating, persistence, export, secrets, or third-party SDKs as part of Phase 12A or the planned Phase 12B filter catalog work.
+
+## Phase 12B Filter Batch 1
+
+Phase 12B extends the existing local Core Image filter scaffold without changing backend code or adding new services.
+
+Current local catalog order:
+
+- Original
+- Soft Warm 400
+- Summer Gold 200
+- Street Chrome
+- Soft Sun Portrait
+- Cinema Flat
+- Silver Gradation
+- Classic Film
+- Warm Vintage
+- Faded Chrome
+
+The first 6 hero filters are Core Image approximations:
+
+- Soft Warm 400: warm color negative feel, soft contrast, lifted shadows.
+- Summer Gold 200: bright golden daylight warmth.
+- Street Chrome: stronger contrast, cooler shadows, sharper urban color.
+- Soft Sun Portrait: gentle portrait tone with protected highlights.
+- Cinema Flat: muted editorial color with controlled highlights.
+- Silver Gradation: smooth black and white tone.
+
+Existing presets are preserved:
+
+- Original remains unfiltered.
+- Classic Film remains a legacy starter filter.
+- Warm Vintage remains a legacy starter filter.
+- Faded Chrome remains a legacy starter filter.
+
+Phase 12B does not add LUT assets, grain overlays, light leaks, expanded 20-filter implementation, premium gating, StoreKit, AI custom filters, real AI, real Firebase, persistence, export, save-to-Photos, secrets, dependencies, third-party SDKs, or backend changes.
+
 ## Phase 01.5 Xcode Setup
 
 Phase 01.5 did not generate a `.xcodeproj` from this Windows environment because it could not be reliably verified in Xcode.

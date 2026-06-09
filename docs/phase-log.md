@@ -8,8 +8,8 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 11 - Camera-First UX Redesign
-Status: Phase 11 / Phase 11B current result manually verified and accepted by user; ready to commit with known product gaps documented
+Current phase: Phase 12B - Filter Preset Schema And Batch 1
+Status: Phase 12B manually verified by user in Xcode / Simulator; ready to commit after review
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -19,7 +19,189 @@ Phase 08 build verification: command-line Xcode simulator build succeeded on 202
 Phase 09 build verification: user Xcode / Simulator build-run accepted on 2026-06-09
 Phase 11 build verification: attempted by Codex; generic iOS Simulator build reached Swift compilation but failed due sandbox-exec / CoreSimulator environment restrictions, not a confirmed Phase 11 source error; user Xcode / Simulator run accepted on 2026-06-09
 Phase 11B build verification: attempted by Codex; generic iOS Simulator build reached Swift compilation but failed due existing SwiftUI `#Preview` macro / CoreSimulator tooling issues, not a confirmed Phase 11B source error; user Xcode / Simulator run accepted on 2026-06-09
-Next phase: Phase 12, only after Phase 11 is reviewed, committed, pushed, and explicitly requested
+Phase 12B build verification: sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec environment restrictions; unsandboxed command-line simulator build succeeded on 2026-06-09; user Xcode / Simulator build-run accepted on 2026-06-09
+Next phase: Phase 13 should not start until Phase 12B is reviewed, committed, pushed, and explicitly requested
+
+---
+
+## Phase 12B - Filter Preset Schema And Batch 1
+
+Status: Manually verified by user; ready to commit after review
+Date completed: 2026-06-09
+
+### Goal
+
+Implement the first small local filter catalog expansion from the Phase 12A planning docs without starting Phase 13.
+
+### Summary
+
+Phase 12B extends the local filter preset model with app-level catalog metadata and implements the first 6 Batch 1 hero filters using only Core Image operations in the existing local pipeline.
+
+The current catalog now presents:
+
+- Original
+- Soft Warm 400
+- Summer Gold 200
+- Street Chrome
+- Soft Sun Portrait
+- Cinema Flat
+- Silver Gradation
+- Classic Film
+- Warm Vintage
+- Faded Chrome
+
+Original remains unfiltered. The existing Classic Film, Warm Vintage, and Faded Chrome presets remain available as legacy starter filters with their existing IDs and localized names.
+
+### Completed
+
+- Added local preset metadata for category, implementation priority, MVP flag, and premium placeholder flag.
+- Added a local `FilterPresetCategory` enum.
+- Added a Core Image highlight/shadow adjustment step to the existing filter pipeline.
+- Added 6 Batch 1 hero filters:
+  - Soft Warm 400
+  - Summer Gold 200
+  - Street Chrome
+  - Soft Sun Portrait
+  - Cinema Flat
+  - Silver Gradation
+- Kept Original as the no-filter preset.
+- Kept Classic Film, Warm Vintage, and Faded Chrome as legacy starter filters.
+- Updated English and Traditional Chinese localization strings.
+- Updated filter planning docs to record the Phase 12B Core Image approximation boundary.
+- Updated manual smoke tests for the Phase 12B flow.
+- Kept Camera-first flow, Photo Picker fallback, mock save, mock AI, local session history, History, and Settings in scope.
+
+### Changed Files
+
+- README.md
+- ios-app/README.md
+- docs/filter-preset-schema.md
+- docs/filter-roadmap.md
+- docs/filter-research-popular-film-looks.md
+- docs/prompts/phase-12-filter-preset-schema-and-batch1.md
+- docs/phase-log.md
+- tests/manual-smoke-tests.md
+- ios-app/AIPhotoApp/Features/Filters/FilterPreset.swift
+- ios-app/AIPhotoApp/Features/Filters/FilterPresetCatalog.swift
+- ios-app/AIPhotoApp/Features/Filters/FilterPipeline.swift
+- ios-app/AIPhotoApp/Resources/Localization/en.lproj/Localizable.strings
+- ios-app/AIPhotoApp/Resources/Localization/zh-Hant.lproj/Localizable.strings
+
+### Build / Verification
+
+- `xcodebuild -project ios-app/AIPhotoApp.xcodeproj -scheme AIPhotoApp -destination 'generic/platform=iOS Simulator' -derivedDataPath /private/tmp/ai-support-phase12b-derived CODE_SIGNING_ALLOWED=NO build`
+  - Sandboxed attempt failed due CoreSimulator / `sandbox-exec` environment restrictions.
+  - Unsandboxed retry succeeded on 2026-06-09.
+- User manually verified Phase 12B in Xcode / Simulator on 2026-06-09 and accepted the current result:
+  - App can build / run.
+  - Camera-first flow remains normal.
+  - Photo Picker fallback works.
+  - Filter selection opens.
+  - Original, Classic Film, Warm Vintage, and Faded Chrome remain preserved or clearly mapped.
+  - Soft Warm 400, Summer Gold 200, Street Chrome, Soft Sun Portrait, Cinema Flat, and Silver Gradation are available.
+  - The 6 new filters have acceptable visual differences.
+  - Mock save success / failure works.
+  - Mock AI analysis success / failure works.
+  - Local session history works.
+  - History and Settings remain normal.
+  - No real Firebase, AI, Cloud Functions, StoreKit, persistence, upload, export, or save-to-Photos behavior was observed.
+  - No secrets, Firebase config, or API keys were added.
+- `git diff --check` passed.
+- Forbidden import scan passed for iOS source.
+- Secrets / config scan passed.
+- Forbidden behavior scan passed for Phase 12B scope.
+
+### Known TODOs
+
+- Phase 12B uses Core Image approximations only. It does not implement HSL-specific tuning, vibrance, true fade controls, grain, LUTs, bloom, glow, halation, Metal, or custom shader passes.
+- Phase 12B is not the final realistic film emulation engine.
+- Phase 13 or later should handle expansion to 12 filters and then 20 filters.
+- LUT, grain overlay, halation, light leak, CCD-style looks, and instant camera looks should remain for later phases.
+- Street Chrome is a Core Image approximation; more accurate chrome / slide color may need a future LUT after licensing and asset strategy are settled.
+- Soft Warm 400, Summer Gold 200, and Silver Gradation do not include grain yet.
+- Soft Sun Portrait does not include real glow or skin-aware masking.
+- Cinema Flat does not include scene-aware highlight protection.
+- Public UI filter names should continue avoiding Kodak, Fujifilm, Leica, Polaroid, CineStill, and similar protected brand names unless legal approval exists.
+
+### Safety Notes
+
+- Did not start Phase 13.
+- Did not implement all 20 proposed filters.
+- Did not add expanded filter monetization.
+- Did not add premium gating.
+- Did not add StoreKit, subscription, paywall, or quota enforcement.
+- Did not add AI custom filters.
+- Did not call Gemini, OpenAI, Cloud Functions, or any external AI API.
+- Did not connect real Firebase.
+- Did not add Firebase, FirebaseFunctions, FirebaseStorage, FirebaseFirestore, Gemini, OpenAI, or StoreKit imports.
+- Did not add `GoogleService-Info.plist`, `.env`, `.firebaserc`, API keys, Firebase project IDs, private keys, OAuth secrets, or Apple credentials.
+- Did not add persistence, UserDefaults, Core Data, SwiftData, export, save-to-Photos, dependencies, third-party SDKs, backend changes, commit, or push.
+
+### Ready for Next Phase
+
+Ready to commit Phase 12B: Yes, after final review.
+
+Ready for Phase 13: No. Phase 12B should be committed, pushed, and read-only confirmed before Phase 13 starts.
+
+---
+
+## Phase 12A - Filter Research Integration & Preset Schema Planning
+
+Status: Ready for review
+Date completed: 2026-06-09
+
+### Goal
+
+Integrate the provided Phase 12 filter research direction into formal repository documentation and prepare the next construction prompt for a small, data-driven Batch 1 filter implementation.
+
+This phase is documentation-only.
+
+### Summary
+
+Phase 12A created filter research, preset schema, implementation roadmap, and Phase 12B construction prompt documents. It defines a brand-safe naming direction, a 20-preset research catalog, a prioritized first 12, app-level filter preset schema fields, parameter ranges, and a staged roadmap that keeps Phase 12B limited to the first 6 hero filters.
+
+The requested source file `deep-research-report.md` was not found in the local repo or nearby workspace during this pass. The new research document records that source-status caveat and should be reconciled with the original source report if it is later added.
+
+### Completed
+
+- Added a formal filter research document for popular film / retro / photographer-style looks.
+- Added public display-name guidance to avoid using protected brand names as product filter names.
+- Added 20 proposed presets and the first 12 implementation priority set.
+- Added engineering seed JSON for catalog planning.
+- Added app-level filter preset schema planning.
+- Added parameter ranges for defaults, HSL, tone curve, render hints, and asset references.
+- Added a filter implementation roadmap with Batch 1, Batch 2, and Batch 3.
+- Marked which presets are good Core Image MVP candidates.
+- Marked which presets may need LUTs, grain overlays, Metal, custom shader, or halation passes later.
+- Added a Phase 12B construction prompt for schema/catalog implementation plus the first 6 hero filters only.
+
+### Changed Files
+
+- README.md
+- ios-app/README.md
+- docs/filter-research-popular-film-looks.md
+- docs/filter-preset-schema.md
+- docs/filter-roadmap.md
+- docs/prompts/phase-12-filter-preset-schema-and-batch1.md
+- docs/phase-log.md
+
+### Phase 12A Safety Notes
+
+- Did not modify Swift code.
+- Did not modify backend code.
+- Did not implement filters.
+- Did not start Phase 13.
+- Did not add expanded filter library implementation.
+- Did not add Firebase, Gemini, OpenAI, Cloud Functions, or StoreKit.
+- Did not add secrets, API keys, `GoogleService-Info.plist`, `.env`, or `.firebaserc`.
+- Did not commit.
+- Did not push.
+
+### Ready for Next Phase
+
+Ready to review Phase 12B prompt: Yes.
+
+Ready to start Phase 13: No. Phase 12B should be reviewed and explicitly requested first.
 
 ---
 

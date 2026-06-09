@@ -88,7 +88,7 @@
 "camera.action.retake" = "重拍或清除";
 "camera.action.continue_placeholder" = "後續階段才繼續";
 "camera.filter.entry" = "濾鏡";
-"camera.filter.pending_note" = "目前選取的預設會套用到下一張拍攝或匯入的照片。這仍是既有本機預設，並不是 expanded filter library 或 live AI guidance。";
+"camera.filter.pending_note" = "目前選取的預設會套用到下一張拍攝或匯入的照片。這只是本機 Batch 1 catalog，並不是完整 expanded filter library 或 live AI guidance。";
 "camera.shell.status" = "本機相機 shell";
 "camera.control.flash" = "閃光";
 "camera.control.timer" = "計時";
@@ -122,6 +122,18 @@
 "filters.preset.warm_vintage.description" = "陽光暖調，加上淡化陰影。";
 "filters.preset.faded_chrome.name" = "Faded Chrome";
 "filters.preset.faded_chrome.description" = "低飽和冷調，帶舊幻燈片感。";
+"filters.preset.soft_warm_400.name" = "Soft Warm 400";
+"filters.preset.soft_warm_400.description" = "日常暖調底片感，柔和對比並微微提亮陰影。";
+"filters.preset.summer_gold_200.name" = "Summer Gold 200";
+"filters.preset.summer_gold_200.description" = "金黃色日光色彩，明亮溫暖並保留輕柔對比。";
+"filters.preset.street_chrome.name" = "Street Chrome";
+"filters.preset.street_chrome.description" = "俐落街拍對比、偏冷陰影和更清晰的色彩分離。";
+"filters.preset.soft_sun_portrait.name" = "Soft Sun Portrait";
+"filters.preset.soft_sun_portrait.description" = "柔和暖調人像感，保護高光並降低皮膚對比。";
+"filters.preset.cinema_flat.name" = "Cinema Flat";
+"filters.preset.cinema_flat.description" = "低飽和、受控高光和克制的 editorial base grade。";
+"filters.preset.silver_gradation.name" = "Silver Gradation";
+"filters.preset.silver_gradation.description" = "平滑黑白對比，保留乾淨底片感層次。";
 "filters.error.render_failed" = "無法渲染濾鏡預覽，會顯示原圖。";
 "save.title" = "Mock 雲端保存";
 "save.mock_note" = "Phase 05 只草擬 Storage path 和 Firestore metadata。此按鈕不會上傳、寫入 Firestore、保存歷史、匯出、執行 AI 或啟動付費。";

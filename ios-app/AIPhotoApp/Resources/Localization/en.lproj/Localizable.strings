@@ -88,7 +88,7 @@
 "camera.action.retake" = "Retake or clear";
 "camera.action.continue_placeholder" = "Continue in later phases";
 "camera.filter.entry" = "Filter";
-"camera.filter.pending_note" = "The selected preset applies to the next captured or imported photo. This is still the existing local preset set, not an expanded library or live AI guidance.";
+"camera.filter.pending_note" = "The selected preset applies to the next captured or imported photo. This is the local Batch 1 catalog only, not the full expanded library or live AI guidance.";
 "camera.shell.status" = "Local camera shell";
 "camera.control.flash" = "Flash";
 "camera.control.timer" = "Timer";
@@ -122,6 +122,18 @@
 "filters.preset.warm_vintage.description" = "Sunny warmth with faded shadows.";
 "filters.preset.faded_chrome.name" = "Faded Chrome";
 "filters.preset.faded_chrome.description" = "Muted color with a cool old-slide feel.";
+"filters.preset.soft_warm_400.name" = "Soft Warm 400";
+"filters.preset.soft_warm_400.description" = "Warm everyday film tone with soft contrast and lifted shadows.";
+"filters.preset.summer_gold_200.name" = "Summer Gold 200";
+"filters.preset.summer_gold_200.description" = "Golden daylight color with bright warmth and gentle contrast.";
+"filters.preset.street_chrome.name" = "Street Chrome";
+"filters.preset.street_chrome.description" = "Crisp urban contrast, cooler shadows, and stronger color separation.";
+"filters.preset.soft_sun_portrait.name" = "Soft Sun Portrait";
+"filters.preset.soft_sun_portrait.description" = "A gentle warm portrait look with protected highlights and soft skin contrast.";
+"filters.preset.cinema_flat.name" = "Cinema Flat";
+"filters.preset.cinema_flat.description" = "Muted saturation, controlled highlights, and a restrained editorial base grade.";
+"filters.preset.silver_gradation.name" = "Silver Gradation";
+"filters.preset.silver_gradation.description" = "Smooth black and white contrast with a clean film-style tone.";
 "filters.error.render_failed" = "The filter preview could not be rendered. Showing the original image.";
 "save.title" = "Mock cloud save";
 "save.mock_note" = "Phase 05 only drafts Storage paths and Firestore metadata. This button does not upload, write Firestore, persist history, export, run AI, or start billing.";

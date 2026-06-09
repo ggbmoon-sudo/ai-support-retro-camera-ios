@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 11: Camera-First UX Redesign
+- Phase 12B: Filter Preset Schema And Batch 1
 
 Next phase:
 
-- Phase 12, only after Phase 11 is reviewed, committed, pushed, and explicitly requested
+- Phase 13, only after Phase 12B is reviewed, committed, pushed, and explicitly requested
 
 Before each task, read `AGENTS.md`, the required docs listed there, and the relevant phase prompt in `docs/prompts/`.
 
@@ -101,6 +101,9 @@ Current MVP demo / QA readiness docs:
 - `docs/mvp-readiness-checklist.md`
 - `docs/product-roadmap-next.md`
 - `docs/feature-change-requests.md`
+- `docs/filter-research-popular-film-looks.md`
+- `docs/filter-preset-schema.md`
+- `docs/filter-roadmap.md`
 
 Use these docs as the source of truth unless a later decision in `docs/decisions.md` explicitly changes an earlier decision.
 
@@ -126,6 +129,43 @@ Completed and manually verified scaffold phases include Camera / Photo Picker, l
 Current limitations are documented in `docs/mvp-known-limitations.md`. The demo flow is documented in `docs/mvp-demo-script.md`. Future real-service gates are documented in `docs/mvp-readiness-checklist.md`.
 
 The current app does not include real Firebase upload, Firestore writes, Storage writes, Cloud Functions calls, real Gemini / OpenAI calls, StoreKit, quota enforcement, disk persistence, UserDefaults persistence, export, save-to-Photos, production Firebase config, or real secrets.
+
+## Phase 12A Filter Planning Status
+
+Phase 12A is documentation-only planning for the next filter system step.
+
+Current Phase 12A docs define:
+
+- Popular film / retro / photographer-style look research.
+- Brand-safe public filter naming guidance.
+- 20 proposed filter presets.
+- The first 12 filter priorities.
+- The first 6 Phase 12B hero filters: Soft Warm 400, Summer Gold 200, Street Chrome, Soft Sun Portrait, Cinema Flat, and Silver Gradation.
+- App-level filter preset schema fields and parameter ranges.
+- A filter implementation roadmap from Batch 1 through 20+ filters.
+
+Phase 12A does not implement filters, modify Swift code, modify backend code, add real Firebase, add real AI, add Cloud Functions calls, add StoreKit, add persistence, add export, add dependencies, or add secrets.
+
+## Phase 12B Filter Batch 1 Status
+
+Phase 12B implements the first data-driven local filter catalog expansion.
+
+Current local filter catalog:
+
+- Original
+- Soft Warm 400
+- Summer Gold 200
+- Street Chrome
+- Soft Sun Portrait
+- Cinema Flat
+- Silver Gradation
+- Classic Film
+- Warm Vintage
+- Faded Chrome
+
+Original remains the no-filter option. Classic Film, Warm Vintage, and Faded Chrome are retained as legacy starter filters with their existing IDs.
+
+Phase 12B uses only Core Image approximations in the existing local pipeline. It does not add the full 20-filter library, LUTs, grain assets, light leaks, live AI guidance, AI custom filters, real AI, real Firebase, StoreKit, persistence, export, secrets, backend changes, dependencies, or third-party SDKs.
 
 ## Phase 11B Camera Entry / Camera Shell Status
 

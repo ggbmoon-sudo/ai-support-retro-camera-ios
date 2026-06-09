@@ -75,6 +75,13 @@ nonisolated final class FilterPipeline {
                 (kCIInputBrightnessKey, brightness),
                 (kCIInputContrastKey, contrast)
             ]
+        case let .highlightShadow(highlightAmount, shadowAmount):
+            filterName = "CIHighlightShadowAdjust"
+            values = [
+                (kCIInputImageKey, image),
+                ("inputHighlightAmount", highlightAmount),
+                ("inputShadowAmount", shadowAmount)
+            ]
         case .toneCurve(let points):
             guard points.count == 5 else {
                 throw FilterPipelineError.renderFailed

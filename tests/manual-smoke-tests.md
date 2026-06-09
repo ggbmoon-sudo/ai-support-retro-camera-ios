@@ -686,3 +686,70 @@ Manual Xcode check on physical iPhone / iPad:
 - [ ] Capture one still photo.
 - [ ] Trigger mock save and mock AI advice.
 - [ ] Confirm no image is uploaded, persisted, exported, saved to Photos, or sent to AI.
+
+## Phase 12B
+
+Check:
+
+- [x] Extended the Swift filter preset model with local catalog metadata.
+- [x] Added `FilterPresetCategory`.
+- [x] Kept the catalog data-driven in `FilterPresetCatalog`.
+- [x] Added a Core Image highlight/shadow adjustment to the existing pipeline.
+- [x] Implemented Batch 1 hero filters only:
+  - Soft Warm 400
+  - Summer Gold 200
+  - Street Chrome
+  - Soft Sun Portrait
+  - Cinema Flat
+  - Silver Gradation
+- [x] Kept Original as the no-filter option.
+- [x] Kept Classic Film, Warm Vintage, and Faded Chrome as legacy starter filters.
+- [x] Updated English and Traditional Chinese localization strings.
+- [x] Confirmed no public UI filter names use Kodak, Fujifilm, Leica, Polaroid, CineStill, or other protected brand names.
+- [x] Confirmed no LUT, grain, light leak, or texture assets were added.
+- [x] Confirmed no backend code was modified.
+- [x] Confirmed no real Firebase, Gemini, OpenAI, Cloud Functions, StoreKit, persistence, export, save-to-Photos, secrets, dependencies, third-party SDKs, monetization, premium gating, quota, Phase 13, or 20-filter implementation was intentionally added.
+
+Build / source checks:
+
+- [x] `git diff --check` passed.
+- [x] Sandboxed command-line Xcode build failed due CoreSimulator / `sandbox-exec` environment restrictions.
+- [x] Unsandboxed command-line Xcode simulator build succeeded on 2026-06-09.
+- [x] Forbidden imports scan found no Firebase / Gemini / OpenAI / StoreKit imports in iOS source.
+- [x] Secrets / config scan found no `GoogleService-Info.plist`, `.env`, `.firebaserc`, API keys, Firebase project IDs, private keys, OAuth secrets, or Apple credentials added.
+- [x] Forbidden behavior scan found no real upload, Firestore write, Storage write, Cloud Functions call, real AI call, StoreKit, quota, persistence, export, or save-to-Photos implementation added for Phase 12B.
+
+Manual Xcode check on simulator:
+
+- [x] User manually verified Phase 12B in Xcode / Simulator on 2026-06-09 and accepted the current result.
+- [x] Launch the app.
+- [x] Confirm Camera-first flow still opens correctly.
+- [x] Confirm Photo Picker fallback still works.
+- [x] Import one photo.
+- [x] Open the filter selector.
+- [x] Confirm Original is available and shows the unfiltered image or is clearly preserved as the no-filter option.
+- [x] Confirm Soft Warm 400 is available and renders an acceptably distinct look.
+- [x] Confirm Summer Gold 200 is available and renders an acceptably distinct look.
+- [x] Confirm Street Chrome is available and renders an acceptably distinct look.
+- [x] Confirm Soft Sun Portrait is available and renders an acceptably distinct look.
+- [x] Confirm Cinema Flat is available and renders an acceptably distinct look.
+- [x] Confirm Silver Gradation is available and renders an acceptably distinct look.
+- [x] Confirm Classic Film, Warm Vintage, and Faded Chrome remain available or clearly mapped.
+- [x] Switch between filters and confirm the app does not freeze in the accepted manual pass.
+- [x] Trigger mock save success and failure.
+- [x] Trigger mock AI success and failure.
+- [x] Confirm local session history works.
+- [x] Open History and Settings.
+- [x] Confirm no real Firebase, AI, Cloud Functions, StoreKit, persistence, upload, export, or save-to-Photos behavior occurs.
+- [x] Confirm no secrets, Firebase config, or API keys were added.
+
+Known TODOs:
+
+- [ ] HSL-specific tuning is not implemented yet.
+- [ ] Vibrance, true fade, grain, bloom, glow, halation, LUT, Metal, and custom shader support remain future work.
+- [ ] Batch 1 filters are Core Image MVP approximations, not the final realistic film emulation engine.
+- [ ] Phase 13 or later should handle expansion to 12 filters and then 20 filters.
+- [ ] LUT, grain overlay, halation, light leak, CCD-style looks, and instant camera looks should remain for later phases.
+- [ ] Public UI filter names should continue avoiding Kodak, Fujifilm, Leica, Polaroid, CineStill, and similar protected brand names unless legal approval exists.
+- [ ] Street Chrome may need a future LUT for more accurate slide / chrome color.
+- [ ] Soft Warm 400, Summer Gold 200, and Silver Gradation do not include grain yet.
