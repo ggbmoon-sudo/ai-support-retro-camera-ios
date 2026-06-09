@@ -839,17 +839,92 @@ Do not put AI API keys in the iOS app. Real provider keys should use server-side
 
 ---
 
-## Phase 07 - AI Result UI
+## Phase 07 - AI Photo Advisor Result UI Scaffold
 
-Status: Not started
+Status: Implemented as mock-only scaffold; manually verified by user in Xcode / Simulator
+Date started: 2026-06-09
+Date completed: 2026-06-09
 
 ### Goal
 
-Implement AI result UI for short summary, up to 3 actionable advice items, and adjustment suggestions.
+Implement a mock-only iOS AI Photo Advisor result UI using the Phase 06 `PhotoAnalysisService` protocol and `MockPhotoAnalysisService`, while keeping all analysis state local to memory and avoiding real AI, Firebase, Cloud Functions, StoreKit, quota, persistence, and secrets.
 
-### Notes
+### Summary
 
-Do not implement full VIP chat in MVP.
+Phase 07 added a mock AI advice panel after the filtered preview / mock save flow. The panel can trigger local mock analysis, display loading / success / failure states, retry after failure, dismiss results, and render the Phase 06 mock `PhotoAnalysisResult` with a short summary, up to three suggestions, adjustment hints, and composition / lighting notes.
+
+After user Simulator testing, Phase 07 also received a minimal UI fix for the selected-photo flow: the mock AI result panel is now reachable through vertical scrolling on small iPhone screens, and dynamic priority / adjustment localization labels now render user-readable strings instead of raw localization keys. The user manually verified the scroll and localization fixes in Xcode / Simulator.
+
+No Gemini API key, OpenAI API key, Firebase project ID, `GoogleService-Info.plist`, `.env`, `.firebaserc`, private key, OAuth secret, Apple credential, real Gemini call, real OpenAI call, Cloud Functions call, Cloud Functions deploy, image upload, Firestore write, Storage write, AI result persistence, history persistence, AI chat, image editing, realtime video AI, StoreKit, subscription/paywall, quota enforcement, npm dependency, or Phase 08 work was added.
+
+### Completed
+
+- Read the Phase 07 prompt and required project context.
+- Confirmed current branch, latest commit, sync status, and `ios-app/AIPhotoApp.xcodeproj` before implementation.
+- Added `AIAnalysisViewModel` using the Phase 06 `PhotoAnalysisService` protocol.
+- Added mock-only AI analysis entry UI after the filtered preview / mock save flow.
+- Added loading, success, failure, retry, and dismiss UI states.
+- Added result UI for summary, up to three suggestions, adjustment hints, and composition / lighting notes.
+- Added suggestion and adjustment hint card views.
+- Wired `FilteredPhotoPreview` to show the Phase 07 mock AI advice panel.
+- Kept analysis state local to memory for the current selected photo flow.
+- Fixed selected-photo layout so the Phase 07 result panel can scroll vertically on small simulator screens.
+- Fixed dynamic priority and adjustment labels so they display localized text instead of raw localization keys.
+- Updated English and Traditional Chinese localization strings.
+- Updated iOS README notes.
+- Updated manual smoke tests with Phase 07 checks.
+- Ran command-line Xcode simulator build successfully with `iPhone 17`.
+
+### Changed Files
+
+- docs/phase-log.md
+- docs/prompts/phase-07-ai-advisor-result-ui.md
+- ios-app/README.md
+- ios-app/AIPhotoApp/Features/AIPhotoAdvisor/AIAnalysisView.swift
+- ios-app/AIPhotoApp/Features/AIPhotoAdvisor/AIAnalysisViewModel.swift
+- ios-app/AIPhotoApp/Features/AIPhotoAdvisor/AIAnalysisResultView.swift
+- ios-app/AIPhotoApp/Features/AIPhotoAdvisor/AIAnalysisSuggestionCard.swift
+- ios-app/AIPhotoApp/Features/AIPhotoAdvisor/AIAdjustmentHintCard.swift
+- ios-app/AIPhotoApp/Features/Camera/CameraView.swift
+- ios-app/AIPhotoApp/Features/Filters/FilteredPhotoPreview.swift
+- ios-app/AIPhotoApp/Resources/Localization/en.lproj/Localizable.strings
+- ios-app/AIPhotoApp/Resources/Localization/zh-Hant.lproj/Localizable.strings
+- tests/manual-smoke-tests.md
+
+### Tests / Manual Checks
+
+- [x] Ran pre-implementation git and project checks.
+- [x] Confirmed `ios-app/AIPhotoApp.xcodeproj` exists.
+- [x] Confirmed local branch was synchronized with `origin/feat/phase-02-auth` before implementation.
+- [x] Confirmed no real Firebase config, `.env`, `.firebaserc`, or `GoogleService-Info.plist` existed before implementation.
+- [x] Confirmed the implementation uses `MockPhotoAnalysisService` and does not call Cloud Functions.
+- [x] Confirmed iOS Phase 07 files do not import Firebase, FirebaseFunctions, FirebaseStorage, FirebaseFirestore, Gemini, OpenAI, or StoreKit.
+- [x] Confirmed no npm dependency was added.
+- [x] Confirmed no real Gemini call, OpenAI call, Cloud Functions deploy, production Firebase, upload, Firestore write, Storage write, AI billing/quota, StoreKit, subscription/paywall, AI chat, image editing, realtime video AI, or Phase 08 work was added.
+- [x] Command-line Xcode simulator build succeeded with `xcodebuild -project ios-app/AIPhotoApp.xcodeproj -scheme AIPhotoApp -destination 'platform=iOS Simulator,name=iPhone 17' build`.
+- [x] User manually verified app build / run in Xcode / Simulator was acceptable.
+- [x] User manually verified Home -> Camera flow.
+- [x] User manually verified photo picker can select an image.
+- [x] User manually verified filter presets can be switched.
+- [x] User manually verified mock save success and failure still work.
+- [x] User manually verified mock AI analysis can be triggered.
+- [x] User manually verified loading / result / failure / retry / dismiss states work.
+- [x] User manually verified the AI result panel can scroll vertically.
+- [x] User manually verified localization keys no longer appear for priority / adjustment labels.
+- [x] User manually verified Home / History / Settings still work.
+- [x] User manually verified no obvious major bug is present.
+- [x] User manually verified no real AI call, Cloud Functions call, upload, Firestore write, Storage write, StoreKit, quota, history persistence, export behavior, real Firebase config, or secrets are present.
+
+### Known TODOs
+
+- Keep real Cloud Functions callable wiring for a later explicitly requested setup task.
+- Keep real Gemini/OpenAI provider setup for a later explicitly requested setup task with server-side secret management.
+- Add consent gate, quota enforcement, App Check, structured response validation, cost controls, provider fallback, and production AI result persistence only in later phases.
+- Do not add AI chat follow-up, image editing, realtime video AI, StoreKit, subscription/paywall, or quota logic in Phase 07.
+
+### Ready for Phase 08
+
+No. Phase 07 has been manually verified, but Phase 08 should not begin until Phase 07 is committed and pushed.
 
 ---
 

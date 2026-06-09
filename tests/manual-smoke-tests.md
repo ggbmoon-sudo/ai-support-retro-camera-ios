@@ -333,3 +333,75 @@ Manual source/backend check:
 - [ ] Review `functions/src/ai/GeminiAnalyzer.ts` and confirm it is placeholder-only.
 - [ ] Review `functions/src/ai/OpenAIAnalyzer.ts` and confirm it is placeholder-only.
 - [ ] Review `functions/src/analyzePhoto.ts` and confirm it returns mock analysis only.
+
+## Phase 07
+
+Check:
+
+- [x] Added mock AI analysis result UI scaffold under `ios-app/AIPhotoApp/Features/AIPhotoAdvisor/`.
+- [x] Added `AIAnalysisViewModel` using the Phase 06 `PhotoAnalysisService` protocol.
+- [x] Default mock analysis service is `MockPhotoAnalysisService`.
+- [x] Added mock AI entry after the filtered preview / mock save flow.
+- [x] Added loading state.
+- [x] Added mock success state.
+- [x] Added mock failure state.
+- [x] Added retry and dismiss actions.
+- [x] Mock result displays one short summary.
+- [x] Mock result displays up to three suggestions.
+- [x] Mock result displays adjustment hints.
+- [x] Mock result displays composition / lighting notes when present.
+- [x] UI clearly labels the result as mock / Phase 07 scaffold.
+- [x] Analysis state is local memory only.
+- [x] Updated English and Traditional Chinese localization strings.
+- [x] Command-line Xcode simulator build succeeded with `iPhone 17`.
+- [x] Confirmed no Gemini API key was added.
+- [x] Confirmed no OpenAI API key was added.
+- [x] Confirmed no Firebase project ID, `GoogleService-Info.plist`, `.env`, `.firebaserc`, private key, OAuth secret, Apple credential, signing credential, or provisioning profile was added.
+- [x] Confirmed no Firebase / FirebaseFunctions / FirebaseStorage / FirebaseFirestore imports were added to iOS.
+- [x] Confirmed no Gemini / OpenAI / StoreKit imports were added to iOS.
+- [x] Confirmed no real Gemini or OpenAI call was added.
+- [x] Confirmed no Cloud Functions call or deploy was added.
+- [x] Confirmed no upload, Firestore write, Storage write, AI result history persistence, AI chat, image editing, realtime video AI, StoreKit, subscription, paywall, quota, npm dependency, or Phase 08 work was added.
+
+Manual Xcode check on simulator:
+
+- [x] Build and run `AIPhotoApp` in an iOS Simulator.
+- [ ] Sign in with mock Auth or continue as guest.
+- [x] Open Home.
+- [x] Open the Camera scaffold.
+- [x] Import one image with the photo picker.
+- [x] Switch to at least one retro preset.
+- [x] Trigger mock save success.
+- [x] Trigger mock save failure.
+- [x] Confirm the mock AI advice panel is visible after the mock save panel.
+- [x] Tap `Analyze photo (mock)`.
+- [x] Confirm loading state appears.
+- [x] Confirm mock summary appears.
+- [x] Confirm up to three suggestions appear.
+- [x] Confirm adjustment hints appear.
+- [x] Confirm composition / lighting notes appear.
+- [x] Confirm the mock / scaffold label is visible.
+- [x] Tap the mock AI failure control.
+- [x] Confirm mock failure state appears.
+- [x] Retry after failure and confirm mock success can appear.
+- [x] Dismiss the result and confirm the panel returns to the entry state.
+- [x] Confirm the AI result panel can scroll vertically on the simulator.
+- [x] Confirm priority and adjustment labels display localized text instead of raw keys.
+- [ ] Switch filter presets and confirm stale analysis result is cleared.
+- [ ] Clear / retake the photo and confirm analysis state is cleared with the selected photo flow.
+- [x] Confirm Phase 03 Camera, Phase 04 Filters, and Phase 05 Mock Save still behave as before.
+- [x] Confirm Home / History / Settings still render.
+- [x] Confirm History does not persist AI result.
+- [x] Confirm no real AI call, Cloud Functions call, upload, Firestore write, Storage write, StoreKit, quota, paywall, export, save-to-Photos, or history persistence occurs.
+- [x] Confirm no real Firebase config or secrets are present.
+- [x] Confirm no obvious major bug is present.
+
+Manual Xcode check on physical iPhone / iPad:
+
+- [ ] Build and run `AIPhotoApp` on device.
+- [ ] Capture one still photo.
+- [ ] Apply one filter preset.
+- [ ] Trigger mock save.
+- [ ] Trigger mock AI analysis.
+- [ ] Confirm mock result UI appears.
+- [ ] Confirm no real network upload, provider call, Firestore write, Storage write, or persistence occurs.

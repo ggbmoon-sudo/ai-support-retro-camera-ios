@@ -29,6 +29,12 @@ struct FilteredPhotoPreview: View {
 
             savePanel
 
+            AIAnalysisView(
+                photoId: analysisPhotoId,
+                filterPresetId: selectedPreset.id
+            )
+            .id("\(photo.id.uuidString)-\(analysisPhotoId)-\(selectedPreset.id)")
+
             Text("filters.local_only_note")
                 .font(AppTypography.caption)
                 .foregroundStyle(AppColors.textSecondary)
@@ -84,6 +90,14 @@ struct FilteredPhotoPreview: View {
         .padding(AppSpacing.md)
         .background(AppColors.elevatedSurface)
         .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.lg))
+    }
+
+    private var analysisPhotoId: String {
+        if case .saved(let savedPhoto) = saveState {
+            return savedPhoto.id
+        }
+
+        return "local-\(photo.id.uuidString.lowercased())"
     }
 
     @ViewBuilder

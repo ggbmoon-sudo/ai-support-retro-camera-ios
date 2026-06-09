@@ -227,3 +227,31 @@ The current AI scaffold is intentionally mock-only:
 - No complete AI result UI is added in Phase 06.
 
 This phase does not add Gemini API keys, OpenAI API keys, Firebase project IDs, `GoogleService-Info.plist`, `.env`, `.firebaserc`, private keys, OAuth secrets, Apple credentials, real Gemini calls, real OpenAI calls, deployed Cloud Functions, production Firebase, FirebaseFunctions imports in iOS, real provider SDK imports, uploads, Firestore writes, Storage writes, AI billing, quota, StoreKit, subscription/paywall logic, AI chat, image editing, generative edit, realtime video AI, or Phase 07 work.
+
+## Phase 07 AI Photo Advisor Result UI Scaffold
+
+Phase 07 adds a mock-only AI advice UI under:
+
+```text
+ios-app/AIPhotoApp/Features/AIPhotoAdvisor/
+```
+
+Current Phase 07 AI UI files include:
+
+- `AIAnalysisView.swift`
+- `AIAnalysisViewModel.swift`
+- `AIAnalysisResultView.swift`
+- `AIAnalysisSuggestionCard.swift`
+- `AIAdjustmentHintCard.swift`
+
+The current AI result UI scaffold is intentionally mock-only:
+
+- The filtered photo preview now shows a mock AI advice panel after the mock save panel.
+- `AIAnalysisViewModel` uses the Phase 06 `PhotoAnalysisService` protocol.
+- `MockPhotoAnalysisService` is the default service for success and failure checks.
+- Loading, success, failure, retry, and dismiss states are visible.
+- Mock results display one short summary, up to three suggestions, adjustment hints, and composition / lighting notes.
+- The UI clearly labels the advice as Phase 07 scaffold / mock output.
+- Analysis state stays in memory for the current selected photo flow only.
+
+This phase does not add Gemini API keys, OpenAI API keys, Firebase project IDs, `GoogleService-Info.plist`, `.env`, `.firebaserc`, private keys, OAuth secrets, Apple credentials, real Gemini calls, real OpenAI calls, Cloud Functions calls or deploys, production Firebase, FirebaseFunctions imports in iOS, real provider SDK imports, uploads, Firestore writes, Storage writes, AI result persistence, history persistence, AI chat, image editing, realtime video AI, StoreKit, subscription/paywall logic, quota enforcement, npm dependencies, or Phase 08 work.

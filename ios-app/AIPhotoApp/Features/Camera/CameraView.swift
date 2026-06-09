@@ -159,36 +159,40 @@ struct CameraView: View {
     }
 
     private func previewContent(_ photo: CapturedPhoto) -> some View {
-        VStack(spacing: AppSpacing.lg) {
-            FilteredPhotoPreview(
-                photo: photo,
-                previewImage: viewModel.filteredPreviewImage ?? photo.image,
-                selectedPreset: viewModel.selectedFilterPreset,
-                presets: viewModel.filterPresets,
-                isRendering: viewModel.isFiltering,
-                saveState: viewModel.photoSaveState,
-                onSelectPreset: viewModel.selectFilterPreset,
-                onSavePhoto: { shouldFail in
-                    Task {
-                        await viewModel.saveSelectedPhoto(shouldFail: shouldFail)
+        ScrollView {
+            LazyVStack(spacing: AppSpacing.lg) {
+                FilteredPhotoPreview(
+                    photo: photo,
+                    previewImage: viewModel.filteredPreviewImage ?? photo.image,
+                    selectedPreset: viewModel.selectedFilterPreset,
+                    presets: viewModel.filterPresets,
+                    isRendering: viewModel.isFiltering,
+                    saveState: viewModel.photoSaveState,
+                    onSelectPreset: viewModel.selectFilterPreset,
+                    onSavePhoto: { shouldFail in
+                        Task {
+                            await viewModel.saveSelectedPhoto(shouldFail: shouldFail)
+                        }
                     }
+                )
+
+                VStack(spacing: AppSpacing.md) {
+                    PrimaryButton("camera.action.retake", systemImage: "arrow.counterclockwise") {
+                        viewModel.resetSelection()
+                    }
+
+                    PhotoPickerView(selection: $viewModel.pickerItem, isLoading: viewModel.isLoading)
+
+                    PrimaryButton(
+                        "camera.action.continue_placeholder",
+                        systemImage: "sparkles",
+                        isEnabled: false
+                    ) {}
                 }
-            )
-
-            VStack(spacing: AppSpacing.md) {
-                PrimaryButton("camera.action.retake", systemImage: "arrow.counterclockwise") {
-                    viewModel.resetSelection()
-                }
-
-                PhotoPickerView(selection: $viewModel.pickerItem, isLoading: viewModel.isLoading)
-
-                PrimaryButton(
-                    "camera.action.continue_placeholder",
-                    systemImage: "sparkles",
-                    isEnabled: false
-                ) {}
             }
+            .padding(.bottom, AppSpacing.xl)
         }
+        .scrollIndicators(.visible)
     }
 }
 
