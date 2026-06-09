@@ -166,6 +166,37 @@ Filter groups:
 
 Phase 13 filters are MVP approximations using the existing local Core Image pipeline. The implementation does not add LUT assets, true grain overlays, light leaks, dust, frames, Metal shaders, AI custom filters, real AI, real Firebase, StoreKit, premium gating, persistence, export, save-to-Photos, secrets, dependencies, third-party SDKs, or backend changes.
 
+## Phase 14 Live Guidance Mock UX
+
+Phase 14 adds a small local/mock live guidance layer to the Camera screen.
+
+Current implementation notes:
+
+- `LiveGuidanceMockState` models off, idle, scanning, suggestion available, and paused states.
+- `MockLiveGuidanceProvider` returns local static suggestions only.
+- `LiveGuidanceToggleView` provides the camera status-bar toggle.
+- `LiveGuidanceOverlayView` renders a compact control-area guidance strip.
+- The overlay is positioned below the framed viewport and above the shutter controls.
+- The state and suggestions are in memory only.
+
+Phase 14 intentionally does not read camera frames, analyze video, upload frames, persist guidance, import Vision, call Gemini / OpenAI / Cloud Functions, connect Firebase, add StoreKit, add voice input, add ASR, add Parakeet, export, save to Photos, change backend code, or add secrets.
+
+## Phase 14B Camera Frame / Inspiration Refinement
+
+Phase 14B keeps Phase 14 local/mock-only and refines the camera and Inspiration surfaces.
+
+Current implementation notes:
+
+- `LensOption` defines local/mock 24mm, 35mm, and 77mm lens labels.
+- `CameraLensSelectorView` shows selectable camera-like focal length chips.
+- `CameraViewModel` stores the selected mock lens option in memory only.
+- `CameraView` now uses a more compact dark camera shell, a framed 4:5-style viewport, a visible focal label, and lower camera controls.
+- The guidance overlay has moved out of the main viewfinder and sits above the shutter area.
+- `HomeView` is now positioned as the Inspiration tab and no longer presents an Open Camera primary CTA.
+- `MainTabShellView` keeps Camera as the first tab and updates the former Guide tab icon to match Inspiration.
+
+Phase 14B does not add real multi-lens hardware switching, Vision, frame analysis, frame upload, Gemini Live, voice / ASR, real Firebase, StoreKit, persistence, export, backend changes, secrets, dependencies, or third-party SDKs.
+
 ## Phase 01.5 Xcode Setup
 
 Phase 01.5 did not generate a `.xcodeproj` from this Windows environment because it could not be reliably verified in Xcode.

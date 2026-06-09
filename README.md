@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 13: Expanded Filter Library - 20 Presets
+- Phase 14B: Dazz-like Camera Frame + Inspiration Tab Refinement
 
 Next phase:
 
-- Phase 14, only after Phase 13 is reviewed, committed, pushed, and explicitly requested
+- Phase 15, only after Phase 14B is reviewed, committed, pushed, and explicitly requested
 
 Before each task, read `AGENTS.md`, the required docs listed there, and the relevant phase prompt in `docs/prompts/`.
 
@@ -199,6 +199,38 @@ Original remains the no-filter option and is not counted as one of the 20 resear
 The filter picker now groups presets instead of showing one long horizontal row.
 
 Phase 13 remains local/mock-only. It does not add LUT assets, true grain overlays, light leaks, frames, dust, Metal shaders, AI custom filters, real AI, real Firebase, Cloud Functions, StoreKit, persistence, export, save-to-Photos, secrets, backend changes, dependencies, or third-party SDKs.
+
+## Phase 14 Live Guidance Mock UX Status
+
+Phase 14 adds a local/mock live guidance overlay to the Camera screen.
+
+Current Phase 14 behavior:
+
+- Small camera-style guidance toggle in the Camera status bar.
+- Camera control-area guidance strip with mock guidance state.
+- Mock states: off, idle, scanning, suggestion available, paused.
+- 1-3 short mock shooting suggestions.
+- Suggestions are local static mock hints only.
+- Capture button, filter picker, Photo Picker import, flash/timer/flip controls, tab navigation, 20 local filters, mock save, mock AI, local session history, History, and Settings remain in scope.
+
+Phase 14 does not add Apple Vision, frame analysis, live video frame reading, frame upload, frame streaming, frame persistence, Gemini Live, Gemini, OpenAI, Cloud Functions, voice input, ASR, Parakeet, real Firebase, StoreKit, persistence, export, save-to-Photos, secrets, backend changes, dependencies, or third-party SDKs.
+
+## Phase 14B Camera Frame / Inspiration Status
+
+Phase 14B refines the Phase 14 UI without starting Phase 15.
+
+Current Phase 14B behavior:
+
+- Camera remains the primary app tab and no landing intro was reintroduced.
+- Camera tab hides the large page title in the primary tab context.
+- The capture screen uses a darker camera-chrome shell with a compact framed 4:5-style viewport.
+- The focal label is visible on the viewport and updates from a local/mock lens selector.
+- The lens selector offers mock 24mm / 35mm / 77mm options only; it does not perform real iPhone multi-lens hardware switching.
+- The live guidance overlay is moved below the viewport and above the shutter controls.
+- The former Guide tab is positioned as Inspiration, with local/mock cards for shooting ideas, mock AI advice entry points, filter inspiration, and future AI photo areas.
+- Inspiration no longer uses Open Camera as the primary CTA.
+
+Phase 14B remains local/mock-only. It does not add Apple Vision, live frame analysis, frame upload, Gemini Live, voice / ASR, real Firebase, StoreKit, persistence, export, backend changes, secrets, dependencies, or third-party SDKs.
 
 ## Phase 11B Camera Entry / Camera Shell Status
 

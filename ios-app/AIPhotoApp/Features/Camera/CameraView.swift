@@ -35,9 +35,19 @@ struct CameraView: View {
                     .padding(.bottom, AppSpacing.xl)
                 }
                 .scrollIndicators(.visible)
+                .safeAreaInset(edge: .top, spacing: 0) {
+                    if viewModel.selectedPhoto != nil {
+                        selectedPhotoActionBar
+                            .padding(.horizontal, AppSpacing.md)
+                            .padding(.top, AppSpacing.xs)
+                            .padding(.bottom, AppSpacing.sm)
+                            .background(Color.black.opacity(0.92))
+                    }
+                }
             }
-            .navigationTitle(Text("camera.title"))
+            .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar(showsCloseButton ? Visibility.visible : Visibility.hidden, for: .navigationBar)
             .toolbarBackground(Color.black, for: .navigationBar)
             .toolbarColorScheme(.dark, for: .navigationBar)
             .toolbar {
@@ -74,9 +84,10 @@ struct CameraView: View {
     }
 
     private var captureContent: some View {
-        VStack(spacing: AppSpacing.md) {
+        VStack(spacing: AppSpacing.sm) {
             cameraStatusBar
             previewSurface
+            lensAndFilterControls
 
             if isCaptureFilterPickerVisible {
                 FilterPresetSelectorView(
@@ -96,6 +107,7 @@ struct CameraView: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
 
+            liveGuidancePanel
             cameraControls
 
             Text("camera.capture.helper")
@@ -107,17 +119,21 @@ struct CameraView: View {
         .padding(AppSpacing.md)
         .background(Color(red: 0.04, green: 0.04, blue: 0.035))
         .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.lg))
+        .overlay {
+            RoundedRectangle(cornerRadius: AppCornerRadius.lg)
+                .stroke(Color.white.opacity(0.08), lineWidth: 1)
+        }
     }
 
     private var previewSurface: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: AppCornerRadius.lg)
-                .fill(AppColors.surface)
+            RoundedRectangle(cornerRadius: AppCornerRadius.md)
+                .fill(Color.black)
 
             switch viewModel.permissionState {
             case .authorized:
                 CameraPreviewView(session: viewModel.service.session)
-                    .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.lg))
+                    .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.md))
                     .overlay {
                         ruleOfThirdsGrid
                     }
@@ -127,40 +143,103 @@ struct CameraView: View {
             }
 
             VStack {
-                Spacer()
-
                 HStack {
-                    Spacer()
+                    focalBadge
 
-                    Button {
-                        isCaptureFilterPickerVisible.toggle()
-                    } label: {
-                        filterEntryLabel
-                    }
-                    .buttonStyle(.plain)
-                    .padding(AppSpacing.md)
-                    .accessibilityLabel("camera.filter.entry")
+                    Spacer()
                 }
+
+                Spacer()
             }
+            .padding(AppSpacing.sm)
         }
-        .frame(maxWidth: .infinity)
         .aspectRatio(4 / 5, contentMode: .fit)
+        .frame(maxWidth: 360)
+        .padding(8)
+        .background(Color(red: 0.012, green: 0.012, blue: 0.011))
         .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.lg))
+        .overlay {
+            RoundedRectangle(cornerRadius: AppCornerRadius.lg)
+                .stroke(Color.white.opacity(0.18), lineWidth: 1)
+        }
+        .shadow(color: .black.opacity(0.28), radius: 16, x: 0, y: 8)
     }
 
     private var cameraStatusBar: some View {
         HStack(spacing: AppSpacing.sm) {
-            Label("camera.shell.status", systemImage: "camera.aperture")
-                .font(AppTypography.caption)
-                .foregroundStyle(.white.opacity(0.82))
-                .lineLimit(1)
+            Label(viewModel.selectedLensOption.focalLengthLabel, systemImage: "camera.aperture")
+                .font(.caption2.weight(.semibold))
+                .foregroundStyle(.white.opacity(0.76))
+                .padding(.vertical, AppSpacing.xs)
+                .padding(.horizontal, AppSpacing.sm)
+                .background(Color.white.opacity(0.08))
+                .clipShape(Capsule())
 
             Spacer()
 
             Text(LocalizedStringKey(viewModel.selectedFilterPreset.nameKey))
-                .font(AppTypography.caption)
-                .foregroundStyle(AppColors.accent)
+                .font(.caption2.weight(.semibold))
+                .foregroundStyle(.white.opacity(0.72))
                 .lineLimit(1)
+                .minimumScaleFactor(0.7)
+
+            LiveGuidanceToggleView(
+                isEnabled: viewModel.liveGuidanceState != .off,
+                toggle: viewModel.toggleLiveGuidance
+            )
+        }
+    }
+
+    private var lensAndFilterControls: some View {
+        HStack(spacing: AppSpacing.sm) {
+            CameraLensSelectorView(
+                options: viewModel.lensOptions,
+                selectedOption: viewModel.selectedLensOption,
+                onSelect: viewModel.selectLensOption
+            )
+
+            Spacer(minLength: AppSpacing.xs)
+
+            Button {
+                isCaptureFilterPickerVisible.toggle()
+            } label: {
+                filterEntryLabel
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("camera.filter.entry")
+        }
+    }
+
+    @ViewBuilder
+    private var liveGuidancePanel: some View {
+        if viewModel.liveGuidanceState != .off {
+            LiveGuidanceOverlayView(
+                state: viewModel.liveGuidanceState,
+                suggestions: viewModel.liveGuidanceSuggestions,
+                advanceState: viewModel.advanceLiveGuidanceMockState
+            )
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
+    private var focalBadge: some View {
+        VStack(alignment: .leading, spacing: 1) {
+            Text(viewModel.selectedLensOption.focalLengthLabel)
+                .font(.caption.weight(.bold))
+                .lineLimit(1)
+
+            Text(viewModel.selectedLensOption.zoomLabel)
+                .font(.caption2.weight(.medium))
+                .lineLimit(1)
+        }
+        .padding(.vertical, AppSpacing.xs)
+        .padding(.horizontal, AppSpacing.sm)
+        .background(Color.black.opacity(0.48))
+        .foregroundStyle(.white)
+        .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.sm))
+        .overlay {
+            RoundedRectangle(cornerRadius: AppCornerRadius.sm)
+                .stroke(Color.white.opacity(0.18), lineWidth: 1)
         }
     }
 
@@ -275,7 +354,7 @@ struct CameraView: View {
             Image(systemName: "camera.filters")
                 .font(.system(size: 15, weight: .semibold))
 
-            Text(LocalizedStringKey(viewModel.selectedFilterPreset.nameKey))
+            Text("camera.filter.entry")
                 .font(AppTypography.caption)
                 .lineLimit(1)
         }
@@ -363,8 +442,8 @@ struct CameraView: View {
             )
 
             VStack(spacing: AppSpacing.md) {
-                PrimaryButton("camera.action.retake", systemImage: "arrow.counterclockwise") {
-                    viewModel.resetSelection()
+                PrimaryButton("camera.action.back_to_camera", systemImage: "camera.viewfinder") {
+                    viewModel.clearSelectedPhoto()
                 }
 
                 PhotoPickerView(selection: $viewModel.pickerItem, isLoading: viewModel.isLoading)
@@ -382,6 +461,52 @@ struct CameraView: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
+    }
+
+    private var selectedPhotoActionBar: some View {
+        HStack(spacing: AppSpacing.sm) {
+            Button {
+                viewModel.clearSelectedPhoto()
+            } label: {
+                Label("camera.action.back_to_camera", systemImage: "camera.viewfinder")
+                    .font(.caption.weight(.semibold))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.72)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, AppSpacing.sm)
+                    .padding(.horizontal, AppSpacing.sm)
+                    .background(Color.white.opacity(0.12))
+                    .foregroundStyle(.white)
+                    .clipShape(Capsule())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("camera.action.back_to_camera_preview")
+
+            Button {
+                viewModel.clearSelectedPhoto()
+            } label: {
+                Label("camera.action.clear", systemImage: "xmark")
+                    .font(.caption.weight(.semibold))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.72)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, AppSpacing.sm)
+                    .padding(.horizontal, AppSpacing.sm)
+                    .background(Color.white.opacity(0.08))
+                    .foregroundStyle(.white.opacity(0.9))
+                    .clipShape(Capsule())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("camera.action.clear_selected_photo")
+        }
+        .padding(AppSpacing.xs)
+        .background(Color(red: 0.05, green: 0.05, blue: 0.045).opacity(0.96))
+        .clipShape(Capsule())
+        .overlay {
+            Capsule()
+                .stroke(Color.white.opacity(0.14), lineWidth: 1)
+        }
+        .shadow(color: .black.opacity(0.22), radius: 10, x: 0, y: 5)
     }
 
     @ViewBuilder

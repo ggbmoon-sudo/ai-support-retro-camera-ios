@@ -1,8 +1,7 @@
 import SwiftUI
 
 struct HomeView: View {
-    private let presets = CameraPreset.samples
-    @State private var isCameraPresented = false
+    private let inspirationCards = InspirationCard.samples
 
     var body: some View {
         ScrollView {
@@ -28,21 +27,12 @@ struct HomeView: View {
                 }
 
                 VStack(alignment: .leading, spacing: AppSpacing.md) {
-                    Text("home.section.presets")
+                    Text("home.section.inspiration")
                         .font(AppTypography.title2)
                         .foregroundStyle(AppColors.textPrimary)
 
-                    ForEach(presets) { preset in
-                        presetRow(preset)
-                    }
-                }
-
-                VStack(spacing: AppSpacing.md) {
-                    PrimaryButton("home.button.open_camera", systemImage: "camera") {
-                        isCameraPresented = true
-                    }
-                    PrimaryButton("home.button.import_photo", systemImage: "photo.on.rectangle") {
-                        isCameraPresented = true
+                    ForEach(inspirationCards) { card in
+                        inspirationCard(card)
                     }
                 }
 
@@ -59,14 +49,11 @@ struct HomeView: View {
         }
         .background(AppColors.background)
         .navigationTitle(Text("tab.home"))
-        .fullScreenCover(isPresented: $isCameraPresented) {
-            CameraView()
-        }
     }
 
-    private func presetRow(_ preset: CameraPreset) -> some View {
+    private func inspirationCard(_ card: InspirationCard) -> some View {
         HStack(spacing: AppSpacing.md) {
-            Image(systemName: preset.symbolName)
+            Image(systemName: card.symbolName)
                 .font(.system(size: 22, weight: .semibold))
                 .frame(width: 48, height: 48)
                 .background(AppColors.elevatedSurface)
@@ -74,13 +61,14 @@ struct HomeView: View {
                 .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.md))
 
             VStack(alignment: .leading, spacing: AppSpacing.xs) {
-                Text(LocalizedStringKey(preset.nameKey))
+                Text(LocalizedStringKey(card.titleKey))
                     .font(AppTypography.bodyEmphasis)
                     .foregroundStyle(AppColors.textPrimary)
 
-                Text(LocalizedStringKey(preset.descriptionKey))
+                Text(LocalizedStringKey(card.descriptionKey))
                     .font(AppTypography.caption)
                     .foregroundStyle(AppColors.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
 
             Spacer()
@@ -89,6 +77,46 @@ struct HomeView: View {
         .background(AppColors.surface)
         .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.lg))
     }
+}
+
+private struct InspirationCard: Identifiable {
+    let id: String
+    let symbolName: String
+    let titleKey: String
+    let descriptionKey: String
+
+    static let samples = [
+        InspirationCard(
+            id: "today",
+            symbolName: "sparkles",
+            titleKey: "home.inspiration.today.title",
+            descriptionKey: "home.inspiration.today.description"
+        ),
+        InspirationCard(
+            id: "import_ai",
+            symbolName: "photo.on.rectangle",
+            titleKey: "home.inspiration.import_ai.title",
+            descriptionKey: "home.inspiration.import_ai.description"
+        ),
+        InspirationCard(
+            id: "portrait",
+            symbolName: "person.crop.rectangle",
+            titleKey: "home.inspiration.portrait.title",
+            descriptionKey: "home.inspiration.portrait.description"
+        ),
+        InspirationCard(
+            id: "filters",
+            symbolName: "camera.filters",
+            titleKey: "home.inspiration.filters.title",
+            descriptionKey: "home.inspiration.filters.description"
+        ),
+        InspirationCard(
+            id: "future_ai",
+            symbolName: "wand.and.stars",
+            titleKey: "home.inspiration.future_ai.title",
+            descriptionKey: "home.inspiration.future_ai.description"
+        )
+    ]
 }
 
 #Preview {

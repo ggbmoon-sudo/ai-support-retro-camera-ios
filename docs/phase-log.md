@@ -8,8 +8,8 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 14R - Live Guidance Research Integration
-Status: Phase 14R docs-only research integration completed; ready to review before commit
+Current phase: Phase 14C - Selected Photo Back / Clear UX Fix
+Status: Phase 14C implemented and ready for review before commit
 Latest documentation maintenance: Filter Research Docs Backfill + Alignment Check completed; docs-only; no Swift/backend changes
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -22,7 +22,255 @@ Phase 11 build verification: attempted by Codex; generic iOS Simulator build rea
 Phase 11B build verification: attempted by Codex; generic iOS Simulator build reached Swift compilation but failed due existing SwiftUI `#Preview` macro / CoreSimulator tooling issues, not a confirmed Phase 11B source error; user Xcode / Simulator run accepted on 2026-06-09
 Phase 12B build verification: sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec environment restrictions; unsandboxed command-line simulator build succeeded on 2026-06-09; user Xcode / Simulator build-run accepted on 2026-06-09
 Phase 13 build verification: sandboxed command-line Xcode build failed due CoreSimulator / sandbox environment restrictions; unsandboxed command-line simulator build succeeded on 2026-06-09; user Xcode / Simulator build-run accepted on 2026-06-09
-Next phase: Phase 14 mock UX implementation should start only after Phase 14R docs are reviewed and Phase 14 is explicitly requested
+Phase 14 build verification: sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec environment restrictions; unsandboxed command-line simulator build succeeded on 2026-06-10
+Phase 14B build verification: sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec / SwiftUI Preview macro environment restrictions; unsandboxed command-line simulator build succeeded on 2026-06-10
+Phase 14C build verification: sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec environment restrictions; unsandboxed command-line simulator build succeeded on 2026-06-10
+Next phase: Phase 15 should not start until Phase 14C is reviewed, committed, pushed, and read-only confirmed
+
+---
+
+## Phase 14C - Selected Photo Back / Clear UX Fix
+
+Status: Implemented; ready for review before commit
+Date completed: 2026-06-10
+
+### Goal
+
+Make it easy to return from the selected-photo / imported-photo preview back to the camera shell without scrolling to the bottom of the selected-photo flow.
+
+### Summary
+
+Phase 14C adds a compact dark camera-chrome action bar whenever a selected or imported photo is active. The action bar stays visible at the top of the selected-photo screen and provides Back to Camera / Clear controls that both clear the selected image and return to the camera preview or simulator fallback.
+
+### Completed
+
+- Added a fixed selected-photo action bar in the Camera screen.
+- Added Back to Camera / Clear actions that are visible without scrolling to the bottom of the selected-photo flow.
+- Added `clearSelectedPhoto()` to clear the selected image, picker item, render preview, filter error, save state, and loading render state while preserving the selected filter preset.
+- Kept `resetSelection()` available for the older full reset behavior.
+- Updated the lower selected-photo fallback button to Back to Camera.
+- Preserved Photo Picker re-import, 20 filters/grouping, mock save, mock AI, local session history, live guidance mock, lens selector, Inspiration, History, and Settings.
+- Updated English and Traditional Chinese localization strings.
+- Updated manual smoke tests.
+
+### Changed Files
+
+- docs/phase-log.md
+- tests/manual-smoke-tests.md
+- ios-app/AIPhotoApp/Features/Camera/CameraView.swift
+- ios-app/AIPhotoApp/Features/Camera/CameraViewModel.swift
+- ios-app/AIPhotoApp/Resources/Localization/en.lproj/Localizable.strings
+- ios-app/AIPhotoApp/Resources/Localization/zh-Hant.lproj/Localizable.strings
+
+### Build / Verification
+
+- `git status --short --branch` confirmed the working tree contains Phase 14 / 14B / 14C changes.
+- `git diff --check` passed.
+- New Phase 14 / 14B Swift files are present in the working tree and can be included in the next commit: `LiveGuidanceMockState.swift`, `LiveGuidanceOverlayView.swift`, `LiveGuidanceToggleView.swift`, `LensOption.swift`, and `CameraLensSelectorView.swift`.
+- Source inspection confirmed selected-photo / imported-photo mode has fixed visible Back to Camera / Clear controls.
+- Source inspection confirmed Back to Camera / Clear call `clearSelectedPhoto()` and return to the camera preview / fallback state.
+- Source inspection confirmed the Camera screen keeps the compact framed 4:5-style viewport.
+- Source inspection confirmed the lens selector remains a local/mock UI scaffold and does not perform real iPhone hardware lens switching.
+- Source inspection confirmed Inspiration remains the former Guide tab refinement and no longer presents Open Camera as the primary CTA.
+- Source inspection confirmed the 20-filter catalog and grouping remain present.
+- Forbidden imports scan passed for Firebase, FirebaseFunctions, FirebaseStorage, FirebaseFirestore, Gemini, OpenAI, StoreKit, and Vision imports.
+- Config file scan passed for `GoogleService-Info.plist`, `.env`, `.firebaserc`, signing secrets, provisioning profiles, and mobile provisioning files.
+- Refined secrets scan found only existing `functions/.env.example` placeholder variable names, not real secrets or newly added config.
+- Swift forbidden behavior scan for the Phase 14 Camera area passed for new Vision, frame analysis, frame upload/stream/persistence, Gemini Live, voice, ASR, Parakeet, Firebase, AI, StoreKit, persistence, quota, export, or save-to-Photos behavior.
+- Broader Swift forbidden behavior scan only matched existing placeholder/comment/enum references outside the Phase 14 changes.
+- Sandboxed command-line Xcode simulator build failed due CoreSimulator / sandbox-exec environment restrictions.
+- Unsandboxed command-line Xcode simulator build succeeded with `xcodebuild -project ios-app/AIPhotoApp.xcodeproj -scheme AIPhotoApp -destination 'generic/platform=iOS Simulator' -derivedDataPath /private/tmp/ai-support-phase14-final-derived CODE_SIGNING_ALLOWED=NO build`.
+
+### Known TODOs
+
+- Physical-device small-screen spacing should be checked to confirm the fixed selected-photo action bar does not crowd the preview.
+- Phase 14C does not change filter parameters, filter grouping, live guidance behavior, or real camera hardware integration.
+
+### Safety Notes
+
+- Did not start Phase 15.
+- Did not add Apple Vision or import Vision.
+- Did not analyze live video frames.
+- Did not read, upload, stream, or persist camera frames.
+- Did not add Gemini Live, voice input, ASR, Parakeet, Firebase, OpenAI, Gemini, Cloud Functions, StoreKit, persistence, export, save-to-Photos, secrets, backend changes, commit, or push.
+
+### Ready for Next Phase
+
+Ready to review before commit: Yes.
+
+Ready for Phase 15: No. Phase 14C should be reviewed, committed, pushed, and read-only confirmed before Phase 15 starts.
+
+---
+
+## Phase 14B - Dazz-like Camera Frame + Inspiration Tab Refinement
+
+Status: Implemented; ready for review before commit
+Date completed: 2026-06-10
+
+### Goal
+
+Refine the Phase 14 local/mock camera UI so it feels more like a Dazz-style retro camera back, then reposition the former Guide tab as an Inspiration area. This is not Phase 15.
+
+### Summary
+
+Phase 14B keeps Camera as the primary tab, removes the large Camera page-title feel in the primary tab context, gives the capture screen a compact framed viewport inside a dark camera shell, moves guidance out of the main viewfinder, and adds a local/mock lens selector with camera-like focal labels.
+
+The former Guide tab is now Inspiration-focused. It no longer presents Open Camera as the primary call to action and instead shows local/mock inspiration cards for shooting ideas, mock AI advice entry points, filter ideas, and future AI photo placeholders.
+
+### Completed
+
+- Moved the live guidance overlay below the viewport and above the shutter/control area.
+- Kept the viewfinder clean by removing guidance from the main preview surface.
+- Removed the large Camera navigation title from the primary camera tab context.
+- Replaced the visible `Local camera shell` label with compact camera-style focal/filter/guidance chips.
+- Added a compact framed 4:5-style viewport inside a dark camera chrome.
+- Added focal labels such as 24mm, 35mm, and 77mm.
+- Added `LensOption` for local/mock lens choices.
+- Added `CameraLensSelectorView` for selectable mock lens chips.
+- Stored the selected lens option in `CameraViewModel` memory only.
+- Preserved flash, timer, flip, capture, Photo Picker import, filter entry, and live guidance toggle.
+- Preserved 20 local filters/grouping, mock save, mock AI, local session history, History, and Settings.
+- Changed the former Guide tab label to Inspiration / 靈感.
+- Reworked `HomeView` into local/mock Inspiration cards and removed the Open Camera primary CTA.
+- Updated English and Traditional Chinese localization strings.
+- Updated README / iOS README / manual smoke tests.
+
+### Changed Files
+
+- README.md
+- ios-app/README.md
+- docs/phase-log.md
+- tests/manual-smoke-tests.md
+- ios-app/AIPhotoApp/App/MainTabShellView.swift
+- ios-app/AIPhotoApp/Features/Camera/CameraView.swift
+- ios-app/AIPhotoApp/Features/Camera/CameraViewModel.swift
+- ios-app/AIPhotoApp/Features/Camera/LensOption.swift
+- ios-app/AIPhotoApp/Features/Camera/CameraLensSelectorView.swift
+- ios-app/AIPhotoApp/Features/Home/HomeView.swift
+- ios-app/AIPhotoApp/Resources/Localization/en.lproj/Localizable.strings
+- ios-app/AIPhotoApp/Resources/Localization/zh-Hant.lproj/Localizable.strings
+
+Phase 14 base files still present in the working tree:
+
+- ios-app/AIPhotoApp/Features/Camera/LiveGuidanceMockState.swift
+- ios-app/AIPhotoApp/Features/Camera/LiveGuidanceOverlayView.swift
+- ios-app/AIPhotoApp/Features/Camera/LiveGuidanceToggleView.swift
+
+### Build / Verification
+
+- `git diff --check` passed.
+- Forbidden imports scan passed for Firebase, FirebaseFunctions, FirebaseStorage, FirebaseFirestore, Gemini, OpenAI, StoreKit, and Vision imports.
+- Secrets / config scan passed for `GoogleService-Info.plist`, `.env`, `.firebaserc`, signing secrets, API-key patterns, and private-key patterns.
+- Swift code forbidden behavior scan passed for new Firebase, AI, Cloud Functions, StoreKit, Vision, frame analysis, frame upload/stream/persistence, speech/ASR, persistence, export, save-to-Photos, quota, paywall, or subscription behavior.
+- The broader iOS diff scan only matched localization safety copy that says StoreKit / quota are not connected; no behavior or import was added.
+- Sandboxed command-line Xcode simulator build failed due CoreSimulator / sandbox-exec / SwiftUI Preview macro environment restrictions.
+- Unsandboxed command-line Xcode simulator build succeeded with `xcodebuild -project ios-app/AIPhotoApp.xcodeproj -scheme AIPhotoApp -destination 'generic/platform=iOS Simulator' -derivedDataPath /private/tmp/ai-support-phase14b-derived CODE_SIGNING_ALLOWED=NO build`.
+
+### Known TODOs
+
+- The lens selector is UI scaffold only and does not switch real iPhone camera hardware.
+- Physical-device layout should be checked for camera-shell proportions and control spacing.
+- Phase 14B guidance remains mock/local only.
+- Phase 15 may prototype local rule-based / Apple Vision guidance only after explicit request.
+
+### Safety Notes
+
+- Did not start Phase 15.
+- Did not add Apple Vision or import Vision.
+- Did not analyze live video frames.
+- Did not read, upload, stream, or persist camera frames.
+- Did not add Gemini Live.
+- Did not call Gemini, OpenAI, Cloud Functions, or external AI.
+- Did not add voice input, ASR, Parakeet, microphone permission copy, or speech recognition permission copy.
+- Did not connect real Firebase.
+- Did not add Firebase, FirebaseFunctions, FirebaseStorage, FirebaseFirestore, Gemini, OpenAI, or StoreKit imports.
+- Did not add `GoogleService-Info.plist`, `.env`, `.firebaserc`, API keys, Firebase project IDs, private keys, OAuth secrets, Apple credentials, signing credentials, provisioning profiles, or production config.
+- Did not add persistence, UserDefaults, Core Data, SwiftData, export, save-to-Photos, StoreKit, subscription, paywall, premium gating, quota enforcement, npm dependencies, third-party SDKs, backend changes, commit, or push.
+
+### Ready for Next Phase
+
+Ready to review before commit: Yes.
+
+Ready for Phase 15: No. Phase 14B should be committed, pushed, and read-only confirmed before Phase 15 starts.
+
+---
+
+## Phase 14 - Live Camera Guidance Mock UX
+
+Status: Implemented; ready for review before commit
+Date completed: 2026-06-10
+
+### Goal
+
+Add a local/mock Live Camera Guidance UX to the Camera screen without starting Phase 15 or adding real Vision, AI, frame analysis, voice, backend, persistence, or service integrations.
+
+### Summary
+
+Phase 14 adds a compact camera overlay for mock pre-capture guidance. The overlay is local-only, shows short shooting suggestions, and can be toggled on/off from the Camera status bar.
+
+The guidance state is in-memory only and does not read, analyze, upload, stream, or persist live camera frames.
+
+### Completed
+
+- Added `LiveGuidanceMockState` with off, idle, scanning, suggestion available, and paused states.
+- Added `LiveGuidanceSuggestion` and `LiveGuidanceSuggestionCategory`.
+- Added `LiveGuidanceProvider` and active `MockLiveGuidanceProvider`.
+- Added `LiveGuidanceOverlayView` for compact viewfinder guidance UI.
+- Added `LiveGuidanceToggleView` for the Camera status bar.
+- Integrated the mock overlay into `CameraView` without blocking capture controls, filter picker, Photo Picker import, flash/timer/flip controls, or tab navigation.
+- Added English and Traditional Chinese localization strings.
+- Preserved Camera-first flow, Photo Picker fallback, 20 local filters/grouping, mock save, mock AI, local session history, History, and Settings.
+- Updated README / iOS README / manual smoke tests.
+
+### Changed Files
+
+- README.md
+- ios-app/README.md
+- docs/phase-log.md
+- tests/manual-smoke-tests.md
+- ios-app/AIPhotoApp/Features/Camera/CameraView.swift
+- ios-app/AIPhotoApp/Features/Camera/CameraViewModel.swift
+- ios-app/AIPhotoApp/Features/Camera/LiveGuidanceMockState.swift
+- ios-app/AIPhotoApp/Features/Camera/LiveGuidanceOverlayView.swift
+- ios-app/AIPhotoApp/Features/Camera/LiveGuidanceToggleView.swift
+- ios-app/AIPhotoApp/Resources/Localization/en.lproj/Localizable.strings
+- ios-app/AIPhotoApp/Resources/Localization/zh-Hant.lproj/Localizable.strings
+
+### Build / Verification
+
+- `git diff --check` passed.
+- Forbidden imports scan passed for Firebase, FirebaseFunctions, FirebaseStorage, FirebaseFirestore, Gemini, OpenAI, StoreKit, and Vision imports.
+- Secrets / config scan passed for `GoogleService-Info.plist`, `.env`, `.firebaserc`, signing secrets, API-key patterns, and private-key patterns.
+- Forbidden behavior scan passed for new Firebase, AI, Cloud Functions, StoreKit, Vision, frame analysis, frame upload/stream/persistence, speech/ASR, persistence, export, save-to-Photos, quota, paywall, or subscription behavior.
+- Sandboxed command-line Xcode simulator build failed due CoreSimulator / sandbox-exec environment restrictions.
+- Unsandboxed command-line Xcode simulator build succeeded with `xcodebuild -project ios-app/AIPhotoApp.xcodeproj -scheme AIPhotoApp -destination 'generic/platform=iOS Simulator' -derivedDataPath /private/tmp/ai-support-phase14-derived CODE_SIGNING_ALLOWED=NO build`.
+
+### Known TODOs
+
+- Phase 14 guidance is mock UX only, not real AI guidance.
+- Phase 15 may prototype local rule-based / Apple Vision guidance only after explicit request.
+- Future local providers, cloud snapshot guidance, Gemini Live, and voice/ASR remain later phases.
+- Physical-device camera overlay readability and responsiveness should be checked in Xcode / Simulator and ideally on a real iPhone.
+
+### Safety Notes
+
+- Did not start Phase 15.
+- Did not add Apple Vision or import Vision.
+- Did not analyze live video frames.
+- Did not read, upload, stream, or persist camera frames.
+- Did not add Gemini Live.
+- Did not call Gemini, OpenAI, Cloud Functions, or external AI.
+- Did not add voice input, ASR, Parakeet, microphone permission copy, or speech recognition permission copy.
+- Did not connect real Firebase.
+- Did not add Firebase, FirebaseFunctions, FirebaseStorage, FirebaseFirestore, Gemini, OpenAI, or StoreKit imports.
+- Did not add `GoogleService-Info.plist`, `.env`, `.firebaserc`, API keys, Firebase project IDs, private keys, OAuth secrets, Apple credentials, signing credentials, provisioning profiles, or production config.
+- Did not add persistence, UserDefaults, Core Data, SwiftData, export, save-to-Photos, StoreKit, subscription, paywall, premium gating, quota enforcement, npm dependencies, third-party SDKs, backend changes, commit, or push.
+
+### Ready for Next Phase
+
+Ready to review before commit: Yes.
+
+Ready for Phase 15: No. Phase 14 should be committed, pushed, and read-only confirmed before Phase 15 starts.
 
 ---
 

@@ -27,7 +27,7 @@ struct MainTabShellView: View {
                 HomeView()
             }
             .tabItem {
-                Label("tab.home", systemImage: "info.circle")
+                Label("tab.home", systemImage: "sparkles")
             }
             .tag(Tab.home)
 

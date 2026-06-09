@@ -13,29 +13,37 @@ final class CameraViewModel: ObservableObject {
     @Published private(set) var photoSaveState: PhotoSaveState = .idle
     @Published private(set) var errorMessage: String?
     @Published private(set) var filterErrorMessage: String?
+    @Published private(set) var liveGuidanceState: LiveGuidanceMockState = .suggestionAvailable
+    @Published private(set) var liveGuidanceSuggestions: [LiveGuidanceSuggestion] = []
+    @Published private(set) var selectedLensOption = LensOption.classic35
     @Published private(set) var isLoading = false
     @Published private(set) var isFiltering = false
     @Published var pickerItem: PhotosPickerItem?
 
     let service: CameraCaptureService
     let filterPresets = FilterPresetCatalog.all
+    let lensOptions = LensOption.all
 
     private let filterPipeline = FilterPipeline()
     private let photoSaveService: any PhotoSaveService
     private let failingPhotoSaveService: any PhotoSaveService
+    private let liveGuidanceProvider: any LiveGuidanceProvider
     private var activeFilterRenderID: UUID?
 
     init(
         service: CameraCaptureService,
         photoSaveService: any PhotoSaveService,
-        failingPhotoSaveService: any PhotoSaveService
+        failingPhotoSaveService: any PhotoSaveService,
+        liveGuidanceProvider: (any LiveGuidanceProvider)? = nil
     ) {
         self.service = service
         self.photoSaveService = photoSaveService
         self.failingPhotoSaveService = failingPhotoSaveService
+        self.liveGuidanceProvider = liveGuidanceProvider ?? MockLiveGuidanceProvider()
         self.permissionState = CameraPermissionState(
             authorizationStatus: AVCaptureDevice.authorizationStatus(for: .video)
         )
+        refreshLiveGuidanceSuggestions()
     }
 
     func prepareCamera() async {
@@ -111,6 +119,7 @@ final class CameraViewModel: ObservableObject {
         selectedFilterPreset = preset
         filterErrorMessage = nil
         photoSaveState = .idle
+        refreshLiveGuidanceSuggestions()
 
         guard let selectedPhoto else {
             filteredPreviewImage = nil
@@ -173,15 +182,48 @@ final class CameraViewModel: ObservableObject {
     }
 
     func resetSelection() {
+        clearSelectedPhoto()
+        resetFilterState()
+    }
+
+    func clearSelectedPhoto() {
         selectedPhoto = nil
         pickerItem = nil
         errorMessage = nil
-        resetFilterState()
+        filteredPreviewImage = nil
+        filterErrorMessage = nil
+        isFiltering = false
+        activeFilterRenderID = nil
         resetSaveState()
     }
 
     func stopCamera() {
         service.stopSession()
+    }
+
+    func toggleLiveGuidance() {
+        liveGuidanceState = liveGuidanceState == .off ? .suggestionAvailable : .off
+        refreshLiveGuidanceSuggestions()
+    }
+
+    func advanceLiveGuidanceMockState() {
+        switch liveGuidanceState {
+        case .off:
+            liveGuidanceState = .idle
+        case .idle:
+            liveGuidanceState = .scanning
+        case .scanning:
+            liveGuidanceState = .suggestionAvailable
+        case .suggestionAvailable:
+            liveGuidanceState = .paused
+        case .paused:
+            liveGuidanceState = .idle
+        }
+        refreshLiveGuidanceSuggestions()
+    }
+
+    func selectLensOption(_ option: LensOption) {
+        selectedLensOption = option
     }
 
     private func configureAndStart() {
@@ -221,5 +263,12 @@ final class CameraViewModel: ObservableObject {
 
     private func resetSaveState() {
         photoSaveState = .idle
+    }
+
+    private func refreshLiveGuidanceSuggestions() {
+        liveGuidanceSuggestions = liveGuidanceProvider.suggestions(
+            for: liveGuidanceState,
+            selectedPreset: selectedFilterPreset
+        )
     }
 }

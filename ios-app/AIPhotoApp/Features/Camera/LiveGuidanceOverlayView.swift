@@ -1,0 +1,106 @@
+import SwiftUI
+
+struct LiveGuidanceOverlayView: View {
+    let state: LiveGuidanceMockState
+    let suggestions: [LiveGuidanceSuggestion]
+    let advanceState: () -> Void
+
+    private var showsSuggestions: Bool {
+        state != .off && state != .paused && !suggestions.isEmpty
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.sm) {
+            HStack(spacing: AppSpacing.xs) {
+                Image(systemName: stateIconName)
+                    .font(.system(size: 12, weight: .bold))
+
+                Text(LocalizedStringKey(state.titleKey))
+                    .font(.caption2.weight(.semibold))
+                    .lineLimit(1)
+
+                Spacer(minLength: AppSpacing.sm)
+
+                Button {
+                    advanceState()
+                } label: {
+                    Text("camera.guidance.action.next_state")
+                        .font(.caption2.weight(.semibold))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("camera.guidance.action.next_state")
+            }
+
+            if state == .scanning {
+                HStack(spacing: AppSpacing.sm) {
+                    ProgressView()
+                        .controlSize(.mini)
+                        .tint(.white)
+
+                    Text("camera.guidance.scanning_note")
+                        .font(.caption2)
+                        .lineLimit(2)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            } else if showsSuggestions {
+                VStack(alignment: .leading, spacing: AppSpacing.xs) {
+                    ForEach(suggestions) { suggestion in
+                        Label {
+                            Text(LocalizedStringKey(suggestion.messageKey))
+                                .font(.caption2)
+                                .lineLimit(2)
+                                .fixedSize(horizontal: false, vertical: true)
+                        } icon: {
+                            Image(systemName: "sparkle")
+                                .font(.system(size: 10, weight: .bold))
+                        }
+                    }
+                }
+            }
+        }
+        .padding(.vertical, AppSpacing.sm)
+        .padding(.horizontal, AppSpacing.md)
+        .foregroundStyle(.white)
+        .background(Color.black.opacity(0.56))
+        .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.md))
+        .overlay {
+            RoundedRectangle(cornerRadius: AppCornerRadius.md)
+                .stroke(.white.opacity(0.18), lineWidth: 1)
+        }
+        .shadow(color: .black.opacity(0.2), radius: 10, x: 0, y: 5)
+        .accessibilityElement(children: .contain)
+    }
+
+    private var stateIconName: String {
+        switch state {
+        case .off:
+            return "lightbulb.slash"
+        case .idle:
+            return "lightbulb"
+        case .scanning:
+            return "scope"
+        case .suggestionAvailable:
+            return "sparkles"
+        case .paused:
+            return "pause.circle"
+        }
+    }
+}
+
+#Preview {
+    LiveGuidanceOverlayView(
+        state: .suggestionAvailable,
+        suggestions: [
+            LiveGuidanceSuggestion(
+                id: "center_subject",
+                messageKey: "camera.guidance.suggestion.center_subject",
+                category: .composition
+            )
+        ],
+        advanceState: {}
+    )
+    .padding()
+    .background(Color.black)
+}

@@ -888,3 +888,164 @@ Known TODOs:
 - [ ] True LUT support remains future work.
 - [ ] True grain overlays, halation, light leak, dust, frames, CCD / instant camera asset treatment, Metal/custom shader work, and camera-specific optical simulation remain future phases.
 - [ ] Public UI filter names should continue avoiding protected brand names unless legal approval exists.
+
+## Phase 14
+
+Check:
+
+- [x] Added local/mock live guidance overlay to the Camera screen.
+- [x] Added guidance toggle in the Camera status bar.
+- [x] Added mock guidance states: off, idle, scanning, suggestion available, paused.
+- [x] Added 1-3 local mock shooting suggestions.
+- [x] Kept the overlay compact and camera-like instead of article/chat-style.
+- [x] Kept overlay away from capture, filter picker, Photo Picker import, flash/timer/flip controls, and tab navigation.
+- [x] Preserved Camera-first flow.
+- [x] Preserved 20 filters and filter grouping.
+- [x] Preserved Photo Picker fallback.
+- [x] Preserved mock save, mock AI, local session history, History, and Settings.
+- [x] Updated English and Traditional Chinese localization strings.
+- [x] Confirmed no Apple Vision, frame analysis, frame reading, frame upload, frame streaming, frame persistence, Gemini Live, voice input, ASR, Parakeet, real Firebase, StoreKit, persistence, export, or backend implementation was intentionally added.
+- [x] `git diff --check` passed.
+- [x] Forbidden imports scan passed for Firebase, Gemini, OpenAI, StoreKit, and Vision imports.
+- [x] Secrets / config scan passed.
+- [x] Forbidden behavior scan passed for new Vision, frame analysis, frame upload/stream/persistence, Gemini Live, voice, ASR, Parakeet, Firebase, AI, StoreKit, persistence, quota, or export behavior.
+- [x] Sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec environment restrictions.
+- [x] Unsandboxed command-line Xcode simulator build succeeded on 2026-06-10.
+
+Manual Xcode check on simulator:
+
+- [ ] Launch the app.
+- [ ] Confirm app enters the camera-first surface.
+- [ ] Confirm the Camera status bar shows the guidance toggle.
+- [ ] Toggle guidance off and confirm the overlay hides.
+- [ ] Toggle guidance on and confirm the overlay appears.
+- [ ] Tap the overlay state action and confirm idle, scanning, suggestion, and paused states are reachable.
+- [ ] Confirm 1-3 short mock suggestions appear in suggestion state.
+- [ ] Confirm capture button remains reachable.
+- [ ] Confirm filter picker still opens.
+- [ ] Confirm Photo Picker import still works.
+- [ ] Confirm flash / timer / flip controls remain reachable.
+- [ ] Confirm all 20 filters and grouping still work.
+- [ ] Trigger mock save success and failure.
+- [ ] Trigger mock AI success and failure.
+- [ ] Confirm local session history still records sessions.
+- [ ] Open History and Settings.
+- [ ] Confirm no raw localization keys appear.
+- [ ] Confirm no upload, Firestore write, Storage write, Cloud Functions call, real AI call, Vision frame analysis, Gemini Live, voice input, ASR, Parakeet, StoreKit, quota, persistence, export, or save-to-Photos behavior occurs.
+
+Known TODOs:
+
+- [ ] Phase 14 guidance is mock UX only, not real AI guidance.
+- [ ] Phase 15 may prototype local rule-based / Apple Vision guidance only after explicit request.
+- [ ] Future local providers, cloud snapshot guidance, Gemini Live, and voice / ASR remain later phases.
+- [ ] Physical-device camera overlay readability and responsiveness should be checked on a real iPhone.
+
+## Phase 14C
+
+Check:
+
+- [x] Added a fixed selected-photo Back to Camera / Clear action bar.
+- [x] Kept the action bar visible without scrolling to the bottom of the selected-photo flow.
+- [x] Back to Camera clears the selected image and returns to the camera preview / simulator fallback.
+- [x] Clear clears the selected image and returns to the camera preview / simulator fallback.
+- [x] Clearing a selected photo resets render, filter error, and mock save state for the selected-photo view.
+- [x] Clearing a selected photo preserves the currently selected filter preset for the next capture/import.
+- [x] Preserved Photo Picker re-import behavior.
+- [x] Preserved 20 filters and filter grouping.
+- [x] Preserved mock save, mock AI, local session history, live guidance mock, lens selector, Inspiration, History, and Settings.
+- [x] Updated English and Traditional Chinese localization strings for the selected-photo actions.
+- [x] Confirmed no Apple Vision, frame analysis, frame reading, frame upload, frame streaming, frame persistence, Gemini Live, voice input, ASR, Parakeet, real Firebase, StoreKit, persistence, export, or backend implementation was intentionally added.
+- [x] `git diff --check` passed.
+- [x] Forbidden imports scan passed for Firebase, Gemini, OpenAI, StoreKit, and Vision imports.
+- [x] Refined secrets / config scan found no real secrets, Firebase config, API keys, or signing credentials.
+- [x] Swift forbidden behavior scan found no Phase 14 Camera additions for Vision, frame analysis, Gemini Live, voice / ASR, Firebase, StoreKit, persistence, export, or save-to-Photos behavior.
+- [x] Sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec environment restrictions.
+- [x] Unsandboxed command-line Xcode simulator build succeeded on 2026-06-10.
+
+Manual Xcode check on simulator:
+
+- [ ] Launch the app.
+- [ ] Confirm Camera is the first selected tab.
+- [ ] Import a photo from the Camera tab.
+- [ ] Confirm the selected-photo screen immediately shows Back to Camera / Clear controls near the top.
+- [ ] Confirm the controls are visible without scrolling to the bottom of the selected-photo flow.
+- [ ] Tap Back to Camera and confirm the app returns to the camera preview or simulator fallback.
+- [ ] Import a photo again.
+- [ ] Tap Clear and confirm the app returns to the camera preview or simulator fallback.
+- [ ] Confirm Photo Picker can be used again after clearing.
+- [ ] Confirm the current filter selection remains available for the next photo.
+- [ ] Open filter picker and confirm 20 filters / grouping still work.
+- [ ] Trigger mock save success and failure on a selected photo.
+- [ ] Trigger mock AI success and failure on a selected photo.
+- [ ] Confirm local session history records mock save / AI items.
+- [ ] Confirm live guidance mock and lens selector still work in camera mode.
+- [ ] Open Inspiration, History, and Settings.
+- [ ] Confirm no raw localization keys appear.
+- [ ] Confirm no upload, Firestore write, Storage write, Cloud Functions call, real AI call, Vision frame analysis, Gemini Live, voice input, ASR, Parakeet, StoreKit, quota, persistence, export, or save-to-Photos behavior occurs.
+
+Known TODOs:
+
+- [ ] Verify fixed selected-photo action bar spacing on small physical iPhone screens.
+- [ ] Phase 14C does not change filter rendering, filter grouping, guidance logic, or real camera hardware behavior.
+
+## Phase 14B
+
+Check:
+
+- [x] Kept Camera as the primary first tab.
+- [x] Did not reintroduce a landing intro.
+- [x] Moved live guidance below the framed viewport and above the shutter/control area.
+- [x] Kept live guidance out of the main viewfinder.
+- [x] Removed the large Camera title feel from the primary Camera tab context.
+- [x] Replaced the visible `Local camera shell` copy with compact camera-style status chips.
+- [x] Adjusted Camera layout toward a darker Dazz-like camera back with a compact framed viewport.
+- [x] Added visible focal labels: 24mm, 35mm, 77mm.
+- [x] Added mock lens selector UI scaffold.
+- [x] Lens selector selection updates the focal label in memory only.
+- [x] Lens selector does not perform real AVFoundation multi-lens hardware switching.
+- [x] Preserved flash, timer, flip, capture, Photo Picker import, filter entry, and live guidance toggle.
+- [x] Preserved 20 filters and filter grouping.
+- [x] Preserved mock save, mock AI, local session history, History, and Settings.
+- [x] Repositioned the former Guide tab as Inspiration / 靈感.
+- [x] Removed Open Camera as the primary Guide / Inspiration CTA.
+- [x] Updated English and Traditional Chinese localization strings.
+- [x] `git diff --check` passed.
+- [x] Forbidden imports scan passed for Firebase, Gemini, OpenAI, StoreKit, and Vision imports.
+- [x] Secrets / config scan passed.
+- [x] Swift code forbidden behavior scan passed for new Vision, frame analysis, frame upload/stream/persistence, Gemini Live, voice, ASR, Parakeet, Firebase, AI, StoreKit, persistence, quota, or export behavior.
+- [x] Broader iOS diff scan only matched localization safety copy that says StoreKit / quota are not connected.
+- [x] Sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec / SwiftUI Preview macro environment restrictions.
+- [x] Unsandboxed command-line Xcode simulator build succeeded on 2026-06-10.
+- [x] Confirmed no Apple Vision, frame analysis, frame reading, frame upload, frame streaming, frame persistence, Gemini Live, voice input, ASR, Parakeet, real Firebase, StoreKit, persistence, export, or backend implementation was intentionally added.
+
+Manual Xcode check on simulator:
+
+- [ ] Launch the app.
+- [ ] Confirm Camera is the first selected tab.
+- [ ] Confirm no landing intro appears.
+- [ ] Confirm the Camera screen no longer shows a large `Camera` / `相機` page title.
+- [ ] Confirm the main viewfinder is framed and compact, with dark camera chrome around it.
+- [ ] Confirm the viewfinder has a visible focal label.
+- [ ] Confirm the lens selector is visible.
+- [ ] Tap 24mm, 35mm, and 77mm and confirm the focal label changes.
+- [ ] Confirm lens selection does not break flip camera.
+- [ ] Confirm guidance appears above the shutter/control area and not over the main viewfinder.
+- [ ] Confirm guidance toggle still hides and shows guidance.
+- [ ] Confirm capture button remains reachable.
+- [ ] Confirm flash, timer, flip, Photo Picker import, and filter entry remain reachable.
+- [ ] Open filter picker and confirm 20 filters / grouping still work.
+- [ ] Capture or import a photo, then run mock save success and failure.
+- [ ] Run mock AI success and failure.
+- [ ] Confirm local session history records items.
+- [ ] Open History and Settings.
+- [ ] Open Inspiration and confirm it is no longer a camera-launch guide.
+- [ ] Confirm Inspiration cards show shooting ideas, mock AI advice entry, filter inspiration, and future AI placeholders.
+- [ ] Confirm no raw localization keys appear.
+- [ ] Confirm no upload, Firestore write, Storage write, Cloud Functions call, real AI call, Vision frame analysis, Gemini Live, voice input, ASR, Parakeet, StoreKit, quota, persistence, export, or save-to-Photos behavior occurs.
+
+Known TODOs:
+
+- [ ] Mock lens selector does not switch real device lenses.
+- [ ] Physical-device layout should be checked for camera-shell proportions, control spacing, and one-handed reach.
+- [ ] Future real camera capability detection can be considered only in a later explicit phase.
+- [ ] Phase 15 remains blocked until Phase 14B is reviewed, committed, pushed, and read-only confirmed.
