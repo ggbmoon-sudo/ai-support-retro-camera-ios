@@ -10,6 +10,7 @@ final class CameraViewModel: ObservableObject {
     @Published private(set) var selectedPhoto: CapturedPhoto?
     @Published private(set) var selectedFilterPreset = FilterPresetCatalog.original
     @Published private(set) var filteredPreviewImage: UIImage?
+    @Published private(set) var photoSaveState: PhotoSaveState = .idle
     @Published private(set) var errorMessage: String?
     @Published private(set) var filterErrorMessage: String?
     @Published private(set) var isLoading = false
@@ -20,10 +21,18 @@ final class CameraViewModel: ObservableObject {
     let filterPresets = FilterPresetCatalog.all
 
     private let filterPipeline = FilterPipeline()
+    private let photoSaveService: any PhotoSaveService
+    private let failingPhotoSaveService: any PhotoSaveService
     private var activeFilterRenderID: UUID?
 
-    init(service: CameraCaptureService) {
+    init(
+        service: CameraCaptureService,
+        photoSaveService: any PhotoSaveService,
+        failingPhotoSaveService: any PhotoSaveService
+    ) {
         self.service = service
+        self.photoSaveService = photoSaveService
+        self.failingPhotoSaveService = failingPhotoSaveService
         self.permissionState = CameraPermissionState(
             authorizationStatus: AVCaptureDevice.authorizationStatus(for: .video)
         )
@@ -101,6 +110,7 @@ final class CameraViewModel: ObservableObject {
     func selectFilterPreset(_ preset: FilterPreset) {
         selectedFilterPreset = preset
         filterErrorMessage = nil
+        photoSaveState = .idle
 
         guard let selectedPhoto else {
             filteredPreviewImage = nil
@@ -139,11 +149,35 @@ final class CameraViewModel: ObservableObject {
         }
     }
 
+    func saveSelectedPhoto(shouldFail: Bool = false) async {
+        guard let selectedPhoto else { return }
+
+        photoSaveState = .saving
+        let request = PhotoSaveRequest(
+            ownerId: "mock-user",
+            source: selectedPhoto.source,
+            sourceImage: selectedPhoto.image,
+            filteredPreviewImage: filteredPreviewImage,
+            filterPresetId: selectedFilterPreset.id,
+            createdAt: Date()
+        )
+
+        do {
+            let service = shouldFail ? failingPhotoSaveService : photoSaveService
+            let savedPhoto = try await service.savePhoto(request)
+            guard self.selectedPhoto?.id == selectedPhoto.id else { return }
+            photoSaveState = .saved(savedPhoto)
+        } catch {
+            photoSaveState = .failed(error.localizedDescription)
+        }
+    }
+
     func resetSelection() {
         selectedPhoto = nil
         pickerItem = nil
         errorMessage = nil
         resetFilterState()
+        resetSaveState()
     }
 
     func stopCamera() {
@@ -168,6 +202,7 @@ final class CameraViewModel: ObservableObject {
         filterErrorMessage = nil
         isFiltering = false
         activeFilterRenderID = nil
+        resetSaveState()
     }
 
     private func resetFilterState() {
@@ -176,5 +211,9 @@ final class CameraViewModel: ObservableObject {
         filterErrorMessage = nil
         isFiltering = false
         activeFilterRenderID = nil
+    }
+
+    private func resetSaveState() {
+        photoSaveState = .idle
     }
 }

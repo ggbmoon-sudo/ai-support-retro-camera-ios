@@ -224,3 +224,52 @@ Manual Xcode check on physical iPhone / iPad:
 - [ ] Confirm filtered previews update without rotated or upside-down output.
 - [ ] Import one library image and confirm it replaces the previous preview.
 - [ ] Confirm no image is uploaded, persisted, exported, saved to Photos, analyzed, or counted toward quota.
+
+## Phase 05
+
+Check:
+
+- [x] Added `PhotoSaveService` protocol.
+- [x] Added `MockPhotoSaveService`.
+- [x] Added `SavedPhoto` metadata model.
+- [x] Added `PhotoSaveState`.
+- [x] Added Storage path convention draft.
+- [x] Added Firestore document shape draft.
+- [x] Added `FirebasePhotoSaveService` placeholder without Firebase imports.
+- [x] Added mock Save UI after filtered preview.
+- [x] Added visible mock save success state.
+- [x] Added visible mock save failure state.
+- [x] History remains an honest placeholder without cross-page saved-item persistence.
+- [x] Updated English and Traditional Chinese localization strings.
+- [x] Command-line Xcode simulator build succeeded.
+- [x] Confirmed no real `GoogleService-Info.plist` was added.
+- [x] Confirmed no Firebase project ID, `.env`, `.firebaserc`, API key, private key, OAuth secret, Apple credential, signing credential, or provisioning profile was added.
+- [x] Confirmed no Firebase, FirebaseStorage, or FirebaseFirestore imports were added.
+- [x] Confirmed no real Firebase upload was implemented.
+- [x] Confirmed no real Firestore write was implemented.
+- [x] Confirmed no AI analysis, Cloud Functions, Gemini, OpenAI, StoreKit, subscription, quota, history persistence, export/save to Photos, account deletion backend, public sharing, or Phase 06 work was added.
+
+Manual Xcode check on simulator:
+
+- [x] Build and run `AIPhotoApp` in an iOS Simulator.
+- [ ] Sign in with mock Auth or continue as guest.
+- [x] Open Home.
+- [x] Open the Camera scaffold.
+- [x] Import one image with the photo picker.
+- [x] Switch to at least one retro preset.
+- [x] Confirm the mock Save UI is visible after the filtered preview.
+- [x] Tap `Mock save`.
+- [x] Confirm mock save success state appears.
+- [x] Tap the mock failure button.
+- [x] Confirm mock save failure state appears.
+- [x] Confirm History remains a placeholder and does not claim real cloud persistence.
+- [x] Confirm Save / Continue does not upload, write Firestore, run AI, call Cloud Functions, start StoreKit, enforce quota, persist history, export, save to Photos, or start Phase 06.
+- [x] Confirm Home / History / Settings still render.
+
+Manual Xcode check on physical iPhone / iPad:
+
+- [ ] Build and run `AIPhotoApp` on device.
+- [ ] Capture one still photo.
+- [ ] Apply a filter preset.
+- [ ] Trigger mock save success.
+- [ ] Confirm no real upload or Firestore write occurs.

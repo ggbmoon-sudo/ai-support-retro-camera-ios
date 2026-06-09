@@ -8,12 +8,13 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 04 - Filter Presets
-Status: Phase 04 local filter presets implemented and manually verified by user in Xcode / Simulator
+Current phase: Phase 05 - Firebase Storage + Firestore Save Scaffold
+Status: Phase 05 mock save scaffold implemented and manually verified by user in Xcode / Simulator
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
-Next phase: Phase 05 - Firebase Storage + Firestore, only after Phase 04 is verified, committed, pushed, and explicitly requested
+Phase 05 build verification: command-line Xcode simulator build succeeded on 2026-06-09
+Next phase: Phase 06 - AI AnalyzePhoto Cloud Function, only after Phase 05 is verified, committed, pushed, and explicitly requested
 
 ---
 
@@ -630,11 +631,88 @@ Do not implement half-frame, double exposure, or advanced camera library as MVP 
 
 ## Phase 05 - Firebase Storage + Firestore
 
-Status: Not started
+Status: Implemented as mock-only save scaffold; command-line build succeeded; manually verified by user in Xcode / Simulator
+Date started: 2026-06-09
+Date completed: 2026-06-09
 
 ### Goal
 
-Implement Firebase Storage upload and Firestore metadata persistence for photos.
+Implement a safe, mockable Firebase Storage / Firestore save scaffold for selected/captured and filtered photos.
+
+### Summary
+
+Phase 05 added a mock-only photo save service architecture. The app now has a `PhotoSaveService` protocol, mock success/failure service, saved photo metadata model, save state model, Storage path convention draft, Firestore document shape draft, and a mock Save UI after the filtered preview.
+
+No real `GoogleService-Info.plist`, Firebase project ID, `.env`, `.firebaserc`, API key, private key, OAuth secret, Apple Team ID, signing credential, provisioning profile, Firebase import, production Firebase upload, production Firestore write, AI analysis, Cloud Functions, Gemini, OpenAI, StoreKit, subscription/quota logic, history persistence, export/save to Photos, account deletion backend, public sharing, or Phase 06 work was added.
+
+### Completed
+
+- Read the Phase 05 prompt and required project documents.
+- Confirmed branch, latest commit, and `ios-app/AIPhotoApp.xcodeproj` before implementation.
+- Added `SavedPhoto` metadata model.
+- Added `PhotoSaveState`.
+- Added `PhotoSaveService` protocol.
+- Added `MockPhotoSaveService` for local success and failure flows.
+- Added `FirebasePhotoSaveService` placeholder/TODO without Firebase imports.
+- Added `PhotoStoragePath` with Storage path and Firestore document path drafts.
+- Added mock Save UI after the filtered preview.
+- Added visible mock save success and failure states.
+- Kept History as an honest placeholder without cross-page saved-item persistence.
+- Updated English and Traditional Chinese localization strings.
+- Updated iOS app notes and manual smoke tests.
+
+### Changed Files
+
+- docs/phase-log.md
+- docs/prompts/phase-05-firebase-storage-firestore.md
+- ios-app/README.md
+- ios-app/AIPhotoApp/Features/Camera/CameraView.swift
+- ios-app/AIPhotoApp/Features/Camera/CameraViewModel.swift
+- ios-app/AIPhotoApp/Features/Filters/FilteredPhotoPreview.swift
+- ios-app/AIPhotoApp/Models/PhotoSaveState.swift
+- ios-app/AIPhotoApp/Models/SavedPhoto.swift
+- ios-app/AIPhotoApp/Services/PhotoStorage/PhotoSaveService.swift
+- ios-app/AIPhotoApp/Services/PhotoStorage/MockPhotoSaveService.swift
+- ios-app/AIPhotoApp/Services/PhotoStorage/FirebasePhotoSaveService.swift
+- ios-app/AIPhotoApp/Services/PhotoStorage/PhotoStoragePath.swift
+- ios-app/AIPhotoApp/Resources/Localization/en.lproj/Localizable.strings
+- ios-app/AIPhotoApp/Resources/Localization/zh-Hant.lproj/Localizable.strings
+- tests/manual-smoke-tests.md
+
+### Tests / Manual Checks
+
+- [x] Ran `git status --short` before implementation.
+- [x] Confirmed `ios-app/AIPhotoApp.xcodeproj` exists.
+- [x] Confirmed no real Firebase upload was implemented.
+- [x] Confirmed no real Firestore write was implemented.
+- [x] Confirmed no Firebase, FirebaseStorage, or FirebaseFirestore imports were added.
+- [x] Confirmed no AI analysis, Cloud Functions, Gemini, OpenAI, StoreKit, subscription, quota, history persistence, export/save to Photos, public sharing, account deletion backend, or Phase 06 work was added.
+- [x] Confirmed no secrets, API keys, credentials, Firebase project IDs, Apple credentials, Google credentials, `.env`, `.firebaserc`, or `GoogleService-Info.plist` were added.
+- [x] Ran `xcodebuild -project ios-app/AIPhotoApp.xcodeproj -scheme AIPhotoApp -sdk iphonesimulator -configuration Debug -derivedDataPath /private/tmp/ai-photo-phase05-derived build`.
+- [x] Command-line Xcode simulator build succeeded.
+- [x] User manually verified app build / run in Xcode / Simulator.
+- [x] User manually verified Home -> Camera scaffold flow.
+- [x] User manually verified photo picker can select one image.
+- [x] User manually verified filter presets can be switched.
+- [x] User manually verified mock save success state.
+- [x] User manually verified mock save failure state.
+- [x] User manually verified Save / Continue does not start upload, Firestore writes, AI, StoreKit, quota, history persistence, export, or Phase 06 behavior.
+- [x] User manually verified History remains an honest placeholder.
+- [x] User manually verified no real Firebase config or secrets were added.
+
+### Known TODOs
+
+- Keep real Firebase Storage / Firestore integration for a later explicitly requested setup task.
+- Keep AI analysis and Cloud Functions for Phase 06 only.
+- Keep StoreKit, subscription, quota, history persistence, export/save to Photos, account deletion backend, and public sharing for later phases only.
+
+### Xcode Build
+
+Command-line Xcode simulator build was run by Codex and succeeded. The first sandboxed build attempt failed because of sandbox/CoreSimulator/SwiftUI preview macro environment errors; a non-sandboxed build was then approved and succeeded.
+
+### Ready for Phase 06
+
+No. Phase 05 has command-line build and user manual Simulator verification, but Phase 06 should not begin until Phase 05 is committed, pushed, and explicitly requested.
 
 ### Notes
 

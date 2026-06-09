@@ -2,7 +2,11 @@ import SwiftUI
 
 struct CameraView: View {
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var viewModel = CameraViewModel(service: CameraCaptureService())
+    @StateObject private var viewModel = CameraViewModel(
+        service: CameraCaptureService(),
+        photoSaveService: MockPhotoSaveService(),
+        failingPhotoSaveService: MockPhotoSaveService(mode: .failure)
+    )
 
     var body: some View {
         NavigationStack {
@@ -162,7 +166,13 @@ struct CameraView: View {
                 selectedPreset: viewModel.selectedFilterPreset,
                 presets: viewModel.filterPresets,
                 isRendering: viewModel.isFiltering,
-                onSelectPreset: viewModel.selectFilterPreset
+                saveState: viewModel.photoSaveState,
+                onSelectPreset: viewModel.selectFilterPreset,
+                onSavePhoto: { shouldFail in
+                    Task {
+                        await viewModel.saveSelectedPhoto(shouldFail: shouldFail)
+                    }
+                }
             )
 
             VStack(spacing: AppSpacing.md) {

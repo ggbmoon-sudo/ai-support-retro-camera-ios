@@ -170,3 +170,33 @@ The current Filter scaffold is intentionally local-only:
 - The Continue placeholder remains disabled and does not start upload, AI, StoreKit, quota, export, or history behavior.
 
 This phase does not add Firebase Storage upload, Firestore metadata, AI analysis, Cloud Functions, StoreKit, subscription/paywall logic, quota enforcement, history persistence, export/save to Photos, half-frame, double exposure, full camera/lens library, paid presets, secrets, credentials, API keys, Firebase project IDs, Apple credentials, Google credentials, or `GoogleService-Info.plist`.
+
+## Phase 05 Firebase Storage / Firestore Save Scaffold
+
+Phase 05 adds a mock-only save scaffold under:
+
+```text
+ios-app/AIPhotoApp/Services/PhotoStorage/
+```
+
+Current Phase 05 storage files include:
+
+- `SavedPhoto.swift`
+- `PhotoSaveState.swift`
+- `PhotoSaveService.swift`
+- `MockPhotoSaveService.swift`
+- `FirebasePhotoSaveService.swift`
+- `PhotoStoragePath.swift`
+
+The current save scaffold is intentionally mock-only:
+
+- `PhotoSaveService` defines the save contract.
+- `MockPhotoSaveService` returns local mock metadata for success and failure checks.
+- `FirebasePhotoSaveService` is a placeholder/TODO and does not import Firebase.
+- Storage paths are drafted as `users/{ownerId}/photos/{photoId}/preview.jpg` and `thumb.jpg`.
+- Firestore document shape is drafted as `users/{ownerId}/photos/{photoId}` metadata.
+- Save UI appears after the filtered preview.
+- Mock save success / failure states are visible.
+- History remains an honest placeholder and does not persist saved photos.
+
+This phase does not add a real `GoogleService-Info.plist`, Firebase project ID, `.env`, `.firebaserc`, API keys, private keys, OAuth secrets, Apple credentials, production Firebase upload, production Firestore writes, Firebase imports, AI analysis, Cloud Functions, StoreKit, subscription/quota logic, history persistence, export/save to Photos, public sharing, account deletion backend, or Phase 06 work.

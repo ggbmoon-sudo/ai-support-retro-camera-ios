@@ -12,7 +12,7 @@
 "home.button.import_placeholder" = "Photo import starts in Phase 03";
 "home.button.open_camera" = "Open camera";
 "home.button.import_photo" = "Import one photo";
-"home.phase_note" = "Phase 04 keeps photos and filter previews local in memory. Firebase upload, AI analysis, StoreKit, quota, export, and history persistence are intentionally not connected.";
+"home.phase_note" = "Phase 05 adds mock cloud-save scaffolding only. Firebase upload, Firestore writes, AI analysis, StoreKit, quota, export, and history persistence are intentionally not connected.";
 "preset.warm_film.name" = "Warm Film";
 "preset.warm_film.description" = "Soft warmth for people and daily scenes.";
 "preset.night_flash.name" = "Night Flash";
@@ -22,7 +22,7 @@
 "quota.summary" = "20 credits · 0/20 photos";
 "phase.placeholder" = "Planned for a later phase";
 "history.empty.title" = "No saved photos yet";
-"history.empty.message" = "History connects after camera, upload, and AI result phases. This view is a navigation placeholder for now.";
+"history.empty.message" = "History remains a placeholder in Phase 05. Mock saves do not persist or upload photos.";
 "history.sample.advice" = "Move closer to the window";
 "settings.auth.title" = "Account";
 "settings.auth.placeholder" = "Auth scaffold begins in Phase 02";
@@ -54,7 +54,7 @@
 "auth.legal.placeholder" = "TODO: Add Privacy Policy and Terms links before release.";
 "auth.loading" = "Checking mock Auth state";
 "camera.title" = "Camera";
-"camera.local_only_note" = "Local-only Phase 04 scaffold. The selected image and filtered preview stay in memory and are not uploaded, saved, analyzed, exported, or counted toward quota.";
+"camera.local_only_note" = "Phase 05 save is mock-only. The selected image and filtered preview stay in memory and are not uploaded, written to Firestore, exported, or counted toward quota.";
 "camera.action.close" = "Close";
 "camera.action.capture" = "Capture photo";
 "camera.action.import" = "Choose one photo";
@@ -88,3 +88,13 @@
 "filters.preset.faded_chrome.name" = "Faded Chrome";
 "filters.preset.faded_chrome.description" = "Muted color with a cool old-slide feel.";
 "filters.error.render_failed" = "The filter preview could not be rendered. Showing the original image.";
+"save.title" = "Mock cloud save";
+"save.mock_note" = "Phase 05 only drafts Storage paths and Firestore metadata. This button does not upload, write Firestore, persist history, export, run AI, or start billing.";
+"save.action.mock_success" = "Mock save";
+"save.action.mock_failure" = "Simulate mock save failure";
+"save.state.idle" = "Ready to test a mock save.";
+"save.state.saving" = "Mock saving";
+"save.state.saved_mock" = "Mock saved. No real upload or Firestore write happened.";
+"save.state.failed" = "Mock save failed";
+"save.error.mock_failure" = "Mock save failure. No network request was made.";
+"save.error.firebase_not_configured" = "Firebase save is not configured in this scaffold.";
