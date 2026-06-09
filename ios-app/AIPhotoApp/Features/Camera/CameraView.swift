@@ -187,6 +187,11 @@ struct CameraView: View {
                 isEnabled: viewModel.liveGuidanceState != .off,
                 toggle: viewModel.toggleLiveGuidance
             )
+
+            LiveGuidanceModeSelectorView(
+                mode: viewModel.liveGuidanceMode,
+                toggle: viewModel.toggleLiveGuidanceMode
+            )
         }
     }
 
@@ -215,6 +220,7 @@ struct CameraView: View {
         if viewModel.liveGuidanceState != .off {
             LiveGuidanceOverlayView(
                 state: viewModel.liveGuidanceState,
+                stateTitleKey: viewModel.liveGuidanceStateTitleKey,
                 suggestions: viewModel.liveGuidanceSuggestions,
                 advanceState: viewModel.advanceLiveGuidanceMockState
             )

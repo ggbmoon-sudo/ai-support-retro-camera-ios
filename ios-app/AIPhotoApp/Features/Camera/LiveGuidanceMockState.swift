@@ -21,6 +21,23 @@ nonisolated enum LiveGuidanceMockState: String, CaseIterable, Sendable {
             return "camera.guidance.state.paused"
         }
     }
+
+    func titleKey(for mode: LiveGuidanceMode) -> String {
+        guard mode == .local else { return titleKey }
+
+        switch self {
+        case .off:
+            return "camera.guidance.state.off"
+        case .idle:
+            return "camera.guidance.state.local_idle"
+        case .scanning:
+            return "camera.guidance.state.local_scanning"
+        case .suggestionAvailable:
+            return "camera.guidance.state.local_suggestion_available"
+        case .paused:
+            return "camera.guidance.state.paused"
+        }
+    }
 }
 
 nonisolated enum LiveGuidanceSuggestionCategory: String, Hashable, Sendable {

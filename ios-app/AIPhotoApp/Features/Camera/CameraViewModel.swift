@@ -14,6 +14,7 @@ final class CameraViewModel: ObservableObject {
     @Published private(set) var errorMessage: String?
     @Published private(set) var filterErrorMessage: String?
     @Published private(set) var liveGuidanceState: LiveGuidanceMockState = .suggestionAvailable
+    @Published private(set) var liveGuidanceMode: LiveGuidanceMode = .local
     @Published private(set) var liveGuidanceSuggestions: [LiveGuidanceSuggestion] = []
     @Published private(set) var selectedLensOption = LensOption.classic35
     @Published private(set) var isLoading = false
@@ -27,23 +28,30 @@ final class CameraViewModel: ObservableObject {
     private let filterPipeline = FilterPipeline()
     private let photoSaveService: any PhotoSaveService
     private let failingPhotoSaveService: any PhotoSaveService
-    private let liveGuidanceProvider: any LiveGuidanceProvider
+    private let mockLiveGuidanceProvider: any LiveGuidanceProvider
+    private let localLiveGuidanceProvider: any LiveGuidanceProvider
     private var activeFilterRenderID: UUID?
 
     init(
         service: CameraCaptureService,
         photoSaveService: any PhotoSaveService,
         failingPhotoSaveService: any PhotoSaveService,
-        liveGuidanceProvider: (any LiveGuidanceProvider)? = nil
+        liveGuidanceProvider: (any LiveGuidanceProvider)? = nil,
+        localLiveGuidanceProvider: (any LiveGuidanceProvider)? = nil
     ) {
         self.service = service
         self.photoSaveService = photoSaveService
         self.failingPhotoSaveService = failingPhotoSaveService
-        self.liveGuidanceProvider = liveGuidanceProvider ?? MockLiveGuidanceProvider()
+        self.mockLiveGuidanceProvider = liveGuidanceProvider ?? MockLiveGuidanceProvider()
+        self.localLiveGuidanceProvider = localLiveGuidanceProvider ?? LocalRuleBasedGuidanceProvider()
         self.permissionState = CameraPermissionState(
             authorizationStatus: AVCaptureDevice.authorizationStatus(for: .video)
         )
         refreshLiveGuidanceSuggestions()
+    }
+
+    var liveGuidanceStateTitleKey: String {
+        liveGuidanceState.titleKey(for: liveGuidanceMode)
     }
 
     func prepareCamera() async {
@@ -206,6 +214,11 @@ final class CameraViewModel: ObservableObject {
         refreshLiveGuidanceSuggestions()
     }
 
+    func toggleLiveGuidanceMode() {
+        liveGuidanceMode = liveGuidanceMode.next
+        refreshLiveGuidanceSuggestions()
+    }
+
     func advanceLiveGuidanceMockState() {
         switch liveGuidanceState {
         case .off:
@@ -266,9 +279,18 @@ final class CameraViewModel: ObservableObject {
     }
 
     private func refreshLiveGuidanceSuggestions() {
-        liveGuidanceSuggestions = liveGuidanceProvider.suggestions(
+        liveGuidanceSuggestions = activeLiveGuidanceProvider.suggestions(
             for: liveGuidanceState,
             selectedPreset: selectedFilterPreset
         )
+    }
+
+    private var activeLiveGuidanceProvider: any LiveGuidanceProvider {
+        switch liveGuidanceMode {
+        case .mock:
+            return mockLiveGuidanceProvider
+        case .local:
+            return localLiveGuidanceProvider
+        }
     }
 }

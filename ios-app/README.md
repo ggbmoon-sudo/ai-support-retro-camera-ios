@@ -197,6 +197,35 @@ Current implementation notes:
 
 Phase 14B does not add real multi-lens hardware switching, Vision, frame analysis, frame upload, Gemini Live, voice / ASR, real Firebase, StoreKit, persistence, export, backend changes, secrets, dependencies, or third-party SDKs.
 
+## Phase 14C Selected Photo Back / Clear
+
+Phase 14C adds fixed selected-photo controls so users do not need to scroll to the bottom of the imported-photo flow.
+
+Current implementation notes:
+
+- `CameraView` shows a compact Back to Camera / Clear action bar whenever `selectedPhoto` exists.
+- `CameraViewModel.clearSelectedPhoto()` clears the selected image, picker item, render preview, filter error, and mock save state while preserving the selected filter preset.
+- The lower selected-photo fallback action also returns to Camera.
+
+Phase 14C does not change filters, mock save, mock AI, local history, live guidance, lens selector, persistence, export, backend code, secrets, or real service integrations.
+
+## Phase 15 Local Live Guidance Prototype
+
+Phase 15 adds a local rule-based guidance provider architecture while keeping the app local/mock-safe.
+
+Current implementation notes:
+
+- `LiveGuidanceMode` switches between Mock and Local guidance modes.
+- `LiveGuidanceModeSelectorView` adds a compact camera status-bar mode control.
+- `MockLiveGuidanceProvider` remains available.
+- `LocalRuleBasedGuidanceProvider` uses local rule-based sample/fallback signals only.
+- `LiveGuidanceSignal` models local guidance signals such as too dark, too bright, framing, headroom, face distance, warm filter, and signal unavailable.
+- `LiveGuidanceFrameAnalyzer` currently returns safe sample/fallback signals instead of sampling live video frames.
+- `LiveGuidanceSuggestionComposer` maps local signals into short localized suggestions.
+- `CameraViewModel` switches between mock and local providers in memory only.
+
+Phase 15 intentionally does not import Vision yet, does not add AVFoundation video frame sampling, and does not store, upload, stream, persist, or log raw frames. It also does not add Gemini Live, Gemini/OpenAI calls, Cloud Functions calls, Firebase Storage / Firestore, voice input, ASR, Parakeet, StoreKit, persistence, export, save-to-Photos, backend changes, secrets, dependencies, or third-party SDKs.
+
 ## Phase 01.5 Xcode Setup
 
 Phase 01.5 did not generate a `.xcodeproj` from this Windows environment because it could not be reliably verified in Xcode.

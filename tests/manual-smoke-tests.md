@@ -889,6 +889,68 @@ Known TODOs:
 - [ ] True grain overlays, halation, light leak, dust, frames, CCD / instant camera asset treatment, Metal/custom shader work, and camera-specific optical simulation remain future phases.
 - [ ] Public UI filter names should continue avoiding protected brand names unless legal approval exists.
 
+## Phase 15
+
+Check:
+
+- [x] Added switchable Mock / Local live guidance modes.
+- [x] Preserved the Phase 14 mock guidance provider.
+- [x] Added local rule-based provider architecture.
+- [x] Added local guidance sample/fallback signal model.
+- [x] Added suggestion composer for local rule-based guidance.
+- [x] Added local suggestions for too dark, too bright, subject centering, headroom, face too close, face too far, warm filter, and local signal unavailable fallback.
+- [x] Kept Simulator behavior safe by using sample/fallback signals instead of live camera frame sampling.
+- [x] Did not import Vision for this first local prototype.
+- [x] Did not add AVFoundation video frame sampling.
+- [x] Did not store, upload, stream, persist, or log raw frames.
+- [x] Preserved Camera as the first selected tab.
+- [x] Preserved Dazz-like compact viewport.
+- [x] Preserved mock lens selector.
+- [x] Preserved selected-photo Back to Camera / Clear.
+- [x] Preserved Photo Picker.
+- [x] Preserved 20 filters and filter grouping.
+- [x] Preserved mock save, mock AI, local session history, Inspiration, History, and Settings.
+- [x] Updated English and Traditional Chinese localization strings.
+- [x] Confirmed no Gemini Live, Gemini/OpenAI calls, Cloud Functions calls, Firebase Storage / Firestore integration, voice input, ASR, Parakeet, StoreKit, persistence, export, save-to-Photos, backend implementation, or secrets were intentionally added.
+- [x] `git diff --check` passed.
+- [x] Forbidden imports scan passed for Firebase, Gemini, OpenAI, and StoreKit imports.
+- [x] Vision import scan found no `import Vision`.
+- [x] Secrets / config scan found no real secrets, Firebase config, API keys, or signing credentials.
+- [x] Camera-scoped forbidden behavior scan passed.
+- [x] Frame safety scan found no raw-frame storage, upload, stream, base64, pixel-buffer logging, or network behavior in Camera feature files.
+- [x] Sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec environment restrictions.
+- [x] Unsandboxed command-line Xcode simulator build succeeded on 2026-06-10.
+
+Manual Xcode check on simulator:
+
+- [x] User manually verified app build / run in Xcode / Simulator on 2026-06-10.
+- [x] User confirmed Camera is still the primary screen.
+- [x] User confirmed the Mock / Local guidance mode chip is usable.
+- [x] User confirmed Mock guidance mode still works.
+- [x] User confirmed Local guidance mode shows sample / fallback local suggestions.
+- [x] User confirmed Local mode does not analyze real frames.
+- [x] User confirmed no Vision import was added.
+- [x] User confirmed no AVFoundation video frame sampling was added.
+- [x] User confirmed guidance overlay stays below the viewfinder and does not block the main preview.
+- [x] User confirmed Dazz-like camera layout remains normal.
+- [x] User confirmed mock lens selector remains normal.
+- [x] User confirmed Photo Picker import remains normal.
+- [x] User confirmed selected-photo Back to Camera / Clear remains normal.
+- [x] User confirmed 20 filters / grouping remain normal.
+- [x] User confirmed mock save, mock AI, and local history remain normal.
+- [x] User confirmed Inspiration, History, and Settings remain normal.
+- [x] User confirmed English / Traditional Chinese localization shows no raw keys.
+- [x] User confirmed no raw frames are read, stored, uploaded, streamed, persisted, or logged.
+- [x] User confirmed no Gemini Live, cloud AI, voice, ASR, or Parakeet was added.
+- [x] User confirmed no Firebase Storage / Firestore / Cloud Functions / StoreKit / persistence / export / save-to-Photos behavior was added.
+- [x] User confirmed no secrets, Firebase config, or API keys were added.
+
+Known TODOs:
+
+- [ ] Phase 15 local provider uses sample/fallback signals only; it does not analyze real frames yet.
+- [ ] A future explicit phase may add throttled Apple Vision / AVFoundation frame sampling.
+- [ ] Physical iPhone testing remains needed before any true live-frame analyzer ships.
+
 ## Phase 14
 
 Check:

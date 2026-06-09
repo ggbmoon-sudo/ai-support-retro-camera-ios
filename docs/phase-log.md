@@ -8,8 +8,8 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 14C - Selected Photo Back / Clear UX Fix
-Status: Phase 14C implemented and ready for review before commit
+Current phase: Phase 15 - Local Live Guidance Prototype
+Status: Phase 15 implemented; user Xcode / Simulator verification accepted; ready to commit
 Latest documentation maintenance: Filter Research Docs Backfill + Alignment Check completed; docs-only; no Swift/backend changes
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -25,7 +25,114 @@ Phase 13 build verification: sandboxed command-line Xcode build failed due CoreS
 Phase 14 build verification: sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec environment restrictions; unsandboxed command-line simulator build succeeded on 2026-06-10
 Phase 14B build verification: sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec / SwiftUI Preview macro environment restrictions; unsandboxed command-line simulator build succeeded on 2026-06-10
 Phase 14C build verification: sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec environment restrictions; unsandboxed command-line simulator build succeeded on 2026-06-10
-Next phase: Phase 15 should not start until Phase 14C is reviewed, committed, pushed, and read-only confirmed
+Phase 15 build verification: sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec environment restrictions; unsandboxed command-line simulator build succeeded on 2026-06-10
+Next phase: Phase 16 should not start until Phase 15 is reviewed, committed, pushed, and read-only confirmed
+
+---
+
+## Phase 15 - Local Live Guidance Prototype
+
+Status: Implemented; ready for review before commit
+Date completed: 2026-06-10
+
+### Goal
+
+Add the first local live guidance prototype on top of the Phase 14 mock guidance system without starting Phase 16 or adding cloud AI, Gemini Live, voice input, persistence, export, backend changes, or secrets.
+
+### Summary
+
+Phase 15 adds a switchable local guidance mode while preserving the Phase 14 mock guidance provider. The local mode uses a rule-based provider with sample/fallback local signals so the feature works safely on Simulator or devices without a live frame analyzer.
+
+This implementation intentionally does not import Vision and does not add AVFoundation video frame sampling. It establishes the provider, signal, analyzer, and suggestion-composer architecture for later local frame analysis while keeping Camera capture, Photo Picker, filters, selected-photo controls, mock save, mock AI, and local history stable.
+
+### Completed
+
+- Added `LiveGuidanceMode` for Mock / Local guidance mode selection.
+- Added a compact `LiveGuidanceModeSelectorView` in the Camera status bar.
+- Kept the existing `MockLiveGuidanceProvider`.
+- Added `LocalRuleBasedGuidanceProvider`.
+- Added `LiveGuidanceSignal`.
+- Added `LiveGuidanceFrameAnalyzer` with safe sample/fallback local signals only.
+- Added `LiveGuidanceSuggestionComposer` to map local signals into short localized suggestions.
+- Updated `CameraViewModel` to switch between mock and local providers.
+- Updated the live guidance overlay to use local-mode state titles.
+- Added local/rule-based suggestions for too dark, too bright, subject centering, headroom, face too close / too far, warm filter suggestion, and local signal unavailable fallback.
+- Preserved Camera as the primary first tab.
+- Preserved the Dazz-like compact viewport, mock lens selector, selected-photo Back to Camera / Clear, 20 filters/grouping, Photo Picker, mock save, mock AI, local history, Inspiration, History, and Settings.
+- Updated English and Traditional Chinese localization strings.
+- Updated README / iOS README / manual smoke tests.
+
+### Changed Files
+
+- README.md
+- ios-app/README.md
+- docs/phase-log.md
+- docs/prompts/phase-15-local-live-guidance-prototype.md
+- tests/manual-smoke-tests.md
+- ios-app/AIPhotoApp/Features/Camera/CameraView.swift
+- ios-app/AIPhotoApp/Features/Camera/CameraViewModel.swift
+- ios-app/AIPhotoApp/Features/Camera/LiveGuidanceMockState.swift
+- ios-app/AIPhotoApp/Features/Camera/LiveGuidanceOverlayView.swift
+- ios-app/AIPhotoApp/Features/Camera/LiveGuidanceMode.swift
+- ios-app/AIPhotoApp/Features/Camera/LiveGuidanceModeSelectorView.swift
+- ios-app/AIPhotoApp/Features/Camera/LiveGuidanceSignal.swift
+- ios-app/AIPhotoApp/Features/Camera/LiveGuidanceFrameAnalyzer.swift
+- ios-app/AIPhotoApp/Features/Camera/LiveGuidanceSuggestionComposer.swift
+- ios-app/AIPhotoApp/Features/Camera/LocalRuleBasedGuidanceProvider.swift
+- ios-app/AIPhotoApp/Resources/Localization/en.lproj/Localizable.strings
+- ios-app/AIPhotoApp/Resources/Localization/zh-Hant.lproj/Localizable.strings
+
+### Build / Verification
+
+- `git diff --check` passed.
+- Forbidden imports scan passed for Firebase, FirebaseFunctions, FirebaseStorage, FirebaseFirestore, Gemini, OpenAI, and StoreKit imports.
+- Vision import scan found no `import Vision`; Phase 15 uses sample/fallback local signals only.
+- Secrets / config scan found no `GoogleService-Info.plist`, `.env`, `.firebaserc`, signing secrets, provisioning profiles, or mobile provisioning files.
+- Refined secrets scan only matched existing `functions/.env.example` placeholder variable names, not real secrets.
+- Camera-scoped forbidden behavior scan passed for upload, persistence, StoreKit, Gemini/OpenAI, speech/ASR, Parakeet, save-to-Photos, and related behavior.
+- Frame safety scan passed for raw-frame storage, upload, stream, base64, pixel-buffer logging, and network behavior in Camera feature files.
+- Broader Swift forbidden behavior scan only matched existing placeholder/comment/enum references outside the Phase 15 Camera changes.
+- Sandboxed command-line Xcode simulator build failed due CoreSimulator / sandbox-exec environment restrictions.
+- Unsandboxed command-line Xcode simulator build succeeded with `xcodebuild -project ios-app/AIPhotoApp.xcodeproj -scheme AIPhotoApp -destination 'generic/platform=iOS Simulator' -derivedDataPath /private/tmp/ai-support-phase15-derived CODE_SIGNING_ALLOWED=NO build`.
+- User manually verified Phase 15 in Xcode / Simulator on 2026-06-10 and accepted the current result:
+  - app builds and runs
+  - Camera remains the primary screen
+  - Mock / Local guidance mode chip works
+  - Mock guidance mode still works
+  - Local guidance mode shows sample / fallback local suggestions
+  - Local mode does not analyze real frames
+  - no Vision import or AVFoundation video frame sampling was added
+  - guidance overlay stays below the viewfinder and does not block the main preview
+  - Dazz-like camera layout, mock lens selector, Photo Picker, selected-photo Back to Camera / Clear, 20 filters/grouping, mock save, mock AI, local history, Inspiration, History, and Settings remain usable
+  - English / Traditional Chinese localization shows no raw keys
+  - no raw frames are read, stored, uploaded, streamed, persisted, or logged
+  - no Gemini Live, cloud AI, voice, ASR, Parakeet, Firebase Storage / Firestore, Cloud Functions, StoreKit, persistence, export, save-to-Photos, secrets, Firebase config, or API keys were added
+
+### Known TODOs
+
+- Phase 15 does not analyze real camera frames yet.
+- Phase 15 does not import Vision yet.
+- Future local frame analysis can add throttled Vision / AVFoundation sampling in a later explicit phase or Phase 15B.
+- Physical iPhone testing remains needed for any future true live-frame analyzer and preview-lag validation.
+
+### Safety Notes
+
+- Did not start Phase 16.
+- Did not add Gemini Live.
+- Did not call Gemini, OpenAI, or Cloud Functions.
+- Did not add cloud snapshot guidance.
+- Did not upload, stream, persist, or log camera frames.
+- Did not add voice input, ASR, Parakeet, microphone permission copy, or speech recognition permission copy.
+- Did not connect Firebase Storage or Firestore.
+- Did not add Firebase, FirebaseFunctions, FirebaseStorage, FirebaseFirestore, Gemini, OpenAI, StoreKit, or Vision imports.
+- Did not add `GoogleService-Info.plist`, `.env`, `.firebaserc`, API keys, Firebase project IDs, private keys, OAuth secrets, Apple credentials, signing credentials, provisioning profiles, or production config.
+- Did not add persistence, UserDefaults, Core Data, SwiftData, export, save-to-Photos, StoreKit, subscription, paywall, premium gating, quota enforcement, backend changes, npm dependencies, third-party SDKs, commit, or push.
+
+### Ready for Next Phase
+
+Ready to review before commit: Yes.
+
+Ready for Phase 16: No. Phase 15 should be reviewed, committed, pushed, and read-only confirmed before Phase 16 starts.
 
 ---
 

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct LiveGuidanceOverlayView: View {
     let state: LiveGuidanceMockState
+    let stateTitleKey: String
     let suggestions: [LiveGuidanceSuggestion]
     let advanceState: () -> Void
 
@@ -15,7 +16,7 @@ struct LiveGuidanceOverlayView: View {
                 Image(systemName: stateIconName)
                     .font(.system(size: 12, weight: .bold))
 
-                Text(LocalizedStringKey(state.titleKey))
+                Text(LocalizedStringKey(stateTitleKey))
                     .font(.caption2.weight(.semibold))
                     .lineLimit(1)
 
@@ -92,6 +93,7 @@ struct LiveGuidanceOverlayView: View {
 #Preview {
     LiveGuidanceOverlayView(
         state: .suggestionAvailable,
+        stateTitleKey: LiveGuidanceMockState.suggestionAvailable.titleKey,
         suggestions: [
             LiveGuidanceSuggestion(
                 id: "center_subject",

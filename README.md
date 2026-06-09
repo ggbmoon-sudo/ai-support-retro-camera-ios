@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 14B: Dazz-like Camera Frame + Inspiration Tab Refinement
+- Phase 15: Local Live Guidance Prototype
 
 Next phase:
 
-- Phase 15, only after Phase 14B is reviewed, committed, pushed, and explicitly requested
+- Phase 16, only after Phase 15 is reviewed, committed, pushed, read-only confirmed, and explicitly requested
 
 Before each task, read `AGENTS.md`, the required docs listed there, and the relevant phase prompt in `docs/prompts/`.
 
@@ -231,6 +231,33 @@ Current Phase 14B behavior:
 - Inspiration no longer uses Open Camera as the primary CTA.
 
 Phase 14B remains local/mock-only. It does not add Apple Vision, live frame analysis, frame upload, Gemini Live, voice / ASR, real Firebase, StoreKit, persistence, export, backend changes, secrets, dependencies, or third-party SDKs.
+
+## Phase 14C Selected Photo Back / Clear Status
+
+Phase 14C keeps the selected-photo / imported-photo flow usable on small screens.
+
+Current Phase 14C behavior:
+
+- Selected-photo / imported-photo mode shows fixed Back to Camera / Clear controls near the top.
+- Back to Camera / Clear returns to the camera preview or simulator fallback.
+- Photo Picker import, filters, mock save, mock AI, local history, History, Settings, Inspiration, live guidance, and the mock lens selector remain in scope.
+
+Phase 14C does not change filter rendering, guidance logic, real camera hardware behavior, persistence, export, backend code, secrets, or real service integrations.
+
+## Phase 15 Local Live Guidance Prototype Status
+
+Phase 15 adds the first local live guidance provider architecture without starting cloud AI guidance.
+
+Current Phase 15 behavior:
+
+- Live guidance can switch between Mock and Local modes.
+- Mock guidance remains available as the Phase 14 fallback.
+- Local guidance uses rule-based sample/fallback signals for too dark, too bright, subject centering, headroom, face distance, warm filter suggestion, and local signal unavailable fallback.
+- Simulator remains safe because this first local prototype does not add live video frame sampling.
+- The guidance overlay remains below / outside the main viewfinder obstruction.
+- Camera primary screen, Dazz-like viewport, mock lens selector, selected-photo Back to Camera / Clear, 20 filters/grouping, Photo Picker, mock save, mock AI, local history, Inspiration, History, and Settings remain in scope.
+
+Phase 15 does not import Vision yet, does not add AVFoundation video frame sampling, and does not store, upload, stream, persist, or log raw frames. It does not add Gemini Live, Gemini/OpenAI calls, Cloud Functions calls, Firebase Storage / Firestore, voice input, ASR, Parakeet, StoreKit, persistence, export, save-to-Photos, backend changes, secrets, dependencies, or third-party SDKs.
 
 ## Phase 11B Camera Entry / Camera Shell Status
 
