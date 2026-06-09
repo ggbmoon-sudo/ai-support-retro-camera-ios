@@ -461,3 +461,49 @@ Manual Xcode check on physical iPhone / iPad:
 - [ ] Open History and confirm one local-only session item appears.
 - [ ] Clear local session history.
 - [ ] Confirm no real network upload, provider call, Firestore write, Storage write, export, save-to-Photos, or persistence occurs.
+
+## Phase 09
+
+Check:
+
+- [x] Added `docs/prompts/phase-09-mvp-polish-ux-hardening.md`.
+- [x] Home presents the current flow as a mock MVP demo instead of implying active quota enforcement.
+- [x] Camera flow uses a consistent scroll container for capture, selected-photo, filter, mock save, mock AI, messages, and local-only notes.
+- [x] Mock save failure is visible as a text button, not only an icon.
+- [x] Mock save state text wraps cleanly.
+- [x] Mock AI retry / dismiss controls are easier to tap.
+- [x] History clear local session history action is visibly destructive.
+- [x] History card filter detail uses localized preset text instead of a raw preset id.
+- [x] Settings copy clearly says backend, cloud, subscription, AI, quota, and account deletion services are not connected.
+- [x] English and Traditional Chinese localization strings were updated.
+- [x] Confirmed no Firebase Storage upload, Firestore write, Storage write, cloud history, disk persistence, UserDefaults persistence, Core Data, SwiftData, save-to-Photos, export, Gemini/OpenAI call, Cloud Functions call, StoreKit, subscription/paywall, quota enforcement, secret, credential, Firebase config, npm dependency, or Phase 10 work was intentionally added.
+
+Manual Xcode check on simulator:
+
+- [x] Build and run `AIPhotoApp` in an iOS Simulator.
+- [x] Test on a small iPhone Simulator if possible.
+- [x] Open Home and confirm the primary flow and mock/local-only copy are clear.
+- [x] Open Camera and confirm permission / unavailable copy remains readable.
+- [x] Import one photo and confirm the selected-photo flow scrolls fully.
+- [x] Switch Original / Classic Film / Warm Vintage / Faded Chrome.
+- [x] Trigger mock save success and confirm the state is clear.
+- [x] Trigger mock save failure and confirm the visible failure button / state are clear.
+- [x] Trigger mock AI success and confirm loading / result / retry / dismiss remain readable.
+- [x] Trigger mock AI failure and confirm failure / retry / dismiss remain readable.
+- [x] Open History and confirm local-only cards scroll.
+- [x] Confirm History clear local session history works and is clearly local-only.
+- [x] Open Settings and confirm placeholders do not claim real backend, subscription, quota, AI, cloud, or account deletion completion.
+- [x] Confirm no raw localization keys appear in the primary tested flow.
+- [x] Confirm no real upload, Firestore write, Storage write, Cloud Functions call, real AI call, StoreKit, quota, paywall, export, save-to-Photos, disk persistence, UserDefaults persistence, Core Data, SwiftData, or cloud history occurs.
+- [x] Confirm no real Firebase config or secrets are present.
+
+Manual Xcode check on physical iPhone / iPad:
+
+- [ ] Build and run `AIPhotoApp` on device.
+- [ ] Capture one still photo.
+- [ ] Apply one filter preset.
+- [ ] Trigger mock save success.
+- [ ] Trigger mock AI success.
+- [ ] Open History and confirm the local session card remains readable.
+- [ ] Confirm safe-area and scroll behavior are usable on device.
+- [ ] Confirm no image is uploaded, persisted, exported, saved to Photos, or sent to AI.

@@ -109,14 +109,23 @@ struct AIAnalysisResultView: View {
                 onRetry()
             }
             .font(AppTypography.caption)
+            .padding(.vertical, AppSpacing.sm)
+            .padding(.horizontal, AppSpacing.md)
+            .background(AppColors.elevatedSurface)
             .foregroundStyle(AppColors.accent)
+            .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.md))
 
             Button("ai.analysis.action.dismiss") {
                 onDismiss()
             }
             .font(AppTypography.caption)
+            .padding(.vertical, AppSpacing.sm)
+            .padding(.horizontal, AppSpacing.md)
+            .background(AppColors.elevatedSurface)
             .foregroundStyle(AppColors.textSecondary)
+            .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.md))
         }
+        .frame(maxWidth: .infinity, alignment: .trailing)
     }
 
     private var providerText: LocalizedStringKey {

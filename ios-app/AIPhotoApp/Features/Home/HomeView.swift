@@ -2,26 +2,29 @@ import SwiftUI
 
 struct HomeView: View {
     private let presets = CameraPreset.samples
-    private let quota = QuotaStatus.sample
     @State private var isCameraPresented = false
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: AppSpacing.xl) {
-                HStack {
-                    VStack(alignment: .leading, spacing: AppSpacing.xs) {
-                        Text("home.title")
-                            .font(AppTypography.title1)
-                            .foregroundStyle(AppColors.textPrimary)
+                VStack(alignment: .leading, spacing: AppSpacing.sm) {
+                    Text("home.badge.mock_mvp")
+                        .font(AppTypography.micro)
+                        .padding(.vertical, AppSpacing.xs)
+                        .padding(.horizontal, AppSpacing.sm)
+                        .background(AppColors.elevatedSurface)
+                        .foregroundStyle(AppColors.accent)
+                        .clipShape(Capsule())
 
-                        Text("home.subtitle")
-                            .font(AppTypography.body)
-                            .foregroundStyle(AppColors.textSecondary)
-                    }
+                    Text("home.title")
+                        .font(AppTypography.title1)
+                        .foregroundStyle(AppColors.textPrimary)
+                        .fixedSize(horizontal: false, vertical: true)
 
-                    Spacer()
-
-                    QuotaBadge(status: quota)
+                    Text("home.subtitle")
+                        .font(AppTypography.body)
+                        .foregroundStyle(AppColors.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
 
                 VStack(alignment: .leading, spacing: AppSpacing.md) {
@@ -47,6 +50,10 @@ struct HomeView: View {
                     .font(AppTypography.caption)
                     .foregroundStyle(AppColors.textSecondary)
                     .fixedSize(horizontal: false, vertical: true)
+                    .padding(AppSpacing.md)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(AppColors.surface)
+                    .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.lg))
             }
             .padding(AppSpacing.lg)
         }

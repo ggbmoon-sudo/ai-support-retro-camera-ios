@@ -286,3 +286,31 @@ The current session history scaffold is intentionally local-only:
 - Clear local session history removes only the in-memory store contents.
 
 This phase does not add Firebase Storage upload, Firestore writes, cloud history, disk persistence, UserDefaults persistence, Core Data, SwiftData, save-to-Photos, export, real Gemini/OpenAI calls, Cloud Functions calls, StoreKit, subscription/paywall logic, quota enforcement, new SDKs, npm dependencies, secrets, credentials, Firebase project IDs, or `GoogleService-Info.plist`.
+
+## Phase 09 MVP Polish / UX Hardening
+
+Phase 09 polishes the existing mock MVP flow without adding new product capabilities.
+
+The Phase 09 polish pass was manually verified by the user in Xcode / Simulator on 2026-06-09.
+
+Current Phase 09 polish touches the main demo path:
+
+- Home
+- Camera / Photo Picker
+- Filter presets
+- Mock Save
+- Mock AI Result
+- Local Session History
+- Settings
+
+The current polish pass is intentionally small and reviewable:
+
+- Home now presents the flow as a mock MVP demo instead of showing a quota badge that could imply active quota enforcement.
+- Camera content uses a consistent scroll container so permission, selected-photo, filter, save, AI, and local-only notes remain reachable on small screens.
+- Mock save failure is a visible text button rather than an icon-only control.
+- Mock AI result action buttons are easier to tap.
+- History clear action is clearer and visually destructive.
+- History card filter labels use localized preset names instead of raw preset IDs.
+- Settings copy more clearly states that backend, subscription, AI, quota, and deletion services are not connected.
+
+This phase remains mock/local-only. It does not add Firebase Storage upload, Firestore writes, cloud history, disk persistence, UserDefaults persistence, Core Data, SwiftData, save-to-Photos, export, real Gemini/OpenAI calls, Cloud Functions calls, StoreKit, subscription/paywall logic, quota enforcement, new SDKs, npm dependencies, secrets, credentials, Firebase project IDs, or `GoogleService-Info.plist`.

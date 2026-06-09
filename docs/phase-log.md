@@ -8,15 +8,16 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 08 - Local Session History / Timeline Scaffold
-Status: Phase 08 local session history scaffold implemented and manually verified by user in Xcode / Simulator
+Current phase: Phase 09 - MVP Polish / UX Hardening
+Status: Phase 09 MVP polish / UX hardening completed; manually verified by user in Xcode / Simulator
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 05 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 06 build verification: attempted by Codex; sandboxed command-line builds failed due existing SwiftUI `#Preview` macro / CoreSimulator sandbox environment, not Phase 06 source errors; user Xcode / Simulator build-run accepted on 2026-06-09
 Phase 08 build verification: command-line Xcode simulator build succeeded on 2026-06-09 after the History tab environment object fix; user Xcode / Simulator build-run accepted on 2026-06-09
-Next phase: Phase 09, only after Phase 08 is committed, pushed, and explicitly requested
+Phase 09 build verification: user Xcode / Simulator build-run accepted on 2026-06-09
+Next phase: Phase 10, only after Phase 09 is manually verified, committed, pushed, and explicitly requested
 
 ---
 
@@ -975,6 +976,54 @@ No. Phase 08 has been manually verified, but Phase 09 should not begin until Pha
 
 ---
 
+## Phase 09 - MVP Polish / UX Hardening
+
+Status: Completed; manually verified by user in Xcode / Simulator
+
+### Goal
+
+Polish the existing mock MVP flow without adding new product features or connecting production services.
+
+### Completed
+
+- Added `docs/prompts/phase-09-mvp-polish-ux-hardening.md`.
+- Polished Home copy and hierarchy so the app is presented as a mock MVP demo instead of implying active quota enforcement.
+- Improved Camera scroll behavior by using one outer scroll container for capture, selected-photo, filter, mock save, mock AI, status messages, and local-only notes.
+- Added clearer Camera helper copy for Simulator / photo import testing.
+- Made mock save failure a visible text button instead of an icon-only action.
+- Improved mock save state text wrapping.
+- Made mock AI result retry / dismiss controls easier to tap.
+- Made History clear action clearer and visually destructive.
+- Changed History card filter detail from raw preset id to localized preset name.
+- Added Settings copy that explicitly states cloud, subscription, AI, quota, and account deletion backend services are not connected.
+- Updated English and Traditional Chinese localization strings.
+- Updated iOS README notes.
+- Updated manual smoke tests with Phase 09 checks.
+
+### Safety Notes
+
+No real Firebase Storage upload, Firestore write, Storage write, Cloud Functions call, cloud history, disk persistence, UserDefaults persistence, Core Data, SwiftData, save-to-Photos, export, real Gemini/OpenAI call, StoreKit, subscription/paywall, quota enforcement, new SDK, npm dependency, real Firebase config, API key, secret, or Phase 10 work was added.
+
+### Verification
+
+- [x] Codex performed source-level safety checks for forbidden imports and config files.
+- [x] User manually verified app build / run in Xcode / Simulator was acceptable.
+- [x] User manually verified Home -> Camera -> Photo Picker -> Filter -> Mock Save -> Mock AI -> History main flow was smooth.
+- [x] User manually verified Camera selected-photo flow can scroll and is not blocked by tab bar / safe area.
+- [x] User manually verified AI result UI can scroll and retry / dismiss work.
+- [x] User manually verified History tab can be entered, card list scrolls, and clear local history works.
+- [x] User manually verified empty / loading / error states look acceptable.
+- [x] User manually verified Traditional Chinese copy looks natural and no obvious raw localization key appears.
+- [x] User manually verified local-only / mock labels are clear but not too noisy.
+- [x] User manually verified Settings placeholders do not claim real backend, subscription, or account deletion completion.
+- [x] User manually verified no upload, Firestore write, Storage write, Cloud Functions call, real AI call, StoreKit, quota, export, disk persistence, UserDefaults behavior, real Firebase config, or secrets were added.
+
+### Ready for Phase 10
+
+No. Phase 09 has been manually verified, but Phase 10 should not begin until Phase 09 is committed, pushed, and explicitly requested.
+
+---
+
 ## Deferred - Quota System (Former Phase 08 Plan)
 
 Status: Not started
@@ -989,7 +1038,7 @@ Quota enforcement should not rely only on client-side logic.
 
 ---
 
-## Phase 09 - Subscription + Paywall
+## Deferred - Subscription + Paywall (Former Phase 09 Plan)
 
 Status: Not started
 

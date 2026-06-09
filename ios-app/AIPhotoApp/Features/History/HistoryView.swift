@@ -26,27 +26,24 @@ struct HistoryView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: AppSpacing.sm) {
-            HStack(alignment: .top) {
-                VStack(alignment: .leading, spacing: AppSpacing.xs) {
-                    Text("history.session.title")
-                        .font(AppTypography.title2)
-                        .foregroundStyle(AppColors.textPrimary)
+            Text("history.session.title")
+                .font(AppTypography.title2)
+                .foregroundStyle(AppColors.textPrimary)
 
-                    Text("history.session.message")
+            Text("history.session.message")
+                .font(AppTypography.caption)
+                .foregroundStyle(AppColors.textSecondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            if !sessionHistoryStore.items.isEmpty {
+                Button(role: .destructive) {
+                    sessionHistoryStore.clear()
+                } label: {
+                    Label("history.action.clear", systemImage: "trash")
                         .font(AppTypography.caption)
-                        .foregroundStyle(AppColors.textSecondary)
-                        .fixedSize(horizontal: false, vertical: true)
                 }
-
-                Spacer()
-
-                if !sessionHistoryStore.items.isEmpty {
-                    Button("history.action.clear") {
-                        sessionHistoryStore.clear()
-                    }
-                    .font(AppTypography.caption)
-                    .foregroundStyle(AppColors.accent)
-                }
+                .foregroundStyle(AppColors.error)
+                .padding(.top, AppSpacing.xs)
             }
         }
         .padding(AppSpacing.md)

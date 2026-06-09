@@ -66,7 +66,7 @@ struct FilteredPhotoPreview: View {
 
             saveStateView
 
-            HStack(spacing: AppSpacing.sm) {
+            VStack(spacing: AppSpacing.sm) {
                 PrimaryButton(
                     "save.action.mock_success",
                     systemImage: "icloud.and.arrow.up",
@@ -78,15 +78,15 @@ struct FilteredPhotoPreview: View {
                 Button {
                     onSavePhoto(true)
                 } label: {
-                    Image(systemName: "exclamationmark.triangle")
-                        .font(.system(size: 16, weight: .semibold))
-                        .frame(width: 48, height: 48)
+                    Label("save.action.mock_failure", systemImage: "exclamationmark.triangle")
+                        .font(AppTypography.caption)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, AppSpacing.sm)
                         .background(AppColors.surface)
                         .foregroundStyle(AppColors.textPrimary)
                         .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.md))
                 }
                 .disabled(isRendering || saveState.isSaving)
-                .accessibilityLabel("save.action.mock_failure")
             }
         }
         .padding(AppSpacing.md)
@@ -107,20 +107,27 @@ struct FilteredPhotoPreview: View {
         switch saveState {
         case .idle:
             Text("save.state.idle")
+                .font(AppTypography.caption)
                 .foregroundStyle(AppColors.textSecondary)
+                .fixedSize(horizontal: false, vertical: true)
         case .saving:
             Label("save.state.saving", systemImage: "hourglass")
+                .font(AppTypography.caption)
                 .foregroundStyle(AppColors.textSecondary)
         case .saved:
             Label("save.state.saved_mock", systemImage: "checkmark.circle.fill")
+                .font(AppTypography.caption)
                 .foregroundStyle(AppColors.success)
+                .fixedSize(horizontal: false, vertical: true)
         case .failed(let message):
             VStack(alignment: .leading, spacing: AppSpacing.xs) {
                 Label("save.state.failed", systemImage: "xmark.circle.fill")
+                    .font(AppTypography.caption)
                     .foregroundStyle(AppColors.error)
                 Text(message)
                     .font(AppTypography.caption)
                     .foregroundStyle(AppColors.error)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
     }

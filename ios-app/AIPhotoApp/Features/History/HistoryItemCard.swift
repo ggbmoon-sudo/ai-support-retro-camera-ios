@@ -30,7 +30,7 @@ struct HistoryItemCard: View {
             }
 
             detailRow(titleKey: "history.item.source", valueKey: item.sourceTitleKey)
-            detailRow(titleKey: "history.item.filter", value: item.filterPresetId)
+            detailRow(titleKey: "history.item.filter", valueKey: item.filterPresetNameKey)
             detailRow(titleKey: "history.item.save_status", valueKey: item.saveStatus.titleKey)
 
             if let summary = item.mockAnalysisSummary {

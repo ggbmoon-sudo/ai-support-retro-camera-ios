@@ -12,6 +12,14 @@ struct SettingsView: View {
     var body: some View {
         List {
             Section {
+                Text("settings.local_only_note")
+                    .font(AppTypography.caption)
+                    .foregroundStyle(AppColors.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.vertical, AppSpacing.xs)
+            }
+
+            Section {
                 settingsRow(
                     icon: "person.crop.circle",
                     title: "settings.auth.title",

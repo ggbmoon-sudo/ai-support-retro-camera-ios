@@ -14,29 +14,16 @@ struct CameraView: View {
             ZStack {
                 AppColors.background.ignoresSafeArea()
 
-                VStack(spacing: AppSpacing.lg) {
-                    content
-
-                    if let errorMessage = viewModel.errorMessage {
-                        Text(errorMessage)
-                            .font(AppTypography.caption)
-                            .foregroundStyle(AppColors.error)
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                ScrollView {
+                    VStack(spacing: AppSpacing.lg) {
+                        content
+                        statusMessages
+                        localOnlyNote
                     }
-
-                    if let filterErrorMessage = viewModel.filterErrorMessage {
-                        Text(filterErrorMessage)
-                            .font(AppTypography.caption)
-                            .foregroundStyle(AppColors.error)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-
-                    Text("camera.local_only_note")
-                        .font(AppTypography.caption)
-                        .foregroundStyle(AppColors.textSecondary)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(AppSpacing.lg)
+                    .padding(.bottom, AppSpacing.xl)
                 }
-                .padding(AppSpacing.lg)
+                .scrollIndicators(.visible)
             }
             .navigationTitle(Text("camera.title"))
             .navigationBarTitleDisplayMode(.inline)
@@ -95,6 +82,12 @@ struct CameraView: View {
                 }
 
                 PhotoPickerView(selection: $viewModel.pickerItem, isLoading: viewModel.isLoading)
+
+                Text("camera.capture.helper")
+                    .font(AppTypography.caption)
+                    .foregroundStyle(AppColors.textSecondary)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
     }
@@ -135,6 +128,7 @@ struct CameraView: View {
                 .font(AppTypography.body)
                 .foregroundStyle(AppColors.textSecondary)
                 .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 
@@ -160,56 +154,88 @@ struct CameraView: View {
     }
 
     private func previewContent(_ photo: CapturedPhoto) -> some View {
-        ScrollView {
-            LazyVStack(spacing: AppSpacing.lg) {
-                FilteredPhotoPreview(
-                    photo: photo,
-                    previewImage: viewModel.filteredPreviewImage ?? photo.image,
-                    selectedPreset: viewModel.selectedFilterPreset,
-                    presets: viewModel.filterPresets,
-                    isRendering: viewModel.isFiltering,
-                    saveState: viewModel.photoSaveState,
-                    onSelectPreset: viewModel.selectFilterPreset,
-                    onSavePhoto: { shouldFail in
-                        Task {
-                            await viewModel.saveSelectedPhoto(shouldFail: shouldFail)
-                            guard viewModel.selectedPhoto?.id == photo.id else { return }
-                            sessionHistoryStore.recordMockSave(
-                                photo: photo,
-                                previewImage: viewModel.filteredPreviewImage ?? photo.image,
-                                filterPreset: viewModel.selectedFilterPreset,
-                                saveState: viewModel.photoSaveState
-                            )
-                        }
-                    },
-                    onAnalysisCompleted: { result in
+        LazyVStack(spacing: AppSpacing.lg) {
+            FilteredPhotoPreview(
+                photo: photo,
+                previewImage: viewModel.filteredPreviewImage ?? photo.image,
+                selectedPreset: viewModel.selectedFilterPreset,
+                presets: viewModel.filterPresets,
+                isRendering: viewModel.isFiltering,
+                saveState: viewModel.photoSaveState,
+                onSelectPreset: viewModel.selectFilterPreset,
+                onSavePhoto: { shouldFail in
+                    Task {
+                        await viewModel.saveSelectedPhoto(shouldFail: shouldFail)
                         guard viewModel.selectedPhoto?.id == photo.id else { return }
-                        sessionHistoryStore.recordMockAnalysis(
+                        sessionHistoryStore.recordMockSave(
                             photo: photo,
                             previewImage: viewModel.filteredPreviewImage ?? photo.image,
                             filterPreset: viewModel.selectedFilterPreset,
-                            result: result
+                            saveState: viewModel.photoSaveState
                         )
                     }
-                )
-
-                VStack(spacing: AppSpacing.md) {
-                    PrimaryButton("camera.action.retake", systemImage: "arrow.counterclockwise") {
-                        viewModel.resetSelection()
-                    }
-
-                    PhotoPickerView(selection: $viewModel.pickerItem, isLoading: viewModel.isLoading)
-
-                    PrimaryButton(
-                        "camera.action.continue_placeholder",
-                        systemImage: "sparkles",
-                        isEnabled: false
-                    ) {}
+                },
+                onAnalysisCompleted: { result in
+                    guard viewModel.selectedPhoto?.id == photo.id else { return }
+                    sessionHistoryStore.recordMockAnalysis(
+                        photo: photo,
+                        previewImage: viewModel.filteredPreviewImage ?? photo.image,
+                        filterPreset: viewModel.selectedFilterPreset,
+                        result: result
+                    )
                 }
+            )
+
+            VStack(spacing: AppSpacing.md) {
+                PrimaryButton("camera.action.retake", systemImage: "arrow.counterclockwise") {
+                    viewModel.resetSelection()
+                }
+
+                PhotoPickerView(selection: $viewModel.pickerItem, isLoading: viewModel.isLoading)
+
+                PrimaryButton(
+                    "camera.action.continue_placeholder",
+                    systemImage: "sparkles",
+                    isEnabled: false
+                ) {}
+
+                Text("camera.continue.disabled_note")
+                    .font(AppTypography.caption)
+                    .foregroundStyle(AppColors.textSecondary)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
             }
-            .padding(.bottom, AppSpacing.xl)
         }
-        .scrollIndicators(.visible)
+    }
+
+    @ViewBuilder
+    private var statusMessages: some View {
+        if let errorMessage = viewModel.errorMessage {
+            Text(errorMessage)
+                .font(AppTypography.caption)
+                .foregroundStyle(AppColors.error)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+
+        if let filterErrorMessage = viewModel.filterErrorMessage {
+            Text(filterErrorMessage)
+                .font(AppTypography.caption)
+                .foregroundStyle(AppColors.error)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    private var localOnlyNote: some View {
+        Text("camera.local_only_note")
+            .font(AppTypography.caption)
+            .foregroundStyle(AppColors.textSecondary)
+            .fixedSize(horizontal: false, vertical: true)
+            .padding(AppSpacing.md)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(AppColors.surface)
+            .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.lg))
     }
 }
 
