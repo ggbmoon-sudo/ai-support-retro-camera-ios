@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 10: MVP Demo QA / Release Readiness
+- Phase 11: Camera-First UX Redesign
 
 Next phase:
 
-- Phase 11, only after Phase 10 is reviewed, committed, pushed, and explicitly requested
+- Phase 12, only after Phase 11 is reviewed, committed, pushed, and explicitly requested
 
 Before each task, read `AGENTS.md`, the required docs listed there, and the relevant phase prompt in `docs/prompts/`.
 
@@ -99,6 +99,8 @@ Current MVP demo / QA readiness docs:
 - `docs/mvp-demo-script.md`
 - `docs/mvp-known-limitations.md`
 - `docs/mvp-readiness-checklist.md`
+- `docs/product-roadmap-next.md`
+- `docs/feature-change-requests.md`
 
 Use these docs as the source of truth unless a later decision in `docs/decisions.md` explicitly changes an earlier decision.
 
@@ -124,6 +126,43 @@ Completed and manually verified scaffold phases include Camera / Photo Picker, l
 Current limitations are documented in `docs/mvp-known-limitations.md`. The demo flow is documented in `docs/mvp-demo-script.md`. Future real-service gates are documented in `docs/mvp-readiness-checklist.md`.
 
 The current app does not include real Firebase upload, Firestore writes, Storage writes, Cloud Functions calls, real Gemini / OpenAI calls, StoreKit, quota enforcement, disk persistence, UserDefaults persistence, export, save-to-Photos, production Firebase config, or real secrets.
+
+## Phase 11B Camera Entry / Camera Shell Status
+
+Phase 11B refines Phase 11 so Camera is the true app entry and the capture screen feels more like a real camera shell.
+
+Current Phase 11B behavior:
+
+- No launch landing / browse screen
+- No launch-time Auth gate
+- Camera as the default first tab
+- Dark camera shell
+- Large central 4:5 viewfinder
+- Top camera status / selected preset line
+- Bottom camera controls
+- Flash / timer / camera flip mock controls
+- Capture button
+- Lower-right filter picker entry
+- Photo Picker fallback
+- Existing local filter presets only
+- Mock save
+- Mock AI advice
+- Local session history
+- History
+- Settings
+- Secondary guide content
+- Mock auth entry in Settings for future cloud features
+
+Phase 11B does not add expanded filters, live AI guidance, AI custom filters, AI image generation, real Firebase, real AI, Cloud Functions, StoreKit, persistence, export, save-to-Photos, secrets, or production config.
+
+Known product gaps accepted for commit:
+
+- Final product should open directly into Camera and should not show a landing / browse screen first.
+- Auth should not block basic camera use; login should live in Settings or future cloud-feature entry points.
+- Camera should feel more like a Dazz-style camera shell and less like a content page.
+- Camera viewfinder should be more prominent and information density should be lower.
+- Camera controls should be completed in a future hardening pass: flash, timer, camera flip, capture button, filter picker, and photo picker import.
+- Recommended follow-up before Phase 12: Camera Entry Flow & Camera Shell Redesign if the current shell is not yet product-satisfying.
 
 ## Phase 00 Status
 

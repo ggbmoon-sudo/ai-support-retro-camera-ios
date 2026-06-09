@@ -544,3 +544,145 @@ Manual Xcode check on physical iPhone / iPad:
 - [ ] Optional: run the demo script on a physical device.
 - [ ] Optional: confirm camera capture works on device.
 - [ ] Optional: confirm no image is uploaded, persisted, exported, saved to Photos, or sent to AI.
+
+## Phase 11
+
+Check:
+
+- [x] Added Camera as the default primary tab in the main tab shell.
+- [x] Kept Guide / Home content as a secondary tab instead of deleting it.
+- [x] Kept History and Settings accessible.
+- [x] Camera tab does not show a Close button.
+- [x] Full-screen Camera launched from the guide still has a Close button.
+- [x] Camera viewfinder uses a larger 4:5 portrait frame to support the 5:4-style camera-first direction.
+- [x] Added a lower-right filter entry on the camera surface.
+- [x] Lower-right filter entry reveals the existing local preset selector.
+- [x] Preset selection before capture / import applies to the next selected photo.
+- [x] Photo Picker fallback remains available.
+- [x] Existing presets only are preserved: Original / Classic Film / Warm Vintage / Faded Chrome.
+- [x] Mock save, mock AI advice, local session history, History, and Settings flows remain in scope.
+- [x] Updated English and Traditional Chinese localization strings.
+- [x] Confirmed no expanded filter library, live AI guidance, AI custom filter, AI image generation, real Firebase, real AI, Cloud Functions, StoreKit, persistence, export, save-to-Photos, secret, credential, Firebase config, or Phase 12 work was intentionally added.
+
+Build / source checks:
+
+- [x] Pre-check confirmed branch `feat/phase-02-auth`.
+- [x] Pre-check confirmed local branch synchronized with `origin/feat/phase-02-auth`.
+- [x] Pre-check confirmed `ios-app/AIPhotoApp.xcodeproj` exists.
+- [x] Source-level safety scan found no forbidden iOS Firebase / Gemini / OpenAI / StoreKit imports.
+- [x] Source-level safety scan found no real persistence, upload, Firestore write, Storage write, Cloud Functions call, real AI call, StoreKit, quota enforcement, export, or save-to-Photos implementation.
+- [ ] Command-line Xcode build should be rerun in Xcode / Simulator. Codex sandbox build reached Swift compilation but failed due `sandbox-exec` / CoreSimulator environment restrictions.
+- [x] User accepted Xcode / Simulator run result on 2026-06-09.
+- [x] User accepted current Phase 11 result as ready to commit.
+
+Manual Xcode check on simulator:
+
+- [x] Build and run `AIPhotoApp` in an iOS Simulator.
+- [ ] Continue through mock auth / guest entry if shown.
+- [ ] Confirm Camera is the first useful app surface.
+- [ ] Confirm the viewfinder is visually dominant and uses the new 5:4-style portrait frame.
+- [ ] Tap the lower-right filter entry and confirm the existing preset selector appears.
+- [ ] Select Classic Film before importing a photo.
+- [ ] Import one photo with Photo Picker and confirm the selected preset is applied.
+- [ ] Switch Original / Classic Film / Warm Vintage / Faded Chrome after import.
+- [ ] Trigger mock save success and failure.
+- [ ] Trigger mock AI success and failure.
+- [ ] Open History and confirm local session item behavior still works.
+- [ ] Clear local session history.
+- [ ] Open Guide and confirm it is secondary explanatory content.
+- [ ] Open Settings and confirm placeholders remain honest.
+- [ ] Confirm no raw localization keys appear.
+- [x] Confirm no upload, Firestore write, Storage write, Cloud Functions call, real AI call, StoreKit, quota enforcement, persistence, export, or save-to-Photos behavior occurs.
+
+Known product gaps / follow-up TODO:
+
+- [ ] Final product should open directly into Camera and should not show a landing / browse screen first.
+- [ ] Auth should not block basic camera use; login should move to Settings or future cloud-feature entry points.
+- [ ] Camera page should feel more like a Dazz-style camera shell and less like a content page.
+- [ ] Camera viewfinder should be more prominent and overall information density should be lower.
+- [ ] Camera controls should be completed later: flash, timer, camera flip, capture button, filter picker, and photo picker import.
+- [ ] Recommended follow-up before Phase 12: Phase 11B / Camera Entry Flow & Camera Shell Redesign, if the current implementation is not yet product-satisfying.
+
+Manual Xcode check on physical iPhone / iPad:
+
+- [ ] Build and run `AIPhotoApp` on device.
+- [ ] Confirm Camera is the first useful app surface.
+- [ ] Confirm camera permission and live preview still work.
+- [ ] Confirm the lower-right filter entry is reachable while framing.
+- [ ] Capture one still photo with a selected preset.
+- [ ] Trigger mock save and mock AI advice.
+- [ ] Confirm no image is uploaded, persisted, exported, saved to Photos, or sent to AI.
+
+## Phase 11B
+
+Check:
+
+- [x] Removed the launch landing / browse screen from the default app entry path.
+- [x] Removed the launch-time Auth gate from the default app entry path.
+- [x] App root now enters the main tab shell directly.
+- [x] Camera remains the default first tab.
+- [x] Basic Camera, existing filters, Photo Picker, mock save, mock AI, and local history remain usable without login.
+- [x] Existing mock Auth scaffold is preserved as a Settings entry for future cloud features.
+- [x] Settings explains that login is not required for basic camera use.
+- [x] Camera capture state now uses a darker camera shell.
+- [x] Camera viewfinder remains large and central.
+- [x] Added top camera shell status / selected preset row.
+- [x] Added bottom camera controls: flash, timer, capture, camera flip, and photo import.
+- [x] Flash / timer / camera flip controls are UI-only scaffold interactions.
+- [x] Kept lower-right filter picker entry on the viewfinder.
+- [x] Kept existing four presets only.
+- [x] Kept Photo Picker fallback.
+- [x] Kept mock save success / failure.
+- [x] Kept mock AI success / failure.
+- [x] Kept local session history, History tab, Settings tab, and Guide tab.
+- [x] Updated English and Traditional Chinese localization strings.
+- [x] Confirmed no expanded filter library, live AI guidance, AI custom filter, AI image generation, real Firebase, Cloud Functions, Gemini/OpenAI, StoreKit, persistence, export, save-to-Photos, secret, credential, Firebase config, backend code, third-party SDK, or Phase 12 work was intentionally added.
+
+Build / source checks:
+
+- [x] Build and run in Xcode / Simulator.
+- [ ] Confirm no raw localization keys appear.
+- [x] Confirm source safety scans find no forbidden Firebase / Gemini / OpenAI / StoreKit imports.
+- [x] Confirm no real persistence, upload, Firestore write, Storage write, Cloud Functions call, real AI call, StoreKit, quota enforcement, export, or save-to-Photos implementation exists.
+- [x] Confirm backend / Firebase / package files were not modified.
+- [ ] Command-line Xcode build should be rerun in Xcode / Simulator. Codex sandbox build reached Swift compilation but failed due existing `#Preview` macro / CoreSimulator tooling issues.
+- [x] User accepted Xcode / Simulator run result on 2026-06-09.
+- [x] User accepted current Phase 11B result as ready to commit.
+
+Manual Xcode check on simulator:
+
+- [ ] Launch app.
+- [ ] Confirm there is no landing / browse screen.
+- [ ] Confirm there is no launch-time Auth screen.
+- [ ] Confirm Camera is the default first tab.
+- [ ] Confirm Camera feels like a dark camera shell rather than a white content page.
+- [ ] Confirm the viewfinder is large and visually dominant.
+- [ ] Toggle flash / timer / camera flip controls.
+- [ ] Tap the lower-right filter entry and confirm the existing preset selector appears.
+- [ ] Use Photo Picker to import one photo.
+- [ ] Confirm selected-photo flow still reaches existing filters, mock save, and mock AI.
+- [ ] Trigger mock save success and failure.
+- [ ] Trigger mock AI success and failure.
+- [ ] Open History and confirm local session item behavior still works.
+- [ ] Open Settings and confirm mock Auth / account entry is available there.
+- [ ] Confirm Settings says login is for future cloud features and not required for basic camera use.
+- [x] Confirm no upload, Firestore write, Storage write, Cloud Functions call, real AI call, StoreKit, quota enforcement, persistence, export, or save-to-Photos behavior occurs.
+
+Known product gaps / follow-up TODO:
+
+- [ ] Final product should open directly into Camera and should not show a landing / browse screen first.
+- [ ] Auth should not block basic camera use; login should move to Settings or future cloud-feature entry points.
+- [ ] Camera page should feel more like a Dazz-style camera shell and less like a content page.
+- [ ] Camera viewfinder should be more prominent and overall information density should be lower.
+- [ ] Camera controls should be completed later: flash, timer, camera flip, capture button, filter picker, and photo picker import.
+- [ ] Recommended follow-up before Phase 12: Camera Entry Flow & Camera Shell Redesign, if the current shell remains visually insufficient.
+
+Manual Xcode check on physical iPhone / iPad:
+
+- [ ] Build and run `AIPhotoApp` on device.
+- [ ] Confirm app enters Camera directly.
+- [ ] Confirm camera permission and live preview still work.
+- [ ] Confirm camera controls are reachable while framing.
+- [ ] Capture one still photo.
+- [ ] Trigger mock save and mock AI advice.
+- [ ] Confirm no image is uploaded, persisted, exported, saved to Photos, or sent to AI.

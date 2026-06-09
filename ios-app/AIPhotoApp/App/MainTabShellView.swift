@@ -1,22 +1,35 @@
 import SwiftUI
 
 struct MainTabShellView: View {
-    let authUser: AuthUser?
-    let onSignOut: () -> Void
+    private enum Tab: Hashable {
+        case camera
+        case home
+        case history
+        case settings
+    }
 
-    init(authUser: AuthUser? = nil, onSignOut: @escaping () -> Void = {}) {
-        self.authUser = authUser
-        self.onSignOut = onSignOut
+    @ObservedObject var authViewModel: AuthViewModel
+    @State private var selectedTab: Tab = .camera
+
+    init(authViewModel: AuthViewModel) {
+        self.authViewModel = authViewModel
     }
 
     var body: some View {
-        TabView {
+        TabView(selection: $selectedTab) {
+            CameraView(showsCloseButton: false)
+                .tabItem {
+                    Label("camera.title", systemImage: "camera.viewfinder")
+                }
+                .tag(Tab.camera)
+
             NavigationStack {
                 HomeView()
             }
             .tabItem {
-                Label("tab.home", systemImage: "camera.aperture")
+                Label("tab.home", systemImage: "info.circle")
             }
+            .tag(Tab.home)
 
             NavigationStack {
                 HistoryView()
@@ -24,19 +37,21 @@ struct MainTabShellView: View {
             .tabItem {
                 Label("tab.history", systemImage: "photo.stack")
             }
+            .tag(Tab.history)
 
             NavigationStack {
-                SettingsView(authUser: authUser, onSignOut: onSignOut)
+                SettingsView(authViewModel: authViewModel)
             }
             .tabItem {
                 Label("tab.settings", systemImage: "gearshape")
             }
+            .tag(Tab.settings)
         }
         .tint(AppColors.accent)
     }
 }
 
 #Preview {
-    MainTabShellView()
+    MainTabShellView(authViewModel: AuthViewModel(service: MockAuthService()))
         .environmentObject(SessionHistoryStore())
 }

@@ -196,13 +196,19 @@ final class CameraViewModel: ObservableObject {
     }
 
     private func setSelectedPhoto(_ photo: CapturedPhoto) {
+        let pendingPreset = selectedFilterPreset
         selectedPhoto = photo
-        selectedFilterPreset = FilterPresetCatalog.original
         filteredPreviewImage = nil
         filterErrorMessage = nil
         isFiltering = false
         activeFilterRenderID = nil
         resetSaveState()
+
+        if pendingPreset.isOriginal {
+            selectedFilterPreset = FilterPresetCatalog.original
+        } else {
+            selectFilterPreset(pendingPreset)
+        }
     }
 
     private func resetFilterState() {

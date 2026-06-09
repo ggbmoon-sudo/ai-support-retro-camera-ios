@@ -120,7 +120,7 @@ nonisolated final class FilterPipeline {
 }
 
 private extension UIImage {
-    func normalizedForFilterRendering() -> UIImage {
+    nonisolated func normalizedForFilterRendering() -> UIImage {
         guard imageOrientation != .up else { return self }
 
         let format = UIGraphicsImageRendererFormat.default()

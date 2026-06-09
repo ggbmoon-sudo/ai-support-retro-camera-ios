@@ -338,3 +338,53 @@ Use the demo script to walk through:
 - Settings placeholders
 
 The current iOS app remains local/mock-only and is not production-ready. It does not include real Firebase upload, Firestore writes, Storage writes, Cloud Functions calls, real Gemini/OpenAI calls, StoreKit, subscription/paywall logic, quota enforcement, persistence, export/save-to-Photos, secrets, credentials, Firebase project IDs, or `GoogleService-Info.plist`.
+
+## Phase 11 Camera-First UX Redesign
+
+Phase 11 makes the Camera screen the primary app surface while keeping the local/mock MVP behavior.
+
+Current Phase 11 behavior:
+
+- The main tab shell defaults to Camera.
+- Home is kept as a secondary guide tab.
+- History and Settings remain accessible.
+- Camera can still be opened from the guide screen as a full-screen flow.
+- The Camera tab does not show a Close button; the full-screen Camera flow still does.
+- The camera viewfinder uses a larger 4:5 portrait frame to lean into the requested 5:4-style composition direction on an iOS portrait screen.
+- A lower-right filter entry appears on the camera surface.
+- The lower-right filter entry reveals the existing local preset selector.
+- Selecting an existing preset before capture or import applies it to the next selected photo.
+- Photo Picker remains available as the reliable Simulator fallback.
+- Mock save, mock AI advice, and local session history remain connected.
+
+This phase does not add expanded filter library work, live AI guidance, real Vision guidance, AI custom filters, AI image generation, real Firebase, Firebase imports, Gemini/OpenAI imports, Cloud Functions calls, StoreKit, persistence, export/save-to-Photos, secrets, credentials, Firebase project IDs, or `GoogleService-Info.plist`.
+
+## Phase 11B Camera Entry Flow / Camera Shell Redesign
+
+Phase 11B refines the Phase 11 camera-first work so the app no longer opens through a landing / browse screen or launch-time Auth screen.
+
+Current Phase 11B behavior:
+
+- `AppRootView` now enters `MainTabShellView` directly.
+- Camera remains the default first tab.
+- Basic Camera, filters, Photo Picker, mock save, mock AI, and local history are usable without login.
+- Existing mock Auth is preserved as a Settings entry for future cloud features.
+- Settings explains that login is not required for basic camera use.
+- The capture screen now uses a darker camera shell rather than a white content-page feel.
+- The viewfinder remains a large 4:5 portrait frame.
+- The camera shell includes top status / selected preset copy.
+- The bottom control row includes flash, timer, capture, camera flip, and photo import controls.
+- Flash / timer / camera flip controls are UI-only mock toggles.
+- The lower-right filter entry remains on the viewfinder and reveals the existing preset selector.
+- Photo Picker remains the reliable Simulator fallback.
+
+This phase does not add expanded filters, live AI guidance, AI custom filters, AI image generation, real Firebase, Cloud Functions, Gemini/OpenAI calls, StoreKit, persistence, export/save-to-Photos, backend code, third-party SDKs, secrets, or production config.
+
+Known product gaps accepted for commit:
+
+- Final product should open directly into Camera and should not show a landing / browse screen first.
+- Auth should not block basic camera use; login should live in Settings or future cloud-feature entry points.
+- Camera should feel more like a Dazz-style camera shell and less like a content page.
+- Camera viewfinder should be more prominent and information density should be lower.
+- Camera controls should be completed in a future hardening pass: flash, timer, camera flip, capture button, filter picker, and photo picker import.
+- Recommended follow-up before Phase 12: Camera Entry Flow & Camera Shell Redesign if the current shell is not yet product-satisfying.

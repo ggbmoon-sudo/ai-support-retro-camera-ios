@@ -1,13 +1,7 @@
 import SwiftUI
 
 struct SettingsView: View {
-    let authUser: AuthUser?
-    let onSignOut: () -> Void
-
-    init(authUser: AuthUser? = nil, onSignOut: @escaping () -> Void = {}) {
-        self.authUser = authUser
-        self.onSignOut = onSignOut
-    }
+    @ObservedObject var authViewModel: AuthViewModel
 
     var body: some View {
         List {
@@ -26,14 +20,32 @@ struct SettingsView: View {
                     detail: authStatusKey
                 )
 
-                Button(action: onSignOut) {
-                    settingsRow(
-                        icon: "rectangle.portrait.and.arrow.right",
-                        title: "settings.auth.sign_out",
-                        detail: "settings.auth.sign_out.placeholder"
-                    )
+                Text("settings.auth.cloud_note")
+                    .font(AppTypography.caption)
+                    .foregroundStyle(AppColors.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                if authViewModel.currentUser == nil {
+                    NavigationLink {
+                        AuthView(viewModel: authViewModel)
+                    } label: {
+                        settingsRow(
+                            icon: "person.badge.key",
+                            title: "settings.auth.open",
+                            detail: "settings.auth.open.placeholder"
+                        )
+                    }
+                } else {
+                    Button {
+                        Task { await authViewModel.signOut() }
+                    } label: {
+                        settingsRow(
+                            icon: "rectangle.portrait.and.arrow.right",
+                            title: "settings.auth.sign_out",
+                            detail: "settings.auth.sign_out.placeholder"
+                        )
+                    }
                 }
-                .disabled(authUser == nil)
             }
 
             Section {
@@ -91,12 +103,16 @@ struct SettingsView: View {
     }
 
     private var authStatusKey: LocalizedStringKey {
-        authUser?.isGuest == true ? "settings.auth.guest" : "settings.auth.signed_in"
+        guard let currentUser = authViewModel.currentUser else {
+            return "settings.auth.not_required"
+        }
+
+        return currentUser.isGuest ? "settings.auth.guest" : "settings.auth.signed_in"
     }
 }
 
 #Preview {
     NavigationStack {
-        SettingsView()
+        SettingsView(authViewModel: AuthViewModel(service: MockAuthService()))
     }
 }

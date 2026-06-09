@@ -8,8 +8,8 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 10 - MVP Demo QA / Release Readiness
-Status: Phase 10 documentation / QA readiness scaffold implemented by Codex; awaiting user review
+Current phase: Phase 11 - Camera-First UX Redesign
+Status: Phase 11 / Phase 11B current result manually verified and accepted by user; ready to commit with known product gaps documented
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -17,7 +17,9 @@ Phase 05 build verification: command-line Xcode simulator build succeeded on 202
 Phase 06 build verification: attempted by Codex; sandboxed command-line builds failed due existing SwiftUI `#Preview` macro / CoreSimulator sandbox environment, not Phase 06 source errors; user Xcode / Simulator build-run accepted on 2026-06-09
 Phase 08 build verification: command-line Xcode simulator build succeeded on 2026-06-09 after the History tab environment object fix; user Xcode / Simulator build-run accepted on 2026-06-09
 Phase 09 build verification: user Xcode / Simulator build-run accepted on 2026-06-09
-Next phase: Phase 11, only after Phase 10 is reviewed, committed, pushed, and explicitly requested
+Phase 11 build verification: attempted by Codex; generic iOS Simulator build reached Swift compilation but failed due sandbox-exec / CoreSimulator environment restrictions, not a confirmed Phase 11 source error; user Xcode / Simulator run accepted on 2026-06-09
+Phase 11B build verification: attempted by Codex; generic iOS Simulator build reached Swift compilation but failed due existing SwiftUI `#Preview` macro / CoreSimulator tooling issues, not a confirmed Phase 11B source error; user Xcode / Simulator run accepted on 2026-06-09
+Next phase: Phase 12, only after Phase 11 is reviewed, committed, pushed, and explicitly requested
 
 ---
 
@@ -1080,6 +1082,154 @@ No Swift code, backend code, real Firebase setup, `GoogleService-Info.plist`, `.
 ### Ready for Phase 11
 
 No. Phase 10 should be reviewed, committed, pushed, and explicitly approved before Phase 11 starts.
+
+---
+
+## Phase 11 - Camera-First UX Redesign
+
+Status: Implemented; user Xcode / Simulator verification accepted; ready to commit with known product gaps documented
+Date completed: 2026-06-09
+
+### Goal
+
+Make the current local/mock MVP camera-first without starting Phase 12 or connecting real services.
+
+### Completed
+
+- Made Camera the default primary tab in `MainTabShellView`.
+- Kept Guide / Home as a secondary tab instead of deleting existing explanatory content.
+- Kept History and Settings accessible.
+- Updated Camera so tab-hosted Camera does not show a Close button, while full-screen Camera launched from the guide still can close.
+- Updated the camera viewfinder surface to a larger 4:5 portrait frame to support the 5:4-style camera-first direction on iOS portrait screens.
+- Added a lower-right filter entry on the camera surface.
+- Reused the existing local preset selector from the lower-right filter entry.
+- Preserved only the existing presets: Original, Classic Film, Warm Vintage, and Faded Chrome.
+- Preserved Photo Picker fallback.
+- Preserved mock save, mock AI advice, and local session history flow.
+- Updated English and Traditional Chinese localization strings.
+- Updated README / iOS README / MVP demo script / manual smoke tests for Phase 11.
+
+### Changed Files
+
+- README.md
+- docs/mvp-demo-script.md
+- docs/phase-log.md
+- ios-app/AIPhotoApp/App/MainTabShellView.swift
+- ios-app/AIPhotoApp/Features/Camera/CameraView.swift
+- ios-app/AIPhotoApp/Features/Camera/CameraViewModel.swift
+- ios-app/AIPhotoApp/Resources/Localization/en.lproj/Localizable.strings
+- ios-app/AIPhotoApp/Resources/Localization/zh-Hant.lproj/Localizable.strings
+- ios-app/README.md
+- tests/manual-smoke-tests.md
+
+### Safety Notes
+
+No expanded filter library, live AI guidance, AI custom filter, AI image generation, real Firebase setup, `GoogleService-Info.plist`, `.env`, `.firebaserc`, API key, Firebase project ID, private key, Apple credential, Firebase import, FirebaseFunctions import, FirebaseStorage import, FirebaseFirestore import, Gemini/OpenAI import, StoreKit import, Firebase Storage upload, Firestore write, Storage write, Cloud Functions call, real Gemini/OpenAI call, StoreKit, subscription/paywall, quota enforcement, persistence, UserDefaults, Core Data, SwiftData, export, save-to-Photos, backend code change, new npm dependency, third-party SDK, production cloud history, or Phase 12 work was added.
+
+### Verification
+
+- [x] Pre-check confirmed branch `feat/phase-02-auth`.
+- [x] Pre-check confirmed local branch synchronized with `origin/feat/phase-02-auth`.
+- [x] Pre-check confirmed `ios-app/AIPhotoApp.xcodeproj` exists.
+- [x] Source-level safety scan found no forbidden iOS Firebase / Gemini / OpenAI / StoreKit imports.
+- [x] Source-level safety scan found no real persistence, upload, Firestore write, Storage write, Cloud Functions call, real AI call, StoreKit, quota enforcement, export, or save-to-Photos implementation.
+- [x] User Xcode / Simulator verification accepted on 2026-06-09.
+- [x] User confirmed Camera tab can be entered and the current Phase 11 result is acceptable for commit.
+- [x] User confirmed Photo Picker fallback, existing four filter presets, mock save, mock AI, local history, History, and Settings remain available.
+- [x] User confirmed no real Firebase, real AI, StoreKit, persistence, or export behavior was added.
+- [ ] Codex command-line build remains blocked by sandbox-exec / CoreSimulator environment restrictions after reaching Swift compilation.
+
+### Known TODOs
+
+- Final product should open directly into Camera and should not show a landing / browse screen first.
+- Auth should not block basic camera use; login should live in Settings or future cloud-feature entry points.
+- Camera page should feel more like a Dazz-style camera shell and less like a content page.
+- Camera viewfinder should become more prominent and overall information density should be lower.
+- Camera controls should be completed in a future hardening pass: flash, timer, camera flip, capture button, filter picker, and photo picker import.
+- Recommended follow-up before Phase 12: Phase 11B / Camera Entry Flow & Camera Shell Redesign, if the current implementation is not yet product-satisfying.
+- Optional physical iPhone / iPad capture verification remains useful.
+- Phase 12 filter research and preset schema should not begin until Phase 11 is reviewed, committed, pushed, and explicitly requested.
+
+### Ready for Phase 12
+
+No. Phase 11 should be committed, pushed, and read-only confirmed before Phase 12 starts.
+
+---
+
+## Phase 11B - Camera Entry Flow & Camera Shell Redesign
+
+Status: Implemented; user Xcode / Simulator verification accepted; ready to commit with known product gaps documented
+Date completed: 2026-06-09
+
+### Goal
+
+Refine Phase 11 so the app truly enters Camera first, does not gate basic camera use behind landing or Auth, and makes the Camera page feel more like a real camera shell.
+
+### Completed
+
+- Removed the launch landing / browse screen from the default app entry path.
+- Removed launch-time Auth gating from the default app entry path.
+- Updated `AppRootView` to enter the main tab shell directly.
+- Preserved the existing mock Auth scaffold.
+- Moved mock Auth access into Settings as a future cloud-feature entry point.
+- Updated Settings copy to explain that login is not required for basic camera use.
+- Preserved Camera as the default first tab.
+- Redesigned the Camera capture state toward a darker camera shell.
+- Kept the large central 4:5 viewfinder.
+- Added top camera shell status / selected preset display.
+- Added bottom camera controls for flash, timer, capture, camera flip, and photo import.
+- Implemented flash / timer / camera flip as UI-only scaffold interactions.
+- Preserved the lower-right filter picker entry.
+- Preserved Photo Picker fallback.
+- Preserved the existing four local presets only.
+- Preserved mock save, mock AI advice, local session history, Guide, History, and Settings.
+- Updated English and Traditional Chinese localization strings.
+- Updated README / iOS README / MVP demo script / manual smoke tests.
+
+### Changed Files
+
+- README.md
+- docs/mvp-demo-script.md
+- docs/phase-log.md
+- ios-app/AIPhotoApp/App/AppRootView.swift
+- ios-app/AIPhotoApp/App/MainTabShellView.swift
+- ios-app/AIPhotoApp/Features/Camera/CameraView.swift
+- ios-app/AIPhotoApp/Features/Camera/CameraViewModel.swift
+- ios-app/AIPhotoApp/Features/Settings/SettingsView.swift
+- ios-app/AIPhotoApp/Resources/Localization/en.lproj/Localizable.strings
+- ios-app/AIPhotoApp/Resources/Localization/zh-Hant.lproj/Localizable.strings
+- ios-app/README.md
+- tests/manual-smoke-tests.md
+
+### Safety Notes
+
+No expanded filter library, live AI guidance, AI custom filter, AI image generation, real Firebase setup, `GoogleService-Info.plist`, `.env`, `.firebaserc`, API key, Firebase project ID, private key, Apple credential, Firebase import, FirebaseFunctions import, FirebaseStorage import, FirebaseFirestore import, Gemini/OpenAI import, StoreKit import, Firebase Storage upload, Firestore write, Storage write, Cloud Functions call, real Gemini/OpenAI call, StoreKit, subscription/paywall, quota enforcement, persistence, UserDefaults, Core Data, SwiftData, export, save-to-Photos, backend code change, new npm dependency, third-party SDK, production cloud history, or Phase 12 work was added.
+
+### Verification
+
+- [x] Source-level safety scan found no forbidden iOS Firebase / Gemini / OpenAI / StoreKit imports.
+- [x] Source-level safety scan found no real persistence, upload, Firestore write, Storage write, Cloud Functions call, real AI call, StoreKit, quota enforcement, export, or save-to-Photos implementation.
+- [x] Secret/config scan found no real `GoogleService-Info.plist`, `.env`, `.firebaserc`, private key, provisioning profile, or Apple credential file.
+- [x] Backend / Firebase / package files were not modified.
+- [x] User Xcode / Simulator run accepted on 2026-06-09.
+- [x] User accepted the current result as commit-ready.
+- [ ] Codex command-line build remains blocked by existing `#Preview` macro / CoreSimulator tooling issues after reaching Swift compilation.
+
+### Known TODOs
+
+- Final product should open directly into Camera and should not show a landing / browse screen first.
+- Auth should not block basic camera use; login should live in Settings or future cloud-feature entry points.
+- Camera page should feel more like a Dazz-style camera shell and less like a content page.
+- Camera viewfinder should become more prominent and overall information density should be lower.
+- Camera controls should be completed in a future hardening pass: flash, timer, camera flip, capture button, filter picker, and photo picker import.
+- Recommended follow-up before Phase 12: Camera Entry Flow & Camera Shell Redesign if the current shell remains visually insufficient.
+- Small-screen camera shell layout should be verified again after the next camera-shell pass.
+- Optional physical iPhone / iPad capture and controls verification remains useful.
+- Phase 12 filter research and preset schema should not begin until Phase 11B is reviewed, committed, pushed, and explicitly requested.
+
+### Ready for Phase 12
+
+No. Phase 11 / 11B should be committed, pushed, and read-only confirmed before Phase 12 starts.
 
 ---
 

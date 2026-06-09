@@ -11,8 +11,7 @@ Use this script to demonstrate the current end-to-end mock MVP flow:
 ```text
 Launch app
 -> guest / mock auth
--> Home
--> Camera scaffold
+-> Camera-first scaffold
 -> Photo Picker import
 -> Filter presets
 -> Mock save success / failure
@@ -33,34 +32,38 @@ Launch app
 ## Demo Script
 
 1. Launch `AIPhotoApp`.
-2. If an auth entry appears, use the guest / mock auth path.
-3. Open Home and explain that the current build is a local/mock MVP demo.
-4. Tap the Camera entry.
-5. On Simulator, explain that live camera preview may be unavailable and Photo Picker is the reliable demo path.
-6. Import one image using Photo Picker.
-7. Review the selected-photo flow and confirm the screen can scroll.
-8. Switch filter presets:
+2. Confirm the app enters the Camera-first surface directly, without a landing screen or launch-time Auth gate.
+3. Explain that login is optional for now and lives in Settings for future cloud features.
+4. Explain that the current build is a local/mock MVP demo.
+5. Show the large 5:4-style camera frame, dark camera shell, lower-right filter entry, and bottom camera controls.
+6. Toggle flash / timer / camera flip to show they are UI scaffold controls.
+7. On Simulator, explain that live camera preview may be unavailable and Photo Picker is the reliable demo path.
+8. Import one image using Photo Picker.
+9. Review the selected-photo flow and confirm the screen can scroll.
+10. Switch filter presets:
    - Original / None
    - Classic Film
    - Warm Vintage
    - Faded Chrome
-9. Trigger mock save success and show the success state.
-10. Trigger mock save failure and show the failure state.
-11. Trigger mock AI analysis.
-12. Show AI loading state.
-13. Show mock AI result:
+11. Trigger mock save success and show the success state.
+12. Trigger mock save failure and show the failure state.
+13. Trigger mock AI analysis.
+14. Show AI loading state.
+15. Show mock AI result:
    - short summary
    - up to 3 suggestions
    - adjustment hints
    - mock/scaffold label
-14. Trigger mock AI failure if needed, then retry.
-15. Open History.
-16. Show the local-only session card.
-17. Explain that History is memory-only and may disappear after app restart.
-18. Clear local session history.
-19. Confirm History returns to the empty state.
-20. Open Settings.
-21. Explain that backend, cloud save, real AI, subscription, quota, and account deletion backend are placeholders.
+16. Trigger mock AI failure if needed, then retry.
+17. Open History.
+18. Show the local-only session card.
+19. Explain that History is memory-only and may disappear after app restart.
+20. Clear local session history.
+21. Confirm History returns to the empty state.
+22. Open Guide if needed to show secondary demo notes.
+23. Open Settings.
+24. Show that mock Auth / account entry is in Settings for future cloud features.
+25. Explain that backend, cloud save, real AI, subscription, quota, and account deletion backend are placeholders.
 
 ## Demo Close
 
