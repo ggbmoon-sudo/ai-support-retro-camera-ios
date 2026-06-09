@@ -60,7 +60,7 @@ Use app-level normalized ranges first. Rendering code can map these values to Co
 | `tint` | `-100...100` | Relative green-to-magenta control. |
 | `fade` | `0...100` | Film fade / lifted toe strength. |
 | `grain_amount` | `0...100` | Grain opacity or procedural intensity. |
-| `grain_size` | `0...100` | Grain scale. |
+| `grain_size` | `0.4...2.0` | Grain scale as a relative size multiplier. |
 | `vignette` | `0...100` | Edge darkening strength. |
 | `sharpness` | `-100...100` | Negative softens, positive sharpens. |
 | `clarity` | `-100...100` | Midtone local contrast. |
@@ -199,7 +199,7 @@ Rules:
     "tint": 2,
     "fade": 12,
     "grain_amount": 16,
-    "grain_size": 28,
+    "grain_size": 0.8,
     "vignette": 8,
     "sharpness": 0,
     "clarity": -4,
@@ -261,3 +261,15 @@ Deferred schema fields:
 - Grain assets and overlays are not implemented.
 - Tone-curve support exists only as a 5-point RGB curve.
 - Bloom, glow, halation, Metal, and custom shader hints remain future work.
+
+## Backfill Alignment Note
+
+The Filter Research Docs Backfill + Alignment Check reviewed `/Users/a1234/Downloads/濾鏡.md` against the Phase 12B / Phase 13 Swift catalog.
+
+Alignment result:
+
+- The schema remains suitable for the current local catalog.
+- Current Swift implementation uses a reduced in-code subset of the schema.
+- `preset_id`, public display name localization, category, group, summary localization, implementation priority, `is_mvp`, `is_premium`, and Core Image rendering parameters are represented.
+- HSL controls, LUT references, true grain overlays, halation passes, light leaks, dust, frames, CCD / instant camera asset treatment, Metal/custom shader work, and app-level JSON catalog loading remain future work.
+- Public UI display names remain brand-safe; brand / stock names are research-only internal inspiration.

@@ -14,6 +14,51 @@ Phase 12A is docs-only. It does not implement filters, change Swift code, change
 - Keep public filter names brand-safe.
 - Defer LUTs, grain overlays, halation, and custom shaders until the basic catalog is stable.
 
+## Backfill Alignment Status
+
+The Filter Research Docs Backfill + Alignment Check reviewed the supplied `/Users/a1234/Downloads/濾鏡.md` report against the Phase 12B / Phase 13 implementation.
+
+Current implementation status:
+
+- Phase 12B implemented the first 6 hero filters.
+- Phase 13 implemented the 20-preset research catalog as Core Image MVP approximations.
+- `Original` remains outside the 20 research presets and remains the no-filter option.
+- Classic Film, Warm Vintage, and Faded Chrome remain available as legacy starter filters.
+- Filter grouping / category UI exists.
+- Public UI filter names remain brand-safe.
+
+Current 20 research presets:
+
+- Soft Warm 400
+- Summer Gold 200
+- Street Chrome
+- Soft Sun Portrait
+- Cinema Flat
+- Silver Gradation
+- Everyday Color 400
+- Amber Night 800
+- Vivid Landscape 100
+- Slide Pop
+- Memory Negative
+- Amber Nostalgia
+- Tri Grit 400
+- Neon Tungsten 800
+- Instant Dream
+- Metro Pop
+- Diana Soft
+- Flash Party
+- CCD Party 2008
+- Editor Classic
+
+The older Batch 2 / Batch 3 tables below are retained as historical Phase 12A planning candidates. Phase 13's implemented catalog supersedes those candidate names where they differ.
+
+Phase 13B TODO candidates:
+
+- Tune individual filter parameters after more real-photo testing.
+- Revisit ordering, grouping, and picker UI based on user taste.
+- Add true LUT support only in a later explicit phase.
+- Add true grain overlays, halation, light leak, dust, frames, CCD / instant camera asset treatment, and Metal/custom shader work only in later explicit phases.
+
 ## Batch 1: Six Hero Filters
 
 Target phase: Phase 12B

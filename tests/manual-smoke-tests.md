@@ -858,3 +858,33 @@ Known TODOs:
 - [ ] Instant Dream, Diana Soft, CCD Party 2008, Flash Party, and other camera looks are color / contrast / vignette / bloom approximations only.
 - [ ] AI custom filters, reference-image-to-filter, and AI image generation remain future phases.
 - [ ] Premium gating remains future monetization work only.
+
+## Filter Research Docs Backfill + Alignment Check
+
+Check:
+
+- [x] Read supplied filter research report at `/Users/a1234/Downloads/濾鏡.md`.
+- [x] Confirmed `docs/filter-research-popular-film-looks.md` exists and backfilled source status / current 20-preset catalog notes.
+- [x] Confirmed `docs/filter-preset-schema.md` exists and records current schema / deferred fields.
+- [x] Confirmed `docs/filter-roadmap.md` exists and records current Phase 13 implementation alignment.
+- [x] Confirmed `docs/prompts/phase-12-filter-preset-schema-and-batch1.md` exists.
+- [x] Confirmed `docs/prompts/phase-13-expanded-filter-library-20-presets.md` exists.
+- [x] Confirmed `Original` remains no-filter.
+- [x] Confirmed legacy starter filters remain present: Classic Film, Warm Vintage, Faded Chrome.
+- [x] Confirmed Batch 1 hero filters remain present: Soft Warm 400, Summer Gold 200, Street Chrome, Soft Sun Portrait, Cinema Flat, Silver Gradation.
+- [x] Confirmed Phase 13 additional filters remain present: Everyday Color 400, Amber Night 800, Vivid Landscape 100, Slide Pop, Memory Negative, Amber Nostalgia, Tri Grit 400, Neon Tungsten 800, Instant Dream, Metro Pop, Diana Soft, Flash Party, CCD Party 2008, Editor Classic.
+- [x] Confirmed stable filter IDs remain present in `FilterPresetCatalog.swift`.
+- [x] Confirmed filter grouping / category metadata remains present.
+- [x] Confirmed public UI display names remain brand-safe and do not use Kodak, Fujifilm, Leica, Polaroid, CineStill, or similar protected brand names.
+- [x] Confirmed Phase 13 filters remain Core Image MVP approximations.
+- [x] Confirmed no Swift code was modified for this docs backfill.
+- [x] Confirmed no backend code was modified for this docs backfill.
+
+Known TODOs:
+
+- [ ] Phase 13B may tune individual filter parameters after more real-photo testing.
+- [ ] Phase 13B may revisit filter ordering, grouping, picker UI, or visual differences.
+- [ ] File-backed local catalog loading can be considered later; current catalog remains Swift in-code.
+- [ ] True LUT support remains future work.
+- [ ] True grain overlays, halation, light leak, dust, frames, CCD / instant camera asset treatment, Metal/custom shader work, and camera-specific optical simulation remain future phases.
+- [ ] Public UI filter names should continue avoiding protected brand names unless legal approval exists.

@@ -8,8 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 13 - Expanded Filter Library - 20 Presets
-Status: Phase 13 manually verified by user in Xcode / Simulator and temporarily accepted; ready to commit after review
+Current phase: Phase 14R - Live Guidance Research Integration
+Status: Phase 14R docs-only research integration completed; ready to review before commit
+Latest documentation maintenance: Filter Research Docs Backfill + Alignment Check completed; docs-only; no Swift/backend changes
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -21,7 +22,181 @@ Phase 11 build verification: attempted by Codex; generic iOS Simulator build rea
 Phase 11B build verification: attempted by Codex; generic iOS Simulator build reached Swift compilation but failed due existing SwiftUI `#Preview` macro / CoreSimulator tooling issues, not a confirmed Phase 11B source error; user Xcode / Simulator run accepted on 2026-06-09
 Phase 12B build verification: sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec environment restrictions; unsandboxed command-line simulator build succeeded on 2026-06-09; user Xcode / Simulator build-run accepted on 2026-06-09
 Phase 13 build verification: sandboxed command-line Xcode build failed due CoreSimulator / sandbox environment restrictions; unsandboxed command-line simulator build succeeded on 2026-06-09; user Xcode / Simulator build-run accepted on 2026-06-09
-Next phase: Phase 14 should not start until Phase 13 is reviewed, committed, pushed, and explicitly requested
+Next phase: Phase 14 mock UX implementation should start only after Phase 14R docs are reviewed and Phase 14 is explicitly requested
+
+---
+
+## Filter Research Docs Backfill + Alignment Check
+
+Status: Docs-only backfill and alignment check completed; ready to review before commit
+Date completed: 2026-06-09
+
+### Goal
+
+Backfill the filter research documentation from the supplied `/Users/a1234/Downloads/濾鏡.md` report and verify that the Phase 12B / Phase 13 Swift filter catalog still aligns with the documented product direction.
+
+This is not a new implementation phase.
+
+### Summary
+
+The filter research docs already existed, but `docs/filter-research-popular-film-looks.md` still described the original source report as unavailable. This task reconciled that doc with the supplied filter research report, clarified the implemented Phase 13 20-preset catalog, and recorded the implementation alignment result without changing Swift or backend code.
+
+### Completed
+
+- Backfilled `docs/filter-research-popular-film-looks.md` with the supplied source report path and current Phase 13 20-preset catalog.
+- Updated `docs/filter-preset-schema.md` with the research-backed `grain_size` range and a schema alignment note.
+- Updated `docs/filter-roadmap.md` with the current implemented 20-preset catalog and Phase 13B TODO candidates.
+- Verified `Original` remains the no-filter option.
+- Verified legacy starter filters remain available:
+  - Classic Film
+  - Warm Vintage
+  - Faded Chrome
+- Verified Batch 1 hero filters remain available:
+  - Soft Warm 400
+  - Summer Gold 200
+  - Street Chrome
+  - Soft Sun Portrait
+  - Cinema Flat
+  - Silver Gradation
+- Verified Phase 13 additional filters remain available:
+  - Everyday Color 400
+  - Amber Night 800
+  - Vivid Landscape 100
+  - Slide Pop
+  - Memory Negative
+  - Amber Nostalgia
+  - Tri Grit 400
+  - Neon Tungsten 800
+  - Instant Dream
+  - Metro Pop
+  - Diana Soft
+  - Flash Party
+  - CCD Party 2008
+  - Editor Classic
+- Verified stable IDs remain present in `FilterPresetCatalog.swift`.
+- Verified filter grouping / category metadata remains present.
+- Verified public UI display names remain brand-safe.
+
+### Alignment Result
+
+Phase 12B / Phase 13 implementation aligns with the backfilled research direction at MVP approximation level.
+
+Important caveats:
+
+- Phase 13 filters are Core Image MVP approximations, not final realistic film simulation.
+- Current Swift catalog is in-code, not JSON/catalog-file loaded.
+- HSL-specific tuning is not implemented.
+- LUT support is not implemented.
+- True grain overlays are not implemented.
+- Halation, light leak, dust, frames, CCD / instant camera asset treatment, and Metal/custom shader work remain future phases.
+
+### Phase 13B TODO Candidates
+
+- Tune individual filter parameters after more real-photo testing.
+- Revisit filter ordering, grouping, and picker UI after user taste review.
+- Decide whether to add a file-backed local catalog or keep the Swift catalog.
+- Add LUT support only in a later explicit phase.
+- Add true grain overlays, halation, light leak, dust, frames, CCD / instant camera asset treatment, and Metal/custom shader work only in later explicit phases.
+
+### Safety Notes
+
+- Docs-only maintenance task.
+- Did not modify Swift code.
+- Did not modify backend code.
+- Did not add filters.
+- Did not change filter visual parameters.
+- Did not redo filter UI.
+- Did not start Phase 13B.
+- Did not start Phase 14.
+- Did not add Firebase, Gemini, OpenAI, or StoreKit imports.
+- Did not add secrets, API keys, Firebase config, `.env`, `.firebaserc`, or `GoogleService-Info.plist`.
+- Did not commit.
+- Did not push.
+
+### Ready for Commit
+
+Ready to commit docs backfill: Yes, after review and final verification checks.
+
+---
+
+## Phase 14R - Live Guidance Research Integration
+
+Status: Docs-only research integration completed; ready to review before commit
+Date completed: 2026-06-09
+
+### Goal
+
+Integrate the Live Camera Guidance, Spoken Camera Assistant / ASR, and Gemini Live research into repo documentation, then update the Phase 14 prompt so the next implementation stays aligned with research conclusions.
+
+This phase does not implement Phase 14.
+
+### Summary
+
+Phase 14R formalizes the live guidance roadmap:
+
+- Phase 14: Mock UX only.
+- Phase 15: Local rule-based / Apple Vision prototype.
+- Phase 16: Server-side low-frequency snapshot guidance.
+- Phase 17: Gemini Live voice + visual assistant prototype.
+- Voice branch: push-to-talk mock, then Apple Speech prototype, then cloud STT / Gemini Live research.
+
+The research integration confirms that Phase 14 should not include Vision, frame analysis, Gemini Live, voice input, ASR, Parakeet, or live video upload.
+
+### Completed
+
+- Added `docs/live-camera-guidance-research.md`.
+- Added `docs/spoken-camera-assistant-research.md`.
+- Added `docs/gemini-live-implementation-notes.md`.
+- Added `docs/live-guidance-roadmap.md`.
+- Updated `docs/prompts/phase-14-live-camera-guidance-mock-ux.md` with Phase 14R research conclusions.
+- Added future provider abstraction names to the Phase 14 prompt:
+  - `MockLiveGuidanceProvider`
+  - `FutureLocalRuleBasedGuidanceProvider`
+  - `FutureVisionGuidanceProvider`
+  - `FutureCloudSnapshotGuidanceProvider`
+  - `FutureGeminiLiveGuidanceProvider`
+- Kept Phase 14 prompt scoped to mock UX only.
+
+### Changed Files
+
+- docs/live-camera-guidance-research.md
+- docs/spoken-camera-assistant-research.md
+- docs/gemini-live-implementation-notes.md
+- docs/live-guidance-roadmap.md
+- docs/prompts/phase-14-live-camera-guidance-mock-ux.md
+- docs/phase-log.md
+
+### Research Conclusions
+
+- Live guidance is a strong long-term product direction, but the MVP should not use real-time cloud video AI.
+- Phase 14 should validate overlay placement, toggle behavior, mock state, and short suggestion copy only.
+- Phase 15 is the right place for local rule-based / Apple Vision prototype work.
+- Phase 16 is the right place for optional server-side low-frequency snapshot guidance.
+- Phase 17 is the right place for Gemini Live voice + visual assistant research.
+- Voice input is worth a long-term branch, but should not enter MVP or Phase 14.
+- Parakeet TDT 0.6B is not suitable as an iPhone on-device ASR solution and is not a good Cantonese / Traditional Chinese primary ASR route.
+- Gemini Live should not be the MVP guidance engine.
+
+### Safety Notes
+
+- Docs-only phase.
+- Did not modify Swift code.
+- Did not modify backend code.
+- Did not implement Phase 14.
+- Did not start Phase 15.
+- Did not connect Gemini Live.
+- Did not connect Apple Vision.
+- Did not connect ASR or Parakeet.
+- Did not add Firebase, OpenAI, Gemini, or StoreKit imports.
+- Did not add secrets, API keys, Firebase config, `.env`, `.firebaserc`, or `GoogleService-Info.plist`.
+- Did not commit.
+- Did not push.
+
+### Ready for Next Phase
+
+Ready to execute Phase 14 mock UX: Yes, after Phase 14R docs are reviewed and Phase 14 is explicitly requested.
+
+Ready for Phase 15: No. Phase 14 mock UX should be implemented, reviewed, committed, pushed, and read-only confirmed first.
 
 ---
 

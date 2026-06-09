@@ -6,9 +6,17 @@ Phase 12A is planning-only. It does not implement filters, change Swift code, ch
 
 ## Source Status
 
-The requested source report is `deep-research-report.md`.
+Original Phase 12A source reference:
 
-At the time of this Phase 12A documentation pass, that file was not found in the local repository or nearby project workspace. This document is therefore based on the user's provided research summary and should be reconciled with `deep-research-report.md` if that source file is later added.
+- `deep-research-report.md`
+
+Backfilled source reviewed during the Filter Research Docs Backfill + Alignment Check:
+
+- `/Users/a1234/Downloads/濾鏡.md`
+
+The backfilled source provides the fuller filter database research report, including market signals, popular film / camera look families, the 20-preset product catalog, app-level parameter ranges, and engineering landing recommendations.
+
+The Phase 13 implementation aligns to the backfilled 20-preset catalog below using local Core Image MVP approximations. Brand names remain internal inspiration only and must not be used as public UI filter names.
 
 ## Naming Safety
 
@@ -51,30 +59,44 @@ Engineering implication:
 
 | Priority | Display name | Category | Internal inspiration | Summary | MVP fit |
 | --- | --- | --- | --- | --- | --- |
-| 1 | Soft Warm 400 | color_negative | warm consumer negative film | Warm, soft everyday film look with gentle contrast. | Yes |
-| 2 | Summer Gold 200 | color_negative | sunny daylight consumer film | Golden highlights, bright outdoor warmth, light grain. | Yes |
-| 3 | Street Chrome | chrome_slide | high-contrast slide street looks | Crisp contrast, cooler shadows, stronger color separation. | Yes |
-| 4 | Soft Sun Portrait | portrait | soft warm portrait film | Gentle skin, lifted shadows, warm highlights. | Yes |
-| 5 | Cinema Flat | cinematic | modern flat cinema base grade | Muted saturation, protected highlights, editorial tone. | Yes |
-| 6 | Silver Gradation | black_white | classic black and white film | Smooth monochrome contrast with controlled grain. | Yes |
-| 7 | Night Glow 800 | night | tungsten / night color negative | Low-light warmth, glow, grain, green-blue shadows. | Later |
-| 8 | Instant Fade | instant | instant camera print fade | Pastel fade, vignette, nostalgic print feel. | Later |
-| 9 | Classic Slide | chrome_slide | saturated slide film | Rich color, higher contrast, clean daylight pop. | Later |
-| 10 | Muted Editorial | editorial | modern photographer muted grade | Lower saturation, clean contrast, polished lifestyle look. | Later |
-| 11 | Dusty Rose | portrait | soft rosy portrait grade | Pink warmth, softer contrast, gentle highlights. | Later |
-| 12 | Forest Negative | color_negative | green-rich outdoor negative film | Organic greens, warm mids, soft highlight rolloff. | Later |
-| 13 | Blue Hour Tungsten | night | tungsten-balanced night look | Cool ambient shadows, warm light sources, low saturation. | Later |
-| 14 | Creamy Pastel | pastel | pastel lifestyle film | Low contrast, creamy highlights, soft color. | Later |
-| 15 | High Contrast Mono | black_white | punchy monochrome street film | Strong blacks, crisp whites, classic grain. | Later |
-| 16 | Clean Documentary | documentary | neutral documentary photographer grade | Balanced tones, low stylization, honest color. | Later |
-| 17 | Amber Flash | compact | direct flash compact camera | Warm flash center, darker edges, saturated skin warmth. | Later |
-| 18 | Old Compact | compact | early compact digital / toy camera | Vignette, crushed shadows, imperfect saturation. | Later |
-| 19 | Green Shadow | experimental | cross-process inspired green shadows | Green-blue shadows, warm highlights, stylized mood. | Later |
-| 20 | Sepia Archive | archive | aged print / archive photo | Warm brown mono, fade, low clarity. | Later |
+| 1 | Soft Warm 400 | classic_negative | warm portrait negative film | Soft warm skin, gentle contrast, flexible everyday hero look. | Implemented |
+| 2 | Summer Gold 200 | classic_negative | sunny consumer color film | Golden, bright, daily daylight and travel look. | Implemented |
+| 3 | Everyday Color 400 | classic_negative | vivid consumer 400-speed film | Practical everyday color with moderate warmth and flexible indoor/outdoor use. | Implemented |
+| 4 | Amber Night 800 | classic_negative | high-speed warm night negative film | Warm low-light look with moodier contrast. | Implemented |
+| 5 | Vivid Landscape 100 | positive_vivid | ultra-vivid landscape film | Crisp high-color daylight look for scenery, food, and travel. | Implemented |
+| 6 | Slide Pop | positive_vivid | saturated slide / positive film | Punchy slide-style color and deeper contrast. | Implemented |
+| 7 | Soft Sun Portrait | portrait_soft | soft warm portrait film | Gentle skin handling and smooth outdoor portrait tone. | Implemented |
+| 8 | Street Chrome | documentary_muted | muted photojournalism / chrome street look | Lower saturation, cooler shadows, documentary street tone. | Implemented |
+| 9 | Memory Negative | documentary_lofi | nostalgic lo-fi negative film | Soft memory-like negative tone with lifted shadows and faded contrast. | Implemented |
+| 10 | Amber Nostalgia | documentary_warm | warm nostalgic documentary grade | Amber highlights, faded archive warmth, compact-camera mood. | Implemented |
+| 11 | Cinema Flat | cinematic | flat cinema base grade | Muted editorial color with protected highlights. | Implemented |
+| 12 | Silver Gradation | bw_clean | clean silver black-and-white film | Smooth monochrome tonal range. | Implemented |
+| 13 | Tri Grit 400 | bw_gritty | gritty monochrome documentary film | Punchier high-contrast street black and white. | Implemented |
+| 14 | Neon Tungsten 800 | cinematic_night | tungsten night cinema film | Cool-blue night and neon mood with bloom approximation. | Implemented |
+| 15 | Instant Dream | instant | instant camera print | Pastel instant-photo mood with fade and vignette approximation. | Implemented |
+| 16 | Metro Pop | experimental_muted | muted city color pop film | Urban pop color with stronger contrast. | Implemented |
+| 17 | Diana Soft | toy_camera | soft toy camera optics | Soft-focus toy-camera mood with vignette and bloom approximation. | Implemented |
+| 18 | Flash Party | disposable_camera | direct-flash disposable camera | Harder party snapshot feel with contrast and vignette. | Implemented |
+| 19 | CCD Party 2008 | ccd_digital | early compact digital / CCD look | High contrast, sharper compact-camera Y2K mood. | Implemented |
+| 20 | Editor Classic | editorial_classic | classic editorial camera look | Clean muted editorial tone for portraits, interiors, and lifestyle. | Implemented |
+
+`Original` is intentionally outside the 20-preset research catalog and remains the no-filter option.
+
+Legacy starter filters remain available outside the research 20:
+
+- Classic Film
+- Warm Vintage
+- Faded Chrome
 
 ## First 12 Priority Set
 
 The first 12 should be treated as the practical product target for Phase 12B and Phase 13 planning, but Phase 12B should implement only the first 6 hero filters.
+
+Backfill note:
+
+- Phase 12B implemented the first 6 hero filters.
+- Phase 13 implemented the full 20-preset research catalog above.
+- The older planning candidates in the seed JSON below are retained as historical engineering seed data and should not override the Phase 13 implemented catalog names.
 
 | Rank | Preset | Reason |
 | --- | --- | --- |
