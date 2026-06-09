@@ -1,4 +1,5 @@
 import { onCall } from "firebase-functions/v2/https";
+export { analyzePhoto } from "./analyzePhoto";
 
 export const helloCallable = onCall(async (request) => {
   return {

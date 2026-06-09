@@ -8,13 +8,14 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 05 - Firebase Storage + Firestore Save Scaffold
-Status: Phase 05 mock save scaffold implemented and manually verified by user in Xcode / Simulator
+Current phase: Phase 06 - AI Photo Advisor Backend / Service Scaffold
+Status: Phase 06 mock AI analysis scaffold implemented and manually verified by user in Xcode / Simulator
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 05 build verification: command-line Xcode simulator build succeeded on 2026-06-09
-Next phase: Phase 06 - AI AnalyzePhoto Cloud Function, only after Phase 05 is verified, committed, pushed, and explicitly requested
+Phase 06 build verification: attempted by Codex; sandboxed command-line builds failed due existing SwiftUI `#Preview` macro / CoreSimulator sandbox environment, not Phase 06 source errors; user Xcode / Simulator build-run accepted on 2026-06-09
+Next phase: Phase 07 - AI Result UI, only after Phase 06 is verified, committed, pushed, and explicitly requested
 
 ---
 
@@ -720,17 +721,121 @@ Do not store image binary data in Firestore.
 
 ---
 
-## Phase 06 - AI AnalyzePhoto Cloud Function
+## Phase 06 - AI Photo Advisor Backend / Service Scaffold
 
-Status: Not started
+Status: Implemented as mock-only scaffold; manually verified by user in Xcode / Simulator
+Date started: 2026-06-09
+Date completed: 2026-06-09
 
 ### Goal
 
-Implement Cloud Functions server-side AI proxy, provider adapter, mock provider, GeminiAnalyzer, schema validation, and analyzePhoto callable function.
+Implement a safe, mockable AI Photo Advisor backend / service scaffold with request / response contracts, mock analyzer behavior, Cloud Functions placeholder shape, provider adapter placeholders, and future prompt template draft.
+
+### Summary
+
+Phase 06 added mock-only AI Photo Advisor models and services on iOS plus a dependency-free backend TypeScript scaffold. The app now has photo analysis request / response models, analysis status/error/provider models, a `PhotoAnalysisService` protocol, mock success/failure service, and a Cloud Function placeholder service that does not import Firebase.
+
+The functions scaffold now has an `analyzePhoto` mock handler, typed photo analysis contract, `AIProviderAdapter`, `MockAnalyzer`, placeholder-only `GeminiAnalyzer` and `OpenAIAnalyzer`, and a future-only prompt template draft.
+
+No Gemini API key, OpenAI API key, Firebase project ID, `GoogleService-Info.plist`, `.env`, `.firebaserc`, private key, OAuth secret, Apple credential, FirebaseFunctions import in iOS, real Gemini call, real OpenAI call, Cloud Functions deploy, production Firebase, Firebase Admin SDK import, npm dependency, image upload, Firestore write, Storage write, AI billing/quota, StoreKit, subscription/paywall, AI chat, image editing, generative edit, realtime video AI, or Phase 07 work was added.
+
+### Completed
+
+- Read the Phase 06 prompt and required project documents.
+- Confirmed branch, latest commit, sync status, and `ios-app/AIPhotoApp.xcodeproj` before implementation.
+- Confirmed no real Firebase config, `.env`, `.firebaserc`, or `GoogleService-Info.plist` was present before implementation.
+- Added `PhotoAnalysisRequest` model draft.
+- Added `PhotoAnalysisResult` model draft.
+- Added `PhotoAnalysisStatus`, provider, and error models.
+- Added `PhotoAnalysisService` protocol.
+- Added `MockPhotoAnalysisService` for local mock success and failure paths.
+- Added `CloudFunctionPhotoAnalysisService` placeholder/TODO without Firebase imports.
+- Added backend `analyzePhoto` mock handler.
+- Added backend `AIProviderAdapter`.
+- Added backend `MockAnalyzer`.
+- Added backend `GeminiAnalyzer` placeholder/TODO.
+- Added backend `OpenAIAnalyzer` placeholder/TODO.
+- Added TypeScript photo analysis contract.
+- Added future-only prompt template draft.
+- Updated English and Traditional Chinese localization strings for mock AI output and errors.
+- Updated iOS and functions README notes.
+- Updated manual smoke tests with Phase 06 checks.
+
+### Changed Files
+
+- docs/phase-log.md
+- docs/prompts/phase-06-ai-photo-advisor-backend.md
+- functions/README.md
+- functions/src/index.ts
+- functions/src/analyzePhoto.ts
+- functions/src/ai/AIProviderAdapter.ts
+- functions/src/ai/MockAnalyzer.ts
+- functions/src/ai/GeminiAnalyzer.ts
+- functions/src/ai/OpenAIAnalyzer.ts
+- functions/src/contracts/photoAnalysis.ts
+- functions/src/prompts/photoAdvisorPrompt.ts
+- ios-app/README.md
+- ios-app/AIPhotoApp/Models/PhotoAnalysisRequest.swift
+- ios-app/AIPhotoApp/Models/PhotoAnalysisResult.swift
+- ios-app/AIPhotoApp/Models/PhotoAnalysisStatus.swift
+- ios-app/AIPhotoApp/Services/AIPhotoAdvisor/PhotoAnalysisService.swift
+- ios-app/AIPhotoApp/Services/AIPhotoAdvisor/MockPhotoAnalysisService.swift
+- ios-app/AIPhotoApp/Services/AIPhotoAdvisor/CloudFunctionPhotoAnalysisService.swift
+- ios-app/AIPhotoApp/Resources/Localization/en.lproj/Localizable.strings
+- ios-app/AIPhotoApp/Resources/Localization/zh-Hant.lproj/Localizable.strings
+- tests/manual-smoke-tests.md
+
+### Tests / Manual Checks
+
+- [x] Ran `git status --short` before implementation.
+- [x] Confirmed `ios-app/AIPhotoApp.xcodeproj` exists.
+- [x] Confirmed local branch was synchronized with `origin/feat/phase-02-auth`.
+- [x] Confirmed no real Firebase config, `.env`, `.firebaserc`, or `GoogleService-Info.plist` existed before implementation.
+- [x] Confirmed iOS Phase 06 files do not import Firebase or FirebaseFunctions.
+- [x] Confirmed backend Phase 06 files do not import Gemini SDK, OpenAI SDK, or Firebase Admin SDK.
+- [x] Confirmed no npm dependency was added.
+- [x] Confirmed mock response contains one short summary, up to three suggestions, adjustment hints, `provider = mock`, and `isMock = true`.
+- [x] Confirmed no complete AI result UI was added.
+- [x] Confirmed no real Gemini call, OpenAI call, Cloud Functions deploy, production Firebase, upload, Firestore write, Storage write, AI billing/quota, StoreKit, subscription/paywall, AI chat, image editing, generative edit, realtime video AI, or Phase 07 work was added.
+- [x] Attempted command-line Xcode simulator build. It failed in the sandbox because SwiftUI `#Preview` macro expansion could not load `PreviewsMacros.SwiftUIView` and CoreSimulator services were unavailable.
+- [x] Attempted command-line Xcode device build with signing disabled. It failed for the same sandbox / SwiftUI Preview macro environment.
+- [x] Filtered Xcode build errors and confirmed reported Swift `error:` lines point to existing `#Preview` macro expansion failures, not Phase 06 files.
+- [x] Backend TypeScript build/check was attempted but could not run because `tsc` is not installed and `functions/node_modules` is absent.
+- [x] User manually verified app build / run in Xcode / Simulator was acceptable.
+- [x] User manually verified Home -> Camera flow.
+- [x] User manually verified photo picker can select an image.
+- [x] User manually verified filter presets can be switched.
+- [x] User manually verified mock save success and failure still work.
+- [x] User manually verified Home / History / Settings still work.
+- [x] User manually verified no AI result UI appears.
+- [x] User manually verified no real AI call occurs.
+- [x] User manually verified no upload, Firestore write, Storage write, StoreKit, quota, history persistence, or export behavior occurs.
+- [x] User manually verified no real Firebase config or secrets were added.
+
+### Known TODOs
+
+- Keep real Cloud Functions callable wiring for a later explicitly requested setup task.
+- Keep real Gemini/OpenAI provider setup for a later explicitly requested setup task with server-side secret management.
+- Add consent gate, quota enforcement, App Check, structured response validation, cost controls, and provider fallback only in later phases.
+- Build complete AI result UI in Phase 07 only after Phase 06 is verified, committed, pushed, and explicitly requested.
+
+### Xcode Build
+
+Codex attempted command-line simulator and device builds. Both failed inside the managed sandbox because Xcode could not access CoreSimulator services and SwiftUI `#Preview` macro expansion reported `PreviewsMacros.SwiftUIView` as unavailable. A filtered error scan showed the Swift `error:` lines are from existing preview declarations, not the new Phase 06 source files.
+
+The user manually verified Phase 06 in Xcode / Simulator and reported that app build / run was acceptable.
+
+### Backend Check
+
+`git diff --check` passed. Backend TypeScript build did not run because `tsc` is not installed in this environment and `functions/node_modules` is absent. No npm install was run and no npm dependency was added.
+
+### Ready for Phase 07
+
+No. Phase 06 has been implemented as a mock-only scaffold and manually verified by user in Xcode / Simulator, but Phase 07 should not begin until Phase 06 is committed, pushed, and explicitly requested.
 
 ### Notes
 
-Do not put AI API keys in the iOS app. Real provider keys should use server-side secret management.
+Do not put AI API keys in the iOS app. Real provider keys should use server-side secret management in a later explicitly requested setup task.
 
 ---
 

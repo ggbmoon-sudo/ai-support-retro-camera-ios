@@ -200,3 +200,30 @@ The current save scaffold is intentionally mock-only:
 - History remains an honest placeholder and does not persist saved photos.
 
 This phase does not add a real `GoogleService-Info.plist`, Firebase project ID, `.env`, `.firebaserc`, API keys, private keys, OAuth secrets, Apple credentials, production Firebase upload, production Firestore writes, Firebase imports, AI analysis, Cloud Functions, StoreKit, subscription/quota logic, history persistence, export/save to Photos, public sharing, account deletion backend, or Phase 06 work.
+
+## Phase 06 AI Photo Advisor Backend / Service Scaffold
+
+Phase 06 adds mock-only AI Photo Advisor service models under:
+
+```text
+ios-app/AIPhotoApp/Services/AIPhotoAdvisor/
+```
+
+Current Phase 06 AI files include:
+
+- `PhotoAnalysisRequest.swift`
+- `PhotoAnalysisResult.swift`
+- `PhotoAnalysisStatus.swift`
+- `PhotoAnalysisService.swift`
+- `MockPhotoAnalysisService.swift`
+- `CloudFunctionPhotoAnalysisService.swift`
+
+The current AI scaffold is intentionally mock-only:
+
+- `PhotoAnalysisService` defines the analysis contract.
+- `MockPhotoAnalysisService` returns local mock success and failure results.
+- `CloudFunctionPhotoAnalysisService` is a placeholder/TODO and does not import Firebase or FirebaseFunctions.
+- Mock results include one short summary, up to three actionable suggestions, simple adjustment hints, `provider = mock`, and `isMock = true`.
+- No complete AI result UI is added in Phase 06.
+
+This phase does not add Gemini API keys, OpenAI API keys, Firebase project IDs, `GoogleService-Info.plist`, `.env`, `.firebaserc`, private keys, OAuth secrets, Apple credentials, real Gemini calls, real OpenAI calls, deployed Cloud Functions, production Firebase, FirebaseFunctions imports in iOS, real provider SDK imports, uploads, Firestore writes, Storage writes, AI billing, quota, StoreKit, subscription/paywall logic, AI chat, image editing, generative edit, realtime video AI, or Phase 07 work.

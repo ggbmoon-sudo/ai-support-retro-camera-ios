@@ -273,3 +273,63 @@ Manual Xcode check on physical iPhone / iPad:
 - [ ] Apply a filter preset.
 - [ ] Trigger mock save success.
 - [ ] Confirm no real upload or Firestore write occurs.
+
+## Phase 06
+
+Check:
+
+- [x] Added `PhotoAnalysisRequest` model draft.
+- [x] Added `PhotoAnalysisResult` model draft.
+- [x] Added `PhotoAnalysisStatus`.
+- [x] Added `PhotoAnalysisService` protocol.
+- [x] Added `MockPhotoAnalysisService` with mock success and failure behavior.
+- [x] Added `CloudFunctionPhotoAnalysisService` placeholder without Firebase or FirebaseFunctions imports.
+- [x] Added backend `analyzePhoto` scaffold.
+- [x] Added `AIProviderAdapter`.
+- [x] Added `MockAnalyzer`.
+- [x] Added `GeminiAnalyzer` placeholder / TODO.
+- [x] Added `OpenAIAnalyzer` placeholder / TODO.
+- [x] Added TypeScript photo analysis contract.
+- [x] Added future-only prompt template draft.
+- [x] Mock response includes one short summary.
+- [x] Mock response includes up to three actionable suggestions.
+- [x] Mock response includes simple adjustment hints.
+- [x] Mock response uses `provider = mock`.
+- [x] Mock response uses `isMock = true`.
+- [x] Confirmed no complete AI result UI was added.
+- [x] Confirmed no Gemini API key was added.
+- [x] Confirmed no OpenAI API key was added.
+- [x] Confirmed no Firebase project ID, `GoogleService-Info.plist`, `.env`, `.firebaserc`, private key, OAuth secret, Apple credential, signing credential, or provisioning profile was added.
+- [x] Confirmed no real Gemini call was implemented.
+- [x] Confirmed no real OpenAI call was implemented.
+- [x] Confirmed no Cloud Functions deploy was run.
+- [x] Confirmed no production Firebase was enabled.
+- [x] Confirmed no Firebase / FirebaseFunctions imports were added to iOS.
+- [x] Confirmed no real Gemini / OpenAI SDK imports were added.
+- [x] Confirmed no Firebase Admin SDK imports were added.
+- [x] Confirmed no npm dependency was added.
+- [x] Confirmed no upload, Firestore write, Storage write, AI billing, quota, StoreKit, subscription/paywall, AI chat, image editing, generative edit, realtime video AI, or Phase 07 work was added.
+
+Manual Xcode check on simulator:
+
+- [x] Build and run `AIPhotoApp` in an iOS Simulator.
+- [ ] Sign in with mock Auth or continue as guest.
+- [x] Open Home.
+- [x] Open the Camera scaffold.
+- [x] Import one image with the photo picker.
+- [x] Switch to at least one retro preset.
+- [x] Trigger mock save success.
+- [x] Trigger mock save failure.
+- [x] Confirm Phase 03 Camera, Phase 04 Filters, and Phase 05 Mock Save still behave as before.
+- [x] Confirm Home / History / Settings still render.
+- [x] Confirm no AI result UI appears unless a future phase explicitly adds it.
+- [x] Confirm no real AI call occurs.
+- [x] Confirm no real Firebase config or secrets are present.
+- [x] Confirm Save / Continue does not upload, write Firestore, write Storage, call Gemini, call OpenAI, deploy/call Cloud Functions, start StoreKit, enforce quota, persist history, export, or start Phase 07.
+
+Manual source/backend check:
+
+- [ ] Review `ios-app/AIPhotoApp/Services/AIPhotoAdvisor/CloudFunctionPhotoAnalysisService.swift` and confirm it has TODOs but no Firebase imports.
+- [ ] Review `functions/src/ai/GeminiAnalyzer.ts` and confirm it is placeholder-only.
+- [ ] Review `functions/src/ai/OpenAIAnalyzer.ts` and confirm it is placeholder-only.
+- [ ] Review `functions/src/analyzePhoto.ts` and confirm it returns mock analysis only.
