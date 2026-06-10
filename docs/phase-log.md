@@ -8,8 +8,8 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 15C - Local Face Framing Vision Prototype
-Status: Phase 15C implemented; user Xcode / Simulator verification accepted; ready to commit
+Current phase: Phase 15D - Guidance Stability and Priority
+Status: Phase 15D implemented; ready for review before commit
 Latest documentation maintenance: Filter Research Docs Backfill + Alignment Check completed; docs-only; no Swift/backend changes
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -28,7 +28,96 @@ Phase 14C build verification: sandboxed command-line Xcode build failed due Core
 Phase 15 build verification: sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec environment restrictions; unsandboxed command-line simulator build succeeded on 2026-06-10
 Phase 15B build verification: sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec environment restrictions; unsandboxed command-line simulator build succeeded on 2026-06-10
 Phase 15C build verification: sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec environment restrictions; unsandboxed command-line simulator build succeeded on 2026-06-10; user Xcode / Simulator build-run accepted on 2026-06-10
-Next phase: Phase 16 should not start until Phase 15C is reviewed, committed, pushed, and read-only confirmed
+Phase 15D build verification: sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec environment restrictions; unsandboxed command-line simulator build succeeded on 2026-06-10
+Next phase: Phase 16 should not start until Phase 15D is reviewed, committed, pushed, and read-only confirmed
+
+---
+
+## Phase 15D - Guidance Stability and Priority
+
+Status: Implemented; ready for review before commit
+Date completed: 2026-06-10
+
+### Goal
+
+Add a conservative Guidance Stability / Priority / Anti-flicker UX layer on top of existing Local guidance signals without starting Phase 16, adding new AI capability, adding new frame analysis types, adding new Vision request types, increasing frame sampling frequency, or touching backend/cloud services.
+
+### Summary
+
+Phase 15D adds `LiveGuidanceStabilityController`, a small memory-only controller that ranks already-composed Local guidance suggestions, limits visible hints to at most two, applies repeat cooldown, requires a short confirmation before replacing current hints, and briefly holds stable suggestions when incoming signals change.
+
+The phase preserves Phase 15B brightness guidance and Phase 15C face framing / headroom guidance. It does not modify `CameraCaptureService` sampling cadence and does not expand Vision beyond the existing face rectangle analyzer.
+
+### Completed
+
+- Added memory-only Local guidance stability controller.
+- Added suggestion priority ordering for lighting, face distance, composition, filter, portrait-ready, and fallback hints.
+- Added cooldown to reduce repeated suggestions.
+- Added confirmation count to reduce one-frame hint jumps.
+- Added short hold behavior when a signal disappears briefly.
+- Limited Local guidance to at most two visible suggestions.
+- Limited Mock guidance display to at most two suggestions without changing the mock provider.
+- Kept Mock guidance mode available.
+- Preserved Phase 15B brightness guidance.
+- Preserved Phase 15C face framing / headroom guidance.
+- Preserved Camera as the primary screen, Dazz-like viewport, mock lens selector, flash / timer / flip / capture, Photo Picker, selected-photo Back to Camera / Clear, 20 filters/grouping, mock save, mock AI, local history, Inspiration, History, and Settings.
+- Updated README / iOS README / manual smoke tests.
+
+### Changed Files
+
+- README.md
+- ios-app/README.md
+- docs/phase-log.md
+- docs/prompts/phase-15D-guidance-stability-and-priority.md
+- tests/manual-smoke-tests.md
+- ios-app/AIPhotoApp/Features/Camera/CameraViewModel.swift
+- ios-app/AIPhotoApp/Features/Camera/LiveGuidanceSignal.swift
+- ios-app/AIPhotoApp/Features/Camera/LiveGuidanceStabilityController.swift
+- ios-app/AIPhotoApp/Features/Camera/LiveGuidanceSuggestionComposer.swift
+
+### Build / Verification
+
+- `git diff --check` passed.
+- Forbidden imports scan passed for Firebase, FirebaseFunctions, FirebaseStorage, FirebaseFirestore, Gemini, OpenAI, and StoreKit imports.
+- Vision import / request scan found `import Vision` and `VNDetectFaceRectanglesRequest` only in the existing `LiveGuidanceFaceAnalyzer.swift`; no new Vision request type was added.
+- Secrets / config file scan found no `GoogleService-Info.plist`, `.env`, or `.firebaserc`.
+- Refined secrets scan only matched `.env.example` placeholder values and docs/prompt scan commands, not real secrets, Firebase config, API keys, signing credentials, or production config.
+- Camera-scoped forbidden behavior scan matched only existing local/mock explanatory strings, not new upload, persistence, StoreKit, Gemini/OpenAI, speech/ASR, Parakeet, save-to-Photos, or related behavior.
+- Frame safety scan only matched the expected existing in-memory `CMSampleBuffer` / `CVPixelBuffer` brightness and face rectangle analysis path; no raw-frame storage, upload, stream, base64 conversion, raw-frame logging, network behavior, or persistence was found.
+- Face safety scan only matched the existing local Vision face rectangle detector, signal names, and UI/message identifiers; no face recognition, identity inference, sensitive attribute inference, face data persistence, or face rectangle history implementation was found.
+- Sandboxed command-line Xcode simulator build failed due CoreSimulator / sandbox-exec environment restrictions.
+- Unsandboxed command-line Xcode simulator build succeeded with `xcodebuild -project ios-app/AIPhotoApp.xcodeproj -scheme AIPhotoApp -destination 'generic/platform=iOS Simulator' -derivedDataPath /private/tmp/ai-support-phase15d-derived CODE_SIGNING_ALLOWED=NO build`.
+
+### Known TODOs
+
+- Physical iPhone testing is still required to tune stability constants against real lighting and face-framing motion.
+- Cooldown, confirmation count, and hold duration may need product tuning after real-device use.
+- This remains local guidance UX stabilization, not cloud AI, Gemini Live, voice guidance, or production-grade pose coaching.
+
+### Safety Notes
+
+- Did not start Phase 16.
+- Did not add Gemini Live.
+- Did not call Gemini, OpenAI, or Cloud Functions.
+- Did not add cloud snapshot guidance.
+- Did not increase camera frame sampling frequency.
+- Did not add new frame analysis types.
+- Did not add new Vision request types.
+- Did not modify `LiveGuidanceFaceAnalyzer`.
+- Did not upload, stream, persist, or log camera frames.
+- Did not store face rectangles or face history.
+- Did not add face recognition, identity inference, age inference, gender inference, emotion inference, beauty scoring, attractiveness scoring, health inference, or sensitive attribute inference.
+- Did not add voice input, ASR, Parakeet, microphone permission copy, or speech recognition permission copy.
+- Did not connect Firebase Storage or Firestore.
+- Did not add Firebase, FirebaseFunctions, FirebaseStorage, FirebaseFirestore, Gemini, OpenAI, or StoreKit imports.
+- Did not add `GoogleService-Info.plist`, `.env`, `.firebaserc`, API keys, Firebase project IDs, private keys, OAuth secrets, Apple credentials, signing credentials, provisioning profiles, or production config.
+- Did not add persistence, UserDefaults, Core Data, SwiftData, export, save-to-Photos, StoreKit, subscription, paywall, premium gating, quota enforcement, backend changes, npm dependencies, third-party SDKs, commit, or push.
+
+### Ready for Next Phase
+
+Ready to review before commit: Yes.
+
+Ready for Phase 16: No. Phase 15D should be reviewed, committed, pushed, and read-only confirmed before Phase 16 starts.
 
 ---
 

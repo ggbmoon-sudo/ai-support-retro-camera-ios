@@ -8,7 +8,7 @@ nonisolated struct LiveGuidanceSuggestionComposer: Sendable {
     ) -> [LiveGuidanceSuggestion] {
         var suggestions: [LiveGuidanceSuggestion] = []
 
-        for signal in signals {
+        for signal in ranked(signals) {
             guard let suggestion = suggestion(for: signal, selectedPreset: selectedPreset),
                   !suggestions.contains(where: { $0.id == suggestion.id }) else {
                 continue
@@ -21,6 +21,21 @@ nonisolated struct LiveGuidanceSuggestionComposer: Sendable {
         }
 
         return suggestions
+    }
+
+    private func ranked(_ signals: [LiveGuidanceSignal]) -> [LiveGuidanceSignal] {
+        signals
+            .reduce(into: [LiveGuidanceSignal]()) { result, signal in
+                guard !result.contains(signal) else { return }
+                result.append(signal)
+            }
+            .sorted { lhs, rhs in
+                if lhs.guidancePriority != rhs.guidancePriority {
+                    return lhs.guidancePriority < rhs.guidancePriority
+                }
+
+                return lhs.stableSortKey < rhs.stableSortKey
+            }
     }
 
     private func suggestion(

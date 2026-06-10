@@ -30,6 +30,7 @@ final class CameraViewModel: ObservableObject {
     private let failingPhotoSaveService: any PhotoSaveService
     private let mockLiveGuidanceProvider: any LiveGuidanceProvider
     private let localLiveGuidanceProvider: any LiveGuidanceProvider
+    private let liveGuidanceStabilityController = LiveGuidanceStabilityController()
     private var activeFilterRenderID: UUID?
     private var latestLocalFrameSignals: [LiveGuidanceSignal]?
 
@@ -209,7 +210,7 @@ final class CameraViewModel: ObservableObject {
         activeFilterRenderID = nil
         resetSaveState()
         updateFrameSignalAnalysisAvailability()
-        refreshLiveGuidanceSuggestions()
+        refreshLiveGuidanceSuggestions(resetStability: true)
     }
 
     func stopCamera() {
@@ -220,13 +221,13 @@ final class CameraViewModel: ObservableObject {
     func toggleLiveGuidance() {
         liveGuidanceState = liveGuidanceState == .off ? .suggestionAvailable : .off
         updateFrameSignalAnalysisAvailability()
-        refreshLiveGuidanceSuggestions()
+        refreshLiveGuidanceSuggestions(resetStability: true)
     }
 
     func toggleLiveGuidanceMode() {
         liveGuidanceMode = liveGuidanceMode.next
         updateFrameSignalAnalysisAvailability()
-        refreshLiveGuidanceSuggestions()
+        refreshLiveGuidanceSuggestions(resetStability: true)
     }
 
     func advanceLiveGuidanceMockState() {
@@ -243,7 +244,7 @@ final class CameraViewModel: ObservableObject {
             liveGuidanceState = .idle
         }
         updateFrameSignalAnalysisAvailability()
-        refreshLiveGuidanceSuggestions()
+        refreshLiveGuidanceSuggestions(resetStability: true)
     }
 
     func selectLensOption(_ option: LensOption) {
@@ -292,13 +293,25 @@ final class CameraViewModel: ObservableObject {
         photoSaveState = .idle
     }
 
-    private func refreshLiveGuidanceSuggestions() {
+    private func refreshLiveGuidanceSuggestions(resetStability: Bool = false) {
+        if resetStability {
+            liveGuidanceStabilityController.reset()
+        }
+
         let frameSignals = liveGuidanceMode == .local ? latestLocalFrameSignals : nil
-        liveGuidanceSuggestions = activeLiveGuidanceProvider.suggestions(
+        let suggestions = activeLiveGuidanceProvider.suggestions(
             for: liveGuidanceState,
             selectedPreset: selectedFilterPreset,
             frameSignals: frameSignals
         )
+
+        guard liveGuidanceMode == .local,
+              liveGuidanceState == .suggestionAvailable else {
+            liveGuidanceSuggestions = Array(suggestions.prefix(2))
+            return
+        }
+
+        liveGuidanceSuggestions = liveGuidanceStabilityController.suggestions(from: suggestions)
     }
 
     private var activeLiveGuidanceProvider: any LiveGuidanceProvider {
@@ -328,6 +341,7 @@ final class CameraViewModel: ObservableObject {
 
         if !shouldAnalyzeFrames {
             latestLocalFrameSignals = nil
+            liveGuidanceStabilityController.reset()
         }
     }
 }

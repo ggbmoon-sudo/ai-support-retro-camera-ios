@@ -256,6 +256,22 @@ Current implementation notes:
 
 Phase 15C intentionally does not do face recognition, identity inference, age / gender / emotion / beauty / attractiveness / health / sensitive inference, raw frame upload / stream / persistence / logging, Gemini Live, Gemini/OpenAI calls, Cloud Functions calls, Firebase Storage / Firestore, voice input, ASR, Parakeet, StoreKit, persistence, export, save-to-Photos, backend changes, secrets, dependencies, or third-party SDKs.
 
+## Phase 15D Guidance Stability and Priority
+
+Phase 15D adds a small memory-only stability controller for Local guidance suggestions.
+
+Implementation notes:
+
+- `LiveGuidanceStabilityController` ranks already-derived suggestions by priority.
+- The controller limits Local guidance to at most two visible suggestions.
+- Repeat cooldown, confirmation count, and short hold duration reduce flicker from changing frame signals.
+- `LiveGuidanceSignal` now carries a stable priority / sort order for derived local signals.
+- `LiveGuidanceSuggestionComposer` ranks local signals before composing suggestions.
+- Mock guidance mode remains available.
+- Phase 15B brightness guidance and Phase 15C face framing / headroom guidance remain available.
+
+Phase 15D does not change frame sampling frequency, add new Vision request types, add new frame analysis types, store raw frames, store face rectangle history, add persistence, connect cloud AI/Firebase/StoreKit, modify backend code, or add third-party SDKs.
+
 ## Phase 01.5 Xcode Setup
 
 Phase 01.5 did not generate a `.xcodeproj` from this Windows environment because it could not be reliably verified in Xcode.

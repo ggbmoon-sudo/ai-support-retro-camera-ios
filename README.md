@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 15C: Local Face Framing Vision Prototype
+- Phase 15D: Guidance Stability and Priority
 
 Next phase:
 
-- Phase 16, only after Phase 15C is reviewed, committed, pushed, read-only confirmed, and explicitly requested
+- Phase 16, only after Phase 15D is reviewed, committed, pushed, read-only confirmed, and explicitly requested
 
 Before each task, read `AGENTS.md`, the required docs listed there, and the relevant phase prompt in `docs/prompts/`.
 
@@ -289,6 +289,22 @@ Current Phase 15C behavior:
 - Mock guidance, Local guidance fallback, Camera primary screen, Dazz-like viewport, mock lens selector, selected-photo Back to Camera / Clear, 20 filters/grouping, Photo Picker, mock save, mock AI, local history, Inspiration, History, and Settings remain in scope.
 
 Phase 15C does not do face recognition, identity inference, age / gender / emotion / beauty / attractiveness / health / sensitive inference, face data persistence, face rectangle history, raw frame upload, raw frame streaming, raw frame persistence, raw frame logging, Gemini Live, Gemini/OpenAI calls, Cloud Functions calls, Firebase Storage / Firestore, voice input, ASR, Parakeet, StoreKit, persistence, export, save-to-Photos, backend changes, secrets, dependencies, or third-party SDKs.
+
+## Phase 15D Guidance Stability and Priority Status
+
+Phase 15D adds a memory-only stability layer for Local guidance suggestions.
+
+Current Phase 15D behavior:
+
+- Local guidance suggestions are ranked so lighting and face-distance warnings can win over softer composition or filter hints.
+- Local guidance shows at most two stable suggestions at once.
+- A small cooldown, confirmation count, and hold duration reduce aggressive flicker and repeated suggestions.
+- Fallback suggestions are kept calm and should not immediately replace stronger recent hints.
+- Mock guidance remains available.
+- Phase 15B brightness guidance and Phase 15C face framing / headroom guidance remain available.
+- Camera primary screen, Dazz-like viewport, mock lens selector, selected-photo Back to Camera / Clear, 20 filters/grouping, Photo Picker, mock save, mock AI, local history, Inspiration, History, and Settings remain in scope.
+
+Phase 15D does not add new AI ability, new frame analysis types, new Vision request types, higher frame sampling frequency, face recognition, identity inference, age / gender / emotion / beauty / attractiveness / health / sensitive inference, face data persistence, face rectangle history, raw frame upload, raw frame streaming, raw frame persistence, raw frame logging, Gemini Live, Gemini/OpenAI calls, Cloud Functions calls, Firebase Storage / Firestore, voice input, ASR, Parakeet, StoreKit, persistence, export, save-to-Photos, backend changes, secrets, dependencies, or third-party SDKs.
 
 ## Phase 11B Camera Entry / Camera Shell Status
 
