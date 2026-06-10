@@ -16,6 +16,7 @@ final class CameraViewModel: ObservableObject {
     @Published private(set) var liveGuidanceState: LiveGuidanceMockState = .suggestionAvailable
     @Published private(set) var liveGuidanceMode: LiveGuidanceMode = .local
     @Published private(set) var liveGuidanceSuggestions: [LiveGuidanceSuggestion] = []
+    @Published private(set) var cloudSnapshotGuidanceState: CloudSnapshotGuidanceState = .idle
     @Published private(set) var selectedLensOption = LensOption.classic35
     @Published private(set) var isLoading = false
     @Published private(set) var isFiltering = false
@@ -30,8 +31,10 @@ final class CameraViewModel: ObservableObject {
     private let failingPhotoSaveService: any PhotoSaveService
     private let mockLiveGuidanceProvider: any LiveGuidanceProvider
     private let localLiveGuidanceProvider: any LiveGuidanceProvider
+    private let cloudSnapshotGuidanceService: any CloudSnapshotGuidanceService
     private let liveGuidanceStabilityController = LiveGuidanceStabilityController()
     private var activeFilterRenderID: UUID?
+    private var activeCloudSnapshotGuidanceID: UUID?
     private var latestLocalFrameSignals: [LiveGuidanceSignal]?
 
     init(
@@ -39,13 +42,17 @@ final class CameraViewModel: ObservableObject {
         photoSaveService: any PhotoSaveService,
         failingPhotoSaveService: any PhotoSaveService,
         liveGuidanceProvider: (any LiveGuidanceProvider)? = nil,
-        localLiveGuidanceProvider: (any LiveGuidanceProvider)? = nil
+        localLiveGuidanceProvider: (any LiveGuidanceProvider)? = nil,
+        cloudSnapshotGuidanceService: (any CloudSnapshotGuidanceService)? = nil,
+        initialSelectedPhoto: CapturedPhoto? = nil
     ) {
         self.service = service
         self.photoSaveService = photoSaveService
         self.failingPhotoSaveService = failingPhotoSaveService
         self.mockLiveGuidanceProvider = liveGuidanceProvider ?? MockLiveGuidanceProvider()
         self.localLiveGuidanceProvider = localLiveGuidanceProvider ?? LocalRuleBasedGuidanceProvider()
+        self.cloudSnapshotGuidanceService = cloudSnapshotGuidanceService ?? MockCloudSnapshotGuidanceService()
+        self.selectedPhoto = initialSelectedPhoto
         self.permissionState = CameraPermissionState(
             authorizationStatus: AVCaptureDevice.authorizationStatus(for: .video)
         )
@@ -209,6 +216,7 @@ final class CameraViewModel: ObservableObject {
         isFiltering = false
         activeFilterRenderID = nil
         resetSaveState()
+        resetCloudSnapshotGuidance()
         updateFrameSignalAnalysisAvailability()
         refreshLiveGuidanceSuggestions(resetStability: true)
     }
@@ -251,6 +259,54 @@ final class CameraViewModel: ObservableObject {
         selectedLensOption = option
     }
 
+    func requestCloudSnapshotGuidanceConsent() {
+        guard !cloudSnapshotGuidanceState.isWorking else { return }
+        cloudSnapshotGuidanceState = .consentRequired
+    }
+
+    func startMockCloudSnapshotGuidance(outcome: CloudSnapshotGuidanceMockOutcome = .success) async {
+        guard !cloudSnapshotGuidanceState.isWorking else { return }
+
+        let guidanceID = UUID()
+        activeCloudSnapshotGuidanceID = guidanceID
+        cloudSnapshotGuidanceState = .preparingSnapshot
+        let request = CloudSnapshotGuidanceRequest(
+            filterPresetID: selectedFilterPreset.id,
+            filterNameKey: selectedFilterPreset.nameKey,
+            lensFocalLengthLabel: selectedLensOption.focalLengthLabel,
+            guidanceModeID: liveGuidanceMode.id,
+            requestedAt: Date()
+        )
+
+        try? await Task.sleep(nanoseconds: 200_000_000)
+        guard activeCloudSnapshotGuidanceID == guidanceID else { return }
+        cloudSnapshotGuidanceState = .analyzing
+        do {
+            let service: any CloudSnapshotGuidanceService = outcome == .success
+                ? cloudSnapshotGuidanceService
+                : MockCloudSnapshotGuidanceService(outcome: outcome)
+            let response = try await service.analyze(request)
+            guard activeCloudSnapshotGuidanceID == guidanceID else { return }
+            cloudSnapshotGuidanceState = .result(response)
+        } catch let error as CloudSnapshotGuidanceError {
+            guard activeCloudSnapshotGuidanceID == guidanceID else { return }
+            switch error {
+            case .mockFailure:
+                cloudSnapshotGuidanceState = .failed(messageKey: error.messageKey)
+            case .mockUnavailable:
+                cloudSnapshotGuidanceState = .unavailable(messageKey: error.messageKey)
+            }
+        } catch {
+            guard activeCloudSnapshotGuidanceID == guidanceID else { return }
+            cloudSnapshotGuidanceState = .failed(messageKey: "camera.cloud_snapshot.error.mock_failure")
+        }
+    }
+
+    func resetCloudSnapshotGuidance() {
+        activeCloudSnapshotGuidanceID = nil
+        cloudSnapshotGuidanceState = .idle
+    }
+
     private func configureAndStart() {
         do {
             try service.configureSessionIfNeeded()
@@ -272,6 +328,7 @@ final class CameraViewModel: ObservableObject {
         isFiltering = false
         activeFilterRenderID = nil
         resetSaveState()
+        resetCloudSnapshotGuidance()
         updateFrameSignalAnalysisAvailability()
 
         if pendingPreset.isOriginal {

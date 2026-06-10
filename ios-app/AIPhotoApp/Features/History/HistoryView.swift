@@ -19,6 +19,7 @@ struct HistoryView: View {
                 }
             }
             .padding(AppSpacing.lg)
+            .padding(.bottom, AppTabBarMetrics.contentPageFooterSpacer)
         }
         .background(AppColors.background)
         .navigationTitle(Text("tab.history"))

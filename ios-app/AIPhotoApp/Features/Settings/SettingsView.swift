@@ -73,6 +73,13 @@ struct SettingsView: View {
                     detail: "settings.subscription.placeholder"
                 )
             }
+
+            Section {
+                Color.clear
+                    .frame(height: AppTabBarMetrics.contentPageFooterSpacer)
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color.clear)
+            }
         }
         .scrollContentBackground(.hidden)
         .background(AppColors.background)

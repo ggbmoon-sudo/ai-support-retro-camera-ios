@@ -272,6 +272,204 @@ Implementation notes:
 
 Phase 15D does not change frame sampling frequency, add new Vision request types, add new frame analysis types, store raw frames, store face rectangle history, add persistence, connect cloud AI/Firebase/StoreKit, modify backend code, or add third-party SDKs.
 
+## Phase 16 Cloud Snapshot AI Guidance Prototype
+
+Phase 16 adds a mock-only app-side boundary for future cloud snapshot guidance.
+
+Implementation notes:
+
+- `CloudSnapshotGuidanceRequest`, `CloudSnapshotGuidanceResponse`, and related models describe derived context and short mock results only.
+- `CloudSnapshotGuidanceState` models idle, consent, preparing, analyzing, result, failed, and unavailable states in memory.
+- `CloudSnapshotGuidanceService` defines the app-side service protocol.
+- `MockCloudSnapshotGuidanceService` returns mock success, failure, and unavailable outcomes with a local delay only.
+- `CloudSnapshotGuidanceConsentView` presents privacy copy before any mock analysis starts.
+- `CloudSnapshotGuidanceResultView` keeps the result short and camera-like, not chat-style.
+- `CameraViewModel` owns the Phase 16 state and does not serialize, persist, upload, or log image/request data.
+- `CameraView` shows a compact AI Quick Advice entry near the existing camera guidance controls.
+- Local guidance remains the default live guidance layer and is not replaced by the optional mock cloud snapshot flow.
+
+Phase 16 does not add real network calls, URLSession/URLRequest usage, real upload, Firebase Storage, Firestore writes, Cloud Functions calls, Gemini/OpenAI calls, Gemini Live, WebSocket/live video streaming, background frame upload, API keys, Firebase config, StoreKit, persistence, export, save-to-Photos, backend code, third-party SDKs, raw frame/photo/request payload persistence, face recognition, identity inference, or sensitive attribute inference.
+
+## Phase 16A Camera One-Screen UX Consolidation
+
+Phase 16A keeps the app local/mock-only and consolidates the Camera capture surface.
+
+Implementation notes:
+
+- `CameraView` now treats capture mode as one-screen-first instead of always wrapping the capture surface in a vertical scroll view.
+- Selected-photo / imported-photo mode remains scrollable because it still hosts filter preview, mock save, mock AI, and local-only status content.
+- Live Guidance renders as a compact expandable pill by default while preserving Mock / Local mode, toggle, local brightness guidance, face framing guidance, and stability logic.
+- AI Snapshot renders as a compact entry and presents consent / result content in a sheet instead of keeping a long panel on the Camera surface.
+- `CameraView` no longer exposes a PhotosPicker entry in the capture controls.
+- `HomeView` / Inspiration owns photo import and presents `CameraView` with an initial selected photo so the existing filter / mock save / mock AI / local history flow is reused.
+- Timer selection supports Off, 3s, 5s, and 10s using a confirmation dialog.
+- Front-camera + flash uses a short local white screen-flash overlay before capture.
+- Filter selection opens as a Camera sheet to keep the capture surface compact.
+
+Phase 16A does not add real network calls, URLSession/URLRequest usage, real upload, Firebase Storage, Firestore writes, Cloud Functions calls, Gemini/OpenAI calls, Gemini Live, WebSocket/live video streaming, background frame upload, API keys, Firebase config, StoreKit, persistence, export, save-to-Photos, backend code, third-party SDKs, new Vision request types, higher frame sampling frequency, voice / ASR, face recognition, identity inference, or sensitive attribute inference.
+
+## Phase 16A-R Native Camera-style Fullscreen UX Rescue
+
+Phase 16A-R rescues the Camera capture UI so it behaves like a fullscreen camera surface instead of a scrolling app page.
+
+Implementation notes:
+
+- `CameraView` now uses a fullscreen capture canvas for shooting mode and keeps selected-photo mode scrollable.
+- The Camera shooting surface hides the tab bar so the shutter cannot be covered by bottom tab chrome.
+- `MainTabShellView` passes a small navigation closure into `CameraView`; `CameraView` exposes this as a compact top menu for Inspiration, History, and Settings.
+- Flash and timer moved into compact top camera controls.
+- Timer remains selectable through Off, 3s, 5s, and 10s.
+- AI Snapshot is a compact shutter-side button and still uses the Phase 16 mock-only consent / result sheet.
+- Live Guidance is a compact lower-preview overlay and keeps the existing Mock / Local provider logic.
+- Filter entry sits on the lower-left of the viewfinder and opens the existing grouped filter picker sheet.
+- Inspiration remains the only visible photo import entry and reuses selected-photo workflow through `CameraView(initialPhoto:)`.
+
+Phase 16A-R does not add real network calls, URLSession/URLRequest usage, real upload, Firebase Storage, Firestore writes, Cloud Functions calls, Gemini/OpenAI calls, Gemini Live, WebSocket/live video streaming, background frame upload, API keys, Firebase config, StoreKit, persistence, export, save-to-Photos, backend code, third-party SDKs, new Vision request types, higher frame sampling frequency, voice / ASR, face recognition, identity inference, or sensitive attribute inference.
+
+## Phase 16A-R2 Final Native Camera Layout Alignment
+
+Phase 16A-R2 Final refines the fullscreen Camera layout so the active capture surface is closer to native iPhone Camera proportions and reclaims more bottom empty space for the viewfinder.
+
+Implementation notes:
+
+- The always-visible `24mm / 35mm / 77mm` selector was collapsed into a compact lens menu near the flip camera control.
+- Bottom chrome, guidance/filter overlay offsets, and mode rail spacing were tightened so the preview sits closer to the shutter controls.
+- The top timer control no longer shows an Off label; selected 3s, 5s, and 10s values display inside the timer circle.
+- The bottom capture rail keeps AI Snapshot, shutter, flip, and lens selection close to the shutter without duplicating flash or timer.
+- A thin camera mode rail keeps Inspiration, History, and Settings one tap away while the tab bar remains hidden during shooting.
+- Live Guidance remains a compact lower-preview pill / optional callout, and AI Snapshot remains a compact shutter-side mock-only entry.
+- The lower-left filter pill remains the only persistent filter entry on the viewfinder.
+
+Phase 16A-R2 Final does not add real network calls, URLSession/URLRequest usage, real upload, Firebase Storage, Firestore writes, Cloud Functions calls, Gemini/OpenAI calls, Gemini Live, WebSocket/live video streaming, background frame upload, API keys, Firebase config, StoreKit, persistence, export, save-to-Photos, backend code, third-party SDKs, new Vision request types, higher frame sampling frequency, voice / ASR, face recognition, identity inference, or sensitive attribute inference.
+
+## Phase 16A-R3 Overlay Collision Fix
+
+Phase 16A-R3 fixes overlay collisions in the fullscreen Camera UI and reclaims additional bottom space.
+
+Implementation notes:
+
+- `CameraView` now tracks one active camera callout so guidance, AI Snapshot, filter picker, and lens dropdown do not remain expanded together.
+- Live Guidance uses either a compact pill or an expanded lower-right viewfinder card, avoiding the previous pill-plus-card stack.
+- The filter pill remains lower-left in the viewfinder and no longer shares the same overlay slot as expanded guidance.
+- Lens selection is a compact custom dropdown strip near the flip camera control and collapses after selecting a focal length.
+- Bottom safe-area padding and overlay offsets were tightened again so the viewfinder sits closer to the shutter controls and mode rail.
+
+Phase 16A-R3 does not add real network calls, URLSession/URLRequest usage, real upload, Firebase Storage, Firestore writes, Cloud Functions calls, Gemini/OpenAI calls, Gemini Live, WebSocket/live video streaming, background frame upload, API keys, Firebase config, StoreKit, persistence, export, save-to-Photos, backend code, third-party SDKs, new Vision request types, higher frame sampling frequency, voice / ASR, face recognition, identity inference, or sensitive attribute inference.
+
+## Phase 16A-R4 Unified Navigation Insets
+
+Phase 16A-R4 replaces the native app `TabView` shell with a small custom shell so Camera can be fullscreen without inheriting ordinary page tab-bar spacing.
+
+Implementation notes:
+
+- `MainTabShellView` now switches between Camera, Inspiration, History, and Settings directly instead of relying on native `TabView` tab items.
+- Camera uses its own compact mode rail and manages its own safe-area spacing.
+- Inspiration, History, and Settings display a custom floating tab bar with the same icon / label / accent language as Camera's compact rail.
+- Non-camera pages add bottom content spacing so the floating tab bar does not cover content.
+- Camera bottom inset was tightened because it no longer needs to account for the ordinary floating tab bar reservation.
+
+Phase 16A-R4 does not add real network calls, URLSession/URLRequest usage, real upload, Firebase Storage, Firestore writes, Cloud Functions calls, Gemini/OpenAI calls, Gemini Live, WebSocket/live video streaming, background frame upload, API keys, Firebase config, StoreKit, persistence, export, save-to-Photos, backend code, third-party SDKs, new Vision request types, higher frame sampling frequency, voice / ASR, face recognition, identity inference, or sensitive attribute inference.
+
+## Phase 16A-R5 Navigation Overlay Root-Cause Fix
+
+Phase 16A-R5 addresses the shared layout causes behind Settings bottom CTA obstruction and Camera bottom empty space.
+
+Implementation notes:
+
+- Added `AppTabBarMetrics` so content-page bottom inset and Camera compact rail spacing are managed from one place.
+- Inspiration, History, and Settings use a shared bottom inset large enough for the custom floating tab bar.
+- Camera remains fullscreen and does not inherit the ordinary content-page bottom inset.
+- Camera shutter controls and compact mode rail are now separate overlays, so the rail can sit lower without pushing shutter controls upward.
+- Camera bottom gradients were reduced to make the fullscreen preview feel larger.
+- Inspiration remains a one-tap destination and continues to own photo import.
+
+Phase 16A-R5 does not add real network calls, URLSession/URLRequest usage, real upload, Firebase Storage, Firestore writes, Cloud Functions calls, Gemini/OpenAI calls, Gemini Live, WebSocket/live video streaming, background frame upload, API keys, Firebase config, StoreKit, persistence, export, save-to-Photos, backend code, third-party SDKs, new Vision request types, higher frame sampling frequency, voice / ASR, face recognition, identity inference, or sensitive attribute inference.
+
+## Phase 16A-R6 Source-to-Simulator Layout Verification
+
+Phase 16A-R6 verifies the R5 source path and applies a stronger fix for visible Simulator layout issues.
+
+Implementation notes:
+
+- `AppTabBarMetrics.swift` is under the filesystem-synchronized `AIPhotoApp` root group and is present in the `xcodebuild` frontend compile input.
+- Non-Camera tabs now use `safeAreaInset` for the custom bottom tab bar instead of drawing it as a pure overlay over content.
+- Settings includes a small transparent `List` footer spacer so the bottom subscription / polish row can scroll above the tab bar.
+- Camera primary capture mode no longer runs inside a `NavigationStack`; the selected/imported photo flow still uses navigation for Back / Clear controls.
+- Camera bottom rail / shutter / overlay spacing was tightened again through shared metrics rather than per-view scattered padding.
+
+Phase 16A-R6 does not add real network calls, URLSession/URLRequest usage, real upload, Firebase Storage, Firestore writes, Cloud Functions calls, Gemini/OpenAI calls, Gemini Live, WebSocket/live video streaming, background frame upload, API keys, Firebase config, StoreKit, persistence, export, save-to-Photos, backend code, third-party SDKs, new Vision request types, higher frame sampling frequency, voice / ASR, face recognition, identity inference, or sensitive attribute inference.
+
+## Phase 16 + Phase 16A-R Closeout
+
+Phase 16 mock cloud snapshot guidance and the Phase 16A-R Camera UX rescue have been manually verified by the user in Xcode / Simulator and accepted for commit review.
+
+Implementation status:
+
+- Phase 16 remains mock-only with `CloudSnapshotGuidanceService`, `MockCloudSnapshotGuidanceService`, consent UX, and mock success / failed / unavailable states.
+- Camera UX is accepted for the current milestone: shutter is visible/tappable, Camera does not require scroll, and compact AI / guidance / filter / lens surfaces work.
+- Inspiration owns photo import; Camera capture mode no longer shows Photo Picker.
+- Ordinary-page bottom tab bar safe-area behavior is accepted for current review.
+- No real network, upload, AI provider call, Firebase, StoreKit, persistence, export, secrets, Firebase config, API keys, or backend changes were added.
+
+Real cloud AI remains deferred until a later explicit Phase 16B / 17 request after commit, push, and read-only confirmation.
+
+## Phase 16A-R10 Ordinary Tab Bar Placement Hard Fix
+
+Phase 16A-R10 fixes ordinary-page floating tab bar placement at the app shell layer.
+
+Implementation notes:
+
+- Inspiration, History, and Settings now render the floating tab bar from a root `ZStack` bottom overlay.
+- The ordinary tab bar no longer depends on bottom `safeAreaInset` placement.
+- Explicit ordinary tab bar height / bottom clearance metrics make the tab bar easier to keep fully inside the visible screen.
+- Camera remains on the separate fullscreen path and keeps its compact mode rail metrics.
+- The accidental `ios-app/AIPhotoApp/App/File.txt` prompt dump was removed.
+
+Phase 16A-R10 does not add real network calls, URLSession/URLRequest usage, real upload, Firebase Storage, Firestore writes, Cloud Functions calls, Gemini/OpenAI calls, Gemini Live, WebSocket/live video streaming, background frame upload, API keys, Firebase config, StoreKit, persistence, export, save-to-Photos, backend code, third-party SDKs, new Vision request types, higher frame sampling frequency, voice / ASR, face recognition, identity inference, or sensitive attribute inference.
+
+## Phase 16A-R9 Bottom Navigation Safe-Area Polish
+
+Phase 16A-R9 tightens bottom navigation safe-area behavior while leaving the accepted Camera viewfinder structure intact.
+
+Implementation notes:
+
+- Ordinary-page floating tab bar uses a clearer bottom offset metric and sits higher above the home indicator.
+- Inspiration and History ScrollViews now add the shared content footer inset.
+- Settings uses the same shared footer inset for the final spacer row, keeping the subscription / polish row accessible.
+- Camera compact mode rail keeps separate fullscreen metrics and now has a minimum home-indicator clearance.
+- Camera shutter row, viewfinder, Live Guidance, AI Snapshot, filter callout, and lens dropdown behavior are preserved.
+
+Phase 16A-R9 does not add real network calls, URLSession/URLRequest usage, real upload, Firebase Storage, Firestore writes, Cloud Functions calls, Gemini/OpenAI calls, Gemini Live, WebSocket/live video streaming, background frame upload, API keys, Firebase config, StoreKit, persistence, export, save-to-Photos, backend code, third-party SDKs, new Vision request types, higher frame sampling frequency, voice / ASR, face recognition, identity inference, or sensitive attribute inference.
+
+## Phase 16A-R8 Hide Camera Status Bar + Lift Content Tab Bar
+
+Phase 16A-R8 separates Camera status-bar behavior from ordinary content-page navigation.
+
+Implementation notes:
+
+- Camera tab hides the iOS status bar through the app shell while Inspiration, History, and Settings keep the normal status bar.
+- Camera top controls use a dedicated camera top inset metric so Live Guidance mode, flash, and timer can sit naturally near the top camera area.
+- Ordinary-page floating tab bar spacing is lifted above the home indicator.
+- Settings keeps footer spacing so the final subscription / polish row can scroll above the floating tab bar.
+- Camera compact mode rail keeps separate fullscreen metrics and is not affected by the ordinary tab bar lift.
+
+Phase 16A-R8 does not add real network calls, URLSession/URLRequest usage, real upload, Firebase Storage, Firestore writes, Cloud Functions calls, Gemini/OpenAI calls, Gemini Live, WebSocket/live video streaming, background frame upload, API keys, Firebase config, StoreKit, persistence, export, save-to-Photos, backend code, third-party SDKs, new Vision request types, higher frame sampling frequency, voice / ASR, face recognition, identity inference, or sensitive attribute inference.
+
+## Phase 16A-R7 Camera Control Position Polish
+
+Phase 16A-R7 refines control placement after the Camera fullscreen layout rescue.
+
+Implementation notes:
+
+- Camera top controls add more safe-area clearance so they sit below the status bar / Dynamic Island region.
+- Filter and guidance overlays now use separate shared bottom metrics to reduce overlap risk.
+- AI Snapshot, shutter, flip camera, and lens dropdown remain grouped in the bottom camera control band.
+- Lens dropdown opens higher near the flip / lens controls.
+- The Camera compact mode rail has a small shadow to align visually with the ordinary floating tab bar.
+- Ordinary-page floating tab bar bottom spacing is lifted, while Settings keeps a footer spacer so the final CTA remains accessible.
+
+Phase 16A-R7 does not add real network calls, URLSession/URLRequest usage, real upload, Firebase Storage, Firestore writes, Cloud Functions calls, Gemini/OpenAI calls, Gemini Live, WebSocket/live video streaming, background frame upload, API keys, Firebase config, StoreKit, persistence, export, save-to-Photos, backend code, third-party SDKs, new Vision request types, higher frame sampling frequency, voice / ASR, face recognition, identity inference, or sensitive attribute inference.
+
 ## Phase 01.5 Xcode Setup
 
 Phase 01.5 did not generate a `.xcodeproj` from this Windows environment because it could not be reliably verified in Xcode.

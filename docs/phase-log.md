@@ -8,8 +8,8 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 15D - Guidance Stability and Priority
-Status: Phase 15D implemented; ready for review before commit
+Current phase: Phase 16 + Phase 16A-R UX rescue closeout
+Status: Phase 16 / 16A-R through R10 manually verified in Xcode / Simulator by user; ready to commit after final review
 Latest documentation maintenance: Filter Research Docs Backfill + Alignment Check completed; docs-only; no Swift/backend changes
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -29,7 +29,925 @@ Phase 15 build verification: sandboxed command-line Xcode build failed due CoreS
 Phase 15B build verification: sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec environment restrictions; unsandboxed command-line simulator build succeeded on 2026-06-10
 Phase 15C build verification: sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec environment restrictions; unsandboxed command-line simulator build succeeded on 2026-06-10; user Xcode / Simulator build-run accepted on 2026-06-10
 Phase 15D build verification: sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec environment restrictions; unsandboxed command-line simulator build succeeded on 2026-06-10
-Next phase: Phase 16 should not start until Phase 15D is reviewed, committed, pushed, and read-only confirmed
+Phase 16 build verification: sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec / SwiftUI Preview macro environment restrictions; unsandboxed command-line simulator build succeeded on 2026-06-10
+Phase 16A build verification: sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec / SwiftUI Preview macro environment restrictions; unsandboxed command-line simulator build succeeded on 2026-06-10
+Phase 16A-R build verification: sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec / SwiftUI Preview macro environment restrictions; unsandboxed command-line simulator build succeeded on 2026-06-10
+Phase 16A-R2 Final build verification: sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec / SwiftUI Preview macro environment restrictions; final unsandboxed command-line build could not be completed because escalation was rejected by the current Codex usage/credits limit; earlier Phase 16A-R2 unsandboxed simulator build succeeded before the final bottom-spacing adjustment
+Phase 16A-R3 build verification: sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec / SwiftUI Preview macro environment restrictions; unsandboxed build was not retried because the prior escalation path was rejected by the current Codex usage/credits limit
+Phase 16A-R4 build verification: sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec / SwiftUI Preview macro environment restrictions; targeted Swift parse and verification scans passed; no real service integration was added
+Phase 16A-R5 build verification: sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec / SwiftUI Preview macro environment restrictions; targeted Swift parse and verification scans passed; no real service integration was added
+Phase 16A-R6 build verification: targeted Swift parse passed; sandboxed command-line Xcode build remains blocked by CoreSimulator / sandbox-exec / SwiftUI Preview macro environment restrictions; unsandboxed build request was rejected by the current workspace credits limit
+Phase 16A-R7 build verification: targeted Swift parse passed; sandboxed command-line Xcode build remains blocked by CoreSimulator / sandbox-exec / SwiftUI Preview macro environment restrictions; no real service integration was added
+Phase 16A-R8 build verification: targeted Swift parse passed; sandboxed command-line Xcode build remains blocked by CoreSimulator / sandbox-exec / SwiftUI Preview macro environment restrictions; no real service integration was added
+Phase 16A-R9 build verification: targeted Swift parse passed; sandboxed command-line Xcode build remains blocked by CoreSimulator / sandbox-exec / SwiftUI Preview macro environment restrictions; no real service integration was added
+Phase 16A-R10 build verification: targeted Swift parse passed; sandboxed command-line Xcode build remains blocked by CoreSimulator / sandbox-exec / SwiftUI Preview macro environment restrictions; no real service integration was added
+Next phase: Real cloud AI integration should not start until Phase 16 / 16A-R is committed, pushed, read-only confirmed, and explicitly requested as Phase 16B / 17
+
+---
+
+## Phase 16 + Phase 16A-R UX Rescue Closeout
+
+Status: Manually verified by user in Xcode / Simulator; ready to commit after final review
+Date completed: 2026-06-10
+
+### Accepted Manual Verification
+
+The user manually verified the current Phase 16 / 16A-R working tree in Xcode / Simulator and accepted the current state:
+
+- Camera UX is acceptable.
+- Shutter is visible and tappable.
+- Camera does not require scrolling.
+- AI Snapshot compact entry, consent, and mock result work.
+- Mock / Local guidance works.
+- Guidance / AI / filter / lens callouts do not have obvious overlap.
+- Filter pill / callout works.
+- Lens dropdown works.
+- Flash, timer, flip, and capture work.
+- Front-camera screen flash scaffold remains available.
+- Phase 15B brightness guidance works.
+- Phase 15C face framing / headroom guidance works.
+- Phase 15D stability / priority / anti-flicker works.
+- Camera tab no longer has Photo Picker.
+- Inspiration tab has the photo import entry.
+- Ordinary pages bottom tab bar is acceptable.
+- Settings, Inspiration, and History content no longer have blocker-level bottom navigation obstruction.
+- 20 filters / grouping work.
+- Mock save, mock AI, and local history work.
+- English and Traditional Chinese localization has no raw keys.
+- No real network, upload, AI, Firebase, StoreKit, persistence, or export behavior was observed.
+- No secrets, Firebase config, or API keys were added.
+- No backend changes were added.
+
+### Scope Confirmation
+
+- Current changed / untracked files are Phase 16 mock cloud snapshot boundary, Phase 16A-R Camera UX rescue, ordinary tab bar safe-area polish, localization, and docs/test updates.
+- `ios-app/AIPhotoApp/App/File.txt` was previously identified as an accidental prompt dump and has been removed.
+- Phase 16 remains mock-only: app-side UI, memory-only state, service protocol boundary, mock cloud response, consent / privacy UX, and failed / unavailable mock states.
+- Phase 16A-R remains UX rescue only: fullscreen Camera shell, compact AI Snapshot, compact guidance, filter callout, lens dropdown, Inspiration import flow, bottom navigation polish, and ordinary tab bar safe-area fixes.
+
+### Safety Notes
+
+- Did not start Phase 16B or Phase 17.
+- Did not add real network requests, URLSession/URLRequest calls, WebSocket, real upload, Firebase Storage upload, Firestore writes, Cloud Functions calls, Gemini/OpenAI calls, Gemini Live, backend code, StoreKit, quota, persistence, export, save-to-Photos, third-party SDKs, secrets, Firebase config, or production config.
+- Did not add UserDefaults, Core Data, SwiftData, raw frame persistence, selected photo persistence, or cloud request payload persistence.
+- Did not add voice input, ASR, Parakeet, face recognition, identity inference, or sensitive attribute inference.
+
+### Ready for Next Phase
+
+Ready to commit Phase 16 + 16A-R: Yes, after final review.
+
+Ready for Phase 16B: No. Phase 16 + 16A-R should be committed, pushed, and read-only confirmed before any real cloud AI integration begins.
+
+---
+
+## Phase 16A-R10 - Ordinary Tab Bar Placement Hard Fix
+
+Status: Implemented; ready for review before commit
+Date completed: 2026-06-10
+
+### Goal
+
+Fix ordinary-page floating tab bar placement at the app shell layer so Inspiration, History, and Settings show a complete floating tab bar above the home indicator instead of relying on a bottom `safeAreaInset` that could still appear clipped.
+
+### Findings
+
+- Phase 16A-R9 did update shared metrics, but ordinary tab bar rendering still lived inside `.safeAreaInset(edge: .bottom)`.
+- On the affected simulator layout, that meant increasing bottom padding mostly changed the inset container instead of guaranteeing the tab bar itself was positioned fully inside visible screen bounds.
+- No `.offset(y:)`, Camera rail sharing, or content-page clipping was found as the main cause.
+- The staged `ios-app/AIPhotoApp/App/File.txt` was an accidentally generated prompt text file, not source code, and was removed.
+
+### Completed
+
+- Replaced the ordinary-page `safeAreaInset` tab bar presentation with a root `GeometryReader` / `ZStack` bottom overlay.
+- The ordinary floating tab bar now uses explicit bottom placement via `ordinaryTabBarBottomOffset(for:)`.
+- Added explicit ordinary tab bar estimated height, bottom fallback, bottom clearance, and content bottom padding metrics.
+- Kept Camera on the fullscreen path and did not route Camera through ordinary tab bar placement.
+- Kept Inspiration and History shared bottom content padding and Settings shared footer spacer.
+- Removed the accidental `ios-app/AIPhotoApp/App/File.txt` prompt dump.
+
+### Changed Files
+
+- README.md
+- ios-app/README.md
+- docs/phase-log.md
+- tests/manual-smoke-tests.md
+- ios-app/AIPhotoApp/App/AppTabBarMetrics.swift
+- ios-app/AIPhotoApp/App/MainTabShellView.swift
+
+### Build / Verification
+
+- Verification commands are recorded in `tests/manual-smoke-tests.md`.
+- `git diff --check` passed.
+- Targeted `swiftc -parse` passed for `AppTabBarMetrics.swift`, `MainTabShellView.swift`, `CameraView.swift`, `HomeView.swift`, `HistoryView.swift`, and `SettingsView.swift`.
+- Localization lint passed for English and Traditional Chinese strings.
+- Forbidden imports scan passed for Firebase, FirebaseFunctions, FirebaseStorage, FirebaseFirestore, Gemini, OpenAI, and StoreKit imports.
+- Network / upload scan found no iOS Swift `URLSession`, `URLRequest`, or `WebSocket` usage. Matches were limited to existing mock placeholder service comments.
+- Secrets / config scan found no `GoogleService-Info.plist`, `.env`, or `.firebaserc`.
+- Frame / photo persistence scan found only existing Phase 15B / 15C in-memory analyzer references and Phase 16 mock consent copy, not new frame/photo upload, stream, persistence, or logging behavior.
+- Full sandboxed command-line Xcode simulator build remains blocked by CoreSimulator / `sandbox-exec` / SwiftUI `#Preview` macro environment restrictions, not a confirmed Phase 16A-R10 source error.
+- No real service integration was added.
+
+### Known TODOs
+
+- Xcode / Simulator visual QA is required to confirm the ordinary tab bar is now fully visible and no longer clipped.
+- Ordinary content bottom padding may need minor tuning after visual QA if the tab bar now floats higher than desired.
+
+### Safety Notes
+
+- Did not start Phase 16B or Phase 17.
+- Did not add real network requests, URLSession/URLRequest calls, WebSocket, real upload, Firebase Storage upload, Firestore writes, Cloud Functions calls, Gemini/OpenAI calls, Gemini Live, backend code, StoreKit, quota, persistence, export, save-to-Photos, third-party SDKs, secrets, or production config.
+- Did not increase frame sampling frequency or add new Vision request types.
+- Did not add voice input, ASR, Parakeet, face recognition, identity inference, or sensitive attribute inference.
+
+### Ready for Next Phase
+
+Ready to review before commit: Yes.
+
+Ready for Phase 16B: No. Phase 16A-R10 should be reviewed, committed, pushed, and read-only confirmed before any real cloud AI integration begins.
+
+---
+
+## Phase 16A-R9 - Bottom Navigation Safe-Area Polish
+
+Status: Implemented; ready for review before commit
+Date completed: 2026-06-10
+
+### Goal
+
+Polish bottom navigation safe-area behavior without redesigning the Camera viewfinder: lift ordinary content-page navigation, keep content clear of the floating tab bar, and add a small safe-area guard to the Camera compact mode rail.
+
+### Completed
+
+- Split bottom navigation metrics into clearer ordinary-page and Camera-specific values.
+- Raised ordinary-page floating tab bar spacing so Inspiration, History, and Settings sit farther above the home indicator / bottom edge.
+- Added a shared ordinary content footer inset and applied it to Inspiration and History ScrollView content.
+- Increased the existing Settings footer spacer through the same shared metric so the subscription / polish row can scroll above the floating tab bar.
+- Added a minimum Camera mode rail home-indicator clearance while keeping the Camera rail more compact than the ordinary floating tab bar.
+- Kept Camera viewfinder structure, top controls, shutter row, AI Snapshot, Live Guidance, filter callout, and lens dropdown behavior unchanged except for bottom safe-area metrics.
+
+### Changed Files
+
+- README.md
+- ios-app/README.md
+- docs/phase-log.md
+- tests/manual-smoke-tests.md
+- ios-app/AIPhotoApp/App/AppTabBarMetrics.swift
+- ios-app/AIPhotoApp/Features/Home/HomeView.swift
+- ios-app/AIPhotoApp/Features/History/HistoryView.swift
+
+### Build / Verification
+
+- Verification commands are recorded in `tests/manual-smoke-tests.md`.
+- `git diff --check` passed.
+- Targeted `swiftc -parse` passed for `AppTabBarMetrics.swift`, `MainTabShellView.swift`, `CameraView.swift`, `HomeView.swift`, `HistoryView.swift`, and `SettingsView.swift`.
+- Localization lint passed for English and Traditional Chinese strings.
+- Forbidden imports scan passed for Firebase, FirebaseFunctions, FirebaseStorage, FirebaseFirestore, Gemini, OpenAI, and StoreKit imports.
+- Network / upload scan found no iOS Swift `URLSession`, `URLRequest`, or `WebSocket` usage. Matches were limited to existing mock placeholder service comments.
+- Secrets / config scan found no `GoogleService-Info.plist`, `.env`, or `.firebaserc`.
+- Frame / photo persistence scan found only existing Phase 15B / 15C in-memory analyzer references and Phase 16 mock consent copy, not new frame/photo upload, stream, persistence, or logging behavior.
+- Full sandboxed command-line Xcode simulator build remains blocked by CoreSimulator / `sandbox-exec` / SwiftUI `#Preview` macro environment restrictions, not a confirmed Phase 16A-R9 source error.
+- No real service integration was added.
+
+### Known TODOs
+
+- Xcode / Simulator visual QA is required to confirm ordinary-page tab bar lift is sufficient and not excessive.
+- Xcode / Simulator visual QA is required to confirm Settings bottom CTA, Inspiration bottom content, and History empty/list content clear the floating tab bar.
+- Real-device safe-area polish may still be needed for home-indicator variants.
+
+### Safety Notes
+
+- Did not start Phase 16B or Phase 17.
+- Did not add real network requests, URLSession/URLRequest calls, WebSocket, real upload, Firebase Storage upload, Firestore writes, Cloud Functions calls, Gemini/OpenAI calls, Gemini Live, backend code, StoreKit, quota, persistence, export, save-to-Photos, third-party SDKs, secrets, or production config.
+- Did not increase frame sampling frequency or add new Vision request types.
+- Did not add voice input, ASR, Parakeet, face recognition, identity inference, or sensitive attribute inference.
+
+### Ready for Next Phase
+
+Ready to review before commit: Yes.
+
+Ready for Phase 16B: No. Phase 16A-R9 should be reviewed, committed, pushed, and read-only confirmed before any real cloud AI integration begins.
+
+---
+
+## Phase 16A-R8 - Hide Camera Status Bar + Lift Content Tab Bar
+
+Status: Implemented; ready for review before commit
+Date completed: 2026-06-10
+
+### Goal
+
+Hide the iOS status bar only on the fullscreen Camera tab, keep normal status bars on Inspiration / History / Settings, and lift the ordinary floating tab bar so content tabs look stable above the home indicator.
+
+### Completed
+
+- Added Camera-only `.statusBarHidden(selectedTab == .camera)` at the app shell level.
+- Kept Inspiration, History, and Settings on the ordinary content-page path so those tabs retain the normal iOS status bar.
+- Added a Camera-specific top control metric so Live Guidance mode, flash, and timer controls can sit at a natural top-camera position without colliding with status UI.
+- Lifted the ordinary floating tab bar above the safe-area baseline while leaving Camera mode rail metrics separate.
+- Preserved Settings bottom footer spacing so the subscription / polish CTA remains scrollable above the tab bar.
+- Kept Camera fullscreen layout, shutter row, compact mode rail, AI Snapshot, Live Guidance, filter, and lens callout behavior unchanged except for top/bottom inset polish.
+
+### Changed Files
+
+- README.md
+- ios-app/README.md
+- docs/phase-log.md
+- tests/manual-smoke-tests.md
+- ios-app/AIPhotoApp/App/AppTabBarMetrics.swift
+- ios-app/AIPhotoApp/App/MainTabShellView.swift
+- ios-app/AIPhotoApp/Features/Camera/CameraView.swift
+
+### Build / Verification
+
+- Verification commands are recorded in `tests/manual-smoke-tests.md`.
+- `git diff --check` passed.
+- Targeted `swiftc -parse` passed for `AppTabBarMetrics.swift`, `MainTabShellView.swift`, `CameraView.swift`, and `SettingsView.swift`.
+- Localization lint passed for English and Traditional Chinese strings.
+- Forbidden imports scan passed for Firebase, FirebaseFunctions, FirebaseStorage, FirebaseFirestore, Gemini, OpenAI, and StoreKit imports.
+- Network / upload scan found no iOS Swift `URLSession`, `URLRequest`, or `WebSocket` usage. Matches were limited to existing mock placeholder service comments.
+- Secrets / config scan found no `GoogleService-Info.plist`, `.env`, or `.firebaserc`.
+- Frame / photo persistence scan found only existing Phase 15B / 15C in-memory analyzer references and Phase 16 mock consent copy, not new frame/photo upload, stream, persistence, or logging behavior.
+- Full sandboxed command-line Xcode simulator build remains blocked by CoreSimulator / `sandbox-exec` / SwiftUI `#Preview` macro environment restrictions, not a confirmed Phase 16A-R8 source error. The failed frontend command includes `AppTabBarMetrics.swift`, confirming it is part of the build input.
+- No real service integration was added.
+
+### Known TODOs
+
+- Xcode / Simulator visual QA is required to confirm Camera hides the iOS status bar while Inspiration, History, and Settings still show it.
+- Xcode / Simulator visual QA is required to confirm the lifted ordinary floating tab bar is high enough without feeling detached from the bottom navigation area.
+- Device-specific safe-area polish may still be needed after real-device review.
+
+### Safety Notes
+
+- Did not start Phase 16B or Phase 17.
+- Did not add real network requests, URLSession/URLRequest calls, WebSocket, real upload, Firebase Storage upload, Firestore writes, Cloud Functions calls, Gemini/OpenAI calls, Gemini Live, backend code, StoreKit, quota, persistence, export, save-to-Photos, third-party SDKs, secrets, or production config.
+- Did not increase frame sampling frequency or add new Vision request types.
+- Did not add voice input, ASR, Parakeet, face recognition, identity inference, or sensitive attribute inference.
+
+### Ready for Next Phase
+
+Ready to review before commit: Yes.
+
+Ready for Phase 16B: No. Phase 16A-R8 should be reviewed, committed, pushed, and read-only confirmed before any real cloud AI integration begins.
+
+---
+
+## Phase 16A-R7 - Camera Control Position Polish + Content Tab Bar Lift
+
+Status: Implemented; ready for review before commit
+Date completed: 2026-06-10
+
+### Goal
+
+Polish Camera overlay positions after the R6 fullscreen fix, prevent controls from crowding the status bar or each other, and lift the non-Camera floating tab bar so it is fully visible above the bottom edge.
+
+### Completed
+
+- Raised ordinary-page floating tab bar bottom fallback spacing so Inspiration, History, and Settings no longer place the tab bar too close to the home indicator / bottom edge.
+- Kept Settings bottom footer spacer so the subscription / polish row can still scroll above the tab bar.
+- Added more Camera top safe-area clearance so Live Guidance mode, flash, and timer controls sit below the status bar / Dynamic Island area.
+- Split Camera filter and guidance overlay bottom metrics so the filter pill and guidance pill/card use separate vertical slots.
+- Kept AI Snapshot, shutter, flip camera, and lens dropdown in one coordinated bottom control band.
+- Moved the lens dropdown slightly higher and right-aligned near the flip / lens control so it is less likely to collide with the flip button.
+- Added a small shadow to the Camera compact mode rail to better match the ordinary floating tab bar visual language.
+
+### Changed Files
+
+- README.md
+- ios-app/README.md
+- docs/phase-log.md
+- tests/manual-smoke-tests.md
+- ios-app/AIPhotoApp/App/AppTabBarMetrics.swift
+- ios-app/AIPhotoApp/Features/Camera/CameraView.swift
+
+### Build / Verification
+
+- Verification commands are recorded in `tests/manual-smoke-tests.md`.
+- `git diff --check` passed.
+- Targeted `swiftc -parse` passed for `AppTabBarMetrics.swift`, `MainTabShellView.swift`, `CameraView.swift`, and `SettingsView.swift`.
+- Localization lint passed for English and Traditional Chinese strings.
+- Forbidden imports scan passed for Firebase, FirebaseFunctions, FirebaseStorage, FirebaseFirestore, Gemini, OpenAI, and StoreKit imports.
+- Network / upload scan found no iOS Swift `URLSession`, `URLRequest`, or `WebSocket` usage. Matches were limited to existing mock placeholder service comments.
+- Secrets / config scan found no `GoogleService-Info.plist`, `.env`, or `.firebaserc`.
+- Frame / photo persistence scan found only existing Phase 15B / 15C in-memory analyzer references and Phase 16 mock consent copy, not new frame/photo upload, stream, persistence, or logging behavior.
+- Full sandboxed command-line Xcode simulator build remains blocked by CoreSimulator / `sandbox-exec` / SwiftUI `#Preview` macro environment restrictions, not a confirmed Phase 16A-R7 source error.
+- No real service integration was added.
+
+### Known TODOs
+
+- Xcode / Simulator visual QA is required to confirm top controls are comfortably below the status area on the target simulator.
+- Xcode / Simulator visual QA is required to confirm the ordinary-page bottom tab bar is lifted enough without creating excessive content-page bottom space.
+- Device-specific safe-area polish may still be needed after real-device review.
+
+### Safety Notes
+
+- Did not start Phase 16B or Phase 17.
+- Did not add real network requests, URLSession/URLRequest calls, WebSocket, real upload, Firebase Storage upload, Firestore writes, Cloud Functions calls, Gemini/OpenAI calls, Gemini Live, backend code, StoreKit, quota, persistence, export, save-to-Photos, third-party SDKs, secrets, or production config.
+- Did not increase frame sampling frequency or add new Vision request types.
+- Did not add voice input, ASR, Parakeet, face recognition, identity inference, or sensitive attribute inference.
+
+### Ready for Next Phase
+
+Ready to review before commit: Yes.
+
+Ready for Phase 16B: No. Phase 16A-R7 should be reviewed, committed, pushed, and read-only confirmed before any real cloud AI integration begins.
+
+---
+
+## Phase 16A-R6 - Source-to-Simulator Verification + Hard Layout Fix
+
+Status: Implemented; ready for review before commit
+Date completed: 2026-06-10
+
+### Goal
+
+Confirm whether Phase 16A-R5 source changes were actually part of the iOS target, then make a more visible layout fix for Settings bottom CTA obstruction and Camera bottom empty space.
+
+### Source-to-Simulator Findings
+
+- The app entry path is `AIPhotoApp` -> `AppRootView` -> `MainTabShellView`; there is no second root shell.
+- `MainTabShellView` no longer contains the native `TabView`; it switches directly between Camera, Inspiration, History, and Settings.
+- `AppTabBarMetrics.swift` sits inside the Xcode project's filesystem-synchronized `AIPhotoApp` root group.
+- The sandboxed `xcodebuild` frontend command listed `AppTabBarMetrics.swift`, confirming the file is included in the target compile input.
+- `CameraView.swift` is the active Camera view used by `MainTabShellView`.
+- R5 likely looked visually unchanged because non-Camera pages still used an overlay-style custom tab bar plus content spacing, while Settings is a `List`; Camera capture mode also still lived inside a `NavigationStack`, leaving room for navigation safe-area behavior to soften the fullscreen change.
+
+### Completed
+
+- Changed non-Camera navigation from an overlay floating tab bar to a bottom `safeAreaInset`, so Inspiration / History / Settings content is laid out above the tab bar instead of being covered by it.
+- Added a small Settings `List` footer spacer using `AppTabBarMetrics.contentPageFooterSpacer` so the bottom subscription / polish row can scroll fully above the tab bar.
+- Kept Camera on a separate fullscreen path with no ordinary content-page inset.
+- Removed `NavigationStack` from the primary Camera capture path. Navigation chrome is now only used for selected/imported photo flow or explicit close-button presentation.
+- Tightened Camera metrics so the compact mode rail sits directly at the bottom and the shutter row remains an overlay above it.
+- Reduced Camera overlay spacing further so Live Guidance / filter overlays sit closer to the shutter controls without consuming layout height.
+
+### Changed Files
+
+- README.md
+- ios-app/README.md
+- docs/phase-log.md
+- tests/manual-smoke-tests.md
+- ios-app/AIPhotoApp/App/AppTabBarMetrics.swift
+- ios-app/AIPhotoApp/App/MainTabShellView.swift
+- ios-app/AIPhotoApp/Features/Camera/CameraView.swift
+- ios-app/AIPhotoApp/Features/Settings/SettingsView.swift
+
+### Build / Verification
+
+- Verification commands are recorded in `tests/manual-smoke-tests.md`.
+- `git diff --check` passed during implementation.
+- Targeted `swiftc -parse` passed for `AppTabBarMetrics.swift`, `MainTabShellView.swift`, `CameraView.swift`, and `SettingsView.swift`.
+- Localization lint passed for English and Traditional Chinese strings.
+- Forbidden imports scan passed for Firebase, FirebaseFunctions, FirebaseStorage, FirebaseFirestore, Gemini, OpenAI, and StoreKit imports.
+- Network / upload scan found no iOS Swift `URLSession`, `URLRequest`, or `WebSocket` usage. Matches were limited to existing mock placeholder service comments.
+- Secrets / config scan found no `GoogleService-Info.plist`, `.env`, or `.firebaserc`.
+- Frame / photo persistence scan found only existing Phase 15B / 15C in-memory analyzer references and Phase 16 mock consent copy, not new frame/photo upload, stream, persistence, or logging behavior.
+- Layout modifier scan confirmed the primary Camera capture path no longer uses `NavigationStack`; remaining Camera `NavigationStack` usage is for selected/imported photo flow and sheets.
+- Full sandboxed command-line Xcode simulator build remains blocked by CoreSimulator / `sandbox-exec` / SwiftUI `#Preview` macro environment restrictions, not a confirmed Phase 16A-R6 source error. The failed frontend command includes `AppTabBarMetrics.swift`, confirming it is part of the build input.
+- Unsandboxed command-line Xcode build was requested but rejected by the current workspace credits limit, so no unsandboxed build result is available.
+
+### Known TODOs
+
+- Xcode / Simulator visual QA is required to confirm Settings bottom CTA is now fully visible and tappable.
+- Xcode / Simulator visual QA is required to confirm Camera bottom black space is visibly reduced after removing `NavigationStack` from capture mode.
+- If Simulator still shows the old layout after a clean build, clear DerivedData / uninstall the simulator app and rebuild to rule out stale install state.
+
+### Safety Notes
+
+- Did not start Phase 16B or Phase 17.
+- Did not add real network requests, URLSession/URLRequest calls, WebSocket, real upload, Firebase Storage upload, Firestore writes, Cloud Functions calls, Gemini/OpenAI calls, Gemini Live, backend code, StoreKit, quota, persistence, export, save-to-Photos, third-party SDKs, secrets, or production config.
+- Did not increase frame sampling frequency or add new Vision request types.
+- Did not add voice input, ASR, Parakeet, face recognition, identity inference, or sensitive attribute inference.
+
+### Ready for Next Phase
+
+Ready to review before commit: Yes.
+
+Ready for Phase 16B: No. Phase 16A-R6 should be reviewed, committed, pushed, and read-only confirmed before any real cloud AI integration begins.
+
+---
+
+## Phase 16A-R5 - Navigation Overlay Root-Cause Investigation + Layout Fix
+
+Status: Implemented; ready for review before commit
+Date completed: 2026-06-10
+
+### Goal
+
+Investigate the shared bottom navigation root cause behind Settings CTA obstruction and Camera bottom empty space, then fix the layout at the app shell / overlay level instead of continuing surface-level Camera padding tweaks.
+
+### Root Cause Findings
+
+- `MainTabShellView` was using a fixed `86` point bottom clear inset for all non-Camera pages, while the floating tab bar itself also used safe-area bottom padding. On taller home-indicator devices this could leave the final Settings subscription / polish CTA too close to the overlay.
+- Settings uses a `List`, so the app shell needs a reliable shared bottom inset that is large enough for the custom floating tab bar rather than a per-page magic number.
+- Camera was no longer using the ordinary page tab bar, but `CameraView` kept shutter controls and the compact mode rail in the same bottom `VStack`. Changing the rail size could push the shutter row upward and make the bottom area feel like a layout block instead of a native camera overlay.
+- Camera's bottom gradients were taller than needed after the controls became compact overlays, adding to the visual impression of unused black space.
+
+### Completed
+
+- Added shared `AppTabBarMetrics` for content-page bottom inset, floating tab bottom padding, and Camera compact rail / control spacing.
+- Updated `MainTabShellView` so non-Camera pages use `AppTabBarMetrics.contentPageBottomInset` instead of an inline `86` point clear inset.
+- Kept Camera on the fullscreen path with no ordinary content-page bottom padding.
+- Split Camera shutter controls and Camera compact mode rail into separate bottom overlays.
+- Kept the Camera mode rail lower and independent from the shutter row so it does not push shutter / viewfinder layout upward.
+- Reduced bottom preview/chrome gradient heights to reclaim more visible camera area.
+- Preserved one-tap access to Inspiration, History, and Settings.
+- Preserved Inspiration photo import and Camera's lack of Photo Picker CTA.
+
+### Changed Files
+
+- README.md
+- ios-app/README.md
+- docs/phase-log.md
+- tests/manual-smoke-tests.md
+- ios-app/AIPhotoApp/App/AppTabBarMetrics.swift
+- ios-app/AIPhotoApp/App/MainTabShellView.swift
+- ios-app/AIPhotoApp/Features/Camera/CameraView.swift
+
+### Build / Verification
+
+- Verification commands are recorded in `tests/manual-smoke-tests.md`.
+- `git diff --check` passed.
+- Targeted `swiftc -parse` passed for `AppTabBarMetrics.swift`, `MainTabShellView.swift`, and `CameraView.swift`.
+- Localization lint passed for English and Traditional Chinese strings.
+- Forbidden imports scan passed for Firebase, FirebaseFunctions, FirebaseStorage, FirebaseFirestore, Gemini, OpenAI, and StoreKit imports.
+- Network / upload scan found no iOS Swift `URLSession`, `URLRequest`, or `WebSocket` usage. Matches were limited to existing mock placeholder service comments.
+- Secrets / config scan found no `GoogleService-Info.plist`, `.env`, or `.firebaserc`.
+- Frame / photo persistence scan found only existing Phase 15B / 15C in-memory analyzer references and Phase 16 mock consent copy, not new frame/photo upload, stream, persistence, or logging behavior.
+- Sandboxed command-line Xcode simulator build failed due CoreSimulator / `sandbox-exec` / SwiftUI `#Preview` macro environment restrictions. The reported Swift `error:` lines point to existing preview macro loading failures across multiple files, not a confirmed Phase 16A-R5 source error.
+- No real service integration was added.
+
+### Known TODOs
+
+- Xcode / Simulator visual QA is still needed to confirm Settings bottom CTA is no longer obstructed by the floating tab bar.
+- Xcode / Simulator visual QA is still needed to confirm the Camera bottom rail feels lower while the shutter remains tappable.
+- Floating tab bar / compact rail metrics may need small device-specific tuning after real-device review.
+
+### Safety Notes
+
+- Did not start Phase 16B or Phase 17.
+- Did not add real network requests, URLSession/URLRequest calls, WebSocket, real upload, Firebase Storage upload, Firestore writes, Cloud Functions calls, Gemini/OpenAI calls, Gemini Live, backend code, StoreKit, quota, persistence, export, save-to-Photos, third-party SDKs, secrets, or production config.
+- Did not increase frame sampling frequency or add new Vision request types.
+- Did not add voice input, ASR, Parakeet, face recognition, identity inference, or sensitive attribute inference.
+
+### Ready for Next Phase
+
+Ready to review before commit: Yes.
+
+Ready for Phase 16B: No. Phase 16A-R5 should be reviewed, committed, pushed, and read-only confirmed before any real cloud AI integration begins.
+
+---
+
+## Phase 16A-R4 - Unified Navigation Insets + Camera Fullscreen Space Fix
+
+Status: Implemented; ready for review before commit
+Date completed: 2026-06-10
+
+### Goal
+
+Remove ordinary tab-bar safe-area reservation from the Camera surface, unify app navigation styling, preserve normal bottom spacing for content pages, and let Camera own its fullscreen bottom controls.
+
+### Summary
+
+Phase 16A-R4 replaces the native `TabView` shell with a small custom navigation shell. Camera is rendered as the fullscreen variant without ordinary page bottom padding or native tab-bar reservation. Inspiration, History, and Settings render as content pages with a custom floating tab bar and explicit bottom content spacing. Camera keeps its compact mode rail, now using the same icon / label / accent visual language as the content-page floating tab bar.
+
+### Completed
+
+- Replaced native `TabView` tab items with a custom `MainTabShellView` switcher.
+- Kept Camera as the default selected screen.
+- Hid the content-page floating tab bar on Camera.
+- Added a custom floating tab bar for Inspiration, History, and Settings.
+- Added non-camera bottom content spacing so the floating tab bar does not cover content.
+- Tightened Camera bottom inset now that Camera does not share ordinary floating-tab reservation.
+- Updated Camera compact mode rail to use matching icon / label / selected-accent styling.
+- Preserved one-tap access from Camera to Inspiration, History, and Settings.
+- Preserved Inspiration photo import, selected-photo flow, 20 filters / grouping, mock save, mock AI, local history, History, Settings, localization, front-camera screen flash scaffold, timer, lens dropdown, AI Snapshot mock boundary, and guidance logic.
+
+### Changed Files
+
+- README.md
+- ios-app/README.md
+- docs/phase-log.md
+- tests/manual-smoke-tests.md
+- ios-app/AIPhotoApp/App/MainTabShellView.swift
+- ios-app/AIPhotoApp/Features/Camera/CameraView.swift
+
+### Build / Verification
+
+- Verification commands are recorded in `tests/manual-smoke-tests.md`.
+- `git diff --check` passed.
+- Targeted `swiftc -parse` passed for `MainTabShellView.swift` and `CameraView.swift`.
+- Localization lint passed for English and Traditional Chinese strings.
+- Forbidden imports scan passed for Firebase, FirebaseFunctions, FirebaseStorage, FirebaseFirestore, Gemini, OpenAI, and StoreKit imports.
+- Network / upload scan found no iOS Swift `URLSession`, `URLRequest`, or `WebSocket` usage.
+- Secrets / config scan found no `GoogleService-Info.plist`, `.env`, or `.firebaserc`.
+- Frame / photo persistence scan found only existing Phase 15B / 15C in-memory analyzer references and Phase 16 mock consent copy, not new frame/photo upload, stream, persistence, or logging behavior.
+- Sandboxed command-line Xcode simulator build failed due CoreSimulator / `sandbox-exec` / SwiftUI `#Preview` macro environment restrictions. The reported Swift `error:` lines point to existing preview macro loading failures across multiple files, not a confirmed Phase 16A-R4 source error.
+
+### Known TODOs
+
+- Xcode / Simulator visual QA is still needed to confirm Camera no longer inherits ordinary page bottom spacing.
+- Floating tab bar size and content page bottom spacer may need device-specific polish after real-device review.
+- Lens dropdown remains a mock UI scaffold and does not perform real hardware lens switching.
+- AI Snapshot remains mock-only and does not capture, serialize, upload, or persist a real snapshot.
+- Real cloud AI integration remains deferred to a later explicit Phase 16B / 17 request.
+
+### Safety Notes
+
+- Did not start Phase 16B or Phase 17.
+- Did not add real network requests, URLSession/URLRequest calls, WebSocket, real upload, Firebase Storage upload, Firestore writes, Cloud Functions calls, Gemini/OpenAI calls, Gemini Live, backend code, StoreKit, quota, persistence, export, save-to-Photos, third-party SDKs, secrets, or production config.
+- Did not increase frame sampling frequency or add new Vision request types.
+- Did not add voice input, ASR, Parakeet, face recognition, identity inference, or sensitive attribute inference.
+
+### Ready for Next Phase
+
+Ready to review before commit: Yes.
+
+Ready for Phase 16B: No. Phase 16A-R4 should be reviewed, committed, pushed, and read-only confirmed before any real cloud AI integration begins.
+
+---
+
+## Phase 16A-R3 - Overlay Collision Fix + Bottom Space Reclaim
+
+Status: Implemented; ready for review before commit
+Date completed: 2026-06-10
+
+### Goal
+
+Fix overlapping Camera overlays, ensure only one callout is expanded at a time, and reclaim additional bottom empty space while preserving the Phase 16 mock-only AI Snapshot boundary.
+
+### Summary
+
+Phase 16A-R3 adds a small active camera callout state to keep Live Guidance, AI Snapshot, filter picker, and lens dropdown mutually exclusive. Live Guidance no longer renders both the compact pill and expanded card together; it now shows either a collapsed pill or a compact expanded card inside the lower-right viewfinder area. The filter pill remains lower-left and uses a different overlay slot. The lens selector was converted from a system `Menu` to a compact custom dropdown strip that can be explicitly collapsed after selecting a focal length.
+
+### Completed
+
+- Added `CameraCallout` state for `.none`, `.guidance`, `.aiSnapshot`, `.filter`, and `.lens`.
+- Collapsed other callouts when opening AI Snapshot, filter picker, lens dropdown, flash, timer, flip camera, or guidance mode controls.
+- Changed Live Guidance overlay so compact pill and expanded card are mutually exclusive.
+- Moved expanded Live Guidance into the viewfinder lower-right, away from the lower-left filter pill.
+- Kept AI Snapshot as a compact shutter-side button that opens a mock-only consent / result sheet.
+- Replaced the lens `Menu` with an in-view custom capsule dropdown that auto-collapses after selection.
+- Tightened bottom inset, guidance/filter overlay offsets, and lower controls so the mode rail has less dead space below it.
+- Preserved Camera primary screen, no-scroll capture layout, shutter visibility, filter picker, 20 filters / grouping, Mock / Local guidance, Phase 15B / 15C / 15D guidance, mock save, mock AI, local history, Inspiration, History, Settings, and localization.
+
+### Changed Files
+
+- README.md
+- ios-app/README.md
+- docs/phase-log.md
+- tests/manual-smoke-tests.md
+- ios-app/AIPhotoApp/Features/Camera/CameraView.swift
+
+### Build / Verification
+
+- Verification commands are recorded in `tests/manual-smoke-tests.md`.
+- `git diff --check` passed.
+- Localization lint passed for English and Traditional Chinese strings.
+- Sandboxed command-line Xcode simulator build failed due CoreSimulator / sandbox-exec / SwiftUI Preview macro environment restrictions.
+- Unsandboxed command-line Xcode simulator build was not retried because the prior escalation path was rejected by the current Codex usage/credits limit.
+- Forbidden imports scan passed for Firebase, FirebaseFunctions, FirebaseStorage, FirebaseFirestore, Gemini, OpenAI, and StoreKit imports.
+- Network / upload scan found no iOS Swift `URLSession`, `URLRequest`, or `WebSocket` usage.
+- Secrets / config scan found no `GoogleService-Info.plist`, `.env`, or `.firebaserc`.
+- Frame / photo persistence scan found only existing Phase 15B / 15C in-memory analyzer references and Phase 16 mock consent copy, not new frame/photo upload, stream, persistence, or logging behavior.
+
+### Known TODOs
+
+- Physical iPhone visual QA is still needed for exact overlay collision behavior, shutter hit testing, and bottom spacing.
+- Lens dropdown remains a mock UI scaffold and does not perform real hardware lens switching.
+- AI Snapshot remains mock-only and does not capture, serialize, upload, or persist a real snapshot.
+- Real cloud AI integration remains deferred to a later explicit Phase 16B / 17 request.
+
+### Safety Notes
+
+- Did not start Phase 16B or Phase 17.
+- Did not add real network requests, URLSession/URLRequest calls, WebSocket, real upload, Firebase Storage upload, Firestore writes, Cloud Functions calls, Gemini/OpenAI calls, Gemini Live, backend code, StoreKit, quota, persistence, export, save-to-Photos, third-party SDKs, secrets, or production config.
+- Did not increase frame sampling frequency or add new Vision request types.
+- Did not add voice input, ASR, Parakeet, face recognition, identity inference, or sensitive attribute inference.
+
+### Ready for Next Phase
+
+Ready to review before commit: Yes.
+
+Ready for Phase 16B: No. Phase 16A-R3 should be reviewed, committed, pushed, and read-only confirmed before any real cloud AI integration begins.
+
+---
+
+## Phase 16A-R2 Final - Native Camera Layout Alignment + Viewfinder Expansion
+
+Status: Implemented; ready for review before commit
+Date completed: 2026-06-10
+
+### Goal
+
+Align the Phase 16A-R fullscreen Camera layout more closely with native iPhone Camera behavior, further expand the viewfinder feel by reclaiming bottom empty space, and keep Phase 16 mock cloud snapshot guidance mock-only while avoiding Phase 16B / 17.
+
+### Summary
+
+Phase 16A-R2 Final keeps the fullscreen camera canvas but reduces persistent chrome so the viewfinder feels larger. The bottom gradient, guidance/filter overlay offsets, capture rail height, bottom padding, and mode rail spacing were tightened so the preview feels closer to the shutter controls. The always-expanded `24mm / 35mm / 77mm` lens strip is replaced with a compact lens menu near the flip camera control. Timer Off no longer renders visible text, while active 3s / 5s / 10s values render inside the timer control. Inspiration, History, and Settings are exposed as a thin one-tap mode rail instead of being hidden only behind a top overflow menu.
+
+### Completed
+
+- Kept capture mode free of vertical scrolling.
+- Reduced top and bottom chrome gradients to make the viewfinder feel larger.
+- Moved Live Guidance and filter overlay offsets closer to the shutter controls without overlapping the shutter.
+- Tightened bottom capture rail height, mode rail spacing, and bottom safe-area padding to reduce empty black space.
+- Removed the always-visible lens selector from the lower camera chrome.
+- Added a compact shutter-side lens menu using existing mock lens options and state.
+- Kept flash and timer as the only top-right camera controls; flash / timer are not duplicated beside the shutter.
+- Changed timer presentation so Off shows only the timer icon, while 3s, 5s, and 10s appear inside the timer circle.
+- Kept AI Snapshot as a compact shutter-side mock-only button that opens consent / result UI only after explicit tap.
+- Kept Live Guidance as a compact lower-preview pill / optional callout.
+- Kept filter entry as a translucent lower-left viewfinder pill that opens the grouped 20-filter picker only on tap.
+- Replaced the top overflow navigation dependency with a bottom mode rail for Camera, Inspiration, History, and Settings.
+- Preserved Inspiration photo import, selected-photo flow, 20 filters / grouping, mock save, mock AI, local history, History, Settings, localization, front-camera screen flash scaffold, and timer capture flow.
+
+### Changed Files
+
+- README.md
+- ios-app/README.md
+- docs/phase-log.md
+- tests/manual-smoke-tests.md
+- ios-app/AIPhotoApp/Features/Camera/CameraView.swift
+
+### Build / Verification
+
+- `git diff --check` passed.
+- Localization lint passed for English and Traditional Chinese strings.
+- Sandboxed command-line Xcode simulator build failed due CoreSimulator / sandbox-exec / SwiftUI Preview macro environment restrictions.
+- Final unsandboxed command-line Xcode simulator build could not be completed because escalation was rejected by the current Codex usage/credits limit.
+- Earlier Phase 16A-R2 unsandboxed command-line Xcode simulator build succeeded before the final bottom-spacing adjustment.
+- Forbidden imports scan passed for Firebase, FirebaseFunctions, FirebaseStorage, FirebaseFirestore, Gemini, OpenAI, and StoreKit imports.
+- Network / upload scan found only existing placeholder comments and safety copy, not new real URLSession, URLRequest, WebSocket, upload, Firebase, Cloud Functions, Gemini/OpenAI, or StoreKit behavior.
+- Secrets / config scan found no `GoogleService-Info.plist`, `.env`, `.firebaserc`, API keys, Firebase config, private keys, OAuth secrets, or Apple credentials.
+- Persistence / export scan found no UserDefaults, Core Data, SwiftData, file writes, save-to-Photos, export, raw-frame logging, or image-data persistence behavior in iOS Swift files.
+- Frame / photo safety scan found only existing Phase 15B / 15C in-memory analyzer references and Phase 16 mock consent copy, not new frame/photo upload, stream, persistence, or logging behavior.
+
+### Known TODOs
+
+- Physical iPhone visual QA is still needed for exact native-camera proportions, shutter hit testing, and compact control spacing.
+- The compact lens menu remains a mock UI scaffold and does not perform real hardware lens switching.
+- Screen flash remains UI-only and does not perform hardware flash sync.
+- AI Snapshot remains mock-only and does not capture, serialize, upload, or persist a real snapshot.
+- Real cloud AI integration remains deferred to a later explicit Phase 16B / 17 request.
+
+### Safety Notes
+
+- Did not start Phase 16B or Phase 17.
+- Did not add real network requests, URLSession/URLRequest calls, WebSocket, real upload, Firebase Storage upload, Firestore writes, Cloud Functions calls, Gemini/OpenAI calls, Gemini Live, backend code, StoreKit, quota, persistence, export, save-to-Photos, third-party SDKs, secrets, or production config.
+- Did not increase frame sampling frequency or add new Vision request types.
+- Did not add voice input, ASR, Parakeet, face recognition, identity inference, or sensitive attribute inference.
+
+### Ready for Next Phase
+
+Ready to review before commit: Yes.
+
+Ready for Phase 16B: No. Phase 16A-R2 should be reviewed, committed, pushed, and read-only confirmed before any real cloud AI integration begins.
+
+---
+
+## Phase 16A-R - Native Camera-style Fullscreen UX Rescue
+
+Status: Implemented; ready for review before commit
+Date completed: 2026-06-10
+
+### Goal
+
+Rescue the Phase 16 / 16A Camera UX so the capture surface behaves like a native fullscreen camera rather than a scrolling app page, while keeping all Phase 16 cloud snapshot behavior mock-only.
+
+### Summary
+
+Phase 16A-R replaces the capture-mode card stack with a fullscreen camera canvas. The Camera tab hides the bottom tab bar while shooting so the shutter cannot be covered by tab chrome. A small top menu preserves navigation to Inspiration, History, and Settings. Live Guidance and AI Snapshot are no longer long persistent cards below the preview; they are compact overlay controls. The filter entry now sits as a translucent button on the lower-left of the viewfinder.
+
+### Completed
+
+- Replaced the capture-mode card layout with a fullscreen `GeometryReader` / `ZStack` camera canvas.
+- Kept selected-photo / imported-photo mode scrollable for filter preview, mock save, mock AI, and local-only notes.
+- Hid the bottom tab bar while Camera is in shooting mode.
+- Added a compact top camera navigation menu so users can still jump to Inspiration, History, and Settings while the tab bar is hidden.
+- Moved flash and timer into small native-camera-style top controls.
+- Kept timer options as Off, 3s, 5s, and 10s.
+- Kept front-camera + flash screen-flash scaffold.
+- Moved filter entry to the lower-left of the viewfinder as a translucent pill showing the current preset.
+- Kept the filter picker as a sheet so the full filter catalog is not permanently occupying the capture surface.
+- Kept Live Guidance as a compact lower-preview overlay with optional expansion.
+- Kept Phase 15B brightness guidance, Phase 15C face framing / headroom guidance, and Phase 15D stability / priority logic unchanged.
+- Moved AI Snapshot to a compact button beside the shutter.
+- Preserved Phase 16 mock-only `CloudSnapshotGuidanceService` boundary, consent UX, success, failed, and unavailable states.
+- Kept Photo Picker out of the Camera capture UI; import remains in Inspiration.
+- Preserved Camera primary screen, Dazz-like / native-camera direction, mock lens selector, capture, flip, 20 filters/grouping, mock save, mock AI, local history, Inspiration, History, Settings, and localization.
+
+### Changed Files
+
+- README.md
+- ios-app/README.md
+- docs/phase-log.md
+- tests/manual-smoke-tests.md
+- ios-app/AIPhotoApp/App/MainTabShellView.swift
+- ios-app/AIPhotoApp/Features/Camera/CameraView.swift
+- ios-app/AIPhotoApp/Features/Camera/CameraViewModel.swift
+- ios-app/AIPhotoApp/Features/Home/HomeView.swift
+- ios-app/AIPhotoApp/Resources/Localization/en.lproj/Localizable.strings
+- ios-app/AIPhotoApp/Resources/Localization/zh-Hant.lproj/Localizable.strings
+
+### Build / Verification
+
+- `git diff --check` passed.
+- Localization lint passed for English and Traditional Chinese strings.
+- Sandboxed command-line Xcode simulator build failed due CoreSimulator / sandbox-exec / SwiftUI Preview macro environment restrictions.
+- Unsandboxed command-line Xcode simulator build succeeded with `xcodebuild -quiet -project ios-app/AIPhotoApp.xcodeproj -scheme AIPhotoApp -destination 'generic/platform=iOS Simulator' -derivedDataPath /private/tmp/ai-support-phase16ar-derived-unsandboxed CODE_SIGNING_ALLOWED=NO build`.
+- Forbidden imports scan passed for Firebase, FirebaseFunctions, FirebaseStorage, FirebaseFirestore, Gemini, OpenAI, and StoreKit imports.
+- Network / upload scan found only existing placeholder comments and quota/settings copy, not new real URLSession, URLRequest, WebSocket, upload, Firebase, Cloud Functions, Gemini/OpenAI, or StoreKit behavior.
+- Secrets / config file scan found no `GoogleService-Info.plist`, `.env`, or `.firebaserc`.
+- Refined secrets scan only matched documentation / placeholder TODOs and localizable safety copy, not real secrets, Firebase config, API keys, signing credentials, or production config.
+- Persistence / export scan found no UserDefaults, Core Data, SwiftData, file writes, save-to-Photos, export, base64, raw-frame logging, or image-data persistence behavior in iOS Swift files.
+- Frame / photo safety scan found only existing Phase 15B / 15C in-memory `CMSampleBuffer` / `CVPixelBuffer` analyzer references and Phase 16 mock consent copy, not new frame upload, stream, persistence, or logging behavior.
+- Vision / face safety scan still found `import Vision` and `VNDetectFaceRectanglesRequest` only in `LiveGuidanceFaceAnalyzer.swift`; no new Vision request type, face recognition, identity inference, or sensitive inference was added.
+
+### Known TODOs
+
+- Physical iPhone verification is still needed for shutter hit testing, full-screen proportions, filter overlay placement, and tab-bar hiding behavior.
+- The top camera navigation menu is a pragmatic scaffold while the Camera tab hides the tab bar; final navigation treatment can be refined later.
+- Screen flash remains UI-only and does not perform hardware flash sync.
+- AI Snapshot remains mock-only and does not capture, serialize, upload, or persist a real snapshot.
+- Real cloud AI integration remains deferred to a later explicit Phase 16B / 17 request.
+
+### Safety Notes
+
+- Did not start Phase 16B or Phase 17.
+- Did not add real network requests, URLSession/URLRequest calls, WebSocket, real upload, Firebase Storage upload, Firestore writes, Cloud Functions calls, Gemini/OpenAI calls, Gemini Live, backend code, StoreKit, quota, persistence, export, save-to-Photos, third-party SDKs, secrets, or production config.
+- Did not increase frame sampling frequency or add new Vision request types.
+- Did not add voice input, ASR, Parakeet, face recognition, identity inference, or sensitive attribute inference.
+
+### Ready for Next Phase
+
+Ready to review before commit: Yes.
+
+Ready for Phase 16B: No. Phase 16A-R should be reviewed, committed, pushed, and read-only confirmed before any real cloud AI integration begins.
+
+---
+
+## Phase 16A - Camera One-Screen UX Consolidation
+
+Status: Implemented; ready for review before commit
+Date completed: 2026-06-10
+
+### Goal
+
+Consolidate the Camera tab into a more one-screen-first shooting surface, move photo import to Inspiration, keep live guidance and mock AI snapshot guidance compact, and add small camera-control scaffolds without starting Phase 16B / 17 or connecting real cloud AI.
+
+### Summary
+
+Phase 16A keeps Camera as the primary shooting surface and reduces the need to scroll in normal capture mode. Live Guidance now defaults to a compact expandable pill, and AI Snapshot now defaults to a compact entry that opens a consent/result sheet instead of occupying the capture surface. Camera no longer exposes a Photo Picker entry; Inspiration now owns the import-photo entry and opens the existing selected-photo filter / mock save / mock AI flow.
+
+### Completed
+
+- Changed the Camera capture state to a one-screen-first layout instead of an always-scrolling capture surface.
+- Kept the selected-photo / imported-photo flow scrollable because filter preview, mock save, and mock AI analysis still need vertical space.
+- Moved the filter preset picker from inline capture content to a medium/large sheet.
+- Changed Live Guidance from a persistent full overlay to a compact expandable guidance pill.
+- Preserved Mock / Local guidance modes, the guidance toggle, Phase 15B brightness guidance, Phase 15C face framing / headroom guidance, and Phase 15D stability / anti-flicker logic.
+- Changed AI Snapshot from a persistent full panel to a compact entry that opens a consent/result sheet.
+- Preserved the Phase 16 mock-only service boundary, consent step, success, failed, and unavailable states.
+- Removed the Photo Picker entry from Camera controls and selected-photo fallback actions.
+- Added an Inspiration import-photo card that loads a single photo and opens the existing selected-photo flow with filters, mock save, mock AI, and local history.
+- Added a front-camera + flash screen-flash scaffold using a short local white overlay before capture.
+- Changed Timer from on/off to Off, 3s, 5s, and 10s options via a confirmation dialog.
+- Kept timer countdown state in memory only and integrated it with the existing capture button.
+- Preserved Camera primary screen, Dazz-like viewport, mock lens selector, 20 filters/grouping, mock save, mock AI, local history, Inspiration, History, Settings, and localization.
+
+### Changed Files
+
+- README.md
+- ios-app/README.md
+- docs/phase-log.md
+- tests/manual-smoke-tests.md
+- ios-app/AIPhotoApp/Features/Camera/CameraView.swift
+- ios-app/AIPhotoApp/Features/Camera/CameraViewModel.swift
+- ios-app/AIPhotoApp/Features/Home/HomeView.swift
+- ios-app/AIPhotoApp/Resources/Localization/en.lproj/Localizable.strings
+- ios-app/AIPhotoApp/Resources/Localization/zh-Hant.lproj/Localizable.strings
+
+### Build / Verification
+
+- `git diff --check` passed.
+- Sandboxed command-line Xcode simulator build failed due CoreSimulator / sandbox-exec / SwiftUI Preview macro environment restrictions.
+- Unsandboxed command-line Xcode simulator build succeeded with `xcodebuild -quiet -project ios-app/AIPhotoApp.xcodeproj -scheme AIPhotoApp -destination 'generic/platform=iOS Simulator' -derivedDataPath /private/tmp/ai-support-phase16a-derived-unsandboxed CODE_SIGNING_ALLOWED=NO build`.
+- Forbidden imports scan passed for Firebase, FirebaseFunctions, FirebaseStorage, FirebaseFirestore, Gemini, OpenAI, and StoreKit imports.
+- Network / upload scan found only existing local/mock placeholder comments and quota/settings copy, not new real URLSession, URLRequest, WebSocket, upload, Firebase, Cloud Functions, Gemini/OpenAI, or StoreKit behavior.
+- Secrets / config file scan found no `GoogleService-Info.plist`, `.env`, or `.firebaserc`.
+- Refined secrets scan only matched documentation / placeholder TODOs and localizable safety copy, not real secrets, Firebase config, API keys, signing credentials, or production config.
+- Persistence / export scan found no UserDefaults, Core Data, SwiftData, file writes, save-to-Photos, export, base64, raw-frame logging, or image-data persistence behavior in iOS Swift files.
+- Frame / photo safety scan found only existing Phase 15B / 15C in-memory `CMSampleBuffer` / `CVPixelBuffer` analyzer references and Phase 16 mock consent copy, not new frame upload, stream, persistence, or logging behavior.
+- Vision / face safety scan still found `import Vision` and `VNDetectFaceRectanglesRequest` only in `LiveGuidanceFaceAnalyzer.swift`; no new Vision request type, face recognition, identity inference, or sensitive inference was added.
+
+### Known TODOs
+
+- Physical iPhone layout verification is still needed for the one-screen capture surface, especially on smaller screens.
+- Front-camera screen flash is a local UI scaffold only; it does not implement real front-camera hardware flash sync.
+- The mock lens selector still does not switch real iPhone lenses.
+- AI Snapshot remains mock-only and does not capture, serialize, upload, or persist a real snapshot.
+- Real cloud AI integration remains deferred to a later explicit Phase 16B / 17 request.
+
+### Safety Notes
+
+- Did not start Phase 16B or Phase 17.
+- Did not add real network requests, URLSession/URLRequest calls, WebSocket, real upload, Firebase Storage upload, Firestore writes, Cloud Functions calls, Gemini/OpenAI calls, Gemini Live, backend code, StoreKit, quota, persistence, export, save-to-Photos, third-party SDKs, secrets, or production config.
+- Did not increase frame sampling frequency or add new Vision request types.
+- Did not add voice input, ASR, Parakeet, face recognition, identity inference, or sensitive attribute inference.
+
+### Ready for Next Phase
+
+Ready to review before commit: Yes.
+
+Ready for Phase 16B: No. Phase 16A should be reviewed, committed, pushed, and read-only confirmed before any real cloud AI integration begins.
+
+---
+
+## Phase 16 - Cloud Snapshot AI Guidance Prototype
+
+Status: Implemented; ready for review before commit
+Date completed: 2026-06-10
+
+### Goal
+
+Add the first app-side, explicitly triggered, consent-gated cloud snapshot guidance prototype without starting Gemini Live, connecting real cloud AI, adding real network/upload behavior, adding backend code, adding persistence, or adding secrets.
+
+### Summary
+
+Phase 16 adds a compact AI snapshot entry to the Camera screen, a memory-only state model, a future-facing service protocol boundary, a mock cloud response service, privacy / consent UX, and mock failed / unavailable states.
+
+Local guidance remains the default live guidance layer. The Phase 16 flow is optional and requires the user to tap the AI entry, review consent copy, and explicitly start the mock check. No real image upload, network call, provider call, Firebase write, or persistence occurs.
+
+### Completed
+
+- Added `CloudSnapshotGuidanceRequest`, `CloudSnapshotGuidanceResponse`, `CloudSnapshotGuidanceSuggestion`, mock outcome, and mock error models.
+- Added `CloudSnapshotGuidanceState` with idle, consent, preparing, analyzing, result, failed, and unavailable states.
+- Added `CloudSnapshotGuidanceService` protocol as the app-side service boundary.
+- Added `MockCloudSnapshotGuidanceService` with local mock success, failure, and unavailable outcomes only.
+- Added `CloudSnapshotGuidanceConsentView` with privacy copy before mock analysis.
+- Added `CloudSnapshotGuidanceResultView` for compact camera-like mock results and recovery states.
+- Added a compact AI snapshot / AI Quick Advice panel to the Camera capture surface.
+- Required explicit user tap before showing consent and another explicit tap before mock analysis.
+- Kept request context derived-only: filter preset ID/key, lens label, guidance mode, and request date.
+- Did not include raw image, base64, pixel buffer, sample buffer, selected photo, or serialized request payload in the Phase 16 request model.
+- Preserved Mock / Local guidance, Phase 15B brightness guidance, Phase 15C face framing / headroom guidance, and Phase 15D stability.
+- Preserved Camera primary screen, Dazz-like viewport, mock lens selector, flash / timer / flip / capture, Photo Picker, selected-photo Back to Camera / Clear, 20 filters/grouping, mock save, mock AI, local history, Inspiration, History, and Settings.
+- Updated English and Traditional Chinese localization strings.
+- Updated README / iOS README / manual smoke tests.
+
+### Changed Files
+
+- README.md
+- ios-app/README.md
+- docs/phase-log.md
+- tests/manual-smoke-tests.md
+- ios-app/AIPhotoApp/Features/Camera/CameraView.swift
+- ios-app/AIPhotoApp/Features/Camera/CameraViewModel.swift
+- ios-app/AIPhotoApp/Features/Camera/CloudSnapshotGuidanceConsentView.swift
+- ios-app/AIPhotoApp/Features/Camera/CloudSnapshotGuidanceModels.swift
+- ios-app/AIPhotoApp/Features/Camera/CloudSnapshotGuidanceResultView.swift
+- ios-app/AIPhotoApp/Features/Camera/CloudSnapshotGuidanceService.swift
+- ios-app/AIPhotoApp/Features/Camera/CloudSnapshotGuidanceState.swift
+- ios-app/AIPhotoApp/Features/Camera/MockCloudSnapshotGuidanceService.swift
+- ios-app/AIPhotoApp/Resources/Localization/en.lproj/Localizable.strings
+- ios-app/AIPhotoApp/Resources/Localization/zh-Hant.lproj/Localizable.strings
+
+### Build / Verification
+
+- `git diff --check` passed.
+- Sandboxed command-line Xcode simulator build failed due CoreSimulator / sandbox-exec / SwiftUI Preview macro environment restrictions.
+- Unsandboxed command-line Xcode simulator build succeeded with `xcodebuild -quiet -project ios-app/AIPhotoApp.xcodeproj -scheme AIPhotoApp -destination 'generic/platform=iOS Simulator' -derivedDataPath /private/tmp/ai-support-phase16-derived-unsandboxed CODE_SIGNING_ALLOWED=NO build`.
+- Forbidden imports scan passed for Firebase, FirebaseFunctions, FirebaseStorage, FirebaseFirestore, Gemini, OpenAI, and StoreKit imports.
+- Vision import / request scan still found `import Vision` and `VNDetectFaceRectanglesRequest` only in `LiveGuidanceFaceAnalyzer.swift`.
+- Network / upload scan found no Phase 16 URLSession, URLRequest, WebSocket, real upload, Gemini/OpenAI, Firebase, Cloud Functions, or StoreKit behavior.
+- Secrets / config file scan found no `GoogleService-Info.plist`, `.env`, or `.firebaserc`.
+- Refined secrets scan only matched `.env.example` placeholder values and docs/prompt scan commands, not real secrets, Firebase config, API keys, signing credentials, or production config.
+- Frame / photo persistence scan found no Phase 16 raw image, base64, sample buffer, pixel buffer, file write, upload, stream, persistence, or logging behavior. Existing Phase 15B / 15C local in-memory frame analyzer references remain expected.
+- Refined face safety scan found no Phase 16 face recognition, identity inference, sensitive attribute inference, face data persistence, or face rectangle history implementation.
+
+### Known TODOs
+
+- Real cloud AI integration remains deferred to a later explicit Phase 16B / 17 after backend, server-issued credential, privacy, pricing/rate-limit, abuse, and quota review.
+- Phase 16 does not capture, serialize, upload, or persist a real snapshot.
+- Future real cloud version should keep Local guidance as the default and keep cloud snapshot guidance explicit, cancelable, and consent-gated.
+- The UI copy may need final legal / App Store privacy review before a real cloud analysis feature ships.
+
+### Safety Notes
+
+- Did not start Gemini Live.
+- Did not add live video streaming, WebSocket realtime guidance, background frame upload, continuous frame upload, or cloud snapshot automation.
+- Did not add URLSession, URLRequest, real network calls, real upload, Firebase Storage upload, Firestore writes, Cloud Functions calls, Gemini calls, OpenAI calls, or provider SDK calls.
+- Did not add Firebase, FirebaseFunctions, FirebaseStorage, FirebaseFirestore, Gemini, OpenAI, or StoreKit imports.
+- Did not add `GoogleService-Info.plist`, `.env`, `.firebaserc`, API keys, Firebase project IDs, private keys, OAuth secrets, Apple credentials, signing credentials, provisioning profiles, or production config.
+- Did not save raw frames, selected photos, cloud request payloads, base64 image data, pixel buffers, sample buffers, face data, or face rectangle history.
+- Did not add persistence, UserDefaults, Core Data, SwiftData, export, save-to-Photos, StoreKit, subscription, paywall, premium gating, quota enforcement, backend changes, npm dependencies, third-party SDKs, commit, or push.
+- Did not add face recognition, identity inference, age inference, gender inference, emotion inference, beauty scoring, attractiveness scoring, health inference, or sensitive attribute inference.
+
+### Ready for Next Phase
+
+Ready to review before commit: Yes.
+
+Ready for real cloud AI integration: No. Real cloud AI integration must wait for a later explicit Phase 16B / 17 request after Phase 16 is reviewed, committed, pushed, and read-only confirmed.
 
 ---
 

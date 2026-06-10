@@ -1,29 +1,140 @@
 import PhotosUI
 import SwiftUI
 
+enum CameraAppDestination {
+    case inspiration
+    case history
+    case settings
+}
+
+private enum CameraCallout {
+    case none
+    case guidance
+    case aiSnapshot
+    case filter
+    case lens
+}
+
 struct CameraView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var sessionHistoryStore: SessionHistoryStore
     let showsCloseButton: Bool
-    @StateObject private var viewModel = CameraViewModel(
-        service: CameraCaptureService(),
-        photoSaveService: MockPhotoSaveService(),
-        failingPhotoSaveService: MockPhotoSaveService(mode: .failure)
-    )
+    let navigateToAppDestination: ((CameraAppDestination) -> Void)?
+    @StateObject private var viewModel: CameraViewModel
     @State private var isCaptureFilterPickerVisible = false
     @State private var isFlashEnabled = false
-    @State private var isTimerEnabled = false
+    @State private var selectedTimerOption: CameraTimerOption = .off
+    @State private var isTimerDialogPresented = false
+    @State private var timerCountdown: Int?
+    @State private var captureCountdownTask: Task<Void, Never>?
     @State private var isUsingFrontCameraMock = false
+    @State private var isScreenFlashVisible = false
+    @State private var isLiveGuidanceExpanded = false
+    @State private var isCloudSnapshotSheetPresented = false
+    @State private var activeCameraCallout: CameraCallout = .none
 
-    init(showsCloseButton: Bool = true) {
+    init(
+        showsCloseButton: Bool = true,
+        initialPhoto: CapturedPhoto? = nil,
+        navigateToAppDestination: ((CameraAppDestination) -> Void)? = nil
+    ) {
         self.showsCloseButton = showsCloseButton
+        self.navigateToAppDestination = navigateToAppDestination
+        _viewModel = StateObject(
+            wrappedValue: CameraViewModel(
+                service: CameraCaptureService(),
+                photoSaveService: MockPhotoSaveService(),
+                failingPhotoSaveService: MockPhotoSaveService(mode: .failure),
+                initialSelectedPhoto: initialPhoto
+            )
+        )
     }
 
     var body: some View {
-        NavigationStack {
-            ZStack {
-                Color.black.ignoresSafeArea()
+        Group {
+            if viewModel.selectedPhoto != nil || showsCloseButton {
+                NavigationStack {
+                    cameraRootContent
+                        .safeAreaInset(edge: .top, spacing: 0) {
+                            if viewModel.selectedPhoto != nil {
+                                selectedPhotoActionBar
+                                    .padding(.horizontal, AppSpacing.md)
+                                    .padding(.top, AppSpacing.xs)
+                                    .padding(.bottom, AppSpacing.sm)
+                                    .background(Color.black.opacity(0.92))
+                            }
+                        }
+                        .navigationTitle("")
+                        .navigationBarTitleDisplayMode(.inline)
+                        .toolbar(showsCloseButton ? Visibility.visible : Visibility.hidden, for: .navigationBar)
+                        .toolbar(viewModel.selectedPhoto == nil ? .hidden : .visible, for: .tabBar)
+                        .toolbarBackground(Color.black, for: .navigationBar)
+                        .toolbarColorScheme(.dark, for: .navigationBar)
+                        .toolbar {
+                            if showsCloseButton {
+                                ToolbarItem(placement: .topBarLeading) {
+                                    Button("camera.action.close") {
+                                        captureCountdownTask?.cancel()
+                                        timerCountdown = nil
+                                        viewModel.stopCamera()
+                                        dismiss()
+                                    }
+                                }
+                            }
+                        }
+                }
+            } else {
+                cameraRootContent
+                    .ignoresSafeArea()
+            }
+        }
+        .sheet(isPresented: $isCaptureFilterPickerVisible, onDismiss: {
+                if activeCameraCallout == .filter {
+                    activeCameraCallout = .none
+                }
+        }) {
+            filterPickerSheet
+        }
+        .sheet(isPresented: $isCloudSnapshotSheetPresented, onDismiss: {
+                if activeCameraCallout == .aiSnapshot {
+                    activeCameraCallout = .none
+                }
+        }) {
+            cloudSnapshotGuidanceSheet
+        }
+        .confirmationDialog(
+            Text("camera.timer.dialog.title"),
+            isPresented: $isTimerDialogPresented,
+            titleVisibility: .visible
+        ) {
+            ForEach(CameraTimerOption.allCases) { option in
+                Button(LocalizedStringKey(option.titleKey)) {
+                    selectedTimerOption = option
+                }
+            }
+        } message: {
+            Text("camera.timer.dialog.message")
+        }
+        .task {
+            await viewModel.prepareCamera()
+        }
+        .onDisappear {
+            captureCountdownTask?.cancel()
+            timerCountdown = nil
+            viewModel.stopCamera()
+        }
+        .onChange(of: viewModel.pickerItem) { _, _ in
+            Task {
+                await viewModel.importSelectedPhoto()
+            }
+        }
+    }
 
+    private var cameraRootContent: some View {
+        ZStack {
+            Color.black.ignoresSafeArea()
+
+            if viewModel.selectedPhoto != nil {
                 ScrollView {
                     VStack(spacing: AppSpacing.lg) {
                         content
@@ -35,41 +146,16 @@ struct CameraView: View {
                     .padding(.bottom, AppSpacing.xl)
                 }
                 .scrollIndicators(.visible)
-                .safeAreaInset(edge: .top, spacing: 0) {
-                    if viewModel.selectedPhoto != nil {
-                        selectedPhotoActionBar
-                            .padding(.horizontal, AppSpacing.md)
-                            .padding(.top, AppSpacing.xs)
-                            .padding(.bottom, AppSpacing.sm)
-                            .background(Color.black.opacity(0.92))
-                    }
-                }
+            } else {
+                content
             }
-            .navigationTitle("")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar(showsCloseButton ? Visibility.visible : Visibility.hidden, for: .navigationBar)
-            .toolbarBackground(Color.black, for: .navigationBar)
-            .toolbarColorScheme(.dark, for: .navigationBar)
-            .toolbar {
-                if showsCloseButton {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button("camera.action.close") {
-                            viewModel.stopCamera()
-                            dismiss()
-                        }
-                    }
-                }
-            }
-            .task {
-                await viewModel.prepareCamera()
-            }
-            .onDisappear {
-                viewModel.stopCamera()
-            }
-            .onChange(of: viewModel.pickerItem) { _, _ in
-                Task {
-                    await viewModel.importSelectedPhoto()
-                }
+
+            if isScreenFlashVisible {
+                Color.white
+                    .ignoresSafeArea()
+                    .transition(.opacity)
+                    .allowsHitTesting(false)
+                    .zIndex(10)
             }
         }
     }
@@ -84,45 +170,599 @@ struct CameraView: View {
     }
 
     private var captureContent: some View {
-        VStack(spacing: AppSpacing.sm) {
-            cameraStatusBar
-            previewSurface
-            lensAndFilterControls
+        GeometryReader { proxy in
+            let safeTop = proxy.safeAreaInsets.top
+            let safeBottom = proxy.safeAreaInsets.bottom
+            let topControlInset = AppTabBarMetrics.cameraTopControlPadding(for: safeTop)
+            let railBottomInset = AppTabBarMetrics.cameraRailBottomPadding(for: safeBottom)
+            let controlBottomInset = AppTabBarMetrics.cameraControlBottomPadding(for: safeBottom)
+            let filterBottomInset = AppTabBarMetrics.cameraFilterBottomPadding(for: safeBottom)
+            let guidanceBottomInset = AppTabBarMetrics.cameraGuidanceBottomPadding(for: safeBottom)
 
-            if isCaptureFilterPickerVisible {
-                FilterPresetSelectorView(
-                    presets: viewModel.filterPresets,
-                    selectedPreset: viewModel.selectedFilterPreset,
-                    isRendering: viewModel.isFiltering,
-                    onSelectPreset: viewModel.selectFilterPreset
-                )
-                .padding(AppSpacing.md)
-                .background(AppColors.elevatedSurface)
-                .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.lg))
+            ZStack {
+                cameraFullscreenCanvas
 
-                Text("camera.filter.pending_note")
-                    .font(AppTypography.caption)
-                    .foregroundStyle(AppColors.textSecondary)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
+                cameraChromeGradient
+                    .allowsHitTesting(false)
+
+                VStack(spacing: 0) {
+                    nativeCameraTopBar
+                        .padding(.horizontal, AppSpacing.md)
+                        .padding(.top, topControlInset)
+
+                    cameraStatusMessagesOverlay
+                        .padding(.horizontal, AppSpacing.md)
+                        .padding(.top, AppSpacing.xs)
+
+                    Spacer()
+                }
+                .zIndex(2)
+
+                VStack(spacing: 0) {
+                    Spacer()
+
+                    HStack {
+                        Spacer()
+
+                        nativeLiveGuidanceOverlay
+                    }
+                        .padding(.horizontal, AppSpacing.md)
+                        .padding(.bottom, guidanceBottomInset)
+                }
+                .zIndex(3)
+
+                VStack(spacing: 0) {
+                    Spacer()
+
+                    HStack {
+                        filterViewportButton
+
+                        Spacer()
+                    }
+                    .padding(.horizontal, AppSpacing.md)
+                    .padding(.bottom, filterBottomInset)
+                }
+                .zIndex(4)
+
+                VStack(spacing: 0) {
+                    Spacer()
+
+                    nativeBottomControls
+                        .padding(.horizontal, AppSpacing.md)
+                        .padding(.bottom, controlBottomInset)
+                }
+                .zIndex(5)
+
+                VStack(spacing: 0) {
+                    Spacer()
+
+                    cameraModeRail
+                        .padding(.bottom, railBottomInset)
+                }
+                .zIndex(6)
+            }
+            .frame(width: proxy.size.width, height: proxy.size.height)
+            .background(Color.black)
+            .ignoresSafeArea()
+        }
+    }
+
+    private var cameraFullscreenCanvas: some View {
+        ZStack {
+            Color.black
+
+            switch viewModel.permissionState {
+            case .authorized:
+                CameraPreviewView(session: viewModel.service.session)
+                    .ignoresSafeArea()
+                    .overlay {
+                        ruleOfThirdsGrid
+                    }
+            case .notDetermined, .denied, .restricted, .unavailable:
+                permissionMessage
+                    .padding(AppSpacing.xl)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color.black)
             }
 
-            liveGuidancePanel
-            cameraControls
+            VStack {
+                Spacer()
 
-            Text("camera.capture.helper")
-                .font(AppTypography.caption)
-                .foregroundStyle(.white.opacity(0.62))
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
+                LinearGradient(
+                    colors: [.clear, .black.opacity(0.12), .black.opacity(0.54)],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .frame(height: 188)
+                .allowsHitTesting(false)
+            }
         }
-        .padding(AppSpacing.md)
-        .background(Color(red: 0.04, green: 0.04, blue: 0.035))
-        .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.lg))
+    }
+
+    private var cameraChromeGradient: some View {
+        VStack {
+            LinearGradient(
+                colors: [.black.opacity(0.68), .black.opacity(0.22), .clear],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .frame(height: 116)
+
+            Spacer()
+
+            LinearGradient(
+                colors: [.clear, .black.opacity(0.42), .black.opacity(0.9)],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .frame(height: 150)
+        }
+        .ignoresSafeArea()
+    }
+
+    private var nativeCameraTopBar: some View {
+        HStack(spacing: AppSpacing.sm) {
+            LiveGuidanceToggleView(
+                isEnabled: viewModel.liveGuidanceState != .off,
+                toggle: {
+                    activeCameraCallout = .none
+                    isLiveGuidanceExpanded = false
+                    viewModel.toggleLiveGuidance()
+                }
+            )
+
+            LiveGuidanceModeSelectorView(
+                mode: viewModel.liveGuidanceMode,
+                toggle: {
+                    activeCameraCallout = .none
+                    isLiveGuidanceExpanded = false
+                    viewModel.toggleLiveGuidanceMode()
+                }
+            )
+
+            Spacer(minLength: AppSpacing.xs)
+
+            nativeIconButton(
+                systemImage: isFlashEnabled ? "bolt.fill" : "bolt.slash",
+                label: "camera.control.flash",
+                valueKey: nil,
+                isActive: isFlashEnabled
+            ) {
+                activeCameraCallout = .none
+                isLiveGuidanceExpanded = false
+                isFlashEnabled.toggle()
+            }
+
+            timerTopButton
+        }
+    }
+
+    private var cameraNavigationMenu: some View {
+        Menu {
+            Button("tab.home") {
+                navigateToAppDestination?(.inspiration)
+            }
+
+            Button("tab.history") {
+                navigateToAppDestination?(.history)
+            }
+
+            Button("tab.settings") {
+                navigateToAppDestination?(.settings)
+            }
+        } label: {
+            Image(systemName: "ellipsis")
+                .font(.system(size: 16, weight: .bold))
+                .frame(width: 34, height: 34)
+                .background(Color.black.opacity(0.46))
+                .foregroundStyle(.white)
+                .clipShape(Circle())
+                .overlay {
+                    Circle()
+                        .stroke(.white.opacity(0.16), lineWidth: 1)
+                }
+        }
+        .accessibilityLabel("camera.navigation.menu")
+    }
+
+    @ViewBuilder
+    private var cameraStatusMessagesOverlay: some View {
+        if viewModel.errorMessage != nil || viewModel.filterErrorMessage != nil {
+            VStack(alignment: .leading, spacing: AppSpacing.xs) {
+                statusMessages
+            }
+            .padding(.vertical, AppSpacing.xs)
+            .padding(.horizontal, AppSpacing.sm)
+            .background(Color.black.opacity(0.58))
+            .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.sm))
+        }
+    }
+
+    @ViewBuilder
+    private var nativeLiveGuidanceOverlay: some View {
+        if viewModel.liveGuidanceState != .off {
+            if activeCameraCallout == .guidance {
+                VStack(alignment: .trailing, spacing: AppSpacing.xs) {
+                    LiveGuidanceOverlayView(
+                        state: viewModel.liveGuidanceState,
+                        stateTitleKey: viewModel.liveGuidanceStateTitleKey,
+                        suggestions: viewModel.liveGuidanceSuggestions,
+                        advanceState: viewModel.advanceLiveGuidanceMockState
+                    )
+                    .frame(width: 244, alignment: .trailing)
+
+                    Button {
+                        withAnimation(.snappy(duration: 0.18)) {
+                            activeCameraCallout = .none
+                            isLiveGuidanceExpanded = false
+                        }
+                    } label: {
+                        Image(systemName: "chevron.down")
+                            .font(.system(size: 11, weight: .bold))
+                            .frame(width: 32, height: 24)
+                            .background(Color.black.opacity(0.5))
+                            .foregroundStyle(.white.opacity(0.86))
+                            .clipShape(Capsule())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("camera.guidance.compact.accessibility")
+                }
+                .transition(.opacity.combined(with: .move(edge: .bottom)))
+            } else {
+                guidanceCompactPill
+            }
+        }
+    }
+
+    private var guidanceCompactPill: some View {
+        Button {
+            withAnimation(.snappy(duration: 0.18)) {
+                activeCameraCallout = .guidance
+                isLiveGuidanceExpanded = true
+            }
+        } label: {
+            HStack(spacing: AppSpacing.xs) {
+                Image(systemName: "sparkles")
+                    .font(.system(size: 12, weight: .bold))
+
+                Text(LocalizedStringKey(viewModel.liveGuidanceStateTitleKey))
+                    .font(.caption2.weight(.semibold))
+                    .lineLimit(1)
+
+                if let firstSuggestion = viewModel.liveGuidanceSuggestions.first {
+                    Text(LocalizedStringKey(firstSuggestion.messageKey))
+                        .font(.caption2)
+                        .foregroundStyle(.white.opacity(0.78))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.72)
+                }
+
+                Image(systemName: "chevron.up")
+                    .font(.system(size: 10, weight: .bold))
+            }
+            .padding(.vertical, AppSpacing.xs)
+            .padding(.horizontal, AppSpacing.sm)
+            .frame(maxWidth: 260, alignment: .leading)
+            .foregroundStyle(.white)
+            .background(.black.opacity(0.52))
+            .clipShape(Capsule())
+            .overlay {
+                Capsule()
+                    .stroke(.white.opacity(0.18), lineWidth: 1)
+            }
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("camera.guidance.compact.accessibility")
+    }
+
+    private var filterViewportButton: some View {
+        Button {
+            activeCameraCallout = .filter
+            isLiveGuidanceExpanded = false
+            isCaptureFilterPickerVisible = true
+        } label: {
+            HStack(spacing: AppSpacing.xs) {
+                Image(systemName: "camera.filters")
+                    .font(.system(size: 13, weight: .bold))
+
+                Text(LocalizedStringKey(viewModel.selectedFilterPreset.nameKey))
+                    .font(.caption2.weight(.semibold))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.72)
+            }
+            .padding(.vertical, AppSpacing.xs)
+            .padding(.horizontal, AppSpacing.sm)
+            .background(Color.black.opacity(0.48))
+            .foregroundStyle(.white)
+            .clipShape(Capsule())
+            .overlay {
+                Capsule()
+                    .stroke(.white.opacity(0.2), lineWidth: 1)
+            }
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("camera.filter.entry")
+    }
+
+    private var nativeBottomControls: some View {
+        ZStack {
+            if activeCameraCallout == .lens {
+                lensDropdownCallout
+                    .frame(maxWidth: 324, alignment: .trailing)
+                    .offset(x: -2, y: -66)
+                    .zIndex(30)
+            }
+
+            HStack(spacing: AppSpacing.xs) {
+                aiSnapshotNativeButton
+
+                Spacer(minLength: AppSpacing.xs)
+
+                HStack(spacing: AppSpacing.xs) {
+                    flipCameraButton
+                    compactLensMenu
+                }
+            }
+            .frame(maxWidth: 352)
+
+            captureButton
+                .frame(width: 88, height: 88)
+                .contentShape(Circle())
+                .zIndex(20)
+        }
+        .frame(maxWidth: .infinity)
+        .frame(height: 82)
+    }
+
+    @ViewBuilder
+    private var cameraModeRail: some View {
+        if navigateToAppDestination != nil {
+            HStack(spacing: AppSpacing.xs) {
+                cameraModeRailItem(
+                    titleKey: "camera.title",
+                    systemImage: "camera.viewfinder",
+                    isSelected: true
+                ) {}
+
+                cameraModeRailItem(
+                    titleKey: "tab.home",
+                    systemImage: "sparkles",
+                    isSelected: false
+                ) {
+                    navigateToAppDestination?(.inspiration)
+                }
+
+                cameraModeRailItem(
+                    titleKey: "tab.history",
+                    systemImage: "photo.stack",
+                    isSelected: false
+                ) {
+                    navigateToAppDestination?(.history)
+                }
+
+                cameraModeRailItem(
+                    titleKey: "tab.settings",
+                    systemImage: "gearshape",
+                    isSelected: false
+                ) {
+                    navigateToAppDestination?(.settings)
+                }
+            }
+            .padding(4)
+            .background(Color.black.opacity(0.42))
+            .clipShape(Capsule())
+            .overlay {
+                Capsule()
+                    .stroke(Color.white.opacity(0.1), lineWidth: 1)
+            }
+            .shadow(color: .black.opacity(0.26), radius: 12, x: 0, y: 6)
+        }
+    }
+
+    private func cameraModeRailItem(
+        titleKey: LocalizedStringKey,
+        systemImage: String,
+        isSelected: Bool,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            HStack(spacing: 4) {
+                Image(systemName: systemImage)
+                    .font(.system(size: 12, weight: .bold))
+
+                Text(titleKey)
+                    .font(.system(size: 12, weight: .semibold))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.68)
+            }
+            .padding(.vertical, 5)
+            .padding(.horizontal, AppSpacing.sm)
+            .foregroundStyle(isSelected ? AppColors.accent : .white.opacity(0.78))
+            .background(isSelected ? AppColors.accent.opacity(0.14) : Color.clear)
+            .clipShape(Capsule())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(titleKey)
+    }
+
+    private var aiSnapshotNativeButton: some View {
+        Button {
+            activeCameraCallout = .aiSnapshot
+            isLiveGuidanceExpanded = false
+            if case .idle = viewModel.cloudSnapshotGuidanceState {
+                viewModel.requestCloudSnapshotGuidanceConsent()
+            }
+            isCloudSnapshotSheetPresented = true
+        } label: {
+            HStack(spacing: AppSpacing.xs) {
+                Image(systemName: "wand.and.stars")
+                    .font(.system(size: 15, weight: .bold))
+
+                Text("camera.cloud_snapshot.short")
+                    .font(.caption2.weight(.semibold))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.72)
+            }
+            .padding(.vertical, AppSpacing.sm)
+            .padding(.horizontal, AppSpacing.md)
+            .background(Color.black.opacity(0.54))
+            .foregroundStyle(AppColors.accent)
+            .clipShape(Capsule())
+            .overlay {
+                Capsule()
+                    .stroke(AppColors.accent.opacity(0.34), lineWidth: 1)
+            }
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("camera.cloud_snapshot.entry")
+    }
+
+    private var flipCameraButton: some View {
+        nativeIconButton(
+            systemImage: "arrow.triangle.2.circlepath.camera",
+            label: "camera.control.flip",
+            valueKey: nil,
+            isActive: isUsingFrontCameraMock
+        ) {
+            activeCameraCallout = .none
+            isLiveGuidanceExpanded = false
+            isUsingFrontCameraMock.toggle()
+        }
+    }
+
+    private var compactLensMenu: some View {
+        Button {
+            withAnimation(.snappy(duration: 0.16)) {
+                activeCameraCallout = activeCameraCallout == .lens ? .none : .lens
+                isLiveGuidanceExpanded = false
+            }
+        } label: {
+            HStack(spacing: 3) {
+                Text(viewModel.selectedLensOption.focalLengthLabel)
+                    .font(.caption.weight(.bold))
+                    .lineLimit(1)
+
+                Image(systemName: "chevron.down")
+                    .font(.system(size: 8, weight: .bold))
+            }
+            .padding(.vertical, AppSpacing.sm)
+            .padding(.horizontal, AppSpacing.md)
+            .background(Color.black.opacity(0.54))
+            .foregroundStyle(.white)
+            .clipShape(Capsule())
+            .overlay {
+                Capsule()
+                    .stroke(Color.white.opacity(0.18), lineWidth: 1)
+            }
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(LocalizedStringKey(viewModel.selectedLensOption.accessibilityKey))
+    }
+
+    private var lensDropdownCallout: some View {
+        HStack(spacing: AppSpacing.xs) {
+            ForEach(viewModel.lensOptions) { option in
+                Button {
+                    viewModel.selectLensOption(option)
+                    withAnimation(.snappy(duration: 0.16)) {
+                        activeCameraCallout = .none
+                    }
+                } label: {
+                    VStack(spacing: 1) {
+                        Text(option.focalLengthLabel)
+                            .font(.caption2.weight(.bold))
+                            .lineLimit(1)
+
+                        Text(option.zoomLabel)
+                            .font(.caption2.weight(.medium))
+                            .lineLimit(1)
+                    }
+                    .frame(minWidth: 46)
+                    .padding(.vertical, 5)
+                    .padding(.horizontal, AppSpacing.xs)
+                    .background(option == viewModel.selectedLensOption ? AppColors.accent.opacity(0.26) : Color.white.opacity(0.08))
+                    .foregroundStyle(option == viewModel.selectedLensOption ? AppColors.accent : .white.opacity(0.84))
+                    .clipShape(Capsule())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(LocalizedStringKey(option.accessibilityKey))
+            }
+        }
+        .padding(5)
+        .background(Color.black.opacity(0.58))
+        .clipShape(Capsule())
         .overlay {
-            RoundedRectangle(cornerRadius: AppCornerRadius.lg)
-                .stroke(Color.white.opacity(0.08), lineWidth: 1)
+            Capsule()
+                .stroke(Color.white.opacity(0.16), lineWidth: 1)
         }
+        .shadow(color: .black.opacity(0.24), radius: 10, x: 0, y: 5)
+    }
+
+    private var timerTopButton: some View {
+        Button {
+            activeCameraCallout = .none
+            isLiveGuidanceExpanded = false
+            isTimerDialogPresented = true
+        } label: {
+            ZStack {
+                Circle()
+                    .fill(selectedTimerOption == .off ? Color.black.opacity(0.46) : AppColors.accent.opacity(0.28))
+                    .frame(width: 38, height: 38)
+
+                if let badgeText = selectedTimerOption.badgeText {
+                    Text(badgeText)
+                        .font(.caption2.weight(.black))
+                        .foregroundStyle(AppColors.accent)
+                        .minimumScaleFactor(0.7)
+                } else {
+                    Image(systemName: "timer")
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundStyle(.white)
+                }
+            }
+            .overlay {
+                Circle()
+                    .stroke(
+                        selectedTimerOption == .off ? .white.opacity(0.16) : AppColors.accent.opacity(0.44),
+                        lineWidth: 1
+                    )
+            }
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("camera.control.timer")
+    }
+
+    private func nativeIconButton(
+        systemImage: String,
+        label: LocalizedStringKey,
+        valueKey: String?,
+        isActive: Bool,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            VStack(spacing: AppSpacing.xs) {
+                Image(systemName: systemImage)
+                    .font(.system(size: 18, weight: .semibold))
+                    .frame(width: 38, height: 38)
+                    .background(isActive ? AppColors.accent.opacity(0.28) : Color.black.opacity(0.46))
+                    .foregroundStyle(isActive ? AppColors.accent : .white)
+                    .clipShape(Circle())
+                    .overlay {
+                        Circle()
+                            .stroke(isActive ? AppColors.accent.opacity(0.44) : .white.opacity(0.16), lineWidth: 1)
+                    }
+
+                if let valueKey {
+                    Text(LocalizedStringKey(valueKey))
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(.white.opacity(0.78))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.72)
+                }
+            }
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(label)
     }
 
     private var previewSurface: some View {
@@ -154,7 +794,7 @@ struct CameraView: View {
             .padding(AppSpacing.sm)
         }
         .aspectRatio(4 / 5, contentMode: .fit)
-        .frame(maxWidth: 360)
+        .frame(maxWidth: 330)
         .padding(8)
         .background(Color(red: 0.012, green: 0.012, blue: 0.011))
         .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.lg))
@@ -218,13 +858,107 @@ struct CameraView: View {
     @ViewBuilder
     private var liveGuidancePanel: some View {
         if viewModel.liveGuidanceState != .off {
-            LiveGuidanceOverlayView(
-                state: viewModel.liveGuidanceState,
-                stateTitleKey: viewModel.liveGuidanceStateTitleKey,
-                suggestions: viewModel.liveGuidanceSuggestions,
-                advanceState: viewModel.advanceLiveGuidanceMockState
-            )
-            .frame(maxWidth: .infinity, alignment: .leading)
+            VStack(spacing: AppSpacing.xs) {
+                Button {
+                    withAnimation(.snappy(duration: 0.18)) {
+                        isLiveGuidanceExpanded.toggle()
+                    }
+                } label: {
+                    HStack(spacing: AppSpacing.xs) {
+                        Image(systemName: "sparkles")
+                            .font(.system(size: 12, weight: .bold))
+
+                        Text(LocalizedStringKey(viewModel.liveGuidanceStateTitleKey))
+                            .font(.caption2.weight(.semibold))
+                            .lineLimit(1)
+
+                        if let firstSuggestion = viewModel.liveGuidanceSuggestions.first {
+                            Text(LocalizedStringKey(firstSuggestion.messageKey))
+                                .font(.caption2)
+                                .foregroundStyle(.white.opacity(0.7))
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.76)
+                        }
+
+                        Spacer(minLength: AppSpacing.xs)
+
+                        Image(systemName: isLiveGuidanceExpanded ? "chevron.down" : "chevron.up")
+                            .font(.system(size: 10, weight: .bold))
+                    }
+                    .padding(.vertical, AppSpacing.xs)
+                    .padding(.horizontal, AppSpacing.sm)
+                    .foregroundStyle(.white)
+                    .background(Color.black.opacity(0.48))
+                    .clipShape(Capsule())
+                    .overlay {
+                        Capsule()
+                            .stroke(.white.opacity(0.18), lineWidth: 1)
+                    }
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("camera.guidance.compact.accessibility")
+
+                if isLiveGuidanceExpanded {
+                    LiveGuidanceOverlayView(
+                        state: viewModel.liveGuidanceState,
+                        stateTitleKey: viewModel.liveGuidanceStateTitleKey,
+                        suggestions: viewModel.liveGuidanceSuggestions,
+                        advanceState: viewModel.advanceLiveGuidanceMockState
+                    )
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .transition(.opacity.combined(with: .move(edge: .top)))
+                }
+            }
+        }
+    }
+
+    private var cloudSnapshotGuidancePanel: some View {
+        Button {
+            if case .idle = viewModel.cloudSnapshotGuidanceState {
+                viewModel.requestCloudSnapshotGuidanceConsent()
+            }
+            isCloudSnapshotSheetPresented = true
+        } label: {
+            HStack(spacing: AppSpacing.xs) {
+                Image(systemName: "wand.and.stars")
+                    .font(.system(size: 12, weight: .bold))
+
+                Text("camera.cloud_snapshot.title")
+                    .font(.caption2.weight(.semibold))
+                    .lineLimit(1)
+
+                Text(LocalizedStringKey(viewModel.cloudSnapshotGuidanceState.titleKey))
+                    .font(.caption2)
+                    .foregroundStyle(.white.opacity(0.68))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.75)
+
+                Spacer(minLength: AppSpacing.xs)
+
+                Text("camera.cloud_snapshot.badge.mock")
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(AppColors.accent)
+                    .lineLimit(1)
+            }
+            .padding(.vertical, AppSpacing.xs)
+            .padding(.horizontal, AppSpacing.sm)
+            .foregroundStyle(.white)
+            .background(Color.black.opacity(0.48))
+            .clipShape(Capsule())
+            .overlay {
+                Capsule()
+                    .stroke(AppColors.accent.opacity(0.32), lineWidth: 1)
+            }
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("camera.cloud_snapshot.entry")
+        .accessibilityElement(children: .contain)
+    }
+
+    private var cameraAssistControls: some View {
+        VStack(spacing: AppSpacing.xs) {
+            liveGuidancePanel
+            cloudSnapshotGuidancePanel
         }
     }
 
@@ -259,10 +993,11 @@ struct CameraView: View {
             }
 
             cameraIconButton(
-                systemImage: isTimerEnabled ? "timer.circle.fill" : "timer",
-                label: "camera.control.timer"
+                systemImage: selectedTimerOption.systemImage,
+                label: "camera.control.timer",
+                valueKey: selectedTimerOption.shortLabelKey
             ) {
-                isTimerEnabled.toggle()
+                isTimerDialogPresented = true
             }
 
             Spacer(minLength: AppSpacing.xs)
@@ -277,17 +1012,15 @@ struct CameraView: View {
             ) {
                 isUsingFrontCameraMock.toggle()
             }
-
-            photoImportButton
         }
-        .padding(.vertical, AppSpacing.sm)
+        .padding(.vertical, AppSpacing.xs)
     }
 
     private var captureButton: some View {
         Button {
             switch viewModel.permissionState {
             case .authorized:
-                viewModel.capturePhoto()
+                scheduleCapture()
             case .notDetermined:
                 Task { await viewModel.requestCameraAccess() }
             case .denied, .restricted, .unavailable:
@@ -306,38 +1039,37 @@ struct CameraView: View {
                 if viewModel.isLoading {
                     ProgressView()
                         .tint(.black)
+                } else if let timerCountdown {
+                    Text("\(timerCountdown)")
+                        .font(.title3.weight(.bold))
+                        .foregroundStyle(.black)
                 }
             }
         }
-        .disabled(viewModel.isLoading || viewModel.permissionState == .denied || viewModel.permissionState == .restricted || viewModel.permissionState == .unavailable)
+        .disabled(
+            viewModel.isLoading
+                || timerCountdown != nil
+                || viewModel.permissionState == .denied
+                || viewModel.permissionState == .restricted
+                || viewModel.permissionState == .unavailable
+        )
         .accessibilityLabel("camera.action.capture")
-    }
-
-    private var photoImportButton: some View {
-        PhotosPicker(
-            selection: $viewModel.pickerItem,
-            matching: .images,
-            photoLibrary: .shared()
-        ) {
-            cameraIconLabel(systemImage: "photo.on.rectangle", label: "camera.action.import")
-        }
-        .disabled(viewModel.isLoading)
-        .accessibilityLabel("camera.action.import")
     }
 
     private func cameraIconButton(
         systemImage: String,
         label: LocalizedStringKey,
+        valueKey: String? = nil,
         action: @escaping () -> Void
     ) -> some View {
         Button(action: action) {
-            cameraIconLabel(systemImage: systemImage, label: label)
+            cameraIconLabel(systemImage: systemImage, label: label, valueKey: valueKey)
         }
         .buttonStyle(.plain)
         .accessibilityLabel(label)
     }
 
-    private func cameraIconLabel(systemImage: String, label: LocalizedStringKey) -> some View {
+    private func cameraIconLabel(systemImage: String, label: LocalizedStringKey, valueKey: String? = nil) -> some View {
         VStack(spacing: AppSpacing.xs) {
             Image(systemName: systemImage)
                 .font(.system(size: 20, weight: .semibold))
@@ -346,11 +1078,19 @@ struct CameraView: View {
                 .foregroundStyle(.white)
                 .clipShape(Circle())
 
-            Text(label)
-                .font(.caption2)
-                .foregroundStyle(.white.opacity(0.68))
-                .lineLimit(1)
-                .minimumScaleFactor(0.75)
+            if let valueKey {
+                Text(LocalizedStringKey(valueKey))
+                    .font(.caption2)
+                    .foregroundStyle(.white.opacity(0.68))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.75)
+            } else {
+                Text(label)
+                    .font(.caption2)
+                    .foregroundStyle(.white.opacity(0.68))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.75)
+            }
         }
         .frame(width: 48)
     }
@@ -452,8 +1192,6 @@ struct CameraView: View {
                     viewModel.clearSelectedPhoto()
                 }
 
-                PhotoPickerView(selection: $viewModel.pickerItem, isLoading: viewModel.isLoading)
-
                 PrimaryButton(
                     "camera.action.continue_placeholder",
                     systemImage: "sparkles",
@@ -515,6 +1253,170 @@ struct CameraView: View {
         .shadow(color: .black.opacity(0.22), radius: 10, x: 0, y: 5)
     }
 
+    private var filterPickerSheet: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: AppSpacing.md) {
+                    FilterPresetSelectorView(
+                        presets: viewModel.filterPresets,
+                        selectedPreset: viewModel.selectedFilterPreset,
+                        isRendering: viewModel.isFiltering,
+                        onSelectPreset: { preset in
+                            viewModel.selectFilterPreset(preset)
+                        }
+                    )
+
+                    Text("camera.filter.pending_note")
+                        .font(AppTypography.caption)
+                        .foregroundStyle(AppColors.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .padding(AppSpacing.lg)
+            }
+            .background(AppColors.background)
+            .navigationTitle("filters.selector.title")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("camera.action.close") {
+                        isCaptureFilterPickerVisible = false
+                    }
+                }
+            }
+        }
+        .presentationDetents([.medium, .large])
+    }
+
+    private var cloudSnapshotGuidanceSheet: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: AppSpacing.md) {
+                    HStack(spacing: AppSpacing.xs) {
+                        Label("camera.cloud_snapshot.title", systemImage: "wand.and.stars")
+                            .font(AppTypography.bodyEmphasis)
+
+                        Spacer()
+
+                        Text("camera.cloud_snapshot.badge.mock")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(AppColors.accent)
+                    }
+
+                    Text("camera.cloud_snapshot.entry_note")
+                        .font(AppTypography.caption)
+                        .foregroundStyle(AppColors.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    Group {
+                        switch viewModel.cloudSnapshotGuidanceState {
+                        case .idle:
+                            Button {
+                                viewModel.requestCloudSnapshotGuidanceConsent()
+                            } label: {
+                                Label("camera.cloud_snapshot.entry", systemImage: "sparkles")
+                                    .font(AppTypography.bodyEmphasis)
+                                    .frame(maxWidth: .infinity)
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .tint(AppColors.accent)
+                        case .consentRequired:
+                            CloudSnapshotGuidanceConsentView(
+                                startAnalysis: {
+                                    Task {
+                                        await viewModel.startMockCloudSnapshotGuidance()
+                                    }
+                                },
+                                simulateFailure: {
+                                    Task {
+                                        await viewModel.startMockCloudSnapshotGuidance(outcome: .failure)
+                                    }
+                                },
+                                simulateUnavailable: {
+                                    Task {
+                                        await viewModel.startMockCloudSnapshotGuidance(outcome: .unavailable)
+                                    }
+                                },
+                                cancel: {
+                                    viewModel.resetCloudSnapshotGuidance()
+                                    isCloudSnapshotSheetPresented = false
+                                }
+                            )
+                        case .preparingSnapshot, .analyzing, .result, .failed, .unavailable:
+                            CloudSnapshotGuidanceResultView(
+                                state: viewModel.cloudSnapshotGuidanceState,
+                                retry: viewModel.requestCloudSnapshotGuidanceConsent,
+                                dismiss: {
+                                    viewModel.resetCloudSnapshotGuidance()
+                                    isCloudSnapshotSheetPresented = false
+                                }
+                            )
+                        }
+                    }
+                    .padding(AppSpacing.md)
+                    .foregroundStyle(.white)
+                    .background(Color.black.opacity(0.82))
+                    .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.md))
+                }
+                .padding(AppSpacing.lg)
+            }
+            .background(AppColors.background)
+            .navigationTitle("camera.cloud_snapshot.title")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("camera.action.close") {
+                        isCloudSnapshotSheetPresented = false
+                    }
+                }
+            }
+        }
+        .presentationDetents([.medium, .large])
+    }
+
+    private func scheduleCapture() {
+        guard timerCountdown == nil else { return }
+
+        if selectedTimerOption.seconds == 0 {
+            performCaptureNow()
+            return
+        }
+
+        captureCountdownTask?.cancel()
+        captureCountdownTask = Task { @MainActor in
+            for remaining in stride(from: selectedTimerOption.seconds, through: 1, by: -1) {
+                timerCountdown = remaining
+                try? await Task.sleep(nanoseconds: 1_000_000_000)
+                guard !Task.isCancelled else {
+                    timerCountdown = nil
+                    return
+                }
+            }
+
+            timerCountdown = nil
+            performCaptureNow()
+        }
+    }
+
+    private func performCaptureNow() {
+        triggerScreenFlashIfNeeded()
+        viewModel.capturePhoto()
+    }
+
+    private func triggerScreenFlashIfNeeded() {
+        guard isUsingFrontCameraMock, isFlashEnabled else { return }
+
+        withAnimation(.easeOut(duration: 0.04)) {
+            isScreenFlashVisible = true
+        }
+
+        Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 140_000_000)
+            withAnimation(.easeOut(duration: 0.18)) {
+                isScreenFlashVisible = false
+            }
+        }
+    }
+
     @ViewBuilder
     private var statusMessages: some View {
         if let errorMessage = viewModel.errorMessage {
@@ -549,4 +1451,58 @@ struct CameraView: View {
 #Preview {
     CameraView()
         .environmentObject(SessionHistoryStore())
+}
+
+private enum CameraTimerOption: Int, CaseIterable, Identifiable {
+    case off = 0
+    case three = 3
+    case five = 5
+    case ten = 10
+
+    var id: Int { rawValue }
+
+    var seconds: Int { rawValue }
+
+    var titleKey: String {
+        switch self {
+        case .off:
+            return "camera.timer.option.off"
+        case .three:
+            return "camera.timer.option.three"
+        case .five:
+            return "camera.timer.option.five"
+        case .ten:
+            return "camera.timer.option.ten"
+        }
+    }
+
+    var shortLabelKey: String {
+        switch self {
+        case .off:
+            return "camera.timer.short.off"
+        case .three:
+            return "camera.timer.short.three"
+        case .five:
+            return "camera.timer.short.five"
+        case .ten:
+            return "camera.timer.short.ten"
+        }
+    }
+
+    var systemImage: String {
+        self == .off ? "timer" : "timer.circle.fill"
+    }
+
+    var badgeText: String? {
+        switch self {
+        case .off:
+            return nil
+        case .three:
+            return "3s"
+        case .five:
+            return "5s"
+        case .ten:
+            return "10s"
+        }
+    }
 }
