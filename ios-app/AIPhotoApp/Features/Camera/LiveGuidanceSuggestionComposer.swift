@@ -78,8 +78,8 @@ nonisolated struct LiveGuidanceSuggestionComposer: Sendable {
             )
         case .portraitLikely:
             return LiveGuidanceSuggestion(
-                id: "more_headroom",
-                messageKey: "camera.guidance.suggestion.more_headroom",
+                id: "portrait_framing_ready",
+                messageKey: "camera.guidance.suggestion.portrait_framing_ready",
                 category: .portrait
             )
         case .warmFilterHelpful:

@@ -889,6 +889,77 @@ Known TODOs:
 - [ ] True grain overlays, halation, light leak, dust, frames, CCD / instant camera asset treatment, Metal/custom shader work, and camera-specific optical simulation remain future phases.
 - [ ] Public UI filter names should continue avoiding protected brand names unless legal approval exists.
 
+## Phase 15C
+
+Check:
+
+- [x] Added local Apple Vision face rectangle prototype.
+- [x] Kept `import Vision` limited to the local face analyzer file.
+- [x] Used Vision only for local face rectangle / bounding box detection.
+- [x] Added derived local face framing signals for subject off-center, low headroom, face too close, face too far, and portrait framing ready.
+- [x] Preserved Phase 15B brightness guidance for too dark, too bright, and balanced lighting.
+- [x] Preserved Mock guidance mode.
+- [x] Preserved Phase 15 sample/fallback local suggestions.
+- [x] Kept frame analysis low-frequency through the existing Phase 15B path.
+- [x] Kept analysis on the background frame signal queue with UI updates returning to the main thread.
+- [x] Did not store face rectangles or face history.
+- [x] Did not log raw frames, base64, pixel buffers, sample buffers, or face rectangles.
+- [x] Did not store, upload, stream, or persist raw frames.
+- [x] Did not add face recognition, identity inference, age inference, gender inference, emotion inference, beauty scoring, attractiveness scoring, health inference, or sensitive attribute inference.
+- [x] Preserved Camera as the first selected tab at source level.
+- [x] Preserved Dazz-like compact viewport at source level.
+- [x] Preserved mock lens selector at source level.
+- [x] Preserved selected-photo Back to Camera / Clear at source level.
+- [x] Preserved Photo Picker at source level.
+- [x] Preserved 20 filters and filter grouping at source level.
+- [x] Preserved mock save, mock AI, local session history, Inspiration, History, and Settings at source level.
+- [x] Added English and Traditional Chinese localization for the stable portrait framing hint.
+- [x] Confirmed no Gemini Live, Gemini/OpenAI calls, Cloud Functions calls, Firebase Storage / Firestore integration, voice input, ASR, Parakeet, StoreKit, persistence, export, save-to-Photos, backend implementation, or secrets were intentionally added.
+- [x] `git diff --check` passed.
+- [x] Forbidden imports scan passed for Firebase, Gemini, OpenAI, and StoreKit imports.
+- [x] Vision import scan found `import Vision` only in `LiveGuidanceFaceAnalyzer.swift`.
+- [x] Secrets / config scan found no real secrets, Firebase config, API keys, or signing credentials.
+- [x] Camera-scoped forbidden behavior scan passed.
+- [x] Frame safety scan found no raw-frame storage, upload, stream, base64, raw-frame logging, or network behavior in Camera feature files.
+- [x] Face safety scan found no face recognition, identity inference, sensitive attribute inference, face data persistence, or face rectangle history implementation.
+- [x] Sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec environment restrictions.
+- [x] Unsandboxed command-line Xcode simulator build succeeded on 2026-06-10.
+
+Manual Xcode / Simulator check:
+
+- [x] User manually verified app build / run in Xcode / Simulator on 2026-06-10.
+- [x] User confirmed Camera is still the primary screen.
+- [x] User confirmed Mock / Local guidance mode can be switched.
+- [x] User confirmed Mock guidance mode still works.
+- [x] User confirmed Local guidance mode still works.
+- [x] User confirmed Phase 15B brightness guidance still works.
+- [x] User confirmed Apple Vision face rectangle / bounding box detection is only used for local face framing / headroom guidance.
+- [x] User confirmed face framing hints can show short composition suggestions.
+- [x] User confirmed hints do not flicker aggressively.
+- [x] User confirmed preview and capture remain responsive, with no obvious lag.
+- [x] User confirmed guidance overlay stays below the viewfinder and does not block the main preview.
+- [x] User confirmed Dazz-like camera layout remains normal.
+- [x] User confirmed mock lens selector remains normal.
+- [x] User confirmed flash / timer / flip / capture remain normal.
+- [x] User confirmed Photo Picker import remains normal.
+- [x] User confirmed selected-photo Back to Camera / Clear remains normal.
+- [x] User confirmed 20 filters / grouping remain normal.
+- [x] User confirmed mock save, mock AI, and local history remain normal.
+- [x] User confirmed Inspiration, History, and Settings remain normal.
+- [x] User confirmed English / Traditional Chinese localization shows no raw keys.
+- [x] User confirmed no raw frames or face rectangles are stored, uploaded, streamed, persisted, or logged.
+- [x] User confirmed no face recognition, identity inference, age inference, gender inference, emotion inference, beauty scoring, attractiveness scoring, health inference, or sensitive inference was added.
+- [x] User confirmed no face rectangle history is stored or logged.
+- [x] User confirmed no Gemini Live, cloud AI, voice, ASR, or Parakeet was added.
+- [x] User confirmed no Firebase Storage / Firestore / Cloud Functions / StoreKit / persistence / export / save-to-Photos behavior was added.
+- [x] User confirmed no secrets, Firebase config, or API keys were added.
+
+Known TODOs:
+
+- [ ] Physical iPhone testing remains required for Vision face rectangle behavior and preview-lag validation.
+- [ ] Face framing thresholds may need tuning after real portrait testing.
+- [ ] Phase 16 remains blocked until Phase 15C is reviewed, committed, pushed, and read-only confirmed.
+
 ## Phase 15B
 
 Check:

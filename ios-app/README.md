@@ -241,6 +241,21 @@ Current implementation notes:
 
 Phase 15B intentionally does not import Vision, does not add face rectangle / headroom analysis, does not log raw frame / base64 / pixel buffer / sample buffer data, does not upload / stream / persist frames, and does not add Gemini Live, Gemini/OpenAI calls, Cloud Functions calls, Firebase Storage / Firestore, voice input, ASR, Parakeet, StoreKit, persistence, export, save-to-Photos, backend changes, secrets, dependencies, or third-party SDKs.
 
+## Phase 15C Local Face Framing Vision Prototype
+
+Phase 15C adds a conservative local Vision face rectangle prototype while preserving Phase 15B brightness guidance.
+
+Current implementation notes:
+
+- `LiveGuidanceFaceAnalyzer` is the only local file that imports Vision.
+- Vision is used only through `VNDetectFaceRectanglesRequest`.
+- Face bounding boxes are converted immediately into derived `LiveGuidanceSignal` values.
+- Derived signals cover off-center subject, low headroom, face too close, face too far, and portrait framing ready.
+- `CameraCaptureService` keeps the same low-frequency frame signal delegate and merges face-derived signals with brightness-derived signals.
+- No raw frames, pixel buffers, sample buffers, face rectangles, or face history are persisted or logged.
+
+Phase 15C intentionally does not do face recognition, identity inference, age / gender / emotion / beauty / attractiveness / health / sensitive inference, raw frame upload / stream / persistence / logging, Gemini Live, Gemini/OpenAI calls, Cloud Functions calls, Firebase Storage / Firestore, voice input, ASR, Parakeet, StoreKit, persistence, export, save-to-Photos, backend changes, secrets, dependencies, or third-party SDKs.
+
 ## Phase 01.5 Xcode Setup
 
 Phase 01.5 did not generate a `.xcodeproj` from this Windows environment because it could not be reliably verified in Xcode.

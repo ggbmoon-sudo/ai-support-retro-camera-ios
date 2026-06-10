@@ -135,6 +135,7 @@
 "camera.guidance.suggestion.more_headroom" = "頭頂可以多留一點空間。";
 "camera.guidance.suggestion.step_back_portrait" = "人像距離可以稍微退後。";
 "camera.guidance.suggestion.move_closer_portrait" = "可以再靠近一點，讓人像更突出。";
+"camera.guidance.suggestion.portrait_framing_ready" = "人像構圖穩定，可以準備拍攝。";
 "camera.guidance.suggestion.try_warm_filter" = "人像可以試試暖色濾鏡。";
 "camera.guidance.suggestion.local_signal_unavailable" = "本機導拍暫時未有足夠畫面訊號。";
 "camera.guidance.suggestion.lighting_balanced" = "光線看起來平均，可以穩住拍攝。";

@@ -161,6 +161,7 @@ private final class FrameSignalState: @unchecked Sendable {
 private final class FrameSignalDelegate: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     private let minimumAnalysisInterval: TimeInterval = 0.6
     private let brightnessAnalyzer = LiveGuidanceBrightnessAnalyzer()
+    private let faceAnalyzer = LiveGuidanceFaceAnalyzer()
     private let state: FrameSignalState
     private let onSignals: @MainActor @Sendable ([LiveGuidanceSignal]) -> Void
     nonisolated(unsafe) private var lastAnalysisDate = Date.distantPast
@@ -185,11 +186,28 @@ private final class FrameSignalDelegate: NSObject, AVCaptureVideoDataOutputSampl
         lastAnalysisDate = now
 
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
-        let signals = brightnessAnalyzer.signals(from: pixelBuffer)
+        let brightnessSignals = brightnessAnalyzer.signals(from: pixelBuffer)
+        let faceSignals = faceAnalyzer.signals(from: pixelBuffer)
+        let signals = combinedSignals(faceSignals: faceSignals, brightnessSignals: brightnessSignals)
         guard !signals.isEmpty else { return }
 
         Task { @MainActor in
             onSignals(signals)
+        }
+    }
+
+    private nonisolated func combinedSignals(
+        faceSignals: [LiveGuidanceSignal],
+        brightnessSignals: [LiveGuidanceSignal]
+    ) -> [LiveGuidanceSignal] {
+        let hasLightingWarning = brightnessSignals.contains(.tooDark) || brightnessSignals.contains(.tooBright)
+        let orderedSignals = hasLightingWarning
+            ? brightnessSignals + faceSignals
+            : faceSignals + brightnessSignals
+
+        return orderedSignals.reduce(into: []) { result, signal in
+            guard !result.contains(signal) else { return }
+            result.append(signal)
         }
     }
 }

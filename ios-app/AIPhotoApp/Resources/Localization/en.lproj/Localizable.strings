@@ -135,6 +135,7 @@
 "camera.guidance.suggestion.more_headroom" = "Leave a little more headroom.";
 "camera.guidance.suggestion.step_back_portrait" = "Step back slightly for a softer portrait frame.";
 "camera.guidance.suggestion.move_closer_portrait" = "Move a little closer so the portrait fills the frame.";
+"camera.guidance.suggestion.portrait_framing_ready" = "Portrait framing looks steady. Hold still.";
 "camera.guidance.suggestion.try_warm_filter" = "Try a warm filter for portraits.";
 "camera.guidance.suggestion.local_signal_unavailable" = "Local guidance needs a clearer frame signal.";
 "camera.guidance.suggestion.lighting_balanced" = "Lighting looks balanced. Hold steady and shoot.";

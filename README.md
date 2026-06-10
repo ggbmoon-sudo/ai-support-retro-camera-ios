@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 15: Local Live Guidance Prototype
+- Phase 15C: Local Face Framing Vision Prototype
 
 Next phase:
 
-- Phase 16, only after Phase 15 is reviewed, committed, pushed, read-only confirmed, and explicitly requested
+- Phase 16, only after Phase 15C is reviewed, committed, pushed, read-only confirmed, and explicitly requested
 
 Before each task, read `AGENTS.md`, the required docs listed there, and the relevant phase prompt in `docs/prompts/`.
 
@@ -275,6 +275,20 @@ Current Phase 15B behavior:
 - Camera primary screen, Dazz-like viewport, mock lens selector, selected-photo Back to Camera / Clear, 20 filters/grouping, Photo Picker, mock save, mock AI, local history, Inspiration, History, and Settings remain in scope.
 
 Phase 15B does not import Vision, does not add face rectangle / headroom analysis, does not store, upload, stream, persist, or log raw frames, and does not add Gemini Live, Gemini/OpenAI calls, Cloud Functions calls, Firebase Storage / Firestore, voice input, ASR, Parakeet, StoreKit, persistence, export, save-to-Photos, backend changes, secrets, dependencies, or third-party SDKs.
+
+## Phase 15C Local Face Framing Vision Prototype Status
+
+Phase 15C adds the first local Apple Vision face rectangle prototype for live guidance.
+
+Current Phase 15C behavior:
+
+- Local guidance keeps the Phase 15B low-frequency brightness signal path.
+- `LiveGuidanceFaceAnalyzer` uses Vision only for local face rectangle / bounding box detection.
+- Face rectangle results are converted immediately into derived framing signals such as subject off-center, low headroom, face too close, face too far, and portrait framing ready.
+- `import Vision` is limited to the local face analyzer file.
+- Mock guidance, Local guidance fallback, Camera primary screen, Dazz-like viewport, mock lens selector, selected-photo Back to Camera / Clear, 20 filters/grouping, Photo Picker, mock save, mock AI, local history, Inspiration, History, and Settings remain in scope.
+
+Phase 15C does not do face recognition, identity inference, age / gender / emotion / beauty / attractiveness / health / sensitive inference, face data persistence, face rectangle history, raw frame upload, raw frame streaming, raw frame persistence, raw frame logging, Gemini Live, Gemini/OpenAI calls, Cloud Functions calls, Firebase Storage / Firestore, voice input, ASR, Parakeet, StoreKit, persistence, export, save-to-Photos, backend changes, secrets, dependencies, or third-party SDKs.
 
 ## Phase 11B Camera Entry / Camera Shell Status
 

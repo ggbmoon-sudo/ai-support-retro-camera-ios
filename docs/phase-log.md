@@ -8,8 +8,8 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 15B - Local Frame Signal Prototype
-Status: Phase 15B implemented; user Xcode / Simulator verification accepted; ready to commit
+Current phase: Phase 15C - Local Face Framing Vision Prototype
+Status: Phase 15C implemented; user Xcode / Simulator verification accepted; ready to commit
 Latest documentation maintenance: Filter Research Docs Backfill + Alignment Check completed; docs-only; no Swift/backend changes
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -27,7 +27,111 @@ Phase 14B build verification: sandboxed command-line Xcode build failed due Core
 Phase 14C build verification: sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec environment restrictions; unsandboxed command-line simulator build succeeded on 2026-06-10
 Phase 15 build verification: sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec environment restrictions; unsandboxed command-line simulator build succeeded on 2026-06-10
 Phase 15B build verification: sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec environment restrictions; unsandboxed command-line simulator build succeeded on 2026-06-10
-Next phase: Phase 16 should not start until Phase 15B is reviewed, committed, pushed, and read-only confirmed
+Phase 15C build verification: sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec environment restrictions; unsandboxed command-line simulator build succeeded on 2026-06-10; user Xcode / Simulator build-run accepted on 2026-06-10
+Next phase: Phase 16 should not start until Phase 15C is reviewed, committed, pushed, and read-only confirmed
+
+---
+
+## Phase 15C - Local Face Framing Vision Prototype
+
+Status: Implemented; user Xcode / Simulator verification accepted; ready to commit
+Date completed: 2026-06-10
+
+### Goal
+
+Add a conservative local Apple Vision face rectangle prototype on top of Phase 15B brightness guidance without starting Phase 16, cloud AI, Gemini Live, voice, persistence, export, backend work, or secrets.
+
+### Summary
+
+Phase 15C adds `LiveGuidanceFaceAnalyzer`, a small local analyzer that uses `VNDetectFaceRectanglesRequest` for face bounding boxes only. It derives simple framing signals such as subject off-center, low headroom, face too close, face too far, and portrait framing ready, then merges those derived signals with the existing Phase 15B brightness signals.
+
+This phase intentionally does not perform face recognition, identity inference, age inference, gender inference, emotion inference, beauty scoring, attractiveness scoring, health inference, sensitive attribute inference, face data persistence, or face rectangle history.
+
+### Completed
+
+- Added local Vision face rectangle analysis in `LiveGuidanceFaceAnalyzer`.
+- Kept `import Vision` limited to the local face analyzer file.
+- Reused the Phase 15B low-frequency frame signal path.
+- Preserved Phase 15B brightness guidance for too dark, too bright, and balanced lighting.
+- Added simple derived face framing signals for off-center subject, low headroom, face too close, face too far, and portrait framing ready.
+- Updated the suggestion composer so a reasonable portrait frame gets a stable short hint instead of an incorrect headroom warning.
+- Kept raw frame handling in memory only, with no raw frame logging, upload, stream, persistence, or base64 conversion.
+- Did not store face rectangles or face history.
+- Preserved Mock guidance provider and Phase 15 fallback local suggestions.
+- Preserved Camera as the primary first tab.
+- Preserved Dazz-like viewport, mock lens selector, selected-photo Back to Camera / Clear, 20 filters/grouping, Photo Picker, mock save, mock AI, local history, Inspiration, History, and Settings.
+- Updated English and Traditional Chinese localization strings.
+- Updated README / iOS README / manual smoke tests.
+
+### Changed Files
+
+- README.md
+- ios-app/README.md
+- docs/phase-log.md
+- docs/prompts/phase-15C-local-face-framing-vision-prototype.md
+- tests/manual-smoke-tests.md
+- ios-app/AIPhotoApp/Features/Camera/CameraCaptureService.swift
+- ios-app/AIPhotoApp/Features/Camera/LiveGuidanceFaceAnalyzer.swift
+- ios-app/AIPhotoApp/Features/Camera/LiveGuidanceSuggestionComposer.swift
+- ios-app/AIPhotoApp/Resources/Localization/en.lproj/Localizable.strings
+- ios-app/AIPhotoApp/Resources/Localization/zh-Hant.lproj/Localizable.strings
+
+### Build / Verification
+
+- `git diff --check` passed.
+- Forbidden imports scan passed for Firebase, FirebaseFunctions, FirebaseStorage, FirebaseFirestore, Gemini, OpenAI, and StoreKit imports.
+- Vision import scan found `import Vision` only in `LiveGuidanceFaceAnalyzer.swift`.
+- Secrets / config file scan found no `GoogleService-Info.plist`, `.env`, or `.firebaserc`.
+- Refined secrets scan only matched placeholder/documentation references, not real secrets, Firebase config, API keys, signing credentials, or production config.
+- Camera-scoped forbidden behavior scan passed for upload, persistence, StoreKit, Gemini/OpenAI, speech/ASR, Parakeet, save-to-Photos, and related behavior.
+- Frame safety scan only matched the expected immediate in-memory `CMSampleBuffer` / `CVPixelBuffer` brightness and face rectangle analysis path; no raw-frame storage, upload, stream, base64 conversion, raw-frame logging, network behavior, or persistence was found.
+- Face safety scan only matched the expected local Vision face rectangle detector and docs/prompt safety notes; no face recognition, identity inference, sensitive attribute inference, face data persistence, or face rectangle history implementation was found.
+- Sandboxed command-line Xcode simulator build failed due CoreSimulator / sandbox-exec environment restrictions.
+- Unsandboxed command-line Xcode simulator build succeeded with `xcodebuild -project ios-app/AIPhotoApp.xcodeproj -scheme AIPhotoApp -destination 'generic/platform=iOS Simulator' -derivedDataPath /private/tmp/ai-support-phase15c-derived CODE_SIGNING_ALLOWED=NO build`.
+- User manually verified Phase 15C in Xcode / Simulator on 2026-06-10 and accepted the current result:
+  - app builds and runs
+  - Camera remains the primary screen
+  - Mock / Local guidance mode can be switched
+  - Mock guidance mode remains normal
+  - Local guidance mode remains normal
+  - Phase 15B brightness guidance remains normal
+  - Apple Vision face rectangle / bounding box detection is used only for local face framing / headroom guidance
+  - face framing hints can show short composition suggestions without obvious flicker
+  - camera preview / capture has no obvious lag
+  - guidance overlay remains below the viewfinder and does not block the main preview
+  - Dazz-like camera layout, mock lens selector, flash / timer / flip / capture, Photo Picker import, selected-photo Back to Camera / Clear, 20 filters/grouping, mock save, mock AI, local history, Inspiration, History, and Settings remain usable
+  - English / Traditional Chinese localization shows no raw keys
+  - no Gemini Live, cloud AI, voice, ASR, Parakeet, Firebase Storage / Firestore, Cloud Functions, StoreKit, persistence, export, save-to-Photos, secrets, Firebase config, or API keys were added
+  - no raw frames are stored, uploaded, streamed, persisted, or logged
+  - no face recognition, identity inference, age inference, gender inference, emotion inference, beauty scoring, attractiveness scoring, health inference, sensitive inference, face rectangle history storage, or face rectangle logging was added
+
+### Known TODOs
+
+- Physical iPhone testing is required to validate Vision face rectangle behavior and preview responsiveness with actual camera frames.
+- Face framing thresholds may need tuning after real-device portrait testing.
+- Future Vision features must remain local-only and require explicit phase approval.
+- This is still not cloud AI, Gemini Live, voice guidance, identity recognition, or production-grade pose coaching.
+
+### Safety Notes
+
+- Did not start Phase 16.
+- Did not add Gemini Live.
+- Did not call Gemini, OpenAI, or Cloud Functions.
+- Did not add cloud snapshot guidance.
+- Did not upload, stream, persist, or log camera frames.
+- Did not store face rectangles or face history.
+- Did not add face recognition, identity inference, age inference, gender inference, emotion inference, beauty scoring, attractiveness scoring, health inference, or sensitive attribute inference.
+- Did not add voice input, ASR, Parakeet, microphone permission copy, or speech recognition permission copy.
+- Did not connect Firebase Storage or Firestore.
+- Did not add Firebase, FirebaseFunctions, FirebaseStorage, FirebaseFirestore, Gemini, OpenAI, or StoreKit imports.
+- Did not add `GoogleService-Info.plist`, `.env`, `.firebaserc`, API keys, Firebase project IDs, private keys, OAuth secrets, Apple credentials, signing credentials, provisioning profiles, or production config.
+- Did not add persistence, UserDefaults, Core Data, SwiftData, export, save-to-Photos, StoreKit, subscription, paywall, premium gating, quota enforcement, backend changes, npm dependencies, third-party SDKs, commit, or push.
+
+### Ready for Next Phase
+
+Ready to commit Phase 15C: Yes.
+
+Ready for Phase 16: No. Phase 15C should be reviewed, committed, pushed, and read-only confirmed before Phase 16 starts.
 
 ---
 
