@@ -104,6 +104,7 @@ Current MVP demo / QA readiness docs:
 - `docs/filter-research-popular-film-looks.md`
 - `docs/filter-preset-schema.md`
 - `docs/filter-roadmap.md`
+- `docs/ai-feature-definition-and-prompt-contract.md`
 
 Use these docs as the source of truth unless a later decision in `docs/decisions.md` explicitly changes an earlier decision.
 
@@ -323,6 +324,14 @@ Current Phase 16 behavior:
 - Camera primary screen, Dazz-like viewport, mock lens selector, selected-photo Back to Camera / Clear, 20 filters/grouping, Photo Picker, mock save, mock AI, local history, Inspiration, History, and Settings remain in scope.
 
 Phase 16 does not add real network requests, URLSession/URLRequest calls, real upload, Firebase Storage, Firestore writes, Cloud Functions calls, Gemini/OpenAI calls, Gemini Live, WebSocket/live video streaming, background frame upload, API keys, Firebase config, StoreKit, persistence, export, save-to-Photos, backend changes, dependencies, raw frame/photo/request payload persistence, face recognition, identity inference, or sensitive attribute inference.
+
+## Phase 16C AI Feature Definition + Prompt UX Contract Status
+
+Phase 16C adds a documentation-only AI feature definition and prompt UX contract at `docs/ai-feature-definition-and-prompt-contract.md`.
+
+The document defines the future role of AI as a camera-first photography assistant, shooting coach, filter recommender, style advisor, and inspiration engine. It also records the AI / AI-like feature map, Pose Overlay concept, AI Filter Generator concept, shared response schema, prompt style guide, safety / privacy boundaries, research backlog, and future roadmap.
+
+Phase 16C does not change Swift app behavior, Camera UI, backend code, real AI integration, networking, upload, persistence, export, Firebase, Gemini/OpenAI, StoreKit, secrets, or production config.
 
 ## Phase 16A Camera One-Screen UX Consolidation Status
 

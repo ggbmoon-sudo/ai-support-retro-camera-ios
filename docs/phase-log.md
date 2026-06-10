@@ -8,8 +8,8 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 16 + Phase 16A-R UX rescue closeout
-Status: Phase 16 / 16A-R through R10 manually verified in Xcode / Simulator by user; ready to commit after final review
+Current phase: Phase 16C - AI Feature Definition + Prompt UX Contract
+Status: Phase 16C documentation-only AI feature definition / prompt contract implemented by Codex; awaiting review
 Latest documentation maintenance: Filter Research Docs Backfill + Alignment Check completed; docs-only; no Swift/backend changes
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -41,7 +41,76 @@ Phase 16A-R7 build verification: targeted Swift parse passed; sandboxed command-
 Phase 16A-R8 build verification: targeted Swift parse passed; sandboxed command-line Xcode build remains blocked by CoreSimulator / sandbox-exec / SwiftUI Preview macro environment restrictions; no real service integration was added
 Phase 16A-R9 build verification: targeted Swift parse passed; sandboxed command-line Xcode build remains blocked by CoreSimulator / sandbox-exec / SwiftUI Preview macro environment restrictions; no real service integration was added
 Phase 16A-R10 build verification: targeted Swift parse passed; sandboxed command-line Xcode build remains blocked by CoreSimulator / sandbox-exec / SwiftUI Preview macro environment restrictions; no real service integration was added
-Next phase: Real cloud AI integration should not start until Phase 16 / 16A-R is committed, pushed, read-only confirmed, and explicitly requested as Phase 16B / 17
+Next phase: Phase 16D / 16E / 16F planning may happen only when explicitly requested; real cloud AI integration should not start before Phase 17 and must be explicitly requested
+
+---
+
+## Phase 16C - AI Feature Definition + Prompt UX Contract
+
+Status: Implemented as documentation-only contract; awaiting review
+Date completed: 2026-06-10
+
+### Goal
+
+Define the future AI / AI-like product role, feature map, prompt UX style, shared response schema, safety boundaries, Pose Overlay concept, AI Filter Generator concept, research backlog, and future roadmap without changing app behavior or connecting real AI.
+
+### Completed
+
+- Added `docs/ai-feature-definition-and-prompt-contract.md`.
+- Defined Product AI Role: camera-first assistant, coach, filter recommender, style advisor, and inspiration engine; not an AI chat app.
+- Documented AI / AI-like Feature Map:
+  - Local Camera Coach
+  - Pose Overlay / Pose Master-like Guide
+  - AI Snapshot
+  - Post-capture AI Photo Advisor
+  - AI Filter Recommendation
+  - AI Filter Generator
+  - Inspiration AI
+  - Future AI Edit
+  - Future Voice / Spoken Camera Assistant
+  - Future Gemini Live / Real-time AI
+- Documented Local Camera Coach behavior and copy examples.
+- Added Pose Overlay concept, including couple / male / female / neutral categories, inclusive principles, and staged roadmap.
+- Documented Phase 16 AI Snapshot boundaries as explicit-tap, consent-gated, mock-only, no background upload, no live stream, and no raw frame / request persistence.
+- Defined Post-capture AI Photo Advisor boundaries and prohibited sensitive / appearance scoring behavior.
+- Added AI Filter Recommendation mapping for existing filter families.
+- Added AI Filter Generator concept, structured recipe example, analyzed style features, and F1-F4 phases.
+- Added Inspiration AI, Future AI Edit, Future Voice, and Future Gemini Live sections.
+- Added initial structured AI response contract shared by mock / local / cloud sources.
+- Added prompt style guide with Traditional Chinese / Cantonese-friendly examples.
+- Added explicit safety / privacy boundaries and research backlog.
+- Added future roadmap: Phase 16C, 16D, 16E, 16F, 17, 18, 19+.
+- Updated `README.md` with a short Phase 16C status and link.
+
+### Changed Files
+
+- README.md
+- docs/ai-feature-definition-and-prompt-contract.md
+- docs/phase-log.md
+
+### Safety Notes
+
+Phase 16C is documentation-only. It did not modify Swift app behavior, Camera UI, Pose Overlay implementation, Filter Generator implementation, backend code, real AI integration, Gemini Live, live video streaming, WebSocket, URLSession/URLRequest usage, real network calls, upload, Firebase Storage, Firestore writes, Cloud Functions calls, Gemini/OpenAI calls, Firebase/Gemini/OpenAI/StoreKit imports, `GoogleService-Info.plist`, `.env`, `.firebaserc`, API keys, Firebase project IDs, private keys, OAuth secrets, Apple credentials, UserDefaults, Core Data, SwiftData, persistence, save-to-Photos, export, third-party SDKs, face recognition, identity inference, sensitive inference, raw frame/photo/cloud request payload persistence, or logging.
+
+### Verification
+
+- [x] `git status --short` checked before changes.
+- [x] No Swift source was modified.
+- [x] No backend source was modified.
+- [x] Documentation-only change; Xcode build not required.
+- [ ] Final `git diff --check` and safety scans to be run before response.
+
+### Known TODOs
+
+- Phase 16D can do AI UX unification only if explicitly requested.
+- Phase 16E Pose Overlay MVP can start static/non-AI only if explicitly requested.
+- Phase 16F AI Filter Generator should start mock-only if explicitly requested.
+- Real cloud AI backend boundary should not start before Phase 17.
+- Real provider integration should not start before Phase 18 and requires backend, privacy, consent, cost, quota, and schema validation review.
+
+### Ready for Phase 17 / Real AI
+
+No. Phase 16C only defines the contract. Real AI integration remains blocked until a later explicit Phase 17+ request.
 
 ---
 
