@@ -15,7 +15,8 @@ struct LocalRuleBasedGuidanceProvider: LiveGuidanceProvider {
 
     func suggestions(
         for state: LiveGuidanceMockState,
-        selectedPreset: FilterPreset
+        selectedPreset: FilterPreset,
+        frameSignals: [LiveGuidanceSignal]? = nil
     ) -> [LiveGuidanceSuggestion] {
         switch state {
         case .off, .paused, .scanning:
@@ -29,9 +30,15 @@ struct LocalRuleBasedGuidanceProvider: LiveGuidanceProvider {
                 )
             ]
         case .suggestionAvailable:
+            if let frameSignals {
+                return suggestionComposer.suggestions(
+                    for: frameSignals,
+                    selectedPreset: selectedPreset
+                )
+            }
+
             let signals = frameAnalyzer.fallbackSignals(selectedPreset: selectedPreset)
             return suggestionComposer.suggestions(for: signals, selectedPreset: selectedPreset)
         }
     }
 }
-

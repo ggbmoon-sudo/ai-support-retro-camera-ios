@@ -23,8 +23,21 @@ final class CameraCaptureService {
     let session = AVCaptureSession()
 
     private let photoOutput = AVCapturePhotoOutput()
+    private let videoOutput = AVCaptureVideoDataOutput()
+    private let frameSignalQueue = DispatchQueue(label: "ai.photo.camera.frame-signal", qos: .utility)
+    private let frameSignalState = FrameSignalState()
+    private var frameSignalDelegate: FrameSignalDelegate?
+    private var frameSignalHandler: (@MainActor @Sendable ([LiveGuidanceSignal]) -> Void)?
     private var isConfigured = false
     private var delegates: [PhotoCaptureDelegate] = []
+
+    func setFrameSignalHandler(_ handler: (@MainActor @Sendable ([LiveGuidanceSignal]) -> Void)?) {
+        frameSignalHandler = handler
+    }
+
+    func setFrameSignalAnalysisEnabled(_ isEnabled: Bool) {
+        frameSignalState.isEnabled = isEnabled
+    }
 
     func configureSessionIfNeeded() throws {
         guard !isConfigured else { return }
@@ -44,6 +57,8 @@ final class CameraCaptureService {
 
         session.addInput(input)
         session.addOutput(photoOutput)
+
+        configureFrameSignalOutputIfPossible()
         session.commitConfiguration()
         isConfigured = true
     }
@@ -73,6 +88,22 @@ final class CameraCaptureService {
 
         delegates.append(delegate)
         photoOutput.capturePhoto(with: settings, delegate: delegate)
+    }
+
+    private func configureFrameSignalOutputIfPossible() {
+        guard session.canAddOutput(videoOutput) else { return }
+
+        let delegate = FrameSignalDelegate(state: frameSignalState) { [weak self] signals in
+            self?.frameSignalHandler?(signals)
+        }
+
+        frameSignalDelegate = delegate
+        videoOutput.alwaysDiscardsLateVideoFrames = true
+        videoOutput.videoSettings = [
+            kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_420YpCbCr8BiPlanarFullRange
+        ]
+        videoOutput.setSampleBufferDelegate(delegate, queue: frameSignalQueue)
+        session.addOutput(videoOutput)
     }
 }
 
@@ -107,6 +138,58 @@ private final class PhotoCaptureDelegate: NSObject, AVCapturePhotoCaptureDelegat
 
         Task { @MainActor in
             completion(.success(data))
+        }
+    }
+}
+
+private final class FrameSignalState: @unchecked Sendable {
+    private let lock = NSLock()
+    nonisolated(unsafe) private var _isEnabled = false
+
+    nonisolated var isEnabled: Bool {
+        get {
+            lock.withLock { _isEnabled }
+        }
+        set {
+            lock.withLock {
+                _isEnabled = newValue
+            }
+        }
+    }
+}
+
+private final class FrameSignalDelegate: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
+    private let minimumAnalysisInterval: TimeInterval = 0.6
+    private let brightnessAnalyzer = LiveGuidanceBrightnessAnalyzer()
+    private let state: FrameSignalState
+    private let onSignals: @MainActor @Sendable ([LiveGuidanceSignal]) -> Void
+    nonisolated(unsafe) private var lastAnalysisDate = Date.distantPast
+
+    init(
+        state: FrameSignalState,
+        onSignals: @escaping @MainActor @Sendable ([LiveGuidanceSignal]) -> Void
+    ) {
+        self.state = state
+        self.onSignals = onSignals
+    }
+
+    nonisolated func captureOutput(
+        _ output: AVCaptureOutput,
+        didOutput sampleBuffer: CMSampleBuffer,
+        from connection: AVCaptureConnection
+    ) {
+        guard state.isEnabled else { return }
+
+        let now = Date()
+        guard now.timeIntervalSince(lastAnalysisDate) >= minimumAnalysisInterval else { return }
+        lastAnalysisDate = now
+
+        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+        let signals = brightnessAnalyzer.signals(from: pixelBuffer)
+        guard !signals.isEmpty else { return }
+
+        Task { @MainActor in
+            onSignals(signals)
         }
     }
 }

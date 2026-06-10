@@ -2,6 +2,7 @@ import Foundation
 
 nonisolated enum LiveGuidanceSignal: Hashable, Sendable {
     case localSignalUnavailable
+    case lightingLooksBalanced
     case tooDark
     case tooBright
     case subjectOffCenter
@@ -11,4 +12,3 @@ nonisolated enum LiveGuidanceSignal: Hashable, Sendable {
     case portraitLikely
     case warmFilterHelpful
 }
-

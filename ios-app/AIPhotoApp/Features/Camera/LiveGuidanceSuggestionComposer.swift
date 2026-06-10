@@ -34,6 +34,12 @@ nonisolated struct LiveGuidanceSuggestionComposer: Sendable {
                 messageKey: "camera.guidance.suggestion.local_signal_unavailable",
                 category: .composition
             )
+        case .lightingLooksBalanced:
+            return LiveGuidanceSuggestion(
+                id: "lighting_balanced",
+                messageKey: "camera.guidance.suggestion.lighting_balanced",
+                category: .lighting
+            )
         case .tooDark:
             return LiveGuidanceSuggestion(
                 id: "move_closer_to_light",
@@ -91,4 +97,3 @@ nonisolated struct LiveGuidanceSuggestionComposer: Sendable {
         }
     }
 }
-

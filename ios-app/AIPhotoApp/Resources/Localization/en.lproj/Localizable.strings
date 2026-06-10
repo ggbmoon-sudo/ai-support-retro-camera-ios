@@ -137,6 +137,7 @@
 "camera.guidance.suggestion.move_closer_portrait" = "Move a little closer so the portrait fills the frame.";
 "camera.guidance.suggestion.try_warm_filter" = "Try a warm filter for portraits.";
 "camera.guidance.suggestion.local_signal_unavailable" = "Local guidance needs a clearer frame signal.";
+"camera.guidance.suggestion.lighting_balanced" = "Lighting looks balanced. Hold steady and shoot.";
 "camera.continue.disabled_note" = "Continue is disabled until a later phase. It does not upload, run real AI, start StoreKit, save history, or export.";
 "camera.preview.source.camera" = "Camera";
 "camera.preview.source.library" = "Photo Library";

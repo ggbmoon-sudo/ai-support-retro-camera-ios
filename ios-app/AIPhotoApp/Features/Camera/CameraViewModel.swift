@@ -31,6 +31,7 @@ final class CameraViewModel: ObservableObject {
     private let mockLiveGuidanceProvider: any LiveGuidanceProvider
     private let localLiveGuidanceProvider: any LiveGuidanceProvider
     private var activeFilterRenderID: UUID?
+    private var latestLocalFrameSignals: [LiveGuidanceSignal]?
 
     init(
         service: CameraCaptureService,
@@ -47,6 +48,10 @@ final class CameraViewModel: ObservableObject {
         self.permissionState = CameraPermissionState(
             authorizationStatus: AVCaptureDevice.authorizationStatus(for: .video)
         )
+        self.service.setFrameSignalHandler { [weak self] signals in
+            self?.updateLiveGuidanceFrameSignals(signals)
+        }
+        updateFrameSignalAnalysisAvailability()
         refreshLiveGuidanceSuggestions()
     }
 
@@ -203,19 +208,24 @@ final class CameraViewModel: ObservableObject {
         isFiltering = false
         activeFilterRenderID = nil
         resetSaveState()
+        updateFrameSignalAnalysisAvailability()
+        refreshLiveGuidanceSuggestions()
     }
 
     func stopCamera() {
+        service.setFrameSignalAnalysisEnabled(false)
         service.stopSession()
     }
 
     func toggleLiveGuidance() {
         liveGuidanceState = liveGuidanceState == .off ? .suggestionAvailable : .off
+        updateFrameSignalAnalysisAvailability()
         refreshLiveGuidanceSuggestions()
     }
 
     func toggleLiveGuidanceMode() {
         liveGuidanceMode = liveGuidanceMode.next
+        updateFrameSignalAnalysisAvailability()
         refreshLiveGuidanceSuggestions()
     }
 
@@ -232,6 +242,7 @@ final class CameraViewModel: ObservableObject {
         case .paused:
             liveGuidanceState = .idle
         }
+        updateFrameSignalAnalysisAvailability()
         refreshLiveGuidanceSuggestions()
     }
 
@@ -244,8 +255,10 @@ final class CameraViewModel: ObservableObject {
             try service.configureSessionIfNeeded()
             service.startSession()
             permissionState = .authorized
+            updateFrameSignalAnalysisAvailability()
         } catch {
             permissionState = .unavailable
+            updateFrameSignalAnalysisAvailability()
             errorMessage = error.localizedDescription
         }
     }
@@ -258,6 +271,7 @@ final class CameraViewModel: ObservableObject {
         isFiltering = false
         activeFilterRenderID = nil
         resetSaveState()
+        updateFrameSignalAnalysisAvailability()
 
         if pendingPreset.isOriginal {
             selectedFilterPreset = FilterPresetCatalog.original
@@ -279,9 +293,11 @@ final class CameraViewModel: ObservableObject {
     }
 
     private func refreshLiveGuidanceSuggestions() {
+        let frameSignals = liveGuidanceMode == .local ? latestLocalFrameSignals : nil
         liveGuidanceSuggestions = activeLiveGuidanceProvider.suggestions(
             for: liveGuidanceState,
-            selectedPreset: selectedFilterPreset
+            selectedPreset: selectedFilterPreset,
+            frameSignals: frameSignals
         )
     }
 
@@ -291,6 +307,27 @@ final class CameraViewModel: ObservableObject {
             return mockLiveGuidanceProvider
         case .local:
             return localLiveGuidanceProvider
+        }
+    }
+
+    private func updateLiveGuidanceFrameSignals(_ signals: [LiveGuidanceSignal]) {
+        latestLocalFrameSignals = signals
+
+        guard liveGuidanceMode == .local else { return }
+        refreshLiveGuidanceSuggestions()
+    }
+
+    private func updateFrameSignalAnalysisAvailability() {
+        let shouldAnalyzeFrames = permissionState == .authorized
+            && selectedPhoto == nil
+            && liveGuidanceMode == .local
+            && liveGuidanceState != .off
+            && liveGuidanceState != .paused
+
+        service.setFrameSignalAnalysisEnabled(shouldAnalyzeFrames)
+
+        if !shouldAnalyzeFrames {
+            latestLocalFrameSignals = nil
         }
     }
 }

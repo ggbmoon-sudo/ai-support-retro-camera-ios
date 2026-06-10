@@ -226,6 +226,21 @@ Current implementation notes:
 
 Phase 15 intentionally does not import Vision yet, does not add AVFoundation video frame sampling, and does not store, upload, stream, persist, or log raw frames. It also does not add Gemini Live, Gemini/OpenAI calls, Cloud Functions calls, Firebase Storage / Firestore, voice input, ASR, Parakeet, StoreKit, persistence, export, save-to-Photos, backend changes, secrets, dependencies, or third-party SDKs.
 
+## Phase 15B Local Frame Signal Prototype
+
+Phase 15B adds the first real local frame signal path while keeping guidance local/mock-safe and brightness-only.
+
+Current implementation notes:
+
+- `CameraCaptureService` configures an optional throttled `AVCaptureVideoDataOutput` alongside the existing photo output.
+- Frame signal analysis is gated so it runs only while Local guidance is active in the camera preview.
+- `FrameSignalDelegate` samples at low frequency and passes only derived `LiveGuidanceSignal` values back to the main actor.
+- `LiveGuidanceBrightnessAnalyzer` reads the luma plane in memory and emits too dark, too bright, or balanced-light signals.
+- `CameraViewModel` stores the latest derived local frame signals and uses them only for Local guidance mode.
+- `LocalRuleBasedGuidanceProvider` prefers real frame-derived signals when available and keeps the Phase 15 sample/fallback path when unavailable.
+
+Phase 15B intentionally does not import Vision, does not add face rectangle / headroom analysis, does not log raw frame / base64 / pixel buffer / sample buffer data, does not upload / stream / persist frames, and does not add Gemini Live, Gemini/OpenAI calls, Cloud Functions calls, Firebase Storage / Firestore, voice input, ASR, Parakeet, StoreKit, persistence, export, save-to-Photos, backend changes, secrets, dependencies, or third-party SDKs.
+
 ## Phase 01.5 Xcode Setup
 
 Phase 01.5 did not generate a `.xcodeproj` from this Windows environment because it could not be reliably verified in Xcode.

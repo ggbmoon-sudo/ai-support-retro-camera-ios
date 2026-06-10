@@ -259,6 +259,23 @@ Current Phase 15 behavior:
 
 Phase 15 does not import Vision yet, does not add AVFoundation video frame sampling, and does not store, upload, stream, persist, or log raw frames. It does not add Gemini Live, Gemini/OpenAI calls, Cloud Functions calls, Firebase Storage / Firestore, voice input, ASR, Parakeet, StoreKit, persistence, export, save-to-Photos, backend changes, secrets, dependencies, or third-party SDKs.
 
+## Phase 15B Local Frame Signal Prototype Status
+
+Phase 15B adds the first real local frame signal path for live guidance, scoped to low-frequency brightness analysis only.
+
+Current Phase 15B behavior:
+
+- Local guidance can receive derived brightness signals from a throttled AVFoundation video data output.
+- Brightness analysis is enabled only while Local guidance is active in the camera preview.
+- The brightness analyzer only emits local guidance signals such as too dark, too bright, or balanced lighting.
+- Frame sampling is low-frequency and runs analysis off the main thread.
+- UI guidance updates return to the main thread.
+- Phase 15 sample/fallback local suggestions remain available when no camera frame signal exists.
+- Mock guidance remains available.
+- Camera primary screen, Dazz-like viewport, mock lens selector, selected-photo Back to Camera / Clear, 20 filters/grouping, Photo Picker, mock save, mock AI, local history, Inspiration, History, and Settings remain in scope.
+
+Phase 15B does not import Vision, does not add face rectangle / headroom analysis, does not store, upload, stream, persist, or log raw frames, and does not add Gemini Live, Gemini/OpenAI calls, Cloud Functions calls, Firebase Storage / Firestore, voice input, ASR, Parakeet, StoreKit, persistence, export, save-to-Photos, backend changes, secrets, dependencies, or third-party SDKs.
+
 ## Phase 11B Camera Entry / Camera Shell Status
 
 Phase 11B refines Phase 11 so Camera is the true app entry and the capture screen feels more like a real camera shell.

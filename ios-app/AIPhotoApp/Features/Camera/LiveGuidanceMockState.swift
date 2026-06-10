@@ -58,8 +58,18 @@ nonisolated struct LiveGuidanceSuggestion: Identifiable, Hashable, Sendable {
 protocol LiveGuidanceProvider {
     func suggestions(
         for state: LiveGuidanceMockState,
-        selectedPreset: FilterPreset
+        selectedPreset: FilterPreset,
+        frameSignals: [LiveGuidanceSignal]?
     ) -> [LiveGuidanceSuggestion]
+}
+
+extension LiveGuidanceProvider {
+    func suggestions(
+        for state: LiveGuidanceMockState,
+        selectedPreset: FilterPreset
+    ) -> [LiveGuidanceSuggestion] {
+        suggestions(for: state, selectedPreset: selectedPreset, frameSignals: nil)
+    }
 }
 
 @MainActor
@@ -94,7 +104,8 @@ struct MockLiveGuidanceProvider: LiveGuidanceProvider {
 
     func suggestions(
         for state: LiveGuidanceMockState,
-        selectedPreset: FilterPreset
+        selectedPreset: FilterPreset,
+        frameSignals: [LiveGuidanceSignal]? = nil
     ) -> [LiveGuidanceSuggestion] {
         switch state {
         case .off, .paused:

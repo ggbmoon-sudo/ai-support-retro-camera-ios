@@ -889,6 +889,71 @@ Known TODOs:
 - [ ] True grain overlays, halation, light leak, dust, frames, CCD / instant camera asset treatment, Metal/custom shader work, and camera-specific optical simulation remain future phases.
 - [ ] Public UI filter names should continue avoiding protected brand names unless legal approval exists.
 
+## Phase 15B
+
+Check:
+
+- [x] Added first local real frame signal prototype for brightness only.
+- [x] Frame signal analysis is enabled only while Local guidance is active in the camera preview.
+- [x] Local frame sampling is throttled to roughly 1-2 samples per second.
+- [x] Brightness analysis runs on a background queue.
+- [x] UI guidance updates return to the main thread.
+- [ ] Local guidance can show too dark / too bright / balanced-light derived suggestions when physical camera frames are available.
+- [ ] Simulator / camera-unavailable path falls back safely and does not crash.
+- [x] Mock guidance mode still works at source level.
+- [x] Phase 15 sample/fallback local suggestions still work when no frame signal is available at source level.
+- [x] No Vision import was added.
+- [x] No face rectangle / headroom analysis was added in this phase.
+- [x] No raw frames, base64, pixel buffers, or sample buffers are logged.
+- [x] No raw frames are stored, uploaded, streamed, or persisted.
+- [x] Camera remains the first selected tab at source level.
+- [x] Dazz-like compact viewport remains normal at source level.
+- [x] Mock lens selector remains normal at source level.
+- [x] selected-photo Back to Camera / Clear remains normal at source level.
+- [x] Photo Picker remains normal at source level.
+- [x] 20 filters and filter grouping remain normal at source level.
+- [x] mock save, mock AI, local session history, Inspiration, History, and Settings remain normal at source level.
+- [x] English and Traditional Chinese localization has Phase 15B keys.
+- [x] Confirmed no Gemini Live, Gemini/OpenAI calls, Cloud Functions calls, Firebase Storage / Firestore integration, voice input, ASR, Parakeet, StoreKit, persistence, export, save-to-Photos, backend implementation, or secrets were intentionally added.
+- [x] `git diff --check` passed.
+- [x] Forbidden imports scan passed for Firebase, Gemini, OpenAI, and StoreKit imports.
+- [x] Vision import scan found no `import Vision`.
+- [x] Secrets / config scan found no real secrets, Firebase config, API keys, or signing credentials.
+- [x] Camera-scoped forbidden behavior scan passed.
+- [x] Frame safety scan found only immediate in-memory brightness analysis references to sample / pixel buffers, with no storage, upload, stream, base64, raw-frame logging, or network behavior in Camera feature files.
+- [x] Sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec environment restrictions; unsandboxed command-line Xcode simulator build succeeded on 2026-06-10.
+
+Manual Xcode check:
+
+- [ ] Launch the app.
+- [ ] Confirm Camera is still the primary screen.
+- [ ] Confirm Mock / Local guidance mode chip is usable.
+- [ ] Confirm Mock guidance mode still works.
+- [ ] Confirm Local guidance mode still shows fallback suggestions on Simulator or unavailable camera.
+- [ ] On a physical iPhone, if available, point camera at a dark scene and confirm Local mode can show a too-dark suggestion.
+- [ ] On a physical iPhone, if available, point camera at a bright scene and confirm Local mode can show a too-bright suggestion.
+- [ ] Confirm preview remains responsive while Local guidance is active.
+- [ ] Confirm guidance overlay stays below the viewfinder and does not block the main preview.
+- [ ] Confirm Dazz-like camera layout remains normal.
+- [ ] Confirm mock lens selector remains normal.
+- [ ] Confirm Photo Picker import remains normal.
+- [ ] Confirm selected-photo Back to Camera / Clear remains normal.
+- [ ] Confirm 20 filters / grouping remain normal.
+- [ ] Confirm mock save, mock AI, and local history remain normal.
+- [ ] Confirm Inspiration, History, and Settings remain normal.
+- [ ] Confirm English / Traditional Chinese localization shows no raw keys.
+- [ ] Confirm no raw frames are stored, uploaded, streamed, persisted, or logged.
+- [ ] Confirm no Gemini Live, cloud AI, voice, ASR, or Parakeet was added.
+- [ ] Confirm no Firebase Storage / Firestore / Cloud Functions / StoreKit / persistence / export / save-to-Photos behavior was added.
+- [ ] Confirm no secrets, Firebase config, or API keys were added.
+
+Known TODOs:
+
+- [ ] Physical iPhone testing remains required for real brightness behavior and preview-lag validation.
+- [ ] Face rectangle / headroom / Vision analysis remains deferred.
+- [ ] Brightness thresholds may need tuning after real-device testing.
+- [ ] Phase 16 remains blocked until Phase 15B is reviewed, committed, pushed, and read-only confirmed.
+
 ## Phase 15
 
 Check:

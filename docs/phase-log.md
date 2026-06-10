@@ -8,8 +8,8 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 15 - Local Live Guidance Prototype
-Status: Phase 15 implemented; user Xcode / Simulator verification accepted; ready to commit
+Current phase: Phase 15B - Local Frame Signal Prototype
+Status: Phase 15B implemented; ready for review before commit
 Latest documentation maintenance: Filter Research Docs Backfill + Alignment Check completed; docs-only; no Swift/backend changes
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -26,7 +26,95 @@ Phase 14 build verification: sandboxed command-line Xcode build failed due CoreS
 Phase 14B build verification: sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec / SwiftUI Preview macro environment restrictions; unsandboxed command-line simulator build succeeded on 2026-06-10
 Phase 14C build verification: sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec environment restrictions; unsandboxed command-line simulator build succeeded on 2026-06-10
 Phase 15 build verification: sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec environment restrictions; unsandboxed command-line simulator build succeeded on 2026-06-10
-Next phase: Phase 16 should not start until Phase 15 is reviewed, committed, pushed, and read-only confirmed
+Phase 15B build verification: sandboxed command-line Xcode build failed due CoreSimulator / sandbox-exec environment restrictions; unsandboxed command-line simulator build succeeded on 2026-06-10
+Next phase: Phase 16 should not start until Phase 15B is reviewed, committed, pushed, and read-only confirmed
+
+---
+
+## Phase 15B - Local Frame Signal Prototype
+
+Status: Implemented; ready for review before commit
+Date completed: 2026-06-10
+
+### Goal
+
+Add the first low-frequency, local-only frame signal prototype on top of Phase 15 local guidance without starting Phase 16, cloud snapshot guidance, Gemini Live, voice, persistence, export, backend work, or secrets.
+
+### Summary
+
+Phase 15B adds a narrow AVFoundation video data output for local brightness analysis only. The frame signal path is throttled to roughly 1-2 samples per second, analyzes luma values on a background queue, and returns only derived guidance signals to the main thread.
+
+This implementation intentionally prioritizes brightness / too dark / too bright. Face rectangle, headroom, and Vision analysis were left out to keep this phase low-risk.
+
+### Completed
+
+- Added `LiveGuidanceBrightnessAnalyzer` for local luma-based brightness signals.
+- Added a throttled optional frame signal output to `CameraCaptureService`.
+- Added an enable gate so brightness analysis runs only when Local guidance is active, guidance is not paused/off, and the Camera preview is active.
+- Kept raw frame handling in memory only, with no raw frame logging, upload, stream, persistence, or base64 conversion.
+- Updated `CameraViewModel` to receive derived local frame signals and refresh Local guidance suggestions on the main thread.
+- Updated `LocalRuleBasedGuidanceProvider` to prefer real frame-derived signals when available and keep Phase 15 fallback signals when unavailable.
+- Added a balanced-light local suggestion for frames that are neither too dark nor too bright.
+- Preserved Mock guidance provider and Phase 15 fallback local suggestions.
+- Preserved Camera as the primary first tab.
+- Preserved Dazz-like viewport, mock lens selector, selected-photo Back to Camera / Clear, 20 filters/grouping, Photo Picker, mock save, mock AI, local history, Inspiration, History, and Settings.
+- Updated English and Traditional Chinese localization strings.
+- Updated README / iOS README / manual smoke tests.
+
+### Changed Files
+
+- README.md
+- ios-app/README.md
+- docs/phase-log.md
+- docs/prompts/phase-15B-local-frame-signal-prototype.md
+- tests/manual-smoke-tests.md
+- ios-app/AIPhotoApp/Features/Camera/CameraCaptureService.swift
+- ios-app/AIPhotoApp/Features/Camera/CameraViewModel.swift
+- ios-app/AIPhotoApp/Features/Camera/LiveGuidanceBrightnessAnalyzer.swift
+- ios-app/AIPhotoApp/Features/Camera/LiveGuidanceMockState.swift
+- ios-app/AIPhotoApp/Features/Camera/LiveGuidanceSignal.swift
+- ios-app/AIPhotoApp/Features/Camera/LiveGuidanceSuggestionComposer.swift
+- ios-app/AIPhotoApp/Features/Camera/LocalRuleBasedGuidanceProvider.swift
+- ios-app/AIPhotoApp/Resources/Localization/en.lproj/Localizable.strings
+- ios-app/AIPhotoApp/Resources/Localization/zh-Hant.lproj/Localizable.strings
+
+### Build / Verification
+
+- `git diff --check` passed.
+- Forbidden imports scan passed for Firebase, FirebaseFunctions, FirebaseStorage, FirebaseFirestore, Gemini, OpenAI, and StoreKit imports.
+- Vision import scan found no `import Vision`; Phase 15B did not implement face rectangle / headroom.
+- Secrets / config file scan found no `GoogleService-Info.plist`, `.env`, or `.firebaserc`.
+- Refined secrets scan only matched existing `.env.example` placeholder variables and docs/prompt scan commands, not real secrets.
+- Camera-scoped forbidden behavior scan passed for upload, persistence, StoreKit, Gemini/OpenAI, speech/ASR, Parakeet, save-to-Photos, and related behavior.
+- Frame safety scan only matched Phase 15B's immediate in-memory `CMSampleBuffer` / `CVPixelBuffer` brightness analysis path; no raw-frame storage, upload, stream, base64 conversion, raw-frame logging, network behavior, or persistence was found.
+- Sandboxed command-line Xcode simulator build failed due CoreSimulator / sandbox-exec environment restrictions.
+- Unsandboxed command-line Xcode simulator build succeeded with `xcodebuild -project ios-app/AIPhotoApp.xcodeproj -scheme AIPhotoApp -destination 'generic/platform=iOS Simulator' -derivedDataPath /private/tmp/ai-support-phase15b-derived CODE_SIGNING_ALLOWED=NO build`.
+
+### Known TODOs
+
+- Physical iPhone testing is required to validate real brightness behavior and preview responsiveness with actual camera frames.
+- Face rectangle / headroom remains deferred; do not add Vision until a later explicit phase or focused follow-up.
+- Future tuning may adjust brightness thresholds after physical-device testing.
+- This is still not cloud AI, Gemini Live, voice guidance, or production-grade live camera intelligence.
+
+### Safety Notes
+
+- Did not start Phase 16.
+- Did not add Gemini Live.
+- Did not call Gemini, OpenAI, or Cloud Functions.
+- Did not add cloud snapshot guidance.
+- Did not upload, stream, persist, or log camera frames.
+- Did not add voice input, ASR, Parakeet, microphone permission copy, or speech recognition permission copy.
+- Did not connect Firebase Storage or Firestore.
+- Did not add Firebase, FirebaseFunctions, FirebaseStorage, FirebaseFirestore, Gemini, OpenAI, StoreKit, or Vision imports.
+- Did not add `GoogleService-Info.plist`, `.env`, `.firebaserc`, API keys, Firebase project IDs, private keys, OAuth secrets, Apple credentials, signing credentials, provisioning profiles, or production config.
+- Did not add persistence, UserDefaults, Core Data, SwiftData, export, save-to-Photos, StoreKit, subscription, paywall, premium gating, quota enforcement, backend changes, npm dependencies, third-party SDKs, commit, or push.
+
+### Ready for Next Phase
+
+Ready to review before commit: Yes.
+
+Ready for Phase 16: No. Phase 15B should be reviewed, committed, pushed, and read-only confirmed before Phase 16 starts.
 
 ---
 
