@@ -9,7 +9,7 @@ Every Codex task must update this file before finishing.
 ## Current Status
 
 Current phase: Phase 15B - Local Frame Signal Prototype
-Status: Phase 15B implemented; ready for review before commit
+Status: Phase 15B implemented; user Xcode / Simulator verification accepted; ready to commit
 Latest documentation maintenance: Filter Research Docs Backfill + Alignment Check completed; docs-only; no Swift/backend changes
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -33,7 +33,7 @@ Next phase: Phase 16 should not start until Phase 15B is reviewed, committed, pu
 
 ## Phase 15B - Local Frame Signal Prototype
 
-Status: Implemented; ready for review before commit
+Status: Implemented; user Xcode / Simulator verification accepted; ready to commit
 Date completed: 2026-06-10
 
 ### Goal
@@ -89,6 +89,19 @@ This implementation intentionally prioritizes brightness / too dark / too bright
 - Frame safety scan only matched Phase 15B's immediate in-memory `CMSampleBuffer` / `CVPixelBuffer` brightness analysis path; no raw-frame storage, upload, stream, base64 conversion, raw-frame logging, network behavior, or persistence was found.
 - Sandboxed command-line Xcode simulator build failed due CoreSimulator / sandbox-exec environment restrictions.
 - Unsandboxed command-line Xcode simulator build succeeded with `xcodebuild -project ios-app/AIPhotoApp.xcodeproj -scheme AIPhotoApp -destination 'generic/platform=iOS Simulator' -derivedDataPath /private/tmp/ai-support-phase15b-derived CODE_SIGNING_ALLOWED=NO build`.
+- User manually verified Phase 15B in Xcode / Simulator on 2026-06-10 and accepted the current result:
+  - app builds and runs
+  - Camera remains the primary screen
+  - Mock / Local guidance mode can be switched
+  - Mock guidance mode remains normal
+  - Local guidance mode can show brightness / fallback suggestions
+  - Simulator / camera-unavailable fallback does not crash
+  - camera preview / capture has no obvious lag
+  - guidance overlay remains below the viewfinder and does not block the main preview
+  - Dazz-like camera layout, mock lens selector, flash / timer / flip / capture, Photo Picker, selected-photo Back to Camera / Clear, 20 filters/grouping, mock save, mock AI, local history, Inspiration, History, and Settings remain usable
+  - English / Traditional Chinese localization shows no raw keys
+  - no Gemini Live, cloud AI, voice, ASR, Parakeet, Firebase Storage / Firestore, Cloud Functions, StoreKit, persistence, export, save-to-Photos, secrets, Firebase config, or API keys were added
+  - no raw frames are stored, uploaded, streamed, persisted, or logged
 
 ### Known TODOs
 

@@ -898,8 +898,8 @@ Check:
 - [x] Local frame sampling is throttled to roughly 1-2 samples per second.
 - [x] Brightness analysis runs on a background queue.
 - [x] UI guidance updates return to the main thread.
-- [ ] Local guidance can show too dark / too bright / balanced-light derived suggestions when physical camera frames are available.
-- [ ] Simulator / camera-unavailable path falls back safely and does not crash.
+- [x] User confirmed Local guidance mode can show brightness / fallback suggestions in Xcode / Simulator.
+- [x] User confirmed Simulator / camera-unavailable path falls back safely and does not crash.
 - [x] Mock guidance mode still works at source level.
 - [x] Phase 15 sample/fallback local suggestions still work when no frame signal is available at source level.
 - [x] No Vision import was added.
@@ -925,27 +925,27 @@ Check:
 
 Manual Xcode check:
 
-- [ ] Launch the app.
-- [ ] Confirm Camera is still the primary screen.
-- [ ] Confirm Mock / Local guidance mode chip is usable.
-- [ ] Confirm Mock guidance mode still works.
-- [ ] Confirm Local guidance mode still shows fallback suggestions on Simulator or unavailable camera.
-- [ ] On a physical iPhone, if available, point camera at a dark scene and confirm Local mode can show a too-dark suggestion.
-- [ ] On a physical iPhone, if available, point camera at a bright scene and confirm Local mode can show a too-bright suggestion.
-- [ ] Confirm preview remains responsive while Local guidance is active.
-- [ ] Confirm guidance overlay stays below the viewfinder and does not block the main preview.
-- [ ] Confirm Dazz-like camera layout remains normal.
-- [ ] Confirm mock lens selector remains normal.
-- [ ] Confirm Photo Picker import remains normal.
-- [ ] Confirm selected-photo Back to Camera / Clear remains normal.
-- [ ] Confirm 20 filters / grouping remain normal.
-- [ ] Confirm mock save, mock AI, and local history remain normal.
-- [ ] Confirm Inspiration, History, and Settings remain normal.
-- [ ] Confirm English / Traditional Chinese localization shows no raw keys.
-- [ ] Confirm no raw frames are stored, uploaded, streamed, persisted, or logged.
-- [ ] Confirm no Gemini Live, cloud AI, voice, ASR, or Parakeet was added.
-- [ ] Confirm no Firebase Storage / Firestore / Cloud Functions / StoreKit / persistence / export / save-to-Photos behavior was added.
-- [ ] Confirm no secrets, Firebase config, or API keys were added.
+- [x] User manually verified app build / run in Xcode / Simulator on 2026-06-10.
+- [x] User confirmed Camera is still the primary screen.
+- [x] User confirmed Mock / Local guidance mode can be switched.
+- [x] User confirmed Mock guidance mode still works.
+- [x] User confirmed Local guidance mode can show brightness / fallback suggestions.
+- [x] User confirmed Simulator / camera-unavailable fallback does not crash.
+- [x] User confirmed camera preview / capture has no obvious lag.
+- [x] User confirmed guidance overlay stays below the viewfinder and does not block the main preview.
+- [x] User confirmed Dazz-like camera layout remains normal.
+- [x] User confirmed mock lens selector remains normal.
+- [x] User confirmed flash / timer / flip / capture remain normal.
+- [x] User confirmed Photo Picker import remains normal.
+- [x] User confirmed selected-photo Back to Camera / Clear remains normal.
+- [x] User confirmed 20 filters / grouping remain normal.
+- [x] User confirmed mock save, mock AI, and local history remain normal.
+- [x] User confirmed Inspiration, History, and Settings remain normal.
+- [x] User confirmed English / Traditional Chinese localization shows no raw keys.
+- [x] User confirmed no raw frames are stored, uploaded, streamed, persisted, or logged.
+- [x] User confirmed no Gemini Live, cloud AI, voice, ASR, or Parakeet was added.
+- [x] User confirmed no Firebase Storage / Firestore / Cloud Functions / StoreKit / persistence / export / save-to-Photos behavior was added.
+- [x] User confirmed no secrets, Firebase config, or API keys were added.
 
 Known TODOs:
 
