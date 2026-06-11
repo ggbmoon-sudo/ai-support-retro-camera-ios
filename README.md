@@ -94,6 +94,8 @@ Product and architecture reports live in `docs/`.
 
 Phase execution prompts live in `docs/prompts/`.
 
+Transition handoff notes live in `docs/handoff/`; the current Codex / Codex API transition note is `docs/handoff/codex-transition-handoff.md`.
+
 Current MVP demo / QA readiness docs:
 
 - `docs/mvp-demo-script.md`

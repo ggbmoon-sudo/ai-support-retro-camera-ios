@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 16G - AI Filter Generator Mock in Inspiration
-Status: Phase 16G F1 mock-only Filter Lab implemented by Codex; user Xcode / Simulator verification temporarily accepted; ready to commit
-Latest documentation maintenance: Filter Research Docs Backfill + Alignment Check completed; docs-only; no Swift/backend changes
+Current phase: Project Handoff - Codex API Transition Handoff Document
+Status: Documentation-only handoff added for temporary Codex API transition; no app behavior changes
+Latest documentation maintenance: Codex transition handoff document added; docs-only; no Swift/backend changes
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -44,7 +44,48 @@ Phase 16A-R10 build verification: targeted Swift parse passed; sandboxed command
 Phase 16E build verification: targeted Swift parse and safety scans passed during implementation; user Xcode / Simulator build-run and Pose Overlay MVP review accepted on 2026-06-11 after R1; no real AI / Vision / network / upload / persistence / export was added
 Phase 16F verification: documentation-only research backfill; no Swift source, backend source, real AI, network, upload, persistence, export, API keys, or production config added
 Phase 16G verification: targeted Swift parse and localization lint passed; user Xcode / Simulator verification temporarily accepted on 2026-06-11; no real AI, backend, network, upload, persistence, export, LUT, provider SDK, StoreKit, or production config added
-Next phase: Do not start Phase 17, real AI, backend implementation, cloud upload, local heuristic extraction, LUT, persistence, or StoreKit until Phase 16G is committed, pushed, read-only confirmed, and explicitly requested
+Next phase: Do not start Phase 16I, Phase 17, real AI, backend implementation, cloud upload, local heuristic extraction, LUT, persistence, or StoreKit until this handoff doc is committed/pushed/read-only confirmed and the user explicitly requests the next phase
+
+---
+
+## Project Handoff - Codex API Transition Handoff Document
+
+Status: Added as documentation-only handoff; ready to commit after review
+Date completed: 2026-06-11
+
+### Goal
+
+Add a repository-local Codex transition handoff note so future Codex / Codex API sessions can continue work on the same Mac, repo, branch, and working tree without relying on the previous chat history.
+
+### Completed
+
+- Added `docs/handoff/codex-transition-handoff.md`.
+- Documented the transition purpose, repo / environment, normal user workflow, current locally verified status, product direction, hard restrictions, recommended AI roadmap, key research docs, known TODOs, June 15 handback protocol, and how future Codex sessions should use the file.
+- Recorded that Phase 16H was user-stated in the handoff request but not locally visible in this checkout at handoff creation time, so future Codex should verify git history / remote state before relying on it.
+- Added README link to the handoff document.
+
+### Safety Notes
+
+This was documentation-only. It did not change Swift source, app UI, backend code, network behavior, upload behavior, persistence, export, Firebase / Gemini / OpenAI / StoreKit imports, secrets, API keys, `GoogleService-Info.plist`, `.env`, or `.firebaserc`.
+
+### Verification
+
+- [x] `git status --short` checked.
+- [x] `git diff --check` passed.
+- [x] `git diff --stat` reviewed.
+- [x] Forbidden imports scan passed.
+- [x] Network / upload behavior scan passed.
+- [x] Secrets / config scan passed.
+- [x] Forbidden behavior scan passed.
+- [x] Xcode build not required because this task did not modify Swift source.
+
+### Ready to Commit Handoff Doc
+
+Yes, after user review.
+
+### Ready for Phase 16I
+
+No. Do not start Phase 16I until the handoff doc is committed, pushed, read-only confirmed, and explicitly requested.
 
 ---
 
