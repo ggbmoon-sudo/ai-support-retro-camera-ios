@@ -59,6 +59,7 @@ Confirmed locally:
 - Phase 16F - AI Filter Generator + Cloud AI Architecture Research Backfill
 - Phase 16G - AI Filter Generator Mock in Inspiration
 - Phase 16H-Recovery - Post-capture AI Advisor UX Research Backfill + Handoff Status Fix
+- Phase 16I - Mock Post-capture AI Advisor UX + R1/R2 refinements
 
 Phase 16G status:
 
@@ -105,6 +106,7 @@ Important completed route so far:
 - Phase 16F - AI Filter Generator + Cloud AI Architecture research backfill.
 - Phase 16G - AI Filter Generator Mock in Inspiration.
 - Phase 16H-Recovery - Post-capture AI Advisor UX research backfill + handoff status fix.
+- Phase 16I - Mock Post-capture AI Advisor UX + R1/R2 refinements.
 
 This list is a short orientation map only. Use `docs/phase-log.md` as the detailed source of truth.
 
@@ -154,13 +156,178 @@ Do not do any of the following unless the user explicitly requests it:
 
 ---
 
+## Codex API Period Update - 2026-06-11
+
+This update records work completed by the new Codex / Codex API session after the original transition handoff was created. Repo docs remain the source of truth.
+
+### Current Branch / Repo State
+
+- Repo: `ai-support-retro-camera-ios`
+- Local path: `/Volumes/moon/Projects/ai-support-retro-camera-ios`
+- Branch: `feat/phase-02-auth`
+- Upstream: `origin/feat/phase-02-auth`
+- Latest commit: `76b1943 feat: add mock post-capture photo advisor UX`
+- Git status at Phase 16J start: clean
+- Local branch synced with origin at Phase 16J start: yes (`git rev-list --left-right --count @{u}...HEAD` returned `0 0`)
+- User workflow remains GitHub Desktop commit / push unless Codex is explicitly asked to commit or push.
+
+### Work Completed During Codex API Period
+
+#### Phase 16H-Recovery
+
+- Recovered the missing Post-capture AI Photo Advisor UX research doc.
+- Added `docs/research/post-capture-ai-photo-advisor-ux-research.md`.
+- Corrected the handoff mismatch where Phase 16H appeared in this file before its research doc existed in the repo.
+- Documentation-only.
+- No Swift source changes.
+- No real AI, backend, network, upload, persistence, export, provider SDKs, API keys, or secrets.
+
+#### Phase 16I - Mock Post-capture AI Advisor UX
+
+- Added mock Post-capture AI Photo Advisor UX.
+- Added typed PhotoAdvisor models.
+- Added `PhotoAdvisorService` protocol.
+- Added `MockPhotoAdvisorService` and mock fixtures.
+- Added validator / fallback handling.
+- Integrated compact advisor access into imported / selected photo flow.
+- Recommended filters only use the existing 20-filter catalog.
+- No score UI and no beauty / attractiveness wording.
+- No real AI, backend, upload, persistence, export, provider SDKs, API keys, or secrets.
+
+#### Phase 16I-R1
+
+- Added and user accepted floating advisor + filter grid for selected-photo UX.
+- Reduced selected-photo scroll friction across varied image aspect ratios.
+- Floating filter grid can apply an existing filter and auto-dismiss.
+- AI advisor is accessible through the floating bar.
+- Preserved mock-only, local-only boundaries.
+
+#### Phase 16I-R2
+
+- Cleaned duplicate inline selected-photo AI / filter sections now covered by the floating bar.
+- Fixed `返回相機` to switch to the outer Camera tab instead of nesting `CameraView` inside Inspiration.
+- Fixed `清除` to clear selected photo and return to Inspiration state.
+- Hardened Filter Lab layout for square, portrait, landscape, wide, tall, and placeholder images.
+- Removed or hid the free / unknown-user default large mock cloud save / mock save card from selected-photo result.
+- Documented cloud save, paid-user cloud save, and free local lossless download as future dedicated entitlement / export phase work.
+- No StoreKit, cloud save, local download, save-to-Photos, export, real AI, backend, network, upload, or persistence.
+
+### Current Accepted App Status
+
+- Camera fullscreen native-camera-like layout remains preserved.
+- Shutter remains visible and tappable.
+- Pose Overlay MVP still works.
+- AI Snapshot compact control still works.
+- Filter Lab mock still works.
+- Mock Post-capture Advisor UX is accepted.
+- Floating bar is accepted.
+- Selected-photo navigation is accepted.
+- Filter Lab layout hardening is accepted.
+- Inspiration / History / Settings still work.
+
+### Current Hard Restrictions Still Active
+
+- No Phase 17 unless explicitly requested.
+- No real AI.
+- No Gemini Live.
+- No live video streaming.
+- No WebSocket.
+- No URLSession / URLRequest.
+- No Firebase / Gemini / OpenAI / StoreKit imports.
+- No API keys / config / secrets.
+- No `GoogleService-Info.plist`.
+- No `.env`.
+- No `.firebaserc`.
+- No backend changes.
+- No real upload.
+- No reference image upload.
+- No raw photo / frame persistence.
+- No AI response persistence.
+- No request payload logging.
+- No UserDefaults / Core Data / SwiftData persistence.
+- No save-to-Photos / export.
+- No StoreKit / premium / credits.
+- No face recognition / identity inference.
+- No gender / age / emotion / sensitive attribute inference.
+
+### Known TODOs
+
+- Pose overlay artwork is still placeholder / visually rough.
+- Filter Generator is mock-only.
+- Post-capture Photo Advisor is mock-only.
+- Future local heuristic advisor / filter recommendation may be added before real cloud if explicitly requested.
+- Future real cloud advisor requires backend boundary first.
+- Cloud save, paid-user cloud save, and free local lossless download require a dedicated entitlement / export phase.
+- No StoreKit / export yet.
+- No real backend endpoint yet.
+- No Gemini Live yet.
+
+### Next Recommended Phase Options
+
+Do not jump to Phase 17 / real AI yet. Do not implement cloud save / StoreKit without an explicit phase. Do not implement local export / download without dedicated planning.
+
+Option A - Phase 16K: Local Heuristic Advisor / Filter Recommendation Prototype
+
+- Local-only.
+- No upload.
+- Use existing image / selected filter / brightness bucket / simple signals.
+- Improve mock advisor recommendations.
+- Still no backend.
+
+Option B - Phase 16L: Polish Selected Photo / Inspiration UX
+
+- Improve UI polish.
+- Reduce visual clutter.
+- Improve card hierarchy.
+- No new AI.
+
+Option C - Phase 16M: Export / Local Lossless Download Planning Research
+
+- Documentation-only first.
+- Relevant because the user mentioned free users may later get local lossless download.
+- No implementation yet.
+- No save-to-Photos / export until a dedicated phase.
+
+### 2026-06-15 Handback Update Draft
+
+Do not fill fake future data. Complete this section on or near the handback date if the original Codex is resuming.
+
+```md
+## 2026-06-15 Handback Update
+
+- Date:
+- Updated by:
+- Branch:
+- Latest commit:
+- Git status:
+- Phases completed during Codex API period:
+- Files changed:
+- Manual verification:
+- Known issues:
+- Restrictions check:
+- Next recommended phase:
+- Ready for original Codex to continue: yes/no
+```
+
+---
+
 ## 7. Current AI Roadmap Recommendation
 
 ### Short-term next recommended phase
 
-Phase 16I - Mock Post-capture AI Advisor UX
+Do not jump to Phase 17 / real AI yet. The next phase should be one of the Phase 16 continuation options above unless the user explicitly requests otherwise.
 
-Recommended scope:
+Suggested next options:
+
+- Phase 16K - Local Heuristic Advisor / Filter Recommendation Prototype.
+- Phase 16L - Polish Selected Photo / Inspiration UX.
+- Phase 16M - Export / Local Lossless Download Planning Research.
+
+Previously completed:
+
+- Phase 16I - Mock Post-capture AI Advisor UX + R1/R2 refinements.
+
+Completed Phase 16I scope:
 
 - Add a mock advisor result card after imported / captured photo.
 - Use mock fixtures.
@@ -181,6 +348,8 @@ Recommended scope:
 
 Roadmap guardrails:
 
+- Do not implement cloud save / StoreKit without an explicit phase.
+- Do not implement local export / download without dedicated planning.
 - Do not jump directly to Gemini Live.
 - Do not jump directly to AI Filter Generator real cloud.
 - First real AI endpoint should likely be `/v1/ai/photo-advisor`, after backend boundary work is in place.
@@ -207,8 +376,11 @@ Important docs already added or expected in this roadmap:
 - Future pose phase should replace placeholder with proper original PDF/vector assets.
 - Filter Generator is mock-only; future F2 can add local heuristic extractor.
 - Filter Generator should not use cloud until backend boundary exists.
-- Post-capture Advisor needs mock UX implementation next.
+- Post-capture Advisor mock UX is implemented and accepted; it remains mock-only.
+- Future local heuristic advisor / filter recommendation may be added before real cloud if explicitly requested.
 - Real cloud AI requires backend boundary, structured schema, explicit consent, quota guard, and validation.
+- Cloud save, paid-user cloud save, and free local lossless download require a dedicated entitlement / export phase.
+- No StoreKit / export yet.
 - No LUT yet.
 - No custom filter persistence yet.
 - No real cloud AI endpoint yet.

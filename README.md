@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 16I Mock Post-capture AI Advisor UX + R1/R2 refinements manually accepted in Xcode / Simulator; ready to commit when explicitly requested
+- Phase 16J Codex API work handoff update is documentation-only and ready for final verification
 
 Next phase:
 
-- Commit Phase 16I only if explicitly requested; do not commit or push automatically
+- Commit Phase 16J only if explicitly requested; do not commit or push automatically
 - Phase 17 / real AI remain blocked until a backend boundary phase is explicitly requested later
 
 Before each task, read `AGENTS.md`, the required docs listed there, and the relevant phase prompt in `docs/prompts/`.
@@ -95,7 +95,7 @@ Product and architecture reports live in `docs/`.
 
 Phase execution prompts live in `docs/prompts/`.
 
-Transition handoff notes live in `docs/handoff/`; the current Codex / Codex API transition note is `docs/handoff/codex-transition-handoff.md`.
+Transition handoff notes live in `docs/handoff/`; the current Codex / Codex API transition note is `docs/handoff/codex-transition-handoff.md`. Phase 16J refreshes that handoff with the Codex API period work through Phase 16I/R1/R2 and the next recommended Phase 16-only options.
 
 Current MVP demo / QA readiness docs:
 

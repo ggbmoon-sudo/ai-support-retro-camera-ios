@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 16I - Mock Post-capture AI Advisor UX + R1/R2 Refinements
-Status: User manually accepted Phase 16I, Phase 16I-R1, and Phase 16I-R2 in Xcode / Simulator; ready to commit after final review
-Latest implementation: Mock Photo Advisor UX, floating advisor / filter grid access, selected-photo cleanup, Inspiration Back to Camera / Clear navigation fixes, Filter Lab layout hardening, and closeout docs / manual smoke tests are complete and accepted
+Current phase: Phase 16J - Codex API Work Handoff Update
+Status: Documentation-only handoff update in progress; no app behavior changes
+Latest implementation: Updated the Codex transition handoff to record completed Codex API period work, including Phase 16H-Recovery and Phase 16I/R1/R2 completion, accepted app status, active restrictions, known TODOs, and next recommended Phase 16 options
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -48,7 +48,57 @@ Phase 16H-Recovery verification: documentation-only research backfill and handof
 Phase 16I verification: targeted Swift parse, localization lint, and command-line Xcode generic iOS Simulator build passed on 2026-06-11; no real AI, backend, network, upload, persistence, export, API keys, provider SDK, StoreKit, or production config added
 Phase 16I-R1 verification: targeted Swift parse, localization lint, and command-line Xcode generic iOS Simulator build passed on 2026-06-11; no real AI, backend, network, upload, persistence, export, API keys, provider SDK, StoreKit, or production config added
 Phase 16I-R2 verification: targeted Swift parse, localization lint, and command-line Xcode generic iOS Simulator build passed on 2026-06-11; no real AI, backend, network, upload, persistence, export, API keys, provider SDK, StoreKit, or production config added
-Next phase: Commit Phase 16I only if explicitly requested by the user. Do not start Phase 17, real AI, backend implementation, cloud upload, local heuristic extraction, LUT, persistence, StoreKit, payment, export, local download, or caption/social copy until explicitly requested.
+Phase 16J verification: documentation-only handoff update; no Swift source, backend source, real AI, network, upload, persistence, export, API keys, provider SDK, StoreKit, or production config added
+Next phase: Commit Phase 16J only if explicitly requested by the user. Recommended next work should stay in Phase 16 continuation options such as local heuristic advisor prototype, selected-photo / Inspiration polish, or export planning research. Do not start Phase 17, real AI, backend implementation, cloud upload, local heuristic extraction, LUT, persistence, StoreKit, payment, export, local download, or caption/social copy until explicitly requested.
+
+---
+
+## Phase 16J - Codex API Work Handoff Update
+
+Status: Documentation-only handoff update; ready to commit after final review
+Date completed: 2026-06-11
+
+### Goal
+
+Update the Codex transition handoff after the Codex API work period so the original Codex can resume later without relying on chat history.
+
+### Completed
+
+- Updated `docs/handoff/codex-transition-handoff.md` with a Codex API period update dated 2026-06-11.
+- Recorded current branch / repo state, latest commit, clean git status at task start, and origin sync state.
+- Recorded Phase 16H-Recovery completion.
+- Recorded Phase 16I, Phase 16I-R1, and Phase 16I-R2 completion and user acceptance.
+- Recorded current accepted app status for Camera, shutter, Pose Overlay, AI Snapshot, Filter Lab, Mock Post-capture Advisor, floating bar, selected-photo navigation, Inspiration, History, and Settings.
+- Reconfirmed hard restrictions: no Phase 17, real AI, backend, network, upload, persistence, export, StoreKit, provider SDKs, secrets, or sensitive inference.
+- Recorded known TODOs for placeholder pose artwork, mock-only Filter Generator, mock-only Photo Advisor, future local heuristic advisor, future backend boundary, and future entitlement / export phase.
+- Recorded next recommended options: Phase 16K local heuristic advisor prototype, Phase 16L selected-photo / Inspiration polish, or Phase 16M export / local lossless download planning research.
+- Preserved the 2026-06-15 handback template and added a draft / pending final update section.
+- Updated README with a short pointer to the refreshed handoff.
+
+### Safety Notes
+
+Phase 16J is documentation-only. It does not change Swift source, app UI, app behavior, backend source, real AI integration, `URLSession`, `URLRequest`, WebSocket, Firebase / Gemini / OpenAI / StoreKit imports, provider SDKs, API keys, Firebase config, `GoogleService-Info.plist`, `.env`, `.firebaserc`, upload, cloud save, StoreKit, premium / credits, real local download, save-to-Photos, export, raw image persistence, AI response persistence, `UserDefaults`, Core Data, SwiftData, Gemini Live, streaming, photo score, beauty / attractiveness score, identity / gender / age / emotion inference, sensitive attribute inference, or backend changes.
+
+### Verification
+
+- [x] `git status --short` checked before documentation edits.
+- [x] Latest commit checked with `git log -1 --oneline`.
+- [x] Origin sync checked with `git rev-list --left-right --count @{u}...HEAD`.
+- [x] `git status --short` final check.
+- [x] `git diff --check` final pass.
+- [x] `git diff --stat` final review.
+- [x] Forbidden imports scan.
+- [x] Network / upload behavior scan.
+- [x] Secrets / config scan.
+- [x] Forbidden behavior scan.
+
+### Ready to Commit Phase 16J
+
+Yes, after final verification. Commit only if explicitly requested by the user; do not commit or push automatically.
+
+### Ready for Phase 17 / Real AI
+
+No.
 
 ---
 
