@@ -12,7 +12,7 @@ struct FilterPreviewView: View {
             Image(uiImage: image)
                 .resizable()
                 .scaledToFit()
-                .frame(maxWidth: .infinity)
+                .frame(maxWidth: .infinity, maxHeight: 560)
                 .background(Color.black)
 
             if isRendering {
@@ -26,6 +26,7 @@ struct FilterPreviewView: View {
         .overlay(alignment: .topLeading) {
             Text(sourceTitle)
                 .font(AppTypography.caption)
+                .lineLimit(1)
                 .padding(.horizontal, AppSpacing.sm)
                 .padding(.vertical, AppSpacing.xs)
                 .background(AppColors.surface.opacity(0.92))
@@ -37,6 +38,8 @@ struct FilterPreviewView: View {
             if let presetTitle {
                 Text(presetTitle)
                     .font(AppTypography.caption)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.78)
                     .padding(.horizontal, AppSpacing.sm)
                     .padding(.vertical, AppSpacing.xs)
                     .background(AppColors.surface.opacity(0.92))

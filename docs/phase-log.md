@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 16J - Codex API Work Handoff Update
-Status: Documentation-only handoff update in progress; no app behavior changes
-Latest implementation: Updated the Codex transition handoff to record completed Codex API period work, including Phase 16H-Recovery and Phase 16I/R1/R2 completion, accepted app status, active restrictions, known TODOs, and next recommended Phase 16 options
+Current phase: Phase 16K-L - Local Heuristic Advisor + Selected Photo UX Polish
+Status: Implemented and manually accepted by the user in Xcode / Simulator; ready to commit after final review
+Latest implementation: Added local aspect-ratio image signals, deterministic filter-family heuristic advisor recommendations, validated existing-filter recommendation path, compact selected-photo preview polish, and updated docs / manual smoke tests
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -49,7 +49,78 @@ Phase 16I verification: targeted Swift parse, localization lint, and command-lin
 Phase 16I-R1 verification: targeted Swift parse, localization lint, and command-line Xcode generic iOS Simulator build passed on 2026-06-11; no real AI, backend, network, upload, persistence, export, API keys, provider SDK, StoreKit, or production config added
 Phase 16I-R2 verification: targeted Swift parse, localization lint, and command-line Xcode generic iOS Simulator build passed on 2026-06-11; no real AI, backend, network, upload, persistence, export, API keys, provider SDK, StoreKit, or production config added
 Phase 16J verification: documentation-only handoff update; no Swift source, backend source, real AI, network, upload, persistence, export, API keys, provider SDK, StoreKit, or production config added
-Next phase: Commit Phase 16J only if explicitly requested by the user. Recommended next work should stay in Phase 16 continuation options such as local heuristic advisor prototype, selected-photo / Inspiration polish, or export planning research. Do not start Phase 17, real AI, backend implementation, cloud upload, local heuristic extraction, LUT, persistence, StoreKit, payment, export, local download, or caption/social copy until explicitly requested.
+Phase 16K-L verification: targeted Swift parse, localization lint, safety scans, and command-line Xcode generic iOS Simulator build passed on 2026-06-12; user Xcode / Simulator verification accepted on 2026-06-12; no real AI, backend, network, upload, persistence, export, API keys, provider SDK, StoreKit, or production config added
+Next phase: Phase 16K-L is ready to commit after final review. Do not start Phase 17, real AI, backend implementation, cloud upload, LUT, persistence, StoreKit, payment, export, local download, or caption/social copy until explicitly requested.
+
+---
+
+## Phase 16K-L - Local Heuristic Advisor + Selected Photo UX Polish
+
+Status: Implemented and manually accepted by the user in Xcode / Simulator; ready to commit after final review
+Date completed: 2026-06-12
+
+### Goal
+
+Make the Mock Post-capture AI Advisor less random by using safe local signals while polishing the selected / imported photo result screen hierarchy. Keep the floating advisor / filter tray intact and preserve all mock-only / local-only boundaries.
+
+### Completed
+
+- Added local image signal models for selected-photo aspect ratio buckets: square, portrait, tall portrait, landscape, wide landscape, and unavailable.
+- Added `PhotoAdvisorHeuristicResolver` to map selected filter family, photo source, aspect ratio bucket, and retry seed into deterministic advisor fixture / recommendation output.
+- Updated `MockPhotoAdvisorService` to use the local heuristic resolver instead of random-only fixture selection.
+- Preserved fallback and whitelist validation through `PhotoAdvisorResultValidator`.
+- Updated advisor retry to preserve local image signal context.
+- Updated floating recommended filters to use the same heuristic resolver as the advisor result.
+- Added local-only heuristic copy for warm, street / chrome, night / neon, cinematic, travel, and chrome / monochrome directions.
+- Added aspect-ratio-aware retake / crop advice for landscape, wide landscape, portrait, tall portrait, and square images.
+- Kept recommendations limited to existing filter IDs in the current catalog.
+- Polished selected-photo preview hierarchy with a safer preview max height, tighter vertical rhythm, compact error cards, and a shorter local-only note.
+- Kept the Phase 16I-R1 floating bar UX, floating filter grid, auto-dismiss behavior, and floating AI advisor access intact.
+- Updated README / iOS README and manual smoke tests.
+- User manually accepted the local heuristic advisor / filter recommendation prototype and selected-photo / Inspiration UX polish in Xcode / Simulator.
+- User accepted that selected filter family can influence advisor summary / suggestions / recommendations, image aspect ratio can influence crop / retake advice, recommendations remain limited to the existing 20 filters, invalid recommendation fallback is safe, and the floating bar remains unchanged and usable.
+
+### Safety Notes
+
+Phase 16K-L remains local-only and mock-only. It does not add real AI, cloud AI, backend code, `URLSession`, `URLRequest`, WebSocket, Firebase / Gemini / OpenAI / StoreKit imports, provider SDKs, API keys, Firebase config, `GoogleService-Info.plist`, `.env`, `.firebaserc`, upload, photo upload, reference image upload, raw image persistence, AI response persistence, `UserDefaults`, Core Data, SwiftData, cloud save, StoreKit, premium / credits, real local download, save-to-Photos, export, Gemini Live, streaming, caption / social copy, photo score, beauty / attractiveness score, identity / gender / age / emotion inference, sensitive attribute inference, or backend changes.
+
+Cloud save / paid-user cloud save / free local lossless download remain future dedicated entitlement / export phases only.
+
+### Known TODOs
+
+- Advisor heuristic remains local and simple, not real AI.
+- Future local heuristic expansion may inspect safer image statistics only if explicitly scoped.
+- Future real cloud advisor requires a backend boundary first.
+- Cloud save / paid-user cloud save / free local lossless download require a dedicated entitlement / export phase.
+- No StoreKit or export exists yet.
+
+### Verification
+
+- [x] `git status --short` checked before implementation.
+- [x] Targeted Swift parse passed during implementation.
+- [x] `git status --short` final check.
+- [x] `git diff --check` final pass.
+- [x] `git diff --stat` final review.
+- [x] Localization lint.
+- [x] Forbidden imports scan.
+- [x] Network / upload behavior scan.
+- [x] Secrets / config scan.
+- [x] Persistence / export scan.
+- [x] Frame / photo payload persistence scan.
+- [x] Score / beauty wording scan.
+- [x] Xcode build passed.
+
+### User Xcode / Simulator Review
+
+Accepted. User manually verified Phase 16K-L in Xcode / Simulator on 2026-06-12.
+
+### Ready to Commit Phase 16K-L
+
+Yes. Latest commit has not been created; do not commit or push automatically.
+
+### Ready for Phase 17 / Real AI
+
+No.
 
 ---
 

@@ -21,7 +21,7 @@ struct ImportedPhotoResultView: View {
             Color.black.ignoresSafeArea()
 
             ScrollView {
-                VStack(spacing: AppSpacing.lg) {
+                VStack(spacing: AppSpacing.md) {
                     FilteredPhotoPreview(
                         photo: photo,
                         previewImage: filteredPreviewImage ?? photo.image,
@@ -30,11 +30,7 @@ struct ImportedPhotoResultView: View {
                     )
 
                     if let filterErrorMessage {
-                        Text(filterErrorMessage)
-                            .font(AppTypography.caption)
-                            .foregroundStyle(AppColors.error)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .fixedSize(horizontal: false, vertical: true)
+                        errorMessage(filterErrorMessage)
                     }
                 }
                 .padding(.horizontal, AppSpacing.md)
@@ -120,6 +116,7 @@ struct ImportedPhotoResultView: View {
                         source: .imported,
                         selectedPreset: selectedPreset,
                         presets: presets,
+                        imageSignal: imageSignal,
                         isRendering: isFiltering,
                         onApplyFilter: { preset in
                             selectFilterPreset(preset)
@@ -175,18 +172,35 @@ struct ImportedPhotoResultView: View {
         let input = PhotoAdvisorInput(
             photoId: advisorPhotoId,
             source: .imported,
-            selectedFilterId: selectedPreset.id
+            selectedFilterId: selectedPreset.id,
+            imageSignal: imageSignal
         )
-        let result = PhotoAdvisorResultValidator.validated(
-            PhotoAdvisorFixtures.result(for: PhotoAdvisorFixtures.scene(for: input)),
-            allowedFilterIds: Set(presets.map(\.id))
-        )
+        let result = PhotoAdvisorHeuristicResolver.result(for: input, allowedFilterIds: Set(presets.map(\.id)))
 
         return result.recommendedFilters
     }
 
+    private var imageSignal: PhotoAdvisorImageSignal {
+        PhotoAdvisorImageSignal(size: photo.image.size)
+    }
+
     private func togglePanel(_ panel: FloatingPhotoActionPanel) {
         activePanel = activePanel == panel ? nil : panel
+    }
+
+    private func errorMessage(_ message: String) -> some View {
+        Label {
+            Text(message)
+                .fixedSize(horizontal: false, vertical: true)
+        } icon: {
+            Image(systemName: "exclamationmark.triangle")
+        }
+        .font(AppTypography.caption)
+        .foregroundStyle(AppColors.error)
+        .padding(AppSpacing.sm)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(AppColors.surface.opacity(0.76))
+        .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.md))
     }
 
     private func selectFilterPreset(_ preset: FilterPreset) {

@@ -45,6 +45,7 @@ final class PhotoAdvisorViewModel: ObservableObject {
             photoId: lastInput.photoId,
             source: lastInput.source,
             selectedFilterId: lastInput.selectedFilterId,
+            imageSignal: lastInput.imageSignal,
             mockScene: nil,
             variantSeed: variantSeed,
             localeIdentifier: lastInput.localeIdentifier

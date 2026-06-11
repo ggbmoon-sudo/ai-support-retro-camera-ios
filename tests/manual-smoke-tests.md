@@ -943,6 +943,52 @@ Known TODOs:
 - [ ] Real cloud AI remains deferred to a later explicit Phase 16B / 17 request after commit, push, and read-only confirmation.
 - [ ] Ordinary tab bar and Camera spacing can receive small visual tuning later if new screenshots reveal device-specific spacing issues.
 
+## Phase 16K-L Local Heuristic Advisor + Selected Photo UX Polish
+
+Check:
+
+- [x] User manually accepted Phase 16K-L in Xcode / Simulator on 2026-06-12.
+- [x] Import a photo from Inspiration / 靈感 and confirm the selected-photo result screen opens normally.
+- [x] Confirm selected / imported photo result still shows the floating AI / Filter bar.
+- [x] Tap AI advice / AI 建議 and confirm the advisor sheet opens.
+- [x] Select a warm / portrait-like filter such as Soft Warm 400 or Instant Dream, open AI advice, and confirm the result leans warm / portrait / soft retro.
+- [x] Confirm warm recommendations use existing filters such as Soft Warm 400, Instant Dream, and Summer Gold 200.
+- [x] Select a street / chrome / high-contrast filter such as Street Chrome or Metro Pop and confirm the result leans street / chrome / city.
+- [x] Confirm street / chrome recommendations use existing filters such as Street Chrome, Metro Pop, and Silver Gradation.
+- [x] Select a night / neon filter such as Amber Night 800 or Neon Tungsten 800 and confirm the result leans night / neon / low-light.
+- [x] Confirm night / neon recommendations use existing filters such as Amber Night 800, Neon Tungsten 800, and CCD Party 2008.
+- [x] Select a cinematic filter such as Cinema Flat or Editor Classic and confirm the result leans cinematic / low contrast.
+- [x] Confirm cinematic recommendations use existing filters such as Cinema Flat and Editor Classic.
+- [x] Import or capture a landscape / wide photo and confirm crop / retake advice suggests keeping background / sky / environment.
+- [x] Import or capture a portrait / tall portrait photo and confirm crop / retake advice mentions centered subject / natural vertical spacing / headroom.
+- [x] Import or use a square photo and confirm the result remains stable and does not require a retake.
+- [x] Confirm recommended filter IDs all resolve to real presets in the existing catalog.
+- [x] Confirm invalid recommendation fallback is covered by validator/code review or an injected preview/service test if manually testable.
+- [x] Tap Filter / 濾鏡 from the floating bar and confirm the floating grid opens.
+- [x] Select a filter from the floating grid and confirm it applies immediately and auto-dismisses.
+- [x] Confirm the current filter label updates after selection.
+- [x] Confirm the AI advisor sheet can be reopened after filter selection and reflects the selected filter family.
+- [x] Confirm selected-photo UI has less clutter, tighter preview spacing, and compact local-only copy.
+- [x] Confirm no duplicate full inline AI advisor / filter grid / mock save sections appear below the photo.
+- [x] Confirm no cloud save CTA appears for free / unknown user.
+- [x] Confirm no local download, export, save-to-Photos, StoreKit paywall, premium gate, or cloud save UI appears.
+- [x] Confirm Filter Lab still opens and result preview remains stable.
+- [x] Confirm Camera fullscreen capture layout, shutter, Pose Overlay, AI Snapshot, guidance, History, and Settings still work.
+- [x] Confirm English and Traditional Chinese UI show no raw localization keys.
+- [x] Confirm no 0-100 score, star rating, beauty wording, attractiveness wording, identity, gender, age, emotion, health, race, religion, or sensitive inference copy appears.
+- [x] Confirm no upload, network call, real AI call, backend call, persistence, export, save-to-Photos, raw image persistence, AI response persistence, or generated filter save occurs.
+
+Known TODOs:
+
+- [ ] Photo Advisor remains mock-only and local-only.
+- [ ] Advisor heuristic remains local/simple, not real AI.
+- [ ] Future local heuristic can inspect safer image statistics only if explicitly scoped.
+- [ ] Future real cloud advisor requires backend boundary work first.
+- [ ] Future local heuristic advisor can be expanded only with safe local signals.
+- [ ] Cloud save / paid-user cloud save / free local lossless download require a dedicated entitlement / export phase.
+- [ ] No StoreKit or export exists yet.
+- [ ] No StoreKit / export / save-to-Photos yet.
+
 ## Phase 16I Mock Post-capture AI Advisor UX
 
 Check:

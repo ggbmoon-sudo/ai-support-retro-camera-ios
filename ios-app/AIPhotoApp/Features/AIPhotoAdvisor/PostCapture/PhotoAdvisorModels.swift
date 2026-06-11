@@ -4,6 +4,7 @@ struct PhotoAdvisorInput: Hashable {
     let photoId: String
     let source: PhotoAdvisorPhotoSource
     let selectedFilterId: String?
+    let imageSignal: PhotoAdvisorImageSignal
     let mockScene: PhotoAdvisorMockScene?
     let variantSeed: Int
     let localeIdentifier: String
@@ -12,6 +13,7 @@ struct PhotoAdvisorInput: Hashable {
         photoId: String,
         source: PhotoAdvisorPhotoSource,
         selectedFilterId: String?,
+        imageSignal: PhotoAdvisorImageSignal = .unavailable,
         mockScene: PhotoAdvisorMockScene? = nil,
         variantSeed: Int = 0,
         localeIdentifier: String = Locale.preferredLanguages.first ?? "en"
@@ -19,6 +21,7 @@ struct PhotoAdvisorInput: Hashable {
         self.photoId = photoId
         self.source = source
         self.selectedFilterId = selectedFilterId
+        self.imageSignal = imageSignal
         self.mockScene = mockScene
         self.variantSeed = variantSeed
         self.localeIdentifier = localeIdentifier

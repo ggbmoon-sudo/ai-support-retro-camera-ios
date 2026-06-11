@@ -1308,7 +1308,7 @@ struct CameraView: View {
     }
 
     private func previewContent(_ photo: CapturedPhoto) -> some View {
-        LazyVStack(spacing: AppSpacing.lg) {
+        LazyVStack(spacing: AppSpacing.md) {
             FilteredPhotoPreview(
                 photo: photo,
                 previewImage: viewModel.filteredPreviewImage ?? photo.image,
@@ -1339,6 +1339,7 @@ struct CameraView: View {
                         source: advisorPhotoSource(for: photo),
                         selectedPreset: viewModel.selectedFilterPreset,
                         presets: viewModel.filterPresets,
+                        imageSignal: imageSignal(for: photo),
                         isRendering: viewModel.isFiltering,
                         onApplyFilter: { preset in
                             viewModel.selectFilterPreset(preset)
@@ -1394,14 +1395,19 @@ struct CameraView: View {
         let input = PhotoAdvisorInput(
             photoId: advisorPhotoId(for: photo),
             source: advisorPhotoSource(for: photo),
-            selectedFilterId: viewModel.selectedFilterPreset.id
+            selectedFilterId: viewModel.selectedFilterPreset.id,
+            imageSignal: imageSignal(for: photo)
         )
-        let result = PhotoAdvisorResultValidator.validated(
-            PhotoAdvisorFixtures.result(for: PhotoAdvisorFixtures.scene(for: input)),
+        let result = PhotoAdvisorHeuristicResolver.result(
+            for: input,
             allowedFilterIds: Set(viewModel.filterPresets.map(\.id))
         )
 
         return result.recommendedFilters
+    }
+
+    private func imageSignal(for photo: CapturedPhoto) -> PhotoAdvisorImageSignal {
+        PhotoAdvisorImageSignal(size: photo.image.size)
     }
 
     private func advisorPhotoId(for photo: CapturedPhoto) -> String {
@@ -1630,31 +1636,39 @@ struct CameraView: View {
     @ViewBuilder
     private var statusMessages: some View {
         if let errorMessage = viewModel.errorMessage {
-            Text(errorMessage)
-                .font(AppTypography.caption)
-                .foregroundStyle(AppColors.error)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .fixedSize(horizontal: false, vertical: true)
+            selectedPhotoErrorMessage(errorMessage)
         }
 
         if let filterErrorMessage = viewModel.filterErrorMessage {
-            Text(filterErrorMessage)
-                .font(AppTypography.caption)
-                .foregroundStyle(AppColors.error)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .fixedSize(horizontal: false, vertical: true)
+            selectedPhotoErrorMessage(filterErrorMessage)
         }
     }
 
     private var localOnlyNote: some View {
-        Text("camera.local_only_note")
-            .font(AppTypography.caption)
+        Label("camera.local_only_note.compact", systemImage: "lock")
+            .font(AppTypography.micro)
             .foregroundStyle(AppColors.textSecondary)
             .fixedSize(horizontal: false, vertical: true)
-            .padding(AppSpacing.md)
+            .padding(.vertical, AppSpacing.sm)
+            .padding(.horizontal, AppSpacing.md)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(AppColors.surface)
-            .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.lg))
+            .background(AppColors.surface.opacity(0.68))
+            .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.md))
+    }
+
+    private func selectedPhotoErrorMessage(_ message: String) -> some View {
+        Label {
+            Text(message)
+                .fixedSize(horizontal: false, vertical: true)
+        } icon: {
+            Image(systemName: "exclamationmark.triangle")
+        }
+        .font(AppTypography.caption)
+        .foregroundStyle(AppColors.error)
+        .padding(AppSpacing.sm)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(AppColors.surface.opacity(0.76))
+        .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.md))
     }
 }
 

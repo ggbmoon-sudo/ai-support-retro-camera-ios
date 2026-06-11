@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 16J Codex API work handoff update is documentation-only and ready for final verification
+- Phase 16K-L Local Heuristic Advisor + Selected Photo UX Polish implemented and manually accepted in Xcode / Simulator on 2026-06-12
 
 Next phase:
 
-- Commit Phase 16J only if explicitly requested; do not commit or push automatically
+- Phase 16K-L is ready to commit after final review; do not commit / push automatically
 - Phase 17 / real AI remain blocked until a backend boundary phase is explicitly requested later
 
 Before each task, read `AGENTS.md`, the required docs listed there, and the relevant phase prompt in `docs/prompts/`.
@@ -419,6 +419,12 @@ Phase 16I-R2 keeps the floating tray intact while cleaning up selected-photo dup
 Future paid cloud save and future free local lossless download require a dedicated export / entitlement phase. Phase 16I-R2 does not add StoreKit, premium gates, cloud save, local download, save-to-Photos, export, upload, or persistence.
 
 User Xcode / Simulator verification accepted Phase 16I, Phase 16I-R1, and Phase 16I-R2 on 2026-06-11. The accepted scope remains mock-only: the future real cloud advisor requires a backend boundary, a future local heuristic advisor may be added before real cloud if explicitly requested, and cloud save / paid-user cloud save / free local lossless download require a dedicated future entitlement / export phase.
+
+Phase 16K-L adds a local-only heuristic advisor prototype and selected-photo polish. Advisor recommendations now use safe local signals such as selected filter family, imported / captured source, and simple image aspect ratio buckets; recommendations are still validated against the existing filter catalog. The selected-photo result keeps the floating AI / Filter tray as the primary control and uses more compact preview / local-only status presentation.
+
+User Xcode / Simulator verification accepted Phase 16K-L on 2026-06-12. The accepted scope remains local-only / mock-only.
+
+Phase 16K-L does not add real AI, backend code, URLSession/URLRequest, WebSocket, upload, persistence, export, save-to-Photos, StoreKit, cloud save, local download, provider SDKs, secrets, score UI, beauty / attractiveness wording, or sensitive inference.
 
 ## Phase 16A Camera One-Screen UX Consolidation Status
 

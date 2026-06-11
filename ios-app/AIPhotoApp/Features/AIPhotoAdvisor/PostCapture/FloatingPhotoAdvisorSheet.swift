@@ -5,6 +5,7 @@ struct FloatingPhotoAdvisorSheet: View {
     let source: PhotoAdvisorPhotoSource
     let selectedPreset: FilterPreset
     let presets: [FilterPreset]
+    let imageSignal: PhotoAdvisorImageSignal
     let isRendering: Bool
     let onApplyFilter: (FilterPreset) -> Void
     let onClose: () -> Void
@@ -19,6 +20,7 @@ struct FloatingPhotoAdvisorSheet: View {
                     source: source,
                     selectedPreset: selectedPreset,
                     presets: presets,
+                    imageSignal: imageSignal,
                     isRendering: isRendering,
                     onApplyFilter: onApplyFilter
                 )
@@ -73,6 +75,7 @@ struct FloatingPhotoAdvisorSheet: View {
         source: .imported,
         selectedPreset: FilterPresetCatalog.instantDream,
         presets: FilterPresetCatalog.all,
+        imageSignal: PhotoAdvisorImageSignal(size: CGSize(width: 1200, height: 1600)),
         isRendering: false,
         onApplyFilter: { _ in },
         onClose: {}

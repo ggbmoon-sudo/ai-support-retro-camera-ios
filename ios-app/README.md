@@ -338,6 +338,14 @@ The accepted iOS scope is mock-only: selected / imported photo result screens us
 
 This phase does not add real AI, backend calls, URLSession/URLRequest, upload, persistence, StoreKit, cloud save, real local download, export, save-to-Photos, photo scoring, beauty / attractiveness scoring, or provider SDKs. Future real cloud advisor work requires a backend boundary; cloud save / paid-user cloud save / free local lossless download require a dedicated future entitlement / export phase.
 
+## Phase 16K-L Local Heuristic Advisor + Selected Photo UX Polish
+
+Phase 16K-L keeps the advisor mock-only and local-only while making recommendations more deterministic. The advisor uses safe local signals: selected filter family, imported / captured source, simple image aspect ratio bucket, and preview availability. It does not add computer vision, face analysis, upload, persistence, backend, or real provider calls.
+
+Selected / imported photo polish keeps the Phase 16I floating AI / Filter tray intact, validates recommendations against the existing filter catalog, tightens selected-photo preview spacing, and keeps mock/no-upload copy compact. Cloud save, paid-user cloud save, free local lossless download, StoreKit, export, and save-to-Photos remain future dedicated phases only.
+
+User Xcode / Simulator verification accepted Phase 16K-L on 2026-06-12. The phase is ready to commit after final review; do not commit or push automatically.
+
 ## Phase 16A Camera One-Screen UX Consolidation
 
 Phase 16A keeps the app local/mock-only and consolidates the Camera capture surface.

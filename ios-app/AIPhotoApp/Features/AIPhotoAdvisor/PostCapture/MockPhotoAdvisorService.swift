@@ -23,11 +23,7 @@ final class MockPhotoAdvisorService: PhotoAdvisorService {
 
         switch mode {
         case .success:
-            let scene = PhotoAdvisorFixtures.scene(for: input)
-            return PhotoAdvisorResultValidator.validated(
-                PhotoAdvisorFixtures.result(for: scene),
-                allowedFilterIds: allowedFilterIds
-            )
+            return PhotoAdvisorHeuristicResolver.result(for: input, allowedFilterIds: allowedFilterIds)
         case .unavailable:
             throw PhotoAdvisorError.mockUnavailable
         case .invalidThenFallback:

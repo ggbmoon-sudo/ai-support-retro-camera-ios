@@ -5,6 +5,7 @@ struct PhotoAdvisorResultView: View {
     let source: PhotoAdvisorPhotoSource
     let selectedPreset: FilterPreset
     let presets: [FilterPreset]
+    let imageSignal: PhotoAdvisorImageSignal
     let isRendering: Bool
     let onApplyFilter: (FilterPreset) -> Void
 
@@ -16,6 +17,7 @@ struct PhotoAdvisorResultView: View {
         source: PhotoAdvisorPhotoSource,
         selectedPreset: FilterPreset,
         presets: [FilterPreset],
+        imageSignal: PhotoAdvisorImageSignal = .unavailable,
         isRendering: Bool,
         onApplyFilter: @escaping (FilterPreset) -> Void
     ) {
@@ -23,6 +25,7 @@ struct PhotoAdvisorResultView: View {
         self.source = source
         self.selectedPreset = selectedPreset
         self.presets = presets
+        self.imageSignal = imageSignal
         self.isRendering = isRendering
         self.onApplyFilter = onApplyFilter
         _viewModel = StateObject(wrappedValue: PhotoAdvisorViewModel())
@@ -41,7 +44,7 @@ struct PhotoAdvisorResultView: View {
             RoundedRectangle(cornerRadius: AppCornerRadius.lg)
                 .stroke(AppColors.accent.opacity(0.18), lineWidth: 1)
         }
-        .task(id: photoId) {
+        .task(id: currentInput) {
             viewModel.reset()
             await viewModel.analyze(currentInput)
         }
@@ -340,7 +343,8 @@ struct PhotoAdvisorResultView: View {
         PhotoAdvisorInput(
             photoId: photoId,
             source: source,
-            selectedFilterId: selectedPreset.id
+            selectedFilterId: selectedPreset.id,
+            imageSignal: imageSignal
         )
     }
 
