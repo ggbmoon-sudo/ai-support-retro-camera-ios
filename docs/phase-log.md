@@ -8,8 +8,8 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 16D - Pose Overlay Research Report Backfill
-Status: Phase 16D documentation-only Pose Overlay research report backfill implemented by Codex; awaiting review
+Current phase: Phase 16E - Static Pose Overlay MVP
+Status: Phase 16E Static Pose Overlay MVP manually accepted by the user in Xcode / Simulator after the R1 safe-area and fallback visibility fix; ready to commit after final review
 Latest documentation maintenance: Filter Research Docs Backfill + Alignment Check completed; docs-only; no Swift/backend changes
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -41,7 +41,145 @@ Phase 16A-R7 build verification: targeted Swift parse passed; sandboxed command-
 Phase 16A-R8 build verification: targeted Swift parse passed; sandboxed command-line Xcode build remains blocked by CoreSimulator / sandbox-exec / SwiftUI Preview macro environment restrictions; no real service integration was added
 Phase 16A-R9 build verification: targeted Swift parse passed; sandboxed command-line Xcode build remains blocked by CoreSimulator / sandbox-exec / SwiftUI Preview macro environment restrictions; no real service integration was added
 Phase 16A-R10 build verification: targeted Swift parse passed; sandboxed command-line Xcode build remains blocked by CoreSimulator / sandbox-exec / SwiftUI Preview macro environment restrictions; no real service integration was added
-Next phase: Phase 16E Pose Overlay MVP implementation should not start until Phase 16D is reviewed, committed, pushed, and explicitly requested; real cloud AI integration should not start before Phase 17 and must be explicitly requested
+Phase 16E build verification: targeted Swift parse and safety scans passed during implementation; user Xcode / Simulator build-run and Pose Overlay MVP review accepted on 2026-06-11 after R1; no real AI / Vision / network / upload / persistence / export was added
+Next phase: Do not start Phase 16F, Phase 17, real AI, or any Pose Overlay expansion until Phase 16E is committed, pushed, read-only confirmed, and explicitly requested
+
+---
+
+## Phase 16E - Static Pose Overlay MVP
+
+Status: Manually verified and accepted by the user in Xcode / Simulator after R1; ready to commit after final review
+Date completed: 2026-06-11
+
+### R1 Fix - Pose Button Safe-Area + Simulator Overlay Visibility
+
+Status: Manually verified and accepted by the user in Xcode / Simulator
+Date completed: 2026-06-11
+
+R1 fixes two Phase 16E blockers found in Simulator review:
+
+- Moved the compact Pose button out of the top control row so it no longer collides with the Dynamic Island / status area.
+- Placed Pose with the existing lower-left viewfinder tool area above the Filter pill.
+- Removed the `permissionState == .authorized` guard from the pose overlay layer so selected static pose outlines also render over the camera-unavailable / Simulator fallback canvas.
+- Increased placeholder outline visibility for testing by using warm-white line art, a slightly thicker stroke, stronger shadow, and `0.5` overlay opacity.
+- Kept the overlay passive with `.allowsHitTesting(false)` and `.accessibilityHidden(true)`.
+- Did not change capture output or camera pipeline.
+
+R1 verification:
+
+- `git diff --check` passed.
+- Targeted Swift parse passed for Phase 16E PoseGuides files and `CameraView.swift`.
+- Localization lint passed for English and Traditional Chinese `Localizable.strings`.
+- Sandboxed command-line Xcode simulator build was attempted and reached Swift compilation, but failed due CoreSimulator / sandbox-exec environment restrictions, not a confirmed Phase 16E-R1 source error.
+- Forbidden imports, Vision body pose, network / upload, secrets / config, persistence / export, and frame / photo payload persistence scans passed with only existing local/mock scaffolds and docs placeholders noted.
+
+### User Manual Verification
+
+The user manually verified Phase 16E in Xcode / Simulator after the R1 fix and accepted the MVP state:
+
+- Pose button is no longer blocked by the Dynamic Island / status area.
+- Tapping Pose opens the pose picker.
+- Selecting a pose displays the static overlay.
+- Simulator / camera-unavailable fallback also displays the selected overlay.
+- Close pose hides the overlay.
+- Mirror pose flips the overlay horizontally.
+- The overlay does not block shutter, AI Snapshot, filter, guidance, lens, timer, flash, or flip controls.
+- Camera remains fullscreen without requiring scroll; shutter remains visible and tappable.
+- Existing AI Snapshot, guidance, filter, and lens callouts still work.
+- No Vision body pose, real AI, network, upload, persistence, or export behavior was added.
+- Current pose outlines are placeholder / visually rough, but accepted for this MVP. A later dedicated phase should replace them with proper original PDF/vector pose assets and improve pose gallery artwork.
+
+### Goal
+
+Add the first camera-first, non-AI static Pose Overlay MVP so users can select a simple pose guide, see a passive outline over the viewfinder, close it, or mirror it without changing capture output or adding AI / Vision body pose detection.
+
+### Completed
+
+- Added a `Features/Camera/PoseGuides/` feature folder.
+- Added session-only pose guide models and catalog:
+  - `PoseGuide`
+  - `PoseGuideCategory`
+  - `PoseFramingHint`
+  - `PoseOverlayAnchor`
+  - `PoseGuideCatalog`
+  - `CameraPoseOverlayState`
+- Added 8 static MVP pose guides:
+  - `solo_side_stand`
+  - `solo_walk`
+  - `half_body_turn_back`
+  - `couple_side_by_side`
+  - `couple_staggered`
+  - `menswear_wall_lean`
+  - `womenswear_hair_touch`
+  - `seated_side_pose`
+- Added a SwiftUI `Canvas`-based placeholder line-art renderer so the MVP uses original in-code outlines instead of external or copied assets.
+- Preserved `assetName` on `PoseGuide` so future original PDF vector assets can replace the placeholder line art.
+- Added `PoseGuideButton` to the Camera top controls as a compact dark-glass Pose entry.
+- Added `PoseSelectorView` as a compact Camera quick picker with title, category, hint, and selected state.
+- Integrated `.pose` into the existing `CameraCallout` flow so guidance, AI Snapshot, filter, lens, and pose picker are mutually exclusive.
+- Added `PoseOverlayView` above the camera preview and below interactive camera controls.
+- Added an active pose badge with close and mirror controls in the camera controls layer.
+- Kept the pose overlay passive with `.allowsHitTesting(false)` and `.accessibilityHidden(true)`.
+- Kept overlay state in memory only; no UserDefaults, Core Data, SwiftData, disk persistence, or cloud sync was added.
+- Updated English and Traditional Chinese localization strings for Pose button, picker, categories, and 8 pose titles / hints.
+- Updated README / iOS README status notes.
+- Updated manual smoke tests.
+
+### Changed Files
+
+- README.md
+- docs/phase-log.md
+- ios-app/README.md
+- ios-app/AIPhotoApp/Features/Camera/CameraView.swift
+- ios-app/AIPhotoApp/Features/Camera/PoseGuides/PoseGuide.swift
+- ios-app/AIPhotoApp/Features/Camera/PoseGuides/PoseGuideCatalog.swift
+- ios-app/AIPhotoApp/Features/Camera/PoseGuides/CameraPoseOverlayState.swift
+- ios-app/AIPhotoApp/Features/Camera/PoseGuides/PoseOverlayView.swift
+- ios-app/AIPhotoApp/Features/Camera/PoseGuides/PoseSelectorView.swift
+- ios-app/AIPhotoApp/Features/Camera/PoseGuides/PoseGuideButton.swift
+- ios-app/AIPhotoApp/Resources/Localization/en.lproj/Localizable.strings
+- ios-app/AIPhotoApp/Resources/Localization/zh-Hant.lproj/Localizable.strings
+- tests/manual-smoke-tests.md
+
+### Safety Notes
+
+Phase 16E implements a UI-only static Pose Overlay MVP. It does not add AI pose suggestion, Apple Vision body pose detection, `VNDetectHumanBodyPoseRequest`, pose matching, pose score, body / appearance scoring, face recognition, identity / gender / age / emotion inference, real AI, network calls, URLSession/URLRequest, WebSocket, camera frame upload, Firebase / Gemini / OpenAI / StoreKit imports, Firebase config, API keys, backend code, persistence, UserDefaults, Core Data, SwiftData, save-to-Photos, export, raw frame/photo/cloud request payload persistence, logging, or third-party assets.
+
+The overlay is a SwiftUI UI layer only. It is not part of `AVCapturePhotoOutput` and should not be written into captured photos.
+
+### Verification
+
+- [x] Final `git status --short` checked before response.
+- [x] `git diff --check` passed.
+- [x] `git diff --stat` reviewed.
+- [x] Targeted Swift parse passed for Phase 16E PoseGuides files and `CameraView.swift`.
+- [x] Sandboxed command-line Xcode simulator build was attempted and reached Swift compilation, but failed due CoreSimulator / sandbox-exec environment restrictions, not a confirmed Phase 16E source error.
+- [x] Generic iOS device command-line build with signing disabled was attempted; new PoseGuides files were included in target compile input, but the build still failed due sandbox-exec environment restrictions, not a confirmed Phase 16E source error.
+- [x] Localization lint passed for English and Traditional Chinese `Localizable.strings`.
+- [x] Forbidden imports scan passed for Firebase / FirebaseFunctions / FirebaseStorage / FirebaseFirestore / Gemini / OpenAI / StoreKit imports.
+- [x] Vision body pose scan found no `VNDetectHumanBodyPoseRequest`, no body pose matching, and no pose scoring implementation.
+- [x] Network / upload behavior scan found no new real network, upload, Firebase, Cloud Functions, Gemini/OpenAI, or StoreKit behavior; only existing future-only TypeScript analyzer placeholders remain.
+- [x] Secrets / config scan found no `GoogleService-Info.plist`, `.env`, `.firebaserc`, private keys, provisioning profiles, or production config; broader text scan only found existing `.env.example` placeholders and docs/test safety text.
+- [x] Persistence / export scan found no new UserDefaults, Core Data, SwiftData, disk persistence, save-to-Photos, or export behavior; existing PhotosPicker `loadTransferable` paths remain expected.
+- [x] Frame / photo payload persistence scan found only existing Phase 15B / 15C in-memory frame analyzer references, not new raw frame/photo/cloud payload persistence or logging.
+- [x] User Xcode / Simulator review accepted on 2026-06-11 after R1.
+
+### Known TODOs
+
+- Current Canvas placeholder outlines are visually rough and accepted only for the Phase 16E MVP.
+- Replace placeholder outlines with original or commercially licensed PDF/vector pose assets in a later dedicated pose artwork phase.
+- Add a better pose gallery and broader pose categories in a later phase.
+- Tune overlay scale / offset per real device after iPhone Simulator and physical-device review.
+- Keep categories inclusive: `男生` / `女生` / `情侶` are browsing labels only, not user classification.
+- AI pose suggestion and Vision body matching remain future work and are not part of P1.
+
+### Ready to Commit Phase 16E
+
+Yes. User Xcode / Simulator verification has accepted the MVP state after R1; do not commit / push automatically.
+
+### Ready for Phase 17 / Real AI
+
+No. Phase 16E is a non-AI static overlay MVP and does not authorize real AI integration.
 
 ---
 

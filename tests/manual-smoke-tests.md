@@ -943,6 +943,54 @@ Known TODOs:
 - [ ] Real cloud AI remains deferred to a later explicit Phase 16B / 17 request after commit, push, and read-only confirmation.
 - [ ] Ordinary tab bar and Camera spacing can receive small visual tuning later if new screenshots reveal device-specific spacing issues.
 
+## Phase 16E Static Pose Overlay MVP
+
+Check:
+
+- [x] Added 8 static pose guide definitions.
+- [x] Added Pose button to the Camera capture surface.
+- [x] R1 moved Pose button out of the top bar so it does not collide with Dynamic Island / status area.
+- [x] Added Pose quick picker with title, category, hint, and selected state.
+- [x] Added a passive SwiftUI pose overlay layer above the camera preview.
+- [x] R1 makes the pose overlay render over camera unavailable / Simulator fallback, not only authorized camera preview.
+- [x] R1 increases placeholder outline visibility with warm-white line art and higher opacity.
+- [x] Added close pose control.
+- [x] Added mirror pose control.
+- [x] Confirmed source uses `.allowsHitTesting(false)` on the pose overlay.
+- [x] Confirmed source uses `.accessibilityHidden(true)` on the decorative pose overlay.
+- [x] Confirmed source does not add Vision body pose detection.
+- [x] Confirmed source does not add AI pose suggestion.
+- [x] Confirmed source does not add persistence, upload, export, Firebase, Gemini, OpenAI, StoreKit, or backend changes.
+- [x] Updated English and Traditional Chinese localization strings.
+
+Manual Xcode / Simulator acceptance on 2026-06-11:
+
+- [x] Launch the app and confirm Camera opens normally.
+- [x] Confirm the compact Pose button is visible in the lower-left viewfinder tool area and is not blocked by Dynamic Island / status area.
+- [x] Tap Pose and confirm the pose picker opens.
+- [x] Confirm only one camera callout / picker is open at a time.
+- [x] Select a pose and confirm a semi-transparent pose outline appears on the viewfinder.
+- [x] On Simulator / camera unavailable fallback, confirm the selected pose outline is visible over the fallback canvas.
+- [x] Confirm the overlay does not block shutter tapping.
+- [x] Confirm shutter remains visible and tappable.
+- [x] Confirm AI Snapshot, filter, guidance, lens, timer, flash, and flip controls are not blocked by the overlay.
+- [x] Confirm existing AI Snapshot, guidance, filter, and lens callouts still work.
+- [x] Tap mirror / 左右反轉 and confirm the overlay flips horizontally.
+- [x] Tap close and confirm the overlay hides.
+- [x] Confirm Camera does not require scrolling in capture mode.
+- [x] Confirm source still keeps the overlay as a SwiftUI UI layer, separate from the existing capture output path.
+- [x] Confirm no Vision body pose, real AI, network, upload, persistence, or export behavior is present.
+- [x] Confirm English and Traditional Chinese UI show no obvious raw localization keys.
+
+Known TODOs:
+
+- [ ] Current in-code placeholder pose line art is visually rough and accepted only for the Phase 16E MVP.
+- [ ] Replace placeholder pose outlines with original or commercially licensed PDF/vector pose assets in a later dedicated artwork phase.
+- [ ] Add a better pose gallery and broader categories in a later phase.
+- [ ] Tune default scale / offset / opacity on real iPhone sizes after visual review.
+- [ ] Keep Pose categories inclusive and unrestricted; do not add user gender/body classification.
+- [ ] AI pose suggestion and Vision body pose matching remain future phases.
+
 ## Phase 16A-R10
 
 Check:

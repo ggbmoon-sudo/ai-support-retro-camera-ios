@@ -290,6 +290,27 @@ Implementation notes:
 
 Phase 16 does not add real network calls, URLSession/URLRequest usage, real upload, Firebase Storage, Firestore writes, Cloud Functions calls, Gemini/OpenAI calls, Gemini Live, WebSocket/live video streaming, background frame upload, API keys, Firebase config, StoreKit, persistence, export, save-to-Photos, backend code, third-party SDKs, raw frame/photo/request payload persistence, face recognition, identity inference, or sensitive attribute inference.
 
+## Phase 16E Static Pose Overlay MVP
+
+Phase 16E adds a non-AI static Pose Overlay MVP to the fullscreen Camera capture surface.
+
+Implementation notes:
+
+- `Features/Camera/PoseGuides/` contains the pose guide model, catalog, session-only overlay state, Pose button, quick picker, and SwiftUI overlay renderer.
+- `PoseGuideCatalog` defines 8 static built-in pose guides.
+- The MVP uses original SwiftUI `Canvas` placeholder line art instead of downloaded or copied assets.
+- `assetName` remains on `PoseGuide` so future original PDF vector assets can replace placeholder line art.
+- `CameraView` adds a compact Pose button to the lower-left viewfinder tool area so it avoids the Dynamic Island / status area.
+- Pose picker joins the existing single active Camera callout path with guidance, AI Snapshot, filter, and lens controls.
+- `PoseOverlayView` is placed above the camera preview and below interactive camera controls.
+- The overlay is decorative and passive with `.allowsHitTesting(false)` and `.accessibilityHidden(true)`.
+- The overlay also renders over the Simulator / camera-unavailable fallback canvas for demo and test visibility.
+- Overlay state is memory-only and resets with the current app/session state.
+
+Phase 16E does not add AI pose suggestion, Apple Vision body pose detection, pose matching, pose score, face recognition, identity / gender / age / emotion inference, body / appearance scoring, camera frame upload, URLSession/URLRequest, WebSocket, Firebase/Gemini/OpenAI/StoreKit imports, backend changes, persistence, export/save-to-Photos, secrets, production config, or third-party assets.
+
+Phase 16E was manually accepted in Xcode / Simulator on 2026-06-11. Current in-code pose outlines are placeholder artwork and should be replaced by proper original PDF/vector pose assets in a later dedicated polish phase.
+
 ## Phase 16A Camera One-Screen UX Consolidation
 
 Phase 16A keeps the app local/mock-only and consolidates the Camera capture surface.

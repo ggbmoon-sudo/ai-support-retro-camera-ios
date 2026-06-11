@@ -13,6 +13,7 @@ private enum CameraCallout {
     case aiSnapshot
     case filter
     case lens
+    case pose
 }
 
 struct CameraView: View {
@@ -21,6 +22,7 @@ struct CameraView: View {
     let showsCloseButton: Bool
     let navigateToAppDestination: ((CameraAppDestination) -> Void)?
     @StateObject private var viewModel: CameraViewModel
+    @StateObject private var poseOverlayState = CameraPoseOverlayState()
     @State private var isCaptureFilterPickerVisible = false
     @State private var isFlashEnabled = false
     @State private var selectedTimerOption: CameraTimerOption = .off
@@ -185,6 +187,13 @@ struct CameraView: View {
                 cameraChromeGradient
                     .allowsHitTesting(false)
 
+                poseOverlayLayer(
+                    viewSize: proxy.size,
+                    topInset: topControlInset,
+                    bottomInset: controlBottomInset
+                )
+                .zIndex(1)
+
                 VStack(spacing: 0) {
                     nativeCameraTopBar
                         .padding(.horizontal, AppSpacing.md)
@@ -197,6 +206,22 @@ struct CameraView: View {
                     Spacer()
                 }
                 .zIndex(2)
+
+                VStack(spacing: 0) {
+                    if let activePose = poseOverlayState.activePoseGuide,
+                       activeCameraCallout != .pose {
+                        HStack {
+                            Spacer()
+
+                            poseOverlayBadge(for: activePose)
+                        }
+                        .padding(.horizontal, AppSpacing.md)
+                        .padding(.top, topControlInset + 48)
+                    }
+
+                    Spacer()
+                }
+                .zIndex(4)
 
                 VStack(spacing: 0) {
                     Spacer()
@@ -215,7 +240,10 @@ struct CameraView: View {
                     Spacer()
 
                     HStack {
-                        filterViewportButton
+                        VStack(alignment: .leading, spacing: AppSpacing.xs) {
+                            poseViewportButton
+                            filterViewportButton
+                        }
 
                         Spacer()
                     }
@@ -223,6 +251,19 @@ struct CameraView: View {
                     .padding(.bottom, filterBottomInset)
                 }
                 .zIndex(4)
+
+                VStack(spacing: 0) {
+                    if activeCameraCallout == .pose {
+                        posePickerCallout
+                            .padding(.horizontal, AppSpacing.md)
+                            .padding(.top, topControlInset + 48)
+                            .transition(.opacity.combined(with: .move(edge: .top)))
+                    }
+
+                    Spacer()
+                }
+                .padding(.bottom, controlBottomInset + 104)
+                .zIndex(7)
 
                 VStack(spacing: 0) {
                     Spacer()
@@ -453,6 +494,108 @@ struct CameraView: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel("camera.guidance.compact.accessibility")
+    }
+
+    @ViewBuilder
+    private func poseOverlayLayer(viewSize: CGSize, topInset: CGFloat, bottomInset: CGFloat) -> some View {
+        if let activePose = poseOverlayState.activePoseGuide {
+            let viewfinderTop = max(topInset + 58, 96)
+            let viewfinderBottom = max(bottomInset + 132, 168)
+            let viewfinderHeight = max(260, viewSize.height - viewfinderTop - viewfinderBottom)
+
+            PoseOverlayView(
+                guide: activePose,
+                isMirrored: poseOverlayState.isPoseMirrored,
+                opacity: poseOverlayState.poseOverlayOpacity
+            )
+            .frame(width: viewSize.width, height: viewfinderHeight)
+            .position(x: viewSize.width / 2, y: viewfinderTop + viewfinderHeight / 2)
+            .allowsHitTesting(false)
+            .accessibilityHidden(true)
+        }
+    }
+
+    private var posePickerCallout: some View {
+        PoseSelectorView(
+            guides: PoseGuideCatalog.all,
+            selectedGuide: poseOverlayState.selectedPoseGuide,
+            onSelect: { guide in
+                withAnimation(.snappy(duration: 0.18)) {
+                    poseOverlayState.selectPoseGuide(guide)
+                    activeCameraCallout = .none
+                    isLiveGuidanceExpanded = false
+                }
+            },
+            onClose: {
+                withAnimation(.snappy(duration: 0.18)) {
+                    activeCameraCallout = .none
+                }
+            }
+        )
+        .frame(maxWidth: 356)
+    }
+
+    private var poseViewportButton: some View {
+        PoseGuideButton(isActive: poseOverlayState.activePoseGuide != nil || activeCameraCallout == .pose) {
+            withAnimation(.snappy(duration: 0.18)) {
+                activeCameraCallout = activeCameraCallout == .pose ? .none : .pose
+                isLiveGuidanceExpanded = false
+            }
+        }
+    }
+
+    private func poseOverlayBadge(for guide: PoseGuide) -> some View {
+        HStack(spacing: AppSpacing.xs) {
+            Label {
+                Text(LocalizedStringKey(guide.titleKey))
+                    .font(.caption2.weight(.semibold))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.72)
+            } icon: {
+                Image(systemName: "figure.stand")
+                    .font(.system(size: 11, weight: .bold))
+            }
+
+            Button {
+                withAnimation(.snappy(duration: 0.16)) {
+                    poseOverlayState.mirrorPoseOverlay()
+                }
+            } label: {
+                Image(systemName: "arrow.left.and.right")
+                    .font(.system(size: 11, weight: .bold))
+                    .frame(width: 26, height: 24)
+                    .background(Color.white.opacity(0.1))
+                    .clipShape(Capsule())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("camera.pose.action.mirror")
+
+            Button {
+                withAnimation(.snappy(duration: 0.16)) {
+                    poseOverlayState.closePoseOverlay()
+                    if activeCameraCallout == .pose {
+                        activeCameraCallout = .none
+                    }
+                }
+            } label: {
+                Image(systemName: "xmark")
+                    .font(.system(size: 10, weight: .bold))
+                    .frame(width: 26, height: 24)
+                    .background(Color.white.opacity(0.1))
+                    .clipShape(Capsule())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("camera.pose.action.close")
+        }
+        .padding(.vertical, AppSpacing.xs)
+        .padding(.horizontal, AppSpacing.sm)
+        .background(Color.black.opacity(0.56))
+        .foregroundStyle(.white)
+        .clipShape(Capsule())
+        .overlay {
+            Capsule()
+                .stroke(Color.white.opacity(0.18), lineWidth: 1)
+        }
     }
 
     private var filterViewportButton: some View {
