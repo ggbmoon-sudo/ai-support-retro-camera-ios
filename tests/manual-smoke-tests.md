@@ -943,6 +943,57 @@ Known TODOs:
 - [ ] Real cloud AI remains deferred to a later explicit Phase 16B / 17 request after commit, push, and read-only confirmation.
 - [ ] Ordinary tab bar and Camera spacing can receive small visual tuning later if new screenshots reveal device-specific spacing issues.
 
+## Phase 16G AI Filter Generator Mock in Inspiration
+
+Check:
+
+- [x] Added Filter Lab / Generate My Filter entry to the Inspiration tab.
+- [x] Kept Filter Lab out of the Camera tab.
+- [x] Added structured mock `GeneratedFilterRecipe` and `GeneratedFilterParameterSet`.
+- [x] Added mock `FilterGenerationService`.
+- [x] Added validator / clamp helper for finite values and safe ranges.
+- [x] Added mock analyzing, result, failed, and unavailable states.
+- [x] Added before / after preview using local mock recipe approximation.
+- [x] Added intensity slider for session-only preview.
+- [x] Added session-only apply action.
+- [x] Added sample fallback for picker / simulator testing.
+- [x] Updated English and Traditional Chinese localization strings.
+- [x] Confirmed source does not add real AI, backend, network, upload, persistence, export, LUT, Firebase, Gemini, OpenAI, StoreKit, or provider imports.
+
+Manual Xcode / Simulator check:
+
+- [x] User manually verified Phase 16G in Xcode / Simulator on 2026-06-11 and temporarily accepted the current result.
+- [x] Launch the app.
+- [x] Open Inspiration / 靈感 tab.
+- [x] Confirm Filter Lab / 生成我的濾鏡 entry is visible.
+- [x] Confirm the existing Import Photo / mock AI flow is still visible.
+- [x] Tap Start generating / 開始生成.
+- [x] Choose a reference image with PhotosPicker.
+- [x] If PhotosPicker is inconvenient in Simulator, tap Use sample / 使用範例.
+- [x] Confirm mock analyzing state appears.
+- [x] Confirm generated filter result card appears.
+- [x] Confirm mock/source/session-only/no-upload copy is visible.
+- [x] Confirm before / after preview appears.
+- [x] Move the intensity slider and confirm the preview updates.
+- [x] Tap Apply mock filter / 套用 mock 濾鏡 and confirm it only applies to the current Filter Lab preview session.
+- [x] Tap Try another image / 再試另一張 and confirm the flow resets.
+- [x] Confirm the generated filter is not added to the permanent 20-filter catalog.
+- [x] Confirm existing 20 filters, mock save, mock AI, and local history still work from the existing photo import flow.
+- [x] Confirm Camera / Pose Overlay / AI Snapshot / guidance / filter / lens still work.
+- [x] Open History and Settings.
+- [x] Confirm English and Traditional Chinese UI show no raw localization keys.
+- [x] Confirm no network prompt, upload, Firestore write, Storage write, Cloud Functions call, real AI call, StoreKit, quota, persistence, export, save-to-Photos, LUT generation, or backend behavior occurs.
+
+Known TODOs:
+
+- [ ] Filter Generator currently remains mock-only and does not perform real local heuristic analysis.
+- [ ] Generated filter recipe visual quality and recipe-to-filter mapping may need tuning.
+- [ ] F2 can add local histogram / palette / preset-family extraction later.
+- [ ] F3 / real backend AI remains blocked until Cloud AI boundary work is explicitly implemented.
+- [ ] LUT generation is not implemented.
+- [ ] Generated mock filters are session-only and are not saved, synced, exported, or added to the permanent catalog.
+- [ ] Custom filter persistence is not implemented.
+
 ## Phase 16E Static Pose Overlay MVP
 
 Check:

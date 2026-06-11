@@ -10,6 +10,7 @@ struct HomeView: View {
     @State private var isImportingPhoto = false
     @State private var importErrorMessage: String?
     @State private var isImportedPhotoFlowPresented = false
+    @State private var isFilterLabPresented = false
 
     var body: some View {
         ScrollView {
@@ -35,6 +36,8 @@ struct HomeView: View {
                 }
 
                 photoImportCard
+
+                filterLabCard
 
                 VStack(alignment: .leading, spacing: AppSpacing.md) {
                     Text("home.section.inspiration")
@@ -69,6 +72,9 @@ struct HomeView: View {
             if let importedPhoto {
                 CameraView(showsCloseButton: true, initialPhoto: importedPhoto)
             }
+        }
+        .sheet(isPresented: $isFilterLabPresented) {
+            FilterLabView()
         }
     }
 
@@ -122,6 +128,42 @@ struct HomeView: View {
                     .font(AppTypography.caption)
                     .foregroundStyle(AppColors.error)
                     .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .padding(AppSpacing.md)
+        .background(AppColors.surface)
+        .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.lg))
+    }
+
+    private var filterLabCard: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.md) {
+            HStack(spacing: AppSpacing.md) {
+                Image(systemName: "wand.and.stars")
+                    .font(.system(size: 22, weight: .semibold))
+                    .frame(width: 48, height: 48)
+                    .background(AppColors.elevatedSurface)
+                    .foregroundStyle(AppColors.accent)
+                    .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.md))
+
+                VStack(alignment: .leading, spacing: AppSpacing.xs) {
+                    Text("home.filter_lab.title")
+                        .font(AppTypography.bodyEmphasis)
+                        .foregroundStyle(AppColors.textPrimary)
+
+                    Text("home.filter_lab.description")
+                        .font(AppTypography.caption)
+                        .foregroundStyle(AppColors.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+
+            Text("home.filter_lab.note")
+                .font(AppTypography.caption)
+                .foregroundStyle(AppColors.textSecondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            PrimaryButton("home.filter_lab.action", systemImage: "camera.filters") {
+                isFilterLabPresented = true
             }
         }
         .padding(AppSpacing.md)

@@ -311,6 +311,25 @@ Phase 16E does not add AI pose suggestion, Apple Vision body pose detection, pos
 
 Phase 16E was manually accepted in Xcode / Simulator on 2026-06-11. Current in-code pose outlines are placeholder artwork and should be replaced by proper original PDF/vector pose assets in a later dedicated polish phase.
 
+## Phase 16G AI Filter Generator Mock in Inspiration
+
+Phase 16G adds an F1 mock-only Filter Lab flow to the Inspiration tab.
+
+User Xcode / Simulator verification was temporarily accepted on 2026-06-11.
+
+Implementation notes:
+
+- `Features/Inspiration/FilterLab/` contains the structured mock recipe model, parameter set, mock service, validator / clamp helper, view model, reference picker, generated result card, before / after preview, and local preview renderer.
+- `HomeView` adds a visible Filter Lab / Generate My Filter entry while preserving the existing Inspiration import-photo flow.
+- PhotosPicker selects a single reference image for in-memory mock preview only.
+- A sample fallback keeps the flow testable when Simulator photo picking is inconvenient.
+- Mock generated filters are session-only and are not added to the permanent filter catalog.
+- The intensity slider affects only the current Filter Lab preview.
+
+Phase 16G does not add real AI, backend code, CloudAIService, URLSession/URLRequest, WebSocket, image upload, Firebase/Gemini/OpenAI/StoreKit imports, API keys, Firebase config, persistence, UserDefaults, Core Data, SwiftData, export/save-to-Photos, LUT generation, local heuristic real analysis, public sharing, premium credits, or provider integration.
+
+Known TODOs: Filter Generator remains mock-only, recipe visuals and mapping may need tuning, local heuristic extraction is future work, real backend AI is blocked until Cloud AI boundary work, LUT generation is not implemented, and custom filter persistence is not implemented.
+
 ## Phase 16A Camera One-Screen UX Consolidation
 
 Phase 16A keeps the app local/mock-only and consolidates the Camera capture surface.

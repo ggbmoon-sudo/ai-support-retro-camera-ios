@@ -8,8 +8,8 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 16F - AI Filter Generator + Cloud AI Architecture Research Backfill
-Status: Phase 16F documentation-only research backfill implemented by Codex; awaiting review
+Current phase: Phase 16G - AI Filter Generator Mock in Inspiration
+Status: Phase 16G F1 mock-only Filter Lab implemented by Codex; user Xcode / Simulator verification temporarily accepted; ready to commit
 Latest documentation maintenance: Filter Research Docs Backfill + Alignment Check completed; docs-only; no Swift/backend changes
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -43,7 +43,121 @@ Phase 16A-R9 build verification: targeted Swift parse passed; sandboxed command-
 Phase 16A-R10 build verification: targeted Swift parse passed; sandboxed command-line Xcode build remains blocked by CoreSimulator / sandbox-exec / SwiftUI Preview macro environment restrictions; no real service integration was added
 Phase 16E build verification: targeted Swift parse and safety scans passed during implementation; user Xcode / Simulator build-run and Pose Overlay MVP review accepted on 2026-06-11 after R1; no real AI / Vision / network / upload / persistence / export was added
 Phase 16F verification: documentation-only research backfill; no Swift source, backend source, real AI, network, upload, persistence, export, API keys, or production config added
-Next phase: Do not start Phase 17, real AI, backend implementation, AI Filter Generator implementation, or cloud upload until Phase 16F is reviewed, committed, pushed, read-only confirmed, and explicitly requested
+Phase 16G verification: targeted Swift parse and localization lint passed; user Xcode / Simulator verification temporarily accepted on 2026-06-11; no real AI, backend, network, upload, persistence, export, LUT, provider SDK, StoreKit, or production config added
+Next phase: Do not start Phase 17, real AI, backend implementation, cloud upload, local heuristic extraction, LUT, persistence, or StoreKit until Phase 16G is committed, pushed, read-only confirmed, and explicitly requested
+
+---
+
+## Phase 16G - AI Filter Generator Mock in Inspiration
+
+Status: Implemented as F1 mock-only Filter Lab; user Xcode / Simulator verification temporarily accepted; ready to commit
+Date completed: 2026-06-11
+
+### Goal
+
+Add the first AI Filter Generator mock flow inside the Inspiration tab so users can choose a reference image, see a mock analyzing state, preview a structured mock generated filter recipe, adjust intensity, and apply it as a session-only mock preview without upload, backend, real AI, persistence, LUT, or catalog changes.
+
+### Completed
+
+- Added a visible Filter Lab / Generate My Filter entry card to the Inspiration tab.
+- Added `Features/Inspiration/FilterLab/` with:
+  - `GeneratedFilterRecipe`
+  - `GeneratedFilterParameterSet`
+  - `FilterGenerationService`
+  - `MockFilterGenerationService`
+  - `FilterRecipeValidator`
+  - `FilterLabViewModel`
+  - `FilterLabView`
+  - `ReferenceImagePickerView`
+  - `GeneratedFilterResultView`
+  - `GeneratedFilterPreviewView`
+  - `GeneratedFilterPreviewRenderer`
+- Reused PhotosPicker for one reference image without full-library access.
+- Added a sample-reference fallback so the mock flow can be tested when picker / simulator photo selection is inconvenient.
+- Added a mock unavailable state for failure / unavailable UI coverage.
+- Added short mock analyzing copy:
+  - extracting tone
+  - generating mock recipe
+  - preparing preview
+- Added 6 structured mock recipe options:
+  - Golden Rooftop Dream
+  - Soft Film Memory
+  - Neon Street Fade
+  - CCD Party Warm
+  - Cool Chrome Portrait
+  - Amber Travel Glow
+- Added validator / clamp helper for finite values and safe ranges.
+- Added local before / after preview using a mock Core Image recipe approximation.
+- Added intensity slider for session-only preview tuning.
+- Added session-only apply action that marks the mock filter as applied to the Filter Lab preview only.
+- Fixed Phase 16G Swift concurrency isolation build issues reported by Xcode by moving the default mock service construction into the view model initializer body and moving the fallback recipe to the non-UI recipe model.
+- User manually verified Phase 16G in Xcode / Simulator and temporarily accepted the current mock-only flow.
+- Updated English and Traditional Chinese localization strings.
+- Updated README / iOS README status notes.
+- Updated manual smoke tests.
+
+### Changed Files
+
+- README.md
+- docs/phase-log.md
+- ios-app/README.md
+- ios-app/AIPhotoApp/Features/Home/HomeView.swift
+- ios-app/AIPhotoApp/Features/Inspiration/FilterLab/GeneratedFilterRecipe.swift
+- ios-app/AIPhotoApp/Features/Inspiration/FilterLab/GeneratedFilterParameterSet.swift
+- ios-app/AIPhotoApp/Features/Inspiration/FilterLab/FilterGenerationService.swift
+- ios-app/AIPhotoApp/Features/Inspiration/FilterLab/MockFilterGenerationService.swift
+- ios-app/AIPhotoApp/Features/Inspiration/FilterLab/FilterRecipeValidator.swift
+- ios-app/AIPhotoApp/Features/Inspiration/FilterLab/FilterLabViewModel.swift
+- ios-app/AIPhotoApp/Features/Inspiration/FilterLab/FilterLabView.swift
+- ios-app/AIPhotoApp/Features/Inspiration/FilterLab/ReferenceImagePickerView.swift
+- ios-app/AIPhotoApp/Features/Inspiration/FilterLab/GeneratedFilterResultView.swift
+- ios-app/AIPhotoApp/Features/Inspiration/FilterLab/GeneratedFilterPreviewView.swift
+- ios-app/AIPhotoApp/Features/Inspiration/FilterLab/GeneratedFilterPreviewRenderer.swift
+- ios-app/AIPhotoApp/Resources/Localization/en.lproj/Localizable.strings
+- ios-app/AIPhotoApp/Resources/Localization/zh-Hant.lproj/Localizable.strings
+- tests/manual-smoke-tests.md
+
+### Safety Notes
+
+Phase 16G is F1 mock-only. It does not add real AI, provider calls, backend code, CloudAIService, URLSession, URLRequest, WebSocket, Firebase / Gemini / OpenAI / StoreKit imports, API keys, Firebase config, GoogleService-Info.plist, `.env`, `.firebaserc`, real upload, reference image upload, raw image persistence, UserDefaults, Core Data, SwiftData, save-to-Photos, export, LUT generation, local heuristic real analysis, public sharing, premium credits, exact-copy / brand / film / creator clone claims, or Phase 17 work.
+
+Reference images stay in memory for the current Filter Lab session. Generated filters are mock/session-only and are not added to the permanent 20-filter catalog.
+
+### Verification
+
+- [x] Targeted Swift parse passed for `HomeView.swift` and the Filter Lab files.
+- [x] Targeted Filter Lab typecheck caught and fixed an `EmptyStateView` argument-order issue.
+- [x] Targeted Filter Lab typecheck passed after the Xcode-reported `FilterLabViewModel` / `FilterRecipeValidator` actor-isolation fix.
+- [x] User Xcode / Simulator verification temporarily accepted on 2026-06-11.
+- [x] Localization lint passed for English and Traditional Chinese `Localizable.strings`.
+- [x] Final `git status --short --untracked-files=all` checked before response.
+- [x] `git diff --check` passed.
+- [x] `git diff --stat` reviewed for tracked files; untracked Filter Lab source files are listed in git status.
+- [x] Forbidden imports scan passed.
+- [x] Network / upload behavior scan passed.
+- [x] Secrets / config scan passed.
+- [x] Persistence / export scan passed.
+- [x] Frame / photo payload persistence scan passed; matches are existing camera capture / local guidance analyzer code only.
+- [x] Sandboxed Xcode build was attempted and failed due CoreSimulator / `sandbox-exec` environment restrictions.
+- [x] Follow-up Swift typecheck excluding AppleDouble metadata was attempted and blocked by the existing SwiftUI `#Preview` macro plugin / sandbox environment after the Phase 16G argument-order issue was fixed.
+
+### Known TODOs
+
+- Filter Generator currently remains mock-only.
+- Generated filter recipe visual quality and recipe-to-filter mapping may need tuning.
+- F2 local heuristic extraction is not implemented.
+- F3 / real backend AI remains blocked until Cloud AI boundary work is explicitly implemented.
+- LUT generation is not implemented.
+- Generated filters are not saved, synced, exported, or added to the permanent catalog.
+- Custom filter persistence is not implemented.
+
+### Ready to Commit Phase 16G
+
+Yes. User Xcode / Simulator review has been temporarily accepted; do not commit until explicitly requested.
+
+### Ready for Phase 17 / Real AI
+
+No. Phase 16G is mock-only and does not authorize real AI, backend implementation, upload, or provider integration.
 
 ---
 

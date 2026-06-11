@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 16F AI Filter Generator + Cloud AI Architecture research backfill implemented as documentation-only; awaiting review
+- Phase 16G AI Filter Generator Mock in Inspiration implemented; user Xcode / Simulator verification temporarily accepted; ready to commit
 
 Next phase:
 
-- Phase 17 / real AI remain blocked until Phase 16F is committed, pushed, read-only confirmed, and explicitly requested
+- Phase 17 / real AI remain blocked until Phase 16G is committed, pushed, read-only confirmed, and explicitly requested
 
 Before each task, read `AGENTS.md`, the required docs listed there, and the relevant phase prompt in `docs/prompts/`.
 
@@ -372,6 +372,23 @@ The AI Filter Generator research recommends starting with F1 mock UX and F2 loca
 The Cloud AI Architecture research recommends keeping the iOS app mock/local-only until a real backend boundary is explicitly implemented. Future real cloud AI should start with a consent-based post-capture Photo Advisor backend endpoint, `POST /v1/ai/photo-advisor`, not Gemini Live, streaming, or AI Filter Generator.
 
 Phase 16F does not change Swift app behavior, Camera UI, backend code, real AI integration, networking, upload, persistence, export, Firebase, Gemini/OpenAI, StoreKit, secrets, or production config.
+
+## Phase 16G AI Filter Generator Mock Status
+
+Phase 16G adds the first F1 mock-only Filter Lab flow inside the Inspiration tab.
+
+User Xcode / Simulator verification was temporarily accepted on 2026-06-11.
+
+Current Phase 16G behavior:
+
+- Inspiration shows a Filter Lab / Generate My Filter entry.
+- Users can choose a reference image or use a sample fallback.
+- The flow shows mock analyzing, generated filter result, before / after preview, intensity slider, session-only apply, try-another, failed, and unavailable states.
+- Generated filters use structured mock recipes with validation / clamping.
+
+Phase 16G does not add real AI, backend code, URLSession/URLRequest, WebSocket, upload, Firebase/Gemini/OpenAI/StoreKit imports, API keys, persistence, export, LUT generation, local heuristic real analysis, public sharing, premium credits, or provider integration.
+
+Known TODOs: Filter Generator remains mock-only, recipe visuals and mapping may need tuning, local heuristic extraction is future work, real backend AI is blocked until Cloud AI boundary work, LUT generation is not implemented, and custom filter persistence is not implemented.
 
 ## Phase 16A Camera One-Screen UX Consolidation Status
 
