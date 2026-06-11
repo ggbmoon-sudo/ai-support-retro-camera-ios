@@ -8,24 +8,37 @@ struct GeneratedFilterPreviewView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: AppSpacing.sm) {
-            HStack(spacing: AppSpacing.sm) {
-                previewColumn(titleKey: "filter_lab.preview.before", image: beforeImage)
-                previewColumn(titleKey: "filter_lab.preview.after", image: afterImage ?? beforeImage)
-                    .overlay(alignment: .center) {
-                        if isRendering {
-                            ProgressView()
-                                .padding(AppSpacing.sm)
-                                .background(.ultraThinMaterial)
-                                .clipShape(Capsule())
-                        }
-                    }
+            ViewThatFits(in: .horizontal) {
+                HStack(alignment: .top, spacing: AppSpacing.sm) {
+                    previewColumn(titleKey: "filter_lab.preview.before", image: beforeImage)
+                    afterPreview
+                }
+
+                VStack(alignment: .leading, spacing: AppSpacing.sm) {
+                    previewColumn(titleKey: "filter_lab.preview.before", image: beforeImage)
+                    afterPreview
+                }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
 
             Text("filter_lab.preview.mock_note")
                 .font(AppTypography.caption)
                 .foregroundStyle(AppColors.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var afterPreview: some View {
+        previewColumn(titleKey: "filter_lab.preview.after", image: afterImage ?? beforeImage)
+            .overlay(alignment: .center) {
+                if isRendering {
+                    ProgressView()
+                        .padding(AppSpacing.sm)
+                        .background(.ultraThinMaterial)
+                        .clipShape(Capsule())
+                }
+            }
     }
 
     private func previewColumn(titleKey: LocalizedStringKey, image: UIImage) -> some View {
@@ -36,11 +49,14 @@ struct GeneratedFilterPreviewView: View {
 
             Image(uiImage: image)
                 .resizable()
-                .scaledToFill()
-                .frame(maxWidth: .infinity)
-                .aspectRatio(0.78, contentMode: .fit)
+                .scaledToFit()
+                .frame(maxWidth: .infinity, maxHeight: 260)
                 .clipped()
                 .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.md))
+                .background(Color.black)
+                .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.md))
         }
+        .frame(maxWidth: .infinity, minHeight: 0, alignment: .topLeading)
+        .layoutPriority(1)
     }
 }

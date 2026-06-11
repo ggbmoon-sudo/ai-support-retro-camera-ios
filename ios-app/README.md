@@ -330,6 +330,14 @@ Phase 16G does not add real AI, backend code, CloudAIService, URLSession/URLRequ
 
 Known TODOs: Filter Generator remains mock-only, recipe visuals and mapping may need tuning, local heuristic extraction is future work, real backend AI is blocked until Cloud AI boundary work, LUT generation is not implemented, and custom filter persistence is not implemented.
 
+## Phase 16I Mock Post-capture AI Advisor
+
+Phase 16I, Phase 16I-R1, and Phase 16I-R2 were manually accepted by the user in Xcode / Simulator on 2026-06-11.
+
+The accepted iOS scope is mock-only: selected / imported photo result screens use a floating AI advice / filter tray, filter selection applies existing local filters and auto-dismisses the grid, duplicate inline AI / filter / mock save sections are reduced, Inspiration Back to Camera switches to the outer Camera tab, Clear returns to Inspiration, and Filter Lab previews are hardened for varied reference image ratios.
+
+This phase does not add real AI, backend calls, URLSession/URLRequest, upload, persistence, StoreKit, cloud save, real local download, export, save-to-Photos, photo scoring, beauty / attractiveness scoring, or provider SDKs. Future real cloud advisor work requires a backend boundary; cloud save / paid-user cloud save / free local lossless download require a dedicated future entitlement / export phase.
+
 ## Phase 16A Camera One-Screen UX Consolidation
 
 Phase 16A keeps the app local/mock-only and consolidates the Camera capture surface.
@@ -337,11 +345,11 @@ Phase 16A keeps the app local/mock-only and consolidates the Camera capture surf
 Implementation notes:
 
 - `CameraView` now treats capture mode as one-screen-first instead of always wrapping the capture surface in a vertical scroll view.
-- Selected-photo / imported-photo mode remains scrollable because it still hosts filter preview, mock save, mock AI, and local-only status content.
+- Selected-photo / imported-photo mode now uses Phase 16I floating AI advice / filter access and no longer depends on large inline filter / AI / mock save sections as the primary controls.
 - Live Guidance renders as a compact expandable pill by default while preserving Mock / Local mode, toggle, local brightness guidance, face framing guidance, and stability logic.
 - AI Snapshot renders as a compact entry and presents consent / result content in a sheet instead of keeping a long panel on the Camera surface.
 - `CameraView` no longer exposes a PhotosPicker entry in the capture controls.
-- `HomeView` / Inspiration owns photo import and presents `CameraView` with an initial selected photo so the existing filter / mock save / mock AI / local history flow is reused.
+- `HomeView` / Inspiration owns photo import and presents a dedicated selected-photo result flow so Back to Camera switches to the outer Camera tab and Clear returns to Inspiration.
 - Timer selection supports Off, 3s, 5s, and 10s using a confirmation dialog.
 - Front-camera + flash uses a short local white screen-flash overlay before capture.
 - Filter selection opens as a Camera sheet to keep the capture surface compact.

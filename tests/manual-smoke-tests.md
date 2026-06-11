@@ -943,6 +943,145 @@ Known TODOs:
 - [ ] Real cloud AI remains deferred to a later explicit Phase 16B / 17 request after commit, push, and read-only confirmation.
 - [ ] Ordinary tab bar and Camera spacing can receive small visual tuning later if new screenshots reveal device-specific spacing issues.
 
+## Phase 16I Mock Post-capture AI Advisor UX
+
+Check:
+
+- [x] Added typed Post-capture Photo Advisor models.
+- [x] Added `PhotoAdvisorService` protocol.
+- [x] Added `MockPhotoAdvisorService`.
+- [x] Added 8 mock fixtures.
+- [x] Added validator / fallback logic.
+- [x] Added compact advisor result card.
+- [x] Added analyzing, success, failed, and unavailable states.
+- [x] Added existing-filter recommendation cards / chips.
+- [x] Added apply recommended filter CTA using the existing filter selection mechanism.
+- [x] Added retake / crop advice display.
+- [x] Integrated advisor card into selected-photo result flow for captured and imported photos.
+- [x] Kept advisor out of the live Camera preview overlay.
+- [x] Updated English and Traditional Chinese localization strings.
+- [x] Confirmed source does not add real AI, backend, network, upload, persistence, export, Firebase, Gemini, OpenAI, StoreKit, provider imports, API keys, caption UI, photo score, beauty / attractiveness scoring, or sensitive inference.
+
+Manual Xcode / Simulator check:
+
+- [x] User manually accepted Phase 16I Mock Post-capture AI Advisor UX in Xcode / Simulator on 2026-06-11.
+- [x] Launch the app.
+- [x] Import one photo from Inspiration / selected-photo import path and confirm the selected-photo result flow appears.
+- [x] Confirm the selected / imported photo screen shows the floating bar.
+- [x] Confirm AI advice / AI 建議 opens the mock Photo Advisor through floating access.
+- [x] Confirm the advisor shows Mock and local demo labeling.
+- [x] Confirm the analyzing state appears briefly.
+- [x] Confirm a mock result appears with summary, strengths, suggestions, recommended filters, retake advice, and crop advice.
+- [x] Confirm recommended filters show existing filter names and short reasons.
+- [x] Tap a recommended filter and confirm the selected-photo preview applies that existing filter.
+- [x] Confirm filter grid opens from the floating bar.
+- [x] Select a filter from the floating grid and confirm it applies and auto-dismisses the grid.
+- [x] Confirm duplicate inline AI / filter sections are cleaned up in the selected-photo flow.
+- [x] Confirm invalid filter fallback path is covered by code review / validator review.
+- [x] Confirm no 0-100 score, star rating, beauty wording, attractiveness wording, identity, gender, age, emotion, health, race, religion, or sensitive inference copy appears.
+- [x] Confirm `Mock demo, no upload/no save` copy is visible.
+- [x] Confirm no raw localization keys appear in EN or zh-Hant.
+- [x] Capture a photo if camera is available and confirm the selected-photo result flow remains usable.
+- [x] Confirm Camera live preview remains fullscreen/native-camera-like and does not become a scroll page.
+- [x] Confirm shutter remains visible and tappable in capture mode.
+- [x] Confirm Pose Overlay still opens, mirrors, closes, and does not block controls.
+- [x] Confirm AI Snapshot compact control still opens and returns mock result.
+- [x] Confirm live guidance, filter pill, lens dropdown, timer, flash, flip, and capture still work.
+- [x] Confirm Filter Lab in Inspiration still opens and mock generated filter flow still works.
+- [x] Confirm History and Settings still render.
+- [x] Confirm no cloud save CTA for free / unknown user.
+- [x] Confirm no upload, Firestore write, Storage write, Cloud Functions call, real AI call, network prompt, StoreKit, quota, persistence, export, save-to-Photos, or backend behavior occurs.
+
+Known TODOs:
+
+- [ ] Mock Photo Advisor remains mock-only.
+- [ ] Future real cloud advisor requires backend boundary work.
+- [ ] Future local heuristic advisor may be added before real cloud if explicitly requested.
+- [ ] Cloud save / paid-user cloud save / free local lossless download require a dedicated future phase.
+- [ ] No StoreKit / export / save-to-Photos yet.
+
+## Phase 16I-R1 Floating Advisor / Filter Grid for Selected Photo UX
+
+Check:
+
+- [x] User manually accepted Phase 16I-R1 floating advisor / filter grid UX in Xcode / Simulator on 2026-06-11.
+- [x] Import a 4:6 portrait photo.
+- [x] Import a 1:1 square photo.
+- [x] Import a 4:5 or 3:4 portrait photo if available.
+- [x] Import a landscape photo if available.
+- [x] Confirm the floating selected-photo tray is visible without scrolling to the page bottom.
+- [x] Confirm the tray respects the bottom safe area / home indicator.
+- [x] Confirm the tray does not cover Back to Camera / Clear controls.
+- [x] Tap Filter / current filter in the tray.
+- [x] Confirm the floating filter grid opens without scrolling to the inline filter section.
+- [x] Confirm AI recommended filters appear first when available.
+- [x] Confirm all existing local filter presets remain available in the grid.
+- [x] Select a filter from the floating grid.
+- [x] Confirm the selected filter applies immediately.
+- [x] Confirm the grid auto-dismisses after filter selection.
+- [x] Confirm the current filter label in the tray updates.
+- [x] Reopen the floating filter grid and select a different filter.
+- [x] Tap AI advice in the tray.
+- [x] Confirm the floating AI advisor sheet opens without scrolling to the inline advisor card.
+- [x] Confirm the advisor sheet shows mock / no-upload copy.
+- [x] Confirm opening AI advice closes the filter grid.
+- [x] Confirm opening the filter grid closes the AI panel.
+- [x] Confirm tapping background or close collapses the active floating panel.
+- [x] Confirm the full inline filter selector is no longer duplicated below the photo.
+- [x] Confirm the full inline AI Photo Advisor card is no longer duplicated below the photo.
+- [x] Confirm no 0-100 score, star rating, beauty, attractiveness, gender, age, emotion, identity, or sensitive attribute wording appears.
+- [x] Confirm no raw localization keys appear in the floating tray, filter grid, or advisor sheet.
+- [x] Confirm no upload, network call, real AI call, backend call, persistence, export, save-to-Photos, or generated filter save occurs.
+- [x] Confirm Camera fullscreen capture layout, shutter, Pose Overlay, AI Snapshot, guidance, Filter Lab, History, and Settings still work.
+
+Known TODOs:
+
+- [ ] Verify the floating panel max height on more physical iPhone sizes during later polish.
+- [ ] Phase 16I-R1 remains mock-only and should not start Phase 17 / real AI.
+- [ ] Caption / social copy is intentionally not implemented.
+- [ ] Advisor results are session-only and are not saved to History.
+- [ ] Visual spacing should be reviewed on small iPhone screens after R2 removed duplicate inline selected-photo sections.
+
+## Phase 16I-R2 Selected Photo Cleanup, Navigation Fix, and Filter Lab Layout Hardening
+
+Check:
+
+- [x] User manually accepted Phase 16I-R2 selected-photo cleanup, navigation fixes, and Filter Lab layout hardening in Xcode / Simulator on 2026-06-11.
+- [x] Import a photo from Inspiration / 靈感.
+- [x] Confirm the selected-photo screen shows the floating AI / Filter bar.
+- [x] Confirm no duplicate full inline AI Photo Advisor card appears below the photo.
+- [x] Confirm no duplicate full inline legacy mock AI advice card appears below the photo.
+- [x] Confirm no duplicate full inline filter grid appears below the photo.
+- [x] Confirm no large Mock cloud save / Mock save card appears by default for free / unknown user.
+- [x] Confirm Back to Camera / 返回相機 from Inspiration selected-photo result closes the result flow and switches to the outer Camera tab.
+- [x] Confirm Back to Camera does not push, present, or nest another CameraView inside Inspiration.
+- [x] Return to Inspiration and import another photo.
+- [x] Confirm Clear / 清除 closes the selected-photo result and returns to the Inspiration page.
+- [x] Confirm Clear does not switch to Camera tab.
+- [x] Confirm the floating filter grid still opens from the floating bar.
+- [x] Confirm selecting a filter applies it and auto-dismisses the grid.
+- [x] Confirm the floating AI advisor still opens from the floating bar.
+- [x] Confirm floating AI panel and filter grid still do not overlap.
+- [x] Open Filter Lab / 生成我的濾鏡.
+- [x] Test a 1:1 reference image and confirm preview/result does not overflow horizontally.
+- [x] Test a 4:5 / 3:4 / 4:6 portrait reference image and confirm preview/result does not overflow horizontally.
+- [x] Test a 16:9 or landscape reference image and confirm preview/result does not overflow horizontally.
+- [x] Test a very wide or very tall image if available and confirm preview/result remains clamped.
+- [x] Confirm before / after preview uses safe aspect-fit sizing.
+- [x] Confirm slider stays within screen width.
+- [x] Confirm tags, warnings, and parameter summary wrap / stay within screen width.
+- [x] Confirm Filter Lab header and close button are not displaced by the image.
+- [x] Confirm no cloud save CTA, StoreKit paywall, premium gate, local download, export, or save-to-Photos UI appears.
+- [x] Confirm no upload, network call, real AI call, backend call, persistence, export, save-to-Photos, or generated filter save occurs.
+- [x] Confirm Camera fullscreen capture layout, shutter, Pose Overlay, AI Snapshot, guidance, Filter Lab, History, and Settings still work.
+- [x] Confirm no raw localization keys appear.
+
+Known TODOs:
+
+- [ ] Future paid users may see cloud save only after a dedicated entitlement / cloud save phase.
+- [ ] Future free users may get local lossless download only after a dedicated export phase.
+- [ ] Phase 16I-R2 remains mock-only and should not start Phase 17 / real AI.
+
 ## Phase 16G AI Filter Generator Mock in Inspiration
 
 Check:

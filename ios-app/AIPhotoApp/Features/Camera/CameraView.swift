@@ -18,7 +18,6 @@ private enum CameraCallout {
 
 struct CameraView: View {
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject private var sessionHistoryStore: SessionHistoryStore
     let showsCloseButton: Bool
     let navigateToAppDestination: ((CameraAppDestination) -> Void)?
     @StateObject private var viewModel: CameraViewModel
@@ -34,6 +33,7 @@ struct CameraView: View {
     @State private var isLiveGuidanceExpanded = false
     @State private var isCloudSnapshotSheetPresented = false
     @State private var activeCameraCallout: CameraCallout = .none
+    @State private var activeSelectedPhotoPanel: FloatingPhotoActionPanel?
 
     init(
         showsCloseButton: Bool = true,
@@ -130,6 +130,11 @@ struct CameraView: View {
                 await viewModel.importSelectedPhoto()
             }
         }
+        .onChange(of: viewModel.selectedPhoto?.id) { _, newValue in
+            if newValue == nil {
+                activeSelectedPhotoPanel = nil
+            }
+        }
     }
 
     private var cameraRootContent: some View {
@@ -145,11 +150,16 @@ struct CameraView: View {
                     }
                     .padding(.horizontal, AppSpacing.md)
                     .padding(.top, AppSpacing.sm)
-                    .padding(.bottom, AppSpacing.xl)
+                    .padding(.bottom, selectedPhotoScrollBottomPadding)
                 }
                 .scrollIndicators(.visible)
             } else {
                 content
+            }
+
+            if let selectedPhoto = viewModel.selectedPhoto {
+                selectedPhotoFloatingLayer(selectedPhoto)
+                    .zIndex(6)
             }
 
             if isScreenFlashVisible {
@@ -1303,50 +1313,107 @@ struct CameraView: View {
                 photo: photo,
                 previewImage: viewModel.filteredPreviewImage ?? photo.image,
                 selectedPreset: viewModel.selectedFilterPreset,
-                presets: viewModel.filterPresets,
-                isRendering: viewModel.isFiltering,
-                saveState: viewModel.photoSaveState,
-                onSelectPreset: viewModel.selectFilterPreset,
-                onSavePhoto: { shouldFail in
-                    Task {
-                        await viewModel.saveSelectedPhoto(shouldFail: shouldFail)
-                        guard viewModel.selectedPhoto?.id == photo.id else { return }
-                        sessionHistoryStore.recordMockSave(
-                            photo: photo,
-                            previewImage: viewModel.filteredPreviewImage ?? photo.image,
-                            filterPreset: viewModel.selectedFilterPreset,
-                            saveState: viewModel.photoSaveState
-                        )
-                    }
-                },
-                onAnalysisCompleted: { result in
-                    guard viewModel.selectedPhoto?.id == photo.id else { return }
-                    sessionHistoryStore.recordMockAnalysis(
-                        photo: photo,
-                        previewImage: viewModel.filteredPreviewImage ?? photo.image,
-                        filterPreset: viewModel.selectedFilterPreset,
-                        result: result
-                    )
-                }
+                isRendering: viewModel.isFiltering
             )
+        }
+    }
 
-            VStack(spacing: AppSpacing.md) {
-                PrimaryButton("camera.action.back_to_camera", systemImage: "camera.viewfinder") {
-                    viewModel.clearSelectedPhoto()
+    private var selectedPhotoScrollBottomPadding: CGFloat {
+        activeSelectedPhotoPanel == nil ? 112 : 160
+    }
+
+    private func selectedPhotoFloatingLayer(_ photo: CapturedPhoto) -> some View {
+        ZStack(alignment: .bottom) {
+            if activeSelectedPhotoPanel != nil {
+                Color.black.opacity(0.001)
+                    .ignoresSafeArea()
+                    .onTapGesture {
+                        activeSelectedPhotoPanel = nil
+                    }
+            }
+
+            VStack(spacing: AppSpacing.sm) {
+                if activeSelectedPhotoPanel == .advisor {
+                    FloatingPhotoAdvisorSheet(
+                        photoId: advisorPhotoId(for: photo),
+                        source: advisorPhotoSource(for: photo),
+                        selectedPreset: viewModel.selectedFilterPreset,
+                        presets: viewModel.filterPresets,
+                        isRendering: viewModel.isFiltering,
+                        onApplyFilter: { preset in
+                            viewModel.selectFilterPreset(preset)
+                        },
+                        onClose: {
+                            activeSelectedPhotoPanel = nil
+                        }
+                    )
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
                 }
 
-                PrimaryButton(
-                    "camera.action.continue_placeholder",
-                    systemImage: "sparkles",
-                    isEnabled: false
-                ) {}
+                if activeSelectedPhotoPanel == .filters {
+                    FloatingFilterGridView(
+                        presets: viewModel.filterPresets,
+                        selectedPreset: viewModel.selectedFilterPreset,
+                        recommendedFilters: floatingRecommendedFilters(for: photo),
+                        isRendering: viewModel.isFiltering,
+                        onSelectPreset: { preset in
+                            viewModel.selectFilterPreset(preset)
+                            activeSelectedPhotoPanel = nil
+                        },
+                        onClose: {
+                            activeSelectedPhotoPanel = nil
+                        }
+                    )
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                }
 
-                Text("camera.continue.disabled_note")
-                    .font(AppTypography.caption)
-                    .foregroundStyle(AppColors.textSecondary)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
+                FloatingPhotoActionTrayView(
+                    selectedPreset: viewModel.selectedFilterPreset,
+                    activePanel: activeSelectedPhotoPanel,
+                    isRendering: viewModel.isFiltering,
+                    onToggleAdvisor: {
+                        toggleSelectedPhotoPanel(.advisor)
+                    },
+                    onToggleFilters: {
+                        toggleSelectedPhotoPanel(.filters)
+                    }
+                )
             }
+            .padding(.horizontal, AppSpacing.md)
+            .padding(.bottom, AppSpacing.md)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+        .animation(.snappy(duration: 0.2), value: activeSelectedPhotoPanel)
+    }
+
+    private func toggleSelectedPhotoPanel(_ panel: FloatingPhotoActionPanel) {
+        activeSelectedPhotoPanel = activeSelectedPhotoPanel == panel ? nil : panel
+    }
+
+    private func floatingRecommendedFilters(for photo: CapturedPhoto) -> [PhotoAdvisorFilterRecommendation] {
+        let input = PhotoAdvisorInput(
+            photoId: advisorPhotoId(for: photo),
+            source: advisorPhotoSource(for: photo),
+            selectedFilterId: viewModel.selectedFilterPreset.id
+        )
+        let result = PhotoAdvisorResultValidator.validated(
+            PhotoAdvisorFixtures.result(for: PhotoAdvisorFixtures.scene(for: input)),
+            allowedFilterIds: Set(viewModel.filterPresets.map(\.id))
+        )
+
+        return result.recommendedFilters
+    }
+
+    private func advisorPhotoId(for photo: CapturedPhoto) -> String {
+        "advisor-\(photo.id.uuidString.lowercased())"
+    }
+
+    private func advisorPhotoSource(for photo: CapturedPhoto) -> PhotoAdvisorPhotoSource {
+        switch photo.source {
+        case .camera:
+            return .captured
+        case .photoLibrary:
+            return .imported
         }
     }
 

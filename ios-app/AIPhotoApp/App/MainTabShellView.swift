@@ -78,7 +78,11 @@ struct MainTabShellView: View {
             }
         case .home:
             NavigationStack {
-                HomeView()
+                HomeView(
+                    onSelectCameraTab: {
+                        selectedTab = .camera
+                    }
+                )
             }
         case .history:
             NavigationStack {

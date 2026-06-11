@@ -1,0 +1,37 @@
+import Foundation
+
+final class MockPhotoAdvisorService: PhotoAdvisorService {
+    enum Mode {
+        case success
+        case unavailable
+        case invalidThenFallback
+    }
+
+    private let mode: Mode
+    private let allowedFilterIds: Set<String>
+
+    init(
+        mode: Mode = .success,
+        allowedFilterIds: Set<String> = Set(FilterPresetCatalog.all.map(\.id))
+    ) {
+        self.mode = mode
+        self.allowedFilterIds = allowedFilterIds
+    }
+
+    func analyzePhoto(_ input: PhotoAdvisorInput) async throws -> PhotoAdvisorResult {
+        try await Task.sleep(nanoseconds: 450_000_000)
+
+        switch mode {
+        case .success:
+            let scene = PhotoAdvisorFixtures.scene(for: input)
+            return PhotoAdvisorResultValidator.validated(
+                PhotoAdvisorFixtures.result(for: scene),
+                allowedFilterIds: allowedFilterIds
+            )
+        case .unavailable:
+            throw PhotoAdvisorError.mockUnavailable
+        case .invalidThenFallback:
+            return PhotoAdvisorResultValidator.fallback(allowedFilterIds: allowedFilterIds)
+        }
+    }
+}

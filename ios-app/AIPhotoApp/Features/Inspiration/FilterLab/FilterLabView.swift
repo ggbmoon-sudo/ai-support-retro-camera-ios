@@ -27,6 +27,7 @@ struct FilterLabView: View {
 
                     stateContent
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(AppSpacing.lg)
                 .padding(.bottom, AppSpacing.xl)
             }

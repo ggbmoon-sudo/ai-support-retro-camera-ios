@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 16H-Recovery - Post-capture AI Advisor UX Research Backfill + Handoff Status Fix
-Status: Missing Phase 16H research backfill recovered; handoff mismatch corrected; documentation-only; no app behavior changes
-Latest documentation maintenance: Post-capture AI Advisor UX research added and handoff status corrected; docs-only; no Swift/backend changes
+Current phase: Phase 16I - Mock Post-capture AI Advisor UX + R1/R2 Refinements
+Status: User manually accepted Phase 16I, Phase 16I-R1, and Phase 16I-R2 in Xcode / Simulator; ready to commit after final review
+Latest implementation: Mock Photo Advisor UX, floating advisor / filter grid access, selected-photo cleanup, Inspiration Back to Camera / Clear navigation fixes, Filter Lab layout hardening, and closeout docs / manual smoke tests are complete and accepted
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -45,7 +45,234 @@ Phase 16E build verification: targeted Swift parse and safety scans passed durin
 Phase 16F verification: documentation-only research backfill; no Swift source, backend source, real AI, network, upload, persistence, export, API keys, or production config added
 Phase 16G verification: targeted Swift parse and localization lint passed; user Xcode / Simulator verification temporarily accepted on 2026-06-11; no real AI, backend, network, upload, persistence, export, LUT, provider SDK, StoreKit, or production config added
 Phase 16H-Recovery verification: documentation-only research backfill and handoff status fix; no Swift source, backend source, real AI, network, upload, persistence, export, API keys, provider SDK, StoreKit, or production config added
-Next phase: Do not start Phase 16I, Phase 17, real AI, backend implementation, cloud upload, local heuristic extraction, LUT, persistence, or StoreKit until Phase 16H-Recovery is committed/pushed/read-only confirmed and the user explicitly requests the next phase
+Phase 16I verification: targeted Swift parse, localization lint, and command-line Xcode generic iOS Simulator build passed on 2026-06-11; no real AI, backend, network, upload, persistence, export, API keys, provider SDK, StoreKit, or production config added
+Phase 16I-R1 verification: targeted Swift parse, localization lint, and command-line Xcode generic iOS Simulator build passed on 2026-06-11; no real AI, backend, network, upload, persistence, export, API keys, provider SDK, StoreKit, or production config added
+Phase 16I-R2 verification: targeted Swift parse, localization lint, and command-line Xcode generic iOS Simulator build passed on 2026-06-11; no real AI, backend, network, upload, persistence, export, API keys, provider SDK, StoreKit, or production config added
+Next phase: Commit Phase 16I only if explicitly requested by the user. Do not start Phase 17, real AI, backend implementation, cloud upload, local heuristic extraction, LUT, persistence, StoreKit, payment, export, local download, or caption/social copy until explicitly requested.
+
+---
+
+## Phase 16I Closeout Acceptance
+
+Status: User manually verified and accepted Phase 16I, Phase 16I-R1, and Phase 16I-R2 in Xcode / Simulator on 2026-06-11.
+
+Accepted scope:
+
+- Phase 16I Mock Post-capture AI Advisor UX is accepted.
+- Phase 16I-R1 floating advisor / filter grid UX is accepted.
+- Phase 16I-R2 selected-photo cleanup, Inspiration navigation fixes, and Filter Lab layout hardening are accepted.
+- Floating bar is preserved as the primary selected-photo AI advice / filter entry.
+- AI advisor and filter grid operate through the floating bar.
+- Duplicate selected-photo inline AI / filter / mock save sections are reduced or removed.
+- Back to Camera from Inspiration selected-photo flow switches to the outer Camera tab instead of nesting `CameraView`.
+- Clear from Inspiration selected-photo flow clears the selected photo and returns to Inspiration.
+- Filter Lab layout is hardened for square, portrait, landscape, wide, tall, and placeholder reference images.
+
+Known TODOs:
+
+- Mock Photo Advisor remains mock-only.
+- Future real cloud advisor requires a backend boundary before any provider integration.
+- Future local heuristic advisor may be added before real cloud AI if explicitly requested.
+- Cloud save, paid-user cloud save, and free local lossless download require a dedicated future entitlement / export phase.
+- StoreKit, premium gates, export, real local download, save-to-Photos, backend upload, and provider AI remain unimplemented.
+
+Safety confirmation:
+
+- No real AI, backend, `URLSession`, `URLRequest`, WebSocket, upload, cloud save, StoreKit, export, save-to-Photos, raw photo persistence, AI response persistence, `UserDefaults`, Core Data, SwiftData, Firebase / Gemini / OpenAI / StoreKit imports, API keys, provider config, score UI, beauty / attractiveness wording, or sensitive inference was added.
+
+Ready to commit Phase 16I: Yes, when explicitly requested by the user. Do not commit or push automatically.
+
+Ready for Phase 17 / Real AI: No.
+
+---
+
+## Phase 16I-R2 - Selected Photo Cleanup, Navigation Fix, and Filter Lab Layout Hardening
+
+Status: Implemented and manually accepted by the user in Xcode / Simulator; ready to commit after final review
+Date completed: 2026-06-11
+
+### Goal
+
+Keep the Phase 16I-R1 floating bar intact while removing selected-photo duplicate inline sections, fixing Inspiration import navigation, and hardening Filter Lab layout for varied reference image aspect ratios.
+
+### Completed
+
+- Removed large duplicate inline selected-photo filter grid, inline AI Photo Advisor card, legacy mock AI photo advice card, mock save card, and extra bottom Back / Continue section from the default selected-photo result content.
+- Kept primary AI advice and filter operation in the floating bottom tray.
+- Kept floating filter grid auto-dismiss behavior and floating AI advisor access unchanged.
+- Replaced the Inspiration import sheet's nested `CameraView` with a selected-photo result flow.
+- Fixed Back to Camera from Inspiration selected-photo flow to dismiss the result flow and switch to the outer Camera tab.
+- Fixed Clear from Inspiration selected-photo flow to dismiss the result flow and return to Inspiration without switching tabs.
+- Hardened Filter Lab before / after previews with aspect-fit images, max heights, safe clipping, and `ViewThatFits` fallback from horizontal to vertical layout.
+- Hardened Filter Lab result card, slider, tags, warnings, and parameter summary to stay within container width.
+- Documented future paid cloud save and future free local lossless download as a separate export / entitlement phase only.
+- Updated README and manual smoke tests.
+- User manually accepted the selected-photo cleanup, Back to Camera navigation fix, Clear navigation fix, and Filter Lab layout hardening in Xcode / Simulator.
+
+### Safety Notes
+
+Phase 16I-R2 is mock-only UX refinement. It does not add real AI, cloud AI, backend code, `URLSession`, `URLRequest`, WebSocket, Firebase / Gemini / OpenAI / StoreKit imports, provider SDKs, API keys, Firebase config, `GoogleService-Info.plist`, `.env`, `.firebaserc`, upload, cloud save, StoreKit, premium / credits, real local download, save-to-Photos, export, raw image persistence, AI response persistence, `UserDefaults`, Core Data, SwiftData, Gemini Live, streaming, caption / social copy, photo score, beauty / attractiveness score, identity / gender / age / emotion inference, sensitive attribute inference, or backend changes.
+
+Future paid cloud save and future free local lossless download require a dedicated export / entitlement phase.
+
+### Verification
+
+- [x] User Xcode / Simulator verification accepted on 2026-06-11.
+- [x] `git status --short` checked during implementation.
+- [x] `git diff --check` final pass.
+- [x] `git diff --stat` final review.
+- [x] Targeted Swift parse passed.
+- [x] Localization lint.
+- [x] Forbidden imports scan.
+- [x] Network / upload behavior scan.
+- [x] Secrets / config scan.
+- [x] Persistence / export scan.
+- [x] Frame / photo payload persistence scan.
+- [x] Xcode build passed.
+
+### Ready for User Review
+
+Accepted. User visually reviewed and accepted the R2 result in Xcode / Simulator.
+
+### Ready to Commit Phase 16I
+
+Yes. Commit only if explicitly requested by the user; do not commit or push automatically.
+
+### Ready for Phase 17 / Real AI
+
+No.
+
+---
+
+## Phase 16I-R1 - Floating Advisor / Filter Grid for Selected Photo UX
+
+Status: Implemented and manually accepted by the user in Xcode / Simulator; ready to commit after final review
+Date completed: 2026-06-11
+
+### Goal
+
+Reduce selected-photo result screen scroll friction across portrait, square, 4:5, 3:4, landscape, and placeholder images by keeping the main AI advice and filter controls reachable from a compact floating layer.
+
+### Completed
+
+- Added a selected-photo floating bottom action tray with AI advice and current filter access.
+- Added compact floating filter grid access for the existing local filter catalog.
+- Shows AI recommended filters first when available, validated against the existing filter catalog.
+- Filter selection applies through the existing local filter mechanism and auto-dismisses the floating grid.
+- Added floating AI advisor sheet access so users can view mock advisor content without scrolling to the inline card.
+- Enforced one floating panel at a time: opening filters closes advisor, opening advisor closes filters, background / close collapses the active panel.
+- Preserved the existing inline filter selector and inline Photo Advisor card as fallback / detail content.
+- Added EN and zh-Hant localization for the floating tray, filter grid, recommendation, and collapse copy.
+- Updated README and manual smoke tests.
+- User manually accepted the floating advisor / filter grid UX in Xcode / Simulator.
+
+### Safety Notes
+
+Phase 16I-R1 is a UX refinement only. It does not add real AI, cloud AI, backend code, `URLSession`, `URLRequest`, WebSocket, Firebase / Gemini / OpenAI / StoreKit imports, provider SDKs, API keys, Firebase config, `GoogleService-Info.plist`, `.env`, `.firebaserc`, upload, raw image persistence, AI response persistence, `UserDefaults`, Core Data, SwiftData, save-to-Photos, export, Gemini Live, streaming, caption / social copy, photo score, beauty / attractiveness score, identity / gender / age / emotion inference, sensitive attribute inference, or backend changes.
+
+Camera fullscreen capture layout, shutter, Pose Overlay, AI Snapshot, local guidance, filter entry, lens controls, timer, flash, flip, AI Filter Generator Mock, History, and Settings remain preserved by scope.
+
+### Verification
+
+- [x] User Xcode / Simulator verification accepted on 2026-06-11.
+- [x] `git status --short` checked during implementation.
+- [x] `git diff --check` final pass.
+- [x] `git diff --stat` final review.
+- [x] Targeted Swift parse / build check.
+- [x] Localization lint.
+- [x] Forbidden imports scan.
+- [x] Network / upload behavior scan.
+- [x] Secrets / config scan.
+- [x] Persistence / export scan.
+- [x] Frame / photo payload persistence scan.
+- [x] Xcode build passed.
+
+### Ready for User Review
+
+Accepted. User visually reviewed and accepted the R1 floating bar result in Xcode / Simulator.
+
+### Ready to Commit Phase 16I
+
+Yes. Commit only if explicitly requested by the user; do not commit or push automatically.
+
+### Ready for Phase 17 / Real AI
+
+No.
+
+---
+
+## Phase 16I - Mock Post-capture AI Advisor UX
+
+Status: Implemented and manually accepted by the user in Xcode / Simulator; ready to commit after final review
+Date completed: 2026-06-11
+
+### Goal
+
+Add the first mock-only Post-capture AI Photo Advisor UX to the selected-photo result context so captured or imported photos can show a compact advisor card with mock analysis, existing-filter recommendations, retake / crop advice, and clear no-upload / no-persistence copy.
+
+### Completed
+
+- Added typed Post-capture Photo Advisor models:
+  - `PhotoAdvisorInput`
+  - `PhotoAdvisorResult`
+  - `PhotoAdvisorSuggestion`
+  - `PhotoAdvisorFilterRecommendation`
+  - `PhotoAdvisorRetakeAdvice`
+  - `PhotoAdvisorCropAdvice`
+  - mode / source / confidence / priority / scene enums
+- Added mock-only `PhotoAdvisorService` boundary and `MockPhotoAdvisorService`.
+- Added 8 mock fixtures:
+  - warm portrait
+  - night street
+  - dim indoor
+  - CCD party
+  - travel landscape
+  - overexposed highlight
+  - busy background
+  - chrome mood
+- Added `PhotoAdvisorResultValidator` with schema version, mode, source, max-count, filter whitelist, and fallback handling.
+- Added `PhotoAdvisorViewModel` with idle, analyzing, success, failed, and unavailable states.
+- Added compact `PhotoAdvisorResultView` and `PhotoAdvisorFilterRecommendationView`.
+- Integrated the advisor card into `FilteredPhotoPreview`, so both captured and imported selected-photo result flows reuse the same card.
+- Recommended filters apply through the existing filter selection mechanism and never create new filters or mutate the 20-filter catalog.
+- Added English and Traditional Chinese localization for advisor labels, states, actions, fixtures, retake / crop advice, no-upload copy, and fallback copy.
+- Updated README and manual smoke tests.
+- User manually accepted the Mock Post-capture AI Advisor UX in Xcode / Simulator.
+
+### Safety Notes
+
+Phase 16I is mock-only. It does not add real AI, cloud AI, backend code, `CloudAIService`, `URLSession`, `URLRequest`, WebSocket, Firebase / Gemini / OpenAI / StoreKit imports, provider SDKs, API keys, Firebase config, `GoogleService-Info.plist`, `.env`, `.firebaserc`, real upload, photo upload, raw image persistence, AI response persistence, `UserDefaults`, Core Data, SwiftData, save-to-Photos, export, Gemini Live, streaming, caption / social copy, photo score, beauty / attractiveness score, identity / gender / age / emotion inference, sensitive attribute inference, or backend changes.
+
+The advisor card is shown only in selected-photo result context, not as a live Camera preview overlay. Camera fullscreen capture layout, shutter, Pose Overlay, AI Snapshot, guidance, filter, lens, timer, flash, flip, Filter Lab, History, and Settings are preserved by scope.
+
+### Verification
+
+- [x] User Xcode / Simulator verification accepted on 2026-06-11.
+- [x] `git status --short` checked during implementation.
+- [x] Targeted Swift parse passed for new PostCapture advisor files plus filter/design dependencies.
+- [x] Localization plist lint passed for EN and zh-Hant.
+- [x] Command-line Xcode generic iOS Simulator build succeeded on 2026-06-11.
+- [x] Docs and manual smoke tests updated.
+- [x] `git diff --check` final pass.
+- [x] `git diff --stat` final review.
+- [x] Forbidden imports scan final pass.
+- [x] Network / upload behavior scan final pass.
+- [x] Secrets / config scan final pass.
+- [x] Persistence / export scan final pass.
+- [x] Frame / photo payload persistence scan final pass.
+- [x] Xcode build passed.
+
+### Ready for User Review
+
+Accepted. User visually reviewed and accepted the mock advisor result in Xcode / Simulator.
+
+### Ready to Commit Phase 16I
+
+Yes. Commit only if explicitly requested by the user; do not commit or push automatically.
+
+### Ready for Phase 17 / Real AI
+
+No.
 
 ---
 

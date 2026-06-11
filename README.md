@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 16H-Recovery Post-capture AI Advisor UX research backfill added; handoff mismatch corrected; documentation-only; ready to commit
+- Phase 16I Mock Post-capture AI Advisor UX + R1/R2 refinements manually accepted in Xcode / Simulator; ready to commit when explicitly requested
 
 Next phase:
 
-- Phase 16I Mock Post-capture AI Advisor UX is the next recommended phase, but remains blocked until Phase 16H-Recovery is committed, pushed, read-only confirmed, and explicitly requested
+- Commit Phase 16I only if explicitly requested; do not commit or push automatically
 - Phase 17 / real AI remain blocked until a backend boundary phase is explicitly requested later
 
 Before each task, read `AGENTS.md`, the required docs listed there, and the relevant phase prompt in `docs/prompts/`.
@@ -401,6 +401,24 @@ Phase 16H-Recovery adds the missing Post-capture AI Photo Advisor UX research ba
 The research recommends starting with mock Post-capture Advisor UX before real cloud AI. Future real cloud AI should use `POST /v1/ai/photo-advisor` only after a backend boundary exists, with consent, compressed image upload, structured JSON, validation, no provider key in iOS, no raw photo persistence, and mock fallback.
 
 Phase 16H-Recovery does not change Swift app behavior, Camera UI, backend code, real AI integration, networking, upload, persistence, export, Firebase, Gemini/OpenAI, StoreKit, secrets, or production config.
+
+## Phase 16I Mock Post-capture AI Advisor UX Status
+
+Phase 16I adds a mock-only AI Photo Advisor compact card to the selected-photo result flow for captured and imported photos. It uses typed models, a mock service boundary, 8 fixtures, validator / fallback logic, existing 20-filter recommendations only, and an apply-filter CTA that reuses the existing local filter selection mechanism.
+
+The advisor card is not a chat UI and does not show scores, beauty ratings, attractiveness ratings, caption generation, or sensitive inference. It clearly labels the feature as mock / local demo and states that no photo is uploaded or saved by this advisor flow.
+
+Phase 16I does not add real AI, backend code, URLSession/URLRequest, WebSocket, upload, Firebase/Gemini/OpenAI/StoreKit imports, API keys, persistence, export, save-to-Photos, Gemini Live, caption/social copy, photo scoring, or provider integration.
+
+Phase 16I-R1 refines the selected-photo UX with a floating bottom action tray plus compact floating filter grid / advisor access. Users can open AI advice, view AI-recommended existing filters, open all 20 presets, apply a filter, and have the grid auto-dismiss without scrolling to the bottom of the result page.
+
+Phase 16I-R1 remains mock-only and local. It does not add real AI, backend code, network calls, upload, persistence, export, generated filters, photo scoring, beauty / attractiveness language, provider SDKs, or secrets.
+
+Phase 16I-R2 keeps the floating tray intact while cleaning up selected-photo duplication: the default result screen no longer shows large inline filter, AI advisor, mock save, or legacy mock AI cards under the photo. Inspiration import now uses a selected-photo result flow instead of nesting `CameraView`; Back to Camera switches to the outer Camera tab, while Clear returns to Inspiration. Filter Lab previews are clamped with aspect-fit image layout for square, portrait, landscape, very wide, and very tall references.
+
+Future paid cloud save and future free local lossless download require a dedicated export / entitlement phase. Phase 16I-R2 does not add StoreKit, premium gates, cloud save, local download, save-to-Photos, export, upload, or persistence.
+
+User Xcode / Simulator verification accepted Phase 16I, Phase 16I-R1, and Phase 16I-R2 on 2026-06-11. The accepted scope remains mock-only: the future real cloud advisor requires a backend boundary, a future local heuristic advisor may be added before real cloud if explicitly requested, and cloud save / paid-user cloud save / free local lossless download require a dedicated future entitlement / export phase.
 
 ## Phase 16A Camera One-Screen UX Consolidation Status
 

@@ -37,7 +37,9 @@ struct GeneratedFilterResultView: View {
                         .foregroundStyle(AppColors.textSecondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
 
             Label(LocalizedStringKey(recipe.source.labelKey), systemImage: "testtube.2")
                 .font(AppTypography.micro)
@@ -73,6 +75,7 @@ struct GeneratedFilterResultView: View {
                 )
                 .accessibilityLabel("filter_lab.intensity")
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
 
             recommendedUses
             parameterSummary
@@ -107,6 +110,7 @@ struct GeneratedFilterResultView: View {
                 .fixedSize(horizontal: false, vertical: true)
         }
         .padding(AppSpacing.md)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .background(AppColors.surface)
         .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.lg))
     }
@@ -121,7 +125,9 @@ struct GeneratedFilterResultView: View {
                 ForEach(recipe.recommendedUseKeys, id: \.self) { key in
                     Text(LocalizedStringKey(key))
                         .font(AppTypography.micro)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .lineLimit(2)
+                        .minimumScaleFactor(0.8)
+                        .frame(maxWidth: .infinity, minHeight: 28, alignment: .leading)
                         .padding(.vertical, AppSpacing.xs)
                         .padding(.horizontal, AppSpacing.sm)
                         .background(AppColors.elevatedSurface)
@@ -130,6 +136,7 @@ struct GeneratedFilterResultView: View {
                 }
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private var parameterSummary: some View {
@@ -143,6 +150,7 @@ struct GeneratedFilterResultView: View {
                 .foregroundStyle(AppColors.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private var warnings: some View {
@@ -154,6 +162,7 @@ struct GeneratedFilterResultView: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private var parameterSummaryText: String {

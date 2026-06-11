@@ -4,6 +4,8 @@ import SwiftUI
 import UIKit
 
 struct HomeView: View {
+    let onSelectCameraTab: () -> Void
+
     private let inspirationCards = InspirationCard.samples
     @State private var pickerItem: PhotosPickerItem?
     @State private var importedPhoto: CapturedPhoto?
@@ -70,7 +72,16 @@ struct HomeView: View {
         }
         .sheet(isPresented: $isImportedPhotoFlowPresented) {
             if let importedPhoto {
-                CameraView(showsCloseButton: true, initialPhoto: importedPhoto)
+                ImportedPhotoResultView(
+                    photo: importedPhoto,
+                    onReturnToCamera: {
+                        clearImportedPhotoFlow()
+                        onSelectCameraTab()
+                    },
+                    onClear: {
+                        clearImportedPhotoFlow()
+                    }
+                )
             }
         }
         .sheet(isPresented: $isFilterLabPresented) {
@@ -220,6 +231,12 @@ struct HomeView: View {
             importErrorMessage = error.localizedDescription
         }
     }
+
+    private func clearImportedPhotoFlow() {
+        isImportedPhotoFlowPresented = false
+        importedPhoto = nil
+        pickerItem = nil
+    }
 }
 
 private struct InspirationCard: Identifiable {
@@ -264,6 +281,6 @@ private struct InspirationCard: Identifiable {
 
 #Preview {
     NavigationStack {
-        HomeView()
+        HomeView(onSelectCameraTab: {})
     }
 }
