@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 16E Static Pose Overlay MVP manually accepted in Xcode / Simulator; ready to commit after final review
+- Phase 16F AI Filter Generator + Cloud AI Architecture research backfill implemented as documentation-only; awaiting review
 
 Next phase:
 
-- Phase 16F / Phase 17 / real AI remain blocked until Phase 16E is committed, pushed, read-only confirmed, and explicitly requested
+- Phase 17 / real AI remain blocked until Phase 16F is committed, pushed, read-only confirmed, and explicitly requested
 
 Before each task, read `AGENTS.md`, the required docs listed there, and the relevant phase prompt in `docs/prompts/`.
 
@@ -106,6 +106,8 @@ Current MVP demo / QA readiness docs:
 - `docs/filter-roadmap.md`
 - `docs/ai-feature-definition-and-prompt-contract.md`
 - `docs/research/pose-overlay-camera-guide-research.md`
+- `docs/research/ai-filter-generator-research.md`
+- `docs/research/cloud-ai-architecture-research.md`
 
 Use these docs as the source of truth unless a later decision in `docs/decisions.md` explicitly changes an earlier decision.
 
@@ -357,6 +359,19 @@ Current Phase 16E behavior:
 Phase 16E uses original in-code placeholder line art and keeps `assetName` fields for future original PDF vector assets. It does not add AI pose suggestion, Vision body pose detection, pose score, body / appearance scoring, camera frame upload, real AI, networking, Firebase, Gemini/OpenAI, StoreKit, persistence, export, backend changes, secrets, or production config.
 
 Phase 16E was manually accepted in Xcode / Simulator on 2026-06-11 after the R1 safe-area and simulator fallback visibility fix. The current pose outlines are intentionally placeholder / visually rough; a later dedicated phase should replace them with proper original PDF/vector pose assets and a stronger pose gallery.
+
+## Phase 16F AI Filter Generator + Cloud AI Architecture Research Backfill Status
+
+Phase 16F adds two documentation-only research backfills:
+
+- `docs/research/ai-filter-generator-research.md`
+- `docs/research/cloud-ai-architecture-research.md`
+
+The AI Filter Generator research recommends starting with F1 mock UX and F2 local heuristic recipe generation before any cloud AI. Future cloud mode should return validated structured filter recipe JSON, not generated bitmaps, arbitrary Core Image names, shader/code, or direct rendering control.
+
+The Cloud AI Architecture research recommends keeping the iOS app mock/local-only until a real backend boundary is explicitly implemented. Future real cloud AI should start with a consent-based post-capture Photo Advisor backend endpoint, `POST /v1/ai/photo-advisor`, not Gemini Live, streaming, or AI Filter Generator.
+
+Phase 16F does not change Swift app behavior, Camera UI, backend code, real AI integration, networking, upload, persistence, export, Firebase, Gemini/OpenAI, StoreKit, secrets, or production config.
 
 ## Phase 16A Camera One-Screen UX Consolidation Status
 

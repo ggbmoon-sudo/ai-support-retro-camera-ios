@@ -8,8 +8,8 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 16E - Static Pose Overlay MVP
-Status: Phase 16E Static Pose Overlay MVP manually accepted by the user in Xcode / Simulator after the R1 safe-area and fallback visibility fix; ready to commit after final review
+Current phase: Phase 16F - AI Filter Generator + Cloud AI Architecture Research Backfill
+Status: Phase 16F documentation-only research backfill implemented by Codex; awaiting review
 Latest documentation maintenance: Filter Research Docs Backfill + Alignment Check completed; docs-only; no Swift/backend changes
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -42,7 +42,77 @@ Phase 16A-R8 build verification: targeted Swift parse passed; sandboxed command-
 Phase 16A-R9 build verification: targeted Swift parse passed; sandboxed command-line Xcode build remains blocked by CoreSimulator / sandbox-exec / SwiftUI Preview macro environment restrictions; no real service integration was added
 Phase 16A-R10 build verification: targeted Swift parse passed; sandboxed command-line Xcode build remains blocked by CoreSimulator / sandbox-exec / SwiftUI Preview macro environment restrictions; no real service integration was added
 Phase 16E build verification: targeted Swift parse and safety scans passed during implementation; user Xcode / Simulator build-run and Pose Overlay MVP review accepted on 2026-06-11 after R1; no real AI / Vision / network / upload / persistence / export was added
-Next phase: Do not start Phase 16F, Phase 17, real AI, or any Pose Overlay expansion until Phase 16E is committed, pushed, read-only confirmed, and explicitly requested
+Phase 16F verification: documentation-only research backfill; no Swift source, backend source, real AI, network, upload, persistence, export, API keys, or production config added
+Next phase: Do not start Phase 17, real AI, backend implementation, AI Filter Generator implementation, or cloud upload until Phase 16F is reviewed, committed, pushed, read-only confirmed, and explicitly requested
+
+---
+
+## Phase 16F - AI Filter Generator + Cloud AI Architecture Research Backfill
+
+Status: Implemented as documentation-only research backfill; awaiting review
+Date completed: 2026-06-11
+
+### Goal
+
+Backfill two research reports into the repo as source-of-truth planning documents for future AI Filter Generator work and future real cloud AI backend boundary work.
+
+### Completed
+
+- Added `docs/research/ai-filter-generator-research.md`.
+- Added `docs/research/cloud-ai-architecture-research.md`.
+- Recorded AI Filter Generator recommendation:
+  - Start with F1 Mock Filter Generator.
+  - Add F2 Local Heuristic Filter Extractor before cloud.
+  - Add F3 Cloud AI Style Analysis only after consent, backend, quota, validation, and privacy copy are ready.
+  - Leave F4 LUT / Saved Custom Filter for later.
+  - Use structured filter recipe JSON, not AI-generated bitmaps, arbitrary Core Image names, shader/code, or direct rendering control.
+- Recorded Cloud AI Architecture recommendation:
+  - Keep the current app mock-only / local-only until an explicit backend boundary phase.
+  - Do not put Gemini / OpenAI SDKs or provider API keys in iOS.
+  - iOS should talk only to our backend.
+  - Backend owns provider credentials, request validation, image handling, provider calls, structured JSON validation, safety filtering, and quota / cost guard.
+  - First real AI endpoint should be `POST /v1/ai/photo-advisor`, not Gemini Live, streaming, or AI Filter Generator.
+- Updated `README.md` with a short Phase 16F status and links to both research docs.
+
+### Changed Files
+
+- README.md
+- docs/phase-log.md
+- docs/research/ai-filter-generator-research.md
+- docs/research/cloud-ai-architecture-research.md
+
+### Safety Notes
+
+Phase 16F is documentation-only. It does not modify Swift app behavior, Camera UI, filter UI, backend code, AI Filter Generator implementation, CloudAIService implementation, real AI integration, real network calls, URLSession/URLRequest usage, WebSocket usage, upload, Firebase / Gemini / OpenAI / StoreKit imports, `GoogleService-Info.plist`, `.env`, `.firebaserc`, API keys, Firebase project IDs, persistence, UserDefaults, Core Data, SwiftData, save-to-Photos, export, raw frame/photo/cloud request payload persistence, or logging.
+
+### Verification
+
+- [x] Pre-check confirmed working tree was clean before Phase 16F edits.
+- [x] No Swift source was modified by Phase 16F.
+- [x] No backend source was modified by Phase 16F.
+- [x] Documentation-only change; Xcode build not required.
+- [x] Final `git status --short` checked before response.
+- [x] `git diff --check` passed.
+- [x] `git diff --stat` reviewed.
+- [x] Forbidden imports scan found no iOS Firebase / FirebaseFunctions / FirebaseStorage / FirebaseFirestore / Gemini / OpenAI / StoreKit imports.
+- [x] Network / upload behavior scan found no new iOS real network, upload, Firebase, Cloud Functions, Gemini/OpenAI, or StoreKit behavior; existing future-only TypeScript analyzer placeholders remain unchanged.
+- [x] Secrets / config scan found no `GoogleService-Info.plist`, `.env`, `.firebaserc`, private keys, provisioning profiles, or production config files.
+- [x] Forbidden behavior scan found only docs safety text and existing placeholder references, not new implementation.
+- [x] Frame / photo persistence scan found only existing Phase 15B / 15C in-memory frame analyzer references, not new raw frame/photo/cloud payload persistence or logging.
+
+### Known TODOs
+
+- Future AI Filter Generator should start with F1 mock UX and F2 local heuristic analysis before cloud AI.
+- Future Cloud AI work should start with a backend boundary and `POST /v1/ai/photo-advisor`, not Gemini Live or Filter Generator.
+- Draft JSON Schemas, consent copy, privacy labels, provider choice, cost estimates, and logging policy before any real AI implementation.
+
+### Ready to Commit Phase 16F
+
+Yes, after final verification; do not commit / push automatically.
+
+### Ready for Phase 17 / Real AI
+
+No. Phase 16F is research backfill only and does not authorize real AI, backend implementation, or upload.
 
 ---
 
