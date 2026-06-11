@@ -5,7 +5,7 @@ enum AppTabBarMetrics {
     static let ordinaryTabBarEstimatedHeight: CGFloat = 68
     static let ordinaryTabBarBottomFallback: CGFloat = 52
     static let ordinaryTabBarBottomClearance: CGFloat = 28
-    static let ordinaryContentBottomInset: CGFloat = 124
+    static let ordinaryContentBottomInset: CGFl 土oat = 124
     static let contentPageFooterSpacer: CGFloat = ordinaryContentBottomInset
 
     static let cameraTopControlMinimumInset: CGFloat = 30

@@ -105,6 +105,7 @@ Current MVP demo / QA readiness docs:
 - `docs/filter-preset-schema.md`
 - `docs/filter-roadmap.md`
 - `docs/ai-feature-definition-and-prompt-contract.md`
+- `docs/research/pose-overlay-camera-guide-research.md`
 
 Use these docs as the source of truth unless a later decision in `docs/decisions.md` explicitly changes an earlier decision.
 
@@ -332,6 +333,14 @@ Phase 16C adds a documentation-only AI feature definition and prompt UX contract
 The document defines the future role of AI as a camera-first photography assistant, shooting coach, filter recommender, style advisor, and inspiration engine. It also records the AI / AI-like feature map, Pose Overlay concept, AI Filter Generator concept, shared response schema, prompt style guide, safety / privacy boundaries, research backlog, and future roadmap.
 
 Phase 16C does not change Swift app behavior, Camera UI, backend code, real AI integration, networking, upload, persistence, export, Firebase, Gemini/OpenAI, StoreKit, secrets, or production config.
+
+## Phase 16D Pose Overlay Research Backfill Status
+
+Phase 16D adds the Pose Overlay / Pose Master-like camera guide research backfill at `docs/research/pose-overlay-camera-guide-research.md`.
+
+The research recommends that a future Phase 16E start with a static, non-AI Pose Overlay MVP using a passive SwiftUI overlay above the camera preview, original PDF vector assets, no Vision body pose detection, no camera frame upload, and no pose / body / appearance scoring.
+
+Phase 16D does not change Swift app behavior, Camera UI, Pose Overlay implementation, Vision, AI, networking, upload, persistence, export, backend code, secrets, or production config.
 
 ## Phase 16A Camera One-Screen UX Consolidation Status
 

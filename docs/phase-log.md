@@ -8,8 +8,8 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 16C - AI Feature Definition + Prompt UX Contract
-Status: Phase 16C documentation-only AI feature definition / prompt contract implemented by Codex; awaiting review
+Current phase: Phase 16D - Pose Overlay Research Report Backfill
+Status: Phase 16D documentation-only Pose Overlay research report backfill implemented by Codex; awaiting review
 Latest documentation maintenance: Filter Research Docs Backfill + Alignment Check completed; docs-only; no Swift/backend changes
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -41,7 +41,80 @@ Phase 16A-R7 build verification: targeted Swift parse passed; sandboxed command-
 Phase 16A-R8 build verification: targeted Swift parse passed; sandboxed command-line Xcode build remains blocked by CoreSimulator / sandbox-exec / SwiftUI Preview macro environment restrictions; no real service integration was added
 Phase 16A-R9 build verification: targeted Swift parse passed; sandboxed command-line Xcode build remains blocked by CoreSimulator / sandbox-exec / SwiftUI Preview macro environment restrictions; no real service integration was added
 Phase 16A-R10 build verification: targeted Swift parse passed; sandboxed command-line Xcode build remains blocked by CoreSimulator / sandbox-exec / SwiftUI Preview macro environment restrictions; no real service integration was added
-Next phase: Phase 16D / 16E / 16F planning may happen only when explicitly requested; real cloud AI integration should not start before Phase 17 and must be explicitly requested
+Next phase: Phase 16E Pose Overlay MVP implementation should not start until Phase 16D is reviewed, committed, pushed, and explicitly requested; real cloud AI integration should not start before Phase 17 and must be explicitly requested
+
+---
+
+## Phase 16D - Pose Overlay Research Report Backfill
+
+Status: Implemented as documentation-only research backfill; awaiting review
+Date completed: 2026-06-11
+
+### Goal
+
+Formalize the Pose Overlay / Pose Master-like camera guide research report inside the repo as the source of truth for a future static Pose Overlay MVP implementation phase.
+
+### Completed
+
+- Added `docs/research/pose-overlay-camera-guide-research.md`.
+- Recorded executive summary that Pose Overlay is worth building and fits the camera-first retro camera app.
+- Recorded the MVP recommendation: static, low-risk, non-AI pose overlay first.
+- Recorded recommended architecture:
+  - SwiftUI `ZStack`
+  - `UIViewRepresentable` hosting `AVCaptureVideoPreviewLayer`
+  - camera preview at bottom
+  - pose overlay above preview
+  - guidance overlay above pose overlay
+  - camera controls as topmost interactive layer
+  - `PoseOverlayView.allowsHitTesting(false)`
+  - capture output remains `AVCapturePhotoOutput`
+- Recorded asset strategy: Asset Catalog PDF vector assets first, PNG fallback, SVG not primary MVP path, Canvas/Shape/Lottie deferred.
+- Recorded overlay layout strategy: align to viewfinder rect, consider `resizeAspectFill`, portrait-only MVP, scale / offset / opacity / anchor defaults, and manual mirror support.
+- Recorded hit-testing and capture safety requirements.
+- Recorded Camera quick Pose button, compact picker, Inspiration pose gallery, pose name badge, close, and mirror UX direction.
+- Recorded pose categories and inclusive principle.
+- Recorded Vision body pose detection evaluation as P4/later research, not MVP.
+- Recorded privacy / App Store / safety boundaries.
+- Recorded future implementation file architecture and model shape for Phase 16E.
+- Recorded P1-P4 MVP phase plan.
+- Updated `README.md` with a short Phase 16D status and link.
+
+### Changed Files
+
+- README.md
+- docs/phase-log.md
+- docs/research/pose-overlay-camera-guide-research.md
+
+### Safety Notes
+
+Phase 16D is documentation-only. It did not modify Swift app behavior, Camera UI, Pose Overlay implementation, Vision body pose implementation, AI pose suggestion, real AI integration, real network calls, URLSession/URLRequest usage, Firebase/Gemini/OpenAI/StoreKit imports, `GoogleService-Info.plist`, `.env`, `.firebaserc`, API keys, Firebase project IDs, backend code, persistence, UserDefaults, Core Data, SwiftData, save-to-Photos, export, raw frame/photo/cloud request payload persistence, or logging.
+
+### Verification
+
+- [x] Pre-check found an existing modified Swift file `ios-app/AIPhotoApp/App/AppTabBarMetrics.swift` in the working tree before Phase 16D edits; Phase 16D did not touch it.
+- [x] No Swift source was intentionally modified by Phase 16D.
+- [x] No backend source was modified by Phase 16D.
+- [x] Documentation-only change; Xcode build not required.
+- [x] `git diff --check` passed.
+- [x] Forbidden imports scan found no iOS Firebase / Gemini / OpenAI / StoreKit imports.
+- [x] Network / upload behavior scan found only existing future-only TypeScript placeholder analyzer names, not new real behavior.
+- [x] Secrets / config scan found only existing `.env.example` placeholders and docs scan commands, not real secrets or production config.
+- [x] Frame / photo persistence scan found only existing Phase 15B / 15C local frame analyzer references, not new raw frame/photo/cloud request payload persistence or logging behavior.
+
+### Known TODOs
+
+- User should review the research backfill.
+- Future Phase 16E can implement P1 Static Pose Overlay MVP only if explicitly requested.
+- Future Phase 16E should use original or commercially licensed pose assets.
+- Vision body pose detection remains P4/later research and should not be included in the first Pose Overlay MVP.
+
+### Ready for Phase 16E
+
+No. Phase 16E implementation should not start until Phase 16D is reviewed and explicitly requested.
+
+### Ready for Phase 17 / Real AI
+
+No. Phase 16D is Pose Overlay research documentation only and does not authorize real AI integration.
 
 ---
 
