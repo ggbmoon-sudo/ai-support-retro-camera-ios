@@ -261,10 +261,12 @@ This update records work completed by the new Codex / Codex API session after th
 - No StoreKit / export yet.
 - No real backend endpoint yet.
 - No Gemini Live yet.
+- Phase 16N added `docs/product/future-ai-premium-feature-policy.md` as the source of truth for future AI, local intelligence, premium features, cloud save, high-quality transfer, AI image editing, Filter Lab free / paid rules, advanced retro effects, Hong Kong / 麻煩友 language mode, AI wording, feature matrix, and research backlog.
+- Before implementing any paid, cloud, export, transfer, AI-edit, local-model, LiDAR, or profanity-language feature, read the Phase 16N policy doc and create a dedicated research / implementation phase.
 
 ### Next Recommended Phase Options
 
-Do not jump to Phase 17 / real AI yet. Do not implement cloud save / StoreKit without an explicit phase. Do not implement local export / download without dedicated planning.
+Do not jump to Phase 17 / real AI yet. Do not implement cloud save / StoreKit without an explicit phase. Do not implement local export / download without dedicated planning. Use `docs/product/future-ai-premium-feature-policy.md` before scoping any paid / cloud / export / AI-edit feature.
 
 Option A - Phase 16K: Local Heuristic Advisor / Filter Recommendation Prototype
 
@@ -360,6 +362,7 @@ Roadmap guardrails:
 
 Important docs already added or expected in this roadmap:
 
+- `docs/product/future-ai-premium-feature-policy.md`
 - `docs/research/pose-overlay-camera-guide-research.md`
 - `docs/research/ai-filter-generator-research.md`
 - `docs/research/cloud-ai-architecture-research.md`
@@ -385,6 +388,7 @@ Important docs already added or expected in this roadmap:
 - No custom filter persistence yet.
 - No real cloud AI endpoint yet.
 - No Gemini Live yet.
+- Future paid / cloud / export / AI-edit / transfer / LiDAR / language-mode work must follow `docs/product/future-ai-premium-feature-policy.md`.
 
 ---
 

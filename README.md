@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 16K-L Local Heuristic Advisor + Selected Photo UX Polish implemented and manually accepted in Xcode / Simulator on 2026-06-12
+- Phase 16N Future AI / Premium Feature Policy Backfill completed as documentation-only
 
 Next phase:
 
-- Phase 16K-L is ready to commit after final review; do not commit / push automatically
+- Phase 16N is ready to commit after final review; do not commit / push automatically
 - Phase 17 / real AI remain blocked until a backend boundary phase is explicitly requested later
 
 Before each task, read `AGENTS.md`, the required docs listed there, and the relevant phase prompt in `docs/prompts/`.
@@ -108,6 +108,7 @@ Current MVP demo / QA readiness docs:
 - `docs/filter-preset-schema.md`
 - `docs/filter-roadmap.md`
 - `docs/ai-feature-definition-and-prompt-contract.md`
+- `docs/product/future-ai-premium-feature-policy.md`
 - `docs/research/pose-overlay-camera-guide-research.md`
 - `docs/research/ai-filter-generator-research.md`
 - `docs/research/cloud-ai-architecture-research.md`
@@ -425,6 +426,8 @@ Phase 16K-L adds a local-only heuristic advisor prototype and selected-photo pol
 User Xcode / Simulator verification accepted Phase 16K-L on 2026-06-12. The accepted scope remains local-only / mock-only.
 
 Phase 16K-L does not add real AI, backend code, URLSession/URLRequest, WebSocket, upload, persistence, export, save-to-Photos, StoreKit, cloud save, local download, provider SDKs, secrets, score UI, beauty / attractiveness wording, or sensitive inference.
+
+Phase 16N adds a planning-only future AI / premium feature policy at `docs/product/future-ai-premium-feature-policy.md`. Use it before scoping paid, cloud, export, AI image editing, encrypted transfer, LiDAR, local model, or Hong Kong / 麻煩友 language-mode work. Phase 16N does not change Swift app behavior.
 
 ## Phase 16A Camera One-Screen UX Consolidation Status
 

@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 16K-L - Local Heuristic Advisor + Selected Photo UX Polish
-Status: Implemented and manually accepted by the user in Xcode / Simulator; ready to commit after final review
-Latest implementation: Added local aspect-ratio image signals, deterministic filter-family heuristic advisor recommendations, validated existing-filter recommendation path, compact selected-photo preview polish, and updated docs / manual smoke tests
+Current phase: Phase 16N - Future AI / Premium Feature Policy Backfill
+Status: Documentation-only product policy backfill; ready to commit after final review
+Latest implementation: Added future AI / premium feature policy for local intelligence, LiDAR research, post-capture cloud AI quota, encrypted app-to-app transfer, paid AI image editing, Filter Lab free / paid rules, retro effects, Hong Kong / 麻煩友 language mode, AI wording guidance, free / paid matrix, and research backlog
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -50,7 +50,62 @@ Phase 16I-R1 verification: targeted Swift parse, localization lint, and command-
 Phase 16I-R2 verification: targeted Swift parse, localization lint, and command-line Xcode generic iOS Simulator build passed on 2026-06-11; no real AI, backend, network, upload, persistence, export, API keys, provider SDK, StoreKit, or production config added
 Phase 16J verification: documentation-only handoff update; no Swift source, backend source, real AI, network, upload, persistence, export, API keys, provider SDK, StoreKit, or production config added
 Phase 16K-L verification: targeted Swift parse, localization lint, safety scans, and command-line Xcode generic iOS Simulator build passed on 2026-06-12; user Xcode / Simulator verification accepted on 2026-06-12; no real AI, backend, network, upload, persistence, export, API keys, provider SDK, StoreKit, or production config added
-Next phase: Phase 16K-L is ready to commit after final review. Do not start Phase 17, real AI, backend implementation, cloud upload, LUT, persistence, StoreKit, payment, export, local download, or caption/social copy until explicitly requested.
+Phase 16N verification: documentation-only product policy backfill; no Swift source, backend source, real AI, network, upload, persistence, export, API keys, provider SDK, StoreKit, payment, LiDAR implementation, local model training, encrypted transfer implementation, image editing implementation, or production config added
+Next phase: Phase 16N is ready to commit after final review. Do not start Phase 17, real AI, backend implementation, cloud upload, LUT, persistence, StoreKit, payment, export, local download, image editing provider integration, encrypted transfer implementation, LiDAR implementation, local model training, or profanity language mode until explicitly requested.
+
+---
+
+## Phase 16N - Future AI / Premium Feature Policy Backfill
+
+Status: Documentation-only product policy backfill; ready to commit after final review
+Date completed: 2026-06-12
+
+### Goal
+
+Record the user's latest product decisions for future AI, local intelligence, paid features, cloud save, high-quality photo transfer, AI image editing, Filter Lab entitlement, advanced retro effects, language modes, and user-facing AI wording.
+
+### Completed
+
+- Added `docs/product/future-ai-premium-feature-policy.md`.
+- Recorded local AI / local camera intelligence policy: pre-capture and in-capture guidance should primarily be local, available to free and paid users, and should not upload live camera frames.
+- Recorded `Local On-device Camera Coach + LiDAR Research` as future research.
+- Recorded LiDAR-aware local camera intelligence as a future high-end-device research topic with non-LiDAR fallback.
+- Recorded post-capture cloud AI quota policy: free users may receive 20 analyses per placeholder monthly quota period; paid users may be higher / fair-use, with cost guard and kill switch.
+- Recorded `POST /v1/ai/photo-advisor` as the first future real cloud endpoint recommendation, still blocked until backend boundary work.
+- Recorded paid app-to-app encrypted high-quality / lossless photo transfer policy and the `Encrypted App-to-App High Quality Photo Transfer Research` title.
+- Recorded paid AI image editing / 改圖師 policy, provider research requirement, backend proxy requirement, prompt guard, consent, quota, moderation, timeout, and cost guard.
+- Recorded AI Filter Generator / Filter Lab free vs paid policy: free session-only use; paid save / manage / reuse / future cloud sync.
+- Recorded advanced retro camera effects / double exposure ideas and research title.
+- Recorded Hong Kong / 麻煩友 language mode policy: opt-in, default off, profanity as tone only, no identity / age / gender / race / body / appearance attacks, App Store age rating research required.
+- Recorded user-facing AI wording reduction guidance.
+- Added free / paid feature matrix.
+- Added research backlog and guardrails.
+- Updated this phase log, transition handoff, and README references.
+
+### Safety Notes
+
+Phase 16N is documentation-only. It does not add Swift source changes, app UI changes, real AI, cloud AI, backend code, network calls, `URLSession`, `URLRequest`, WebSocket, Firebase / Gemini / OpenAI / StoreKit imports, provider SDKs, API keys, Firebase config, `GoogleService-Info.plist`, `.env`, `.firebaserc`, upload, photo upload, reference image upload, raw image persistence, AI response persistence, `UserDefaults`, Core Data, SwiftData, cloud save, StoreKit, premium / credits, payment, real local download, save-to-Photos, export, Gemini Live, streaming, image editing implementation, encrypted transfer implementation, LiDAR implementation, local model training, profanity language mode implementation, photo score, beauty / attractiveness score, identity / gender / age / emotion inference, sensitive attribute inference, or backend changes.
+
+### Verification
+
+- [x] `git status --short` checked before implementation.
+- [x] `git status --short` final check.
+- [x] `git diff --check` final pass.
+- [x] `git diff --stat` final review.
+- [x] Forbidden imports scan.
+- [x] Network / upload behavior scan.
+- [x] Secrets / config scan.
+- [x] Forbidden behavior scan.
+- [x] Persistence / export scan.
+- [x] No Swift source changed; Xcode build not required.
+
+### Ready to Commit Phase 16N
+
+Yes. Latest commit has not been created; do not commit or push automatically.
+
+### Ready for Phase 17 / Real AI
+
+No.
 
 ---
 
