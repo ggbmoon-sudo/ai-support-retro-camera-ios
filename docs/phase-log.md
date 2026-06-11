@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Project Handoff - Codex API Transition Handoff Document
-Status: Documentation-only handoff added for temporary Codex API transition; no app behavior changes
-Latest documentation maintenance: Codex transition handoff document added; docs-only; no Swift/backend changes
+Current phase: Phase 16H-Recovery - Post-capture AI Advisor UX Research Backfill + Handoff Status Fix
+Status: Missing Phase 16H research backfill recovered; handoff mismatch corrected; documentation-only; no app behavior changes
+Latest documentation maintenance: Post-capture AI Advisor UX research added and handoff status corrected; docs-only; no Swift/backend changes
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -44,7 +44,55 @@ Phase 16A-R10 build verification: targeted Swift parse passed; sandboxed command
 Phase 16E build verification: targeted Swift parse and safety scans passed during implementation; user Xcode / Simulator build-run and Pose Overlay MVP review accepted on 2026-06-11 after R1; no real AI / Vision / network / upload / persistence / export was added
 Phase 16F verification: documentation-only research backfill; no Swift source, backend source, real AI, network, upload, persistence, export, API keys, or production config added
 Phase 16G verification: targeted Swift parse and localization lint passed; user Xcode / Simulator verification temporarily accepted on 2026-06-11; no real AI, backend, network, upload, persistence, export, LUT, provider SDK, StoreKit, or production config added
-Next phase: Do not start Phase 16I, Phase 17, real AI, backend implementation, cloud upload, local heuristic extraction, LUT, persistence, or StoreKit until this handoff doc is committed/pushed/read-only confirmed and the user explicitly requests the next phase
+Phase 16H-Recovery verification: documentation-only research backfill and handoff status fix; no Swift source, backend source, real AI, network, upload, persistence, export, API keys, provider SDK, StoreKit, or production config added
+Next phase: Do not start Phase 16I, Phase 17, real AI, backend implementation, cloud upload, local heuristic extraction, LUT, persistence, or StoreKit until Phase 16H-Recovery is committed/pushed/read-only confirmed and the user explicitly requests the next phase
+
+---
+
+## Phase 16H-Recovery - Post-capture AI Advisor UX Research Backfill + Handoff Status Fix
+
+Status: Added missing research backfill and corrected handoff mismatch; documentation-only; ready to commit after review
+Date completed: 2026-06-11
+
+### Goal
+
+Recover the missing Phase 16H Post-capture AI Photo Advisor UX research backfill and fix the transition handoff state after read-only onboarding found that the handoff referenced Phase 16H before the research document existed in the repo / origin branch.
+
+### Completed
+
+- Added `docs/research/post-capture-ai-photo-advisor-ux-research.md`.
+- Documented Post-capture AI Photo Advisor as the preferred mock-first advisor UX and the best current candidate for a future first real cloud AI endpoint after backend boundary work.
+- Recorded product role, placement, UX pattern comparison, result content design, existing-filter recommendation rules, retake / crop copy principles, response schema, 8 mock fixtures, future real AI strategy, History / Inspiration integration, safety / privacy boundaries, UI copy, future architecture proposal, MVP phase plan, risks, and final recommendation.
+- Updated `docs/handoff/codex-transition-handoff.md` to state that Phase 16H originally appeared in the handoff before its doc existed locally, and that Phase 16H-Recovery added the missing doc and corrected the state.
+- Updated README research / roadmap references for Post-capture AI Advisor UX.
+
+### Safety Notes
+
+This was documentation-only. It did not change Swift source, app UI, backend code, real AI integration, network behavior, upload behavior, persistence, export, Firebase / Gemini / OpenAI / StoreKit imports, secrets, API keys, `GoogleService-Info.plist`, `.env`, or `.firebaserc`.
+
+### Verification
+
+- [x] `git status --short` checked.
+- [x] `git diff --check` passed.
+- [x] `git diff --stat` reviewed.
+- [x] Forbidden imports scan passed.
+- [x] Network / upload behavior scan passed.
+- [x] Secrets / config scan passed.
+- [x] Forbidden behavior scan passed.
+- [x] Frame / photo persistence scan passed.
+- [x] Xcode build not required because this task did not modify Swift source.
+
+### Ready to Commit Phase 16H-Recovery
+
+Yes, after user review.
+
+### Ready for Phase 16I
+
+No. Do not start Phase 16I until Phase 16H-Recovery is committed, pushed, read-only confirmed, and explicitly requested.
+
+### Ready for Phase 17 / Real AI
+
+No.
 
 ---
 

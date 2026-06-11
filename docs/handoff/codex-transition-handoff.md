@@ -38,23 +38,27 @@ Normal working flow:
 
 ## 3. Current Confirmed Status
 
-Local repository check at the time this handoff was created:
+Local repository check at the time this handoff was originally created:
 
 - Branch: `feat/phase-02-auth`
 - Latest local commit observed: `7479a10 feat: add AI filter generator mock`
 - Working tree observed clean before this documentation-only handoff began.
 - Local checkout confirms Phase 16E, Phase 16F, and Phase 16G history.
-- The user-provided handoff request says Phase 16H was completed, committed, pushed, and read-only confirmed. This local checkout did not show a Phase 16H commit or `docs/research/post-capture-ai-photo-advisor-ux-research.md` at handoff creation time. Next Codex should verify by checking git history, pulling if the user asks, and reading the repo before relying on Phase 16H.
+- The user-provided handoff request said Phase 16H was completed, committed, pushed, and read-only confirmed. The local checkout did not show a Phase 16H commit or `docs/research/post-capture-ai-photo-advisor-ux-research.md` at handoff creation time.
+
+Phase 16H-Recovery status fix:
+
+- A new Codex read-only onboarding confirmed the mismatch: this handoff mentioned Phase 16H before the Phase 16H research doc existed in the repo / origin branch.
+- Phase 16H-Recovery added the missing `docs/research/post-capture-ai-photo-advisor-ux-research.md` research backfill and corrected this handoff state.
+- Repo documents are the source of truth. Do not rely on earlier chat memory or user-stated phase status when it conflicts with committed / local repo files.
+- This recovery is documentation-only. It does not add Swift feature implementation, real AI, backend code, network calls, upload, persistence, export, provider SDKs, or secrets.
 
 Confirmed locally:
 
 - Phase 16E - Static Pose Overlay MVP
 - Phase 16F - AI Filter Generator + Cloud AI Architecture Research Backfill
 - Phase 16G - AI Filter Generator Mock in Inspiration
-
-User-stated but not locally confirmed in this checkout at handoff creation:
-
-- Phase 16H - Post-capture AI Advisor UX Research Backfill
+- Phase 16H-Recovery - Post-capture AI Advisor UX Research Backfill + Handoff Status Fix
 
 Phase 16G status:
 
@@ -70,12 +74,13 @@ Phase 16G status:
 - No persistence.
 - No real AI, backend, or network.
 
-Phase 16H user-stated status to verify before using:
+Phase 16H-Recovery status:
 
 - Added Post-capture AI Photo Advisor UX research backfill.
 - Documentation-only.
-- No Swift source changes.
-- No real AI, backend, network, or upload.
+- Corrected the earlier handoff mismatch where Phase 16H was referenced before its research doc existed locally.
+- No Swift source changes or app behavior changes.
+- No real AI, backend, network, upload, persistence, export, API keys, provider SDKs, or secrets.
 - Future implementation should start with mock UX before real cloud.
 
 ---
@@ -99,7 +104,7 @@ Important completed route so far:
 - Phase 16E - Static Pose Overlay MVP.
 - Phase 16F - AI Filter Generator + Cloud AI Architecture research backfill.
 - Phase 16G - AI Filter Generator Mock in Inspiration.
-- Phase 16H - Post-capture AI Advisor UX research backfill, if verified in the local repo / remote history.
+- Phase 16H-Recovery - Post-capture AI Advisor UX research backfill + handoff status fix.
 
 This list is a short orientation map only. Use `docs/phase-log.md` as the detailed source of truth.
 
@@ -189,7 +194,7 @@ Important docs already added or expected in this roadmap:
 - `docs/research/pose-overlay-camera-guide-research.md`
 - `docs/research/ai-filter-generator-research.md`
 - `docs/research/cloud-ai-architecture-research.md`
-- `docs/research/post-capture-ai-photo-advisor-ux-research.md` - user-stated Phase 16H doc; verify existence in local checkout / remote history before relying on it.
+- `docs/research/post-capture-ai-photo-advisor-ux-research.md`
 - `docs/ai-feature-definition-and-prompt-contract.md`
 - `docs/phase-log.md`
 - `tests/manual-smoke-tests.md`

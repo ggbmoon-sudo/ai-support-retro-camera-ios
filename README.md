@@ -78,11 +78,12 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 16G AI Filter Generator Mock in Inspiration implemented; user Xcode / Simulator verification temporarily accepted; ready to commit
+- Phase 16H-Recovery Post-capture AI Advisor UX research backfill added; handoff mismatch corrected; documentation-only; ready to commit
 
 Next phase:
 
-- Phase 17 / real AI remain blocked until Phase 16G is committed, pushed, read-only confirmed, and explicitly requested
+- Phase 16I Mock Post-capture AI Advisor UX is the next recommended phase, but remains blocked until Phase 16H-Recovery is committed, pushed, read-only confirmed, and explicitly requested
+- Phase 17 / real AI remain blocked until a backend boundary phase is explicitly requested later
 
 Before each task, read `AGENTS.md`, the required docs listed there, and the relevant phase prompt in `docs/prompts/`.
 
@@ -110,6 +111,7 @@ Current MVP demo / QA readiness docs:
 - `docs/research/pose-overlay-camera-guide-research.md`
 - `docs/research/ai-filter-generator-research.md`
 - `docs/research/cloud-ai-architecture-research.md`
+- `docs/research/post-capture-ai-photo-advisor-ux-research.md`
 
 Use these docs as the source of truth unless a later decision in `docs/decisions.md` explicitly changes an earlier decision.
 
@@ -391,6 +393,14 @@ Current Phase 16G behavior:
 Phase 16G does not add real AI, backend code, URLSession/URLRequest, WebSocket, upload, Firebase/Gemini/OpenAI/StoreKit imports, API keys, persistence, export, LUT generation, local heuristic real analysis, public sharing, premium credits, or provider integration.
 
 Known TODOs: Filter Generator remains mock-only, recipe visuals and mapping may need tuning, local heuristic extraction is future work, real backend AI is blocked until Cloud AI boundary work, LUT generation is not implemented, and custom filter persistence is not implemented.
+
+## Phase 16H-Recovery Post-capture AI Advisor UX Research Status
+
+Phase 16H-Recovery adds the missing Post-capture AI Photo Advisor UX research backfill at `docs/research/post-capture-ai-photo-advisor-ux-research.md` and corrects the handoff mismatch where Phase 16H was referenced before its research doc existed in the repo.
+
+The research recommends starting with mock Post-capture Advisor UX before real cloud AI. Future real cloud AI should use `POST /v1/ai/photo-advisor` only after a backend boundary exists, with consent, compressed image upload, structured JSON, validation, no provider key in iOS, no raw photo persistence, and mock fallback.
+
+Phase 16H-Recovery does not change Swift app behavior, Camera UI, backend code, real AI integration, networking, upload, persistence, export, Firebase, Gemini/OpenAI, StoreKit, secrets, or production config.
 
 ## Phase 16A Camera One-Screen UX Consolidation Status
 
