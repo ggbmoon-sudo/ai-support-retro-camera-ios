@@ -1250,6 +1250,7 @@ struct CameraView: View {
                         selectedPreset: viewModel.selectedFilterPreset,
                         presets: viewModel.filterPresets,
                         imageSignal: imageSignal(for: photo),
+                        debugSourceImage: photo.image,
                         isRendering: viewModel.isFiltering,
                         onApplyFilter: { preset in
                             viewModel.selectFilterPreset(preset)

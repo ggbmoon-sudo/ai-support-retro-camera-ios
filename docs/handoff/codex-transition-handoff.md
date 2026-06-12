@@ -129,6 +129,7 @@ Important completed route so far:
 - Phase 16W-R2 - Camera local-only AI surface cleanup.
 - Phase 16X - Inspiration AI Hub cleanup.
 - Phase 17A - Real Cloud AI Backend Boundary Skeleton.
+- Phase 17B - Debug-only Remote CloudAIService Wiring.
 
 This list is a short orientation map only. Use `docs/phase-log.md` as the detailed source of truth.
 
@@ -376,6 +377,10 @@ This update records work completed by the new Codex / Codex API session after th
 - iOS defaults to mock/local behavior; existing Photo Advisor remains mock/local by default.
 - Backend mock endpoint does not call a provider, does not require provider keys, does not persist images, and must not log request payloads.
 - Camera remains local-only; no Camera cloud AI entry has been reintroduced.
+- Phase 17B adds DEBUG-only remote chain testing for the local backend mock `/v1/ai/photo-advisor` endpoint.
+- `RemoteCloudAIService` remains disabled by default.
+- The DEBUG-only remote path requires consent, compresses / re-encodes the image, validates the structured response, and falls back to local/mock advice on failure.
+- Phase 17 remains provider-disabled; no real provider integration is approved.
 
 ### Next Recommended Phase Options
 
@@ -383,12 +388,10 @@ Do not jump to real provider integration yet. Do not implement cloud save / Stor
 
 Option 0 - Phase 17B: RemoteCloudAIService Internal Debug Wiring Only
 
-- Only if explicitly requested.
-- Internal / debug only.
-- No production-reachable remote Cloud AI.
-- No provider call.
-- No provider API key.
-- Must keep mock fallback and consent.
+- Completed as debug-only wiring.
+- Keep disabled by default.
+- Keep mock fallback and consent.
+- Do not turn it into production remote without a separate phase.
 
 Option 1 - Phase 17C: Real Provider Integration Planning / Approval Gate
 
@@ -475,7 +478,8 @@ Completed Phase 16I scope:
 - Phase 16J - Improve integration between Post-capture Advisor and Inspiration import flow.
 - Phase 16K - Local heuristic advisor / filter recommendation, if desired.
 - Phase 17A - Backend boundary skeleton only, not real provider first.
-- Phase 17B / 17C - Remote CloudAIService and real provider only after backend boundary is ready.
+- Phase 17B - Debug-only RemoteCloudAIService wiring to backend mock endpoint.
+- Phase 17C - Real provider only after explicit approval.
 
 Roadmap guardrails:
 
@@ -485,6 +489,7 @@ Roadmap guardrails:
 - Do not jump directly to AI Filter Generator real cloud.
 - First real AI endpoint should likely be `/v1/ai/photo-advisor`, after backend boundary work is in place.
 - Phase 17A has now added the boundary skeleton, but real provider integration is still not approved.
+- Phase 17B has now added debug-only remote wiring to the backend mock endpoint, but real provider integration is still not approved.
 
 ---
 
@@ -543,7 +548,7 @@ Important docs already added or expected in this roadmap:
 - Phase 16X organizes Inspiration as the future AI hub; Photo Advisor / future cloud AI should live in Inspiration / selected photo flow.
 - Phase 17A adds a provider-disabled Cloud AI backend boundary skeleton.
 - Future real cloud AI should use the Phase 17A boundary before any provider work.
-- Future Phase 17B may wire `RemoteCloudAIService` behind an internal debug flag only if explicitly requested.
+- Phase 17B wires `RemoteCloudAIService` behind a DEBUG-only internal path.
 - Future Phase 17C may add a real provider call only after explicit approval, secret management, provider policy review, timeout / cancellation, moderation, validation, and cost guard work.
 - No Gemini Live / streaming, AI Filter Generator real backend, 改圖師 provider integration, or Camera cloud AI entry is approved by Phase 17A.
 - App-wide language switching remains not implemented.

@@ -1,5 +1,31 @@
 # Manual Smoke Tests
 
+## Phase 17B
+
+Check:
+
+- [ ] Normal app launch still uses mock/local Photo Advisor.
+- [ ] Camera remains local-only and no Camera AI Snapshot / Quick Advice cloud entry returns.
+- [ ] Inspiration AI Hub still works.
+- [ ] In release/default mode, no remote cloud call occurs.
+- [ ] In DEBUG/internal path, open an imported / selected photo Photo Advisor.
+- [ ] Tap `Debug: Test Cloud Boundary` if available.
+- [ ] Consent appears before the remote debug request.
+- [ ] Cancel consent returns safely and does not call backend.
+- [ ] If backend is not running, fallback appears and the app does not crash.
+- [ ] If backend is running, structured mock result appears in the existing Photo Advisor UI.
+- [ ] Recommended filter apply still works.
+- [ ] No provider key exists in app or backend.
+- [ ] No raw image / base64 image / request payload is logged.
+- [ ] No raw localization keys appear.
+- [ ] No offensive / explicit profanity copy appears.
+
+Known TODOs:
+
+- [ ] Phase 17B does not connect a real provider.
+- [ ] Phase 17B does not enable production remote Cloud AI.
+- [ ] Future Phase 17C may add real provider integration only after explicit approval and safety / cost / secrets review.
+
 ## Phase 17A
 
 Check:

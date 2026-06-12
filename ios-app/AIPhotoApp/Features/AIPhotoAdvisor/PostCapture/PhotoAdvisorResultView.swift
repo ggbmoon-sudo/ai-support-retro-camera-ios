@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 struct PhotoAdvisorResultView: View {
     let photoId: String
@@ -6,12 +7,16 @@ struct PhotoAdvisorResultView: View {
     let selectedPreset: FilterPreset
     let presets: [FilterPreset]
     let imageSignal: PhotoAdvisorImageSignal
+    let debugSourceImage: UIImage?
     let isRendering: Bool
     let onApplyFilter: (FilterPreset) -> Void
 
     @StateObject private var viewModel: PhotoAdvisorViewModel
     @ObservedObject private var toneSettings = CameraCoachToneSettingsStore.shared
     @State private var applyMessageKey: String?
+    #if DEBUG
+    @State private var showsCloudDebugConsent = false
+    #endif
 
     init(
         photoId: String,
@@ -19,6 +24,7 @@ struct PhotoAdvisorResultView: View {
         selectedPreset: FilterPreset,
         presets: [FilterPreset],
         imageSignal: PhotoAdvisorImageSignal = .unavailable,
+        debugSourceImage: UIImage? = nil,
         isRendering: Bool,
         onApplyFilter: @escaping (FilterPreset) -> Void
     ) {
@@ -27,6 +33,7 @@ struct PhotoAdvisorResultView: View {
         self.selectedPreset = selectedPreset
         self.presets = presets
         self.imageSignal = imageSignal
+        self.debugSourceImage = debugSourceImage
         self.isRendering = isRendering
         self.onApplyFilter = onApplyFilter
         _viewModel = StateObject(wrappedValue: PhotoAdvisorViewModel())
@@ -52,6 +59,22 @@ struct PhotoAdvisorResultView: View {
         .onChange(of: selectedPreset.id) { _, _ in
             applyMessageKey = nil
         }
+        #if DEBUG
+        .sheet(isPresented: $showsCloudDebugConsent) {
+            CloudAIConsentView(
+                onAccept: { consent in
+                    showsCloudDebugConsent = false
+                    runCloudDebug(consent: consent)
+                },
+                onCancel: {
+                    showsCloudDebugConsent = false
+                }
+            )
+            .presentationDetents([.medium])
+            .presentationDragIndicator(.visible)
+            .padding()
+        }
+        #endif
     }
 
     private var header: some View {
@@ -165,6 +188,15 @@ struct PhotoAdvisorResultView: View {
             suggestionsSection(result.suggestions)
             filterSection(result.recommendedFilters)
             adviceSection(result)
+
+            #if DEBUG
+            if let messageKey = viewModel.cloudDebugFallbackMessageKey {
+                Label(LocalizedStringKey(messageKey), systemImage: "wifi.exclamationmark")
+                    .font(AppTypography.caption)
+                    .foregroundStyle(AppColors.warning)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            #endif
 
             if let applyMessageKey {
                 Label(LocalizedStringKey(applyMessageKey), systemImage: "info.circle")
@@ -281,6 +313,21 @@ struct PhotoAdvisorResultView: View {
         VStack(alignment: .leading, spacing: AppSpacing.xs) {
             Text("photo_advisor.footer.no_upload")
             Text("photo_advisor.footer.future_cloud")
+
+            #if DEBUG
+            if debugSourceImage != nil {
+                Button {
+                    showsCloudDebugConsent = true
+                } label: {
+                    Label("photo_advisor.cloud_debug.action", systemImage: "network")
+                        .font(AppTypography.micro.weight(.semibold))
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(AppColors.accent)
+                .disabled(viewModel.state.isAnalyzing)
+                .padding(.top, AppSpacing.xs)
+            }
+            #endif
         }
         .font(AppTypography.micro)
         .foregroundStyle(AppColors.textSecondary)
@@ -373,6 +420,22 @@ struct PhotoAdvisorResultView: View {
             return "photo_advisor.source.fallback"
         }
     }
+
+    #if DEBUG
+    private func runCloudDebug(consent: CloudAIConsent) {
+        guard let debugSourceImage else { return }
+
+        Task {
+            await viewModel.analyzeCloudDebug(
+                currentInput,
+                image: debugSourceImage,
+                consent: consent,
+                selectedFilterId: selectedPreset.id,
+                allowedFilterIds: Set(presets.map(\.id))
+            )
+        }
+    }
+    #endif
 }
 
 #Preview {

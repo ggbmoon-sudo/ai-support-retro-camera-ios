@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 struct FloatingPhotoAdvisorSheet: View {
     let photoId: String
@@ -6,6 +7,7 @@ struct FloatingPhotoAdvisorSheet: View {
     let selectedPreset: FilterPreset
     let presets: [FilterPreset]
     let imageSignal: PhotoAdvisorImageSignal
+    let debugSourceImage: UIImage?
     let isRendering: Bool
     let onApplyFilter: (FilterPreset) -> Void
     let onClose: () -> Void
@@ -21,6 +23,7 @@ struct FloatingPhotoAdvisorSheet: View {
                     selectedPreset: selectedPreset,
                     presets: presets,
                     imageSignal: imageSignal,
+                    debugSourceImage: debugSourceImage,
                     isRendering: isRendering,
                     onApplyFilter: onApplyFilter
                 )
@@ -76,6 +79,7 @@ struct FloatingPhotoAdvisorSheet: View {
         selectedPreset: FilterPresetCatalog.instantDream,
         presets: FilterPresetCatalog.all,
         imageSignal: PhotoAdvisorImageSignal(size: CGSize(width: 1200, height: 1600)),
+        debugSourceImage: nil,
         isRendering: false,
         onApplyFilter: { _ in },
         onClose: {}

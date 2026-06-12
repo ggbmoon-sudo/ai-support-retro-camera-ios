@@ -117,6 +117,7 @@ struct ImportedPhotoResultView: View {
                         selectedPreset: selectedPreset,
                         presets: presets,
                         imageSignal: imageSignal,
+                        debugSourceImage: photo.image,
                         isRendering: isFiltering,
                         onApplyFilter: { preset in
                             selectFilterPreset(preset)

@@ -54,6 +54,7 @@ test("provider key is not required", () => {
 function validRequest() {
   return {
     schemaVersion: "1.0",
+    feature: "photo_advisor",
     mode: "post_capture",
     locale: "zh-Hant-HK",
     selectedFilterId: "instant_dream",

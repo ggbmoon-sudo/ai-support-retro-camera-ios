@@ -3,11 +3,14 @@
   "$id": "photo-advisor-request.v1",
   "title": "Photo Advisor Request v1",
   "type": "object",
-  "required": ["schemaVersion", "mode", "consent"],
+  "required": ["schemaVersion", "feature", "mode", "consent"],
   "additionalProperties": true,
   "properties": {
     "schemaVersion": {
       "const": "1.0"
+    },
+    "feature": {
+      "const": "photo_advisor"
     },
     "mode": {
       "const": "post_capture"

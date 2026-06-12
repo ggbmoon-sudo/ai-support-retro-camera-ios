@@ -678,3 +678,5 @@
 "photo_advisor.fixture.chrome_mood.filter.street" = "保留色彩，同時加強街拍對比。";
 "photo_advisor.fixture.chrome_mood.retake" = "目前光影已經適合 chrome 方向。";
 "photo_advisor.fixture.chrome_mood.crop" = "可以試試 4:5，線條會更集中。";
+"photo_advisor.cloud_debug.action" = "Debug：測試雲端邊界";
+"photo_advisor.cloud_debug.fallback" = "雲端分析暫時未能使用，已改用本機建議。";

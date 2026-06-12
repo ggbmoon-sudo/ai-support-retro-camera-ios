@@ -78,6 +78,18 @@ Phase 17A adds iOS Cloud AI boundary scaffolding only:
 
 The iOS app still defaults to mock/local Photo Advisor behavior. There is no provider SDK, provider API key, production remote Cloud AI call, real upload, storage write, export, or StoreKit integration in this phase.
 
+## Phase 17B Debug-only Remote Wiring
+
+Phase 17B lets DEBUG/internal builds test the local backend mock `/v1/ai/photo-advisor` endpoint from Photo Advisor:
+
+- consent is required first
+- the selected image is compressed / re-encoded as JPEG
+- `RemoteCloudAIService` calls the local mock backend only in DEBUG mode
+- the response is decoded and validated before being mapped into the existing Photo Advisor UI
+- failures fall back to local/mock advice
+
+Production/default behavior remains mock/local. Camera remains local-only. There is still no provider SDK, provider key, production cloud AI, storage upload, export, or StoreKit integration.
+
 ## Phase 12A Filter Planning
 
 Phase 12A adds filter research and schema planning documents only. It does not change iOS app source code.

@@ -11,6 +11,10 @@ export function validatePhotoAdvisorRequest(request) {
     return invalid("unsupported_schema_version", "schemaVersion must be 1.0");
   }
 
+  if (request.feature !== "photo_advisor") {
+    return invalid("unsupported_feature", "feature must be photo_advisor");
+  }
+
   if (request.mode !== "post_capture") {
     return invalid("unsupported_mode", "mode must be post_capture");
   }

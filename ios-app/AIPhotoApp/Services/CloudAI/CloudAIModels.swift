@@ -11,6 +11,49 @@ struct CloudAIPhotoAdvisorInput {
     let selectedFilterId: String?
 }
 
+struct CloudAIPhotoAdvisorRequest: Codable, Hashable, Sendable {
+    let schemaVersion: String
+    let feature: String
+    let mode: CloudAIMode
+    let locale: String
+    let consent: CloudAIConsent
+    let image: CloudAIRequestImage
+    let client: CloudAIRequestClient
+    let selectedFilterId: String?
+
+    init(input: CloudAIPhotoAdvisorInput) {
+        schemaVersion = "1.0"
+        feature = "photo_advisor"
+        mode = .postCapture
+        locale = input.locale
+        consent = input.consent
+        image = CloudAIRequestImage(input: input)
+        client = CloudAIRequestClient(platform: "iOS", appVersion: Bundle.main.appVersionString)
+        selectedFilterId = input.selectedFilterId
+    }
+}
+
+struct CloudAIRequestImage: Codable, Hashable, Sendable {
+    let contentType: String
+    let width: Int
+    let height: Int
+    let metadataStripped: Bool
+    let dataBase64: String
+
+    init(input: CloudAIPhotoAdvisorInput) {
+        contentType = input.contentType
+        width = input.width
+        height = input.height
+        metadataStripped = input.metadataStripped
+        dataBase64 = input.imageData.base64EncodedString()
+    }
+}
+
+struct CloudAIRequestClient: Codable, Hashable, Sendable {
+    let platform: String
+    let appVersion: String
+}
+
 struct CloudAIConsent: Codable, Hashable, Sendable {
     static let currentVersion = "2026-06-12.phase17a.v1"
 
@@ -137,6 +180,8 @@ struct CloudAIResponse: Codable, Hashable, Sendable {
 enum CloudAIServiceError: LocalizedError, Equatable {
     case consentRequired
     case remoteDisabled
+    case remoteUnavailable
+    case remoteHTTPStatus(Int)
     case invalidResponse([String])
     case imageCompressionFailed
 
@@ -146,10 +191,30 @@ enum CloudAIServiceError: LocalizedError, Equatable {
             return "Cloud photo analysis requires explicit consent."
         case .remoteDisabled:
             return "Remote Cloud AI is disabled in this build."
+        case .remoteUnavailable:
+            return "Cloud analysis is unavailable right now."
+        case .remoteHTTPStatus(let statusCode):
+            return "Cloud analysis returned HTTP \(statusCode)."
         case .invalidResponse(let reasons):
             return "Cloud AI response failed validation: \(reasons.joined(separator: ", "))"
         case .imageCompressionFailed:
             return "Unable to prepare the image for cloud analysis."
+        }
+    }
+}
+
+private extension Bundle {
+    var appVersionString: String {
+        let version = object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+        let build = object(forInfoDictionaryKey: "CFBundleVersion") as? String
+
+        switch (version, build) {
+        case let (version?, build?):
+            return "\(version) (\(build))"
+        case let (version?, nil):
+            return version
+        default:
+            return "debug"
         }
     }
 }

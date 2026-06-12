@@ -678,3 +678,5 @@
 "photo_advisor.fixture.chrome_mood.filter.street" = "Keeps color while adding crisp street contrast.";
 "photo_advisor.fixture.chrome_mood.retake" = "The current light already fits a chrome direction.";
 "photo_advisor.fixture.chrome_mood.crop" = "Try a 4:5 crop if you want the lines to feel tighter.";
+"photo_advisor.cloud_debug.action" = "Debug: Test Cloud Boundary";
+"photo_advisor.cloud_debug.fallback" = "Cloud analysis is unavailable right now. Showing local advice instead.";

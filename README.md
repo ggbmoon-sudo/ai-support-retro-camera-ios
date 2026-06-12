@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 17A Cloud AI backend boundary skeleton implemented; ready for user review
+- Phase 17B debug-only RemoteCloudAIService wiring implemented; ready for user review
 
 Next phase:
 
-- Do not commit Phase 17A until user reviews it
+- Do not commit Phase 17B until user reviews it
 - Real provider integration remains blocked until a later explicit provider phase
 
 Before each task, read `AGENTS.md`, the required docs listed there, and the relevant phase prompt in `docs/prompts/`.
@@ -98,6 +98,8 @@ Phase execution prompts live in `docs/prompts/`.
 Transition handoff notes live in `docs/handoff/`; the current Codex / Codex API transition note is `docs/handoff/codex-transition-handoff.md`. Phase 16J refreshes that handoff with the Codex API period work through Phase 16I/R1/R2 and the next recommended Phase 16-only options.
 
 Phase 17A adds a Cloud AI boundary skeleton only: iOS CloudAI models / service protocol / validator / disabled remote skeleton / consent view / image compressor scaffold, plus a mock-only `backend/` with `GET /health` and `POST /v1/ai/photo-advisor`. No real provider is connected, no provider key belongs in iOS or the repo, and existing Photo Advisor remains mock/local by default.
+
+Phase 17B adds DEBUG-only wiring from iOS `RemoteCloudAIService` to the local backend mock `/v1/ai/photo-advisor` endpoint. Production/default behavior remains mock/local, and real provider integration remains future-only.
 
 Current MVP demo / QA readiness docs:
 
@@ -147,6 +149,8 @@ Current limitations are documented in `docs/mvp-known-limitations.md`. The demo 
 The current app does not include real Firebase upload, Firestore writes, Storage writes, Cloud Functions calls, real Gemini / OpenAI calls, StoreKit, quota enforcement, disk persistence, UserDefaults persistence, export, save-to-Photos, production Firebase config, or real secrets.
 
 Phase 17A does not change that production boundary: the new backend folder is mock-only and provider-disabled, and the iOS remote Cloud AI service is not production-reachable by default.
+
+Phase 17B keeps the same production boundary. The remote chain is DEBUG/internal only, requires consent, uses compressed JPEG input, validates the structured response, and falls back to local advice on failure.
 
 ## Phase 12A Filter Planning Status
 

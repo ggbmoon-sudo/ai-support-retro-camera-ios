@@ -13,6 +13,14 @@ npm start
 
 The mock server listens on `PORT` or `8787`.
 
+Phase 17B iOS DEBUG builds expect the local mock server at:
+
+```text
+http://127.0.0.1:8787
+```
+
+This is for internal boundary testing only. It is not a production provider URL.
+
 ## Endpoints
 
 - `GET /health`
