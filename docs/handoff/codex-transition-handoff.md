@@ -123,6 +123,7 @@ Important completed route so far:
 - Phase 16T / HK3 - Settings-only mock Language / Tone UI.
 - Phase 16T-R1 / HK3 - simplified Settings mock UI to language-only buttons.
 - Phase 16T-R2 / HK3 - hid production-visible mock preview cards from Settings.
+- Phase 16U / HK4 - deterministic Local Camera Coach copy resolver scaffold / neutral runtime integration.
 
 This list is a short orientation map only. Use `docs/phase-log.md` as the detailed source of truth.
 
@@ -328,6 +329,15 @@ This update records work completed by the new Codex / Codex API session after th
 - Runtime copy resolver is not implemented.
 - Explicit mode is not runtime-enabled and no production-visible explicit phrase example is shown.
 - The next safe step, if explicitly requested after user acceptance, may be HK4 deterministic template integration.
+- Phase 16U / HK4 added a deterministic Local Camera Coach copy resolver.
+- Runtime integration is limited to Local Camera Coach copy only.
+- Runtime Local Camera Coach uses neutral default tone; Settings Language / Tone remains mock-only and non-persistent.
+- No explicit profanity runtime was added.
+- No AI-generated copy was added.
+- App-wide language switching remains not implemented.
+- Runtime copy resolver persistence remains not implemented.
+- Future HK5 may consider Settings persistence / formal language mode only if explicitly requested.
+- Explicit profanity remains future review-only.
 - Do not jump directly to explicit profanity mode.
 - Do not use LLM-generated live camera copy.
 - Runtime deterministic template integration should wait for an explicit phase and must not write to persistence without approval.
@@ -473,7 +483,7 @@ Important docs already added or expected in this roadmap:
 - Future language mode / copy resolver / profanity / localization runtime work must now also follow `docs/product/hk-troublemaker-copy-system-style-guide.md`.
 - HK3 Mock Language Mode UI is a safer future step than explicit profanity mode or runtime copy resolver.
 - Phase 16T / HK3 now provides the Settings mock UI preview only. Phase 16T-R1 keeps it simpler with language-only buttons and no separate tone selector. Phase 16T-R2 hides mock preview / praise loop / explicit phrase cards from production Settings UI. Runtime language mode, app-wide language switching, copy resolver, localization runtime, persistence, and explicit profanity remain unimplemented.
-- HK4 deterministic template integration may be considered later only after explicit user approval.
+- HK4 deterministic template integration now exists only for Local Camera Coach copy with neutral runtime default. Any HK5 formal language mode, settings persistence, app-wide language switching, or explicit profanity work requires explicit user approval.
 
 ---
 

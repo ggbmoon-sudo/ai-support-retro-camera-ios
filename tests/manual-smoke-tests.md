@@ -967,8 +967,33 @@ Check:
 Known TODOs:
 
 - [ ] Runtime language mode is not implemented.
-- [ ] Deterministic copy resolver integration requires a future explicit HK4 phase.
+- [ ] Deterministic copy resolver scaffold is now HK4, but formal language mode remains future-only.
 - [ ] Explicit profanity remains future-only and requires separate safety / App Store / age-rating review before any runtime use.
+
+## Phase 16U / HK4 Deterministic Camera Coach Copy Resolver Integration
+
+Check:
+
+- [ ] Open Camera and confirm the camera preview or simulator fallback still opens normally.
+- [ ] Confirm Live Guidance / 本機導拍 still appears when enabled.
+- [ ] Confirm Local Camera Coach suggestions still update without obvious flicker or repeated aggressive copy.
+- [ ] Confirm existing guidance priority / anti-flicker behavior still feels preserved.
+- [ ] Confirm no explicit profanity appears in live camera guidance.
+- [ ] Confirm no banned appearance, body, identity, age, gender, health, mental health, protected-class, or attractiveness wording appears.
+- [ ] Confirm Settings Language / Tone remains mock-only and non-persistent.
+- [ ] Confirm changing Settings Language / Tone does not change Camera runtime copy.
+- [ ] Confirm Photo Advisor runtime copy is unchanged.
+- [ ] Confirm Filter Lab runtime copy is unchanged.
+- [ ] Confirm 改圖師 / image editing runtime copy is unchanged.
+- [ ] Confirm no app-wide language switching occurs.
+- [ ] Confirm no raw localization keys appear.
+- [ ] Confirm no UserDefaults, @AppStorage, Core Data, SwiftData, persistence, network, backend, real AI, provider SDK, StoreKit, payment, moderation, or runtime profanity filtering behavior occurs.
+
+Known TODOs:
+
+- [ ] Runtime tone remains neutral by default.
+- [ ] HK / 麻煩友 runtime activation requires a future explicit HK5 phase.
+- [ ] Explicit profanity remains unsupported in runtime.
 
 ## Phase 16K-L Local Heuristic Advisor + Selected Photo UX Polish
 

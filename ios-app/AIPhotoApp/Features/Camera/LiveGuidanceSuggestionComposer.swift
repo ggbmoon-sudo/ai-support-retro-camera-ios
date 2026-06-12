@@ -1,6 +1,17 @@
 import Foundation
 
 nonisolated struct LiveGuidanceSuggestionComposer: Sendable {
+    private let copyResolver: GuidanceCopyResolver
+    private let runtimeTone: ToneMode
+
+    init(
+        copyResolver: GuidanceCopyResolver = GuidanceCopyResolver(),
+        runtimeTone: ToneMode = .neutral
+    ) {
+        self.copyResolver = copyResolver
+        self.runtimeTone = runtimeTone
+    }
+
     func suggestions(
         for signals: [LiveGuidanceSignal],
         selectedPreset: FilterPreset,
@@ -52,31 +63,46 @@ nonisolated struct LiveGuidanceSuggestionComposer: Sendable {
         case .lightingLooksBalanced:
             return LiveGuidanceSuggestion(
                 id: "lighting_balanced",
-                messageKey: "camera.guidance.suggestion.lighting_balanced",
+                messageKey: copyResolver.messageKey(
+                    for: .successPraise,
+                    requestedTone: runtimeTone
+                ),
                 category: .lighting
             )
         case .tooDark:
             return LiveGuidanceSuggestion(
                 id: "move_closer_to_light",
-                messageKey: "camera.guidance.suggestion.move_closer_to_light",
+                messageKey: copyResolver.messageKey(
+                    for: .lighting,
+                    requestedTone: runtimeTone
+                ),
                 category: .lighting
             )
         case .tooBright:
             return LiveGuidanceSuggestion(
                 id: "avoid_direct_light",
-                messageKey: "camera.guidance.suggestion.avoid_direct_light",
+                messageKey: copyResolver.messageKey(
+                    for: .directLight,
+                    requestedTone: runtimeTone
+                ),
                 category: .lighting
             )
         case .subjectOffCenter:
             return LiveGuidanceSuggestion(
                 id: "center_subject",
-                messageKey: "camera.guidance.suggestion.center_subject",
+                messageKey: copyResolver.messageKey(
+                    for: .framing,
+                    requestedTone: runtimeTone
+                ),
                 category: .composition
             )
         case .lowHeadroom:
             return LiveGuidanceSuggestion(
                 id: "more_headroom",
-                messageKey: "camera.guidance.suggestion.more_headroom",
+                messageKey: copyResolver.messageKey(
+                    for: .headroom,
+                    requestedTone: runtimeTone
+                ),
                 category: .portrait
             )
         case .faceTooClose:

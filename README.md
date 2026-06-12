@@ -446,6 +446,8 @@ Phase 16S saves the ChatGPT-provided HK2 Hong Kong / 麻煩友 Copy System + Saf
 
 Phase 16T / HK3 adds a Settings-only mock Language / Tone entry based on Phase 16R and HK2. Phase 16T-R1 simplifies it to language-only buttons for English / 繁體中文 / 简体中文 / 廣東話, and Phase 16T-R2 hides mock preview / praise loop / explicit phrase cards from the production Settings UI. Cantonese keeps a short safety notice. It does not change Camera guidance, Photo Advisor, Filter Lab, editing runtime copy, app-wide language switching, persistence, backend, network, AI, StoreKit, or provider integration.
 
+Phase 16U / HK4 adds a local-only deterministic copy resolver scaffold for Local Camera Coach / 本機導拍 copy. Runtime integration is limited to selected camera guidance categories and uses neutral default tone only; HK conversational and non-explicit 麻煩友 keys are scaffolded but not connected to Settings or persistence. Explicit profanity runtime, app-wide language switching, backend, network, AI, and provider integration remain out of scope.
+
 ## Phase 16A Camera One-Screen UX Consolidation Status
 
 Phase 16A consolidates the Camera tab into a more one-screen-first shooting surface while keeping Phase 16 mock-only.

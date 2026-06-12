@@ -354,6 +354,14 @@ Phase 16T-R1 simplifies the mock UI to language-only buttons. Phase 16T-R2 hides
 
 This phase does not add runtime language switching, app-wide language switching, Settings persistence, copy resolver integration, localization runtime changes, Camera guidance copy changes, Photo Advisor copy changes, Filter Lab copy changes, explicit profanity enablement, backend, network, AI, StoreKit, provider SDKs, moderation, or runtime profanity filtering.
 
+## Phase 16U / HK4 Deterministic Camera Coach Copy Resolver
+
+Phase 16U / HK4 adds a local-only deterministic copy resolver scaffold for Local Camera Coach / 本機導拍 copy.
+
+The runtime integration is intentionally narrow: selected local guidance categories now resolve through neutral default copy keys, while HK conversational and non-explicit 麻煩友 keys are scaffolded for future explicit phases. Settings Language / Tone remains mock-only and non-persistent.
+
+This phase does not add app-wide language switching, Settings persistence, explicit profanity runtime, LLM-generated copy, AI-generated live camera copy, Photo Advisor copy changes, Filter Lab copy changes, image editing copy changes, backend, network, AI, StoreKit, provider SDKs, moderation, or runtime profanity filtering.
+
 ## Phase 16A Camera One-Screen UX Consolidation
 
 Phase 16A keeps the app local/mock-only and consolidates the Camera capture surface.
