@@ -63,6 +63,7 @@ Confirmed locally:
 - Phase 16N - Future AI / Premium Feature Policy Backfill
 - Phase 16O - Save Local On-device Camera Coach + LiDAR Research
 - Phase 16P - Save Encrypted App-to-App Photo Transfer Research
+- Phase 16Q - Save Paid AI Image Editing / 改圖師 Research
 
 Phase 16G status:
 
@@ -113,6 +114,7 @@ Important completed route so far:
 - Phase 16N - Future AI / Premium Feature Policy Backfill.
 - Phase 16O - Local On-device Camera Coach + LiDAR Scene Understanding research save.
 - Phase 16P - Encrypted App-to-App High Quality / Lossless Photo Transfer research save.
+- Phase 16Q - Paid AI Image Editing / 改圖師 research save.
 
 This list is a short orientation map only. Use `docs/phase-log.md` as the detailed source of truth.
 
@@ -283,6 +285,14 @@ This update records work completed by the new Codex / Codex API session after th
 - The next safe step, if explicitly requested, may be local high-quality export renderer planning / prototype.
 - StoreKit, entitlement, backend, storage, abuse controls, and privacy policy are required before real paid transfer.
 - Encrypted transfer, cloud storage, CryptoKit prototype, Universal Links, signed URLs, QR code, and receiver flow remain future dedicated phases.
+- Phase 16Q added `docs/research/paid-ai-image-editing-research.md`.
+- Paid AI Image Editing / 改圖師 research is now saved in the repo.
+- Future implementation must use this research before any image editing, provider adapter, backend, StoreKit, entitlement, upload, prompt guard, quota, moderation, or provider integration work.
+- Do not jump directly to real provider integration.
+- The next safe step, if explicitly requested, may be mock image editing UX only.
+- Prompt guard must be designed before provider integration.
+- StoreKit, entitlement, backend, privacy policy, retention policy, safety policy, quota, and cost guard are required before real paid image editing.
+- OpenAI / Gemini / Stability provider integration remains a future dedicated phase.
 
 ### Next Recommended Phase Options
 
@@ -385,6 +395,7 @@ Important docs already added or expected in this roadmap:
 - `docs/product/future-ai-premium-feature-policy.md`
 - `docs/research/local-on-device-camera-coach-lidar-research.md`
 - `docs/research/encrypted-app-to-app-photo-transfer-research.md`
+- `docs/research/paid-ai-image-editing-research.md`
 - `docs/research/pose-overlay-camera-guide-research.md`
 - `docs/research/ai-filter-generator-research.md`
 - `docs/research/cloud-ai-architecture-research.md`
@@ -415,6 +426,8 @@ Important docs already added or expected in this roadmap:
 - Local camera coach architecture refactor is a safer future implementation candidate than live cloud AI.
 - Future export / encrypted transfer / StoreKit / backend / cloud storage work must also follow `docs/research/encrypted-app-to-app-photo-transfer-research.md`.
 - Local high-quality export renderer planning / prototype is a safer future step than encrypted transfer backend.
+- Future paid image editing / provider / prompt guard / backend / StoreKit work must also follow `docs/research/paid-ai-image-editing-research.md`.
+- Mock image editing UX is a safer future step than real provider integration.
 
 ---
 

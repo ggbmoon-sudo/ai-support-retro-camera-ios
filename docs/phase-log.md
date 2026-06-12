@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 16P - Save Encrypted App-to-App Photo Transfer Research
+Current phase: Phase 16Q - Save Paid AI Image Editing / 改圖師 Research
 Status: Documentation-only research save; ready to commit after final review
-Latest implementation: Saved ChatGPT-provided Encrypted App-to-App High Quality / Lossless Photo Transfer research to repo and updated phase log / handoff / README references
+Latest implementation: Saved ChatGPT-provided Paid AI Image Editing / 改圖師 research to repo and updated phase log / handoff / README references
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -53,7 +53,86 @@ Phase 16K-L verification: targeted Swift parse, localization lint, safety scans,
 Phase 16N verification: documentation-only product policy backfill; no Swift source, backend source, real AI, network, upload, persistence, export, API keys, provider SDK, StoreKit, payment, LiDAR implementation, local model training, encrypted transfer implementation, image editing implementation, or production config added
 Phase 16O verification: documentation-only research save; no Swift source, backend source, app behavior change, LiDAR implementation, Core ML implementation, ARKit implementation, local model training, real AI, network, upload, persistence, export, API keys, provider SDK, StoreKit, payment, or production config added
 Phase 16P verification: documentation-only research save; no Swift source, backend source, app behavior change, export implementation, encrypted transfer implementation, CryptoKit prototype, backend, StoreKit, cloud storage, real upload, network, persistence, API keys, provider SDK, payment, or production config added
-Next phase: Phase 16P is ready to commit after final review. The next safe implementation candidate from this research, if explicitly requested later, is local high-quality export renderer planning / prototype, not encrypted transfer backend. Do not start Phase 17, real AI, backend implementation, cloud upload, encrypted transfer implementation, CryptoKit prototype, Universal Links, signed URLs, cloud storage, StoreKit, payment, export, local download, persistence, or image editing provider integration until explicitly requested.
+Phase 16Q verification: documentation-only research save; no Swift source, backend source, app behavior change, AI image editing implementation, mock UI implementation, prompt guard implementation, provider adapter, backend, StoreKit, OpenAI / Gemini / Stability integration, real upload, network, persistence, export, API keys, provider SDK, payment, quota, entitlement, moderation, or production config added
+Next phase: Phase 16Q is ready to commit after final review. The next safe implementation candidate from this research, if explicitly requested later, is mock image editing UX only, not real provider integration. Do not start Phase 17, real AI, backend implementation, cloud upload, image editing provider integration, prompt guard implementation, provider adapter, StoreKit, payment, quota, entitlement, upload, persistence, export, or moderation implementation until explicitly requested.
+
+---
+
+## Phase 16Q - Save Paid AI Image Editing / 改圖師 Research
+
+Status: Documentation-only research save; ready to commit after final review
+Date completed: 2026-06-12
+
+### Goal
+
+Save the user-provided ChatGPT research report for Paid AI Image Editing / 改圖師 into the repo, then update documentation indexes and handoff status.
+
+### Completed
+
+- Added `docs/research/paid-ai-image-editing-research.md`.
+- Preserved the provided report title: `Paid AI Image Editing / 改圖師 for iOS Retro Camera App 深入研究報告`.
+- Saved the full ChatGPT-provided Markdown research report to the repo.
+- Removed `utm_source=chatgpt.com` query strings without changing source meaning.
+- Preserved the required sections:
+  - Executive Summary
+  - Product Goal
+  - Feature Boundary: Photo Editing, Not General Image Generation
+  - Relationship with Photo Advisor / Filter Lab / Local Coach
+  - Provider / Model Landscape
+  - Recommended Architecture
+  - Prompt Design
+  - Prompt Guard / Abuse Prevention
+  - Free vs Paid / Quota / Cost Policy
+  - UX Design
+  - Privacy / Consent / Retention
+  - Safety / Legal / App Store Considerations
+  - Backend Contract Proposal
+  - Data Model Proposal
+  - Failure States and Recovery
+  - MVP / Future Phase Plan
+  - Risk Table
+  - Final Recommendation
+  - Sources / Links
+- Recorded the research conclusion that 改圖師 / AI image editing should be a paid post-capture / imported-photo enhancement tool.
+- Recorded that it should not be used for pre-capture / in-capture continuous live guidance or as a general text-to-image generator.
+- Recorded that user-facing UI may call it 改圖師 / 相片改造 / 麻煩友幫你執相 / Photo Fix / Style Edit and can reduce everyday `AI` wording.
+- Recorded that privacy / consent screens must clearly disclose cloud AI / third-party AI.
+- Recorded that first implementation should be mock-first and real provider integration must be backend-mediated.
+- Recorded that iOS must not contain provider API keys or directly call OpenAI / Gemini / Stability / any provider.
+- Recorded that backend must handle entitlement, quota, prompt guard, provider adapter, timeout / cancellation, moderation / safety, response validation, and logging minimization before real provider work.
+- Recorded that the next safe implementation candidate, if explicitly requested later, is mock image editing UX, not real provider integration.
+- Updated transition handoff and README references.
+
+### Safety Notes
+
+Phase 16Q is documentation-only. Codex only saved the ChatGPT-provided research report and updated docs references. It does not add Swift source changes, app UI changes, app behavior changes, mock image editing UI implementation, prompt guard implementation, AI image editing implementation, provider adapter implementation, backend code, cloud AI, network calls, `URLSession`, `URLRequest`, WebSocket, OpenAI / Gemini / Stability / Firebase / StoreKit imports, provider SDKs, API keys, Firebase config, `GoogleService-Info.plist`, `.env`, `.firebaserc`, image upload, photo upload, raw photo persistence, AI response persistence, provider raw response persistence, `UserDefaults`, Core Data, SwiftData, export, save-to-Photos, StoreKit, payment, credits, real quota system, real entitlement system, moderation implementation, or backend changes.
+
+### Verification
+
+- [x] `git status --short` checked before implementation.
+- [x] `git status --short` final check.
+- [x] `git diff --check` final pass.
+- [x] `git diff --stat` final review.
+- [x] Markdown heading sanity check confirmed required sections exist.
+- [x] Source links section preserved.
+- [x] `utm_source=chatgpt.com` removed from saved report links.
+- [x] Reference-style link sanity check.
+- [x] Forbidden imports scan.
+- [x] Network / upload behavior scan.
+- [x] Secrets / config scan.
+- [x] Forbidden behavior scan.
+- [x] Persistence / export scan.
+- [x] Provider import scan.
+- [x] StoreKit scan.
+- [x] No Swift source changed; Xcode build not required.
+
+### Ready to Commit Phase 16Q
+
+Yes. Latest commit has not been created; do not commit or push automatically.
+
+### Ready for Phase 17 / Real AI
+
+No.
 
 ---
 
