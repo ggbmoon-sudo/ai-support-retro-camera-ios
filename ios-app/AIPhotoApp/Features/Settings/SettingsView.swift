@@ -67,6 +67,10 @@ struct SettingsView: View {
             }
 
             Section {
+                LanguageToneSettingsView()
+            }
+
+            Section {
                 settingsRow(
                     icon: "creditcard",
                     title: "settings.subscription.title",

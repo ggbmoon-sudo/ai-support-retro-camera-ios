@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 16S - Save HK2 Hong Kong / 麻煩友 Copy System + Safety Style Guide
-Status: Documentation-only product / copy style guide save; ready to commit after final review
-Latest implementation: Saved ChatGPT-provided HK2 Hong Kong / 麻煩友 Copy System + Safety Style Guide to repo and updated phase log / handoff / README references
+Current phase: Phase 16T-R2 / HK3 - Hide Mock Preview Cards From Production UI
+Status: Hid production-visible mock preview cards from Settings Language / Tone UI; ready for user Xcode / Simulator review
+Latest implementation: Kept language-only mock selection, removed production-visible preview / praise loop / explicit phrase cards, kept a short Cantonese safety notice, and updated localization / docs / handoff / manual smoke tests
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -56,7 +56,165 @@ Phase 16P verification: documentation-only research save; no Swift source, backe
 Phase 16Q verification: documentation-only research save; no Swift source, backend source, app behavior change, AI image editing implementation, mock UI implementation, prompt guard implementation, provider adapter, backend, StoreKit, OpenAI / Gemini / Stability integration, real upload, network, persistence, export, API keys, provider SDK, payment, quota, entitlement, moderation, or production config added
 Phase 16R verification: documentation-only research save; no Swift source, backend source, app behavior change, language mode implementation, Settings UI implementation, copy resolver implementation, profanity mode implementation, localization runtime implementation, persistence change, backend, network, real AI, provider SDK, StoreKit, moderation implementation, runtime profanity filtering, or production config added
 Phase 16S verification: documentation-only product / copy style guide save; no Swift source, backend source, app behavior change, language mode implementation, Settings UI implementation, copy resolver implementation, profanity mode implementation, localization runtime implementation, persistence change, backend, network, real AI, provider SDK, StoreKit, moderation implementation, runtime profanity filtering, or production config added
-Next phase: Phase 16S is ready to commit after final review. The next safe implementation candidate from this guide, if explicitly requested later, is HK3 Mock Language Mode UI, not explicit profanity or runtime resolver. Do not start Phase 17, real AI, backend implementation, cloud upload, language mode implementation, Settings UI, copy resolver, localization runtime, explicit profanity mode, LLM-generated copy, AI-generated live camera copy, persistence, StoreKit, payment, moderation implementation, or runtime profanity filtering until explicitly requested.
+Phase 16T verification: localization lint, safety scans, and command-line Xcode generic iOS Simulator build passed on 2026-06-12; Settings-only mock language / tone UI; no runtime language mode, Camera guidance integration, Photo Advisor copy integration, Filter Lab copy integration, copy resolver, explicit profanity enablement, persistence, backend, network, real AI, provider SDK, StoreKit, moderation implementation, runtime profanity filtering, or production config added
+Phase 16T-R1 verification: localization lint, safety scans, and command-line Xcode generic iOS Simulator build passed on 2026-06-12; Settings-only mock language / tone UI remains language-button-only with no runtime language switching, Camera guidance integration, Photo Advisor copy integration, Filter Lab copy integration, copy resolver, explicit profanity enablement, persistence, backend, network, real AI, provider SDK, StoreKit, moderation implementation, runtime profanity filtering, or production config added
+Phase 16T-R2 verification: localization lint, safety scans, and command-line Xcode generic iOS Simulator build passed on 2026-06-12; production-visible mock preview cards are removed from Settings Language / Tone UI with no runtime language switching, Camera guidance integration, Photo Advisor copy integration, Filter Lab copy integration, copy resolver, explicit profanity enablement, persistence, backend, network, real AI, provider SDK, StoreKit, moderation implementation, runtime profanity filtering, or production config added
+Next phase: Phase 16T-R2 is ready for user Xcode / Simulator review. The next safe implementation candidate, if explicitly requested after acceptance, may be HK4 deterministic template integration, not explicit profanity mode. Do not start Phase 17, real AI, backend implementation, cloud upload, runtime language mode, copy resolver, localization runtime, explicit profanity production path, LLM-generated copy, AI-generated live camera copy, persistence, StoreKit, payment, moderation implementation, or runtime profanity filtering until explicitly requested.
+
+---
+
+## Phase 16T-R2 / HK3 - Hide Mock Preview Cards From Production UI
+
+Status: Hid production-visible mock preview cards from Settings Language / Tone UI; ready for user Xcode / Simulator review
+Date completed: 2026-06-12
+
+### Goal
+
+Keep the Language / Tone Settings UI production-clean by removing mock preview phrase cards from the visible Settings surface.
+
+### Completed
+
+- Removed production-visible mock preview cards from the Language / Tone Settings UI.
+- Removed production-visible Tip / After fixing praise loop examples.
+- Removed production-visible explicit profanity example.
+- Kept language buttons for English, Traditional Chinese, Simplified Chinese, and Cantonese.
+- Kept a short Cantonese / 麻煩友 safety notice when Cantonese is selected.
+- Updated English and Traditional Chinese localization keys.
+- Updated README, iOS README, transition handoff, phase log, and manual smoke tests.
+
+### Safety Notes
+
+Phase 16T-R2 remains Settings-only mock UI. It does not add app-wide language switching, runtime language mode, Settings persistence, copy resolver, localization runtime, Camera guidance copy integration, Photo Advisor copy integration, Filter Lab copy integration, 改圖師 copy integration, explicit profanity production path, visible explicit phrase examples in production UI, LLM-generated copy, AI-generated live camera copy, backend code, cloud AI, network calls, `URLSession`, `URLRequest`, WebSocket, Firebase / Gemini / OpenAI / StoreKit imports, provider SDKs, API keys, Firebase config, `GoogleService-Info.plist`, `.env`, `.firebaserc`, upload, persistence changes, `UserDefaults`, `@AppStorage`, Core Data, SwiftData, StoreKit, payment, credits, moderation implementation, runtime profanity filtering, or backend changes.
+
+### Verification
+
+- [x] `git status --short` final check.
+- [x] `git diff --check` final pass.
+- [x] `git diff --stat` final review.
+- [x] Targeted Swift parse / build check.
+- [x] Localization lint.
+- [x] Forbidden imports scan.
+- [x] Network / upload behavior scan.
+- [x] Secrets / config scan.
+- [x] Forbidden behavior scan.
+- [x] Persistence scan.
+- [x] Provider import scan.
+- [x] StoreKit scan.
+- [x] Swift source change summary.
+- [x] Xcode build passed, if environment allows.
+
+### Ready to Commit Phase 16T-R2
+
+No. Wait until the user visually accepts the Phase 16T-R2 result in Xcode / Simulator.
+
+### Ready for Phase 17 / Real AI
+
+No.
+
+---
+
+## Phase 16T-R1 / HK3 - Simplified Mock Language Tone UI
+
+Status: Simplified Settings-only mock language / tone mode UI; ready for user Xcode / Simulator review
+Date completed: 2026-06-12
+
+### Goal
+
+Simplify the Phase 16T Settings mock so it shows language choices only, with preview content driven by the selected language instead of separate tone selector buttons.
+
+### Completed
+
+- Removed the separate tone selector buttons for Neutral, Hong Kong conversational, 麻煩友, and 麻煩友 explicit.
+- Kept language choices: English, Traditional Chinese, Simplified Chinese, and Cantonese.
+- English, Traditional Chinese, and Simplified Chinese now show neutral mock previews.
+- Cantonese now shows a 麻煩友 / controlled explicit preview and Cantonese-only safety notice.
+- Kept all preview content deterministic and static.
+- Kept explicit / profanity direction preview-only and not runtime-enabled.
+- Updated English and Traditional Chinese localization keys.
+- Updated README, iOS README, transition handoff, phase log, and manual smoke tests.
+
+### Safety Notes
+
+Phase 16T-R1 remains Settings-only mock UI. It does not add app-wide language switching, runtime language mode, Settings persistence, copy resolver, localization runtime, Camera guidance copy integration, Photo Advisor copy integration, Filter Lab copy integration, 改圖師 copy integration, explicit profanity production path, LLM-generated copy, AI-generated live camera copy, backend code, cloud AI, network calls, `URLSession`, `URLRequest`, WebSocket, Firebase / Gemini / OpenAI / StoreKit imports, provider SDKs, API keys, Firebase config, `GoogleService-Info.plist`, `.env`, `.firebaserc`, upload, persistence changes, `UserDefaults`, `@AppStorage`, Core Data, SwiftData, StoreKit, payment, credits, moderation implementation, runtime profanity filtering, or backend changes.
+
+### Verification
+
+- [x] `git status --short` final check.
+- [x] `git diff --check` final pass.
+- [x] `git diff --stat` final review.
+- [x] Targeted Swift parse / build check.
+- [x] Localization lint.
+- [x] Forbidden imports scan.
+- [x] Network / upload behavior scan.
+- [x] Secrets / config scan.
+- [x] Forbidden behavior scan.
+- [x] Persistence scan.
+- [x] Provider import scan.
+- [x] StoreKit scan.
+- [x] Swift source change summary.
+- [x] Xcode build passed, if environment allows.
+
+### Ready to Commit Phase 16T-R1
+
+No. Wait until the user visually accepts the Phase 16T-R1 result in Xcode / Simulator.
+
+### Ready for Phase 17 / Real AI
+
+No.
+
+---
+
+## Phase 16T / HK3 - Mock Language Mode UI
+
+Status: Implemented Settings-only mock language / tone mode UI; ready for user Xcode / Simulator review
+Date completed: 2026-06-12
+
+### Goal
+
+Add a Settings-only mock language / tone preview based on Phase 16R research and Phase 16S / HK2 style guide, without changing runtime Camera, Advisor, Filter Lab, or editing copy.
+
+### Completed
+
+- Added `LanguageToneSettingsView` to Settings.
+- Added view-local `AppLanguageMode` and `ToneMode` enum state for mock preview only.
+- Added language choices: English, Traditional Chinese, Simplified Chinese, Cantonese.
+- Added tone choices: Neutral, Hong Kong conversational, 麻煩友, and 麻煩友 explicit as future / disabled.
+- Added deterministic static preview examples for neutral, Hong Kong conversational, 麻煩友, and disabled explicit mode.
+- Added safety notice: 麻煩友 comments on shooting choices and photo state, not appearance, body, or identity.
+- Added explicit mode notice: explicit mode is not enabled and would require future confirmation.
+- Added praise loop preview for "講一次就好，做返對就讚".
+- Added localization keys for English and Traditional Chinese.
+- Updated README, iOS README, transition handoff, phase log, and manual smoke tests.
+
+### Safety Notes
+
+Phase 16T is Settings-only mock UI. It does not add runtime language mode, Settings persistence, copy resolver, localization runtime, Camera guidance copy integration, Photo Advisor copy integration, Filter Lab copy integration, 改圖師 copy integration, explicit profanity production path, LLM-generated copy, AI-generated live camera copy, backend code, cloud AI, network calls, `URLSession`, `URLRequest`, WebSocket, Firebase / Gemini / OpenAI / StoreKit imports, provider SDKs, API keys, Firebase config, `GoogleService-Info.plist`, `.env`, `.firebaserc`, upload, persistence changes, `UserDefaults`, `@AppStorage`, Core Data, SwiftData, StoreKit, payment, credits, moderation implementation, runtime profanity filtering, or backend changes.
+
+### Verification
+
+- [x] `git status --short` checked before implementation.
+- [x] `git status --short` final check.
+- [x] `git diff --check` final pass.
+- [x] `git diff --stat` final review.
+- [x] Targeted Swift parse / build check.
+- [x] Localization lint.
+- [x] Forbidden imports scan.
+- [x] Network / upload behavior scan.
+- [x] Secrets / config scan.
+- [x] Forbidden behavior scan.
+- [x] Persistence scan.
+- [x] Provider import scan.
+- [x] StoreKit scan.
+- [x] Swift source change summary.
+- [x] Xcode build passed, if environment allows.
+
+### Ready to Commit Phase 16T
+
+No. Wait until the user visually accepts the Phase 16T result in Xcode / Simulator.
+
+### Ready for Phase 17 / Real AI
+
+No.
 
 ---
 

@@ -943,6 +943,33 @@ Known TODOs:
 - [ ] Real cloud AI remains deferred to a later explicit Phase 16B / 17 request after commit, push, and read-only confirmation.
 - [ ] Ordinary tab bar and Camera spacing can receive small visual tuning later if new screenshots reveal device-specific spacing issues.
 
+## Phase 16T / HK3 Mock Language Mode UI
+
+Check:
+
+- [ ] Open Settings.
+- [ ] Confirm the Language / Tone section appears.
+- [ ] Confirm only language buttons are shown.
+- [ ] Confirm no separate tone selector appears.
+- [ ] Confirm English / 繁體中文 / 简体中文 / 廣東話 options are visible.
+- [ ] Select English, 繁體中文, 简体中文, and 廣東話 and confirm the choice only affects the Settings mock selection.
+- [ ] Confirm no production-visible preview card appears.
+- [ ] Confirm no production-visible Tip / After fixing / 提示 / 修正後 phrase examples appear.
+- [ ] Confirm no production-visible explicit profanity example appears.
+- [ ] Confirm Cantonese safety notice appears when 廣東話 is selected.
+- [ ] Confirm safety notice says 麻煩友 direction comments on shooting choices and photo state, not appearance, body, or identity.
+- [ ] Confirm there is no app-wide language switching.
+- [ ] Confirm Camera guidance copy remains unchanged.
+- [ ] Confirm Photo Advisor, Filter Lab, and 改圖師 runtime copy remain unchanged.
+- [ ] Confirm no raw localization keys appear.
+- [ ] Confirm no UserDefaults, persistence, network, backend, real AI, provider SDK, StoreKit, payment, moderation, or runtime profanity filtering behavior occurs.
+
+Known TODOs:
+
+- [ ] Runtime language mode is not implemented.
+- [ ] Deterministic copy resolver integration requires a future explicit HK4 phase.
+- [ ] Explicit profanity remains future-only and requires separate safety / App Store / age-rating review before any runtime use.
+
 ## Phase 16K-L Local Heuristic Advisor + Selected Photo UX Polish
 
 Check:

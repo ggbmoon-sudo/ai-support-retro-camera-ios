@@ -145,6 +145,16 @@
 "settings.privacy.delete_account.placeholder" = "Placeholder only; backend deletion arrives in a later privacy phase";
 "settings.subscription.title" = "Subscription";
 "settings.subscription.placeholder" = "Subscription and StoreKit are not connected in this polish phase.";
+"settings.language_tone.title" = "Language / Tone";
+"settings.language_tone.subtitle" = "Mock preview only. This does not change Camera, Photo Advisor, Filter Lab, or Edit actual copy.";
+"settings.language_tone.language.title" = "Language";
+"settings.language_tone.language.english" = "English";
+"settings.language_tone.language.traditional_chinese" = "Traditional Chinese";
+"settings.language_tone.language.simplified_chinese" = "Simplified Chinese";
+"settings.language_tone.language.cantonese" = "Cantonese";
+"settings.language_tone.notice.title" = "Cantonese note";
+"settings.language_tone.notice.safety" = "Cantonese mode will use more local Hong Kong wording. Troublemaker tone is still under safety review.";
+"settings.language_tone.notice.explicit" = "It will only comment on shooting choices and photo state, not appearance, body, or identity.";
 "auth.title" = "Sign in for cloud features";
 "auth.subtitle" = "Basic camera and starter filters should stay accessible. Sign in is planned for sync, cloud history, quota, and account features.";
 "auth.mode.picker" = "Auth mode";

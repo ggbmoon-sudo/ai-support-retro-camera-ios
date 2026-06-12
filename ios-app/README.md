@@ -346,6 +346,14 @@ Selected / imported photo polish keeps the Phase 16I floating AI / Filter tray i
 
 User Xcode / Simulator verification accepted Phase 16K-L on 2026-06-12. The phase is ready to commit after final review; do not commit or push automatically.
 
+## Phase 16T / HK3 Mock Language Mode UI
+
+Phase 16T / HK3 adds a Settings-only mock Language / Tone preview based on the Hong Kong / 麻煩友 research and HK2 copy system style guide.
+
+Phase 16T-R1 simplifies the mock UI to language-only buttons. Phase 16T-R2 hides mock preview, praise loop, and explicit phrase cards from the production Settings UI. Cantonese keeps a short safety notice while 麻煩友 / explicit direction remains future-only.
+
+This phase does not add runtime language switching, app-wide language switching, Settings persistence, copy resolver integration, localization runtime changes, Camera guidance copy changes, Photo Advisor copy changes, Filter Lab copy changes, explicit profanity enablement, backend, network, AI, StoreKit, provider SDKs, moderation, or runtime profanity filtering.
+
 ## Phase 16A Camera One-Screen UX Consolidation
 
 Phase 16A keeps the app local/mock-only and consolidates the Camera capture surface.

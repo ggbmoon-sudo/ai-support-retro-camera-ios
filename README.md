@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 16S HK2 Hong Kong / 麻煩友 Copy System + Safety Style Guide saved as documentation-only
+- Phase 16T-R1 / HK3 simplified Mock Language Tone UI implemented; ready for user Xcode / Simulator review
 
 Next phase:
 
-- Phase 16S is ready to commit after final review; do not commit / push automatically
+- Do not commit Phase 16T-R1 until user visually accepts it in Xcode / Simulator
 - Phase 17 / real AI remain blocked until a backend boundary phase is explicitly requested later
 
 Before each task, read `AGENTS.md`, the required docs listed there, and the relevant phase prompt in `docs/prompts/`.
@@ -443,6 +443,8 @@ Phase 16Q saves the ChatGPT-provided Paid AI Image Editing / 改圖師 research 
 Phase 16R saves the ChatGPT-provided Hong Kong / 麻煩友 Language Mode UX + Safety research at `docs/research/hong-kong-troublemaker-language-mode-research.md`. It recommends HK2 copy system / style guide documentation before any runtime language mode and keeps explicit profanity mode, Settings UI, copy resolver, localization runtime, persistence, LLM-generated copy, backend, network, and AI-generated live camera copy out of scope. Phase 16R does not change Swift app behavior.
 
 Phase 16S saves the ChatGPT-provided HK2 Hong Kong / 麻煩友 Copy System + Safety Style Guide at `docs/product/hk-troublemaker-copy-system-style-guide.md`. It is a product / copy style guide, not runtime implementation, and keeps runtime language mode, Settings UI, explicit profanity mode, copy resolver, localization runtime, persistence, LLM-generated copy, backend, network, and AI-generated live camera copy out of scope. Phase 16S does not change Swift app behavior.
+
+Phase 16T / HK3 adds a Settings-only mock Language / Tone entry based on Phase 16R and HK2. Phase 16T-R1 simplifies it to language-only buttons for English / 繁體中文 / 简体中文 / 廣東話, and Phase 16T-R2 hides mock preview / praise loop / explicit phrase cards from the production Settings UI. Cantonese keeps a short safety notice. It does not change Camera guidance, Photo Advisor, Filter Lab, editing runtime copy, app-wide language switching, persistence, backend, network, AI, StoreKit, or provider integration.
 
 ## Phase 16A Camera One-Screen UX Consolidation Status
 

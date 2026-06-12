@@ -66,6 +66,7 @@ Confirmed locally:
 - Phase 16Q - Save Paid AI Image Editing / 改圖師 Research
 - Phase 16R - Save Hong Kong / 麻煩友 Language Mode Research
 - Phase 16S - Save HK2 Hong Kong / 麻煩友 Copy System + Safety Style Guide
+- Phase 16T / HK3 - Mock Language Mode UI
 
 Phase 16G status:
 
@@ -119,6 +120,9 @@ Important completed route so far:
 - Phase 16Q - Paid AI Image Editing / 改圖師 research save.
 - Phase 16R - Hong Kong / 麻煩友 Language Mode UX + Safety research save.
 - Phase 16S - HK2 Hong Kong / 麻煩友 Copy System + Safety Style Guide save.
+- Phase 16T / HK3 - Settings-only mock Language / Tone UI.
+- Phase 16T-R1 / HK3 - simplified Settings mock UI to language-only buttons.
+- Phase 16T-R2 / HK3 - hid production-visible mock preview cards from Settings.
 
 This list is a short orientation map only. Use `docs/phase-log.md` as the detailed source of truth.
 
@@ -313,6 +317,20 @@ This update records work completed by the new Codex / Codex API session after th
 - The next safe step, if explicitly requested, may be HK3 Mock Language Mode UI.
 - Runtime deterministic template integration should wait until mock UI and copy resolver phases are explicitly approved.
 - Explicit profanity mode requires separate review, App Store / age rating consideration, explicit opt-in, and manual QA.
+- Phase 16T / HK3 added a Settings-only mock Language / Tone preview UI.
+- Phase 16T-R1 simplified the mock Settings UI so only language buttons are shown.
+- Phase 16T-R2 hides the mock preview cards from the production Settings UI.
+- Language / Tone remains a Settings-only mock selection with English, Traditional Chinese, Simplified Chinese, and Cantonese buttons.
+- Preview examples are removed from production UI.
+- Cantonese keeps a short safety notice; 麻煩友 / explicit direction remains safety-reviewed future work.
+- Future runtime integration is still not implemented.
+- App-wide language switching is not implemented.
+- Runtime copy resolver is not implemented.
+- Explicit mode is not runtime-enabled and no production-visible explicit phrase example is shown.
+- The next safe step, if explicitly requested after user acceptance, may be HK4 deterministic template integration.
+- Do not jump directly to explicit profanity mode.
+- Do not use LLM-generated live camera copy.
+- Runtime deterministic template integration should wait for an explicit phase and must not write to persistence without approval.
 
 ### Next Recommended Phase Options
 
@@ -454,6 +472,8 @@ Important docs already added or expected in this roadmap:
 - HK2 Copy System / Style Guide documentation is a safer future step than runtime language mode or explicit profanity mode.
 - Future language mode / copy resolver / profanity / localization runtime work must now also follow `docs/product/hk-troublemaker-copy-system-style-guide.md`.
 - HK3 Mock Language Mode UI is a safer future step than explicit profanity mode or runtime copy resolver.
+- Phase 16T / HK3 now provides the Settings mock UI preview only. Phase 16T-R1 keeps it simpler with language-only buttons and no separate tone selector. Phase 16T-R2 hides mock preview / praise loop / explicit phrase cards from production Settings UI. Runtime language mode, app-wide language switching, copy resolver, localization runtime, persistence, and explicit profanity remain unimplemented.
+- HK4 deterministic template integration may be considered later only after explicit user approval.
 
 ---
 

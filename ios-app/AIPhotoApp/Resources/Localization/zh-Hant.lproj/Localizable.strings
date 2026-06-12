@@ -145,6 +145,16 @@
 "settings.auth.sign_out.placeholder" = "只限 mock 登出";
 "settings.privacy.delete_account" = "刪除帳戶";
 "settings.privacy.delete_account.placeholder" = "只限 placeholder；真正後端刪除會在之後的私隱階段處理";
+"settings.language_tone.title" = "語言 / 語氣";
+"settings.language_tone.subtitle" = "只限 mock 預覽。不會改變 Camera、相片顧問、Filter Lab 或改圖師的實際文案。";
+"settings.language_tone.language.title" = "語言";
+"settings.language_tone.language.english" = "English";
+"settings.language_tone.language.traditional_chinese" = "繁體中文";
+"settings.language_tone.language.simplified_chinese" = "简体中文";
+"settings.language_tone.language.cantonese" = "廣東話";
+"settings.language_tone.notice.title" = "廣東話說明";
+"settings.language_tone.notice.safety" = "廣東話模式會使用較地道的香港口語。正式麻煩友語氣仍在安全審核中。";
+"settings.language_tone.notice.explicit" = "只會針對拍攝操作和照片狀態，不會評論樣貌、身材或身份。";
 "auth.title" = "登入以使用雲端功能";
 "auth.subtitle" = "基本相機和入門濾鏡不應被登入鎖住。登入主要用於同步、雲端歷史、額度和帳戶功能。";
 "auth.mode.picker" = "登入模式";
