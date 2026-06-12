@@ -31,7 +31,13 @@ final class PhotoAdvisorViewModel: ObservableObject {
             state = .success(result)
         } catch PhotoAdvisorError.mockUnavailable {
             guard activeRequestID == requestID else { return }
-            state = .unavailable(messageKey: "photo_advisor.error.unavailable")
+            state = .unavailable(
+                messageKey: PhotoAdvisorCopyResolver().messageKey(
+                    for: .unavailable,
+                    language: input.languageMode,
+                    requestedTone: input.toneMode
+                )
+            )
         } catch {
             guard activeRequestID == requestID else { return }
             state = .failed(messageKey: "photo_advisor.error.invalid_result")
@@ -48,7 +54,9 @@ final class PhotoAdvisorViewModel: ObservableObject {
             imageSignal: lastInput.imageSignal,
             mockScene: nil,
             variantSeed: variantSeed,
-            localeIdentifier: lastInput.localeIdentifier
+            localeIdentifier: lastInput.localeIdentifier,
+            languageMode: lastInput.languageMode,
+            toneMode: lastInput.toneMode
         )
         await analyze(nextInput)
     }

@@ -370,6 +370,22 @@ Settings saves `cameraCoach.languageMode` and `cameraCoach.toneMode`. English, T
 
 This phase does not add app-wide language switching, Photo Advisor copy changes, Filter Lab copy changes, image editing copy changes, backend, network, AI, StoreKit, provider SDKs, upload, export, save-to-Photos, or raw image / frame persistence.
 
+## Phase 16W Photo Advisor Language / Tone Resolver
+
+Phase 16W extends the persisted language / tone preference to the mock/local Post-capture Photo Advisor.
+
+Photo Advisor copy now supports English, Traditional Chinese, Simplified Chinese, Cantonese conversational, and non-explicit 麻煩友 phrasing. The result card structure, filter recommendation apply behavior, no-upload boundary, and mock/local service boundary stay unchanged.
+
+This phase does not add real AI, backend, network, provider SDKs, upload, Photo Advisor output persistence, app-wide language switching, Filter Lab copy changes, image editing copy changes, explicit profanity runtime, StoreKit, export, save-to-Photos, or raw image / frame persistence.
+
+## Phase 16W-R2 Camera Local-only AI Surface
+
+Phase 16W-R2 keeps Camera focused on capture and Local Camera Coach / 本機導拍 only.
+
+Camera no longer exposes AI Snapshot / cloud-style quick advice entry points. Local Guidance remains visible and follows the persisted language / tone preference. Inspiration / imported / selected Photo Advisor remains available and language-aware for mock/local advisor flow and future cloud AI planning.
+
+This phase does not add real AI, backend, network, provider SDKs, upload, new persistence beyond language / tone preference, app-wide language switching, explicit profanity runtime, StoreKit, export, save-to-Photos, or raw image / frame persistence.
+
 ## Phase 16A Camera One-Screen UX Consolidation
 
 Phase 16A keeps the app local/mock-only and consolidates the Camera capture surface.

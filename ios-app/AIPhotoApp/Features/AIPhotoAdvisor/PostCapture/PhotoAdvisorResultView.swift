@@ -10,6 +10,7 @@ struct PhotoAdvisorResultView: View {
     let onApplyFilter: (FilterPreset) -> Void
 
     @StateObject private var viewModel: PhotoAdvisorViewModel
+    @ObservedObject private var toneSettings = CameraCoachToneSettingsStore.shared
     @State private var applyMessageKey: String?
 
     init(
@@ -344,7 +345,9 @@ struct PhotoAdvisorResultView: View {
             photoId: photoId,
             source: source,
             selectedFilterId: selectedPreset.id,
-            imageSignal: imageSignal
+            imageSignal: imageSignal,
+            languageMode: toneSettings.runtimeLanguageMode,
+            toneMode: toneSettings.runtimeToneMode
         )
     }
 

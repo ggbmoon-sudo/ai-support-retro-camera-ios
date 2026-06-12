@@ -64,6 +64,19 @@ final class CameraViewModel: ObservableObject {
     }
 
     var liveGuidanceStateTitleKey: String {
+        guard liveGuidanceMode == .local,
+              liveGuidanceState != .off,
+              liveGuidanceState != .paused else {
+            return liveGuidanceState.titleKey(for: liveGuidanceMode)
+        }
+
+        return GuidanceCopyResolver().chipTitleKey(
+            language: CameraCoachToneSettingsStore.shared.runtimeLanguageMode,
+            requestedTone: CameraCoachToneSettingsStore.shared.runtimeToneMode
+        )
+    }
+
+    var legacyLiveGuidanceStateTitleKey: String {
         liveGuidanceState.titleKey(for: liveGuidanceMode)
     }
 
@@ -235,6 +248,11 @@ final class CameraViewModel: ObservableObject {
     func toggleLiveGuidanceMode() {
         liveGuidanceMode = liveGuidanceMode.next
         updateFrameSignalAnalysisAvailability()
+        refreshLiveGuidanceSuggestions(resetStability: true)
+    }
+
+    func refreshLiveGuidanceCopyForCurrentTone() {
+        guard liveGuidanceMode == .local else { return }
         refreshLiveGuidanceSuggestions(resetStability: true)
     }
 

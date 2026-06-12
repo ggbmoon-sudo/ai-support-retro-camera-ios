@@ -10,7 +10,6 @@ enum CameraAppDestination {
 private enum CameraCallout {
     case none
     case guidance
-    case aiSnapshot
     case filter
     case lens
     case pose
@@ -22,6 +21,7 @@ struct CameraView: View {
     let navigateToAppDestination: ((CameraAppDestination) -> Void)?
     @StateObject private var viewModel: CameraViewModel
     @StateObject private var poseOverlayState = CameraPoseOverlayState()
+    @ObservedObject private var toneSettings = CameraCoachToneSettingsStore.shared
     @State private var isCaptureFilterPickerVisible = false
     @State private var isFlashEnabled = false
     @State private var selectedTimerOption: CameraTimerOption = .off
@@ -31,7 +31,6 @@ struct CameraView: View {
     @State private var isUsingFrontCameraMock = false
     @State private var isScreenFlashVisible = false
     @State private var isLiveGuidanceExpanded = false
-    @State private var isCloudSnapshotSheetPresented = false
     @State private var activeCameraCallout: CameraCallout = .none
     @State private var activeSelectedPhotoPanel: FloatingPhotoActionPanel?
 
@@ -97,13 +96,6 @@ struct CameraView: View {
         }) {
             filterPickerSheet
         }
-        .sheet(isPresented: $isCloudSnapshotSheetPresented, onDismiss: {
-                if activeCameraCallout == .aiSnapshot {
-                    activeCameraCallout = .none
-                }
-        }) {
-            cloudSnapshotGuidanceSheet
-        }
         .confirmationDialog(
             Text("camera.timer.dialog.title"),
             isPresented: $isTimerDialogPresented,
@@ -134,6 +126,12 @@ struct CameraView: View {
             if newValue == nil {
                 activeSelectedPhotoPanel = nil
             }
+        }
+        .onChange(of: toneSettings.languageMode) { _, _ in
+            viewModel.refreshLiveGuidanceCopyForCurrentTone()
+        }
+        .onChange(of: toneSettings.toneMode) { _, _ in
+            viewModel.refreshLiveGuidanceCopyForCurrentTone()
         }
     }
 
@@ -359,15 +357,6 @@ struct CameraView: View {
                     activeCameraCallout = .none
                     isLiveGuidanceExpanded = false
                     viewModel.toggleLiveGuidance()
-                }
-            )
-
-            LiveGuidanceModeSelectorView(
-                mode: viewModel.liveGuidanceMode,
-                toggle: {
-                    activeCameraCallout = .none
-                    isLiveGuidanceExpanded = false
-                    viewModel.toggleLiveGuidanceMode()
                 }
             )
 
@@ -647,8 +636,6 @@ struct CameraView: View {
             }
 
             HStack(spacing: AppSpacing.xs) {
-                aiSnapshotNativeButton
-
                 Spacer(minLength: AppSpacing.xs)
 
                 HStack(spacing: AppSpacing.xs) {
@@ -736,38 +723,6 @@ struct CameraView: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel(titleKey)
-    }
-
-    private var aiSnapshotNativeButton: some View {
-        Button {
-            activeCameraCallout = .aiSnapshot
-            isLiveGuidanceExpanded = false
-            if case .idle = viewModel.cloudSnapshotGuidanceState {
-                viewModel.requestCloudSnapshotGuidanceConsent()
-            }
-            isCloudSnapshotSheetPresented = true
-        } label: {
-            HStack(spacing: AppSpacing.xs) {
-                Image(systemName: "wand.and.stars")
-                    .font(.system(size: 15, weight: .bold))
-
-                Text("camera.cloud_snapshot.short")
-                    .font(.caption2.weight(.semibold))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.72)
-            }
-            .padding(.vertical, AppSpacing.sm)
-            .padding(.horizontal, AppSpacing.md)
-            .background(Color.black.opacity(0.54))
-            .foregroundStyle(AppColors.accent)
-            .clipShape(Capsule())
-            .overlay {
-                Capsule()
-                    .stroke(AppColors.accent.opacity(0.34), lineWidth: 1)
-            }
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel("camera.cloud_snapshot.entry")
     }
 
     private var flipCameraButton: some View {
@@ -980,11 +935,6 @@ struct CameraView: View {
                 isEnabled: viewModel.liveGuidanceState != .off,
                 toggle: viewModel.toggleLiveGuidance
             )
-
-            LiveGuidanceModeSelectorView(
-                mode: viewModel.liveGuidanceMode,
-                toggle: viewModel.toggleLiveGuidanceMode
-            )
         }
     }
 
@@ -1065,53 +1015,9 @@ struct CameraView: View {
         }
     }
 
-    private var cloudSnapshotGuidancePanel: some View {
-        Button {
-            if case .idle = viewModel.cloudSnapshotGuidanceState {
-                viewModel.requestCloudSnapshotGuidanceConsent()
-            }
-            isCloudSnapshotSheetPresented = true
-        } label: {
-            HStack(spacing: AppSpacing.xs) {
-                Image(systemName: "wand.and.stars")
-                    .font(.system(size: 12, weight: .bold))
-
-                Text("camera.cloud_snapshot.title")
-                    .font(.caption2.weight(.semibold))
-                    .lineLimit(1)
-
-                Text(LocalizedStringKey(viewModel.cloudSnapshotGuidanceState.titleKey))
-                    .font(.caption2)
-                    .foregroundStyle(.white.opacity(0.68))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.75)
-
-                Spacer(minLength: AppSpacing.xs)
-
-                Text("camera.cloud_snapshot.badge.mock")
-                    .font(.caption2.weight(.semibold))
-                    .foregroundStyle(AppColors.accent)
-                    .lineLimit(1)
-            }
-            .padding(.vertical, AppSpacing.xs)
-            .padding(.horizontal, AppSpacing.sm)
-            .foregroundStyle(.white)
-            .background(Color.black.opacity(0.48))
-            .clipShape(Capsule())
-            .overlay {
-                Capsule()
-                    .stroke(AppColors.accent.opacity(0.32), lineWidth: 1)
-            }
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel("camera.cloud_snapshot.entry")
-        .accessibilityElement(children: .contain)
-    }
-
     private var cameraAssistControls: some View {
         VStack(spacing: AppSpacing.xs) {
             liveGuidancePanel
-            cloudSnapshotGuidancePanel
         }
     }
 
@@ -1322,6 +1228,10 @@ struct CameraView: View {
         activeSelectedPhotoPanel == nil ? 112 : 160
     }
 
+    private var isPrimaryCameraSurface: Bool {
+        !showsCloseButton
+    }
+
     private func selectedPhotoFloatingLayer(_ photo: CapturedPhoto) -> some View {
         ZStack(alignment: .bottom) {
             if activeSelectedPhotoPanel != nil {
@@ -1333,7 +1243,7 @@ struct CameraView: View {
             }
 
             VStack(spacing: AppSpacing.sm) {
-                if activeSelectedPhotoPanel == .advisor {
+                if !isPrimaryCameraSurface, activeSelectedPhotoPanel == .advisor {
                     FloatingPhotoAdvisorSheet(
                         photoId: advisorPhotoId(for: photo),
                         source: advisorPhotoSource(for: photo),
@@ -1355,7 +1265,7 @@ struct CameraView: View {
                     FloatingFilterGridView(
                         presets: viewModel.filterPresets,
                         selectedPreset: viewModel.selectedFilterPreset,
-                        recommendedFilters: floatingRecommendedFilters(for: photo),
+                        recommendedFilters: isPrimaryCameraSurface ? [] : floatingRecommendedFilters(for: photo),
                         isRendering: viewModel.isFiltering,
                         onSelectPreset: { preset in
                             viewModel.selectFilterPreset(preset)
@@ -1372,8 +1282,11 @@ struct CameraView: View {
                     selectedPreset: viewModel.selectedFilterPreset,
                     activePanel: activeSelectedPhotoPanel,
                     isRendering: viewModel.isFiltering,
+                    showsAdvisorButton: !isPrimaryCameraSurface,
                     onToggleAdvisor: {
-                        toggleSelectedPhotoPanel(.advisor)
+                        if !isPrimaryCameraSurface {
+                            toggleSelectedPhotoPanel(.advisor)
+                        }
                     },
                     onToggleFilters: {
                         toggleSelectedPhotoPanel(.filters)
@@ -1388,6 +1301,11 @@ struct CameraView: View {
     }
 
     private func toggleSelectedPhotoPanel(_ panel: FloatingPhotoActionPanel) {
+        guard !isPrimaryCameraSurface || panel != .advisor else {
+            activeSelectedPhotoPanel = nil
+            return
+        }
+
         activeSelectedPhotoPanel = activeSelectedPhotoPanel == panel ? nil : panel
     }
 
@@ -1496,92 +1414,6 @@ struct CameraView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("camera.action.close") {
                         isCaptureFilterPickerVisible = false
-                    }
-                }
-            }
-        }
-        .presentationDetents([.medium, .large])
-    }
-
-    private var cloudSnapshotGuidanceSheet: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: AppSpacing.md) {
-                    HStack(spacing: AppSpacing.xs) {
-                        Label("camera.cloud_snapshot.title", systemImage: "wand.and.stars")
-                            .font(AppTypography.bodyEmphasis)
-
-                        Spacer()
-
-                        Text("camera.cloud_snapshot.badge.mock")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(AppColors.accent)
-                    }
-
-                    Text("camera.cloud_snapshot.entry_note")
-                        .font(AppTypography.caption)
-                        .foregroundStyle(AppColors.textSecondary)
-                        .fixedSize(horizontal: false, vertical: true)
-
-                    Group {
-                        switch viewModel.cloudSnapshotGuidanceState {
-                        case .idle:
-                            Button {
-                                viewModel.requestCloudSnapshotGuidanceConsent()
-                            } label: {
-                                Label("camera.cloud_snapshot.entry", systemImage: "sparkles")
-                                    .font(AppTypography.bodyEmphasis)
-                                    .frame(maxWidth: .infinity)
-                            }
-                            .buttonStyle(.borderedProminent)
-                            .tint(AppColors.accent)
-                        case .consentRequired:
-                            CloudSnapshotGuidanceConsentView(
-                                startAnalysis: {
-                                    Task {
-                                        await viewModel.startMockCloudSnapshotGuidance()
-                                    }
-                                },
-                                simulateFailure: {
-                                    Task {
-                                        await viewModel.startMockCloudSnapshotGuidance(outcome: .failure)
-                                    }
-                                },
-                                simulateUnavailable: {
-                                    Task {
-                                        await viewModel.startMockCloudSnapshotGuidance(outcome: .unavailable)
-                                    }
-                                },
-                                cancel: {
-                                    viewModel.resetCloudSnapshotGuidance()
-                                    isCloudSnapshotSheetPresented = false
-                                }
-                            )
-                        case .preparingSnapshot, .analyzing, .result, .failed, .unavailable:
-                            CloudSnapshotGuidanceResultView(
-                                state: viewModel.cloudSnapshotGuidanceState,
-                                retry: viewModel.requestCloudSnapshotGuidanceConsent,
-                                dismiss: {
-                                    viewModel.resetCloudSnapshotGuidance()
-                                    isCloudSnapshotSheetPresented = false
-                                }
-                            )
-                        }
-                    }
-                    .padding(AppSpacing.md)
-                    .foregroundStyle(.white)
-                    .background(Color.black.opacity(0.82))
-                    .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.md))
-                }
-                .padding(AppSpacing.lg)
-            }
-            .background(AppColors.background)
-            .navigationTitle("camera.cloud_snapshot.title")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("camera.action.close") {
-                        isCloudSnapshotSheetPresented = false
                     }
                 }
             }

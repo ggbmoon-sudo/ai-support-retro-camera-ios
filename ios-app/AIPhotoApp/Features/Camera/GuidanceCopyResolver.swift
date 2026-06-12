@@ -95,14 +95,30 @@ nonisolated struct GuidanceCopyResolver: Sendable {
              .successPraise:
             return "camera.guidance.copy.\(language.keyComponent).\(tone.keyComponent).\(category.rawValue)"
         case .directLight:
-            return "camera.guidance.suggestion.avoid_direct_light"
+            return "camera.guidance.copy.\(language.keyComponent).\(tone.keyComponent).direct_light"
         case .portraitDistance:
-            return "camera.guidance.suggestion.step_back_portrait"
+            return "camera.guidance.copy.\(language.keyComponent).\(tone.keyComponent).portrait_distance"
         case .filter:
-            return "camera.guidance.suggestion.try_warm_filter"
+            return "camera.guidance.copy.\(language.keyComponent).\(tone.keyComponent).filter"
         case .unavailable:
-            return "camera.guidance.suggestion.local_signal_unavailable"
+            return "camera.guidance.copy.\(language.keyComponent).\(tone.keyComponent).unavailable"
         }
+    }
+
+    func chipTitleKey(
+        language: AppLanguageMode = .traditionalChinese,
+        requestedTone: ToneMode = .neutral,
+        featureContext: FeatureContext = .liveCameraCoach,
+        isPublicContext: Bool = false
+    ) -> String {
+        let resolvedTone = safetyPolicy.resolvedTone(
+            requestedTone: requestedTone,
+            featureContext: featureContext,
+            isPublicContext: isPublicContext
+        )
+        let tone = language.resolvedTone(for: resolvedTone)
+
+        return "camera.guidance.chip.\(language.keyComponent).\(tone.keyComponent)"
     }
 }
 

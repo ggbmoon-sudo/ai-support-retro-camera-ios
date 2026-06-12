@@ -27,7 +27,8 @@ final class MockPhotoAdvisorService: PhotoAdvisorService {
         case .unavailable:
             throw PhotoAdvisorError.mockUnavailable
         case .invalidThenFallback:
-            return PhotoAdvisorResultValidator.fallback(allowedFilterIds: allowedFilterIds)
+            let fallback = PhotoAdvisorResultValidator.fallback(allowedFilterIds: allowedFilterIds)
+            return PhotoAdvisorCopyResolver().localizedResult(fallback, input: input)
         }
     }
 }

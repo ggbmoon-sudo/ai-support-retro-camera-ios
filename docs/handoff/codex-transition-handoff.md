@@ -125,6 +125,8 @@ Important completed route so far:
 - Phase 16T-R2 / HK3 - hid production-visible mock preview cards from Settings.
 - Phase 16U / HK4 - deterministic Local Camera Coach copy resolver scaffold / neutral runtime integration.
 - Phase 16V - persistent Language / Tone settings + Local Camera Coach runtime integration.
+- Phase 16W - extended persisted Language / Tone preference to mock/local Post-capture Photo Advisor copy.
+- Phase 16W-R2 - Camera local-only AI surface cleanup.
 
 This list is a short orientation map only. Use `docs/phase-log.md` as the detailed source of truth.
 
@@ -350,6 +352,17 @@ This update records work completed by the new Codex / Codex API session after th
 - App-wide language switching remains not implemented.
 - Photo Advisor, Filter Lab, 改圖師 / image editing, AI Snapshot, History, and Inspiration runtime copy remain unchanged.
 - Future expansion of the resolver to Photo Advisor or other surfaces requires separate explicit approval.
+- Phase 16W connected the persisted Language / Tone setting to mock/local Post-capture Photo Advisor copy.
+- Runtime scope now includes Local Camera Coach and Photo Advisor only.
+- Photo Advisor supports English, Traditional Chinese, Simplified Chinese, Cantonese HK conversational, and Cantonese non-explicit 麻煩友 copy.
+- Explicit profanity remains future-only and is not output by Photo Advisor.
+- Filter Lab, 改圖師 / image editing, AI Snapshot, Cloud AI, History persistence, and backend remain unchanged.
+- Future phases may expand labels / localization polish or Filter Lab copy only if explicitly requested.
+- Phase 16W-R2 makes Camera a local-only AI guidance surface.
+- Camera AI Snapshot / cloud-style quick advice entry is hidden / removed from Camera UI.
+- Local Camera Coach remains visible on Camera and follows persisted Language / Tone preference.
+- Cloud-style AI Advisor / Photo Advisor remains in Inspiration / imported / selected photo flows.
+- Future Phase 17 real cloud AI should target Inspiration / Photo Advisor first, not Camera tab.
 
 ### Next Recommended Phase Options
 
@@ -494,8 +507,11 @@ Important docs already added or expected in this roadmap:
 - Phase 16T / HK3 introduced the Settings language / tone surface. Phase 16T-R1 kept it simpler with language buttons, and Phase 16T-R2 hid mock preview / praise loop / explicit phrase cards from production Settings UI.
 - Phase 16U / HK4 added deterministic Local Camera Coach copy resolver scaffolding.
 - Phase 16V now persists Language / Tone preference and uses it only for Local Camera Coach runtime copy.
+- Phase 16W extends the same persisted preference to mock/local Photo Advisor copy.
+- Phase 16W-R2 cleans up Camera so it is a local-only AI surface.
+- Runtime scope is now Local Camera Coach plus Photo Advisor only, with Camera exposing Local Camera Coach and Inspiration exposing Photo Advisor.
 - App-wide language switching remains not implemented.
-- Photo Advisor / Filter Lab / 改圖師 copy integration remains future-only.
+- Filter Lab / 改圖師 copy integration remains future-only.
 - Explicit profanity remains future review-only and not runtime-enabled.
 
 ---

@@ -3,6 +3,7 @@ import SwiftUI
 struct LiveGuidanceToggleView: View {
     let isEnabled: Bool
     let toggle: () -> Void
+    @ObservedObject private var toneSettings = CameraCoachToneSettingsStore.shared
 
     var body: some View {
         Button {
@@ -12,7 +13,7 @@ struct LiveGuidanceToggleView: View {
                 Image(systemName: isEnabled ? "lightbulb.fill" : "lightbulb.slash")
                     .font(.system(size: 12, weight: .bold))
 
-                Text(LocalizedStringKey(isEnabled ? "camera.guidance.toggle.on" : "camera.guidance.toggle.off"))
+                Text(titleKey)
                     .font(.caption2.weight(.semibold))
                     .lineLimit(1)
                     .minimumScaleFactor(0.75)
@@ -29,6 +30,17 @@ struct LiveGuidanceToggleView: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel("camera.guidance.toggle.accessibility")
+    }
+
+    private var titleKey: LocalizedStringKey {
+        guard isEnabled else { return "camera.guidance.toggle.off" }
+
+        return LocalizedStringKey(
+            GuidanceCopyResolver().chipTitleKey(
+                language: toneSettings.runtimeLanguageMode,
+                requestedTone: toneSettings.runtimeToneMode
+            )
+        )
     }
 }
 

@@ -6,6 +6,7 @@ enum PhotoAdvisorHeuristicResolver {
         let base = PhotoAdvisorFixtures.result(for: scene)
         let recommendations = filterRecommendations(for: input, scene: scene)
         let suggestions = suggestions(for: input, base: base)
+        let copyResolver = PhotoAdvisorCopyResolver()
 
         let result = PhotoAdvisorResult(
             id: "\(base.id)_\(input.selectedFilterId ?? "none")_\(input.imageSignal.aspectRatioBucket.rawValue)",
@@ -21,7 +22,8 @@ enum PhotoAdvisorHeuristicResolver {
             source: .local
         )
 
-        return PhotoAdvisorResultValidator.validated(result, allowedFilterIds: allowedFilterIds)
+        let localizedResult = copyResolver.localizedResult(result, input: input)
+        return PhotoAdvisorResultValidator.validated(localizedResult, allowedFilterIds: allowedFilterIds)
     }
 
     static func scene(for input: PhotoAdvisorInput) -> PhotoAdvisorMockScene {

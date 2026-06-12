@@ -9,20 +9,23 @@ struct FloatingPhotoActionTrayView: View {
     let selectedPreset: FilterPreset
     let activePanel: FloatingPhotoActionPanel?
     let isRendering: Bool
+    let showsAdvisorButton: Bool
     let onToggleAdvisor: () -> Void
     let onToggleFilters: () -> Void
 
     var body: some View {
         HStack(spacing: AppSpacing.sm) {
-            Button(action: onToggleAdvisor) {
-                trayButtonContent(
-                    icon: "sparkles",
-                    titleKey: "photo_advisor.floating.ai_advice",
-                    subtitleKey: "photo_advisor.badge.mock",
-                    isActive: activePanel == .advisor
-                )
+            if showsAdvisorButton {
+                Button(action: onToggleAdvisor) {
+                    trayButtonContent(
+                        icon: "sparkles",
+                        titleKey: "photo_advisor.floating.ai_advice",
+                        subtitleKey: "photo_advisor.badge.mock",
+                        isActive: activePanel == .advisor
+                    )
+                }
+                .buttonStyle(.plain)
             }
-            .buttonStyle(.plain)
 
             Button(action: onToggleFilters) {
                 HStack(spacing: AppSpacing.sm) {
@@ -113,6 +116,7 @@ struct FloatingPhotoActionTrayView: View {
         selectedPreset: FilterPresetCatalog.streetChrome,
         activePanel: .filters,
         isRendering: false,
+        showsAdvisorButton: true,
         onToggleAdvisor: {},
         onToggleFilters: {}
     )

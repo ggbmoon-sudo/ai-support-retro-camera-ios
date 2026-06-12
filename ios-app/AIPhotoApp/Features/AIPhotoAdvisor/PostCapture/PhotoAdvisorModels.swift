@@ -8,6 +8,8 @@ struct PhotoAdvisorInput: Hashable {
     let mockScene: PhotoAdvisorMockScene?
     let variantSeed: Int
     let localeIdentifier: String
+    let languageMode: AppLanguageMode
+    let toneMode: ToneMode
 
     init(
         photoId: String,
@@ -16,7 +18,9 @@ struct PhotoAdvisorInput: Hashable {
         imageSignal: PhotoAdvisorImageSignal = .unavailable,
         mockScene: PhotoAdvisorMockScene? = nil,
         variantSeed: Int = 0,
-        localeIdentifier: String = Locale.preferredLanguages.first ?? "en"
+        localeIdentifier: String = Locale.preferredLanguages.first ?? "en",
+        languageMode: AppLanguageMode = .traditionalChinese,
+        toneMode: ToneMode = .neutral
     ) {
         self.photoId = photoId
         self.source = source
@@ -25,6 +29,8 @@ struct PhotoAdvisorInput: Hashable {
         self.mockScene = mockScene
         self.variantSeed = variantSeed
         self.localeIdentifier = localeIdentifier
+        self.languageMode = languageMode
+        self.toneMode = toneMode
     }
 }
 

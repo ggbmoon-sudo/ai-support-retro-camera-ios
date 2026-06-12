@@ -1031,6 +1031,75 @@ Known TODOs:
 - [ ] Expanding the resolver to Photo Advisor / Filter Lab / 改圖師 requires a separate explicit phase.
 - [ ] Explicit profanity remains unsupported in runtime and requires separate safety / App Store / age-rating review before any future use.
 
+## Phase 16W Extend Language / Tone Resolver to Photo Advisor
+
+Check:
+
+- [ ] Open Settings and select English.
+- [ ] Open captured / imported photo AI 建議 / Photo Advisor.
+- [ ] Confirm Photo Advisor copy appears in English.
+- [ ] Select 繁體中文.
+- [ ] Open Photo Advisor again and confirm copy appears in Traditional Chinese.
+- [ ] Select 简体中文.
+- [ ] Open Photo Advisor again and confirm copy appears in Simplified Chinese.
+- [ ] Select 廣東話 and 香港口語.
+- [ ] Open Photo Advisor again and confirm copy appears in Cantonese conversational style.
+- [ ] Select 廣東話 and 麻煩友.
+- [ ] Open Photo Advisor again and confirm copy appears in non-explicit 麻煩友 style.
+- [ ] Confirm no explicit profanity appears in Photo Advisor runtime copy.
+- [ ] Confirm no banned appearance, body, identity, age, gender, health, mental health, protected-class, or attractiveness wording appears.
+- [ ] Confirm Photo Advisor card structure is unchanged.
+- [ ] Confirm recommended filter apply still works.
+- [ ] Confirm Camera Coach still follows the selected language / tone.
+- [ ] Confirm Filter Lab runtime copy is unchanged.
+- [ ] Confirm 改圖師 / image editing runtime copy is unchanged.
+- [ ] Confirm no app-wide language switching occurs.
+- [ ] Confirm no raw localization keys appear.
+- [ ] Confirm no new persistence beyond `cameraCoach.languageMode` and `cameraCoach.toneMode`.
+- [ ] Confirm no network, backend, real AI, provider SDK, StoreKit, payment, upload, save-to-Photos, or export behavior occurs.
+
+Known TODOs:
+
+- [ ] Photo Advisor labels can receive deeper localization polish in a later explicit phase.
+- [ ] Filter Lab / 改圖師 copy resolver integration remains future-only.
+- [ ] Explicit profanity remains unsupported in Photo Advisor runtime.
+
+## Phase 16W-R2 Camera Local-only AI Surface Cleanup
+
+Check:
+
+- [ ] Open Camera.
+- [ ] Confirm no AI Snapshot / Quick Advice / cloud-style AI button appears on Camera.
+- [ ] Confirm no Camera surface shows `AI Snapshot`, `Quick Advice`, `快速建議`, or `麻煩友看看`.
+- [ ] Confirm Local Guidance chip still appears.
+- [ ] Select English in Settings.
+- [ ] Confirm Local Guidance chip / sentence appears in English.
+- [ ] Select 简体中文 in Settings.
+- [ ] Confirm Local Guidance chip / sentence appears in Simplified Chinese.
+- [ ] Select 廣東話 / 麻煩友 in Settings.
+- [ ] Confirm Local Guidance uses non-explicit Cantonese 麻煩友 copy.
+- [ ] Confirm no explicit profanity appears in Camera Local Guidance.
+- [ ] Confirm no banned appearance, body, identity, age, gender, health, mental health, protected-class, or attractiveness wording appears.
+- [ ] Confirm shutter remains visible and tappable.
+- [ ] Confirm timer, flash, flip, filter, and lens selector still work.
+- [ ] Capture or select a photo from the Camera tab and confirm the floating tray does not show AI Advisor access on the Camera surface.
+- [ ] Confirm Camera selected-photo filter grid can still apply filters and auto-dismiss.
+- [ ] Open Inspiration.
+- [ ] Confirm imported / selected photo AI 建議 / Photo Advisor remains available there.
+- [ ] Confirm Photo Advisor still follows selected language / tone preference.
+- [ ] Confirm Filter Lab runtime copy is unchanged.
+- [ ] Confirm 改圖師 / image editing runtime copy is unchanged.
+- [ ] Confirm no app-wide language switching occurs.
+- [ ] Confirm no raw localization keys appear.
+- [ ] Confirm no new persistence beyond `cameraCoach.languageMode` and `cameraCoach.toneMode`.
+- [ ] Confirm no network, backend, real AI, provider SDK, StoreKit, payment, upload, save-to-Photos, or export behavior occurs.
+
+Known TODOs:
+
+- [ ] Future real cloud AI should target Inspiration / Photo Advisor first, not Camera tab.
+- [ ] Camera AI Snapshot service boundary files can remain for reference but should not be exposed on Camera without a new explicit phase.
+- [ ] Filter Lab / 改圖師 copy resolver integration remains future-only.
+
 ## Phase 16K-L Local Heuristic Advisor + Selected Photo UX Polish
 
 Check:

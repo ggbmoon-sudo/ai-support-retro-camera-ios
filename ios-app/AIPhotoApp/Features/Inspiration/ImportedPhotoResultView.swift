@@ -149,6 +149,7 @@ struct ImportedPhotoResultView: View {
                     selectedPreset: selectedPreset,
                     activePanel: activePanel,
                     isRendering: isFiltering,
+                    showsAdvisorButton: true,
                     onToggleAdvisor: {
                         togglePanel(.advisor)
                     },

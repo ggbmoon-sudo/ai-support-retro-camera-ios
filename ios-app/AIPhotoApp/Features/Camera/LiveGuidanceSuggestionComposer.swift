@@ -61,7 +61,11 @@ nonisolated struct LiveGuidanceSuggestionComposer: Sendable {
         case .localSignalUnavailable:
             return LiveGuidanceSuggestion(
                 id: "local_signal_unavailable",
-                messageKey: "camera.guidance.suggestion.local_signal_unavailable",
+                messageKey: copyResolver.messageKey(
+                    for: .unavailable,
+                    language: languageMode,
+                    requestedTone: toneMode
+                ),
                 category: .composition
             )
         case .lightingLooksBalanced:
@@ -117,19 +121,31 @@ nonisolated struct LiveGuidanceSuggestionComposer: Sendable {
         case .faceTooClose:
             return LiveGuidanceSuggestion(
                 id: "step_back_portrait",
-                messageKey: "camera.guidance.suggestion.step_back_portrait",
+                messageKey: copyResolver.messageKey(
+                    for: .portraitDistance,
+                    language: languageMode,
+                    requestedTone: toneMode
+                ),
                 category: .portrait
             )
         case .faceTooFar:
             return LiveGuidanceSuggestion(
                 id: "move_closer_portrait",
-                messageKey: "camera.guidance.suggestion.move_closer_portrait",
+                messageKey: copyResolver.messageKey(
+                    for: .portraitDistance,
+                    language: languageMode,
+                    requestedTone: toneMode
+                ),
                 category: .portrait
             )
         case .portraitLikely:
             return LiveGuidanceSuggestion(
                 id: "portrait_framing_ready",
-                messageKey: "camera.guidance.suggestion.portrait_framing_ready",
+                messageKey: copyResolver.messageKey(
+                    for: .successPraise,
+                    language: languageMode,
+                    requestedTone: toneMode
+                ),
                 category: .portrait
             )
         case .warmFilterHelpful:
@@ -141,7 +157,11 @@ nonisolated struct LiveGuidanceSuggestionComposer: Sendable {
 
             return LiveGuidanceSuggestion(
                 id: "try_warm_filter",
-                messageKey: "camera.guidance.suggestion.try_warm_filter",
+                messageKey: copyResolver.messageKey(
+                    for: .filter,
+                    language: languageMode,
+                    requestedTone: toneMode
+                ),
                 category: .filter
             )
         }

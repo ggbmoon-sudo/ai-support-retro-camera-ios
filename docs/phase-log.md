@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 16V - Persistent Language / Tone Settings + Camera Coach Runtime Integration
-Status: Added persistent language / tone preference for Local Camera Coach and connected deterministic resolver to runtime; ready for user Xcode / Simulator review
-Latest implementation: Added centralized CameraCoachToneSettingsStore persistence for language / tone preference only, connected Local Camera Coach runtime to the deterministic resolver, supported English / Traditional Chinese / Simplified Chinese / Cantonese copy for selected guidance categories, preserved explicit profanity block, and updated localization / docs / handoff / manual smoke tests
+Current phase: Phase 16W-R2 - Camera Local-only AI Surface Cleanup
+Status: Camera surface is local-only for AI guidance; ready for user Xcode / Simulator review
+Latest implementation: Removed / hid Camera AI Snapshot and cloud-style quick advice entry points from Camera UI, kept Local Guidance on Camera, wired Local Guidance chip title and sentence copy through persisted language / tone resolver, kept Inspiration / imported / selected Photo Advisor available and language-aware, and updated localization / docs / handoff / manual smoke tests
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -61,7 +61,118 @@ Phase 16T-R1 verification: localization lint, safety scans, and command-line Xco
 Phase 16T-R2 verification: localization lint, safety scans, and command-line Xcode generic iOS Simulator build passed on 2026-06-12; production-visible mock preview cards are removed from Settings Language / Tone UI with no runtime language switching, Camera guidance integration, Photo Advisor copy integration, Filter Lab copy integration, copy resolver, explicit profanity enablement, persistence, backend, network, real AI, provider SDK, StoreKit, moderation implementation, runtime profanity filtering, or production config added
 Phase 16U verification: localization lint, safety scans, explicit profanity runtime scan, banned phrase scan, and command-line Xcode generic iOS Simulator build passed on 2026-06-12; local-only deterministic camera coach copy resolver scaffold added with neutral runtime default, no app-wide language switching, Settings persistence, explicit profanity runtime, Camera frame upload, Photo Advisor copy integration, Filter Lab copy integration, image editing copy integration, backend, network, real AI, provider SDK, StoreKit, moderation implementation, runtime profanity filtering, or production config added
 Phase 16V verification: localization lint, safety scans, persistence scope scan, explicit profanity runtime scan, banned phrase scan, and command-line Xcode generic iOS Simulator build passed on 2026-06-12; persistence is limited to `cameraCoach.languageMode` and `cameraCoach.toneMode`; no app-wide language switching, explicit profanity runtime, raw image / frame persistence, Photo Advisor copy integration, Filter Lab copy integration, image editing copy integration, backend, network, real AI, provider SDK, StoreKit, export, or upload was added
-Next phase: Phase 16V is ready for user Xcode / Simulator review. Do not start Phase 17, real AI, backend implementation, cloud upload, app-wide language switching, explicit profanity production path, LLM-generated copy, AI-generated live camera copy, StoreKit, payment, moderation implementation, export, or upload until explicitly requested.
+Phase 16W verification: localization lint, safety scans, persistence scope scan, explicit profanity runtime scan, banned phrase scan, and command-line Xcode generic iOS Simulator build passed on 2026-06-12; Photo Advisor mock/local copy now follows persisted language / tone preference; no app-wide language switching, explicit profanity runtime, raw image / frame persistence, Filter Lab copy integration, image editing copy integration, backend, network, real AI, provider SDK, StoreKit, export, or upload was added
+Phase 16W-R2 verification: localization lint, safety scans, Camera local-only UI scan, persistence scope scan, explicit profanity runtime scan, banned phrase scan, and command-line Xcode generic iOS Simulator build passed on 2026-06-12; Camera UI is local-only for AI guidance, Camera AI Snapshot / cloud-style quick advice entries are removed / hidden, Local Guidance remains language / tone aware, Inspiration / Photo Advisor remains language-aware, and no real AI, backend, network, upload, new persistence, explicit profanity runtime, provider SDK, StoreKit, export, or cloud AI was added
+Next phase: Phase 16W-R2 is ready for user Xcode / Simulator review after verification. Do not start Phase 17, real AI, backend implementation, cloud upload, app-wide language switching, explicit profanity production path, LLM-generated copy, AI-generated live camera copy, StoreKit, payment, moderation implementation, export, or upload until explicitly requested.
+
+---
+
+## Phase 16W-R2 - Camera Local-only AI Surface Cleanup
+
+Status: Camera surface changed to local-only AI guidance; ready for user Xcode / Simulator review
+Date completed: 2026-06-12
+
+### Goal
+
+Apply the latest product decision that Camera should only expose local guidance / 本機導拍, while cloud-style AI / Photo Advisor entry points live in Inspiration / imported / selected photo flows.
+
+### Completed
+
+- Removed / hid Camera AI Snapshot / cloud-style quick advice entry points from `CameraView`.
+- Removed the Camera guidance mode selector from the Camera UI so the Camera surface remains local-coach focused.
+- Kept Local Guidance / 本機提示 on the Camera screen.
+- Local Guidance chip title now follows persisted language / tone preference.
+- Local Guidance sentence copy continues through the deterministic resolver and now covers more local signal fallback categories.
+- Main Camera selected-photo floating tray keeps filter access but no longer shows the AI Advisor button on the Camera tab.
+- Main Camera selected-photo floating filter grid no longer shows AI recommended filters.
+- Inspiration / imported photo selected flow still shows AI 建議 / Photo Advisor and remains language-aware from Phase 16W.
+- Kept Phase 15B brightness, Phase 15C face framing / headroom, and Phase 15D stability / priority / anti-flicker behavior intact.
+- Updated README, iOS README, transition handoff, phase log, and manual smoke tests.
+
+### Safety Notes
+
+Phase 16W-R2 does not add real AI, backend code, cloud AI, network calls, `URLSession`, `URLRequest`, WebSocket, Firebase / Gemini / OpenAI / StoreKit imports, provider SDKs, API keys, Firebase config, `GoogleService-Info.plist`, `.env`, `.firebaserc`, upload, raw image / frame persistence, Photo Advisor output persistence, new persistence beyond existing language / tone settings, app-wide language switching, full localization runtime, explicit profanity runtime, `troublemakerExplicit` runtime output, LLM-generated copy, AI-generated live camera copy, Filter Lab copy changes, 改圖師 copy changes, History schema changes, Core Data, SwiftData, save-to-Photos, export, StoreKit, payment, credits, moderation implementation, runtime profanity filtering, face recognition, identity inference, or sensitive attribute inference.
+
+### Verification
+
+- [x] `git status --short` final check.
+- [x] `git diff --check` final pass.
+- [x] `git diff --stat` final review.
+- [x] Localization lint.
+- [x] Unit tests, if available; no separate test target exists in this repo.
+- [x] Forbidden imports scan.
+- [x] Network / upload behavior scan.
+- [x] Secrets / config scan.
+- [x] Forbidden behavior scan.
+- [x] Persistence scope scan.
+- [x] Provider import scan.
+- [x] StoreKit scan.
+- [x] Explicit profanity runtime scan.
+- [x] Banned phrase scan.
+- [x] Swift source change summary.
+- [x] Xcode build passed, if environment allows.
+
+### Ready to Commit Phase 16W-R2
+
+No. Wait until the user visually accepts the Phase 16W-R2 result in Xcode / Simulator.
+
+### Ready for Phase 17 / Real AI
+
+No.
+
+---
+
+## Phase 16W - Extend Language / Tone Resolver to Photo Advisor
+
+Status: Extended persisted language / tone preference to mock/local Post-capture Photo Advisor copy; ready for user Xcode / Simulator review
+Date completed: 2026-06-12
+
+### Goal
+
+Make Post-capture Photo Advisor / AI 建議 / 相片顧問 follow the same persisted Language / Tone preference introduced in Phase 16V, while keeping the feature mock/local-only.
+
+### Completed
+
+- Added `PhotoAdvisorCopyResolver` for deterministic post-capture advisor copy.
+- Extended `PhotoAdvisorInput` with language / tone fields.
+- `PhotoAdvisorResultView` now passes the persisted `CameraCoachToneSettingsStore` language / tone into Photo Advisor analysis input.
+- Mock / local Photo Advisor results now resolve summary, suggestions, filter recommendation reasons, retake advice, crop advice, and unavailable fallback copy through the deterministic resolver.
+- Added phrase keys for English neutral, Traditional Chinese neutral, Simplified Chinese neutral, Cantonese HK conversational, and Cantonese non-explicit 麻煩友 Photo Advisor copy.
+- Kept existing Photo Advisor result card structure, filter apply behavior, validator, mock service boundary, and no-upload footer.
+- Kept Local Camera Coach resolver working.
+- Kept Filter Lab, 改圖師 / image editing, AI Snapshot, History, and cloud AI surfaces unchanged.
+- Updated README, iOS README, transition handoff, phase log, and manual smoke tests.
+
+### Safety Notes
+
+Phase 16W does not add real AI, backend code, cloud AI, network calls, `URLSession`, `URLRequest`, WebSocket, Firebase / Gemini / OpenAI / StoreKit imports, provider SDKs, API keys, Firebase config, `GoogleService-Info.plist`, `.env`, `.firebaserc`, upload, raw image / frame persistence, Photo Advisor output persistence, app-wide language switching, full localization runtime, explicit profanity runtime, `troublemakerExplicit` runtime output, LLM-generated copy, AI-generated live camera copy, Filter Lab copy changes, 改圖師 copy changes, History schema changes, Core Data, SwiftData, save-to-Photos, export, StoreKit, payment, credits, moderation implementation, runtime profanity filtering, face recognition, identity inference, or sensitive attribute inference.
+
+### Verification
+
+- [x] `git status --short` final check.
+- [x] `git diff --check` final pass.
+- [x] `git diff --stat` final review.
+- [x] Localization lint.
+- [x] Unit tests, if available; no separate test target exists in this repo.
+- [x] Forbidden imports scan.
+- [x] Network / upload behavior scan.
+- [x] Secrets / config scan.
+- [x] Forbidden behavior scan.
+- [x] Persistence scope scan.
+- [x] Provider import scan.
+- [x] StoreKit scan.
+- [x] Explicit profanity runtime scan.
+- [x] Banned phrase scan.
+- [x] Swift source change summary.
+- [x] Xcode build passed, if environment allows.
+
+### Ready to Commit Phase 16W
+
+No. Wait until the user visually accepts the Phase 16W result in Xcode / Simulator.
+
+### Ready for Phase 17 / Real AI
+
+No.
 
 ---
 
