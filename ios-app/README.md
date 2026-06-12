@@ -64,6 +64,20 @@ Do not add real `GoogleService-Info.plist` to git.
 
 The real Firebase, AI, and StoreKit integrations should be added only in their later phases.
 
+## Phase 17A Cloud AI Boundary
+
+Phase 17A adds iOS Cloud AI boundary scaffolding only:
+
+- `CloudAIService` protocol
+- typed Cloud AI request / response models
+- response validator
+- mock Cloud AI service
+- disabled remote service skeleton
+- neutral consent view
+- image compression / metadata stripping scaffold
+
+The iOS app still defaults to mock/local Photo Advisor behavior. There is no provider SDK, provider API key, production remote Cloud AI call, real upload, storage write, export, or StoreKit integration in this phase.
+
 ## Phase 12A Filter Planning
 
 Phase 12A adds filter research and schema planning documents only. It does not change iOS app source code.

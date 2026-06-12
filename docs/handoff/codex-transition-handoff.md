@@ -128,6 +128,7 @@ Important completed route so far:
 - Phase 16W - extended persisted Language / Tone preference to mock/local Post-capture Photo Advisor copy.
 - Phase 16W-R2 - Camera local-only AI surface cleanup.
 - Phase 16X - Inspiration AI Hub cleanup.
+- Phase 17A - Real Cloud AI Backend Boundary Skeleton.
 
 This list is a short orientation map only. Use `docs/phase-log.md` as the detailed source of truth.
 
@@ -368,11 +369,33 @@ This update records work completed by the new Codex / Codex API session after th
 - Inspiration now groups import photo analysis, Photo Advisor orientation, Filter Lab mock, future Photo Edit placeholder, and future cloud AI consent/no-background-upload notice.
 - Filter Lab remains mock/local.
 - Photo Edit / 改圖師 remains disabled future placeholder only.
-- Phase 17 still has not started.
+- Phase 17A has started, but remains a provider-disabled boundary skeleton only.
+- iOS now has CloudAIService protocol / models / validator / mock service / disabled remote skeleton / consent view / image compression scaffold.
+- A mock-only `backend/` boundary exists with `GET /health` and `POST /v1/ai/photo-advisor`.
+- The first future real endpoint target remains `POST /v1/ai/photo-advisor`.
+- iOS defaults to mock/local behavior; existing Photo Advisor remains mock/local by default.
+- Backend mock endpoint does not call a provider, does not require provider keys, does not persist images, and must not log request payloads.
+- Camera remains local-only; no Camera cloud AI entry has been reintroduced.
 
 ### Next Recommended Phase Options
 
-Do not jump to Phase 17 / real AI yet. Do not implement cloud save / StoreKit without an explicit phase. Do not implement local export / download without dedicated planning. Use `docs/product/future-ai-premium-feature-policy.md` before scoping any paid / cloud / export / AI-edit feature.
+Do not jump to real provider integration yet. Do not implement cloud save / StoreKit without an explicit phase. Do not implement local export / download without dedicated planning. Use `docs/product/future-ai-premium-feature-policy.md` before scoping any paid / cloud / export / AI-edit feature.
+
+Option 0 - Phase 17B: RemoteCloudAIService Internal Debug Wiring Only
+
+- Only if explicitly requested.
+- Internal / debug only.
+- No production-reachable remote Cloud AI.
+- No provider call.
+- No provider API key.
+- Must keep mock fallback and consent.
+
+Option 1 - Phase 17C: Real Provider Integration Planning / Approval Gate
+
+- Only after explicit user approval.
+- Provider docs, pricing, safety policy, prompt contract, timeout, validation, moderation, cost guard, and secret management must be reviewed first.
+- No Gemini Live / streaming.
+- No Camera cloud AI entry.
 
 Option A - Phase 16K: Local Heuristic Advisor / Filter Recommendation Prototype
 
@@ -423,13 +446,13 @@ Do not fill fake future data. Complete this section on or near the handback date
 
 ### Short-term next recommended phase
 
-Do not jump to Phase 17 / real AI yet. The next phase should be one of the Phase 16 continuation options above unless the user explicitly requests otherwise.
+Phase 17A has started as a backend boundary skeleton only. Do not jump to real provider integration. The next implementation phase should remain explicitly scoped and provider-disabled unless the user approves a later real-provider phase.
 
 Suggested next options:
 
-- Phase 16K - Local Heuristic Advisor / Filter Recommendation Prototype.
-- Phase 16L - Polish Selected Photo / Inspiration UX.
-- Phase 16M - Export / Local Lossless Download Planning Research.
+- Phase 17B - RemoteCloudAIService internal debug wiring only, still mock/provider-disabled.
+- Phase 17C - Real provider integration planning / approval gate, not implementation, unless separately requested.
+- Phase 16M - Export / Local Lossless Download Planning Research, if product planning returns to export.
 
 Previously completed:
 
@@ -461,6 +484,7 @@ Roadmap guardrails:
 - Do not jump directly to Gemini Live.
 - Do not jump directly to AI Filter Generator real cloud.
 - First real AI endpoint should likely be `/v1/ai/photo-advisor`, after backend boundary work is in place.
+- Phase 17A has now added the boundary skeleton, but real provider integration is still not approved.
 
 ---
 
@@ -497,7 +521,7 @@ Important docs already added or expected in this roadmap:
 - No StoreKit / export yet.
 - No LUT yet.
 - No custom filter persistence yet.
-- No real cloud AI endpoint yet.
+- Phase 17A mock-only `/v1/ai/photo-advisor` backend endpoint skeleton exists; no real cloud AI provider endpoint is connected yet.
 - No Gemini Live yet.
 - Future paid / cloud / export / AI-edit / transfer / LiDAR / language-mode work must follow `docs/product/future-ai-premium-feature-policy.md`.
 - Future local camera coach / LiDAR / Core ML work must also follow `docs/research/local-on-device-camera-coach-lidar-research.md`.
@@ -517,10 +541,15 @@ Important docs already added or expected in this roadmap:
 - Phase 16W-R2 cleans up Camera so it is a local-only AI surface.
 - Runtime scope is now Local Camera Coach plus Photo Advisor only, with Camera exposing Local Camera Coach and Inspiration exposing Photo Advisor.
 - Phase 16X organizes Inspiration as the future AI hub; Photo Advisor / future cloud AI should live in Inspiration / selected photo flow.
+- Phase 17A adds a provider-disabled Cloud AI backend boundary skeleton.
+- Future real cloud AI should use the Phase 17A boundary before any provider work.
+- Future Phase 17B may wire `RemoteCloudAIService` behind an internal debug flag only if explicitly requested.
+- Future Phase 17C may add a real provider call only after explicit approval, secret management, provider policy review, timeout / cancellation, moderation, validation, and cost guard work.
+- No Gemini Live / streaming, AI Filter Generator real backend, 改圖師 provider integration, or Camera cloud AI entry is approved by Phase 17A.
 - App-wide language switching remains not implemented.
 - Filter Lab / 改圖師 copy integration remains future-only.
 - Explicit profanity remains future review-only and not runtime-enabled.
-- Next safe step may be a Phase 17 planning document or backend boundary skeleton only after explicit user approval.
+- Next safe step may be Phase 17B internal debug remote wiring only after explicit user approval; real provider integration remains blocked.
 
 ---
 

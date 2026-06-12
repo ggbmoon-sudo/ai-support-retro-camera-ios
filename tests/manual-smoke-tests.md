@@ -1,5 +1,33 @@
 # Manual Smoke Tests
 
+## Phase 17A
+
+Check:
+
+- [ ] App still launches.
+- [ ] Camera remains local-only and no Camera AI Snapshot / Quick Advice cloud entry returns.
+- [ ] Inspiration AI Hub still works.
+- [ ] Imported / selected photo Photo Advisor still uses mock/local result by default.
+- [ ] Existing Photo Advisor language / tone behavior still works.
+- [ ] Consent view copy exists in the reusable Cloud AI boundary component if reached through an internal path.
+- [ ] Normal production UI does not trigger a real remote AI call.
+- [ ] No provider API key exists in the iOS app or new backend skeleton.
+- [ ] Backend `GET /health` returns mock-only service status.
+- [ ] Backend `POST /v1/ai/photo-advisor` returns a structured mock response for a valid consented request.
+- [ ] Backend rejects missing consent.
+- [ ] Backend rejects unsupported schema versions.
+- [ ] Backend does not require a provider key.
+- [ ] Backend does not log raw image, base64 image, request payload, EXIF / GPS, face data, or provider raw response.
+- [ ] No raw localization keys appear.
+- [ ] No offensive / explicit profanity copy appears.
+
+Known TODOs:
+
+- [ ] Phase 17A does not connect a real provider.
+- [ ] Phase 17A does not enable production remote Cloud AI from iOS.
+- [ ] Future Phase 17B may wire remote service behind an internal debug flag only after explicit approval.
+- [ ] Future Phase 17C may add real provider integration only after provider policy, secret management, timeout, validation, moderation, and cost guard work is explicitly approved.
+
 ## Phase 00
 
 Check:

@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "cloud-ai-response.v1",
+  "title": "Cloud AI Response v1",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "mode",
+    "summary",
+    "suggestions",
+    "recommendedFilters",
+    "confidence",
+    "source",
+    "locale",
+    "safety",
+    "error"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "mode": {
+      "enum": [
+        "post_capture",
+        "pre_capture",
+        "filter_recommendation",
+        "filter_generation",
+        "inspiration",
+        "pose_guide",
+        "unavailable",
+        "error"
+      ]
+    },
+    "summary": {
+      "type": "string",
+      "maxLength": 280
+    },
+    "suggestions": {
+      "type": "array",
+      "maxItems": 3
+    },
+    "recommendedFilters": {
+      "type": "array",
+      "maxItems": 3
+    },
+    "confidence": {
+      "enum": ["low", "medium", "high"]
+    },
+    "source": {
+      "enum": ["mock", "local", "cloud", "fallback"]
+    },
+    "locale": {
+      "type": "string"
+    },
+    "safety": {
+      "type": "object",
+      "required": ["containsSensitiveInference", "requiresUserConsent"],
+      "properties": {
+        "containsSensitiveInference": {
+          "const": false
+        },
+        "requiresUserConsent": {
+          "type": "boolean"
+        },
+        "blockedReason": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "error": {
+      "type": ["object", "null"]
+    }
+  }
+}

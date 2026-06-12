@@ -78,12 +78,12 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 16X Inspiration AI Hub cleanup implemented; ready for user Xcode / Simulator review
+- Phase 17A Cloud AI backend boundary skeleton implemented; ready for user review
 
 Next phase:
 
-- Do not commit Phase 16X until user visually accepts it in Xcode / Simulator
-- Phase 17 / real AI remain blocked until a backend boundary phase is explicitly requested later
+- Do not commit Phase 17A until user reviews it
+- Real provider integration remains blocked until a later explicit provider phase
 
 Before each task, read `AGENTS.md`, the required docs listed there, and the relevant phase prompt in `docs/prompts/`.
 
@@ -96,6 +96,8 @@ Product and architecture reports live in `docs/`.
 Phase execution prompts live in `docs/prompts/`.
 
 Transition handoff notes live in `docs/handoff/`; the current Codex / Codex API transition note is `docs/handoff/codex-transition-handoff.md`. Phase 16J refreshes that handoff with the Codex API period work through Phase 16I/R1/R2 and the next recommended Phase 16-only options.
+
+Phase 17A adds a Cloud AI boundary skeleton only: iOS CloudAI models / service protocol / validator / disabled remote skeleton / consent view / image compressor scaffold, plus a mock-only `backend/` with `GET /health` and `POST /v1/ai/photo-advisor`. No real provider is connected, no provider key belongs in iOS or the repo, and existing Photo Advisor remains mock/local by default.
 
 Current MVP demo / QA readiness docs:
 
@@ -143,6 +145,8 @@ Completed and manually verified scaffold phases include Camera / Photo Picker, l
 Current limitations are documented in `docs/mvp-known-limitations.md`. The demo flow is documented in `docs/mvp-demo-script.md`. Future real-service gates are documented in `docs/mvp-readiness-checklist.md`.
 
 The current app does not include real Firebase upload, Firestore writes, Storage writes, Cloud Functions calls, real Gemini / OpenAI calls, StoreKit, quota enforcement, disk persistence, UserDefaults persistence, export, save-to-Photos, production Firebase config, or real secrets.
+
+Phase 17A does not change that production boundary: the new backend folder is mock-only and provider-disabled, and the iOS remote Cloud AI service is not production-reachable by default.
 
 ## Phase 12A Filter Planning Status
 
