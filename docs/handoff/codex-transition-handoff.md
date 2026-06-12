@@ -127,6 +127,7 @@ Important completed route so far:
 - Phase 16V - persistent Language / Tone settings + Local Camera Coach runtime integration.
 - Phase 16W - extended persisted Language / Tone preference to mock/local Post-capture Photo Advisor copy.
 - Phase 16W-R2 - Camera local-only AI surface cleanup.
+- Phase 16X - Inspiration AI Hub cleanup.
 
 This list is a short orientation map only. Use `docs/phase-log.md` as the detailed source of truth.
 
@@ -363,6 +364,11 @@ This update records work completed by the new Codex / Codex API session after th
 - Local Camera Coach remains visible on Camera and follows persisted Language / Tone preference.
 - Cloud-style AI Advisor / Photo Advisor remains in Inspiration / imported / selected photo flows.
 - Future Phase 17 real cloud AI should target Inspiration / Photo Advisor first, not Camera tab.
+- Phase 16X organizes Inspiration as the future AI Hub / creative hub.
+- Inspiration now groups import photo analysis, Photo Advisor orientation, Filter Lab mock, future Photo Edit placeholder, and future cloud AI consent/no-background-upload notice.
+- Filter Lab remains mock/local.
+- Photo Edit / 改圖師 remains disabled future placeholder only.
+- Phase 17 still has not started.
 
 ### Next Recommended Phase Options
 
@@ -510,9 +516,11 @@ Important docs already added or expected in this roadmap:
 - Phase 16W extends the same persisted preference to mock/local Photo Advisor copy.
 - Phase 16W-R2 cleans up Camera so it is a local-only AI surface.
 - Runtime scope is now Local Camera Coach plus Photo Advisor only, with Camera exposing Local Camera Coach and Inspiration exposing Photo Advisor.
+- Phase 16X organizes Inspiration as the future AI hub; Photo Advisor / future cloud AI should live in Inspiration / selected photo flow.
 - App-wide language switching remains not implemented.
 - Filter Lab / 改圖師 copy integration remains future-only.
 - Explicit profanity remains future review-only and not runtime-enabled.
+- Next safe step may be a Phase 17 planning document or backend boundary skeleton only after explicit user approval.
 
 ---
 

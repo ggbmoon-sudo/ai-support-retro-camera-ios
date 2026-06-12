@@ -1100,6 +1100,35 @@ Known TODOs:
 - [ ] Camera AI Snapshot service boundary files can remain for reference but should not be exposed on Camera without a new explicit phase.
 - [ ] Filter Lab / 改圖師 copy resolver integration remains future-only.
 
+## Phase 16X Inspiration AI Hub Cleanup
+
+Check:
+
+- [ ] Open Camera.
+- [ ] Confirm Camera remains local-only and no cloud AI / AI Snapshot / Quick Advice entry returns.
+- [ ] Confirm shutter remains visible and tappable.
+- [ ] Open Inspiration.
+- [ ] Confirm AI Hub / creative hub layout appears.
+- [ ] Confirm import photo analysis is a clear primary entry.
+- [ ] Import a photo and confirm the selected / imported photo workflow still opens.
+- [ ] Confirm Photo Advisor / AI 建議 result still works from the imported / selected photo flow.
+- [ ] Confirm Photo Advisor follows Settings language / tone preference.
+- [ ] Confirm Filter Lab mock remains accessible.
+- [ ] Confirm Filter Lab remains mock/local and does not upload.
+- [ ] Confirm Photo Edit / 改圖師 placeholder is disabled / future-only if present.
+- [ ] Confirm future cloud AI notice says clear consent is required before any cloud analysis.
+- [ ] Confirm future cloud AI notice says no background photo upload.
+- [ ] Confirm no real network, backend, provider SDK, StoreKit, payment, upload, save-to-Photos, or export behavior occurs.
+- [ ] Confirm no raw localization keys appear.
+- [ ] Confirm no explicit profanity appears in production Inspiration UI or Photo Advisor runtime.
+- [ ] Confirm no banned appearance, body, identity, age, gender, health, mental health, protected-class, or attractiveness wording appears.
+
+Known TODOs:
+
+- [ ] Future real cloud AI still requires explicit Phase 17 / backend boundary approval.
+- [ ] Photo Edit / 改圖師 remains placeholder-only until a dedicated mock UX or provider research implementation phase.
+- [ ] Filter Lab remains mock/local until a dedicated future phase.
+
 ## Phase 16K-L Local Heuristic Advisor + Selected Photo UX Polish
 
 Check:

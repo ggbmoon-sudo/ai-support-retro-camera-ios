@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 16W-R2 Camera local-only AI surface cleanup implemented; ready for user Xcode / Simulator review
+- Phase 16X Inspiration AI Hub cleanup implemented; ready for user Xcode / Simulator review
 
 Next phase:
 
-- Do not commit Phase 16W-R2 until user visually accepts it in Xcode / Simulator
+- Do not commit Phase 16X until user visually accepts it in Xcode / Simulator
 - Phase 17 / real AI remain blocked until a backend boundary phase is explicitly requested later
 
 Before each task, read `AGENTS.md`, the required docs listed there, and the relevant phase prompt in `docs/prompts/`.
@@ -453,6 +453,8 @@ Phase 16V promotes that resolver into a limited runtime path for Local Camera Co
 Phase 16W extends the same persisted language / tone preference to the mock/local Post-capture Photo Advisor. Advisor copy can now display English, Traditional Chinese, Simplified Chinese, Cantonese conversational, or non-explicit 麻煩友 phrasing. This keeps the existing advisor UI structure and does not add real AI, backend, network, upload, advisor output persistence, app-wide language switching, Filter Lab / 改圖師 copy changes, or explicit profanity runtime.
 
 Phase 16W-R2 makes the Camera tab a local-only AI guidance surface. Camera keeps Local Camera Coach / 本機導拍 with persisted language / tone copy, while Camera AI Snapshot / cloud-style quick advice is hidden from Camera UI. Inspiration / imported / selected Photo Advisor remains the place for mock/local advisor and future cloud AI entry planning. This does not add real AI, backend, network, upload, new persistence, StoreKit, export, or explicit profanity runtime.
+
+Phase 16X organizes Inspiration as the mock/local AI Hub and creative hub. It groups import photo analysis, Photo Advisor orientation, Filter Lab, a disabled future Photo Edit / 改圖師 placeholder, and a future cloud AI consent/no-background-upload notice. Camera remains local-only, and current AI features remain mock/local with no real AI, backend, network, upload, provider SDK, StoreKit, export, or new persistence.
 
 ## Phase 16A Camera One-Screen UX Consolidation Status
 

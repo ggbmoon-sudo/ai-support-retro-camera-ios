@@ -386,6 +386,14 @@ Camera no longer exposes AI Snapshot / cloud-style quick advice entry points. Lo
 
 This phase does not add real AI, backend, network, provider SDKs, upload, new persistence beyond language / tone preference, app-wide language switching, explicit profanity runtime, StoreKit, export, save-to-Photos, or raw image / frame persistence.
 
+## Phase 16X Inspiration AI Hub Cleanup
+
+Phase 16X organizes Inspiration as the mock/local AI Hub and creative hub.
+
+Inspiration now groups import photo analysis, Photo Advisor orientation, Filter Lab, a disabled future Photo Edit / 改圖師 placeholder, and a future cloud AI consent / no-background-upload notice. Camera remains local-only and does not regain AI Snapshot / cloud-style quick advice.
+
+This phase does not add real AI, backend, network, provider SDKs, upload, new persistence beyond language / tone preference, app-wide language switching, explicit profanity runtime, StoreKit, export, save-to-Photos, image editing generation, or raw image / frame persistence.
+
 ## Phase 16A Camera One-Screen UX Consolidation
 
 Phase 16A keeps the app local/mock-only and consolidates the Camera capture surface.

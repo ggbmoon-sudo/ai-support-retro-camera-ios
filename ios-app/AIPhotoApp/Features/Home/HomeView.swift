@@ -7,6 +7,7 @@ struct HomeView: View {
     let onSelectCameraTab: () -> Void
 
     private let inspirationCards = InspirationCard.samples
+    private let aiHubCards = AIHubCard.samples
     @State private var pickerItem: PhotosPickerItem?
     @State private var importedPhoto: CapturedPhoto?
     @State private var isImportingPhoto = false
@@ -17,29 +18,17 @@ struct HomeView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: AppSpacing.xl) {
-                VStack(alignment: .leading, spacing: AppSpacing.sm) {
-                    Text("home.badge.mock_mvp")
-                        .font(AppTypography.micro)
-                        .padding(.vertical, AppSpacing.xs)
-                        .padding(.horizontal, AppSpacing.sm)
-                        .background(AppColors.elevatedSurface)
-                        .foregroundStyle(AppColors.accent)
-                        .clipShape(Capsule())
-
-                    Text("home.title")
-                        .font(AppTypography.title1)
-                        .foregroundStyle(AppColors.textPrimary)
-                        .fixedSize(horizontal: false, vertical: true)
-
-                    Text("home.subtitle")
-                        .font(AppTypography.body)
-                        .foregroundStyle(AppColors.textSecondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
+                hubHeader
 
                 photoImportCard
 
+                aiHubSection
+
                 filterLabCard
+
+                photoEditPlaceholderCard
+
+                futureCloudNotice
 
                 VStack(alignment: .leading, spacing: AppSpacing.md) {
                     Text("home.section.inspiration")
@@ -92,16 +81,11 @@ struct HomeView: View {
     private var photoImportCard: some View {
         VStack(alignment: .leading, spacing: AppSpacing.md) {
             HStack(spacing: AppSpacing.md) {
-                Image(systemName: "photo.badge.plus")
-                    .font(.system(size: 22, weight: .semibold))
-                    .frame(width: 48, height: 48)
-                    .background(AppColors.elevatedSurface)
-                    .foregroundStyle(AppColors.accent)
-                    .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.md))
+                hubIcon(systemName: "photo.badge.plus")
 
                 VStack(alignment: .leading, spacing: AppSpacing.xs) {
                     Text("home.import.title")
-                        .font(AppTypography.bodyEmphasis)
+                        .font(AppTypography.title2)
                         .foregroundStyle(AppColors.textPrimary)
 
                     Text("home.import.description")
@@ -146,15 +130,44 @@ struct HomeView: View {
         .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.lg))
     }
 
+    private var hubHeader: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.sm) {
+            Text("home.badge.ai_hub")
+                .font(AppTypography.micro)
+                .padding(.vertical, AppSpacing.xs)
+                .padding(.horizontal, AppSpacing.sm)
+                .background(AppColors.elevatedSurface)
+                .foregroundStyle(AppColors.accent)
+                .clipShape(Capsule())
+
+            Text("home.title")
+                .font(AppTypography.title1)
+                .foregroundStyle(AppColors.textPrimary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Text("home.subtitle")
+                .font(AppTypography.body)
+                .foregroundStyle(AppColors.textSecondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    private var aiHubSection: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.md) {
+            Text("home.section.ai_hub")
+                .font(AppTypography.title2)
+                .foregroundStyle(AppColors.textPrimary)
+
+            ForEach(aiHubCards) { card in
+                aiHubCard(card)
+            }
+        }
+    }
+
     private var filterLabCard: some View {
         VStack(alignment: .leading, spacing: AppSpacing.md) {
             HStack(spacing: AppSpacing.md) {
-                Image(systemName: "wand.and.stars")
-                    .font(.system(size: 22, weight: .semibold))
-                    .frame(width: 48, height: 48)
-                    .background(AppColors.elevatedSurface)
-                    .foregroundStyle(AppColors.accent)
-                    .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.md))
+                hubIcon(systemName: "camera.filters")
 
                 VStack(alignment: .leading, spacing: AppSpacing.xs) {
                     Text("home.filter_lab.title")
@@ -182,14 +195,81 @@ struct HomeView: View {
         .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.lg))
     }
 
+    private var photoEditPlaceholderCard: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.md) {
+            HStack(spacing: AppSpacing.md) {
+                hubIcon(systemName: "paintbrush.pointed")
+
+                VStack(alignment: .leading, spacing: AppSpacing.xs) {
+                    HStack(spacing: AppSpacing.sm) {
+                        Text("home.photo_edit.title")
+                            .font(AppTypography.bodyEmphasis)
+                            .foregroundStyle(AppColors.textPrimary)
+
+                        Text("home.photo_edit.badge")
+                            .font(AppTypography.micro)
+                            .padding(.vertical, 2)
+                            .padding(.horizontal, AppSpacing.xs)
+                            .background(AppColors.elevatedSurface)
+                            .foregroundStyle(AppColors.textSecondary)
+                            .clipShape(Capsule())
+                    }
+
+                    Text("home.photo_edit.description")
+                        .font(AppTypography.caption)
+                        .foregroundStyle(AppColors.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+
+            PrimaryButton("home.photo_edit.action", systemImage: "clock", isEnabled: false) {}
+        }
+        .padding(AppSpacing.md)
+        .background(AppColors.surface)
+        .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.lg))
+    }
+
+    private var futureCloudNotice: some View {
+        Label {
+            Text("home.cloud_notice")
+                .font(AppTypography.caption)
+                .foregroundStyle(AppColors.textSecondary)
+                .fixedSize(horizontal: false, vertical: true)
+        } icon: {
+            Image(systemName: "lock.shield")
+                .foregroundStyle(AppColors.accent)
+        }
+        .padding(AppSpacing.md)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(AppColors.elevatedSurface.opacity(0.58))
+        .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.lg))
+    }
+
+    private func aiHubCard(_ card: AIHubCard) -> some View {
+        HStack(alignment: .top, spacing: AppSpacing.md) {
+            hubIcon(systemName: card.symbolName)
+
+            VStack(alignment: .leading, spacing: AppSpacing.xs) {
+                Text(LocalizedStringKey(card.titleKey))
+                    .font(AppTypography.bodyEmphasis)
+                    .foregroundStyle(AppColors.textPrimary)
+
+                Text(LocalizedStringKey(card.descriptionKey))
+                    .font(AppTypography.caption)
+                    .foregroundStyle(AppColors.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            Spacer(minLength: AppSpacing.xs)
+        }
+        .padding(AppSpacing.md)
+        .background(AppColors.surface)
+        .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.lg))
+    }
+
     private func inspirationCard(_ card: InspirationCard) -> some View {
         HStack(spacing: AppSpacing.md) {
-            Image(systemName: card.symbolName)
-                .font(.system(size: 22, weight: .semibold))
-                .frame(width: 48, height: 48)
-                .background(AppColors.elevatedSurface)
-                .foregroundStyle(AppColors.accent)
-                .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.md))
+            hubIcon(systemName: card.symbolName)
 
             VStack(alignment: .leading, spacing: AppSpacing.xs) {
                 Text(LocalizedStringKey(card.titleKey))
@@ -207,6 +287,15 @@ struct HomeView: View {
         .padding(AppSpacing.md)
         .background(AppColors.surface)
         .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.lg))
+    }
+
+    private func hubIcon(systemName: String) -> some View {
+        Image(systemName: systemName)
+            .font(.system(size: 22, weight: .semibold))
+            .frame(width: 48, height: 48)
+            .background(AppColors.elevatedSurface)
+            .foregroundStyle(AppColors.accent)
+            .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.md))
     }
 
     private func importSelectedPhoto() async {
@@ -237,6 +326,28 @@ struct HomeView: View {
         importedPhoto = nil
         pickerItem = nil
     }
+}
+
+private struct AIHubCard: Identifiable {
+    let id: String
+    let symbolName: String
+    let titleKey: String
+    let descriptionKey: String
+
+    static let samples = [
+        AIHubCard(
+            id: "photo_advisor",
+            symbolName: "sparkles",
+            titleKey: "home.ai_hub.photo_advisor.title",
+            descriptionKey: "home.ai_hub.photo_advisor.description"
+        ),
+        AIHubCard(
+            id: "future_cloud",
+            symbolName: "cloud",
+            titleKey: "home.ai_hub.future_cloud.title",
+            descriptionKey: "home.ai_hub.future_cloud.description"
+        )
+    ]
 }
 
 private struct InspirationCard: Identifiable {
