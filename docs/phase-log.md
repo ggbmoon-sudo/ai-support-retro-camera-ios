@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 16N - Future AI / Premium Feature Policy Backfill
-Status: Documentation-only product policy backfill; ready to commit after final review
-Latest implementation: Added future AI / premium feature policy for local intelligence, LiDAR research, post-capture cloud AI quota, encrypted app-to-app transfer, paid AI image editing, Filter Lab free / paid rules, retro effects, Hong Kong / 麻煩友 language mode, AI wording guidance, free / paid matrix, and research backlog
+Current phase: Phase 16O - Save Local On-device Camera Coach + LiDAR Research
+Status: Documentation-only research save; ready to commit after final review
+Latest implementation: Saved ChatGPT-provided Local On-device Camera Coach + LiDAR Scene Understanding research to repo and updated phase log / handoff / README references
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -51,7 +51,79 @@ Phase 16I-R2 verification: targeted Swift parse, localization lint, and command-
 Phase 16J verification: documentation-only handoff update; no Swift source, backend source, real AI, network, upload, persistence, export, API keys, provider SDK, StoreKit, or production config added
 Phase 16K-L verification: targeted Swift parse, localization lint, safety scans, and command-line Xcode generic iOS Simulator build passed on 2026-06-12; user Xcode / Simulator verification accepted on 2026-06-12; no real AI, backend, network, upload, persistence, export, API keys, provider SDK, StoreKit, or production config added
 Phase 16N verification: documentation-only product policy backfill; no Swift source, backend source, real AI, network, upload, persistence, export, API keys, provider SDK, StoreKit, payment, LiDAR implementation, local model training, encrypted transfer implementation, image editing implementation, or production config added
-Next phase: Phase 16N is ready to commit after final review. Do not start Phase 17, real AI, backend implementation, cloud upload, LUT, persistence, StoreKit, payment, export, local download, image editing provider integration, encrypted transfer implementation, LiDAR implementation, local model training, or profanity language mode until explicitly requested.
+Phase 16O verification: documentation-only research save; no Swift source, backend source, app behavior change, LiDAR implementation, Core ML implementation, ARKit implementation, local model training, real AI, network, upload, persistence, export, API keys, provider SDK, StoreKit, payment, or production config added
+Next phase: Phase 16O is ready to commit after final review. The next safe implementation candidate from this research is local coach architecture refactor, not live cloud AI. Do not start Phase 17, real AI, backend implementation, cloud upload, LiDAR implementation, Core ML implementation, ARKit implementation, local model training, persistence, StoreKit, payment, export, local download, image editing provider integration, encrypted transfer implementation, or profanity language mode until explicitly requested.
+
+---
+
+## Phase 16O - Save Local On-device Camera Coach + LiDAR Research
+
+Status: Documentation-only research save; ready to commit after final review
+Date completed: 2026-06-12
+
+### Goal
+
+Save the user-provided ChatGPT research report for Local On-device Camera Coach + LiDAR Scene Understanding into the repo, then update documentation indexes and handoff status.
+
+### Completed
+
+- Added `docs/research/local-on-device-camera-coach-lidar-research.md`.
+- Preserved the provided report title: `Local On-device Camera Coach + LiDAR Scene Understanding for iOS Retro Camera App 深入研究報告`.
+- Saved the full ChatGPT-provided Markdown research report to the repo.
+- Removed `utm_source=chatgpt.com` query strings without changing source meaning.
+- Preserved the required sections:
+  - Executive Summary
+  - Product Goal
+  - Why Continuous Live Cloud AI Is Not Recommended
+  - Current Local Guidance Baseline
+  - Local Heuristic Guidance Layer
+  - iOS Native Signal Sources
+  - On-device AI / Core ML Feasibility
+  - Dataset and Training Requirements
+  - LiDAR-aware Scene Understanding
+  - Device Compatibility and Fallback
+  - Guidance UX Design
+  - Free vs Paid Policy
+  - Privacy / Safety / App Store Considerations
+  - Technical Architecture Proposal
+  - Integration with Current App Phases
+  - MVP / Future Phase Plan
+  - Risk Table
+  - Final Recommendation
+  - Sources / Links
+- Recorded the research conclusion that pre-capture / in-capture guidance should not depend on continuous live cloud AI.
+- Recorded that local camera guidance should remain local-first / on-device-first, while cloud AI should mainly remain post-capture / imported-photo analysis.
+- Recorded that the next safe implementation candidate is local coach architecture refactor, not live cloud AI.
+- Updated transition handoff and README references.
+
+### Safety Notes
+
+Phase 16O is documentation-only. Codex only saved the ChatGPT-provided research report and updated docs references. It does not add Swift source changes, app UI changes, app behavior changes, LiDAR implementation, Core ML implementation, ARKit implementation, Vision body pose implementation, local model training, real AI, cloud AI, backend code, network calls, `URLSession`, `URLRequest`, WebSocket, Firebase / Gemini / OpenAI / StoreKit imports, provider SDKs, API keys, Firebase config, `GoogleService-Info.plist`, `.env`, `.firebaserc`, upload, photo upload, live camera frame upload, raw frame persistence, photo persistence, AI response persistence, `UserDefaults`, Core Data, SwiftData, cloud save, StoreKit, premium / credits, payment, real local download, save-to-Photos, export, Gemini Live, streaming, profanity language mode implementation, photo score, beauty / attractiveness score, identity / gender / age / emotion inference, sensitive attribute inference, or backend changes.
+
+### Verification
+
+- [x] `git status --short` checked before implementation.
+- [x] `git status --short` final check.
+- [x] `git diff --check` final pass.
+- [x] `git diff --stat` final review.
+- [x] Markdown heading sanity check confirmed required sections exist.
+- [x] Source links section preserved.
+- [x] `utm_source=chatgpt.com` removed from saved report links.
+- [x] Reference-style link sanity check.
+- [x] Forbidden imports scan.
+- [x] Network / upload behavior scan.
+- [x] Secrets / config scan.
+- [x] Forbidden behavior scan.
+- [x] Persistence / export scan.
+- [x] No Swift source changed; Xcode build not required.
+
+### Ready to Commit Phase 16O
+
+Yes. Latest commit has not been created; do not commit or push automatically.
+
+### Ready for Phase 17 / Real AI
+
+No.
 
 ---
 

@@ -60,6 +60,8 @@ Confirmed locally:
 - Phase 16G - AI Filter Generator Mock in Inspiration
 - Phase 16H-Recovery - Post-capture AI Advisor UX Research Backfill + Handoff Status Fix
 - Phase 16I - Mock Post-capture AI Advisor UX + R1/R2 refinements
+- Phase 16N - Future AI / Premium Feature Policy Backfill
+- Phase 16O - Save Local On-device Camera Coach + LiDAR Research
 
 Phase 16G status:
 
@@ -107,6 +109,8 @@ Important completed route so far:
 - Phase 16G - AI Filter Generator Mock in Inspiration.
 - Phase 16H-Recovery - Post-capture AI Advisor UX research backfill + handoff status fix.
 - Phase 16I - Mock Post-capture AI Advisor UX + R1/R2 refinements.
+- Phase 16N - Future AI / Premium Feature Policy Backfill.
+- Phase 16O - Local On-device Camera Coach + LiDAR Scene Understanding research save.
 
 This list is a short orientation map only. Use `docs/phase-log.md` as the detailed source of truth.
 
@@ -263,6 +267,13 @@ This update records work completed by the new Codex / Codex API session after th
 - No Gemini Live yet.
 - Phase 16N added `docs/product/future-ai-premium-feature-policy.md` as the source of truth for future AI, local intelligence, premium features, cloud save, high-quality transfer, AI image editing, Filter Lab free / paid rules, advanced retro effects, Hong Kong / 麻煩友 language mode, AI wording, feature matrix, and research backlog.
 - Before implementing any paid, cloud, export, transfer, AI-edit, local-model, LiDAR, or profanity-language feature, read the Phase 16N policy doc and create a dedicated research / implementation phase.
+- Phase 16O added `docs/research/local-on-device-camera-coach-lidar-research.md`.
+- Local On-device Camera Coach + LiDAR research is now saved in the repo.
+- Future local guidance architecture work should read this research before changing coach / guidance providers.
+- Do not jump to live cloud AI for pre-capture / in-capture guidance.
+- Future LC2 may be Local Coach Architecture Refactor.
+- LiDAR should remain a later dedicated prototype, not the next implementation.
+- Core ML should wait for dataset, label, evaluation, device, battery, and thermal strategy.
 
 ### Next Recommended Phase Options
 
@@ -363,6 +374,7 @@ Roadmap guardrails:
 Important docs already added or expected in this roadmap:
 
 - `docs/product/future-ai-premium-feature-policy.md`
+- `docs/research/local-on-device-camera-coach-lidar-research.md`
 - `docs/research/pose-overlay-camera-guide-research.md`
 - `docs/research/ai-filter-generator-research.md`
 - `docs/research/cloud-ai-architecture-research.md`
@@ -389,6 +401,8 @@ Important docs already added or expected in this roadmap:
 - No real cloud AI endpoint yet.
 - No Gemini Live yet.
 - Future paid / cloud / export / AI-edit / transfer / LiDAR / language-mode work must follow `docs/product/future-ai-premium-feature-policy.md`.
+- Future local camera coach / LiDAR / Core ML work must also follow `docs/research/local-on-device-camera-coach-lidar-research.md`.
+- Local camera coach architecture refactor is a safer future implementation candidate than live cloud AI.
 
 ---
 
