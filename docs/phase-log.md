@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 16U / HK4 - Deterministic Camera Coach Copy Resolver Integration
-Status: Added local-only deterministic camera coach copy resolver scaffold / neutral runtime integration; ready for user Xcode / Simulator review
-Latest implementation: Added GuidanceCopyResolver / SafetyCopyPolicy / GuidancePraiseResolver scaffold, routed selected Local Camera Coach deterministic categories through resolver with neutral runtime default, kept Settings mock non-persistent, disabled explicit profanity runtime, and updated localization / docs / handoff / manual smoke tests
+Current phase: Phase 16V - Persistent Language / Tone Settings + Camera Coach Runtime Integration
+Status: Added persistent language / tone preference for Local Camera Coach and connected deterministic resolver to runtime; ready for user Xcode / Simulator review
+Latest implementation: Added centralized CameraCoachToneSettingsStore persistence for language / tone preference only, connected Local Camera Coach runtime to the deterministic resolver, supported English / Traditional Chinese / Simplified Chinese / Cantonese copy for selected guidance categories, preserved explicit profanity block, and updated localization / docs / handoff / manual smoke tests
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -60,7 +60,73 @@ Phase 16T verification: localization lint, safety scans, and command-line Xcode 
 Phase 16T-R1 verification: localization lint, safety scans, and command-line Xcode generic iOS Simulator build passed on 2026-06-12; Settings-only mock language / tone UI remains language-button-only with no runtime language switching, Camera guidance integration, Photo Advisor copy integration, Filter Lab copy integration, copy resolver, explicit profanity enablement, persistence, backend, network, real AI, provider SDK, StoreKit, moderation implementation, runtime profanity filtering, or production config added
 Phase 16T-R2 verification: localization lint, safety scans, and command-line Xcode generic iOS Simulator build passed on 2026-06-12; production-visible mock preview cards are removed from Settings Language / Tone UI with no runtime language switching, Camera guidance integration, Photo Advisor copy integration, Filter Lab copy integration, copy resolver, explicit profanity enablement, persistence, backend, network, real AI, provider SDK, StoreKit, moderation implementation, runtime profanity filtering, or production config added
 Phase 16U verification: localization lint, safety scans, explicit profanity runtime scan, banned phrase scan, and command-line Xcode generic iOS Simulator build passed on 2026-06-12; local-only deterministic camera coach copy resolver scaffold added with neutral runtime default, no app-wide language switching, Settings persistence, explicit profanity runtime, Camera frame upload, Photo Advisor copy integration, Filter Lab copy integration, image editing copy integration, backend, network, real AI, provider SDK, StoreKit, moderation implementation, runtime profanity filtering, or production config added
-Next phase: Phase 16U is ready for user Xcode / Simulator review. Future HK5 settings persistence / formal language mode can be considered only if explicitly requested. Do not start Phase 17, real AI, backend implementation, cloud upload, app-wide language switching, Settings persistence, explicit profanity production path, LLM-generated copy, AI-generated live camera copy, StoreKit, payment, moderation implementation, or runtime profanity filtering until explicitly requested.
+Phase 16V verification: localization lint, safety scans, persistence scope scan, explicit profanity runtime scan, banned phrase scan, and command-line Xcode generic iOS Simulator build passed on 2026-06-12; persistence is limited to `cameraCoach.languageMode` and `cameraCoach.toneMode`; no app-wide language switching, explicit profanity runtime, raw image / frame persistence, Photo Advisor copy integration, Filter Lab copy integration, image editing copy integration, backend, network, real AI, provider SDK, StoreKit, export, or upload was added
+Next phase: Phase 16V is ready for user Xcode / Simulator review. Do not start Phase 17, real AI, backend implementation, cloud upload, app-wide language switching, explicit profanity production path, LLM-generated copy, AI-generated live camera copy, StoreKit, payment, moderation implementation, export, or upload until explicitly requested.
+
+---
+
+## Phase 16V - Persistent Language / Tone Settings + Camera Coach Runtime Integration
+
+Status: Added persistent Local Camera Coach language / tone preference and runtime resolver integration; ready for user Xcode / Simulator review
+Date completed: 2026-06-12
+
+### Goal
+
+Promote the HK3 / HK4 language-tone work from Settings mock and neutral resolver scaffold into a limited production runtime path for Local Camera Coach / 本機導拍 only.
+
+### Completed
+
+- Added centralized `CameraCoachToneSettingsStore` persistence for language / tone preference only.
+- Settings Language / Tone now saves `cameraCoach.languageMode` and `cameraCoach.toneMode`.
+- English, Traditional Chinese, and Simplified Chinese force neutral tone.
+- Cantonese supports Hong Kong conversational and non-explicit 麻煩友 tone.
+- `troublemakerExplicit` remains unavailable in Settings and falls back to non-explicit safe tone if encountered.
+- Local Camera Coach reads the selected language / tone at suggestion composition time.
+- Deterministic resolver supports lighting, headroom, stability, framing, background clutter, and success praise phrase categories.
+- Added language-specific phrase keys for English, Traditional Chinese, Simplified Chinese, Cantonese HK conversational, and Cantonese non-explicit 麻煩友.
+- Preserved existing Phase 15D stability / priority / anti-flicker controller.
+- Kept Photo Advisor, Filter Lab, 改圖師 / image editing, AI Snapshot, History, and Inspiration runtime copy unchanged.
+- Updated README, iOS README, transition handoff, phase log, and manual smoke tests.
+
+### Persistence Scope
+
+Phase 16V intentionally persists only app settings preference keys:
+
+- `cameraCoach.languageMode`
+- `cameraCoach.toneMode`
+
+It does not persist photos, camera frames, face data, raw image data, AI responses, provider responses, prompts, identity data, sensitive inference, exports, cloud data, or history changes.
+
+### Safety Notes
+
+Phase 16V does not add app-wide language switching, full localization runtime, explicit profanity runtime, production coarse profanity enablement, `troublemakerExplicit` runtime output, LLM-generated copy, AI-generated live camera copy, Photo Advisor copy changes, Filter Lab copy changes, 改圖師 copy changes, backend code, cloud AI, network calls, `URLSession`, `URLRequest`, WebSocket, Firebase / Gemini / OpenAI / StoreKit imports, provider SDKs, API keys, Firebase config, `GoogleService-Info.plist`, `.env`, `.firebaserc`, upload, raw image / frame persistence, Core Data, SwiftData, save-to-Photos, export, StoreKit, payment, credits, moderation implementation, runtime profanity filtering, or backend changes.
+
+### Verification
+
+- [x] `git status --short` final check.
+- [x] `git diff --check` final pass.
+- [x] `git diff --stat` final review.
+- [x] Localization lint.
+- [x] Unit tests, if available; no separate test target exists in this repo.
+- [x] Forbidden imports scan.
+- [x] Network / upload behavior scan.
+- [x] Secrets / config scan.
+- [x] Forbidden behavior scan.
+- [x] Persistence scope scan.
+- [x] Provider import scan.
+- [x] StoreKit scan.
+- [x] Explicit profanity runtime scan.
+- [x] Banned phrase scan.
+- [x] Swift source change summary.
+- [x] Xcode build passed, if environment allows.
+
+### Ready to Commit Phase 16V
+
+No. Wait until the user visually accepts the Phase 16V result in Xcode / Simulator.
+
+### Ready for Phase 17 / Real AI
+
+No.
 
 ---
 

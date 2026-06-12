@@ -1,13 +1,6 @@
 import SwiftUI
 
-enum AppLanguageMode: String, CaseIterable, Identifiable {
-    case english
-    case traditionalChinese
-    case simplifiedChinese
-    case cantonese
-
-    var id: String { rawValue }
-
+extension AppLanguageMode {
     var titleKey: LocalizedStringKey {
         switch self {
         case .english:
@@ -22,8 +15,23 @@ enum AppLanguageMode: String, CaseIterable, Identifiable {
     }
 }
 
+extension ToneMode {
+    var titleKey: LocalizedStringKey {
+        switch self {
+        case .neutral:
+            return "settings.language_tone.tone.neutral"
+        case .hongKongConversational:
+            return "settings.language_tone.tone.hk"
+        case .troublemaker:
+            return "settings.language_tone.tone.troublemaker"
+        case .troublemakerExplicit:
+            return "settings.language_tone.tone.explicit"
+        }
+    }
+}
+
 struct LanguageToneSettingsView: View {
-    @State private var selectedLanguage: AppLanguageMode = .cantonese
+    @ObservedObject private var toneSettings = CameraCoachToneSettingsStore.shared
 
     var body: some View {
         VStack(alignment: .leading, spacing: AppSpacing.md) {
@@ -32,12 +40,20 @@ struct LanguageToneSettingsView: View {
             optionGroup(
                 title: "settings.language_tone.language.title",
                 options: AppLanguageMode.allCases,
-                selected: selectedLanguage,
+                selected: toneSettings.languageMode,
                 label: { $0.titleKey },
-                action: { selectedLanguage = $0 }
+                action: { toneSettings.setLanguageMode($0) }
             )
 
-            if selectedLanguage == .cantonese {
+            if toneSettings.languageMode == .cantonese {
+                optionGroup(
+                    title: "settings.language_tone.cantonese_tone.title",
+                    options: [ToneMode.hongKongConversational, .troublemaker],
+                    selected: toneSettings.toneMode,
+                    label: { $0.titleKey },
+                    action: { toneSettings.setToneMode($0) }
+                )
+
                 CantoneseLanguageNoticeView()
             }
         }

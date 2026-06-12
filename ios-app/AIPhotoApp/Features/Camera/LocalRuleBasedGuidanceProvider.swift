@@ -4,13 +4,16 @@ import Foundation
 struct LocalRuleBasedGuidanceProvider: LiveGuidanceProvider {
     private let frameAnalyzer: LiveGuidanceFrameAnalyzer
     private let suggestionComposer: LiveGuidanceSuggestionComposer
+    private let toneSettingsStore: CameraCoachToneSettingsStore
 
     init(
         frameAnalyzer: LiveGuidanceFrameAnalyzer = LiveGuidanceFrameAnalyzer(),
-        suggestionComposer: LiveGuidanceSuggestionComposer = LiveGuidanceSuggestionComposer()
+        suggestionComposer: LiveGuidanceSuggestionComposer = LiveGuidanceSuggestionComposer(),
+        toneSettingsStore: CameraCoachToneSettingsStore = .shared
     ) {
         self.frameAnalyzer = frameAnalyzer
         self.suggestionComposer = suggestionComposer
+        self.toneSettingsStore = toneSettingsStore
     }
 
     func suggestions(
@@ -30,15 +33,25 @@ struct LocalRuleBasedGuidanceProvider: LiveGuidanceProvider {
                 )
             ]
         case .suggestionAvailable:
+            let languageMode = toneSettingsStore.runtimeLanguageMode
+            let toneMode = toneSettingsStore.runtimeToneMode
+
             if let frameSignals {
                 return suggestionComposer.suggestions(
                     for: frameSignals,
-                    selectedPreset: selectedPreset
+                    selectedPreset: selectedPreset,
+                    languageMode: languageMode,
+                    toneMode: toneMode
                 )
             }
 
             let signals = frameAnalyzer.fallbackSignals(selectedPreset: selectedPreset)
-            return suggestionComposer.suggestions(for: signals, selectedPreset: selectedPreset)
+            return suggestionComposer.suggestions(
+                for: signals,
+                selectedPreset: selectedPreset,
+                languageMode: languageMode,
+                toneMode: toneMode
+            )
         }
     }
 }

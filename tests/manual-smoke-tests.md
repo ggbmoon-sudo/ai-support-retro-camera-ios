@@ -995,6 +995,42 @@ Known TODOs:
 - [ ] HK / 麻煩友 runtime activation requires a future explicit HK5 phase.
 - [ ] Explicit profanity remains unsupported in runtime.
 
+## Phase 16V Persistent Language / Tone Settings + Camera Coach Runtime Integration
+
+Check:
+
+- [ ] Open Settings.
+- [ ] Select English, 繁體中文, 简体中文, and 廣東話 in the Language / Tone section.
+- [ ] Confirm non-Cantonese languages do not show a tone selector.
+- [ ] Select 廣東話 and confirm only 香港口語 and 麻煩友 tone choices are available.
+- [ ] Confirm 麻煩友（粗口） is not available as an active runtime option.
+- [ ] Restart the app and confirm the selected language / tone preference persists.
+- [ ] Open Camera.
+- [ ] Trigger Local Camera Coach guidance where possible.
+- [ ] Confirm English selection shows English neutral Camera Coach copy for supported categories.
+- [ ] Confirm 繁體中文 selection shows Traditional Chinese neutral Camera Coach copy for supported categories.
+- [ ] Confirm 简体中文 selection shows Simplified Chinese neutral Camera Coach copy for supported categories.
+- [ ] Confirm 廣東話 + 香港口語 shows Cantonese conversational Camera Coach copy for supported categories.
+- [ ] Confirm 廣東話 + 麻煩友 shows non-explicit 麻煩友 Camera Coach copy for supported categories.
+- [ ] Confirm no explicit profanity appears in runtime Camera Coach copy.
+- [ ] Confirm no banned appearance, body, identity, age, gender, health, mental health, protected-class, or attractiveness wording appears.
+- [ ] Confirm existing guidance priority / anti-flicker behavior still feels preserved.
+- [ ] Confirm Photo Advisor runtime copy is unchanged.
+- [ ] Confirm Filter Lab runtime copy is unchanged.
+- [ ] Confirm 改圖師 / image editing runtime copy is unchanged.
+- [ ] Confirm no app-wide language switching occurs.
+- [ ] Confirm no raw localization keys appear.
+- [ ] Confirm no photos, camera frames, face data, raw image data, AI responses, prompts, exports, cloud data, or sensitive inference are persisted.
+- [ ] Confirm persistence is limited to `cameraCoach.languageMode` and `cameraCoach.toneMode`.
+- [ ] Confirm no network, backend, real AI, provider SDK, StoreKit, payment, moderation, upload, save-to-Photos, or export behavior occurs.
+
+Known TODOs:
+
+- [ ] Local Camera Coach currently uses deterministic phrase categories only.
+- [ ] Deeper issue-resolved praise wiring can be considered later without destabilizing anti-flicker logic.
+- [ ] Expanding the resolver to Photo Advisor / Filter Lab / 改圖師 requires a separate explicit phase.
+- [ ] Explicit profanity remains unsupported in runtime and requires separate safety / App Store / age-rating review before any future use.
+
 ## Phase 16K-L Local Heuristic Advisor + Selected Photo UX Polish
 
 Check:

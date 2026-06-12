@@ -2,25 +2,27 @@ import Foundation
 
 nonisolated struct LiveGuidanceSuggestionComposer: Sendable {
     private let copyResolver: GuidanceCopyResolver
-    private let runtimeTone: ToneMode
 
-    init(
-        copyResolver: GuidanceCopyResolver = GuidanceCopyResolver(),
-        runtimeTone: ToneMode = .neutral
-    ) {
+    init(copyResolver: GuidanceCopyResolver = GuidanceCopyResolver()) {
         self.copyResolver = copyResolver
-        self.runtimeTone = runtimeTone
     }
 
     func suggestions(
         for signals: [LiveGuidanceSignal],
         selectedPreset: FilterPreset,
-        limit: Int = 3
+        limit: Int = 3,
+        languageMode: AppLanguageMode = .traditionalChinese,
+        toneMode: ToneMode = .neutral
     ) -> [LiveGuidanceSuggestion] {
         var suggestions: [LiveGuidanceSuggestion] = []
 
         for signal in ranked(signals) {
-            guard let suggestion = suggestion(for: signal, selectedPreset: selectedPreset),
+            guard let suggestion = suggestion(
+                for: signal,
+                selectedPreset: selectedPreset,
+                languageMode: languageMode,
+                toneMode: toneMode
+            ),
                   !suggestions.contains(where: { $0.id == suggestion.id }) else {
                 continue
             }
@@ -51,7 +53,9 @@ nonisolated struct LiveGuidanceSuggestionComposer: Sendable {
 
     private func suggestion(
         for signal: LiveGuidanceSignal,
-        selectedPreset: FilterPreset
+        selectedPreset: FilterPreset,
+        languageMode: AppLanguageMode,
+        toneMode: ToneMode
     ) -> LiveGuidanceSuggestion? {
         switch signal {
         case .localSignalUnavailable:
@@ -65,7 +69,8 @@ nonisolated struct LiveGuidanceSuggestionComposer: Sendable {
                 id: "lighting_balanced",
                 messageKey: copyResolver.messageKey(
                     for: .successPraise,
-                    requestedTone: runtimeTone
+                    language: languageMode,
+                    requestedTone: toneMode
                 ),
                 category: .lighting
             )
@@ -74,7 +79,8 @@ nonisolated struct LiveGuidanceSuggestionComposer: Sendable {
                 id: "move_closer_to_light",
                 messageKey: copyResolver.messageKey(
                     for: .lighting,
-                    requestedTone: runtimeTone
+                    language: languageMode,
+                    requestedTone: toneMode
                 ),
                 category: .lighting
             )
@@ -83,7 +89,8 @@ nonisolated struct LiveGuidanceSuggestionComposer: Sendable {
                 id: "avoid_direct_light",
                 messageKey: copyResolver.messageKey(
                     for: .directLight,
-                    requestedTone: runtimeTone
+                    language: languageMode,
+                    requestedTone: toneMode
                 ),
                 category: .lighting
             )
@@ -92,7 +99,8 @@ nonisolated struct LiveGuidanceSuggestionComposer: Sendable {
                 id: "center_subject",
                 messageKey: copyResolver.messageKey(
                     for: .framing,
-                    requestedTone: runtimeTone
+                    language: languageMode,
+                    requestedTone: toneMode
                 ),
                 category: .composition
             )
@@ -101,7 +109,8 @@ nonisolated struct LiveGuidanceSuggestionComposer: Sendable {
                 id: "more_headroom",
                 messageKey: copyResolver.messageKey(
                     for: .headroom,
-                    requestedTone: runtimeTone
+                    language: languageMode,
+                    requestedTone: toneMode
                 ),
                 category: .portrait
             )

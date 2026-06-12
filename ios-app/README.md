@@ -362,6 +362,14 @@ The runtime integration is intentionally narrow: selected local guidance categor
 
 This phase does not add app-wide language switching, Settings persistence, explicit profanity runtime, LLM-generated copy, AI-generated live camera copy, Photo Advisor copy changes, Filter Lab copy changes, image editing copy changes, backend, network, AI, StoreKit, provider SDKs, moderation, or runtime profanity filtering.
 
+## Phase 16V Persistent Camera Coach Language / Tone
+
+Phase 16V connects the deterministic resolver to Local Camera Coach runtime and persists only the Camera Coach language / tone preference.
+
+Settings saves `cameraCoach.languageMode` and `cameraCoach.toneMode`. English, Traditional Chinese, and Simplified Chinese use neutral copy; Cantonese supports Hong Kong conversational and non-explicit 麻煩友 copy. Explicit profanity remains disabled and unavailable in runtime.
+
+This phase does not add app-wide language switching, Photo Advisor copy changes, Filter Lab copy changes, image editing copy changes, backend, network, AI, StoreKit, provider SDKs, upload, export, save-to-Photos, or raw image / frame persistence.
+
 ## Phase 16A Camera One-Screen UX Consolidation
 
 Phase 16A keeps the app local/mock-only and consolidates the Camera capture surface.

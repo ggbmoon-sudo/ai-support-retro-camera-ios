@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 16T-R1 / HK3 simplified Mock Language Tone UI implemented; ready for user Xcode / Simulator review
+- Phase 16V persistent Local Camera Coach Language / Tone settings implemented; ready for user Xcode / Simulator review
 
 Next phase:
 
-- Do not commit Phase 16T-R1 until user visually accepts it in Xcode / Simulator
+- Do not commit Phase 16V until user visually accepts it in Xcode / Simulator
 - Phase 17 / real AI remain blocked until a backend boundary phase is explicitly requested later
 
 Before each task, read `AGENTS.md`, the required docs listed there, and the relevant phase prompt in `docs/prompts/`.
@@ -447,6 +447,8 @@ Phase 16S saves the ChatGPT-provided HK2 Hong Kong / 麻煩友 Copy System + Saf
 Phase 16T / HK3 adds a Settings-only mock Language / Tone entry based on Phase 16R and HK2. Phase 16T-R1 simplifies it to language-only buttons for English / 繁體中文 / 简体中文 / 廣東話, and Phase 16T-R2 hides mock preview / praise loop / explicit phrase cards from the production Settings UI. Cantonese keeps a short safety notice. It does not change Camera guidance, Photo Advisor, Filter Lab, editing runtime copy, app-wide language switching, persistence, backend, network, AI, StoreKit, or provider integration.
 
 Phase 16U / HK4 adds a local-only deterministic copy resolver scaffold for Local Camera Coach / 本機導拍 copy. Runtime integration is limited to selected camera guidance categories and uses neutral default tone only; HK conversational and non-explicit 麻煩友 keys are scaffolded but not connected to Settings or persistence. Explicit profanity runtime, app-wide language switching, backend, network, AI, and provider integration remain out of scope.
+
+Phase 16V promotes that resolver into a limited runtime path for Local Camera Coach only. Settings now persists language / tone preferences using `cameraCoach.languageMode` and `cameraCoach.toneMode`; Camera Coach can show English, Traditional Chinese, Simplified Chinese, Cantonese conversational, or non-explicit 麻煩友 deterministic copy. This does not add app-wide language switching, Photo Advisor / Filter Lab / 改圖師 copy changes, explicit profanity runtime, backend, network, real AI, StoreKit, upload, export, or raw image / frame persistence.
 
 ## Phase 16A Camera One-Screen UX Consolidation Status
 

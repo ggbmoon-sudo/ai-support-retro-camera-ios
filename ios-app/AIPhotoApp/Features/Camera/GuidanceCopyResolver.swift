@@ -1,10 +1,21 @@
 import Foundation
 
-nonisolated enum ToneMode: String, CaseIterable, Sendable {
+nonisolated enum AppLanguageMode: String, CaseIterable, Identifiable, Sendable {
+    case english
+    case traditionalChinese
+    case simplifiedChinese
+    case cantonese
+
+    var id: String { rawValue }
+}
+
+nonisolated enum ToneMode: String, CaseIterable, Identifiable, Sendable {
     case neutral
     case hongKongConversational
     case troublemaker
     case troublemakerExplicit
+
+    var id: String { rawValue }
 }
 
 nonisolated enum FeatureContext: String, CaseIterable, Sendable {
@@ -63,15 +74,17 @@ nonisolated struct GuidanceCopyResolver: Sendable {
 
     func messageKey(
         for category: GuidanceCopyCategory,
+        language: AppLanguageMode = .traditionalChinese,
         requestedTone: ToneMode = .neutral,
         featureContext: FeatureContext = .liveCameraCoach,
         isPublicContext: Bool = false
     ) -> String {
-        let tone = safetyPolicy.resolvedTone(
+        let resolvedTone = safetyPolicy.resolvedTone(
             requestedTone: requestedTone,
             featureContext: featureContext,
             isPublicContext: isPublicContext
         )
+        let tone = language.resolvedTone(for: resolvedTone)
 
         switch category {
         case .lighting,
@@ -80,7 +93,7 @@ nonisolated struct GuidanceCopyResolver: Sendable {
              .framing,
              .backgroundClutter,
              .successPraise:
-            return "camera.guidance.copy.\(tone.keyComponent).\(category.rawValue)"
+            return "camera.guidance.copy.\(language.keyComponent).\(tone.keyComponent).\(category.rawValue)"
         case .directLight:
             return "camera.guidance.suggestion.avoid_direct_light"
         case .portraitDistance:
@@ -101,11 +114,13 @@ nonisolated struct GuidancePraiseResolver: Sendable {
     }
 
     func praiseKey(
+        language: AppLanguageMode = .traditionalChinese,
         requestedTone: ToneMode = .neutral,
         featureContext: FeatureContext = .liveCameraCoach
     ) -> String {
         copyResolver.messageKey(
             for: .successPraise,
+            language: language,
             requestedTone: requestedTone,
             featureContext: featureContext,
             isPublicContext: false
@@ -123,6 +138,37 @@ nonisolated struct GuidanceIssueMemory: Sendable {
     func shouldPraiseResolvedIssue(currentIssueID: String?) -> Bool {
         guard lastIssueID != nil else { return false }
         return currentIssueID == nil
+    }
+}
+
+private extension AppLanguageMode {
+    var keyComponent: String {
+        switch self {
+        case .english:
+            return "en"
+        case .traditionalChinese:
+            return "zh_hant"
+        case .simplifiedChinese:
+            return "zh_hans"
+        case .cantonese:
+            return "yue"
+        }
+    }
+
+    func resolvedTone(for tone: ToneMode) -> ToneMode {
+        switch self {
+        case .english, .traditionalChinese, .simplifiedChinese:
+            return .neutral
+        case .cantonese:
+            switch tone {
+            case .neutral:
+                return .hongKongConversational
+            case .troublemakerExplicit:
+                return .troublemaker
+            case .hongKongConversational, .troublemaker:
+                return tone
+            }
+        }
     }
 }
 
