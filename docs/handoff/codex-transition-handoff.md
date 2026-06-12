@@ -62,6 +62,7 @@ Confirmed locally:
 - Phase 16I - Mock Post-capture AI Advisor UX + R1/R2 refinements
 - Phase 16N - Future AI / Premium Feature Policy Backfill
 - Phase 16O - Save Local On-device Camera Coach + LiDAR Research
+- Phase 16P - Save Encrypted App-to-App Photo Transfer Research
 
 Phase 16G status:
 
@@ -111,6 +112,7 @@ Important completed route so far:
 - Phase 16I - Mock Post-capture AI Advisor UX + R1/R2 refinements.
 - Phase 16N - Future AI / Premium Feature Policy Backfill.
 - Phase 16O - Local On-device Camera Coach + LiDAR Scene Understanding research save.
+- Phase 16P - Encrypted App-to-App High Quality / Lossless Photo Transfer research save.
 
 This list is a short orientation map only. Use `docs/phase-log.md` as the detailed source of truth.
 
@@ -274,6 +276,13 @@ This update records work completed by the new Codex / Codex API session after th
 - Future LC2 may be Local Coach Architecture Refactor.
 - LiDAR should remain a later dedicated prototype, not the next implementation.
 - Core ML should wait for dataset, label, evaluation, device, battery, and thermal strategy.
+- Phase 16P added `docs/research/encrypted-app-to-app-photo-transfer-research.md`.
+- Encrypted app-to-app high-quality / lossless photo transfer research is now saved in the repo.
+- Future implementation must use this research before any export, transfer, StoreKit, entitlement, backend, signed URL, Universal Link, cloud storage, or CryptoKit work.
+- Do not jump directly to encrypted transfer backend.
+- The next safe step, if explicitly requested, may be local high-quality export renderer planning / prototype.
+- StoreKit, entitlement, backend, storage, abuse controls, and privacy policy are required before real paid transfer.
+- Encrypted transfer, cloud storage, CryptoKit prototype, Universal Links, signed URLs, QR code, and receiver flow remain future dedicated phases.
 
 ### Next Recommended Phase Options
 
@@ -375,6 +384,7 @@ Important docs already added or expected in this roadmap:
 
 - `docs/product/future-ai-premium-feature-policy.md`
 - `docs/research/local-on-device-camera-coach-lidar-research.md`
+- `docs/research/encrypted-app-to-app-photo-transfer-research.md`
 - `docs/research/pose-overlay-camera-guide-research.md`
 - `docs/research/ai-filter-generator-research.md`
 - `docs/research/cloud-ai-architecture-research.md`
@@ -403,6 +413,8 @@ Important docs already added or expected in this roadmap:
 - Future paid / cloud / export / AI-edit / transfer / LiDAR / language-mode work must follow `docs/product/future-ai-premium-feature-policy.md`.
 - Future local camera coach / LiDAR / Core ML work must also follow `docs/research/local-on-device-camera-coach-lidar-research.md`.
 - Local camera coach architecture refactor is a safer future implementation candidate than live cloud AI.
+- Future export / encrypted transfer / StoreKit / backend / cloud storage work must also follow `docs/research/encrypted-app-to-app-photo-transfer-research.md`.
+- Local high-quality export renderer planning / prototype is a safer future step than encrypted transfer backend.
 
 ---
 
