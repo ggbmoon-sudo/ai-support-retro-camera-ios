@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 16Q - Save Paid AI Image Editing / 改圖師 Research
+Current phase: Phase 16R - Save Hong Kong / 麻煩友 Language Mode Research
 Status: Documentation-only research save; ready to commit after final review
-Latest implementation: Saved ChatGPT-provided Paid AI Image Editing / 改圖師 research to repo and updated phase log / handoff / README references
+Latest implementation: Saved ChatGPT-provided Hong Kong / 麻煩友 Language Mode UX + Safety research to repo and updated phase log / handoff / README references
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -54,7 +54,90 @@ Phase 16N verification: documentation-only product policy backfill; no Swift sou
 Phase 16O verification: documentation-only research save; no Swift source, backend source, app behavior change, LiDAR implementation, Core ML implementation, ARKit implementation, local model training, real AI, network, upload, persistence, export, API keys, provider SDK, StoreKit, payment, or production config added
 Phase 16P verification: documentation-only research save; no Swift source, backend source, app behavior change, export implementation, encrypted transfer implementation, CryptoKit prototype, backend, StoreKit, cloud storage, real upload, network, persistence, API keys, provider SDK, payment, or production config added
 Phase 16Q verification: documentation-only research save; no Swift source, backend source, app behavior change, AI image editing implementation, mock UI implementation, prompt guard implementation, provider adapter, backend, StoreKit, OpenAI / Gemini / Stability integration, real upload, network, persistence, export, API keys, provider SDK, payment, quota, entitlement, moderation, or production config added
-Next phase: Phase 16Q is ready to commit after final review. The next safe implementation candidate from this research, if explicitly requested later, is mock image editing UX only, not real provider integration. Do not start Phase 17, real AI, backend implementation, cloud upload, image editing provider integration, prompt guard implementation, provider adapter, StoreKit, payment, quota, entitlement, upload, persistence, export, or moderation implementation until explicitly requested.
+Phase 16R verification: documentation-only research save; no Swift source, backend source, app behavior change, language mode implementation, Settings UI implementation, copy resolver implementation, profanity mode implementation, localization runtime implementation, persistence change, backend, network, real AI, provider SDK, StoreKit, moderation implementation, runtime profanity filtering, or production config added
+Next phase: Phase 16R is ready to commit after final review. The next safe implementation candidate from this research, if explicitly requested later, is HK2 copy system / style guide documentation, not runtime language mode. Do not start Phase 17, real AI, backend implementation, cloud upload, language mode implementation, Settings UI, copy resolver, localization runtime, explicit profanity mode, LLM-generated copy, AI-generated live camera copy, persistence, StoreKit, payment, moderation implementation, or runtime profanity filtering until explicitly requested.
+
+---
+
+## Phase 16R - Save Hong Kong / 麻煩友 Language Mode Research
+
+Status: Documentation-only research save; ready to commit after final review
+Date completed: 2026-06-12
+
+### Goal
+
+Save the user-provided ChatGPT research report for Hong Kong / 麻煩友 Language Mode UX + Safety into the repo, then update documentation indexes and handoff status.
+
+### Completed
+
+- Added `docs/research/hong-kong-troublemaker-language-mode-research.md`.
+- Preserved the provided report title: `Hong Kong / 麻煩友 Language Mode UX + Safety for iOS Retro Camera App 深入研究報告`.
+- Saved the full ChatGPT-provided Markdown research report to the repo.
+- Removed `utm_source=chatgpt.com` query strings without changing source meaning.
+- Preserved the required sections:
+  - Executive Summary
+  - My Product Idea — 整理你的想法
+  - Product Positioning: Local Interest and Brand Differentiation
+  - Product Goal
+  - Language Mode Taxonomy
+  - Hong Kong / 麻煩友 Tone Definition
+  - Profanity Policy
+  - Safety Boundaries
+  - Context-based Tone Rules
+  - Positive Feedback Loop: 講一次就好，做返對就讚
+  - UX Design
+  - Copywriting System
+  - Feature Integration
+  - Localization Architecture
+  - Free vs Paid Policy
+  - App Store / Legal / Brand Risk
+  - Moderation / QA Strategy
+  - Technical Architecture Proposal
+  - MVP / Future Phase Plan
+  - Risk Table
+  - Final Recommendation
+  - Sources / Links
+- Recorded the research conclusion that 廣東話 / 麻煩友 mode is a Hong Kong localization brand personality, not a generic AI tone pack, translation mode, or profanity feature.
+- Recorded the core principles: criticize the shooting behavior / photo state, not the person; say it once; praise when the issue is fixed.
+- Recorded the tone taxonomy: Neutral, Hong Kong Conversational, 麻煩友, and 麻煩友 + explicit profanity opt-in.
+- Recorded that profanity must be default off, explicit opt-in, double-confirmed, previewed, one-tap-off, excluded from public / legal / privacy contexts, and mainly limited to `屌` as a Hong Kong tone particle.
+- Recorded that live camera copy should start with deterministic templates and should not use LLM-generated profanity / live camera copy.
+- Recorded that privacy / consent / legal copy must remain neutral and technical cloud AI / third-party AI disclosures must remain clear.
+- Recorded that MVP should start with HK conversational + non-explicit 麻煩友.
+- Recorded that the next safe implementation candidate, if explicitly requested later, is HK2 copy system / style guide documentation, not runtime language mode.
+- Updated transition handoff and README references.
+
+### Safety Notes
+
+Phase 16R is documentation-only. Codex only saved the ChatGPT-provided research report and updated docs references. It does not add Swift source changes, app UI changes, app behavior changes, Settings UI implementation, language mode implementation, copy resolver implementation, localization runtime implementation, explicit profanity mode implementation, LLM-generated copy, AI-generated live camera copy, backend code, cloud AI, network calls, `URLSession`, `URLRequest`, WebSocket, Firebase / Gemini / OpenAI / StoreKit imports, provider SDKs, API keys, Firebase config, `GoogleService-Info.plist`, `.env`, `.firebaserc`, upload, persistence changes, `UserDefaults`, Core Data, SwiftData, StoreKit, payment, credits, moderation implementation, runtime profanity filtering, or backend changes.
+
+### Verification
+
+- [x] `git status --short` checked before implementation.
+- [x] `git status --short` final check.
+- [x] `git diff --check` final pass.
+- [x] `git diff --stat` final review.
+- [x] Markdown heading sanity check confirmed required sections exist.
+- [x] Source links section preserved.
+- [x] `utm_source=chatgpt.com` removed from saved report links.
+- [x] Reference-style link sanity check.
+- [x] Forbidden imports scan.
+- [x] Network / upload behavior scan.
+- [x] Secrets / config scan.
+- [x] Forbidden behavior scan.
+- [x] Persistence scan.
+- [x] Provider import scan.
+- [x] StoreKit scan.
+- [x] Swift source change scan.
+- [x] No Swift source changed; Xcode build not required.
+
+### Ready to Commit Phase 16R
+
+Yes. Latest commit has not been created; do not commit or push automatically.
+
+### Ready for Phase 17 / Real AI
+
+No.
 
 ---
 

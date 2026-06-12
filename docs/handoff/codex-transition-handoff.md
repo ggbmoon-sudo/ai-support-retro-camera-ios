@@ -64,6 +64,7 @@ Confirmed locally:
 - Phase 16O - Save Local On-device Camera Coach + LiDAR Research
 - Phase 16P - Save Encrypted App-to-App Photo Transfer Research
 - Phase 16Q - Save Paid AI Image Editing / 改圖師 Research
+- Phase 16R - Save Hong Kong / 麻煩友 Language Mode Research
 
 Phase 16G status:
 
@@ -115,6 +116,7 @@ Important completed route so far:
 - Phase 16O - Local On-device Camera Coach + LiDAR Scene Understanding research save.
 - Phase 16P - Encrypted App-to-App High Quality / Lossless Photo Transfer research save.
 - Phase 16Q - Paid AI Image Editing / 改圖師 research save.
+- Phase 16R - Hong Kong / 麻煩友 Language Mode UX + Safety research save.
 
 This list is a short orientation map only. Use `docs/phase-log.md` as the detailed source of truth.
 
@@ -293,6 +295,14 @@ This update records work completed by the new Codex / Codex API session after th
 - Prompt guard must be designed before provider integration.
 - StoreKit, entitlement, backend, privacy policy, retention policy, safety policy, quota, and cost guard are required before real paid image editing.
 - OpenAI / Gemini / Stability provider integration remains a future dedicated phase.
+- Phase 16R added `docs/research/hong-kong-troublemaker-language-mode-research.md`.
+- Hong Kong / 麻煩友 Language Mode UX + Safety research is now saved in the repo.
+- Future implementation must use this research before any language mode, copy resolver, profanity, localization runtime, Settings UI, copy system, or QA policy work.
+- Do not jump directly to explicit profanity mode.
+- Do not use LLM-generated live camera copy.
+- The next safe step, if explicitly requested, may be HK2 Copy System / Style Guide documentation.
+- Runtime integration should wait until copy system, banned phrase list, and QA policy are documented.
+- Explicit profanity mode requires separate review, App Store / age rating consideration, explicit opt-in, and manual QA.
 
 ### Next Recommended Phase Options
 
@@ -396,6 +406,7 @@ Important docs already added or expected in this roadmap:
 - `docs/research/local-on-device-camera-coach-lidar-research.md`
 - `docs/research/encrypted-app-to-app-photo-transfer-research.md`
 - `docs/research/paid-ai-image-editing-research.md`
+- `docs/research/hong-kong-troublemaker-language-mode-research.md`
 - `docs/research/pose-overlay-camera-guide-research.md`
 - `docs/research/ai-filter-generator-research.md`
 - `docs/research/cloud-ai-architecture-research.md`
@@ -428,6 +439,8 @@ Important docs already added or expected in this roadmap:
 - Local high-quality export renderer planning / prototype is a safer future step than encrypted transfer backend.
 - Future paid image editing / provider / prompt guard / backend / StoreKit work must also follow `docs/research/paid-ai-image-editing-research.md`.
 - Mock image editing UX is a safer future step than real provider integration.
+- Future language mode / copy resolver / profanity / localization runtime work must also follow `docs/research/hong-kong-troublemaker-language-mode-research.md`.
+- HK2 Copy System / Style Guide documentation is a safer future step than runtime language mode or explicit profanity mode.
 
 ---
 

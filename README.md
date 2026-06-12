@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 16Q Paid AI Image Editing / 改圖師 research saved as documentation-only
+- Phase 16R Hong Kong / 麻煩友 Language Mode research saved as documentation-only
 
 Next phase:
 
-- Phase 16Q is ready to commit after final review; do not commit / push automatically
+- Phase 16R is ready to commit after final review; do not commit / push automatically
 - Phase 17 / real AI remain blocked until a backend boundary phase is explicitly requested later
 
 Before each task, read `AGENTS.md`, the required docs listed there, and the relevant phase prompt in `docs/prompts/`.
@@ -112,6 +112,7 @@ Current MVP demo / QA readiness docs:
 - `docs/research/local-on-device-camera-coach-lidar-research.md`
 - `docs/research/encrypted-app-to-app-photo-transfer-research.md`
 - `docs/research/paid-ai-image-editing-research.md`
+- `docs/research/hong-kong-troublemaker-language-mode-research.md`
 - `docs/research/pose-overlay-camera-guide-research.md`
 - `docs/research/ai-filter-generator-research.md`
 - `docs/research/cloud-ai-architecture-research.md`
@@ -437,6 +438,8 @@ Phase 16O saves the ChatGPT-provided Local On-device Camera Coach + LiDAR resear
 Phase 16P saves the ChatGPT-provided Encrypted App-to-App High Quality / Lossless Photo Transfer research at `docs/research/encrypted-app-to-app-photo-transfer-research.md`. It recommends defining local high-quality export before any encrypted transfer backend and keeps real export, StoreKit, backend, cloud storage, signed URLs, CryptoKit prototype, Universal Links, upload, and persistence out of scope. Phase 16P does not change Swift app behavior.
 
 Phase 16Q saves the ChatGPT-provided Paid AI Image Editing / 改圖師 research at `docs/research/paid-ai-image-editing-research.md`. It recommends mock image editing UX before any real provider integration and keeps real provider calls, backend, StoreKit, prompt guard implementation, upload, persistence, export, quota, entitlement, moderation, and provider adapters out of scope. Phase 16Q does not change Swift app behavior.
+
+Phase 16R saves the ChatGPT-provided Hong Kong / 麻煩友 Language Mode UX + Safety research at `docs/research/hong-kong-troublemaker-language-mode-research.md`. It recommends HK2 copy system / style guide documentation before any runtime language mode and keeps explicit profanity mode, Settings UI, copy resolver, localization runtime, persistence, LLM-generated copy, backend, network, and AI-generated live camera copy out of scope. Phase 16R does not change Swift app behavior.
 
 ## Phase 16A Camera One-Screen UX Consolidation Status
 
