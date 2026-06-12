@@ -1,6 +1,6 @@
 import { hasUploadConsent } from "../security/consent.mjs";
-
-const MAX_MOCK_IMAGE_BASE64_LENGTH = 96_000;
+import { isKnownFilterId } from "../filters/filterWhitelist.mjs";
+import { CLOUD_AI_LIMITS } from "../security/limits.mjs";
 
 export function validatePhotoAdvisorRequest(request) {
   if (!request || typeof request !== "object" || Array.isArray(request)) {
@@ -23,11 +23,28 @@ export function validatePhotoAdvisorRequest(request) {
     return invalid("consent_required", "Explicit image upload consent is required");
   }
 
-  if (request.image !== undefined) {
-    const imageValidation = validateImageShape(request.image);
-    if (!imageValidation.ok) {
-      return imageValidation;
+  if (typeof request.locale !== "string" || request.locale.trim().length === 0) {
+    return invalid("invalid_locale", "locale is required");
+  }
+
+  if (
+    request.selectedFilterId !== undefined &&
+    request.selectedFilterId !== null &&
+    !isKnownFilterId(request.selectedFilterId)
+  ) {
+    return invalid("invalid_filter_id", "selectedFilterId must be a known app filter");
+  }
+
+  if (request.client !== undefined) {
+    const clientValidation = validateClientShape(request.client);
+    if (!clientValidation.ok) {
+      return clientValidation;
     }
+  }
+
+  const imageValidation = validateImageShape(request.image);
+  if (!imageValidation.ok) {
+    return imageValidation;
   }
 
   return { ok: true };
@@ -54,17 +71,52 @@ function validateImageShape(image) {
     return invalid("metadata_not_stripped", "image metadataStripped must be true");
   }
 
-  if (image.dataBase64 !== undefined) {
-    if (typeof image.dataBase64 !== "string") {
-      return invalid("invalid_image_payload", "image dataBase64 must be a string when present");
-    }
+  if (typeof image.dataBase64 !== "string" || image.dataBase64.length === 0) {
+    return invalid("invalid_image_payload", "image dataBase64 is required");
+  }
 
-    if (image.dataBase64.length > MAX_MOCK_IMAGE_BASE64_LENGTH) {
-      return invalid("payload_too_large", "mock image payload is too large");
-    }
+  if (image.dataBase64.length > CLOUD_AI_LIMITS.maxImageBase64LengthDebug) {
+    return invalid("payload_too_large", "mock image payload is too large");
+  }
+
+  const decodedBytes = decodedBase64ByteLength(image.dataBase64);
+  if (decodedBytes === null) {
+    return invalid("invalid_image_payload", "image dataBase64 must be valid base64");
+  }
+
+  if (decodedBytes > CLOUD_AI_LIMITS.maxImageBase64LengthDebug) {
+    return invalid("payload_too_large", "decoded mock image payload is too large");
   }
 
   return { ok: true };
+}
+
+function validateClientShape(client) {
+  if (!client || typeof client !== "object" || Array.isArray(client)) {
+    return invalid("invalid_client", "client must be an object");
+  }
+
+  if (client.platform !== undefined && client.platform !== "iOS") {
+    return invalid("unsupported_client_platform", "client.platform must be iOS when provided");
+  }
+
+  return { ok: true };
+}
+
+function isValidBase64(value) {
+  if (value.length % 4 !== 0) {
+    return false;
+  }
+
+  return /^[A-Za-z0-9+/]+={0,2}$/.test(value);
+}
+
+function decodedBase64ByteLength(value) {
+  if (!isValidBase64(value)) {
+    return null;
+  }
+
+  return Buffer.from(value, "base64").length;
 }
 
 function invalid(code, message) {

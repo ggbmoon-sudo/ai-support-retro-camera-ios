@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 17B debug-only RemoteCloudAIService wiring implemented; ready for user review
+- Phase 17C-Prep provider readiness and schema hardening implemented; ready for user review
 
 Next phase:
 
-- Do not commit Phase 17B until user reviews it
+- Do not commit Phase 17C-Prep until user reviews it
 - Real provider integration remains blocked until a later explicit provider phase
 
 Before each task, read `AGENTS.md`, the required docs listed there, and the relevant phase prompt in `docs/prompts/`.
@@ -100,6 +100,8 @@ Transition handoff notes live in `docs/handoff/`; the current Codex / Codex API 
 Phase 17A adds a Cloud AI boundary skeleton only: iOS CloudAI models / service protocol / validator / disabled remote skeleton / consent view / image compressor scaffold, plus a mock-only `backend/` with `GET /health` and `POST /v1/ai/photo-advisor`. No real provider is connected, no provider key belongs in iOS or the repo, and existing Photo Advisor remains mock/local by default.
 
 Phase 17B adds DEBUG-only wiring from iOS `RemoteCloudAIService` to the local backend mock `/v1/ai/photo-advisor` endpoint. Production/default behavior remains mock/local, and real provider integration remains future-only.
+
+Phase 17C-Prep hardens the backend boundary before any real provider work: mock-only provider adapter / registry, stricter request and response validation, filter whitelist checks, unsafe response guard, standardized fallback errors, quota / rate-limit / timeout placeholders, redacted logging helper, and backend fixtures/tests. There is still no real provider call, no provider API key, no production remote enablement, and no Camera cloud AI entry.
 
 Current MVP demo / QA readiness docs:
 
@@ -151,6 +153,8 @@ The current app does not include real Firebase upload, Firestore writes, Storage
 Phase 17A does not change that production boundary: the new backend folder is mock-only and provider-disabled, and the iOS remote Cloud AI service is not production-reachable by default.
 
 Phase 17B keeps the same production boundary. The remote chain is DEBUG/internal only, requires consent, uses compressed JPEG input, validates the structured response, and falls back to local advice on failure.
+
+Phase 17C-Prep keeps provider integration blocked. It only prepares the backend boundary with mock-only provider plumbing, schema hardening, safety fallback, and no-payload logging rules.
 
 ## Phase 12A Filter Planning Status
 

@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1.0",
+  "feature": "photo_advisor",
+  "mode": "post_capture",
+  "locale": "zh-Hant-HK",
+  "selectedFilterId": "instant_dream",
+  "image": {
+    "contentType": "image/jpeg",
+    "width": 1024,
+    "height": 768,
+    "metadataStripped": true,
+    "dataBase64": "/9j/"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "1.0",
+  "mode": "post_capture",
+  "summary": "這張相有暖光感，可以試柔和復古濾鏡。",
+  "suggestions": [],
+  "recommendedFilters": [
+    {
+      "filterId": "provider_made_this_up",
+      "reason": "Invalid provider-created filter.",
+      "confidence": "high"
+    }
+  ],
+  "generatedFilter": null,
+  "poseGuide": null,
+  "retakeAdvice": null,
+  "cropAdvice": null,
+  "confidence": "medium",
+  "source": "mock",
+  "locale": "zh-Hant-HK",
+  "safety": {
+    "containsSensitiveInference": false,
+    "requiresUserConsent": true,
+    "blockedReason": null
+  },
+  "error": null
+}

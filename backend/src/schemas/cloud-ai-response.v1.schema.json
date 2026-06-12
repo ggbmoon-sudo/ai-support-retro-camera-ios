@@ -3,12 +3,17 @@
   "$id": "cloud-ai-response.v1",
   "title": "Cloud AI Response v1",
   "type": "object",
+  "additionalProperties": false,
   "required": [
     "schemaVersion",
     "mode",
     "summary",
     "suggestions",
     "recommendedFilters",
+    "generatedFilter",
+    "poseGuide",
+    "retakeAdvice",
+    "cropAdvice",
     "confidence",
     "source",
     "locale",
@@ -37,11 +42,60 @@
     },
     "suggestions": {
       "type": "array",
-      "maxItems": 3
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "text", "priority", "action"],
+        "properties": {
+          "type": {
+            "enum": ["filter", "crop", "lighting", "retake", "composition"]
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 180
+          },
+          "priority": {
+            "enum": ["low", "medium", "high"]
+          },
+          "action": {
+            "enum": ["apply_filter", "adjust_crop", "retake", "none"]
+          }
+        }
+      }
     },
     "recommendedFilters": {
       "type": "array",
-      "maxItems": 3
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["filterId", "reason", "confidence"],
+        "properties": {
+          "filterId": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 140
+          },
+          "confidence": {
+            "enum": ["low", "medium", "high"]
+          }
+        }
+      }
+    },
+    "generatedFilter": {
+      "type": ["object", "null"]
+    },
+    "poseGuide": {
+      "type": ["object", "null"]
+    },
+    "retakeAdvice": {
+      "type": ["object", "null"]
+    },
+    "cropAdvice": {
+      "type": ["object", "null"]
     },
     "confidence": {
       "enum": ["low", "medium", "high"]
@@ -54,7 +108,8 @@
     },
     "safety": {
       "type": "object",
-      "required": ["containsSensitiveInference", "requiresUserConsent"],
+      "additionalProperties": false,
+      "required": ["containsSensitiveInference", "requiresUserConsent", "blockedReason"],
       "properties": {
         "containsSensitiveInference": {
           "const": false
@@ -68,7 +123,36 @@
       }
     },
     "error": {
-      "type": ["object", "null"]
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["code", "message", "recoverable"],
+      "properties": {
+        "code": {
+          "enum": [
+            "network_unavailable",
+            "timeout",
+            "quota_exceeded",
+            "provider_error",
+            "invalid_json",
+            "invalid_schema",
+            "unsafe_response",
+            "image_too_large",
+            "user_cancelled",
+            "consent_declined",
+            "unsupported_image",
+            "backend_unavailable",
+            "invalid_request",
+            "rate_limited"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "maxLength": 180
+        },
+        "recoverable": {
+          "type": "boolean"
+        }
+      }
     }
   }
 }

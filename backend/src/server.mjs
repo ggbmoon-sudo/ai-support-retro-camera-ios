@@ -1,8 +1,9 @@
 import http from "node:http";
 import { healthResponse } from "./routes/health.mjs";
 import { handlePhotoAdvisorRequest } from "./routes/photoAdvisor.mjs";
-
-const MAX_BODY_BYTES = 128_000;
+import { CLOUD_AI_ERROR_CODES } from "./responses/cloudAIErrorCodes.mjs";
+import { fallbackCloudAIResponse } from "./responses/fallbackResponse.mjs";
+import { CLOUD_AI_LIMITS } from "./security/limits.mjs";
 
 export function createServer() {
   return http.createServer(async (request, response) => {
@@ -13,7 +14,7 @@ export function createServer() {
 
       if (request.method === "POST" && request.url === "/v1/ai/photo-advisor") {
         const body = await readJsonBody(request);
-        const result = handlePhotoAdvisorRequest(body);
+        const result = await handlePhotoAdvisorRequest(body);
         return sendJson(response, result.status, result.body);
       }
 
@@ -24,6 +25,20 @@ export function createServer() {
         }
       });
     } catch (error) {
+      if (error.code === "invalid_json") {
+        return sendJson(response, 400, fallbackCloudAIResponse({
+          code: CLOUD_AI_ERROR_CODES.invalidJson,
+          message: "Request body must be valid JSON"
+        }));
+      }
+
+      if (error.code === "payload_too_large") {
+        return sendJson(response, 413, fallbackCloudAIResponse({
+          code: CLOUD_AI_ERROR_CODES.imageTooLarge,
+          message: "Image payload is too large"
+        }));
+      }
+
       return sendJson(response, error.statusCode ?? 500, {
         error: {
           code: error.code ?? "internal_error",
@@ -49,7 +64,7 @@ function readJsonBody(request) {
 
     request.on("data", (chunk) => {
       size += chunk.length;
-      if (size > MAX_BODY_BYTES) {
+      if (size > CLOUD_AI_LIMITS.maxRequestBodyBytes) {
         const error = new Error("Request body is too large");
         error.statusCode = 413;
         error.code = "payload_too_large";

@@ -3,8 +3,8 @@
   "$id": "photo-advisor-request.v1",
   "title": "Photo Advisor Request v1",
   "type": "object",
-  "required": ["schemaVersion", "feature", "mode", "consent"],
-  "additionalProperties": true,
+  "required": ["schemaVersion", "feature", "mode", "locale", "consent", "image"],
+  "additionalProperties": false,
   "properties": {
     "schemaVersion": {
       "const": "1.0"
@@ -16,14 +16,43 @@
       "const": "post_capture"
     },
     "locale": {
-      "type": "string"
+      "type": "string",
+      "minLength": 1
     },
     "selectedFilterId": {
-      "type": ["string", "null"]
+      "type": ["string", "null"],
+      "enum": [
+        "original",
+        "soft_warm_400",
+        "summer_gold_200",
+        "street_chrome",
+        "soft_sun_portrait",
+        "cinema_flat",
+        "silver_gradation",
+        "everyday_color_400",
+        "amber_night_800",
+        "vivid_landscape_100",
+        "slide_pop",
+        "memory_negative",
+        "amber_nostalgia",
+        "tri_grit_400",
+        "neon_tungsten_800",
+        "instant_dream",
+        "metro_pop",
+        "diana_soft",
+        "flash_party",
+        "ccd_party_2008",
+        "editor_classic",
+        "classic-film",
+        "warm-vintage",
+        "faded-chrome",
+        null
+      ]
     },
     "consent": {
       "type": "object",
       "required": ["imageUploadAccepted", "consentVersion"],
+      "additionalProperties": false,
       "properties": {
         "imageUploadAccepted": {
           "const": true
@@ -36,7 +65,8 @@
     },
     "image": {
       "type": "object",
-      "required": ["contentType", "width", "height", "metadataStripped"],
+      "required": ["contentType", "width", "height", "metadataStripped", "dataBase64"],
+      "additionalProperties": false,
       "properties": {
         "contentType": {
           "const": "image/jpeg"
@@ -56,7 +86,20 @@
         },
         "dataBase64": {
           "type": "string",
+          "minLength": 4,
           "maxLength": 96000
+        }
+      }
+    },
+    "client": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "platform": {
+          "const": "iOS"
+        },
+        "appVersion": {
+          "type": "string"
         }
       }
     }

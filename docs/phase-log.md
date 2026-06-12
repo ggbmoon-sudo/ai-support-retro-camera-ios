@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 17B - Debug-only Remote CloudAIService Wiring
-Status: Debug-only remote Cloud AI boundary wiring added; ready for user review after verification
-Latest implementation: Added DEBUG-only RemoteCloudAIService path to call the local backend mock `/v1/ai/photo-advisor` endpoint after consent and image compression, validate the structured response, map it into the existing Photo Advisor UI, and fallback to local/mock advice on failure while production/default Photo Advisor remains mock/local and Camera remains local-only
+Current phase: Phase 17C-Prep - Provider Readiness + Schema Hardening
+Status: Provider readiness and schema hardening added; ready for user review after verification
+Latest implementation: Added mock-only provider adapter boundary, stricter backend request / response validation, filter whitelist validation, unsafe output guard, standardized fallback / error contract, quota / rate-limit / timeout placeholders, no-payload logging helpers, and valid / invalid / unsafe backend test fixtures while keeping production/default Photo Advisor mock/local and Camera local-only
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -66,7 +66,72 @@ Phase 16W-R2 verification: localization lint, safety scans, Camera local-only UI
 Phase 16X verification: localization lint, safety scans, Camera cloud-entry regression scan, persistence scope scan, explicit profanity runtime scan, banned phrase scan, and command-line Xcode generic iOS Simulator build passed on 2026-06-12; Inspiration is organized as a mock/local AI Hub, Camera remains local-only, Photo Advisor / future cloud AI home is Inspiration, and no real AI, backend, network, upload, new persistence, explicit profanity runtime, provider SDK, StoreKit, export, or cloud AI was added
 Phase 17A verification: Cloud AI backend boundary skeleton only; no real provider call, no provider API key, no production-reachable iOS remote call, no real upload / storage, no request payload logging, and Camera remains local-only.
 Phase 17B verification: debug-only remote chain added for local backend mock endpoint; production/default remains mock/local; no provider call, no provider API key, no Camera cloud AI entry, no storage upload, and no request payload logging.
-Next phase: Phase 17B is ready for user review after verification. Do not start Phase 17C, real provider integration, real upload, cloud storage, app-wide language switching, Gemini Live, StoreKit, payment, export, or save-to-Photos until explicitly requested.
+Phase 17C-Prep verification: provider adapter boundary remains mock-only; backend request / response validation, filter whitelist validation, unsafe response guard, fallback contract, rate-limit / quota / timeout placeholders, redaction helpers, fixtures, and backend tests are in place; no real provider call, no provider API key, no production remote enablement, no storage upload, no request payload logging, and Camera remains local-only.
+Next phase: Phase 17C-Prep is ready for user review after verification. Do not start real provider integration, real upload, cloud storage, app-wide language switching, Gemini Live, StoreKit, payment, export, or save-to-Photos until explicitly requested.
+
+---
+
+## Phase 17C-Prep - Provider Readiness + Schema Hardening
+
+Status: Provider readiness and schema hardening added; ready for user review
+Date completed: 2026-06-12
+
+### Goal
+
+Prepare the Cloud AI backend boundary for a future provider phase by hardening schemas, validation, provider abstraction, safety fallback, and tests without adding any real provider integration.
+
+### Completed
+
+- Added backend provider adapter boundary with `CloudAIProvider`, `MockCloudAIProvider`, `DisabledProvider`, and a mock-only `ProviderRegistry`.
+- Kept executable provider kinds limited to `mock` and `disabled`.
+- Hardened `/v1/ai/photo-advisor` request validation for schema version, feature, mode, consent, locale, JPEG image shape, metadata stripping, valid base64, client platform, debug payload size, and selected filter whitelist.
+- Hardened backend `CloudAIResponse` validation for allowed modes, summary length, suggestions max 3, suggestion text/action, recommended filters max 3, filter whitelist, confidence, source, safety, error shape, and unsafe text.
+- Added backend filter whitelist aligned with the app filter catalog IDs.
+- Added unsafe output guard for banned Cantonese / appearance / body / identity terms and simple sensitive-inference patterns.
+- Added standardized fallback Cloud AI response contract with safe error codes.
+- Added dev-only rate-limit, quota, and provider timeout placeholders.
+- Added redacted operational metadata / safe logging helper that excludes image payloads and request bodies.
+- Added backend fixtures for valid request, missing consent, invalid schema version, oversized image, valid response, invalid filter response, unsafe response, and too-many-suggestions response.
+- Expanded backend tests to cover valid / invalid / unsafe / mock-only provider / no-payload metadata cases.
+- Updated backend JSON schemas to match the hardened request / response contract.
+- Existing iOS debug remote chain from Phase 17B remains compatible and still validates backend responses before mapping them into Photo Advisor.
+- Production/default Photo Advisor remains mock/local.
+- Camera remains local-only and no cloud AI entry was added.
+- Updated README, iOS README, backend README, transition handoff, phase log, and manual smoke tests.
+
+### Safety Notes
+
+Phase 17C-Prep does not add real OpenAI, Gemini, Firebase AI, Stability, or provider calls; provider SDK imports; provider API keys; provider URLs; production remote Cloud AI; cloud storage upload; Firebase Storage upload; Firestore writes; request payload logging; provider raw response logging; Camera cloud AI entry; Gemini Live; WebSocket; live video streaming; StoreKit; payment; account / auth; save-to-Photos; export; raw photo / frame persistence; face recognition; identity inference; sensitive inference; app-wide language switching; Phase 17C real provider beta; or changes to Filter Lab / 改圖師 runtime behavior.
+
+### Verification
+
+- [x] `git status --short` final check.
+- [x] `git diff --check` final pass.
+- [x] `git diff --stat` final review.
+- [x] Localization lint.
+- [x] iOS unit tests, if available; no separate iOS test target exists in this repo.
+- [x] Backend tests passed with bundled Node runtime.
+- [x] Backend JSON schema sanity check passed.
+- [x] Forbidden imports scan.
+- [x] Network / upload behavior scan.
+- [x] Secrets / config scan.
+- [x] Provider key scan.
+- [x] Provider URL scan.
+- [x] Request payload logging scan.
+- [x] Unsafe phrase scan.
+- [x] Filter whitelist tests.
+- [x] Persistence scope scan.
+- [x] Swift source change summary.
+- [x] Backend source change summary.
+- [x] Xcode generic iOS Simulator build passed on 2026-06-12.
+
+### Ready to Commit Phase 17C-Prep
+
+No. Wait until the user reviews the Phase 17C-Prep result.
+
+### Ready for Real Provider Integration
+
+No.
 
 ---
 

@@ -4,6 +4,8 @@ Phase 17A adds a mock-only backend boundary for future Cloud AI work.
 
 This backend does not call OpenAI, Gemini, Firebase AI, Stability, or any other provider. It does not require provider API keys and must not store uploaded images or request payloads.
 
+Phase 17C-Prep hardens the boundary before any real provider work. The executable provider adapter remains mock / disabled only.
+
 ## Run
 
 ```sh
@@ -26,10 +28,39 @@ This is for internal boundary testing only. It is not a production provider URL.
 - `GET /health`
   - Returns mock-only service status.
 - `POST /v1/ai/photo-advisor`
-  - Validates a Phase 17A request shape.
-  - Requires `schemaVersion: "1.0"`, `mode: "post_capture"`, and an explicit consent marker.
-  - Accepts only mock-safe JPEG image metadata / payload shape.
+  - Validates the hardened request shape.
+  - Requires `schemaVersion: "1.0"`, `feature: "photo_advisor"`, `mode: "post_capture"`, locale, and explicit consent.
+  - Accepts only mock-safe compressed JPEG image metadata / base64 payload shape.
+  - Requires metadata stripping.
+  - Validates optional `selectedFilterId` against the app filter whitelist.
   - Returns a structured mock `CloudAIResponse`.
+
+## Provider Boundary
+
+Executable provider kinds:
+
+- `mock`
+- `disabled`
+
+There is no OpenAI, Gemini, Firebase AI, Stability, or other real provider implementation. Do not add provider SDKs, provider URLs, or provider API key reads without an explicit future provider phase.
+
+## Validation / Safety
+
+Phase 17C-Prep adds:
+
+- stricter request validation
+- stricter response validation
+- known filter ID whitelist
+- unsafe text / sensitive inference guard
+- standardized fallback / unavailable response
+- dev-only rate-limit, quota, and provider timeout placeholders
+- valid / invalid / unsafe backend fixtures
+
+Run:
+
+```sh
+npm test
+```
 
 ## No Payload Logging
 
@@ -55,6 +86,7 @@ Allowed operational metadata, if needed in a future phase:
 - latency
 - coarse image size bucket
 - error code
+- provider kind
 
 ## Future TODO
 

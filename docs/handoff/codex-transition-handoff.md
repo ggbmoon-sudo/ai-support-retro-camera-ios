@@ -130,6 +130,7 @@ Important completed route so far:
 - Phase 16X - Inspiration AI Hub cleanup.
 - Phase 17A - Real Cloud AI Backend Boundary Skeleton.
 - Phase 17B - Debug-only Remote CloudAIService Wiring.
+- Phase 17C-Prep - Provider Readiness + Schema Hardening.
 
 This list is a short orientation map only. Use `docs/phase-log.md` as the detailed source of truth.
 
@@ -380,6 +381,11 @@ This update records work completed by the new Codex / Codex API session after th
 - Phase 17B adds DEBUG-only remote chain testing for the local backend mock `/v1/ai/photo-advisor` endpoint.
 - `RemoteCloudAIService` remains disabled by default.
 - The DEBUG-only remote path requires consent, compresses / re-encodes the image, validates the structured response, and falls back to local/mock advice on failure.
+- Phase 17C-Prep hardens the backend boundary before any real provider work.
+- Provider adapter boundary now exists, but executable provider kinds remain mock / disabled only.
+- Backend request / response validation now includes stricter schema, consent, JPEG, base64, filter whitelist, unsafe text, standard fallback, and error-code checks.
+- Rate-limit, quota, timeout, redaction / no-payload logging helpers, and test fixtures are in place as placeholders.
+- Real provider integration has still not started.
 - Phase 17 remains provider-disabled; no real provider integration is approved.
 
 ### Next Recommended Phase Options
@@ -396,7 +402,7 @@ Option 0 - Phase 17B: RemoteCloudAIService Internal Debug Wiring Only
 Option 1 - Phase 17C: Real Provider Integration Planning / Approval Gate
 
 - Only after explicit user approval.
-- Provider docs, pricing, safety policy, prompt contract, timeout, validation, moderation, cost guard, and secret management must be reviewed first.
+- Phase 17C-Prep has added schema / safety / adapter hardening, but provider docs, pricing, provider policy, prompt contract, moderation, cost guard, secret management, and ops readiness must still be explicitly reviewed before any real provider beta.
 - No Gemini Live / streaming.
 - No Camera cloud AI entry.
 
@@ -449,12 +455,12 @@ Do not fill fake future data. Complete this section on or near the handback date
 
 ### Short-term next recommended phase
 
-Phase 17A has started as a backend boundary skeleton only. Do not jump to real provider integration. The next implementation phase should remain explicitly scoped and provider-disabled unless the user approves a later real-provider phase.
+Phase 17C-Prep has hardened the backend boundary and provider adapter surface, but real provider integration has still not started. Do not jump to real provider integration without explicit approval and provider readiness review.
 
 Suggested next options:
 
-- Phase 17B - RemoteCloudAIService internal debug wiring only, still mock/provider-disabled.
 - Phase 17C - Real provider integration planning / approval gate, not implementation, unless separately requested.
+- Phase 17D - Internal real provider beta only after explicit approval, secret management, provider policy review, cost guard, timeout, moderation, and validation checks.
 - Phase 16M - Export / Local Lossless Download Planning Research, if product planning returns to export.
 
 Previously completed:
@@ -479,7 +485,8 @@ Completed Phase 16I scope:
 - Phase 16K - Local heuristic advisor / filter recommendation, if desired.
 - Phase 17A - Backend boundary skeleton only, not real provider first.
 - Phase 17B - Debug-only RemoteCloudAIService wiring to backend mock endpoint.
-- Phase 17C - Real provider only after explicit approval.
+- Phase 17C-Prep - Provider readiness and schema hardening, still mock/provider-disabled.
+- Phase 17C / 17D - Real provider only after explicit approval.
 
 Roadmap guardrails:
 
@@ -490,6 +497,7 @@ Roadmap guardrails:
 - First real AI endpoint should likely be `/v1/ai/photo-advisor`, after backend boundary work is in place.
 - Phase 17A has now added the boundary skeleton, but real provider integration is still not approved.
 - Phase 17B has now added debug-only remote wiring to the backend mock endpoint, but real provider integration is still not approved.
+- Phase 17C-Prep has now added mock-only provider adapter, schema hardening, filter whitelist, unsafe response guard, fallback contract, quota / rate-limit / timeout placeholders, redaction helpers, and fixtures, but real provider integration is still not approved.
 
 ---
 
@@ -549,12 +557,13 @@ Important docs already added or expected in this roadmap:
 - Phase 17A adds a provider-disabled Cloud AI backend boundary skeleton.
 - Future real cloud AI should use the Phase 17A boundary before any provider work.
 - Phase 17B wires `RemoteCloudAIService` behind a DEBUG-only internal path.
-- Future Phase 17C may add a real provider call only after explicit approval, secret management, provider policy review, timeout / cancellation, moderation, validation, and cost guard work.
+- Phase 17C-Prep adds provider readiness and schema hardening while keeping the provider path mock-only.
+- Future real provider work may start only after explicit approval, secret management, provider policy review, timeout / cancellation, moderation, validation, and cost guard work.
 - No Gemini Live / streaming, AI Filter Generator real backend, 改圖師 provider integration, or Camera cloud AI entry is approved by Phase 17A.
 - App-wide language switching remains not implemented.
 - Filter Lab / 改圖師 copy integration remains future-only.
 - Explicit profanity remains future review-only and not runtime-enabled.
-- Next safe step may be Phase 17B internal debug remote wiring only after explicit user approval; real provider integration remains blocked.
+- Next safe step may be a Phase 17C real-provider planning / approval gate; real provider integration remains blocked.
 
 ---
 

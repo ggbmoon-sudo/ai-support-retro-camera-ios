@@ -1,4 +1,6 @@
-export function mockPhotoAdvisorResponse({ locale }) {
+export function mockPhotoAdvisorResponse({ locale, selectedFilterId }) {
+  const preferredFilterId = selectedFilterId === "soft_warm_400" ? "soft_warm_400" : "instant_dream";
+
   return {
     schemaVersion: "1.0",
     mode: "post_capture",
@@ -13,7 +15,7 @@ export function mockPhotoAdvisorResponse({ locale }) {
     ],
     recommendedFilters: [
       {
-        filterId: "instant_dream",
+        filterId: preferredFilterId,
         reason: "適合暖光人像。",
         confidence: "high"
       }

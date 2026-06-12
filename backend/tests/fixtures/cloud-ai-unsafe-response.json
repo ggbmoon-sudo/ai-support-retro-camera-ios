@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1.0",
+  "mode": "post_capture",
+  "summary": "你樣衰，所以張相唔得。",
+  "suggestions": [],
+  "recommendedFilters": [],
+  "generatedFilter": null,
+  "poseGuide": null,
+  "retakeAdvice": null,
+  "cropAdvice": null,
+  "confidence": "low",
+  "source": "mock",
+  "locale": "zh-Hant-HK",
+  "safety": {
+    "containsSensitiveInference": false,
+    "requiresUserConsent": true,
+    "blockedReason": null
+  },
+  "error": null
+}

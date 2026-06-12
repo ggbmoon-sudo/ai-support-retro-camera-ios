@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "2.0",
+  "feature": "photo_advisor",
+  "mode": "post_capture",
+  "locale": "zh-Hant-HK",
+  "selectedFilterId": "instant_dream",
+  "consent": {
+    "imageUploadAccepted": true,
+    "consentVersion": "2026-06-12.phase17a.v1"
+  },
+  "image": {
+    "contentType": "image/jpeg",
+    "width": 1024,
+    "height": 768,
+    "metadataStripped": true,
+    "dataBase64": "/9j/"
+  }
+}

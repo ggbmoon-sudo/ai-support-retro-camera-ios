@@ -1,5 +1,34 @@
 # Manual Smoke Tests
 
+## Phase 17C-Prep
+
+Check:
+
+- [ ] Normal app launch still uses mock/local Photo Advisor.
+- [ ] Debug remote path still works with the backend mock endpoint.
+- [ ] Backend valid request returns a structured mock `CloudAIResponse`.
+- [ ] Backend invalid request returns a structured fallback / unavailable response.
+- [ ] Backend missing consent fixture is rejected.
+- [ ] Backend invalid schema fixture is rejected.
+- [ ] Backend oversized image fixture is rejected.
+- [ ] Backend invalid filter ID is rejected or blocked before provider output reaches iOS.
+- [ ] Backend unsafe output fixture is rejected and maps to safe fallback.
+- [ ] Backend too-many-suggestions fixture is rejected.
+- [ ] Provider registry exposes mock / disabled only.
+- [ ] No provider key exists in app or backend.
+- [ ] No real provider package exists.
+- [ ] Backend logs do not contain raw image, base64 image, full request payload, EXIF / GPS, face data, or provider raw response.
+- [ ] Camera remains local-only and no Camera AI Snapshot / Quick Advice cloud entry returns.
+- [ ] Inspiration AI Hub still works.
+- [ ] No raw localization keys appear.
+- [ ] No explicit profanity / unsafe appearance / body / identity copy appears.
+
+Known TODOs:
+
+- [ ] Phase 17C-Prep does not connect a real provider.
+- [ ] Phase 17C-Prep does not enable production remote Cloud AI.
+- [ ] Future real provider integration requires explicit approval, secret management, provider policy review, cost guard, moderation / safety, timeout, and validation readiness.
+
 ## Phase 17B
 
 Check:

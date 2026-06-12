@@ -1,11 +1,13 @@
-export function redactedOperationalMetadata({ endpoint, mode, schemaVersion, status, latencyMs, image }) {
+export function redactedOperationalMetadata({ endpoint, mode, schemaVersion, status, latencyMs, image, errorCode, providerKind }) {
   return {
     endpoint,
     mode,
     schemaVersion,
     status,
     latencyMs,
-    imageSizeBucket: imageSizeBucket(image)
+    imageSizeBucket: imageSizeBucket(image),
+    errorCode,
+    providerKind
   };
 }
 

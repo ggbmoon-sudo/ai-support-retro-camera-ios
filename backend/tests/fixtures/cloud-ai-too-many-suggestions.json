@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "1.0",
+  "mode": "post_capture",
+  "summary": "這張相有暖光感，可以試柔和復古濾鏡。",
+  "suggestions": [
+    {
+      "type": "filter",
+      "text": "試柔和濾鏡。",
+      "priority": "high",
+      "action": "apply_filter"
+    },
+    {
+      "type": "crop",
+      "text": "裁走邊位。",
+      "priority": "medium",
+      "action": "adjust_crop"
+    },
+    {
+      "type": "lighting",
+      "text": "保留高光。",
+      "priority": "medium",
+      "action": "none"
+    },
+    {
+      "type": "retake",
+      "text": "再影一張。",
+      "priority": "low",
+      "action": "retake"
+    }
+  ],
+  "recommendedFilters": [],
+  "generatedFilter": null,
+  "poseGuide": null,
+  "retakeAdvice": null,
+  "cropAdvice": null,
+  "confidence": "medium",
+  "source": "mock",
+  "locale": "zh-Hant-HK",
+  "safety": {
+    "containsSensitiveInference": false,
+    "requiresUserConsent": true,
+    "blockedReason": null
+  },
+  "error": null
+}

@@ -90,6 +90,18 @@ Phase 17B lets DEBUG/internal builds test the local backend mock `/v1/ai/photo-a
 
 Production/default behavior remains mock/local. Camera remains local-only. There is still no provider SDK, provider key, production cloud AI, storage upload, export, or StoreKit integration.
 
+## Phase 17C-Prep Provider Readiness
+
+Phase 17C-Prep keeps iOS production/default behavior mock/local while hardening the backend contract it may call in DEBUG mode:
+
+- backend provider boundary is mock / disabled only
+- request and response schemas are stricter
+- filter IDs are whitelisted against the app catalog
+- unsafe backend output maps to safe fallback
+- rate-limit, quota, timeout, and no-payload logging placeholders exist
+
+The iOS app does not add a real provider SDK, provider key, production remote Cloud AI, storage upload, export, StoreKit integration, or Camera cloud AI entry.
+
 ## Phase 12A Filter Planning
 
 Phase 12A adds filter research and schema planning documents only. It does not change iOS app source code.
