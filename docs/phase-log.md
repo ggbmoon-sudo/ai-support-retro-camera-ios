@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 16R - Save Hong Kong / 麻煩友 Language Mode Research
-Status: Documentation-only research save; ready to commit after final review
-Latest implementation: Saved ChatGPT-provided Hong Kong / 麻煩友 Language Mode UX + Safety research to repo and updated phase log / handoff / README references
+Current phase: Phase 16S - Save HK2 Hong Kong / 麻煩友 Copy System + Safety Style Guide
+Status: Documentation-only product / copy style guide save; ready to commit after final review
+Latest implementation: Saved ChatGPT-provided HK2 Hong Kong / 麻煩友 Copy System + Safety Style Guide to repo and updated phase log / handoff / README references
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -55,7 +55,82 @@ Phase 16O verification: documentation-only research save; no Swift source, backe
 Phase 16P verification: documentation-only research save; no Swift source, backend source, app behavior change, export implementation, encrypted transfer implementation, CryptoKit prototype, backend, StoreKit, cloud storage, real upload, network, persistence, API keys, provider SDK, payment, or production config added
 Phase 16Q verification: documentation-only research save; no Swift source, backend source, app behavior change, AI image editing implementation, mock UI implementation, prompt guard implementation, provider adapter, backend, StoreKit, OpenAI / Gemini / Stability integration, real upload, network, persistence, export, API keys, provider SDK, payment, quota, entitlement, moderation, or production config added
 Phase 16R verification: documentation-only research save; no Swift source, backend source, app behavior change, language mode implementation, Settings UI implementation, copy resolver implementation, profanity mode implementation, localization runtime implementation, persistence change, backend, network, real AI, provider SDK, StoreKit, moderation implementation, runtime profanity filtering, or production config added
-Next phase: Phase 16R is ready to commit after final review. The next safe implementation candidate from this research, if explicitly requested later, is HK2 copy system / style guide documentation, not runtime language mode. Do not start Phase 17, real AI, backend implementation, cloud upload, language mode implementation, Settings UI, copy resolver, localization runtime, explicit profanity mode, LLM-generated copy, AI-generated live camera copy, persistence, StoreKit, payment, moderation implementation, or runtime profanity filtering until explicitly requested.
+Phase 16S verification: documentation-only product / copy style guide save; no Swift source, backend source, app behavior change, language mode implementation, Settings UI implementation, copy resolver implementation, profanity mode implementation, localization runtime implementation, persistence change, backend, network, real AI, provider SDK, StoreKit, moderation implementation, runtime profanity filtering, or production config added
+Next phase: Phase 16S is ready to commit after final review. The next safe implementation candidate from this guide, if explicitly requested later, is HK3 Mock Language Mode UI, not explicit profanity or runtime resolver. Do not start Phase 17, real AI, backend implementation, cloud upload, language mode implementation, Settings UI, copy resolver, localization runtime, explicit profanity mode, LLM-generated copy, AI-generated live camera copy, persistence, StoreKit, payment, moderation implementation, or runtime profanity filtering until explicitly requested.
+
+---
+
+## Phase 16S - Save HK2 Hong Kong / 麻煩友 Copy System + Safety Style Guide
+
+Status: Documentation-only product / copy style guide save; ready to commit after final review
+Date completed: 2026-06-12
+
+### Goal
+
+Save the user-provided ChatGPT HK2 product / copy style guide for Hong Kong / 麻煩友 Copy System + Safety Style Guide into the repo, then update documentation indexes and handoff status.
+
+### Completed
+
+- Added `docs/product/hk-troublemaker-copy-system-style-guide.md`.
+- Preserved the provided document title: `HK2 — Hong Kong / 麻煩友 Copy System + Safety Style Guide`.
+- Saved the full ChatGPT-provided HK2 Markdown content to the repo.
+- Removed `utm_source=chatgpt.com` query strings without changing source meaning.
+- Preserved the required sections:
+  - Executive Summary
+  - Design Principles
+  - Language / Tone Modes
+  - Context Rules
+  - Safety Rules
+  - Banned Phrase List
+  - Safe Rewrite Table
+  - Copy Template Categories
+  - Phrase Bank
+  - Positive Feedback / Praise Loop
+  - Localization Key Plan
+  - QA Checklist
+  - Implementation Notes for Future Codex Phase
+  - Final Recommendation
+- Preserved the reference-style source links at the end of the provided document.
+- Recorded that HK2 is a product / copy style guide after Phase 16R, not a research report and not a runtime implementation spec.
+- Recorded that HK2 remains documentation-only with no runtime language mode, explicit profanity implementation, LLM-generated live copy, cloud dependency, or persistence change.
+- Recorded the deterministic copy system goal and the three core principles: 鬧拍攝，不鬧被拍的人; 鬧張相，不鬧人; 講一次就好，做返對就讚.
+- Recorded the AppLanguageMode and ToneMode taxonomy, with MVP limited to neutral, Hong Kong conversational, and non-explicit troublemaker.
+- Recorded that `troublemakerExplicit` is future-only and explicit copy must not enter MVP, default UI, App Store screenshots, privacy / consent / legal copy, notifications, widgets, or post-capture criticism.
+- Recorded that future implementation should use deterministic templates and should not use AI to generate live profanity.
+- Recorded that the next safe implementation candidate, if explicitly requested later, is HK3 Mock Language Mode UI, not explicit profanity or runtime copy resolver.
+- Updated transition handoff and README references.
+
+### Safety Notes
+
+Phase 16S is documentation-only. Codex only saved the ChatGPT-provided HK2 style guide and updated docs references. It does not add Swift source changes, app UI changes, app behavior changes, Settings UI implementation, language mode implementation, copy resolver implementation, localization runtime implementation, explicit profanity mode implementation, LLM-generated copy, AI-generated live camera copy, backend code, cloud AI, network calls, `URLSession`, `URLRequest`, WebSocket, Firebase / Gemini / OpenAI / StoreKit imports, provider SDKs, API keys, Firebase config, `GoogleService-Info.plist`, `.env`, `.firebaserc`, upload, persistence changes, `UserDefaults`, Core Data, SwiftData, StoreKit, payment, credits, moderation implementation, runtime profanity filtering, or backend changes.
+
+### Verification
+
+- [x] `git status --short` checked before implementation.
+- [x] `git status --short` final check.
+- [x] `git diff --check` final pass.
+- [x] `git diff --stat` final review.
+- [x] Markdown heading sanity check confirmed required sections exist.
+- [x] Reference-style source links preserved.
+- [x] `utm_source=chatgpt.com` removed from saved guide links.
+- [x] Reference-style link sanity check.
+- [x] Forbidden imports scan.
+- [x] Network / upload behavior scan.
+- [x] Secrets / config scan.
+- [x] Forbidden behavior scan.
+- [x] Persistence scan.
+- [x] Provider import scan.
+- [x] StoreKit scan.
+- [x] Swift source change scan.
+- [x] No Swift source changed; Xcode build not required.
+
+### Ready to Commit Phase 16S
+
+Yes. Latest commit has not been created; do not commit or push automatically.
+
+### Ready for Phase 17 / Real AI
+
+No.
 
 ---
 

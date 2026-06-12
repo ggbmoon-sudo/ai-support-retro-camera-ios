@@ -65,6 +65,7 @@ Confirmed locally:
 - Phase 16P - Save Encrypted App-to-App Photo Transfer Research
 - Phase 16Q - Save Paid AI Image Editing / 改圖師 Research
 - Phase 16R - Save Hong Kong / 麻煩友 Language Mode Research
+- Phase 16S - Save HK2 Hong Kong / 麻煩友 Copy System + Safety Style Guide
 
 Phase 16G status:
 
@@ -117,6 +118,7 @@ Important completed route so far:
 - Phase 16P - Encrypted App-to-App High Quality / Lossless Photo Transfer research save.
 - Phase 16Q - Paid AI Image Editing / 改圖師 research save.
 - Phase 16R - Hong Kong / 麻煩友 Language Mode UX + Safety research save.
+- Phase 16S - HK2 Hong Kong / 麻煩友 Copy System + Safety Style Guide save.
 
 This list is a short orientation map only. Use `docs/phase-log.md` as the detailed source of truth.
 
@@ -303,6 +305,14 @@ This update records work completed by the new Codex / Codex API session after th
 - The next safe step, if explicitly requested, may be HK2 Copy System / Style Guide documentation.
 - Runtime integration should wait until copy system, banned phrase list, and QA policy are documented.
 - Explicit profanity mode requires separate review, App Store / age rating consideration, explicit opt-in, and manual QA.
+- Phase 16S added `docs/product/hk-troublemaker-copy-system-style-guide.md`.
+- HK2 Copy System + Safety Style Guide is now saved in the repo.
+- Future implementation must use this guide before any language mode, copy resolver, profanity, localization runtime, Settings UI, deterministic template integration, or QA policy work.
+- Do not jump directly to explicit profanity mode.
+- Do not use LLM-generated live camera copy.
+- The next safe step, if explicitly requested, may be HK3 Mock Language Mode UI.
+- Runtime deterministic template integration should wait until mock UI and copy resolver phases are explicitly approved.
+- Explicit profanity mode requires separate review, App Store / age rating consideration, explicit opt-in, and manual QA.
 
 ### Next Recommended Phase Options
 
@@ -407,6 +417,7 @@ Important docs already added or expected in this roadmap:
 - `docs/research/encrypted-app-to-app-photo-transfer-research.md`
 - `docs/research/paid-ai-image-editing-research.md`
 - `docs/research/hong-kong-troublemaker-language-mode-research.md`
+- `docs/product/hk-troublemaker-copy-system-style-guide.md`
 - `docs/research/pose-overlay-camera-guide-research.md`
 - `docs/research/ai-filter-generator-research.md`
 - `docs/research/cloud-ai-architecture-research.md`
@@ -441,6 +452,8 @@ Important docs already added or expected in this roadmap:
 - Mock image editing UX is a safer future step than real provider integration.
 - Future language mode / copy resolver / profanity / localization runtime work must also follow `docs/research/hong-kong-troublemaker-language-mode-research.md`.
 - HK2 Copy System / Style Guide documentation is a safer future step than runtime language mode or explicit profanity mode.
+- Future language mode / copy resolver / profanity / localization runtime work must now also follow `docs/product/hk-troublemaker-copy-system-style-guide.md`.
+- HK3 Mock Language Mode UI is a safer future step than explicit profanity mode or runtime copy resolver.
 
 ---
 
