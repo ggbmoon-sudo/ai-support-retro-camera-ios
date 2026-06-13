@@ -167,79 +167,134 @@ enum CameraCaptureContextSnapshotter {
 
 enum CreativeIntentGuard {
     static func context(for captureContext: CameraCaptureContext) -> CreativeIntentContext {
-        var signals: [CreativeIntentStyleSignal] = []
+        var styleSignals: [CreativeIntentStyleSignal] = []
+        var intentSignals: [CreativeIntentSignal] = []
+        let selectedFilter = captureContext.selectedFilterAtCapture
+        let previewFilter = captureContext.previewFilterAtCapture
+        let hasSoftStyle = isSoftFilter(selectedFilter) || isSoftFilter(previewFilter)
+        let hasGrainStyle = isRetroGrainFilter(selectedFilter) || isRetroGrainFilter(previewFilter)
+        let hasLowLightStyle = isLowLightStyleFilter(selectedFilter) || isLowLightStyleFilter(previewFilter)
+        let hasLightLeakStyle = isLightLeakStyleFilter(selectedFilter) || isLightLeakStyleFilter(previewFilter)
 
         if captureContext.exposure.lowLightDetected
             || captureContext.exposure.exposureBucket == .lowLight
             || captureContext.localImageSignals.brightness == .low {
-            signals.append(.lowLight)
+            intentSignals.append(.lowLight)
+            styleSignals.append(.lowLight)
+        }
+
+        if captureContext.exposure.exposureBiasBucket == .under {
+            intentSignals.append(.underexposure)
+        }
+
+        if captureContext.exposure.exposureBiasBucket == .over
+            || captureContext.exposure.exposureBucket == .bright
+            || captureContext.localImageSignals.brightness == .high {
+            intentSignals.append(.overexposure)
         }
 
         if captureContext.motion.motionBucket == .slightMotion
-            || captureContext.motion.motionBucket == .shaky
-            || captureContext.localImageSignals.blurRisk == .medium
+            || captureContext.motion.motionBucket == .shaky {
+            intentSignals.append(.motion)
+            styleSignals.append(.motionBlur)
+        }
+
+        if captureContext.localImageSignals.blurRisk == .medium
             || captureContext.localImageSignals.blurRisk == .high {
-            signals.append(.motionBlur)
+            intentSignals.append(.blur)
+            if hasSoftStyle || hasGrainStyle || captureContext.localImageSignals.blurRisk == .medium {
+                styleSignals.append(.motionBlur)
+            }
         }
 
         if captureContext.level.available,
            captureContext.level.isNearLevel == false {
-            signals.append(.tilt)
+            intentSignals.append(.tilt)
+            styleSignals.append(.tilt)
         }
 
-        if isRetroGrainFilter(captureContext.selectedFilterAtCapture)
-            || isRetroGrainFilter(captureContext.previewFilterAtCapture) {
-            signals.append(.retroGrain)
+        if hasGrainStyle {
+            intentSignals.append(.grain)
+            styleSignals.append(.retroGrain)
         }
 
-        if isSoftFilter(captureContext.selectedFilterAtCapture)
-            || isSoftFilter(captureContext.previewFilterAtCapture) {
-            signals.append(.softFocus)
+        if hasSoftStyle {
+            intentSignals.append(.softFocus)
+            styleSignals.append(.softFocus)
         }
 
-        if isHighContrastFilter(captureContext.selectedFilterAtCapture)
-            || isHighContrastFilter(captureContext.previewFilterAtCapture)
+        if isHighContrastFilter(selectedFilter)
+            || isHighContrastFilter(previewFilter)
             || captureContext.localImageSignals.contrast == .high {
-            signals.append(.highContrast)
+            intentSignals.append(.highContrast)
+            styleSignals.append(.highContrast)
         }
 
-        if isFadedColorFilter(captureContext.selectedFilterAtCapture)
-            || isFadedColorFilter(captureContext.previewFilterAtCapture)
+        if isFadedColorFilter(selectedFilter)
+            || isFadedColorFilter(previewFilter)
             || captureContext.localImageSignals.saturation == .low {
-            signals.append(.fadedColor)
+            intentSignals.append(.fadedColor)
+            styleSignals.append(.fadedColor)
         }
 
         if captureContext.localImageSignals.clutter == .medium
             || captureContext.localImageSignals.clutter == .high {
-            signals.append(.unusualFraming)
+            intentSignals.append(.unusualFraming)
+            styleSignals.append(.unusualFraming)
         }
 
-        let uniqueSignals = signals.reduce(into: [CreativeIntentStyleSignal]()) { result, signal in
-            guard !result.contains(signal) else { return }
-            result.append(signal)
+        if captureContext.localImageSignals.clutter == .high {
+            intentSignals.append(.clutter)
+            intentSignals.append(.cropRisk)
         }
 
-        let adviceMode: CreativeIntentAdviceMode
-        if uniqueSignals.contains(.lowLight)
-            || uniqueSignals.contains(.motionBlur)
-            || uniqueSignals.contains(.tilt)
-            || uniqueSignals.contains(.retroGrain)
-            || uniqueSignals.contains(.softFocus)
-            || uniqueSignals.contains(.highContrast)
-            || uniqueSignals.contains(.fadedColor) {
-            adviceMode = .preserveStyle
-        } else if !uniqueSignals.isEmpty {
-            adviceMode = .optionalRefinement
-        } else {
-            adviceMode = .technicalHint
-        }
+        let uniqueIntentSignals = CreativeIntentLanguageRules.uniqueSignals(intentSignals)
+        let uniqueStyleSignals = CreativeIntentLanguageRules.uniqueStyleSignals(styleSignals)
+        let severeTechnicalRiskLikely = severeTechnicalRiskLikely(
+            captureContext: captureContext,
+            hasSoftStyle: hasSoftStyle,
+            hasGrainStyle: hasGrainStyle,
+            hasLowLightStyle: hasLowLightStyle,
+            hasLightLeakStyle: hasLightLeakStyle
+        )
+        let classification = CreativeIntentLanguageRules.classification(
+            for: uniqueIntentSignals,
+            styleSignals: uniqueStyleSignals,
+            severeTechnicalRiskLikely: severeTechnicalRiskLikely
+        )
+        let adviceMode = CreativeIntentLanguageRules.adviceMode(for: classification)
 
         return CreativeIntentContext(
-            possibleIntentionalStyle: !uniqueSignals.isEmpty,
-            styleSignals: uniqueSignals,
-            avoidOvercorrecting: !uniqueSignals.isEmpty,
+            possibleIntentionalStyle: classification == .stylePositive || classification == .acceptableImperfection,
+            classification: classification,
+            intentSignals: uniqueIntentSignals,
+            styleSignals: uniqueStyleSignals,
+            avoidOvercorrecting: classification != .unknown,
             adviceMode: adviceMode
         )
+    }
+
+    private static func severeTechnicalRiskLikely(
+        captureContext: CameraCaptureContext,
+        hasSoftStyle: Bool,
+        hasGrainStyle: Bool,
+        hasLowLightStyle: Bool,
+        hasLightLeakStyle: Bool
+    ) -> Bool {
+        let severeBlurWithoutStyle = captureContext.localImageSignals.blurRisk == .high
+            && captureContext.motion.motionBucket == .shaky
+            && !hasSoftStyle
+            && !hasGrainStyle
+
+        let severeUnderexposureWithoutStyle = captureContext.localImageSignals.brightness == .low
+            && captureContext.exposure.exposureBiasBucket == .under
+            && !hasLowLightStyle
+
+        let severeOverexposureWithoutStyle = captureContext.localImageSignals.brightness == .high
+            && captureContext.exposure.exposureBiasBucket == .over
+            && !hasLightLeakStyle
+
+        return severeBlurWithoutStyle || severeUnderexposureWithoutStyle || severeOverexposureWithoutStyle
     }
 
     private static func isRetroGrainFilter(_ filterId: String?) -> Bool {
@@ -271,5 +326,25 @@ enum CreativeIntentGuard {
             || filterId.contains("pastel")
             || filterId.contains("vintage")
             || filterId.contains("film")
+    }
+
+    private static func isLowLightStyleFilter(_ filterId: String?) -> Bool {
+        guard let filterId else { return false }
+        return filterId.contains("amber")
+            || filterId.contains("night")
+            || filterId.contains("neon")
+            || filterId.contains("ccd")
+            || filterId.contains("flash")
+            || filterId.contains("grain")
+    }
+
+    private static func isLightLeakStyleFilter(_ filterId: String?) -> Bool {
+        guard let filterId else { return false }
+        return filterId.contains("instant")
+            || filterId.contains("dream")
+            || filterId.contains("diana")
+            || filterId.contains("faded")
+            || filterId.contains("flat")
+            || filterId.contains("warm")
     }
 }

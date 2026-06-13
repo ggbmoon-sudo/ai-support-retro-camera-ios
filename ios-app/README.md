@@ -199,6 +199,19 @@ Phase 18-A2 adds a structured local filter reason library for the mock/local Pho
 
 This phase does not change filter rendering, backend provider payloads, capture-context upload, provider keys, direct provider calls, Camera cloud AI, GPS/location collection, raw EXIF dump, raw sensor persistence, or production cloud rollout.
 
+## Phase 18-A3 CreativeIntentGuard Language Rules
+
+Phase 18-A3 formalizes local/mock Photo Advisor creative-intent language rules:
+
+- Capture intelligence now carries a typed `CreativeIntentClassification`: `style_positive`, `acceptable_imperfection`, `technical_risk`, or `unknown`.
+- `CreativeIntentSignal` covers blur, motion, low light, tilt, grain, soft focus, overexposure, underexposure, high contrast, faded color, unusual framing, clutter, and crop risk.
+- Local/mock Photo Advisor chooses signal copy through the language pack before giving advice.
+- Retake language is restrained: non-severe blur, tilt, low light, grain, high contrast, faded color, motion, and unusual framing preserve mood first; optional retake copy appears only for likely severe technical risk.
+- The wording continues to follow Observation -> Mood -> Retro intent -> Optional action, not Score -> Problem -> Fix -> Retake.
+- Validation scripts cover CreativeIntentGuard language keys, filter reason coverage, and obvious score / fix-it wording.
+
+This phase does not change backend provider payloads, upload capture context, add provider keys, add direct provider calls, add Camera cloud AI, collect GPS/location, dump raw EXIF, persist raw sensor streams, or enable production cloud rollout.
+
 ## Phase 12A Filter Planning
 
 Phase 12A adds filter research and schema planning documents only. It does not change iOS app source code.

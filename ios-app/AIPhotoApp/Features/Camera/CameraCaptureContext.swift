@@ -359,16 +359,43 @@ enum LocalImageWarmth: String, Codable, Hashable {
 
 struct CreativeIntentContext: Codable, Hashable {
     let possibleIntentionalStyle: Bool
+    let classification: CreativeIntentClassification
+    let intentSignals: [CreativeIntentSignal]
     let styleSignals: [CreativeIntentStyleSignal]
     let avoidOvercorrecting: Bool
     let adviceMode: CreativeIntentAdviceMode
 
     static let neutral = CreativeIntentContext(
         possibleIntentionalStyle: false,
+        classification: .unknown,
+        intentSignals: [],
         styleSignals: [],
         avoidOvercorrecting: false,
         adviceMode: .technicalHint
     )
+}
+
+enum CreativeIntentClassification: String, Codable, Hashable {
+    case stylePositive = "style_positive"
+    case acceptableImperfection = "acceptable_imperfection"
+    case technicalRisk = "technical_risk"
+    case unknown
+}
+
+enum CreativeIntentSignal: String, Codable, Hashable, CaseIterable {
+    case blur
+    case motion
+    case lowLight = "low_light"
+    case tilt
+    case grain
+    case softFocus = "soft_focus"
+    case overexposure
+    case underexposure
+    case highContrast = "high_contrast"
+    case fadedColor = "faded_color"
+    case unusualFraming = "unusual_framing"
+    case clutter
+    case cropRisk = "crop_risk"
 }
 
 enum CreativeIntentStyleSignal: String, Codable, Hashable {

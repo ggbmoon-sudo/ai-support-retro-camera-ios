@@ -25,29 +25,30 @@ enum PhotoAdvisorLanguagePack {
     static func signalKey(for signal: CreativeIntentStyleSignal, input: PhotoAdvisorInput) -> String {
         switch signal {
         case .lowLight:
-            return localizedKey("advisor.signal.light.low", input: input)
+            return intentSignalKey(for: .lowLight, input: input)
         case .motionBlur:
             if input.captureContext.localImageSignals.blurRisk == .high
                 || input.captureContext.motion.motionBucket == .shaky {
-                return localizedKey("advisor.signal.blur.strong", input: input)
+                return intentSignalKey(for: .blur, input: input)
             }
-            return localizedKey("advisor.signal.motion.slight", input: input)
+            return intentSignalKey(for: .motion, input: input)
         case .tilt:
-            if input.captureContext.level.levelBucket == .strongTilt {
-                return localizedKey("advisor.signal.tilt.strong", input: input)
-            }
-            return localizedKey("advisor.signal.tilt.slight", input: input)
+            return intentSignalKey(for: .tilt, input: input)
         case .softFocus:
-            return localizedKey("advisor.signal.blur.soft_focus", input: input)
+            return intentSignalKey(for: .softFocus, input: input)
         case .retroGrain:
-            return localizedKey("advisor.signal.grain.retro", input: input)
+            return intentSignalKey(for: .grain, input: input)
         case .highContrast:
-            return localizedKey("advisor.signal.contrast.high", input: input)
+            return intentSignalKey(for: .highContrast, input: input)
         case .fadedColor:
-            return localizedKey("advisor.signal.color.faded", input: input)
+            return intentSignalKey(for: .fadedColor, input: input)
         case .unusualFraming:
-            return localizedKey("advisor.signal.framing.unusual", input: input)
+            return intentSignalKey(for: .unusualFraming, input: input)
         }
+    }
+
+    static func intentSignalKey(for signal: CreativeIntentSignal, input: PhotoAdvisorInput) -> String {
+        localizedKey("advisor.intent.signal.\(signal.rawValue)", input: input)
     }
 
     static func aspectSuggestionKey(for bucket: PhotoAdvisorAspectRatioBucket, input: PhotoAdvisorInput) -> String? {
@@ -78,6 +79,10 @@ enum PhotoAdvisorLanguagePack {
 
     static func retakeOptionalKey(for input: PhotoAdvisorInput) -> String {
         localizedKey("advisor.action.retake.optional", input: input)
+    }
+
+    static func retakeTechnicalRiskKey(for input: PhotoAdvisorInput) -> String {
+        localizedKey("advisor.action.retake.technical_risk", input: input)
     }
 
     static func keepStyleKey(for input: PhotoAdvisorInput) -> String {

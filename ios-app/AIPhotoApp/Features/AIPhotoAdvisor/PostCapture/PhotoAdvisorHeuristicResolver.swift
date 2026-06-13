@@ -102,81 +102,16 @@ enum PhotoAdvisorHeuristicResolver {
     }
 
     private static func intentSuggestion(for input: PhotoAdvisorInput) -> PhotoAdvisorSuggestion? {
-        let signals = input.captureContext.creativeIntent.styleSignals
-
-        if signals.contains(.lowLight) {
-            return PhotoAdvisorSuggestion(
-                id: "intent_low_light",
-                type: .lighting,
-                textKey: PhotoAdvisorLanguagePack.signalKey(for: .lowLight, input: input),
-                priority: .medium
-            )
+        guard let signal = CreativeIntentLanguageRules.primarySignal(in: input.captureContext.creativeIntent) else {
+            return nil
         }
 
-        if signals.contains(.motionBlur) {
-            return PhotoAdvisorSuggestion(
-                id: "intent_motion",
-                type: .composition,
-                textKey: PhotoAdvisorLanguagePack.signalKey(for: .motionBlur, input: input),
-                priority: .medium
-            )
-        }
-
-        if signals.contains(.tilt) {
-            return PhotoAdvisorSuggestion(
-                id: "intent_tilt",
-                type: .composition,
-                textKey: PhotoAdvisorLanguagePack.signalKey(for: .tilt, input: input),
-                priority: .medium
-            )
-        }
-
-        if signals.contains(.softFocus) {
-            return PhotoAdvisorSuggestion(
-                id: "intent_soft_focus",
-                type: .composition,
-                textKey: PhotoAdvisorLanguagePack.signalKey(for: .softFocus, input: input),
-                priority: .medium
-            )
-        }
-
-        if signals.contains(.retroGrain) {
-            return PhotoAdvisorSuggestion(
-                id: "intent_grain",
-                type: .filter,
-                textKey: PhotoAdvisorLanguagePack.signalKey(for: .retroGrain, input: input),
-                priority: .medium
-            )
-        }
-
-        if signals.contains(.highContrast) {
-            return PhotoAdvisorSuggestion(
-                id: "intent_high_contrast",
-                type: .filter,
-                textKey: PhotoAdvisorLanguagePack.signalKey(for: .highContrast, input: input),
-                priority: .medium
-            )
-        }
-
-        if signals.contains(.fadedColor) {
-            return PhotoAdvisorSuggestion(
-                id: "intent_faded_color",
-                type: .filter,
-                textKey: PhotoAdvisorLanguagePack.signalKey(for: .fadedColor, input: input),
-                priority: .medium
-            )
-        }
-
-        if signals.contains(.unusualFraming) {
-            return PhotoAdvisorSuggestion(
-                id: "intent_framing",
-                type: .composition,
-                textKey: PhotoAdvisorLanguagePack.signalKey(for: .unusualFraming, input: input),
-                priority: .medium
-            )
-        }
-
-        return nil
+        return PhotoAdvisorSuggestion(
+            id: "intent_\(signal.rawValue)",
+            type: suggestionType(for: signal),
+            textKey: PhotoAdvisorLanguagePack.intentSignalKey(for: signal, input: input),
+            priority: .medium
+        )
     }
 
     private static func importedPhotoSuggestion(for input: PhotoAdvisorInput) -> PhotoAdvisorSuggestion {
@@ -227,10 +162,17 @@ enum PhotoAdvisorHeuristicResolver {
         for input: PhotoAdvisorInput,
         base: PhotoAdvisorResult
     ) -> PhotoAdvisorRetakeAdvice {
+        if CreativeIntentLanguageRules.shouldOfferOptionalRetake(for: input.captureContext.creativeIntent) {
+            return PhotoAdvisorRetakeAdvice(
+                shouldRetake: true,
+                reasonKey: PhotoAdvisorLanguagePack.retakeTechnicalRiskKey(for: input)
+            )
+        }
+
         if input.captureContext.creativeIntent.avoidOvercorrecting {
             return PhotoAdvisorRetakeAdvice(
                 shouldRetake: false,
-                reasonKey: PhotoAdvisorLanguagePack.retakeOptionalKey(for: input)
+                reasonKey: PhotoAdvisorLanguagePack.keepStyleKey(for: input)
             )
         }
 
@@ -356,6 +298,17 @@ enum PhotoAdvisorHeuristicResolver {
             reasonKey: reasonKey,
             confidence: confidence
         )
+    }
+
+    private static func suggestionType(for signal: CreativeIntentSignal) -> PhotoAdvisorSuggestionType {
+        switch signal {
+        case .lowLight, .overexposure, .underexposure:
+            return .lighting
+        case .grain, .softFocus, .highContrast, .fadedColor:
+            return .filter
+        case .blur, .motion, .tilt, .unusualFraming, .clutter, .cropRisk:
+            return .composition
+        }
     }
 
     private static func confidence(for input: PhotoAdvisorInput) -> PhotoAdvisorConfidence {

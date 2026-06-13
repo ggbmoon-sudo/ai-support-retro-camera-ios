@@ -260,3 +260,23 @@ The first family set is:
 - classic film
 
 Filter reason wording is designed to explain why a filter fits without turning local image signals into a score or correction demand. Low light, blur, grain, tilt, faded color, high contrast, and soft focus remain possible retro style choices. Backend provider payloads remain unchanged, capture context and filter reason metadata are not uploaded, Camera remains local-only, and production rollout remains blocked.
+
+## Phase 18-A3 Implementation Note
+
+Phase 18-A3 formalizes CreativeIntentGuard language rules and retake restraint for the local/mock Photo Advisor. Capture intelligence now classifies local signals before advice selection:
+
+- `style_positive`
+- `acceptable_imperfection`
+- `technical_risk`
+- `unknown`
+
+The signal set covers blur, motion, low light, tilt, grain, soft focus, overexposure, underexposure, high contrast, faded color, unusual framing, clutter, and crop risk.
+
+The app-side language mapping remains:
+
+1. Observation.
+2. Mood.
+3. Retro intent.
+4. Optional action.
+
+Retake advice is reserved for likely severe technical risk and remains optional. Non-severe blur, tilt, low light, grain, high contrast, faded color, motion, soft focus, overexposure, underexposure, and unusual framing preserve style first. Backend provider payloads remain unchanged, capture context and creative-intent metadata are not uploaded, Camera remains local-only, and production rollout remains blocked.
