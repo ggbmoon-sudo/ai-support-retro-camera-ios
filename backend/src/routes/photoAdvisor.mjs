@@ -1,18 +1,25 @@
+import { cloudAIConfig } from "../config/cloudAIConfig.mjs";
 import { resolveProvider, ProviderKind } from "../providers/ProviderRegistry.mjs";
 import { fallbackCloudAIResponse } from "../responses/fallbackResponse.mjs";
 import { CLOUD_AI_ERROR_CODES } from "../responses/cloudAIErrorCodes.mjs";
+import { isInternalCloudAIAllowed } from "../security/internalDebugGuard.mjs";
 import { checkDevQuota } from "../security/quota.mjs";
 import { checkDevRateLimit } from "../security/rateLimit.mjs";
 import { withProviderTimeout } from "../security/timeout.mjs";
+import { elapsedMs, nowMs } from "../utils/latency.mjs";
 import { validatePhotoAdvisorRequest } from "../validators/validatePhotoAdvisorRequest.mjs";
 import { validateCloudAIResponse } from "../validators/validateCloudAIResponse.mjs";
 
 export async function handlePhotoAdvisorRequest(requestBody, options = {}) {
+  const startedAt = nowMs();
+  const config = options.config ?? cloudAIConfig();
+  const headers = options.headers ?? {};
   const requestValidation = validatePhotoAdvisorRequest(requestBody);
   if (!requestValidation.ok) {
+    const code = errorCodeForRequestValidation(requestValidation.error.code);
     return {
-      status: 400,
-      body: fallbackForRequest(requestBody, CLOUD_AI_ERROR_CODES.invalidRequest, requestValidation.error.message)
+      status: code === CLOUD_AI_ERROR_CODES.imageTooLarge ? 413 : 400,
+      body: fallbackForRequest(requestBody, code, requestValidation.error.message)
     };
   }
 
@@ -32,42 +39,160 @@ export async function handlePhotoAdvisorRequest(requestBody, options = {}) {
     };
   }
 
-  const provider = options.provider ?? resolveProvider(ProviderKind.mock);
-  let response;
+  const providerKind = resolveProviderKind({ config, headers });
+  if (providerKind === ProviderKind.disabled) {
+    return {
+      status: 200,
+      body: fallbackForRequest(requestBody, CLOUD_AI_ERROR_CODES.internalCloudDisabled, "Cloud analysis is unavailable right now. Showing local advice instead.")
+    };
+  }
+
+  const provider = options.provider ?? resolveProvider(providerKind, config);
+  let providerResult;
   try {
-    response = await withProviderTimeout(
-      provider.analyzePhotoAdvisor({
-        locale: requestBody.locale,
-        selectedFilterId: requestBody.selectedFilterId ?? null,
-        image: {
-          width: requestBody.image.width,
-          height: requestBody.image.height,
-          contentType: requestBody.image.contentType,
-          metadataStripped: requestBody.image.metadataStripped
-        }
-      }),
-      options.timeoutMs
-    );
+    providerResult = await analyzeWithRetry({
+      provider,
+      providerKind,
+      input: providerInputFromRequest(requestBody),
+      timeoutMs: options.timeoutMs
+    });
   } catch (error) {
-    const code = error?.code === "timeout" ? CLOUD_AI_ERROR_CODES.timeout : CLOUD_AI_ERROR_CODES.providerError;
+    const code = mapProviderErrorCode(error?.code);
     return {
       status: 200,
       body: fallbackForRequest(requestBody, code, "Cloud analysis is unavailable right now. Showing local advice instead.")
     };
   }
-  const responseValidation = validateCloudAIResponse(response);
+
+  const responseValidation = validateCloudAIResponse(providerResult.response);
 
   if (!responseValidation.ok) {
+    const code = responseValidation.error.code === "unsafe_response"
+      ? CLOUD_AI_ERROR_CODES.unsafeResponse
+      : CLOUD_AI_ERROR_CODES.providerInvalidSchema;
     return {
       status: 200,
-      body: fallbackForRequest(requestBody, CLOUD_AI_ERROR_CODES.unsafeResponse, "Cloud analysis is unavailable right now. Showing local advice instead.")
+      body: fallbackForRequest(requestBody, code, "Cloud analysis is unavailable right now. Showing local advice instead.")
     };
   }
 
   return {
     status: 200,
-    body: response
+    body: responseValidation.response ?? providerResult.response,
+    metadata: {
+      providerKind,
+      latencyMs: elapsedMs(startedAt),
+      attempts: providerResult.attempts
+    }
   };
+}
+
+export function resolveProviderKind({ config, headers = {} }) {
+  if (config.providerMode === ProviderKind.qweInternal) {
+    if (!isInternalCloudAIAllowed({ headers, config })) {
+      return ProviderKind.mock;
+    }
+    if (!config.qweAPIKey || !config.qweBaseURL || !config.qwePhotoAdvisorModel || !config.qweChatCompletionsPath) {
+      return ProviderKind.disabled;
+    }
+    return ProviderKind.qweInternal;
+  }
+
+  if (config.providerMode === ProviderKind.disabled) {
+    return ProviderKind.disabled;
+  }
+
+  return ProviderKind.mock;
+}
+
+async function analyzeWithRetry({ provider, providerKind, input, timeoutMs }) {
+  let lastError;
+  const maxAttempts = providerKind === ProviderKind.mock ? 1 : 2;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      const response = await withProviderTimeout(provider.analyzePhotoAdvisor(input), timeoutMs);
+      const validation = validateCloudAIResponse(response);
+      if (!validation.ok) {
+        if (validation.error.code === "unsafe_response") {
+          const error = new Error("Unsafe provider output");
+          error.code = "unsafe_response";
+          throw error;
+        }
+
+        const error = new Error("Provider response failed schema validation");
+        error.code = "provider_invalid_schema";
+        lastError = error;
+        if (attempt < maxAttempts) {
+          continue;
+        }
+        throw error;
+      }
+
+      return { response, attempts: attempt };
+    } catch (error) {
+      lastError = error;
+      if (!shouldRetryProviderError(error?.code) || attempt === maxAttempts) {
+        throw error;
+      }
+    }
+  }
+
+  throw lastError;
+}
+
+function shouldRetryProviderError(code) {
+  return [
+    "invalid_json",
+    "provider_invalid_json",
+    "provider_invalid_schema",
+    "provider_transient_error",
+    "timeout"
+  ].includes(code);
+}
+
+function providerInputFromRequest(requestBody) {
+  return {
+    locale: requestBody.locale,
+    selectedFilterId: requestBody.selectedFilterId ?? null,
+    image: {
+      width: requestBody.image.width,
+      height: requestBody.image.height,
+      contentType: requestBody.image.contentType,
+      metadataStripped: requestBody.image.metadataStripped,
+      dataBase64: requestBody.image.dataBase64
+    }
+  };
+}
+
+function mapProviderErrorCode(code) {
+  switch (code) {
+  case "timeout":
+    return CLOUD_AI_ERROR_CODES.providerTimeout;
+  case "provider_invalid_json":
+  case "invalid_json":
+    return CLOUD_AI_ERROR_CODES.providerInvalidJson;
+  case "provider_invalid_schema":
+    return CLOUD_AI_ERROR_CODES.providerInvalidSchema;
+  case "unsafe_response":
+    return CLOUD_AI_ERROR_CODES.unsafeResponse;
+  case "provider_unavailable":
+  case "provider_disabled":
+    return CLOUD_AI_ERROR_CODES.providerUnavailable;
+  default:
+    return CLOUD_AI_ERROR_CODES.providerError;
+  }
+}
+
+function errorCodeForRequestValidation(code) {
+  switch (code) {
+  case "consent_required":
+    return CLOUD_AI_ERROR_CODES.missingConsent;
+  case "payload_too_large":
+    return CLOUD_AI_ERROR_CODES.imageTooLarge;
+  default:
+    return CLOUD_AI_ERROR_CODES.invalidRequest;
+  }
 }
 
 function fallbackForRequest(requestBody, code, message) {

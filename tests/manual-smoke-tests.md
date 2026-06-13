@@ -1,5 +1,38 @@
 # Manual Smoke Tests
 
+## Phase 17C
+
+Check:
+
+- [ ] Normal app launch still uses mock/local Photo Advisor.
+- [ ] Camera remains local-only and no Camera AI Snapshot / Quick Advice cloud entry returns.
+- [ ] Inspiration AI Hub still works.
+- [ ] Debug/internal real provider test shows consent first.
+- [ ] Cancel consent stops the request and does not crash.
+- [ ] Missing backend server returns safe local/mock fallback.
+- [ ] Missing backend secret returns safe fallback.
+- [ ] With `ALLOW_INTERNAL_CLOUD_AI=true`, `CLOUD_AI_PROVIDER_MODE=qweInternal`, backend `QWE_API_KEY`, `QWE_BASE_URL=https://qweapi.com`, `QWE_PHOTO_ADVISOR_MODEL=gemini-3.1-flash-image-preview`, and internal debug header, the backend can return a structured Photo Advisor result.
+- [ ] Run `backend/scripts/probe-qwe-endpoint.mjs` before image smoke testing; it should call `https://qweapi.com/v1/chat/completions`.
+- [ ] Confirm text-only QweAPI probe succeeds before testing image analysis.
+- [ ] Confirm image Photo Advisor smoke returns a validated `source=cloud` response when internal QweAPI config is enabled and backend is running.
+- [ ] Probe script prints sanitized status / latency only and does not print API key, request body, base64 image, or provider raw response.
+- [ ] No QweAPI API key or QweAPI base URL appears in iOS source.
+- [ ] Result language follows Settings where supported.
+- [ ] Provider invalid JSON / invalid schema fixtures fall back after retry.
+- [ ] Unsafe provider output fixture falls back without showing unsafe text.
+- [ ] Invalid provider filter ID is rejected or falls back.
+- [ ] No raw image / base64 image / request body appears in backend logs.
+- [ ] No provider raw error / raw response is shown to the user.
+- [ ] No provider key exists in iOS or repo.
+- [ ] No `屌` or banned appearance / body / identity copy appears.
+- [ ] No raw localization keys appear.
+
+Known TODOs:
+
+- [ ] Phase 17C is internal/debug only, not production rollout.
+- [ ] QweAPI `gemini-3.1-flash-image-preview` image_url smoke now returns a validated cloud response; production rollout still requires explicit approval, QA, and cost/safety guard review.
+- [ ] Next safe step is provider latency / QA tuning, not Camera cloud AI, Gemini Live, Filter Generator real backend, 改圖師, StoreKit, or production cloud AI.
+
 ## Phase 17C-Prep
 
 Check:

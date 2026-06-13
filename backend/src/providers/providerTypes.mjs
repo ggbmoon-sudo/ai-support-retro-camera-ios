@@ -6,7 +6,7 @@ export const ProviderMode = Object.freeze({
 export function providerBoundaryStatus() {
   return {
     mode: ProviderMode.mockOnly,
-    executableProviders: ["mock", "disabled"],
+    executableProviders: ["mock", "qweInternal", "disabled"],
     providerCallsEnabled: false,
     providerKeyRequired: false
   };

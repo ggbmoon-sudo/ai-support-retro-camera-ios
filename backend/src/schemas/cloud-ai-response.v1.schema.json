@@ -142,7 +142,13 @@
             "unsupported_image",
             "backend_unavailable",
             "invalid_request",
-            "rate_limited"
+            "rate_limited",
+            "provider_unavailable",
+            "provider_timeout",
+            "provider_invalid_json",
+            "provider_invalid_schema",
+            "missing_consent",
+            "internal_cloud_disabled"
           ]
         },
         "message": {

@@ -14,7 +14,7 @@ export function createServer() {
 
       if (request.method === "POST" && request.url === "/v1/ai/photo-advisor") {
         const body = await readJsonBody(request);
-        const result = await handlePhotoAdvisorRequest(body);
+        const result = await handlePhotoAdvisorRequest(body, { headers: request.headers });
         return sendJson(response, result.status, result.body);
       }
 

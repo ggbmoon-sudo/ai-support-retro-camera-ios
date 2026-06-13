@@ -6,7 +6,7 @@ struct CloudAIEndpointClient: Sendable {
 
     init(
         baseURL: URL = URL(string: "http://127.0.0.1:8787")!,
-        timeoutSeconds: TimeInterval = 20
+        timeoutSeconds: TimeInterval = 35
     ) {
         self.baseURL = baseURL
         self.timeoutSeconds = timeoutSeconds
@@ -19,6 +19,7 @@ struct CloudAIEndpointClient: Sendable {
         urlRequest.timeoutInterval = timeoutSeconds
         urlRequest.setValue("application/json", forHTTPHeaderField: "content-type")
         urlRequest.setValue("application/json", forHTTPHeaderField: "accept")
+        urlRequest.setValue("true", forHTTPHeaderField: "X-Internal-Debug-CloudAI")
         urlRequest.httpBody = try JSONEncoder().encode(request)
 
         let (data, response) = try await Foundation.URLSession.shared.data(for: urlRequest)

@@ -88,6 +88,14 @@ function validateImageShape(image) {
     return invalid("payload_too_large", "decoded mock image payload is too large");
   }
 
+  if (decodedBytes > CLOUD_AI_LIMITS.maxImageBytesInternal) {
+    return invalid("payload_too_large", "image payload is too large");
+  }
+
+  if (Math.max(image.width, image.height) > CLOUD_AI_LIMITS.maxDeclaredLongEdgeInternal) {
+    return invalid("invalid_image_dimensions", "image long edge exceeds the internal beta limit");
+  }
+
   return { ok: true };
 }
 

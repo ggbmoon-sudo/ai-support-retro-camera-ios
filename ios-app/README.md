@@ -102,6 +102,18 @@ Phase 17C-Prep keeps iOS production/default behavior mock/local while hardening 
 
 The iOS app does not add a real provider SDK, provider key, production remote Cloud AI, storage upload, export, StoreKit integration, or Camera cloud AI entry.
 
+## Phase 17C Gemini Photo Advisor Internal Beta
+
+Phase 17C-R1 keeps the iOS app provider-key-free and production/default mock/local while allowing the existing DEBUG-only remote chain to test a backend Photo Advisor internal beta through the QweAPI OpenAI-compatible gateway:
+
+- iOS sends only the DEBUG internal header to the local backend test path
+- consent copy is neutral and states neither original nor compressed image is stored
+- the selected image is still compressed / metadata-stripped before the remote request
+- QweAPI base URL, QweAPI API key, and provider calls stay server-side
+- Camera remains local-only
+
+There is still no Gemini / OpenAI SDK import in iOS, no provider key in iOS, no direct QweAPI call in iOS, no production cloud AI rollout, no Camera cloud AI entry, no storage upload, no export, and no StoreKit integration.
+
 ## Phase 12A Filter Planning
 
 Phase 12A adds filter research and schema planning documents only. It does not change iOS app source code.

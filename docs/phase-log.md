@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 17C-Prep - Provider Readiness + Schema Hardening
-Status: Provider readiness and schema hardening added; ready for user review after verification
-Latest implementation: Added mock-only provider adapter boundary, stricter backend request / response validation, filter whitelist validation, unsafe output guard, standardized fallback / error contract, quota / rate-limit / timeout placeholders, no-payload logging helpers, and valid / invalid / unsafe backend test fixtures while keeping production/default Photo Advisor mock/local and Camera local-only
+Current phase: Phase 17C - Gemini Photo Advisor Internal Beta
+Status: Backend-only Photo Advisor internal beta path through QweAPI gateway added; text-only and image provider smoke pass with gemini-3.1-flash-image-preview
+Latest implementation: Added internal/debug-guarded Gemini Photo Advisor provider adapter on the backend, server-side config / secret reads, prompt contract, structured JSON parsing, response validation, retry / fallback handling, updated consent copy, and tests while keeping production/default Photo Advisor mock/local, iOS provider-key-free, and Camera local-only
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -67,7 +67,102 @@ Phase 16X verification: localization lint, safety scans, Camera cloud-entry regr
 Phase 17A verification: Cloud AI backend boundary skeleton only; no real provider call, no provider API key, no production-reachable iOS remote call, no real upload / storage, no request payload logging, and Camera remains local-only.
 Phase 17B verification: debug-only remote chain added for local backend mock endpoint; production/default remains mock/local; no provider call, no provider API key, no Camera cloud AI entry, no storage upload, and no request payload logging.
 Phase 17C-Prep verification: provider adapter boundary remains mock-only; backend request / response validation, filter whitelist validation, unsafe response guard, fallback contract, rate-limit / quota / timeout placeholders, redaction helpers, fixtures, and backend tests are in place; no real provider call, no provider API key, no production remote enablement, no storage upload, no request payload logging, and Camera remains local-only.
-Next phase: Phase 17C-Prep is ready for user review after verification. Do not start real provider integration, real upload, cloud storage, app-wide language switching, Gemini Live, StoreKit, payment, export, or save-to-Photos until explicitly requested.
+Phase 17C-R1 verification: active provider contract switched from the failed Code0 gateway attempt to the QweAPI OpenAI-compatible gateway; a safe text-only provider probe script was added; backend-only Photo Advisor internal beta path remains behind `ALLOW_INTERNAL_CLOUD_AI=true`, `CLOUD_AI_PROVIDER_MODE=qweInternal`, internal debug header, server-side `QWE_API_KEY`, validated `QWE_BASE_URL=https://qweapi.com`, and `QWE_PHOTO_ADVISOR_MODEL=gemini-3.1-flash-image-preview`; text-only QweAPI probe succeeds, and `gemini-3.1-flash-image-preview` image_url multimodal request returns a validated `source=cloud` Photo Advisor response; default remains mock/local; iOS has no provider key / SDK / direct QweAPI call; Camera remains local-only; no storage upload, request payload logging, provider raw response logging, Gemini Live, WebSocket, StoreKit, export, or production rollout was added.
+Next phase: Phase 17C still needs user visual QA and provider latency / quality review before any production rollout. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, or save-to-Photos until explicitly requested.
+
+---
+
+## Phase 17C - Gemini Photo Advisor Internal Beta
+
+Status: Backend-only Photo Advisor internal beta path through QweAPI gateway added; image provider path passes with gemini-3.1-flash-image-preview
+Date completed: 2026-06-13
+
+### Goal
+
+Move the Cloud AI boundary from mock-only provider readiness to a first internal/debug real provider beta for post-capture Photo Advisor only, while keeping production/default behavior mock/local and Camera local-only.
+
+### Completed
+
+- Added backend `QwePhotoAdvisorProvider` adapter using backend -> QweAPI OpenAI-compatible gateway -> `gemini-3.1-flash-image-preview` routing.
+- Added server-side Cloud AI config for `CLOUD_AI_PROVIDER_MODE`, `ALLOW_INTERNAL_CLOUD_AI`, `INTERNAL_CLOUD_AI_DEBUG_TOKEN`, `QWE_API_KEY`, `QWE_BASE_URL`, and `QWE_PHOTO_ADVISOR_MODEL`.
+- QweAPI base URL config trims whitespace, requires `https`, rejects query strings / fragments, allows only `https://qweapi.com`, and fails safely when missing or invalid.
+- Default provider mode remains `mock`.
+- QweAPI provider path only activates when provider mode is `qweInternal`, internal cloud AI is allowed, the internal debug header / token guard passes, and the server-side QweAPI key / base URL / model config exist.
+- iOS debug request now sends the internal debug header and keeps provider calls behind DEBUG-only remote wiring.
+- iOS request timeout is 35 seconds; backend provider timeout is 30 seconds.
+- Updated consent copy to say the selected compressed photo is uploaded for one-time analysis and neither original nor compressed image is stored.
+- Added Photo Advisor prompt contract that bans identity / sensitive inference, appearance / body scoring, profanity, arbitrary filter IDs, provider references, and non-JSON output.
+- QweAPI response parsing accepts JSON text from OpenAI-compatible `choices[0].message.content` responses and maps the result into existing `CloudAIResponse` v1.0.
+- Provider output is validated by the existing Cloud AI response validator and unsafe text guard.
+- Added one retry for invalid JSON, invalid schema, transient provider error, and timeout.
+- Unsafe output, invalid request, missing consent, oversized image, rate limit, and quota paths do not retry.
+- Provider failure maps to structured fallback / unavailable response.
+- Backend image limit is capped for the internal beta; no cloud storage upload or file persistence was added.
+- Updated `.env.example` with placeholder-only QweAPI/internal config; `.env` remains gitignored.
+- Added QweAPI provider tests for mock default, internal flag guard, missing key/base URL fallback, base URL validation, prompt construction, structured provider response, invalid JSON retry, invalid schema retry, unsafe fallback, missing consent no-call, and image-too-large no-call.
+- Updated README, iOS README, backend README, transition handoff, phase log, and manual smoke tests.
+- Internal verification with a local QweAPI key confirmed text-only chat completions succeed against `https://qweapi.com/v1/chat/completions`.
+- Internal image Photo Advisor smoke using OpenAI-compatible `image_url` returned a validated `source=cloud` Photo Advisor response with `gemini-3.1-flash-image-preview`.
+- Direct diagnostic confirmed text-only chat and image_url multimodal payload both succeed with sanitized output only.
+
+### Safety Notes
+
+Phase 17C does not add provider keys to iOS; Gemini / OpenAI / Firebase / StoreKit SDK imports in iOS; real provider calls from iOS; Camera cloud AI entry; AI Snapshot; Filter Generator real backend; 改圖師 real image editing; image generation; Gemini Live; WebSocket; live video streaming; production remote rollout; cloud storage upload; Firestore write; account / auth / payment / StoreKit; raw image persistence; request body logging; provider raw response logging; face recognition; identity inference; sensitive inference; app-wide language switching; or production cloud AI enablement.
+
+### Verification
+
+- [x] `git status --short` final check.
+- [x] `git diff --check` final pass.
+- [x] `git diff --stat` final review.
+- [x] Localization lint.
+- [x] iOS unit tests, if available; no separate iOS test target exists in this repo.
+- [x] Backend tests passed with bundled Node runtime.
+- [x] Backend JSON schema sanity check passed.
+- [x] Forbidden iOS imports scan.
+- [x] Provider key scan.
+- [x] Provider URL scan.
+- [x] Secrets / config scan.
+- [x] Request payload logging scan.
+- [x] Raw image persistence scan.
+- [x] Storage upload scan.
+- [x] Unsafe phrase scan.
+- [x] Network path scan.
+- [x] Swift source change summary.
+- [x] Backend source change summary.
+- [x] Xcode generic iOS Simulator build passed on 2026-06-13.
+
+### Ready to Commit Phase 17C
+
+No. Wait until the user reviews the Phase 17C result.
+
+---
+
+## Phase 17C-R1 - Switch Photo Advisor Provider to QweAPI OpenAI-Compatible Gateway
+
+Status: QweAPI OpenAI-compatible gateway contract added; text-only and image smoke succeed with gemini-3.1-flash-image-preview
+Date completed: 2026-06-13
+
+### Completed
+
+- Replaced the active Code0 gateway attempt with QweAPI backend config: `QWE_API_KEY`, `QWE_BASE_URL=https://qweapi.com`, and `QWE_PHOTO_ADVISOR_MODEL=gemini-3.1-flash-image-preview`.
+- Provider adapter posts to `https://qweapi.com/v1/chat/completions` using OpenAI-compatible chat completions shape.
+- Auth is server-side `Authorization: Bearer <QWE_API_KEY>` only.
+- `.env.example` now defaults to `CLOUD_AI_PROVIDER_MODE=mock` and `ALLOW_INTERNAL_CLOUD_AI=false`.
+- Added safe developer probe script at `backend/scripts/probe-qwe-endpoint.mjs`.
+- Probe sends text-only request first, prints sanitized status / latency only, and never prints API key, request body, base64 image, or provider raw response.
+- Added backend tests for QweAPI v1 base URL validation, `gemini-3.1-flash-image-preview` model use, final `/v1/chat/completions` URL construction, Authorization Bearer headers, OpenAI-compatible choices parsing, non-JSON rejection, and probe script safety.
+- Updated `.env.example`, backend README, phase log, handoff, and manual smoke tests.
+- Verified local `.env` remains gitignored and the QweAPI key is not printed.
+- Text-only provider probe succeeded with HTTP 200 and sanitized output only.
+- Image Photo Advisor internal smoke returned a validated `source=cloud` response with `gemini-3.1-flash-image-preview`.
+
+### Safety Notes
+
+R1 keeps backend-only provider calls, internal/debug guard, production/default mock/local behavior, Camera local-only behavior, schema validation, safety validation, and fallback behavior. It does not add provider keys to iOS, direct QweAPI iOS calls, production remote enablement, Camera cloud AI, payload logging, raw provider response logging, storage upload, Gemini Live, WebSocket, StoreKit, export, or production rollout.
+
+### Ready for Production Rollout
+
+No.
 
 ---
 

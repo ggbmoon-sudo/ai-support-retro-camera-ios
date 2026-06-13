@@ -131,6 +131,7 @@ Important completed route so far:
 - Phase 17A - Real Cloud AI Backend Boundary Skeleton.
 - Phase 17B - Debug-only Remote CloudAIService Wiring.
 - Phase 17C-Prep - Provider Readiness + Schema Hardening.
+- Phase 17C - Gemini Photo Advisor Internal Beta.
 
 This list is a short orientation map only. Use `docs/phase-log.md` as the detailed source of truth.
 
@@ -371,9 +372,9 @@ This update records work completed by the new Codex / Codex API session after th
 - Inspiration now groups import photo analysis, Photo Advisor orientation, Filter Lab mock, future Photo Edit placeholder, and future cloud AI consent/no-background-upload notice.
 - Filter Lab remains mock/local.
 - Photo Edit / 改圖師 remains disabled future placeholder only.
-- Phase 17A has started, but remains a provider-disabled boundary skeleton only.
+- Phase 17A started as a provider-disabled boundary skeleton.
 - iOS now has CloudAIService protocol / models / validator / mock service / disabled remote skeleton / consent view / image compression scaffold.
-- A mock-only `backend/` boundary exists with `GET /health` and `POST /v1/ai/photo-advisor`.
+- A `backend/` boundary exists with `GET /health` and `POST /v1/ai/photo-advisor`.
 - The first future real endpoint target remains `POST /v1/ai/photo-advisor`.
 - iOS defaults to mock/local behavior; existing Photo Advisor remains mock/local by default.
 - Backend mock endpoint does not call a provider, does not require provider keys, does not persist images, and must not log request payloads.
@@ -382,15 +383,23 @@ This update records work completed by the new Codex / Codex API session after th
 - `RemoteCloudAIService` remains disabled by default.
 - The DEBUG-only remote path requires consent, compresses / re-encodes the image, validates the structured response, and falls back to local/mock advice on failure.
 - Phase 17C-Prep hardens the backend boundary before any real provider work.
-- Provider adapter boundary now exists, but executable provider kinds remain mock / disabled only.
+- Provider adapter boundary now exists.
 - Backend request / response validation now includes stricter schema, consent, JPEG, base64, filter whitelist, unsafe text, standard fallback, and error-code checks.
 - Rate-limit, quota, timeout, redaction / no-payload logging helpers, and test fixtures are in place as placeholders.
-- Real provider integration has still not started.
-- Phase 17 remains provider-disabled; no real provider integration is approved.
+- Phase 17C introduces the first real provider internal beta for Photo Advisor only.
+- Backend provider path can use QweAPI internal mode only when `ALLOW_INTERNAL_CLOUD_AI=true`, `CLOUD_AI_PROVIDER_MODE=qweInternal`, internal debug guard passes, server-side `QWE_API_KEY` exists, `QWE_BASE_URL=https://qweapi.com`, and `QWE_PHOTO_ADVISOR_MODEL=gemini-3.1-flash-image-preview`.
+- Phase 17C-R0 Code0 gateway verification did not produce a successful provider response, so it remains a previous attempted route rather than active config.
+- Phase 17C-R1 switches the active backend provider contract to QweAPI OpenAI-compatible chat completions at `https://qweapi.com/v1/chat/completions`, keeps `Authorization: Bearer` server-side, and adds a safe text-only provider probe script.
+- Local internal verification confirms the QweAPI text-only probe succeeds, and the `gemini-3.1-flash-image-preview` OpenAI-compatible `image_url` request returns a validated `source=cloud` response in internal testing.
+- iOS must not contain a QweAPI key or direct QweAPI base URL call.
+- Default provider mode remains mock.
+- iOS default remains mock/local and provider-key-free.
+- Camera remains local-only.
+- This is not production rollout.
 
 ### Next Recommended Phase Options
 
-Do not jump to real provider integration yet. Do not implement cloud save / StoreKit without an explicit phase. Do not implement local export / download without dedicated planning. Use `docs/product/future-ai-premium-feature-policy.md` before scoping any paid / cloud / export / AI-edit feature.
+Do not jump to production rollout. Do not implement cloud save / StoreKit without an explicit phase. Do not implement local export / download without dedicated planning. Use `docs/product/future-ai-premium-feature-policy.md` before scoping any paid / cloud / export / AI-edit feature.
 
 Option 0 - Phase 17B: RemoteCloudAIService Internal Debug Wiring Only
 
@@ -399,10 +408,12 @@ Option 0 - Phase 17B: RemoteCloudAIService Internal Debug Wiring Only
 - Keep mock fallback and consent.
 - Do not turn it into production remote without a separate phase.
 
-Option 1 - Phase 17C: Real Provider Integration Planning / Approval Gate
+Option 1 - Phase 17C-R1: Gemini Internal Beta Latency / Provider QA
 
-- Only after explicit user approval.
-- Phase 17C-Prep has added schema / safety / adapter hardening, but provider docs, pricing, provider policy, prompt contract, moderation, cost guard, secret management, and ops readiness must still be explicitly reviewed before any real provider beta.
+- Tune latency, prompt quality, provider errors, retry behavior, and fallback UX for internal testing only.
+- Keep Camera local-only.
+- Keep iOS provider-key-free.
+- Do not production-enable remote Cloud AI.
 - No Gemini Live / streaming.
 - No Camera cloud AI entry.
 
@@ -455,12 +466,12 @@ Do not fill fake future data. Complete this section on or near the handback date
 
 ### Short-term next recommended phase
 
-Phase 17C-Prep has hardened the backend boundary and provider adapter surface, but real provider integration has still not started. Do not jump to real provider integration without explicit approval and provider readiness review.
+Phase 17C adds a backend-only Gemini Photo Advisor internal beta. Do not jump to production rollout without explicit approval, QA, cost guard, monitoring, abuse controls, and provider policy review.
 
 Suggested next options:
 
-- Phase 17C - Real provider integration planning / approval gate, not implementation, unless separately requested.
-- Phase 17D - Internal real provider beta only after explicit approval, secret management, provider policy review, cost guard, timeout, moderation, and validation checks.
+- Phase 17C-R1 follow-up - QweAPI model / image payload compatibility QA; do not treat real Photo Advisor image success as complete until image smoke returns a validated `source=cloud` response.
+- Phase 17D - Production rollout planning only after explicit approval, secret management hardening, provider policy review, cost guard, timeout, moderation, and validation checks.
 - Phase 16M - Export / Local Lossless Download Planning Research, if product planning returns to export.
 
 Previously completed:
@@ -486,7 +497,8 @@ Completed Phase 16I scope:
 - Phase 17A - Backend boundary skeleton only, not real provider first.
 - Phase 17B - Debug-only RemoteCloudAIService wiring to backend mock endpoint.
 - Phase 17C-Prep - Provider readiness and schema hardening, still mock/provider-disabled.
-- Phase 17C / 17D - Real provider only after explicit approval.
+- Phase 17C - Gemini Photo Advisor internal beta only.
+- Phase 17D - Production rollout only after explicit approval.
 
 Roadmap guardrails:
 
@@ -498,6 +510,7 @@ Roadmap guardrails:
 - Phase 17A has now added the boundary skeleton, but real provider integration is still not approved.
 - Phase 17B has now added debug-only remote wiring to the backend mock endpoint, but real provider integration is still not approved.
 - Phase 17C-Prep has now added mock-only provider adapter, schema hardening, filter whitelist, unsafe response guard, fallback contract, quota / rate-limit / timeout placeholders, redaction helpers, and fixtures, but real provider integration is still not approved.
+- Phase 17C has now added backend-only Gemini Photo Advisor internal beta support. It is disabled by default and gated by server-side secret/config plus internal debug guard; production rollout is still not approved.
 
 ---
 
@@ -558,12 +571,13 @@ Important docs already added or expected in this roadmap:
 - Future real cloud AI should use the Phase 17A boundary before any provider work.
 - Phase 17B wires `RemoteCloudAIService` behind a DEBUG-only internal path.
 - Phase 17C-Prep adds provider readiness and schema hardening while keeping the provider path mock-only.
-- Future real provider work may start only after explicit approval, secret management, provider policy review, timeout / cancellation, moderation, validation, and cost guard work.
+- Phase 17C adds backend-only QweAPI Photo Advisor internal beta plumbing; current image provider smoke returns a validated `source=cloud` response with `gemini-3.1-flash-image-preview`, while production/default remains mock/local.
+- Future production rollout may start only after explicit approval, real image provider success, secret management hardening, provider policy review, timeout / cancellation, moderation, validation, and cost guard work.
 - No Gemini Live / streaming, AI Filter Generator real backend, 改圖師 provider integration, or Camera cloud AI entry is approved by Phase 17A.
 - App-wide language switching remains not implemented.
 - Filter Lab / 改圖師 copy integration remains future-only.
 - Explicit profanity remains future review-only and not runtime-enabled.
-- Next safe step may be a Phase 17C real-provider planning / approval gate; real provider integration remains blocked.
+- Next safe step may be Phase 17C-R1 latency / provider QA; production rollout remains blocked.
 
 ---
 

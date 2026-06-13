@@ -1,0 +1,9 @@
+{
+  "choices": [
+    {
+      "message": {
+        "content": "{\"schemaVersion\":\"1.0\",\"mode\":\"post_capture\",\"summary\":\"Too many suggestions\",\"suggestions\":[{\"type\":\"filter\",\"text\":\"One\",\"priority\":\"high\",\"action\":\"apply_filter\"},{\"type\":\"crop\",\"text\":\"Two\",\"priority\":\"medium\",\"action\":\"adjust_crop\"},{\"type\":\"lighting\",\"text\":\"Three\",\"priority\":\"medium\",\"action\":\"none\"},{\"type\":\"retake\",\"text\":\"Four\",\"priority\":\"low\",\"action\":\"retake\"}],\"recommendedFilters\":[],\"generatedFilter\":null,\"poseGuide\":null,\"retakeAdvice\":null,\"cropAdvice\":null,\"confidence\":\"medium\",\"source\":\"cloud\",\"locale\":\"en\",\"safety\":{\"containsSensitiveInference\":false,\"requiresUserConsent\":true,\"blockedReason\":null},\"error\":null}"
+      }
+    }
+  ]
+}

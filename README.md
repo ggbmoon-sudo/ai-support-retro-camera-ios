@@ -78,12 +78,12 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 17C-Prep provider readiness and schema hardening implemented; ready for user review
+- Phase 17C Gemini Photo Advisor internal beta implemented; ready for user review
 
 Next phase:
 
-- Do not commit Phase 17C-Prep until user reviews it
-- Real provider integration remains blocked until a later explicit provider phase
+- Do not commit Phase 17C until user reviews it
+- Production rollout remains blocked until a later explicit release phase
 
 Before each task, read `AGENTS.md`, the required docs listed there, and the relevant phase prompt in `docs/prompts/`.
 
@@ -102,6 +102,8 @@ Phase 17A adds a Cloud AI boundary skeleton only: iOS CloudAI models / service p
 Phase 17B adds DEBUG-only wiring from iOS `RemoteCloudAIService` to the local backend mock `/v1/ai/photo-advisor` endpoint. Production/default behavior remains mock/local, and real provider integration remains future-only.
 
 Phase 17C-Prep hardens the backend boundary before any real provider work: mock-only provider adapter / registry, stricter request and response validation, filter whitelist checks, unsafe response guard, standardized fallback errors, quota / rate-limit / timeout placeholders, redacted logging helper, and backend fixtures/tests. There is still no real provider call, no provider API key, no production remote enablement, and no Camera cloud AI entry.
+
+Phase 17C-R1 switches the backend-only Photo Advisor internal beta to the QweAPI OpenAI-compatible gateway. It is disabled by default and only runs when backend config explicitly sets `ALLOW_INTERNAL_CLOUD_AI=true`, `CLOUD_AI_PROVIDER_MODE=qweInternal`, an internal debug header / token guard passes, server-side `QWE_API_KEY` is configured, `QWE_BASE_URL=https://qweapi.com`, and `QWE_PHOTO_ADVISOR_MODEL=gemini-3.1-flash-image-preview`. iOS still has no provider SDK, provider key, or direct QweAPI call; production/default Photo Advisor remains mock/local, and Camera remains local-only.
 
 Current MVP demo / QA readiness docs:
 
@@ -155,6 +157,8 @@ Phase 17A does not change that production boundary: the new backend folder is mo
 Phase 17B keeps the same production boundary. The remote chain is DEBUG/internal only, requires consent, uses compressed JPEG input, validates the structured response, and falls back to local advice on failure.
 
 Phase 17C-Prep keeps provider integration blocked. It only prepares the backend boundary with mock-only provider plumbing, schema hardening, safety fallback, and no-payload logging rules.
+
+Phase 17C is still not a production rollout. It adds backend-only QweAPI OpenAI-compatible internal beta support for Photo Advisor, with structured output validation, safety validation, retry/fallback, and server-side secrets only. Current verification confirms QweAPI text-only chat works and `gemini-3.1-flash-image-preview` returns a validated Photo Advisor image result in internal testing.
 
 ## Phase 12A Filter Planning Status
 

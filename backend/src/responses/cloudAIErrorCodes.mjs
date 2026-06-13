@@ -12,7 +12,13 @@ export const CLOUD_AI_ERROR_CODES = Object.freeze({
   unsupportedImage: "unsupported_image",
   backendUnavailable: "backend_unavailable",
   invalidRequest: "invalid_request",
-  rateLimited: "rate_limited"
+  rateLimited: "rate_limited",
+  providerUnavailable: "provider_unavailable",
+  providerTimeout: "provider_timeout",
+  providerInvalidJson: "provider_invalid_json",
+  providerInvalidSchema: "provider_invalid_schema",
+  missingConsent: "missing_consent",
+  internalCloudDisabled: "internal_cloud_disabled"
 });
 
 export function isKnownCloudAIErrorCode(code) {

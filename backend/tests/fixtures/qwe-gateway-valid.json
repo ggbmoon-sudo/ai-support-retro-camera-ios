@@ -1,0 +1,9 @@
+{
+  "choices": [
+    {
+      "message": {
+        "content": "{\"schemaVersion\":\"1.0\",\"mode\":\"post_capture\",\"summary\":\"This photo has a warm, relaxed mood.\",\"suggestions\":[{\"type\":\"filter\",\"text\":\"Try a soft warm retro filter to keep the mood gentle.\",\"priority\":\"high\",\"action\":\"apply_filter\"}],\"recommendedFilters\":[{\"filterId\":\"instant_dream\",\"reason\":\"Works well for warm portraits.\",\"confidence\":\"high\"}],\"generatedFilter\":null,\"poseGuide\":null,\"retakeAdvice\":{\"shouldRetake\":false,\"reason\":\"No need to retake immediately. Try a filter and crop first.\"},\"cropAdvice\":{\"recommended\":true,\"text\":\"A small crop can remove extra empty space.\"},\"confidence\":\"medium\",\"source\":\"cloud\",\"locale\":\"en\",\"safety\":{\"containsSensitiveInference\":false,\"requiresUserConsent\":true,\"blockedReason\":null},\"error\":null}"
+      }
+    }
+  ]
+}
