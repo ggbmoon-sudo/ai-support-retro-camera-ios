@@ -29,11 +29,29 @@ loadDotEnv(new URL("../../.env", import.meta.url));
 const qaOptions = parseArgs(process.argv.slice(2));
 const config = cloudAIConfig(process.env);
 
+if (qaOptions.checkSafetyGate) {
+  const gate = await buildSafetyGateReport({ config, qaOptions });
+  printSanitized(gate);
+  process.exit(gate.ok ? 0 : 1);
+}
+
 if (qaOptions.runMode === "synthetic") {
   const report = await runSyntheticContractQA();
   await writeSanitizedReport(report);
   printReportSummary(report);
   process.exit(0);
+}
+
+if (!qaOptions.runProvider) {
+  printSanitized({
+    ok: false,
+    errorCode: "provider_run_requires_explicit_opt_in",
+    message: "Real-provider QA requires --run-provider after the dry-run safety gate is reviewed. No provider request was sent.",
+    suggestedPreflight: "node scripts/run-photo-advisor-provider-qa.mjs --check-safety-gate",
+    suggestedSynthetic: "node scripts/run-photo-advisor-provider-qa.mjs --synthetic-contract",
+    productionReady: false
+  });
+  process.exit(1);
 }
 
 const cases = await loadQACases(qaOptions);
@@ -113,13 +131,15 @@ function isQweInternalConfigured(value) {
 
 function parseArgs(args) {
   const syntheticContract = args.includes("--synthetic-contract");
+  const checkSafetyGate = args.includes("--check-safety-gate") || args.includes("--dry-run-gate");
+  const runProvider = args.includes("--run-provider");
   const modeArg = args.find((item) => item.startsWith("--mode="));
   const runMode = syntheticContract ? "synthetic" : modeArg?.split("=")[1] ?? "provider";
   if (!["provider", "synthetic"].includes(runMode)) {
     printSanitized({
       ok: false,
       errorCode: "invalid_run_mode",
-      message: "Use --mode=provider, --mode=synthetic, or --synthetic-contract."
+      message: "Use --mode=provider, --mode=synthetic, --synthetic-contract, or --check-safety-gate."
     });
     process.exit(1);
   }
@@ -134,7 +154,65 @@ function parseArgs(args) {
     });
     process.exit(1);
   }
-  return { runMode, imageSet };
+  return { runMode, imageSet, checkSafetyGate, runProvider };
+}
+
+async function buildSafetyGateReport({ config, qaOptions }) {
+  const selectedSets = qaOptions.imageSet === "all"
+    ? ["synthetic", "approved-real"]
+    : [qaOptions.imageSet ?? "synthetic"];
+  const imageSetSummaries = [];
+
+  for (const imageSet of selectedSets) {
+    const directory = imageSet === "approved-real" ? APPROVED_REAL_SAMPLE_DIR : LOCAL_IMAGE_DIR;
+    const entries = await loadImageEntries(directory, imageSet);
+    imageSetSummaries.push({
+      imageSet,
+      sampleCount: entries.length,
+      ignoredByPolicy: true,
+      approvedRealSamplesRequireOperatorConsent: imageSet === "approved-real"
+    });
+  }
+
+  const providerConfigured = Boolean(isQweInternalConfigured(config));
+  return {
+    ok: true,
+    gate: "photo_advisor_provider_qa_dry_run",
+    runMode: "dry_run_gate",
+    providerConfigured,
+    providerNameBucket: providerConfigured ? "qweapi" : "not_configured",
+    modelNameBucket: providerConfigured ? sanitizeModelNameForGate(config.qwePhotoAdvisorModel) : "not_configured",
+    selectedImageSet: qaOptions.imageSet,
+    imageSets: imageSetSummaries,
+    checks: {
+      syntheticContractCommandAvailable: true,
+      realProviderRequiresRunProviderFlag: true,
+      internalProviderGuardRequired: true,
+      localCredentialsRequiredForProviderMode: true,
+      reportPathIgnoredByPolicy: true,
+      localImageFoldersIgnoredByPolicy: true,
+      approvedRealSampleFolderIgnoredByPolicy: true,
+      payloadLoggingDisabled: true,
+      rawImagePersisted: false,
+      rawProviderResponsePersisted: false,
+      rawPromptPersisted: false,
+      reportContainsRawUserContent: false,
+      productionReady: false
+    },
+    commands: {
+      syntheticContract: "node scripts/run-photo-advisor-provider-qa.mjs --synthetic-contract",
+      realProvider: "node scripts/run-photo-advisor-provider-qa.mjs --run-provider --image-set=approved-real"
+    },
+    requiredOperatorConfirmations: [
+      "B0/B1/B2 backend tests and synthetic-contract QA have passed.",
+      "Provider credentials exist only in ignored local env/config.",
+      "Approved real samples are consented, local-only, metadata-stripped JPEGs.",
+      "Generated reports remain ignored and sanitized.",
+      "No raw images, prompts, provider responses, request payloads, secrets, GPS, raw EXIF, stack traces, or unsafe provider text will be logged or committed.",
+      "productionReady remains false."
+    ],
+    productionReady: false
+  };
 }
 
 async function runSyntheticContractQA() {
@@ -514,6 +592,14 @@ function validationCategoryForValidation(code, item = {}) {
   default:
     return "invalid_schema";
   }
+}
+
+function sanitizeModelNameForGate(value) {
+  const text = String(value ?? "").trim();
+  if (!text) {
+    return "not_configured";
+  }
+  return text.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 80);
 }
 
 function printSanitized(payload) {

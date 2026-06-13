@@ -78,7 +78,7 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 18-B1 provider contract regression fixtures and fallback parity checks completed; ready for review
+- Phase 18-B3 internal real-provider QA dry-run gate completed; ready for review
 
 Next phase:
 
@@ -114,6 +114,7 @@ Current MVP demo / QA readiness docs:
 - `docs/feature-change-requests.md`
 - `docs/ai-photo-advisor-language-audit.md`
 - `docs/photo-advisor-provider-language-contract.md`
+- `docs/photo-advisor-provider-qa-dry-run-gate.md`
 - `docs/filter-research-popular-film-looks.md`
 - `docs/filter-preset-schema.md`
 - `docs/filter-roadmap.md`
@@ -193,6 +194,8 @@ Phase 18-A5 adds a multilingual local/mock Photo Advisor copy QA and regression 
 Phase 18-B0 aligns the backend-mediated real AI Photo Advisor contract with the Phase 18-A1 through Phase 18-A5 app language system before any production provider output is allowed. `docs/photo-advisor-provider-language-contract.md` records the provider voice contract, CloudAIResponse-to-result-card schema alignment, prompt/validator/fallback audit, and provider QA fixture plan. Backend validation now rejects score/rating wording, harsh fix-it / retake-first language, provider/debug leakage, chain-of-thought wording, and overlong filter reasons. This does not enable production cloud AI, does not change the iOS upload payload, does not upload capture context, does not add provider keys/direct calls to iOS, and does not add a Camera cloud AI entry.
 
 Phase 18-B2 aligns the real-provider QA runner with the B0/B1 provider contract. `backend/scripts/run-photo-advisor-provider-qa.mjs --synthetic-contract` runs the committed B1 fixtures without credentials, network, real photos, raw prompts, or raw provider responses. Real-provider QA still requires explicit local QweAPI credentials and internal/debug config, and generated reports remain ignored under `backend/reports/provider-qa/`. Reports contain sanitized metrics and redaction flags only, with `productionReady: false`.
+
+Phase 18-B3 adds an internal real-provider QA dry-run gate. `backend/scripts/run-photo-advisor-provider-qa.mjs --check-safety-gate` prints sanitized operator gate status, `npm run qa:photo-advisor` is safe-by-default synthetic-contract QA, and real-provider QA now requires explicit `--run-provider` opt-in plus local ignored credentials and approved ignored samples. No production cloud AI is enabled, backend provider request payloads and iOS upload payloads are unchanged, capture context is not uploaded, iOS has no provider key / direct provider call, Camera remains local-only, generated reports/photos remain ignored, and `productionReady` remains false.
 
 Phase 18-B1 adds synthetic provider contract regression fixtures and fallback parity checks for the backend-mediated Photo Advisor path. The fixtures cover valid app-voice responses plus invalid JSON, markdown prose, schema errors, unsupported filter IDs, overlong text, score/rating language, harsh fix-it / retake-first wording, sensitive inference, chain-of-thought, provider/debug leakage, raw localization keys, raw filter-family IDs, and provider failure fallbacks. Invalid, unsafe, overlong, or provider-leaking output is rejected or mapped to structured fallback before iOS can display it. This does not enable production cloud AI, does not change backend provider request payloads or iOS upload payloads, does not upload capture context, does not add provider keys/direct calls to iOS, and does not add a Camera cloud AI entry.
 

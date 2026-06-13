@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node src/server.mjs",
     "test": "node --test tests/*.test.mjs",
-    "qa:photo-advisor": "node scripts/run-photo-advisor-provider-qa.mjs"
+    "qa:photo-advisor": "node scripts/run-photo-advisor-provider-qa.mjs --synthetic-contract",
+    "qa:photo-advisor:gate": "node scripts/run-photo-advisor-provider-qa.mjs --check-safety-gate",
+    "qa:photo-advisor:provider": "node scripts/run-photo-advisor-provider-qa.mjs --run-provider"
   },
   "dependencies": {},
   "devDependencies": {}

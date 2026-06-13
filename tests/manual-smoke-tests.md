@@ -1,5 +1,45 @@
 # Manual Smoke Tests
 
+## Phase 18-B3
+
+Internal real-provider QA dry-run gate:
+
+- [ ] Open `docs/photo-advisor-provider-qa-dry-run-gate.md`.
+- [ ] Confirm B3 says production rollout remains blocked and `productionReady` must remain `false`.
+- [ ] Confirm the pre-run gate requires backend tests, synthetic-contract QA, ignored local credentials, ignored approved samples, ignored generated reports, and operator consent for approved real samples.
+- [ ] Confirm real-provider QA requires explicit `--run-provider` and must fail closed without it.
+- [ ] Confirm generated reports stay under ignored `backend/reports/provider-qa/`.
+- [ ] Confirm approved real samples stay under ignored `backend/tests/approved-real-samples/`.
+- [ ] Confirm no raw image/base64, prompt, request payload, provider response, unsafe provider text, API key, Authorization header, GPS/raw EXIF, or provider stack trace is logged or persisted.
+
+Automated local checks:
+
+- [ ] `cd backend && npm test` passes, or use the bundled Node fallback.
+- [ ] `cd backend && npm run qa:photo-advisor` runs synthetic-contract QA only.
+- [ ] `cd backend && npm run qa:photo-advisor:gate` prints sanitized gate status.
+- [ ] `cd backend && node scripts/run-photo-advisor-provider-qa.mjs --image-set=synthetic` fails closed and sends no provider request.
+- [ ] `scripts/validate-photo-advisor-copy-regression.sh` passes.
+- [ ] `scripts/validate-photo-advisor-card-language.sh` passes.
+- [ ] `scripts/validate-creative-intent-language.sh` passes.
+- [ ] `scripts/validate-photo-advisor-filter-reasons.sh` passes.
+
+Real-provider QA, only when approved local credentials and approved ignored samples exist:
+
+- [ ] Run `cd backend && npm run qa:photo-advisor:provider -- --image-set=approved-real`.
+- [ ] Record sanitized aggregate metrics only.
+- [ ] Do not paste raw provider output, raw prompts, raw request payloads, image names that identify private photos, or generated report contents.
+- [ ] Confirm generated report remains ignored/untracked.
+- [ ] Confirm `productionReady: false`.
+
+Boundary check:
+
+- [ ] Backend `/v1/ai/photo-advisor` request payload shape remains unchanged.
+- [ ] iOS Cloud AI request/upload payload remains unchanged.
+- [ ] Capture context is not uploaded.
+- [ ] iOS still has no provider key, provider SDK import, or direct provider URL call.
+- [ ] Camera remains local-only with no AI Snapshot / Quick Advice / Cloud AI entry.
+- [ ] No GPS/location collection, raw EXIF dump, raw sensor persistence, StoreKit, Gemini Live, WebSocket, export, real photos, generated reports, screenshots, recordings, or production cloud rollout is enabled.
+
 ## Phase 18-B1
 
 Provider contract regression and fallback parity check:
@@ -379,7 +419,9 @@ Check:
 - [ ] Run `backend/scripts/probe-qwe-endpoint.mjs` before image smoke testing; it should call `https://qweapi.com/v1/chat/completions`.
 - [ ] Confirm text-only QweAPI probe succeeds before testing image analysis.
 - [ ] Confirm image Photo Advisor smoke returns a validated `source=cloud` response when internal QweAPI config is enabled and backend is running.
-- [ ] Run `backend/scripts/run-photo-advisor-provider-qa.mjs` or `npm run qa:photo-advisor`.
+- [ ] Run safe synthetic provider QA with `cd backend && npm run qa:photo-advisor`.
+- [ ] Run the dry-run gate with `cd backend && npm run qa:photo-advisor:gate` before any real-provider QA.
+- [ ] Run real-provider QA only with explicit opt-in, for example `cd backend && npm run qa:photo-advisor:provider -- --image-set=approved-real`.
 - [ ] Confirm provider QA report is written to ignored `backend/reports/provider-qa/photo-advisor-qa-report.json`.
 - [ ] Confirm provider QA report contains no API key, base64 image, raw image, request body, provider raw response, EXIF, GPS, or face data.
 - [ ] Review provider QA summary: cloud success, fallback count, average / p50 / p95 latency, schema failures, safety failures, invalid filter IDs.
@@ -396,7 +438,7 @@ Check:
 - [ ] Confirm `latencyAssessment.productionRollout` remains blocked when p95 / max latency or fallback risk is high.
 - [ ] Confirm fallback reasons are reviewed, especially `unsafe_response` and `provider_timeout`.
 - [ ] Confirm fallback classifications distinguish provider timeout, unsafe response, invalid JSON, invalid schema, invalid filter ID, provider / network error, and unknown error where applicable.
-- [ ] Run synthetic QA with `backend/scripts/run-photo-advisor-provider-qa.mjs --image-set=synthetic`.
+- [ ] Run real-provider synthetic image QA only after the dry-run gate, with explicit opt-in: `backend/scripts/run-photo-advisor-provider-qa.mjs --run-provider --image-set=synthetic`.
 - [ ] Run approved real sample QA only when approved local images exist under ignored `backend/tests/approved-real-samples/`.
 - [ ] Confirm approved real samples remain ignored / untracked and use non-personal filenames.
 - [ ] Manually review 3-5 real approved local QA image results when available.

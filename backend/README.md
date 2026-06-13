@@ -154,7 +154,7 @@ Run backend tests first:
 npm test
 ```
 
-Run provider QA:
+Run the safe provider contract QA:
 
 ```sh
 npm run qa:photo-advisor
@@ -163,21 +163,21 @@ npm run qa:photo-advisor
 If this runtime does not have `npm`, run the script directly:
 
 ```sh
-node scripts/run-photo-advisor-provider-qa.mjs
-```
-
-Image set options:
-
-```sh
-node scripts/run-photo-advisor-provider-qa.mjs --image-set=synthetic
-node scripts/run-photo-advisor-provider-qa.mjs --image-set=approved-real
-node scripts/run-photo-advisor-provider-qa.mjs --image-set=all
-```
-
-Run the provider contract QA without credentials or network:
-
-```sh
 node scripts/run-photo-advisor-provider-qa.mjs --synthetic-contract
+```
+
+Run the dry-run safety gate before any real-provider QA:
+
+```sh
+node scripts/run-photo-advisor-provider-qa.mjs --check-safety-gate
+```
+
+Real-provider image set options require explicit opt-in:
+
+```sh
+node scripts/run-photo-advisor-provider-qa.mjs --run-provider --image-set=synthetic
+node scripts/run-photo-advisor-provider-qa.mjs --run-provider --image-set=approved-real
+node scripts/run-photo-advisor-provider-qa.mjs --run-provider --image-set=all
 ```
 
 The synthetic-contract mode uses the committed B1 fixture file only:
@@ -195,6 +195,7 @@ The QA script:
 
 - loads local `.env`
 - runs in either `provider` mode or explicit `synthetic-contract` mode
+- fails closed for real-provider QA unless `--run-provider` is present
 - requires `CLOUD_AI_PROVIDER_MODE=qweInternal` only for real-provider QA
 - requires `ALLOW_INTERNAL_CLOUD_AI=true` only for real-provider QA
 - sends only internal/debug Photo Advisor requests in real-provider mode
@@ -233,10 +234,21 @@ QWE_BASE_URL=https://qweapi.com
 QWE_PHOTO_ADVISOR_MODEL=gemini-3.1-flash-image-preview
 CLOUD_AI_PROVIDER_MODE=qweInternal
 ALLOW_INTERNAL_CLOUD_AI=true
-node scripts/run-photo-advisor-provider-qa.mjs --image-set=synthetic
+node scripts/run-photo-advisor-provider-qa.mjs --run-provider --image-set=synthetic
 ```
 
 Do not commit the generated report. Do not paste raw provider output into docs, tests, reports, or issue comments.
+
+Phase 18-B3 adds an internal dry-run gate for this workflow:
+
+- `npm run qa:photo-advisor` is safe-by-default and runs synthetic-contract QA only
+- `npm run qa:photo-advisor:gate` prints sanitized gate status and required operator confirmations
+- `npm run qa:photo-advisor:provider -- --image-set=approved-real` is the explicit real-provider path
+- real-provider QA must use local ignored credentials and local ignored approved samples only
+- generated reports remain ignored under `backend/reports/provider-qa/`
+- `productionReady` must remain `false`
+
+See `../docs/photo-advisor-provider-qa-dry-run-gate.md`.
 
 Phase 17C-R3 local QA used five ignored synthetic JPEGs:
 

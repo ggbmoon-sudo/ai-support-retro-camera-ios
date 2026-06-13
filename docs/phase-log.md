@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 18-B2 - Real Provider QA Runner Contract Alignment
-Status: Phase 18-B2 completed and ready to commit
-Latest implementation: Aligned the Photo Advisor provider QA runner and sanitized reports with the B0/B1 provider contract by adding explicit synthetic-contract QA mode, B2 report metadata / redaction flags, validation-category counters, real-provider QA guard documentation, and manual QA checks while leaving backend provider request payloads, iOS upload payloads, capture-context upload, provider keys, Camera cloud entry, and production rollout unchanged
+Current phase: Phase 18-B3 - Internal Real Provider QA Dry Run Gate
+Status: Phase 18-B3 completed and ready to commit
+Latest implementation: Added an internal Photo Advisor real-provider QA dry-run gate with a sanitized operator checklist, safe-by-default synthetic-contract QA npm command, explicit `--run-provider` opt-in for real-provider QA, dry-run gate status output, updated report/artifact docs, and backend guardrail tests while leaving backend provider request payloads, iOS upload payloads, capture-context upload, provider keys, Camera cloud entry, and production rollout unchanged
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -72,7 +72,45 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Recommended next step is Phase 18-B3 real-provider QA review / prompt QA, or Phase 18-C capture-context schema planning only if explicitly requested; production rollout is still blocked. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, or save-to-Photos until explicitly requested.
+Next phase: Recommended next step is Phase 18-B4 provider QA dry-run review / approved-sample analysis, or Phase 18-C capture-context schema planning only if explicitly requested; production rollout is still blocked. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, or save-to-Photos until explicitly requested.
+
+---
+
+## Phase 18-B3 - Internal Real Provider QA Dry Run Gate
+
+Status: Completed and ready to commit
+Date: 2026-06-14
+
+### Completed
+
+- Added `docs/photo-advisor-provider-qa-dry-run-gate.md` as the internal operator gate for real-provider Photo Advisor QA.
+- Added `--check-safety-gate` / `--dry-run-gate` support to `backend/scripts/run-photo-advisor-provider-qa.mjs`.
+- Added explicit `--run-provider` opt-in for real-provider QA; provider mode now fails closed without it and sends no provider request.
+- Made `npm run qa:photo-advisor` safe-by-default by running synthetic-contract QA.
+- Added `npm run qa:photo-advisor:gate` for the sanitized dry-run gate.
+- Added `npm run qa:photo-advisor:provider` for the explicit real-provider path.
+- Updated backend/local image sample docs so real-provider image-set commands include `--run-provider`.
+- Updated provider contract docs, backend README, root README, iOS README, manual smoke tests, phase log, and handoff notes.
+- Added backend test coverage for the B3 runner guardrails.
+
+### Safety Notes
+
+- Backend provider request payloads are unchanged.
+- iOS upload payloads are unchanged.
+- Capture context is not uploaded.
+- No provider key, provider SDK, direct provider call, Camera cloud AI entry, production remote rollout, GPS/location collection, raw EXIF dump, raw sensor persistence, raw provider output display, chain-of-thought display, StoreKit, export, Gemini Live, WebSocket, or AI Filter Generator backend was added.
+- Generated provider QA reports remain ignored under `backend/reports/provider-qa/`.
+- Real photos, approved sample photos, local QA reports, screenshots, recordings, generated images, and device-specific artifacts remain uncommitted.
+- `productionReady` remains false.
+
+### Verification
+
+- Backend tests, synthetic-contract QA, dry-run gate, copy/language scripts, and safety scans were run during implementation.
+- Additional verification is recorded in the final Codex response for this phase.
+
+### Ready to Commit Phase 18-B3
+
+Yes.
 
 ---
 

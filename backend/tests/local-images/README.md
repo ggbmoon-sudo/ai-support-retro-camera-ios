@@ -14,7 +14,7 @@ Rules:
 Run the synthetic set:
 
 ```sh
-node scripts/run-photo-advisor-provider-qa.mjs --image-set=synthetic
+node scripts/run-photo-advisor-provider-qa.mjs --run-provider --image-set=synthetic
 ```
 
 Approved real sample photos belong in `backend/tests/approved-real-samples/`, not this folder.

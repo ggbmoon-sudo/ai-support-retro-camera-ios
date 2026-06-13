@@ -906,6 +906,21 @@ test("photo advisor provider qa runner supports synthetic contract mode without 
   assert.equal(source.includes("console.log(request"), false);
 });
 
+test("photo advisor provider qa runner requires explicit real-provider opt in", async () => {
+  const scriptURL = new URL("./../scripts/run-photo-advisor-provider-qa.mjs", import.meta.url);
+  const source = await readFile(scriptURL, "utf8");
+
+  assert.equal(source.includes("--check-safety-gate"), true);
+  assert.equal(source.includes("--dry-run-gate"), true);
+  assert.equal(source.includes("--run-provider"), true);
+  assert.equal(source.includes("provider_run_requires_explicit_opt_in"), true);
+  assert.equal(source.includes("productionReady: false"), true);
+  assert.equal(source.includes("rawProviderResponsePersisted: false"), true);
+  assert.equal(source.includes("rawPromptPersisted: false"), true);
+  assert.equal(source.includes("console.log(request"), false);
+  assert.equal(source.includes("console.log(response"), false);
+});
+
 test("safety guard returns sanitized diagnostic labels", () => {
   const appearance = validateSafeTextOutput("The skin looks smooth and the face looks attractive.");
   const sensitive = validateSafeTextOutput("The gender appears detected.");

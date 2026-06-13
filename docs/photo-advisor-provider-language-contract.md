@@ -260,7 +260,7 @@ Real-provider mode command:
 
 ```sh
 cd backend
-node scripts/run-photo-advisor-provider-qa.mjs --image-set=synthetic
+node scripts/run-photo-advisor-provider-qa.mjs --run-provider --image-set=synthetic
 ```
 
 Real-provider mode must fail closed when the internal provider config is missing. Missing credentials must not cause normal tests to fail unexpectedly.
@@ -307,6 +307,54 @@ Provider QA must track these counts before any future rollout decision:
 - p95 and max latency
 
 Internal QA can use these metrics for review, but `productionReady` must remain `false` in this phase. A production rollout still needs a separate explicit approval phase with cost, abuse, monitoring, privacy, latency, fallback, and App Store-facing UX review.
+
+## Phase 18-B3 Provider QA Dry-run Gate
+
+Phase 18-B3 adds an operator gate before real-provider QA.
+
+Dry-run gate command:
+
+```sh
+cd backend
+node scripts/run-photo-advisor-provider-qa.mjs --check-safety-gate
+```
+
+The dry-run gate prints sanitized status only:
+
+- provider configured yes/no
+- selected image set
+- local/approved sample policy summary
+- report and sample ignore-policy confirmations
+- required operator confirmations
+- `productionReady: false`
+
+Real-provider QA now requires explicit opt-in:
+
+```sh
+cd backend
+node scripts/run-photo-advisor-provider-qa.mjs --run-provider --image-set=approved-real
+```
+
+If `--run-provider` is omitted, the runner fails closed and sends no provider request.
+
+Safe default npm commands:
+
+- `npm run qa:photo-advisor` runs synthetic-contract QA only
+- `npm run qa:photo-advisor:gate` runs the dry-run gate only
+- `npm run qa:photo-advisor:provider -- --image-set=approved-real` is the explicit real-provider path
+
+B3 keeps the B0/B1/B2 contract intact:
+
+- no production rollout
+- no iOS provider key
+- no iOS direct provider call
+- no Camera cloud AI entry
+- no capture-context upload
+- no iOS upload payload change
+- no committed real photos or provider reports
+- no raw image/base64, prompt, request payload, provider response, unsafe text, auth header, API key, GPS/raw EXIF, or stack trace logging / persistence
+
+See `docs/photo-advisor-provider-qa-dry-run-gate.md`.
 
 ## Production Status
 

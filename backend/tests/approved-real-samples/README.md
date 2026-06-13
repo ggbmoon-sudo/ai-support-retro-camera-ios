@@ -16,13 +16,13 @@ Rules:
 Run approved real samples:
 
 ```sh
-node scripts/run-photo-advisor-provider-qa.mjs --image-set=approved-real
+node scripts/run-photo-advisor-provider-qa.mjs --run-provider --image-set=approved-real
 ```
 
 Run synthetic plus approved real samples:
 
 ```sh
-node scripts/run-photo-advisor-provider-qa.mjs --image-set=all
+node scripts/run-photo-advisor-provider-qa.mjs --run-provider --image-set=all
 ```
 
 Manual review notes should use `backend/tests/local-images/manual-review-template.json` and must not include raw image data, base64 payloads, private photo details, provider raw responses, API keys, EXIF, GPS, or face data.
