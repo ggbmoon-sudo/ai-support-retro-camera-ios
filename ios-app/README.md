@@ -225,6 +225,20 @@ Phase 18-A4 adds a UI-facing result card language model for the local/mock Photo
 
 This phase does not change backend provider payloads, upload capture context, add provider keys, add direct provider calls, add Camera cloud AI, collect GPS/location, dump raw EXIF, persist raw sensor streams, or enable production cloud rollout.
 
+## Phase 18-A5 Multilingual Advisor Copy QA Kit
+
+Phase 18-A5 adds a repeatable QA and regression kit for local/mock Photo Advisor copy:
+
+- `docs/photo-advisor-copy-regression-matrix.md` defines 30 captured / imported / fallback scenarios.
+- The matrix covers expected mood behavior, filter reason behavior, optional refinement behavior, retake expectations, forbidden wording, and Xcode visual checks.
+- Language review notes cover English, Traditional Chinese, Cantonese-style, and Simplified Chinese variants already represented in the localization files.
+- The captured/imported rules verify imported photos do not overclaim capture-time motion / tilt / exposure context.
+- The creative intent rules verify blur, motion, low light, tilt, grain, soft focus, exposure extremes, high contrast, faded color, and unusual framing remain possible retro style.
+- The filter reason rules verify every current filter preset maps to a reason profile and produces photo signal + retro aesthetic wording.
+- `scripts/validate-photo-advisor-copy-regression.sh` wraps the existing A2/A3/A4 checks and scans UI-facing advisor code/localization for raw keys, provider/debug wording, score/rating language, generic filter copy, harsh fix-it wording, and sensitive inference terms.
+
+This phase does not change backend provider payloads, upload capture context, add provider keys, add direct provider calls, add Camera cloud AI, collect GPS/location, dump raw EXIF, persist raw sensor streams, or enable production cloud rollout.
+
 ## Phase 12A Filter Planning
 
 Phase 12A adds filter research and schema planning documents only. It does not change iOS app source code.

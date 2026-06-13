@@ -1,5 +1,36 @@
 # Manual Smoke Tests
 
+## Phase 18-A5
+
+Multilingual Photo Advisor copy regression check:
+
+- [ ] Open `docs/photo-advisor-copy-regression-matrix.md`.
+- [ ] Review 3-5 captured scenarios and 2-3 imported/fallback scenarios from the matrix.
+- [ ] Confirm English copy is short, natural, practical, and not generic AI.
+- [ ] Confirm Traditional Chinese copy sounds natural and not overly literal.
+- [ ] Confirm Cantonese-style copy uses natural safe phrasing such as “幾有…感”, “可以試…”, and “唔一定要重拍”.
+- [ ] Confirm Simplified Chinese copy is natural where supported and uses 胶片 / 氛围 / 画面 naturally.
+- [ ] Confirm imported photo copy does not claim capture-time motion / tilt / focus / lens / exposure context.
+- [ ] Confirm blur, motion, low light, tilt, grain, soft focus, overexposure, underexposure, high contrast, faded color, and unusual framing remain possible retro style unless severe unreadability is likely.
+- [ ] Confirm filter reasons include a safe photo signal plus retro aesthetic result.
+- [ ] Confirm retake advice remains hidden unless useful and is always optional / conservative.
+- [ ] Confirm fallback copy is calm and does not show raw provider errors, raw JSON, raw localization keys, provider names, debug fields, or internal classification names.
+- [ ] Confirm no real photos, screenshots, simulator recordings, generated reports, provider reports, or device-specific artifacts are committed.
+
+Automated local checks:
+
+- [ ] `scripts/validate-photo-advisor-copy-regression.sh` passes.
+- [ ] `scripts/validate-photo-advisor-card-language.sh` passes.
+- [ ] `scripts/validate-creative-intent-language.sh` passes.
+- [ ] `scripts/validate-photo-advisor-filter-reasons.sh` passes.
+
+Boundary check:
+
+- [ ] Backend `/v1/ai/photo-advisor` payloads remain unchanged.
+- [ ] Capture context and QA metadata are not uploaded.
+- [ ] iOS still has no provider key, provider SDK import, or direct provider URL call.
+- [ ] No GPS/location collection, raw EXIF dump, raw sensor persistence, StoreKit, Gemini Live, WebSocket, export, or production cloud rollout is enabled.
+
 ## Phase 18-A4
 
 Photo Advisor result card language model check:

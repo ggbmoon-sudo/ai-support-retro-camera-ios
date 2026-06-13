@@ -293,3 +293,20 @@ Phase 18-A4 implements a UI-facing Photo Advisor result card language model. It 
 6. Calm fallback context when needed.
 
 The production card does not expose provider/source labels or internal result details. It avoids raw JSON, raw localization keys, raw capture context, raw EXIF, numeric confidence, score/rating language, and internal classification names. Imported photos can show limited-context copy without pretending to know capture-time motion / tilt / exposure. Backend provider payloads remain unchanged, capture context and result-card metadata are not uploaded, Camera remains local-only, and production rollout remains blocked.
+
+## Phase 18-A5 Implementation Note
+
+Phase 18-A5 adds a multilingual copy QA and regression kit for the app-owned Photo Advisor language system. The new regression matrix covers captured, imported, fallback, safety, missing-key, and unknown-filter scenarios without using real photos or generated reports.
+
+The QA kit checks that the local/mock advisor keeps the Phase 18-A1/A2/A3/A4 contract:
+
+- Copy follows Observation -> Mood -> Retro intent -> Optional action.
+- English, Traditional Chinese, Cantonese-style, and Simplified Chinese variants stay short, natural, and UI-ready.
+- Captured photos may use safe local capture context summaries.
+- Imported photos do not pretend to know capture-time motion, tilt, focus, lens, ISO, or exposure settings.
+- Creative intent signals remain possible retro style unless severe unreadability is likely.
+- Filter reasons continue to explain photo signal + retro aesthetic result.
+- Retake remains conservative and optional.
+- Raw provider/debug/internal wording, score/rating language, harsh fix-it copy, and sensitive inference remain forbidden.
+
+Backend provider payloads remain unchanged, capture context and QA metadata are not uploaded, Camera remains local-only, and production rollout remains blocked.
