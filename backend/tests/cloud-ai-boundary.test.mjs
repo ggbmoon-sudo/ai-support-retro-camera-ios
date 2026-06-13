@@ -411,6 +411,8 @@ test("photo advisor prompt bans sensitive inference and arbitrary filters", () =
 
   assert.equal(prompt.includes("Do not identify people"), true);
   assert.equal(prompt.includes("Do not infer age, gender, race"), true);
+  assert.equal(prompt.includes("Avoid words related to attractiveness"), true);
+  assert.equal(prompt.includes("visible non-sensitive photo qualities"), true);
   assert.equal(prompt.includes("Recommended filter IDs must be chosen only from this whitelist"), true);
   assert.equal(prompt.includes("Avoid poetic copy, overclaiming, and generic filler"), true);
   assert.equal(prompt.includes("Retake advice must be soft"), true);
@@ -511,9 +513,11 @@ test("photo advisor qa report summarizes fallback metrics", () => {
   assert.equal(report.cloudSuccess, 1);
   assert.equal(report.fallback, 1);
   assert.equal(report.providerTimeouts, 1);
+  assert.deepEqual(report.fallbackByCode, { provider_timeout: 1 });
   assert.equal(report.averageLatencyMs, 3100);
   assert.equal(report.p50LatencyMs, 1200);
   assert.equal(report.p95LatencyMs, 5000);
+  assert.equal(report.maxLatencyMs, 5000);
 });
 
 async function fixture(name) {

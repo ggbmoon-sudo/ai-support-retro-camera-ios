@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0",
+  "notes": [
+    "Copy this template locally if you need manual QA notes.",
+    "Do not include raw provider response, base64 image data, private photo details, API keys, EXIF, GPS, or face data."
+  ],
+  "cases": [
+    {
+      "caseId": "warm-rooftop",
+      "overallUseful": null,
+      "tooGeneric": null,
+      "tooLong": null,
+      "filterReasonable": null,
+      "captionAcceptable": null,
+      "languageAcceptable": null,
+      "sensitiveConcern": null,
+      "notes": ""
+    },
+    {
+      "caseId": "low-light-street",
+      "overallUseful": null,
+      "tooGeneric": null,
+      "tooLong": null,
+      "filterReasonable": null,
+      "captionAcceptable": null,
+      "languageAcceptable": null,
+      "sensitiveConcern": null,
+      "notes": ""
+    },
+    {
+      "caseId": "portrait-headroom",
+      "overallUseful": null,
+      "tooGeneric": null,
+      "tooLong": null,
+      "filterReasonable": null,
+      "captionAcceptable": null,
+      "languageAcceptable": null,
+      "sensitiveConcern": null,
+      "notes": ""
+    },
+    {
+      "caseId": "busy-background",
+      "overallUseful": null,
+      "tooGeneric": null,
+      "tooLong": null,
+      "filterReasonable": null,
+      "captionAcceptable": null,
+      "languageAcceptable": null,
+      "sensitiveConcern": null,
+      "notes": ""
+    },
+    {
+      "caseId": "flat-indoor",
+      "overallUseful": null,
+      "tooGeneric": null,
+      "tooLong": null,
+      "filterReasonable": null,
+      "captionAcceptable": null,
+      "languageAcceptable": null,
+      "sensitiveConcern": null,
+      "notes": ""
+    }
+  ]
+}

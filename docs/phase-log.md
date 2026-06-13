@@ -9,8 +9,8 @@ Every Codex task must update this file before finishing.
 ## Current Status
 
 Current phase: Phase 17C - Gemini Photo Advisor Internal Beta
-Status: Phase 17C-R2 provider QA batch workflow added for QweAPI / gemini-3.1-flash-image-preview internal Photo Advisor beta
-Latest implementation: Added internal/debug-guarded Gemini Photo Advisor provider adapter plus provider QA batch reporting, server-side config / secret reads, prompt contract tuning, structured JSON parsing, response validation, retry / fallback handling, updated consent copy, and tests while keeping production/default Photo Advisor mock/local, iOS provider-key-free, and Camera local-only
+Status: Phase 17C-R3 local QA image set and latency review completed for QweAPI / gemini-3.1-flash-image-preview internal Photo Advisor beta
+Latest implementation: Added internal/debug-guarded Gemini Photo Advisor provider adapter plus provider QA batch reporting, local QA image workflow, server-side config / secret reads, prompt contract tuning, structured JSON parsing, response validation, retry / fallback handling, updated consent copy, and tests while keeping production/default Photo Advisor mock/local, iOS provider-key-free, and Camera local-only
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -69,7 +69,59 @@ Phase 17B verification: debug-only remote chain added for local backend mock end
 Phase 17C-Prep verification: provider adapter boundary remains mock-only; backend request / response validation, filter whitelist validation, unsafe response guard, fallback contract, rate-limit / quota / timeout placeholders, redaction helpers, fixtures, and backend tests are in place; no real provider call, no provider API key, no production remote enablement, no storage upload, no request payload logging, and Camera remains local-only.
 Phase 17C-R1 verification: active provider contract switched from the failed Code0 gateway attempt to the QweAPI OpenAI-compatible gateway; a safe text-only provider probe script was added; backend-only Photo Advisor internal beta path remains behind `ALLOW_INTERNAL_CLOUD_AI=true`, `CLOUD_AI_PROVIDER_MODE=qweInternal`, internal debug header, server-side `QWE_API_KEY`, validated `QWE_BASE_URL=https://qweapi.com`, and `QWE_PHOTO_ADVISOR_MODEL=gemini-3.1-flash-image-preview`; text-only QweAPI probe succeeds, and `gemini-3.1-flash-image-preview` image_url multimodal request returns a validated `source=cloud` Photo Advisor response; default remains mock/local; iOS has no provider key / SDK / direct QweAPI call; Camera remains local-only; no storage upload, request payload logging, provider raw response logging, Gemini Live, WebSocket, StoreKit, export, or production rollout was added.
 Phase 17C-R2 verification: provider QA batch workflow added; local QA images and generated provider QA reports are ignored; QA script records sanitized latency / schema / safety / fallback metrics only; prompt wording was tightened for short, practical, non-poetic, locale-aware Photo Advisor output; backend tests and a four-locale tiny-image QA batch passed with no schema, safety, or invalid-filter failures; production/default remains mock/local; iOS has no provider key / SDK / direct QweAPI call; Camera remains local-only.
+Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Next phase: Phase 17C still needs user visual QA and provider latency / quality review before any production rollout. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, or save-to-Photos until explicitly requested.
+
+---
+
+## Phase 17C-R3 - Provider QA Image Set + Latency Review
+
+Status: Local QA image set workflow exercised; production rollout remains blocked
+Date completed: 2026-06-13
+
+### Completed
+
+- Generated five ignored synthetic local QA JPEGs under `backend/tests/local-images/` for provider QA:
+  - `warm-rooftop.jpg`
+  - `low-light-street.jpg`
+  - `portrait-headroom.jpg`
+  - `busy-background.jpg`
+  - `flat-indoor.jpg`
+- Kept local QA images ignored; committed only README / sanitized manual review template.
+- Hardened QA script to ignore macOS AppleDouble `._*.jpg` metadata files.
+- Added `maxLatencyMs` and `fallbackByCode` to sanitized QA reports.
+- Added a committed sanitized `manual-review-template.json` for human quality review notes.
+- Further tuned prompt wording to avoid attractiveness, faces, skin, age, gender, emotion, health, or identity wording even when positive.
+- Updated backend README, phase log, handoff, and manual smoke tests.
+
+### QA Observation
+
+- Ran 20 cases: 5 synthetic images x `en`, `zh-Hant`, `zh-Hans`, `yue-Hant-HK`.
+- Cloud success: 17.
+- Fallback: 3.
+- Fallback reasons: 2 `unsafe_response`, 1 `provider_timeout`.
+- Average latency: 9963 ms.
+- p50 latency: 4657 ms.
+- p95 latency: 35803 ms.
+- Max latency: 44980 ms.
+- Schema failures: 0.
+- Safety metadata failures: 0.
+- Invalid filter IDs: 0.
+- Language quality remains manual-review only.
+
+### Production Blockers
+
+- p95 / max latency is too high for rollout.
+- English outputs still sometimes trigger `unsafe_response`, likely due wording that intersects with appearance / sensitive guard patterns.
+- More approved realistic local QA images and manual language / caption / filter review are needed before any production rollout.
+
+### Safety Notes
+
+R3 does not add production remote enablement, provider keys to iOS, direct QweAPI calls from iOS, Camera cloud AI, AI Snapshot, Filter Generator real backend, 改圖師, image generation, Gemini Live, WebSocket, cloud storage upload, request payload logging, provider raw response logging, raw image persistence, account / payment / StoreKit, or production rollout.
+
+### Ready to Commit Phase 17C-R3
+
+No. Wait until the user reviews the QA workflow and Xcode / Simulator behavior.
 
 ---
 

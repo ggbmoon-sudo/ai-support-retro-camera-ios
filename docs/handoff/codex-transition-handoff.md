@@ -394,7 +394,10 @@ This update records work completed by the new Codex / Codex API session after th
 - Phase 17C-R2 adds a backend provider QA batch workflow for QweAPI / `gemini-3.1-flash-image-preview`, including sanitized latency / schema / safety / fallback reporting and prompt tuning for shorter, practical Photo Advisor output.
 - Generated QA reports live under ignored `backend/reports/provider-qa/`; local QA images live under ignored `backend/tests/local-images/`.
 - Initial R2 QA batch with the built-in tiny JPEG smoke image across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK` produced 4 cases, 3 cloud successes, 1 fallback, 0 schema failures, 0 safety failures, 0 invalid filter IDs, average latency 15429 ms, p50 6606 ms, and p95 34403 ms.
-- The p95 latency is high; next work should review provider latency / quality and real sample-image QA, not production rollout.
+- Phase 17C-R3 generated five ignored synthetic local QA JPEGs and ran 20 cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`.
+- R3 final QA metrics: 17 cloud successes, 3 fallbacks, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs.
+- R3 added `maxLatencyMs`, `fallbackByCode`, AppleDouble image ignore hardening, and a sanitized manual review template.
+- The p95 / max latency and remaining unsafe fallbacks are production rollout blockers; next work should review provider latency / quality and approved sample-image QA, not production rollout.
 - iOS must not contain a QweAPI key or direct QweAPI base URL call.
 - Default provider mode remains mock.
 - iOS default remains mock/local and provider-key-free.
@@ -577,6 +580,7 @@ Important docs already added or expected in this roadmap:
 - Phase 17C-Prep adds provider readiness and schema hardening while keeping the provider path mock-only.
 - Phase 17C adds backend-only QweAPI Photo Advisor internal beta plumbing; current image provider smoke returns a validated `source=cloud` response with `gemini-3.1-flash-image-preview`, while production/default remains mock/local.
 - Phase 17C-R2 adds provider QA batch reporting; future provider QA should add real approved sample images locally, review language / caption / filter quality manually, and keep generated reports ignored unless explicitly sanitized for commit.
+- Phase 17C-R3 completed a synthetic local image QA pass; future QA should use approved realistic local images, manually review 3-5 outputs, and avoid committing generated reports or real photos.
 - Future production rollout may start only after explicit approval, real image provider success, secret management hardening, provider policy review, timeout / cancellation, moderation, validation, and cost guard work.
 - No Gemini Live / streaming, AI Filter Generator real backend, 改圖師 provider integration, or Camera cloud AI entry is approved by Phase 17A.
 - App-wide language switching remains not implemented.

@@ -162,6 +162,8 @@ Phase 17C is still not a production rollout. It adds backend-only QweAPI OpenAI-
 
 Phase 17C-R2 adds a backend provider QA batch workflow for the internal Photo Advisor beta. It records sanitized latency / schema / safety / fallback metrics only; generated QA reports and local QA images are ignored, and production/default remains mock/local.
 
+Phase 17C-R3 runs that QA workflow against five ignored synthetic local QA images. The result keeps production rollout blocked because p95 / max latency and unsafe-response fallbacks still need provider QA review.
+
 ## Phase 12A Filter Planning Status
 
 Phase 12A is documentation-only planning for the next filter system step.

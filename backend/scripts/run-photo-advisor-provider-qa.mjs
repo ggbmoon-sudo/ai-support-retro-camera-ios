@@ -97,9 +97,11 @@ printSanitized({
   averageLatencyMs: report.averageLatencyMs,
   p50LatencyMs: report.p50LatencyMs,
   p95LatencyMs: report.p95LatencyMs,
+  maxLatencyMs: report.maxLatencyMs,
   schemaFailures: report.schemaFailures,
   safetyFailures: report.safetyFailures,
   invalidFilterIds: report.invalidFilterIds,
+  fallbackByCode: report.fallbackByCode,
   languageCasesNeedingManualReview: report.languageCasesNeedingManualReview
 });
 
@@ -115,6 +117,7 @@ function isQweInternalConfigured(value) {
 async function loadQACases() {
   const images = existsSync(LOCAL_IMAGE_DIR)
     ? (await readdir(LOCAL_IMAGE_DIR)).filter((name) => [".jpg", ".jpeg"].includes(extname(name).toLowerCase()))
+      .filter((name) => !name.startsWith("._"))
     : [];
 
   if (images.length === 0) {

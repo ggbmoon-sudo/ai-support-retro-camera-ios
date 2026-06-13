@@ -158,12 +158,37 @@ Local image policy:
 
 - optional local QA JPEGs go in `backend/tests/local-images/`
 - `backend/tests/local-images/` is ignored except for its README
+- the committed `manual-review-template.json` is a sanitized checklist template only
 - use only non-sensitive, approved, metadata-stripped, small JPEGs
 - do not commit private photos, large originals, EXIF / GPS metadata, or real user images
 
 If no local QA images are present, the script uses a tiny built-in JPEG smoke image across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`.
 
 The generated report is ignored and must remain metadata-only. It includes counts for cloud success, fallback, latency, schema failures, safety failures, invalid filter IDs, and manual language review flags. It must not include API keys, base64 images, raw request bodies, provider raw responses, EXIF, GPS, or face data.
+
+Phase 17C-R3 local QA used five ignored synthetic JPEGs:
+
+- `warm-rooftop.jpg`
+- `low-light-street.jpg`
+- `portrait-headroom.jpg`
+- `busy-background.jpg`
+- `flat-indoor.jpg`
+
+Latest R3 QA observation:
+
+- 20 total cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`
+- 17 cloud successes
+- 3 fallbacks
+- fallback reasons: 2 `unsafe_response`, 1 `provider_timeout`
+- average latency 9963 ms
+- p50 latency 4657 ms
+- p95 latency 35803 ms
+- max latency 44980 ms
+- 0 schema failures
+- 0 safety validation failures in returned report metadata
+- 0 invalid filter IDs
+
+The p95 / max latency and remaining unsafe fallbacks are blockers for production rollout. Keep using internal QA before any public cloud AI release.
 
 ## No Payload Logging
 

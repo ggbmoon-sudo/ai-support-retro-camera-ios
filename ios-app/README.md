@@ -116,6 +116,8 @@ There is still no Gemini / OpenAI SDK import in iOS, no provider key in iOS, no 
 
 Phase 17C-R2 keeps iOS behavior unchanged. Provider QA runs in the backend only and writes sanitized ignored reports; production/default Photo Advisor remains mock/local and Camera remains local-only.
 
+Phase 17C-R3 also keeps iOS behavior unchanged. Local QA images and provider QA reports remain backend-only / ignored; no provider key, direct provider call, Camera cloud AI entry, or production rollout is added to iOS.
+
 ## Phase 12A Filter Planning
 
 Phase 12A adds filter research and schema planning documents only. It does not change iOS app source code.

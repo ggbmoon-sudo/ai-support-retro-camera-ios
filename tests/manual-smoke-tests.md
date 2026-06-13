@@ -19,6 +19,9 @@ Check:
 - [ ] Confirm provider QA report is written to ignored `backend/reports/provider-qa/photo-advisor-qa-report.json`.
 - [ ] Confirm provider QA report contains no API key, base64 image, raw image, request body, provider raw response, EXIF, GPS, or face data.
 - [ ] Review provider QA summary: cloud success, fallback count, average / p50 / p95 latency, schema failures, safety failures, invalid filter IDs.
+- [ ] Confirm R3 local QA image set stays ignored under `backend/tests/local-images/`.
+- [ ] Confirm R3 report includes `maxLatencyMs` and `fallbackByCode`.
+- [ ] Confirm fallback reasons are reviewed, especially `unsafe_response` and `provider_timeout`.
 - [ ] Manually review 3-5 real approved local QA image results when available.
 - [ ] Manually check language quality for English, Traditional Chinese, Simplified Chinese, and Cantonese.
 - [ ] Check captions are short and not weird.
@@ -42,6 +45,7 @@ Known TODOs:
 - [ ] QweAPI `gemini-3.1-flash-image-preview` image_url smoke now returns a validated cloud response; production rollout still requires explicit approval, QA, and cost/safety guard review.
 - [ ] Phase 17C-R2 QA batch currently uses built-in tiny JPEG smoke cases unless approved local images are placed in ignored `backend/tests/local-images/`.
 - [ ] R2 initial QA p95 latency was high; review latency with real approved sample images before any production rollout.
+- [ ] R3 synthetic QA pass showed p95 / max latency and unsafe fallbacks remain production rollout blockers.
 - [ ] Next safe step is provider latency / QA tuning, not Camera cloud AI, Gemini Live, Filter Generator real backend, 改圖師, StoreKit, or production cloud AI.
 
 ## Phase 17C-Prep

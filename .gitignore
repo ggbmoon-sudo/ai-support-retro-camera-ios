@@ -45,3 +45,4 @@ tmp/
 backend/reports/provider-qa/
 backend/tests/local-images/*
 !backend/tests/local-images/README.md
+!backend/tests/local-images/manual-review-template.json

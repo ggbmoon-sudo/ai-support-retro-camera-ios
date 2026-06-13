@@ -27,9 +27,11 @@ export function summarizePhotoAdvisorQA({
     averageLatencyMs: roundedAverage(latencies),
     p50LatencyMs: percentile(latencies, 0.5),
     p95LatencyMs: percentile(latencies, 0.95),
+    maxLatencyMs: latencies.at(-1) ?? null,
     schemaFailures: cases.filter((item) => item.schemaValid === false).length,
     safetyFailures: cases.filter((item) => item.safetyValid === false).length,
     invalidFilterIds: cases.reduce((sum, item) => sum + (item.invalidFilterIds ?? 0), 0),
+    fallbackByCode: fallbackCounts(fallbackCases),
     providerErrors: cases.filter((item) => item.fallbackCode === "provider_error").length,
     providerTimeouts: cases.filter((item) => item.fallbackCode === "provider_timeout" || item.fallbackCode === "timeout").length,
     invalidJSON: cases.filter((item) => item.fallbackCode === "provider_invalid_json" || item.fallbackCode === "invalid_json").length,
@@ -113,6 +115,15 @@ function percentile(values, ratio) {
   }
   const index = Math.min(values.length - 1, Math.max(0, Math.ceil(values.length * ratio) - 1));
   return values[index];
+}
+
+function fallbackCounts(cases) {
+  const counts = {};
+  for (const item of cases) {
+    const code = item.fallbackCode ?? "unknown";
+    counts[code] = (counts[code] ?? 0) + 1;
+  }
+  return counts;
 }
 
 function finiteOrNull(value) {

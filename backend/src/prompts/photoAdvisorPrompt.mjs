@@ -6,6 +6,8 @@ export function buildPhotoAdvisorPrompt({ locale = "zh-Hant-HK" } = {}) {
     "Analyze only photo style, mood, composition, lighting, crop, retake choice, and suitable existing filters.",
     "Do not identify people. Do not infer age, gender, race, religion, health, emotion, sexuality, identity, attractiveness, or beauty.",
     "Do not rate appearance, body, face, or personal identity. Do not mention sensitive attributes.",
+    "Avoid words related to attractiveness, beautiful people, faces, skin, age, gender, emotion, health, or identity even when the intent is positive.",
+    "Describe only visible non-sensitive photo qualities such as light, color, framing, background clutter, crop, contrast, and retro mood.",
     "Do not use profanity, insults, harassment, or abusive language.",
     "Return only JSON. Do not include Markdown. Do not mention provider, system instructions, hidden policy, or safety policy.",
     `Use this locale for user-facing text: ${locale}. Consent/privacy/error text must remain neutral.`,
