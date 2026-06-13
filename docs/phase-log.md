@@ -9,8 +9,8 @@ Every Codex task must update this file before finishing.
 ## Current Status
 
 Current phase: Phase 17C - Gemini Photo Advisor Internal Beta
-Status: Phase 17C-R4 latency / fallback QA hardening completed for QweAPI / gemini-3.1-flash-image-preview internal Photo Advisor beta
-Latest implementation: Added internal/debug-guarded Gemini Photo Advisor provider adapter plus provider QA batch reporting, local QA image workflow, server-side config / secret reads, prompt contract tuning, structured JSON parsing, response validation, retry / fallback handling, latency / fallback QA classification, updated consent copy, and tests while keeping production/default Photo Advisor mock/local, iOS provider-key-free, and Camera local-only
+Status: Phase 17C-R5 unsafe-response reduction and approved-real-sample QA workflow completed for QweAPI / gemini-3.1-flash-image-preview internal Photo Advisor beta
+Latest implementation: Added internal/debug-guarded Gemini Photo Advisor provider adapter plus provider QA batch reporting, local QA image workflow, approved-real-sample workflow, server-side config / secret reads, prompt contract tuning, structured JSON parsing, response validation, retry / fallback handling, unsafe diagnostic labels, latency / fallback QA classification, updated consent copy, and tests while keeping production/default Photo Advisor mock/local, iOS provider-key-free, and Camera local-only
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -71,7 +71,63 @@ Phase 17C-R1 verification: active provider contract switched from the failed Cod
 Phase 17C-R2 verification: provider QA batch workflow added; local QA images and generated provider QA reports are ignored; QA script records sanitized latency / schema / safety / fallback metrics only; prompt wording was tightened for short, practical, non-poetic, locale-aware Photo Advisor output; backend tests and a four-locale tiny-image QA batch passed with no schema, safety, or invalid-filter failures; production/default remains mock/local; iOS has no provider key / SDK / direct QweAPI call; Camera remains local-only.
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
+Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
 Next phase: Phase 17C still needs user visual QA and provider latency / quality review before any production rollout. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, or save-to-Photos until explicitly requested.
+
+---
+
+## Phase 17C-R5 - Unsafe Response Reduction + Approved Real Sample QA Workflow
+
+Status: Unsafe-response risk reduced in latest QA run; production rollout remains blocked
+Date completed: 2026-06-13
+
+### Completed
+
+- Tightened the Photo Advisor provider prompt to only discuss light, color, contrast, exposure, framing, crop, background clutter, non-identifying subject placement, retro mood, and filter fit.
+- Reinforced prompt restrictions against face, skin, age, gender, attractiveness, beauty, emotion / mental state, health, body, identity, ethnicity, nationality, religion, disability, and protected-class wording.
+- Added safe unsafe diagnostic labels for QA: `appearance_or_identity_guard`, `sensitive_attribute_guard`, `banned_term_guard`, and `unknown_safety_guard`.
+- Preserved strict `unsafe_response` fallback behavior; R5 does not remove or weaken banned-term / sensitive-inference guards.
+- Extended sanitized QA reports with `unsafeByCategory` and per-case `unsafeCategory`.
+- Added approved real sample workflow under ignored `backend/tests/approved-real-samples/`; committed only its README.
+- Updated QA script image set selection: `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`.
+- QA script warns about and ignores macOS `._*.jpg` resource-fork files.
+- Expanded manual review template with sample type, unsafe diagnostic label, crop / framing usefulness, and local reviewer ID fields.
+- Added backend tests for unsafe diagnostic labels, safe redaction, prompt wording, and QA report fields.
+- Updated backend README, phase log, handoff, manual smoke tests, README, and iOS README.
+
+### QA Observation
+
+- Ran 20 cases across the ignored synthetic local QA image set.
+- Cloud success: 19.
+- Fallback: 1.
+- Fallback reason: 1 `provider_invalid_json`.
+- Unsafe-response count: 0.
+- Average latency: 6130 ms.
+- p50 latency: 4842 ms.
+- p90 latency: 5837 ms.
+- p95 latency: 9637 ms.
+- Max latency: 24372 ms.
+- Timeout count: 0.
+- Schema failures: 0.
+- Safety metadata failures: 0.
+- Invalid filter IDs: 0.
+- `latencyAssessment.productionRollout`: `blocked`.
+
+### Safety Notes
+
+R5 does not add production remote enablement, provider keys to iOS, direct QweAPI calls from iOS, Camera cloud AI, AI Snapshot, Filter Generator real backend, 改圖師, image generation, Gemini Live, WebSocket, cloud storage upload, request payload logging, provider raw response logging, raw image persistence, account / payment / StoreKit, production feature flags, or production rollout.
+
+### Production Blockers
+
+- The latest synthetic QA run reduced unsafe fallbacks to zero, but this needs repeated validation.
+- Manual language naturalness review is still required.
+- Approved real sample review is still required.
+- Filter recommendation fit and crop / framing usefulness need manual review.
+- Production rollout remains blocked pending cost guard, abuse guard, privacy review, monitoring, and explicit user approval.
+
+### Ready to Commit Phase 17C-R5
+
+Yes, after user review. Codex has not committed or pushed.
 
 ---
 

@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 17C-R4 Photo Advisor provider QA latency / fallback hardening completed; ready for user review
+- Phase 17C-R5 unsafe-response reduction and approved-real QA workflow completed; ready for user review
 
 Next phase:
 
-- Do not commit Phase 17C-R4 until user reviews it
+- Do not commit Phase 17C-R5 until user reviews it
 - Production rollout remains blocked until a later explicit release phase
 
 Before each task, read `AGENTS.md`, the required docs listed there, and the relevant phase prompt in `docs/prompts/`.
@@ -165,6 +165,8 @@ Phase 17C-R2 adds a backend provider QA batch workflow for the internal Photo Ad
 Phase 17C-R3 runs that QA workflow against five ignored synthetic local QA images. The result keeps production rollout blocked because p95 / max latency and unsafe-response fallbacks still need provider QA review.
 
 Phase 17C-R4 hardens backend QA reporting with p90 / p95 / max latency, timeout / unsafe fallback counters, normalized fallback categories, latency assessment, and an expanded manual review template. It is still internal/debug QA only: iOS has no provider key or direct provider call, Camera remains local-only, and production rollout remains blocked.
+
+Phase 17C-R5 tightens Photo Advisor prompt and safety diagnostics to reduce `unsafe_response` fallback risk, adds safe unsafe-category labels to sanitized QA reports, and adds a local-only approved real sample photo workflow. Synthetic images, approved real sample images, and generated QA reports stay ignored; production rollout remains blocked.
 
 ## Phase 12A Filter Planning Status
 

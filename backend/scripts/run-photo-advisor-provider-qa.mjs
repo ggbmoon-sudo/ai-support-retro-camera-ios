@@ -15,6 +15,7 @@ import { validateSafeTextOutput } from "../src/security/safetyTextGuard.mjs";
 import { isKnownFilterId } from "../src/filters/filterWhitelist.mjs";
 
 const LOCAL_IMAGE_DIR = new URL("../tests/local-images/", import.meta.url);
+const APPROVED_REAL_SAMPLE_DIR = new URL("../tests/approved-real-samples/", import.meta.url);
 const REPORT_DIR = new URL("../reports/provider-qa/", import.meta.url);
 const REPORT_URL = new URL("./photo-advisor-qa-report.json", REPORT_DIR);
 const DEFAULT_LOCALES = ["en", "zh-Hant", "zh-Hans", "yue-Hant-HK"];
@@ -23,7 +24,8 @@ const TINY_JPEG_BASE64 = "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAP////////////////////
 loadDotEnv(new URL("../../.env", import.meta.url));
 
 const config = cloudAIConfig(process.env);
-const cases = await loadQACases();
+const qaOptions = parseArgs(process.argv.slice(2));
+const cases = await loadQACases(qaOptions);
 
 if (!isQweInternalConfigured(config)) {
   printSanitized({
@@ -48,12 +50,14 @@ for (const item of cases) {
 
   results.push(sanitizePhotoAdvisorQACase({
     caseId: item.caseId,
+    sampleType: item.sampleType ?? "synthetic",
     locale: item.locale,
     source: body?.source ?? "unknown",
     latencyMs: Date.now() - started,
     schemaValid: validation.ok,
     safetyValid: safety.ok,
     fallbackCode: body?.error?.code ?? null,
+    unsafeCategory: response.metadata?.unsafeCategory ?? null,
     recommendedFilterIds: recommendedFilterIds(body),
     invalidFilterIds: invalidFilterIds(body).length,
     captionLength: captionLength(body),
@@ -101,6 +105,7 @@ printSanitized({
   maxLatencyMs: report.maxLatencyMs,
   timeoutCount: report.timeoutCount,
   unsafeResponseCount: report.unsafeResponseCount,
+  unsafeByCategory: report.unsafeByCategory,
   schemaFailures: report.schemaFailures,
   safetyFailures: report.safetyFailures,
   invalidFilterIds: report.invalidFilterIds,
@@ -119,15 +124,35 @@ function isQweInternalConfigured(value) {
     && value.qweChatCompletionsPath;
 }
 
-async function loadQACases() {
-  const images = existsSync(LOCAL_IMAGE_DIR)
-    ? (await readdir(LOCAL_IMAGE_DIR)).filter((name) => [".jpg", ".jpeg"].includes(extname(name).toLowerCase()))
-      .filter((name) => !name.startsWith("._"))
-    : [];
+function parseArgs(args) {
+  const imageSetArg = args.find((item) => item.startsWith("--image-set="));
+  const imageSet = imageSetArg?.split("=")[1] ?? "synthetic";
+  if (!["synthetic", "approved-real", "all"].includes(imageSet)) {
+    printSanitized({
+      ok: false,
+      errorCode: "invalid_image_set",
+      message: "Use --image-set=synthetic, --image-set=approved-real, or --image-set=all."
+    });
+    process.exit(1);
+  }
+  return { imageSet };
+}
+
+async function loadQACases(options = {}) {
+  const selectedSets = options.imageSet === "all"
+    ? ["synthetic", "approved-real"]
+    : [options.imageSet ?? "synthetic"];
+  const images = [];
+
+  for (const imageSet of selectedSets) {
+    const directory = imageSet === "approved-real" ? APPROVED_REAL_SAMPLE_DIR : LOCAL_IMAGE_DIR;
+    images.push(...await loadImageEntries(directory, imageSet));
+  }
 
   if (images.length === 0) {
     return DEFAULT_LOCALES.map((locale) => ({
       caseId: `tiny-smoke-${locale}`,
+      sampleType: "synthetic",
       locale,
       width: 1,
       height: 1,
@@ -137,12 +162,12 @@ async function loadQACases() {
   }
 
   const loaded = [];
-  for (const imageName of images) {
-    const fileURL = new URL(imageName, LOCAL_IMAGE_DIR);
-    const buffer = await readFile(fileURL);
+  for (const image of images) {
+    const buffer = await readFile(image.fileURL);
     for (const locale of DEFAULT_LOCALES) {
       loaded.push({
-        caseId: `${basename(imageName, extname(imageName))}-${locale}`,
+        caseId: `${image.imageSet}-${basename(image.name, extname(image.name))}-${locale}`,
+        sampleType: image.imageSet === "approved-real" ? "approved_real_sample" : "synthetic",
         locale,
         width: 1024,
         height: 768,
@@ -152,6 +177,32 @@ async function loadQACases() {
     }
   }
   return loaded;
+}
+
+async function loadImageEntries(directoryURL, imageSet) {
+  if (!existsSync(directoryURL)) {
+    return [];
+  }
+
+  const names = await readdir(directoryURL);
+  const resourceForks = names.filter((name) => name.startsWith("._"));
+  if (resourceForks.length > 0) {
+    printSanitized({
+      ok: true,
+      warningCode: "resource_fork_files_ignored",
+      imageSet,
+      count: resourceForks.length
+    });
+  }
+
+  return names
+    .filter((name) => [".jpg", ".jpeg"].includes(extname(name).toLowerCase()))
+    .filter((name) => !name.startsWith("._"))
+    .map((name) => ({
+      imageSet,
+      name,
+      fileURL: new URL(name, directoryURL)
+    }));
 }
 
 function buildRequest(item) {

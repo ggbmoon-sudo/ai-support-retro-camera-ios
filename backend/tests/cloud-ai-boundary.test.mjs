@@ -18,6 +18,7 @@ import {
   sanitizePhotoAdvisorQACase,
   summarizePhotoAdvisorQA
 } from "../src/qa/photoAdvisorQAReport.mjs";
+import { validateSafeTextOutput } from "../src/security/safetyTextGuard.mjs";
 
 test("health returns mock-only status", () => {
   assert.deepEqual(healthResponse(), {
@@ -98,6 +99,27 @@ test("cloud ai response validator rejects unsafe text", async () => {
 
   assert.equal(result.ok, false);
   assert.equal(result.error.code, "unsafe_response");
+  assert.equal(result.error.unsafeCategory, "banned_term_guard");
+});
+
+test("cloud ai response validator labels appearance and sensitive unsafe text without raw output", async () => {
+  const appearanceResponse = await fixture("cloud-ai-valid-response.json");
+  appearanceResponse.summary = "The face looks attractive in this frame.";
+  const appearanceResult = validateCloudAIResponse(appearanceResponse);
+
+  assert.equal(appearanceResult.ok, false);
+  assert.equal(appearanceResult.error.code, "unsafe_response");
+  assert.equal(appearanceResult.error.unsafeCategory, "appearance_or_identity_guard");
+  assert.equal(JSON.stringify(appearanceResult).includes("attractive"), false);
+
+  const sensitiveResponse = await fixture("cloud-ai-valid-response.json");
+  sensitiveResponse.summary = "The age appears young in this frame.";
+  const sensitiveResult = validateCloudAIResponse(sensitiveResponse);
+
+  assert.equal(sensitiveResult.ok, false);
+  assert.equal(sensitiveResult.error.code, "unsafe_response");
+  assert.equal(sensitiveResult.error.unsafeCategory, "sensitive_attribute_guard");
+  assert.equal(JSON.stringify(sensitiveResult).includes("young"), false);
 });
 
 test("unsafe provider output maps to fallback response", async () => {
@@ -113,6 +135,7 @@ test("unsafe provider output maps to fallback response", async () => {
   assert.equal(result.body.mode, "unavailable");
   assert.equal(result.body.source, "fallback");
   assert.equal(result.body.error.code, "unsafe_response");
+  assert.equal(result.metadata.unsafeCategory, "banned_term_guard");
   assert.equal(JSON.stringify(result.body).includes("你樣衰"), false);
 });
 
@@ -411,8 +434,12 @@ test("photo advisor prompt bans sensitive inference and arbitrary filters", () =
 
   assert.equal(prompt.includes("Do not identify people"), true);
   assert.equal(prompt.includes("Do not infer age, gender, race"), true);
+  assert.equal(prompt.includes("Analyze only non-sensitive photographic qualities"), true);
+  assert.equal(prompt.includes("Subject placement means where the main visual subject sits in the frame"), true);
+  assert.equal(prompt.includes("Do not describe or rate appearance, body, face, skin"), true);
+  assert.equal(prompt.includes("If a photo includes people, discuss only framing"), true);
   assert.equal(prompt.includes("Avoid words related to attractiveness"), true);
-  assert.equal(prompt.includes("visible non-sensitive photo qualities"), true);
+  assert.equal(prompt.includes("Use neutral object/photo terms"), true);
   assert.equal(prompt.includes("Recommended filter IDs must be chosen only from this whitelist"), true);
   assert.equal(prompt.includes("Avoid poetic copy, overclaiming, and generic filler"), true);
   assert.equal(prompt.includes("Retake advice must be soft"), true);
@@ -453,6 +480,7 @@ test("photo advisor qa report redacts sensitive fields", () => {
     cases: [
       sanitizePhotoAdvisorQACase({
         caseId: "warm-rooftop-01",
+        sampleType: "approved_real_sample",
         locale: "zh-Hant",
         source: "cloud",
         latencyMs: 5600,
@@ -478,6 +506,7 @@ test("photo advisor qa report redacts sensitive fields", () => {
   assert.equal(report.fallback, 0);
   assert.equal(report.fallbackCount, 0);
   assert.equal(report.languageCasesNeedingManualReview, 1);
+  assert.equal(report.cases[0].sampleType, "approved_real_sample");
   assert.equal(report.cases[0].latencyBucket, "5s_to_10s");
   assert.equal(JSON.stringify(report).includes("/9j/"), false);
   assert.equal(JSON.stringify(report).includes("requestBody"), false);
@@ -530,6 +559,57 @@ test("photo advisor qa report summarizes fallback metrics", () => {
   assert.equal(report.latencyAssessment.providerTimeoutMs, 30000);
   assert.equal(report.latencyAssessment.productionRollout, "blocked");
   assert.equal(report.cases[1].fallbackCategory, "timeout");
+});
+
+test("photo advisor qa report records safe unsafe diagnostic labels only", () => {
+  const report = summarizePhotoAdvisorQA({
+    provider: "qweapi",
+    model: "gemini-3.1-flash-image-preview",
+    baseURL: "https://qweapi.com",
+    cases: [
+      sanitizePhotoAdvisorQACase({
+        caseId: "unsafe-appearance",
+        locale: "en",
+        source: "fallback",
+        latencyMs: 900,
+        schemaValid: true,
+        safetyValid: true,
+        fallbackCode: "unsafe_response",
+        unsafeCategory: "appearance_or_identity_guard",
+        rawProviderText: "redact this"
+      }),
+      sanitizePhotoAdvisorQACase({
+        caseId: "unsafe-sensitive",
+        locale: "zh-Hant",
+        source: "fallback",
+        latencyMs: 1200,
+        schemaValid: true,
+        safetyValid: true,
+        fallbackCode: "unsafe_response",
+        unsafeCategory: "sensitive_attribute_guard"
+      })
+    ]
+  });
+
+  assert.equal(report.unsafeResponseCount, 2);
+  assert.deepEqual(report.unsafeByCategory, {
+    appearance_or_identity_guard: 1,
+    sensitive_attribute_guard: 1
+  });
+  assert.equal(report.cases[0].unsafeCategory, "appearance_or_identity_guard");
+  assert.equal(JSON.stringify(report).includes("redact this"), false);
+  assert.equal(assertQAReportRedacted(report).ok, true);
+});
+
+test("safety guard returns sanitized diagnostic labels", () => {
+  const appearance = validateSafeTextOutput("The skin looks smooth and the face looks attractive.");
+  const sensitive = validateSafeTextOutput("The gender appears detected.");
+
+  assert.equal(appearance.ok, false);
+  assert.equal(appearance.error.unsafeCategory, "appearance_or_identity_guard");
+  assert.equal(JSON.stringify(appearance).includes("smooth"), false);
+  assert.equal(sensitive.ok, false);
+  assert.equal(sensitive.error.unsafeCategory, "sensitive_attribute_guard");
 });
 
 async function fixture(name) {

@@ -89,7 +89,9 @@ export function validateCloudAIResponse(response) {
 
   const textValidation = validateSafeTextOutput(response);
   if (!textValidation.ok) {
-    return invalid("unsafe_response", "Response contains unsafe text");
+    return invalid("unsafe_response", "Response contains unsafe text", {
+      unsafeCategory: textValidation.error.unsafeCategory
+    });
   }
 
   return { ok: true };
@@ -111,12 +113,13 @@ function validateErrorShape(error) {
   return { ok: true };
 }
 
-function invalid(code, message) {
+function invalid(code, message, details = {}) {
   return {
     ok: false,
     error: {
       code,
-      message
+      message,
+      ...details
     }
   };
 }

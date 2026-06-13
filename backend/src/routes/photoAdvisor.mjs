@@ -60,7 +60,13 @@ export async function handlePhotoAdvisorRequest(requestBody, options = {}) {
     const code = mapProviderErrorCode(error?.code);
     return {
       status: 200,
-      body: fallbackForRequest(requestBody, code, "Cloud analysis is unavailable right now. Showing local advice instead.")
+      body: fallbackForRequest(requestBody, code, "Cloud analysis is unavailable right now. Showing local advice instead."),
+      metadata: {
+        providerKind,
+        latencyMs: elapsedMs(startedAt),
+        attempts: error?.attempts ?? null,
+        unsafeCategory: error?.unsafeCategory ?? null
+      }
     };
   }
 
@@ -72,7 +78,13 @@ export async function handlePhotoAdvisorRequest(requestBody, options = {}) {
       : CLOUD_AI_ERROR_CODES.providerInvalidSchema;
     return {
       status: 200,
-      body: fallbackForRequest(requestBody, code, "Cloud analysis is unavailable right now. Showing local advice instead.")
+      body: fallbackForRequest(requestBody, code, "Cloud analysis is unavailable right now. Showing local advice instead."),
+      metadata: {
+        providerKind,
+        latencyMs: elapsedMs(startedAt),
+        attempts: providerResult.attempts,
+        unsafeCategory: responseValidation.error.unsafeCategory ?? null
+      }
     };
   }
 
@@ -117,11 +129,14 @@ async function analyzeWithRetry({ provider, providerKind, input, timeoutMs }) {
         if (validation.error.code === "unsafe_response") {
           const error = new Error("Unsafe provider output");
           error.code = "unsafe_response";
+          error.unsafeCategory = validation.error.unsafeCategory ?? null;
+          error.attempts = attempt;
           throw error;
         }
 
         const error = new Error("Provider response failed schema validation");
         error.code = "provider_invalid_schema";
+        error.attempts = attempt;
         lastError = error;
         if (attempt < maxAttempts) {
           continue;
@@ -132,6 +147,9 @@ async function analyzeWithRetry({ provider, providerKind, input, timeoutMs }) {
       return { response, attempts: attempt };
     } catch (error) {
       lastError = error;
+      if (error && typeof error === "object" && !error.attempts) {
+        error.attempts = attempt;
+      }
       if (!shouldRetryProviderError(error?.code) || attempt === maxAttempts) {
         throw error;
       }

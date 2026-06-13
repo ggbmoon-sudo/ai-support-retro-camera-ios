@@ -145,6 +145,14 @@ If this runtime does not have `npm`, run the script directly:
 node scripts/run-photo-advisor-provider-qa.mjs
 ```
 
+Image set options:
+
+```sh
+node scripts/run-photo-advisor-provider-qa.mjs --image-set=synthetic
+node scripts/run-photo-advisor-provider-qa.mjs --image-set=approved-real
+node scripts/run-photo-advisor-provider-qa.mjs --image-set=all
+```
+
 The QA script:
 
 - loads local `.env`
@@ -156,15 +164,19 @@ The QA script:
 
 Local image policy:
 
-- optional local QA JPEGs go in `backend/tests/local-images/`
-- `backend/tests/local-images/` is ignored except for its README
+- synthetic local QA JPEGs go in ignored `backend/tests/local-images/`
+- approved real sample JPEGs go in ignored `backend/tests/approved-real-samples/`
+- `backend/tests/local-images/` is ignored except for its README and `manual-review-template.json`
+- `backend/tests/approved-real-samples/` is ignored except for its README
 - the committed `manual-review-template.json` is a sanitized checklist template only
 - use only non-sensitive, approved, metadata-stripped, small JPEGs
 - do not commit private photos, large originals, EXIF / GPS metadata, or real user images
+- approved real sample filenames should be non-personal, descriptive, and kebab-cased, for example `street-night-approved-01.jpg`
+- macOS `._*.jpg` resource fork files are warned about and ignored
 
 If no local QA images are present, the script uses a tiny built-in JPEG smoke image across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`.
 
-The generated report is ignored and must remain metadata-only. It includes counts for cloud success, fallback, latency, schema failures, safety failures, invalid filter IDs, and manual language review flags. It must not include API keys, base64 images, raw request bodies, provider raw responses, EXIF, GPS, or face data.
+The generated report is ignored and must remain metadata-only. It includes counts for cloud success, fallback, latency, schema failures, safety failures, invalid filter IDs, safe unsafe-diagnostic labels, and manual language review flags. It must not include API keys, base64 images, raw request bodies, provider raw responses, EXIF, GPS, or face data.
 
 Phase 17C-R3 local QA used five ignored synthetic JPEGs:
 
@@ -227,6 +239,34 @@ Latest R4 QA observation:
 - `latencyAssessment.productionRollout` remains `blocked`
 
 Production rollout remains blocked until latency instability, fallback rate, unsafe-response QA, and manual language / filter-fit review are resolved.
+
+Phase 17C-R5 tightens unsafe-response reduction and approved real sample review:
+
+- provider prompt is stricter about allowed photo-only topics: light, color, contrast, exposure, framing, crop, background clutter, non-identifying subject placement, retro mood, and filter fit
+- provider prompt avoids face, skin, age, gender, attractiveness, beauty, emotion / mental state, health, body, identity, ethnicity, nationality, religion, disability, and protected-class wording
+- unsafe fallback diagnostics use safe labels only: `appearance_or_identity_guard`, `sensitive_attribute_guard`, `banned_term_guard`, or `unknown_safety_guard`
+- raw unsafe provider text is not written to reports, logs, README, tests, or UI
+- manual review template now includes sample type, unsafe diagnostic label, crop / framing usefulness, and reviewer-local ID fields
+
+Latest R5 QA observation:
+
+- 20 total cases across the ignored synthetic local QA image set
+- 19 cloud successes
+- 1 fallback
+- fallback reason: 1 `provider_invalid_json`
+- unsafe-response count 0
+- average latency 6130 ms
+- p50 latency 4842 ms
+- p90 latency 5837 ms
+- p95 latency 9637 ms
+- max latency 24372 ms
+- timeout count 0
+- 0 schema failures
+- 0 safety metadata failures
+- 0 invalid filter IDs
+- `latencyAssessment.productionRollout` remains `blocked`
+
+Production rollout remains blocked until unsafe-response reduction is stable across more runs, approved real sample review is complete, language quality is manually checked, and filter / crop usefulness is reviewed.
 
 ## No Payload Logging
 

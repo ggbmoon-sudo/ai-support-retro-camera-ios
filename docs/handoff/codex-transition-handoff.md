@@ -401,7 +401,10 @@ This update records work completed by the new Codex / Codex API session after th
 - R4 centralizes QA latency thresholds in `backend/src/qa/photoAdvisorQAConfig.mjs` for measurement only; it does not raise provider timeouts to hide slow cases.
 - R4 expands `backend/tests/local-images/manual-review-template.json` for fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter recommendation fit, crop / framing usefulness, safety concern, and notes.
 - R4 real-provider QA run produced 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs.
-- The p95 / max latency, fallback rate, remaining unsafe fallbacks, and manual language / filter-fit review are production rollout blockers; next work should review provider latency / quality and approved sample-image QA, not production rollout.
+- Phase 17C-R5 tightens the provider prompt to allowed photo-only topics, adds safe unsafe diagnostic labels, extends QA reports with `unsafeByCategory` / per-case `unsafeCategory`, and adds an ignored approved-real-sample workflow under `backend/tests/approved-real-samples/`.
+- R5 QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; it warns about and ignores macOS `._*.jpg` resource-fork files.
+- R5 real-provider synthetic QA run produced 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs.
+- Manual language review, approved real sample review, filter / crop usefulness review, and repeated unsafe-response validation are production rollout blockers; next work should review provider quality and approved sample-image QA, not production rollout.
 - iOS must not contain a QweAPI key or direct QweAPI base URL call.
 - Default provider mode remains mock.
 - iOS default remains mock/local and provider-key-free.
@@ -586,6 +589,7 @@ Important docs already added or expected in this roadmap:
 - Phase 17C-R2 adds provider QA batch reporting; future provider QA should add real approved sample images locally, review language / caption / filter quality manually, and keep generated reports ignored unless explicitly sanitized for commit.
 - Phase 17C-R3 completed a synthetic local image QA pass; future QA should use approved realistic local images, manually review 3-5 outputs, and avoid committing generated reports or real photos.
 - Phase 17C-R4 adds provider QA latency / fallback hardening and manual review readiness; future QA should use the expanded report fields and manual review template before changing product rollout status.
+- Phase 17C-R5 reduces unsafe-response fallback risk in the latest synthetic QA run and adds the approved-real-sample workflow; future QA should run approved real samples locally without committing photos or reports.
 - Future production rollout may start only after explicit approval, real image provider success, secret management hardening, provider policy review, timeout / cancellation, moderation, validation, and cost guard work.
 - No Gemini Live / streaming, AI Filter Generator real backend, 改圖師 provider integration, or Camera cloud AI entry is approved by Phase 17A.
 - App-wide language switching remains not implemented.

@@ -6,10 +6,12 @@
   ],
   "cases": [
     {
+      "sampleType": "synthetic",
       "imageFixtureName": "warm-rooftop.jpg",
       "locale": "en",
       "providerStatus": "cloud_success",
       "fallbackCode": null,
+      "unsafeDiagnosticLabel": null,
       "latencyBucket": "5s_to_10s",
       "caseId": "warm-rooftop-en",
       "overallUseful": null,
@@ -20,13 +22,16 @@
       "captionAcceptable": null,
       "languageNaturalness": null,
       "safetyConcern": null,
+      "reviewerId": "",
       "notes": ""
     },
     {
+      "sampleType": "synthetic",
       "imageFixtureName": "low-light-street.jpg",
       "locale": "zh-Hant",
       "providerStatus": "cloud_success",
       "fallbackCode": null,
+      "unsafeDiagnosticLabel": null,
       "latencyBucket": "5s_to_10s",
       "caseId": "low-light-street-zh-Hant",
       "overallUseful": null,
@@ -37,13 +42,16 @@
       "captionAcceptable": null,
       "languageNaturalness": null,
       "safetyConcern": null,
+      "reviewerId": "",
       "notes": ""
     },
     {
+      "sampleType": "synthetic",
       "imageFixtureName": "portrait-headroom.jpg",
       "locale": "zh-Hans",
       "providerStatus": "fallback",
       "fallbackCode": "provider_timeout",
+      "unsafeDiagnosticLabel": null,
       "latencyBucket": "timeout_or_over",
       "caseId": "portrait-headroom-zh-Hans",
       "overallUseful": null,
@@ -54,13 +62,16 @@
       "captionAcceptable": null,
       "languageNaturalness": null,
       "safetyConcern": null,
+      "reviewerId": "",
       "notes": ""
     },
     {
+      "sampleType": "synthetic",
       "imageFixtureName": "busy-background.jpg",
       "locale": "yue-Hant-HK",
       "providerStatus": "cloud_success",
       "fallbackCode": null,
+      "unsafeDiagnosticLabel": null,
       "latencyBucket": "10s_to_20s",
       "caseId": "busy-background-yue-Hant-HK",
       "overallUseful": null,
@@ -71,13 +82,16 @@
       "captionAcceptable": null,
       "languageNaturalness": null,
       "safetyConcern": null,
+      "reviewerId": "",
       "notes": ""
     },
     {
+      "sampleType": "synthetic",
       "imageFixtureName": "flat-indoor.jpg",
       "locale": "en",
       "providerStatus": "fallback",
       "fallbackCode": "unsafe_response",
+      "unsafeDiagnosticLabel": "appearance_or_identity_guard",
       "latencyBucket": "under_5s",
       "caseId": "flat-indoor-en",
       "overallUseful": null,
@@ -88,6 +102,27 @@
       "captionAcceptable": null,
       "languageNaturalness": null,
       "safetyConcern": null,
+      "reviewerId": "",
+      "notes": ""
+    },
+    {
+      "sampleType": "approved_real_sample",
+      "imageFixtureName": "street-night-approved-01.jpg",
+      "locale": "zh-Hant",
+      "providerStatus": "cloud_success",
+      "fallbackCode": null,
+      "unsafeDiagnosticLabel": null,
+      "latencyBucket": "5s_to_10s",
+      "caseId": "street-night-approved-01-zh-Hant",
+      "overallUseful": null,
+      "tooGeneric": null,
+      "tooLong": null,
+      "filterReasonable": null,
+      "cropFramingUseful": null,
+      "captionAcceptable": null,
+      "languageNaturalness": null,
+      "safetyConcern": null,
+      "reviewerId": "",
       "notes": ""
     }
   ]

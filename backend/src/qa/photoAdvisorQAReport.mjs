@@ -63,6 +63,7 @@ export function summarizePhotoAdvisorQA({
     invalidFilterIdCount,
     networkOrProviderErrorCount,
     unknownFallbackCount,
+    unsafeByCategory: unsafeCategoryCounts(fallbackCases),
     languageCasesNeedingManualReview: cases.filter((item) => item.needsManualLanguageReview).length,
     latencyAssessment: assessLatencyForQA({
       p95LatencyMs,
@@ -79,6 +80,7 @@ export function summarizePhotoAdvisorQA({
 export function sanitizePhotoAdvisorQACase(input = {}) {
   return {
     caseId: String(input.caseId ?? "unknown"),
+    sampleType: sanitizeSampleType(input.sampleType),
     locale: String(input.locale ?? ""),
     source: input.source ?? "unknown",
     latencyMs: finiteOrNull(input.latencyMs),
@@ -91,6 +93,7 @@ export function sanitizePhotoAdvisorQACase(input = {}) {
       : [],
     invalidFilterIds: Number.isFinite(input.invalidFilterIds) ? input.invalidFilterIds : 0,
     fallbackCategory: classifyFallbackCode(input.fallbackCode),
+    unsafeCategory: sanitizeUnsafeCategory(input.unsafeCategory),
     captionLength: Number.isFinite(input.captionLength) ? input.captionLength : 0,
     summaryLength: Number.isFinite(input.summaryLength) ? input.summaryLength : 0,
     suggestionCount: Number.isFinite(input.suggestionCount) ? input.suggestionCount : 0,
@@ -171,6 +174,40 @@ function fallbackCategoryCounts(cases) {
   return counts;
 }
 
+function unsafeCategoryCounts(cases) {
+  const counts = {};
+  for (const item of cases) {
+    if (classifyFallbackCode(item.fallbackCode) !== "unsafe_response") {
+      continue;
+    }
+    const category = sanitizeUnsafeCategory(item.unsafeCategory) ?? "unknown_safety_guard";
+    counts[category] = (counts[category] ?? 0) + 1;
+  }
+  return counts;
+}
+
 function finiteOrNull(value) {
   return Number.isFinite(value) ? value : null;
+}
+
+function sanitizeUnsafeCategory(value) {
+  switch (value) {
+  case "appearance_or_identity_guard":
+  case "sensitive_attribute_guard":
+  case "banned_term_guard":
+  case "unknown_safety_guard":
+    return value;
+  default:
+    return null;
+  }
+}
+
+function sanitizeSampleType(value) {
+  switch (value) {
+  case "synthetic":
+  case "approved_real_sample":
+    return value;
+  default:
+    return "synthetic";
+  }
 }
