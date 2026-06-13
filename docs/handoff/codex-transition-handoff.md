@@ -596,6 +596,7 @@ Important docs already added or expected in this roadmap:
 - Phase 17C-R4 adds provider QA latency / fallback hardening and manual review readiness; future QA should use the expanded report fields and manual review template before changing product rollout status.
 - Phase 17C-R5 reduces unsafe-response fallback risk in the latest synthetic QA run and adds the approved-real-sample workflow; future QA should run approved real samples locally without committing photos or reports.
 - Phase 17D-A adds local capture context for mock/local advisor intent awareness; future cloud schema expansion for capture context requires a separate explicit phase.
+- Phase 17D-B adds the local Capture Intelligence Pack: bucketed level / motion snapshots, local image signal buckets, stronger CreativeIntentGuard, DEBUG-only bucket preview, and intent-aware mock/local advisor behavior. It remains local-only; backend provider payloads are unchanged and capture context is not uploaded.
 - Future production rollout may start only after explicit approval, real image provider success, secret management hardening, provider policy review, timeout / cancellation, moderation, validation, and cost guard work.
 - No Gemini Live / streaming, AI Filter Generator real backend, 改圖師 provider integration, or Camera cloud AI entry is approved by Phase 17A.
 - App-wide language switching remains not implemented.

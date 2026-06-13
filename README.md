@@ -78,7 +78,7 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 17D-A local intent-aware Camera Capture Context model completed; ready for review
+- Phase 17D-B local Capture Intelligence Pack completed; ready for review
 
 Next phase:
 
@@ -169,6 +169,8 @@ Phase 17C-R4 hardens backend QA reporting with p90 / p95 / max latency, timeout 
 Phase 17C-R5 tightens Photo Advisor prompt and safety diagnostics to reduce `unsafe_response` fallback risk, adds safe unsafe-category labels to sanitized QA reports, and adds a local-only approved real sample photo workflow. Synthetic images, approved real sample images, and generated QA reports stay ignored; production rollout remains blocked.
 
 Phase 17D-A adds a local-only Camera Capture Context model for safe summarized capture metadata. Captured photos can carry bucketed context such as orientation, lens, selected filter, local guidance exposure summary, and creative intent signals; imported photos default to unavailable / unknown context. Mock/local Photo Advisor can use that context to preserve retro creative intent instead of treating blur, low light, tilt, grain, or unusual framing as automatic mistakes. No GPS/location, raw EXIF dump, continuous sensor stream persistence, backend payload change, provider key, direct provider call, Camera cloud entry, or production rollout is added.
+
+Phase 17D-B extends that local-only context into a Capture Intelligence Pack. Captured photos now snapshot safe bucketed level / motion summaries, local image signal buckets, selected filter context, and a stronger CreativeIntentGuard; imported photos can receive local image buckets while capture-only fields stay unavailable / unknown. DEBUG builds may show a compact bucket preview in Photo Advisor, but production UI does not expose raw sensor streams, raw EXIF, or JSON. Backend provider payloads are unchanged, capture context is not uploaded, Camera remains local-only, and advisor copy still frames blur / tilt / low light / grain / faded color / high contrast as possible retro style rather than automatic retake problems.
 
 ## Phase 12A Filter Planning Status
 

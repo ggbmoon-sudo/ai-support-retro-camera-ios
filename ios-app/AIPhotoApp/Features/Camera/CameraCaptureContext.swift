@@ -30,7 +30,10 @@ struct CameraCaptureContext: Codable, Hashable {
         creativeIntent: .neutral
     )
 
-    static func imported(imageSize: CGSize? = nil) -> CameraCaptureContext {
+    static func imported(
+        imageSize: CGSize? = nil,
+        localImageSignals: LocalImageSignalContext = .unknown
+    ) -> CameraCaptureContext {
         let context = CameraCaptureContext(
             source: .imported,
             orientation: CameraCaptureOrientation(size: imageSize),
@@ -42,10 +45,27 @@ struct CameraCaptureContext: Codable, Hashable {
             compositionHelpers: .unavailable,
             selectedFilterAtCapture: nil,
             previewFilterAtCapture: nil,
-            localImageSignals: .unknown,
+            localImageSignals: localImageSignals,
             creativeIntent: .neutral
         )
-        return context
+        return context.withCreativeIntent(CreativeIntentGuard.context(for: context))
+    }
+
+    func withCreativeIntent(_ creativeIntent: CreativeIntentContext) -> CameraCaptureContext {
+        CameraCaptureContext(
+            source: source,
+            orientation: orientation,
+            level: level,
+            motion: motion,
+            exposure: exposure,
+            focus: focus,
+            lens: lens,
+            compositionHelpers: compositionHelpers,
+            selectedFilterAtCapture: selectedFilterAtCapture,
+            previewFilterAtCapture: previewFilterAtCapture,
+            localImageSignals: localImageSignals,
+            creativeIntent: creativeIntent
+        )
     }
 }
 
@@ -74,28 +94,99 @@ enum CameraCaptureOrientation: String, Codable, Hashable {
 
 struct CameraLevelContext: Codable, Hashable {
     let available: Bool
-    let rollDegrees: Double?
-    let pitchDegrees: Double?
+    let rollDegreesRounded: Double?
+    let pitchDegreesRounded: Double?
+    let levelBucket: CameraLevelBucket
     let isNearLevel: Bool?
 
     static let unavailable = CameraLevelContext(
         available: false,
-        rollDegrees: nil,
-        pitchDegrees: nil,
+        rollDegreesRounded: nil,
+        pitchDegreesRounded: nil,
+        levelBucket: .unknown,
         isNearLevel: nil
     )
+
+    static func rounded(rollDegrees: Double?, pitchDegrees: Double?) -> CameraLevelContext {
+        let roundedRoll = rollDegrees.map { ($0 * 10).rounded() / 10 }
+        let roundedPitch = pitchDegrees.map { ($0 * 10).rounded() / 10 }
+        let absoluteRoll = abs(roundedRoll ?? 0)
+        let bucket: CameraLevelBucket
+
+        if roundedRoll == nil {
+            bucket = .unknown
+        } else if absoluteRoll <= 2.5 {
+            bucket = .level
+        } else if absoluteRoll <= 8 {
+            bucket = .slightTilt
+        } else {
+            bucket = .strongTilt
+        }
+
+        return CameraLevelContext(
+            available: roundedRoll != nil,
+            rollDegreesRounded: roundedRoll,
+            pitchDegreesRounded: roundedPitch,
+            levelBucket: bucket,
+            isNearLevel: bucket == .level
+        )
+    }
+}
+
+enum CameraLevelBucket: String, Codable, Hashable {
+    case level
+    case slightTilt = "slight_tilt"
+    case strongTilt = "strong_tilt"
+    case unknown
 }
 
 struct CameraMotionContext: Codable, Hashable {
     let available: Bool
-    let stability: CameraMotionStability
-    let motionScore: Double?
+    let motionBucket: CameraMotionStability
+    let captureStabilityScore: Double?
+    let captureWindowMs: Int?
 
     static let unavailable = CameraMotionContext(
         available: false,
-        stability: .unknown,
-        motionScore: nil
+        motionBucket: .unknown,
+        captureStabilityScore: nil,
+        captureWindowMs: nil
     )
+
+    static func summary(
+        score: Double?,
+        captureWindowMs: Int?
+    ) -> CameraMotionContext {
+        guard let score else {
+            return .unavailable
+        }
+
+        let normalized = min(max((score * 100).rounded() / 100, 0), 1)
+        let bucket: CameraMotionStability
+
+        if normalized < 0.24 {
+            bucket = .stable
+        } else if normalized < 0.58 {
+            bucket = .slightMotion
+        } else {
+            bucket = .shaky
+        }
+
+        return CameraMotionContext(
+            available: true,
+            motionBucket: bucket,
+            captureStabilityScore: normalized,
+            captureWindowMs: captureWindowMs
+        )
+    }
+
+    var stability: CameraMotionStability {
+        motionBucket
+    }
+
+    var motionScore: Double? {
+        captureStabilityScore
+    }
 }
 
 enum CameraMotionStability: String, Codable, Hashable {
@@ -107,16 +198,22 @@ enum CameraMotionStability: String, Codable, Hashable {
 
 struct CameraExposureContext: Codable, Hashable {
     let available: Bool
+    let exposureBucket: CameraExposureBucket
     let lowLightDetected: Bool
     let isoBucket: CameraISOBucket
-    let exposureBias: CameraExposureBias
+    let exposureBiasBucket: CameraExposureBias
 
     static let unavailable = CameraExposureContext(
         available: false,
+        exposureBucket: .unknown,
         lowLightDetected: false,
         isoBucket: .unknown,
-        exposureBias: .unknown
+        exposureBiasBucket: .unknown
     )
+
+    var exposureBias: CameraExposureBias {
+        exposureBiasBucket
+    }
 }
 
 enum CameraISOBucket: String, Codable, Hashable {
@@ -133,16 +230,27 @@ enum CameraExposureBias: String, Codable, Hashable {
     case unknown
 }
 
+enum CameraExposureBucket: String, Codable, Hashable {
+    case lowLight = "low_light"
+    case balanced
+    case bright
+    case unknown
+}
+
 struct CameraFocusContext: Codable, Hashable {
     let available: Bool
-    let focusState: CameraFocusState
+    let focusBucket: CameraFocusState
     let focusPointBucket: CameraFocusPointBucket
 
     static let unavailable = CameraFocusContext(
         available: false,
-        focusState: .unknown,
+        focusBucket: .unknown,
         focusPointBucket: .unknown
     )
+
+    var focusState: CameraFocusState {
+        focusBucket
+    }
 }
 
 enum CameraFocusState: String, Codable, Hashable {
@@ -222,6 +330,17 @@ struct LocalImageSignalContext: Codable, Hashable {
         warmth: .unknown,
         clutter: .unknown
     )
+
+    func merged(preferring preferred: LocalImageSignalContext) -> LocalImageSignalContext {
+        LocalImageSignalContext(
+            brightness: preferred.brightness == .unknown ? brightness : preferred.brightness,
+            contrast: preferred.contrast == .unknown ? contrast : preferred.contrast,
+            saturation: preferred.saturation == .unknown ? saturation : preferred.saturation,
+            blurRisk: preferred.blurRisk == .unknown ? blurRisk : preferred.blurRisk,
+            warmth: preferred.warmth == .unknown ? warmth : preferred.warmth,
+            clutter: preferred.clutter == .unknown ? clutter : preferred.clutter
+        )
+    }
 }
 
 enum LocalImageSignalBucket: String, Codable, Hashable {
@@ -242,20 +361,29 @@ struct CreativeIntentContext: Codable, Hashable {
     let possibleIntentionalStyle: Bool
     let styleSignals: [CreativeIntentStyleSignal]
     let avoidOvercorrecting: Bool
+    let adviceMode: CreativeIntentAdviceMode
 
     static let neutral = CreativeIntentContext(
         possibleIntentionalStyle: false,
         styleSignals: [],
-        avoidOvercorrecting: false
+        avoidOvercorrecting: false,
+        adviceMode: .technicalHint
     )
 }
 
 enum CreativeIntentStyleSignal: String, Codable, Hashable {
     case softFocus = "soft_focus"
     case motionBlur = "motion_blur"
-    case lowLight = "low_light"
+    case lowLight = "low_light_mood"
     case tilt
     case retroGrain = "retro_grain"
     case highContrast = "high_contrast"
+    case fadedColor = "faded_color"
     case unusualFraming = "unusual_framing"
+}
+
+enum CreativeIntentAdviceMode: String, Codable, Hashable {
+    case preserveStyle = "preserve_style"
+    case optionalRefinement = "optional_refinement"
+    case technicalHint = "technical_hint"
 }

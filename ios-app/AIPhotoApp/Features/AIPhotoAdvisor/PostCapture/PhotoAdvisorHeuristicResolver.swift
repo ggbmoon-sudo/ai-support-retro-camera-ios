@@ -188,6 +188,19 @@ enum PhotoAdvisorHeuristicResolver {
             )
         }
 
+        if signals.contains(.fadedColor) {
+            return PhotoAdvisorSuggestion(
+                id: "intent_faded_color",
+                type: .filter,
+                textKey: copyResolver.intentMessageKey(
+                    for: "faded_color",
+                    language: input.languageMode,
+                    requestedTone: input.toneMode
+                ),
+                priority: .medium
+            )
+        }
+
         if signals.contains(.unusualFraming) {
             return PhotoAdvisorSuggestion(
                 id: "intent_framing",

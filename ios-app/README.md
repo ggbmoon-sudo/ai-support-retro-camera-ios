@@ -133,6 +133,18 @@ Phase 17D-A adds local-only summarized capture context for captured / imported p
 
 This phase does not collect GPS/location, dump raw EXIF, persist continuous sensor streams, upload capture context to the backend, change backend provider payloads, add provider SDKs or keys to iOS, add direct provider calls from iOS, add Camera cloud AI, or enable production rollout.
 
+## Phase 17D-B Local Capture Intelligence Pack
+
+Phase 17D-B keeps the app local-only while making captured / imported Photo Advisor context more useful:
+
+- captured photos snapshot safe bucketed level and motion summaries at capture time
+- imported and captured photos can receive lightweight local image signal buckets for brightness, contrast, saturation, warmth, blur hint, and clutter hint
+- CreativeIntentGuard combines capture context, filter choice, and local image buckets to prefer `preserve_style`, `optional_refinement`, or `technical_hint`
+- mock/local Photo Advisor uses optional intent-aware wording and does not default to retake / fix-it advice for blur, tilt, low light, grain, high contrast, faded color, soft focus, motion, or unusual framing
+- DEBUG builds show a compact capture context bucket preview in Photo Advisor; release / production UI does not show raw sensor values, raw EXIF, raw JSON, or continuous motion streams
+
+This phase does not upload capture context, change backend provider payloads, collect GPS/location, dump raw EXIF, persist raw sensor streams, add provider SDKs or keys to iOS, add direct provider calls from iOS, add Camera cloud AI, or enable production rollout.
+
 ## Phase 12A Filter Planning
 
 Phase 12A adds filter research and schema planning documents only. It does not change iOS app source code.

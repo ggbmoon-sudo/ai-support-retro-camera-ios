@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 17D-A - Local Camera Capture Context Model
-Status: Phase 17D-A completed; ready for commit review
-Latest implementation: Added local summarized capture context models and intent-aware mock/local Photo Advisor copy while keeping backend payloads unchanged, production/default mock/local, iOS provider-key-free, and Camera cloud-entry-free
+Current phase: Phase 17D-B - Local Capture Intelligence Pack
+Status: Phase 17D-B completed; ready for commit review
+Latest implementation: Extended local capture context with bucketed level / motion snapshots, local image signal buckets, stronger CreativeIntentGuard, DEBUG-only context bucket preview, and intent-aware mock/local Photo Advisor behavior while keeping backend payloads unchanged, capture context local-only, iOS provider-key-free, and Camera cloud-entry-free
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -72,7 +72,50 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Phase 17C still needs user visual QA and provider latency / quality review before any production rollout. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, or save-to-Photos until explicitly requested.
+Next phase: Phase 17D-B still needs user visual QA before commit; production rollout remains blocked. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, or save-to-Photos until explicitly requested.
+
+---
+
+## Phase 17D-B - Local Capture Intelligence Pack
+
+Status: Completed; ready for commit review
+Date: 2026-06-13
+
+### Completed
+
+- Extended `CameraCaptureContext` with safer bucketed / rounded local intelligence fields for level, motion, exposure, focus, lens, selected / preview filter context, local image signals, and creative intent advice mode.
+- Added a short-window in-memory `CameraCaptureDeviceSignalMonitor` for local level / motion snapshots at capture time.
+- Added a lightweight local image signal analyzer for brightness, contrast, saturation, warmth, blur hint, and clutter hint buckets.
+- Wired capture and import flows so captured photos receive level / motion / image buckets and imported photos receive local image buckets while capture-only fields remain unavailable / unknown.
+- Strengthened `CreativeIntentGuard` to combine capture context, selected filters, and local image signals for low-light mood, motion blur, tilt, retro grain, high contrast, faded color, soft focus, and unusual framing.
+- Updated mock/local Photo Advisor heuristic behavior so it preserves creative intent and uses optional refinement wording instead of default retake / fix-it advice.
+- Added a compact DEBUG-only capture context bucket preview in Photo Advisor; production UI remains free of raw sensor values, raw EXIF, raw JSON, or continuous motion streams.
+- Added localization for the faded-color intent-aware advisory copy.
+- Updated README, iOS README, backend README, phase log, handoff, and manual smoke tests.
+
+### Safety Notes
+
+- Local-only; no capture context or image intelligence signals are uploaded to the backend in this phase.
+- Backend `/v1/ai/photo-advisor` payloads are unchanged.
+- No provider key, provider SDK, direct provider call, Camera cloud AI entry, production remote rollout, GPS/location collection, raw EXIF dump, raw photo persistence, continuous sensor stream persistence, raw sensor stream logging, Gemini Live, WebSocket, StoreKit, or export behavior was added.
+- Capture context is not a score system; advisor copy treats blur, tilt, low light, grain, over/underexposure, faded color, high contrast, soft focus, motion, and unusual framing as possible creative style.
+
+### Verification
+
+- `git diff --check` passed.
+- `xcodebuild -project ios-app/AIPhotoApp.xcodeproj -scheme AIPhotoApp -destination 'generic/platform=iOS Simulator' build` passed.
+- No iOS XCTest target exists in this repo structure, so no iOS unit tests were run.
+- Backend source / package files were not changed; backend provider payloads remain unchanged, so backend tests were not required for this phase.
+- Secret / provider scan found no new iOS provider keys, provider URLs, provider SDK imports, or direct provider calls in the iOS diff.
+- Camera cloud-entry scan found no new Camera AI Snapshot / Quick Advice / Cloud AI entry; only existing unused cloud-debug / future-cloud strings remain outside the production Camera flow.
+- GPS/location/raw EXIF/continuous sensor scan found no CoreLocation, GPS collection, raw EXIF dump, sensor logging, sensor persistence, or new settings persistence. The new CoreMotion monitor keeps only a short in-memory rolling summary and clears it on stop.
+- Unsafe phrase scan found no banned phrase, explicit profanity, face recognition, identity recognition, attractiveness score, body shaming, or skin wording in the updated iOS surface.
+- Raw sensor production UI scan found rounded level / motion values only in model / monitor code; the Photo Advisor preview shows bucket labels only and is wrapped in `#if DEBUG`.
+- Ignored local synthetic images and generated provider QA reports remain untracked.
+
+### Ready to Commit Phase 17D-B
+
+Yes, after final verification and user review. Codex has not committed or pushed.
 
 ---
 

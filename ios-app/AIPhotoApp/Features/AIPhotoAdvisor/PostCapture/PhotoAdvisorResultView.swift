@@ -187,6 +187,10 @@ struct PhotoAdvisorResultView: View {
                 }
             }
 
+            #if DEBUG
+            captureContextDebugPreview
+            #endif
+
             strengthsSection(result.strengthsKeys)
             suggestionsSection(result.suggestions)
             filterSection(result.recommendedFilters)
@@ -426,6 +430,40 @@ struct PhotoAdvisorResultView: View {
     }
 
     #if DEBUG
+    private var captureContextDebugPreview: some View {
+        compactSection(titleKey: "Capture context", icon: "waveform.path.ecg") {
+            VStack(alignment: .leading, spacing: AppSpacing.xs) {
+                debugBucketRow("Level", value: debugLevelLabel)
+                debugBucketRow("Motion", value: debugMotionLabel)
+                debugBucketRow("Light", value: captureContext.localImageSignals.brightness.rawValue)
+                debugBucketRow("Blur hint", value: captureContext.localImageSignals.blurRisk.rawValue)
+                debugBucketRow("Creative intent", value: captureContext.creativeIntent.adviceMode.rawValue)
+            }
+        }
+    }
+
+    private func debugBucketRow(_ label: String, value: String) -> some View {
+        HStack(spacing: AppSpacing.xs) {
+            Text(label)
+                .foregroundStyle(AppColors.textPrimary)
+            Text(value.replacingOccurrences(of: "_", with: " "))
+                .foregroundStyle(AppColors.textSecondary)
+        }
+        .font(AppTypography.micro)
+    }
+
+    private var debugLevelLabel: String {
+        captureContext.level.available
+            ? captureContext.level.levelBucket.rawValue
+            : "unknown"
+    }
+
+    private var debugMotionLabel: String {
+        captureContext.motion.available
+            ? captureContext.motion.motionBucket.rawValue
+            : "unknown"
+    }
+
     private func runCloudDebug(consent: CloudAIConsent) {
         guard let debugSourceImage else { return }
 

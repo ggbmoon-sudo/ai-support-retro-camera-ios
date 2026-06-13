@@ -19,6 +19,7 @@ struct CapturedPhoto: Identifiable {
         self.image = image
         self.source = source
         self.captureContext = captureContext ?? {
+            let imageSignals = LocalImageSignalAnalyzer.analyze(image)
             switch source {
             case .camera:
                 return CameraCaptureContextSnapshotter.snapshot(
@@ -27,10 +28,14 @@ struct CapturedPhoto: Identifiable {
                     selectedFilterId: nil,
                     previewFilterId: nil,
                     lensOption: nil,
-                    liveGuidanceSignals: nil
+                    liveGuidanceSignals: nil,
+                    analyzedImageSignals: imageSignals
                 )
             case .photoLibrary:
-                return CameraCaptureContext.imported(imageSize: image.size)
+                return CameraCaptureContext.imported(
+                    imageSize: image.size,
+                    localImageSignals: imageSignals
+                )
             }
         }()
     }

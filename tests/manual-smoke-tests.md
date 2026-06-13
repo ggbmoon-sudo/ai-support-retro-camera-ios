@@ -1,5 +1,31 @@
 # Manual Smoke Tests
 
+## Phase 17D-B
+
+Check:
+
+- [ ] App launches normally.
+- [ ] Camera still opens and captures photos normally.
+- [ ] Camera remains local-only and no AI Snapshot / Quick Advice / Cloud AI entry appears.
+- [ ] Capture a photo and confirm the mock/local Photo Advisor opens normally.
+- [ ] Import a photo and confirm the mock/local Photo Advisor opens normally.
+- [ ] Confirm capture / import still uses mock/local Photo Advisor unless DEBUG remote mode is explicitly enabled.
+- [ ] Confirm blur, tilt, low light, grain, high contrast, faded color, soft focus, motion, and unusual framing are treated as possible creative style rather than automatic mistakes.
+- [ ] Confirm advice uses optional wording such as “if you want...” / “如果你想...” and does not default to retake / fix-it advice.
+- [ ] Confirm retake advice remains conservative and optional.
+- [ ] In DEBUG builds, confirm the capture context preview is compact and shows only buckets such as Level, Motion, Light, Blur hint, and Creative intent.
+- [ ] Confirm DEBUG capture context preview does not show raw roll / pitch values, raw motion streams, raw EXIF, raw JSON, provider errors, raw localization keys, or image payloads.
+- [ ] Confirm release / production UI does not show the DEBUG capture context preview.
+- [ ] Confirm no GPS/location, raw EXIF dump, continuous sensor logging, continuous sensor persistence, raw photo persistence, or backend capture-context upload is visible in behavior.
+- [ ] Confirm no provider key / direct provider call was added to iOS.
+- [ ] Confirm no production remote AI rollout is enabled.
+
+Known TODOs:
+
+- [ ] Phase 17D-B keeps backend provider payloads unchanged and does not upload capture context.
+- [ ] Physical-device QA should verify level / motion bucket behavior because simulator device-motion data may be unavailable.
+- [ ] Future backend schema support for capture context requires a separate explicit phase.
+
 ## Phase 17D-A
 
 Check:

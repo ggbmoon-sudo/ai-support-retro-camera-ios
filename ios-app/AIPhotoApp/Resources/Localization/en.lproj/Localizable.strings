@@ -686,6 +686,7 @@
 "photo_advisor.intent.en.neutral.soft_focus" = "The soft focus can suit a dreamy retro feel. If you want more clarity next time, tap the main subject to lock focus.";
 "photo_advisor.intent.en.neutral.grain" = "If you want to keep the retro grain, pair it with lower contrast; for a cleaner look, use a softer filter.";
 "photo_advisor.intent.en.neutral.high_contrast" = "The stronger contrast can suit a punchy film mood. If you want a gentler look, lower contrast slightly.";
+"photo_advisor.intent.en.neutral.faded_color" = "Faded color can feel like an old print. If you want more depth, add only a little contrast or warmth.";
 "photo_advisor.intent.en.neutral.framing" = "Unusual framing can feel intentional. If you want a cleaner version, keep a little more breathing room around the subject.";
 "photo_advisor.intent.en.neutral.retake_optional" = "No retake by default. Keep the style first, then retake only if you want a cleaner alternate.";
 "photo_advisor.intent.en.neutral.crop_optional" = "If the angle feels intentional, keep it. For a tidier version, make only a small crop or straighten.";
@@ -695,6 +696,7 @@
 "photo_advisor.intent.zh_hant.neutral.soft_focus" = "柔焦感幾配合復古相機味；如果想更清楚，可以下次 tap 主體鎖焦。";
 "photo_advisor.intent.zh_hant.neutral.grain" = "如果你想保留復古顆粒感，可以配低一點 contrast；如果想乾淨一點，就用柔和濾鏡。";
 "photo_advisor.intent.zh_hant.neutral.high_contrast" = "較強對比可以有菲林感。如果想柔和一點，可以稍微降低 contrast。";
+"photo_advisor.intent.zh_hant.neutral.faded_color" = "色彩偏淡幾有舊相味。如果想更有層次，可以只加少少 contrast 或暖色。";
 "photo_advisor.intent.zh_hant.neutral.framing" = "不尋常構圖可以是風格。如果想更整齊，可以只留多一點主體周邊空間。";
 "photo_advisor.intent.zh_hant.neutral.retake_optional" = "不會預設建議重拍。先保留目前風格；只有想要更乾淨版本時才再拍一張。";
 "photo_advisor.intent.zh_hant.neutral.crop_optional" = "如果角度是有意的，可以保留；想整齊一點才做輕微裁切或拉直。";
@@ -704,6 +706,7 @@
 "photo_advisor.intent.zh_hans.neutral.soft_focus" = "柔焦感很适合复古相机味；如果想更清楚，可以下次 tap 主体锁焦。";
 "photo_advisor.intent.zh_hans.neutral.grain" = "如果你想保留复古颗粒感，可以配低一点 contrast；如果想干净一点，就用柔和滤镜。";
 "photo_advisor.intent.zh_hans.neutral.high_contrast" = "较强对比可以有胶片感。如果想柔和一点，可以稍微降低 contrast。";
+"photo_advisor.intent.zh_hans.neutral.faded_color" = "色彩偏淡很有旧照片味。如果想更有层次，可以只加一点 contrast 或暖色。";
 "photo_advisor.intent.zh_hans.neutral.framing" = "不寻常构图可以是风格。如果想更整齐，可以只留多一点主体周边空间。";
 "photo_advisor.intent.zh_hans.neutral.retake_optional" = "不会默认建议重拍。先保留目前风格；只有想要更干净版本时才再拍一张。";
 "photo_advisor.intent.zh_hans.neutral.crop_optional" = "如果角度是有意的，可以保留；想整齐一点才做轻微裁切或拉直。";
@@ -713,6 +716,7 @@
 "photo_advisor.intent.yue.hk.soft_focus" = "柔焦感幾襯復古相機味；如果想清楚啲，下次可以 tap 主體鎖焦。";
 "photo_advisor.intent.yue.hk.grain" = "如果想保留復古 grain，可以配低少少 contrast；想乾淨啲就試柔和 filter。";
 "photo_advisor.intent.yue.hk.high_contrast" = "強少少 contrast 可以有菲林味；如果想順眼啲，可以收返少少。";
+"photo_advisor.intent.yue.hk.faded_color" = "色彩偏淡幾有舊相味。如果想有層次啲，可以加少少 contrast 或暖色。";
 "photo_advisor.intent.yue.hk.framing" = "怪少少嘅構圖都可以係風格；如果想乾淨啲，就留多少少主體周邊空間。";
 "photo_advisor.intent.yue.hk.retake_optional" = "唔會預設叫你重影。先保留呢個 feel；想要乾淨版本先再影多張。";
 "photo_advisor.intent.yue.hk.crop_optional" = "如果個角度係有意，可以留；想整齊啲先輕輕裁或者拉直。";
@@ -722,6 +726,7 @@
 "photo_advisor.intent.yue.troublemaker.soft_focus" = "柔焦唔係死罪，配復古味可以成立。想清楚啲，下次記得 tap 主體鎖焦。";
 "photo_advisor.intent.yue.troublemaker.grain" = "粒子感可以留，唔好急住磨到膠晒。想乾淨啲就換柔和 filter。";
 "photo_advisor.intent.yue.troublemaker.high_contrast" = "contrast 強少少可以有菲林味。想順眼啲先收返少少，唔使即刻推翻晒。";
+"photo_advisor.intent.yue.troublemaker.faded_color" = "淡色唔係錯，舊相味可以成立。想有層次啲先加少少 contrast，唔好一手推爆。";
 "photo_advisor.intent.yue.troublemaker.framing" = "構圖怪少少都可以係你嘅風格。想安全啲先留多少少主體周邊空間。";
 "photo_advisor.intent.yue.troublemaker.retake_optional" = "未去到要重影。先保留個 feel；真係想要乾淨版本先再拍多張。";
 "photo_advisor.intent.yue.troublemaker.crop_optional" = "角度有意就留，唔好為拉直而拉直；想整齊啲先郁少少。";

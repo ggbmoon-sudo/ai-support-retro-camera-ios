@@ -9,19 +9,26 @@ enum CameraCaptureContextSnapshotter {
         previewFilterId: String?,
         lensOption: LensOption?,
         liveGuidanceSignals: [LiveGuidanceSignal]?,
+        deviceSignalSnapshot: CameraCaptureDeviceSignalSnapshot = .unavailable,
+        analyzedImageSignals: LocalImageSignalContext = .unknown,
         compositionHelpers: CameraCompositionHelperContext = .unavailable
     ) -> CameraCaptureContext {
         guard source == .captured else {
-            return CameraCaptureContext.imported(imageSize: imageSize)
+            return CameraCaptureContext.imported(
+                imageSize: imageSize,
+                localImageSignals: analyzedImageSignals
+            )
         }
 
-        let exposure = exposureContext(from: liveGuidanceSignals)
-        let localSignals = localImageSignals(from: liveGuidanceSignals)
+        let localSignals = analyzedImageSignals.merged(
+            preferring: localImageSignals(from: liveGuidanceSignals)
+        )
+        let exposure = exposureContext(from: liveGuidanceSignals, localImageSignals: localSignals)
         let context = CameraCaptureContext(
             source: source,
             orientation: CameraCaptureOrientation(size: imageSize),
-            level: .unavailable,
-            motion: .unavailable,
+            level: deviceSignalSnapshot.level,
+            motion: deviceSignalSnapshot.motion,
             exposure: exposure,
             focus: .unavailable,
             lens: lensContext(from: lensOption),
@@ -32,55 +39,71 @@ enum CameraCaptureContextSnapshotter {
             creativeIntent: .neutral
         )
 
-        return CameraCaptureContext(
-            source: context.source,
-            orientation: context.orientation,
-            level: context.level,
-            motion: context.motion,
-            exposure: context.exposure,
-            focus: context.focus,
-            lens: context.lens,
-            compositionHelpers: context.compositionHelpers,
-            selectedFilterAtCapture: context.selectedFilterAtCapture,
-            previewFilterAtCapture: context.previewFilterAtCapture,
-            localImageSignals: context.localImageSignals,
-            creativeIntent: CreativeIntentGuard.context(for: context)
-        )
+        return context.withCreativeIntent(CreativeIntentGuard.context(for: context))
     }
 
-    private static func exposureContext(from signals: [LiveGuidanceSignal]?) -> CameraExposureContext {
-        guard let signals, !signals.isEmpty else {
-            return .unavailable
-        }
-
-        if signals.contains(.tooDark) {
+    private static func exposureContext(
+        from signals: [LiveGuidanceSignal]?,
+        localImageSignals: LocalImageSignalContext
+    ) -> CameraExposureContext {
+        if signals?.contains(.tooDark) == true {
             return CameraExposureContext(
                 available: true,
+                exposureBucket: .lowLight,
                 lowLightDetected: true,
                 isoBucket: .unknown,
-                exposureBias: .under
+                exposureBiasBucket: .under
             )
         }
 
-        if signals.contains(.tooBright) {
+        if signals?.contains(.tooBright) == true {
             return CameraExposureContext(
                 available: true,
+                exposureBucket: .bright,
                 lowLightDetected: false,
                 isoBucket: .unknown,
-                exposureBias: .over
+                exposureBiasBucket: .over
             )
         }
 
-        if signals.contains(.lightingLooksBalanced) {
+        if signals?.contains(.lightingLooksBalanced) == true {
             return CameraExposureContext(
                 available: true,
+                exposureBucket: .balanced,
                 lowLightDetected: false,
                 isoBucket: .unknown,
-                exposureBias: .neutral
+                exposureBiasBucket: .neutral
             )
         }
 
-        return .unavailable
+        switch localImageSignals.brightness {
+        case .low:
+            return CameraExposureContext(
+                available: true,
+                exposureBucket: .lowLight,
+                lowLightDetected: true,
+                isoBucket: .unknown,
+                exposureBiasBucket: .under
+            )
+        case .medium:
+            return CameraExposureContext(
+                available: true,
+                exposureBucket: .balanced,
+                lowLightDetected: false,
+                isoBucket: .unknown,
+                exposureBiasBucket: .neutral
+            )
+        case .high:
+            return CameraExposureContext(
+                available: true,
+                exposureBucket: .bright,
+                lowLightDetected: false,
+                isoBucket: .unknown,
+                exposureBiasBucket: .over
+            )
+        case .unknown:
+            return .unavailable
+        }
     }
 
     private static func localImageSignals(from signals: [LiveGuidanceSignal]?) -> LocalImageSignalContext {
@@ -147,12 +170,13 @@ enum CreativeIntentGuard {
         var signals: [CreativeIntentStyleSignal] = []
 
         if captureContext.exposure.lowLightDetected
+            || captureContext.exposure.exposureBucket == .lowLight
             || captureContext.localImageSignals.brightness == .low {
             signals.append(.lowLight)
         }
 
-        if captureContext.motion.stability == .slightMotion
-            || captureContext.motion.stability == .shaky
+        if captureContext.motion.motionBucket == .slightMotion
+            || captureContext.motion.motionBucket == .shaky
             || captureContext.localImageSignals.blurRisk == .medium
             || captureContext.localImageSignals.blurRisk == .high {
             signals.append(.motionBlur)
@@ -174,8 +198,15 @@ enum CreativeIntentGuard {
         }
 
         if isHighContrastFilter(captureContext.selectedFilterAtCapture)
-            || isHighContrastFilter(captureContext.previewFilterAtCapture) {
+            || isHighContrastFilter(captureContext.previewFilterAtCapture)
+            || captureContext.localImageSignals.contrast == .high {
             signals.append(.highContrast)
+        }
+
+        if isFadedColorFilter(captureContext.selectedFilterAtCapture)
+            || isFadedColorFilter(captureContext.previewFilterAtCapture)
+            || captureContext.localImageSignals.saturation == .low {
+            signals.append(.fadedColor)
         }
 
         if captureContext.localImageSignals.clutter == .medium
@@ -188,10 +219,26 @@ enum CreativeIntentGuard {
             result.append(signal)
         }
 
+        let adviceMode: CreativeIntentAdviceMode
+        if uniqueSignals.contains(.lowLight)
+            || uniqueSignals.contains(.motionBlur)
+            || uniqueSignals.contains(.tilt)
+            || uniqueSignals.contains(.retroGrain)
+            || uniqueSignals.contains(.softFocus)
+            || uniqueSignals.contains(.highContrast)
+            || uniqueSignals.contains(.fadedColor) {
+            adviceMode = .preserveStyle
+        } else if !uniqueSignals.isEmpty {
+            adviceMode = .optionalRefinement
+        } else {
+            adviceMode = .technicalHint
+        }
+
         return CreativeIntentContext(
             possibleIntentionalStyle: !uniqueSignals.isEmpty,
             styleSignals: uniqueSignals,
-            avoidOvercorrecting: !uniqueSignals.isEmpty
+            avoidOvercorrecting: !uniqueSignals.isEmpty,
+            adviceMode: adviceMode
         )
     }
 
@@ -215,5 +262,14 @@ enum CreativeIntentGuard {
         return filterId.contains("street_chrome")
             || filterId.contains("chrome")
             || filterId.contains("flash")
+    }
+
+    private static func isFadedColorFilter(_ filterId: String?) -> Bool {
+        guard let filterId else { return false }
+        return filterId.contains("faded")
+            || filterId.contains("flat")
+            || filterId.contains("pastel")
+            || filterId.contains("vintage")
+            || filterId.contains("film")
     }
 }

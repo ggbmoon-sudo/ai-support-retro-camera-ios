@@ -33,6 +33,7 @@ final class CameraViewModel: ObservableObject {
     private let localLiveGuidanceProvider: any LiveGuidanceProvider
     private let cloudSnapshotGuidanceService: any CloudSnapshotGuidanceService
     private let liveGuidanceStabilityController = LiveGuidanceStabilityController()
+    private let captureSignalMonitor = CameraCaptureDeviceSignalMonitor()
     private var activeFilterRenderID: UUID?
     private var activeCloudSnapshotGuidanceID: UUID?
     private var latestLocalFrameSignals: [LiveGuidanceSignal]?
@@ -124,6 +125,7 @@ final class CameraViewModel: ObservableObject {
                     self.errorMessage = CameraCaptureError.imageDataUnavailable.localizedDescription
                     return
                 }
+                let analyzedImageSignals = LocalImageSignalAnalyzer.analyze(image)
                 let captureContext = CameraCaptureContextSnapshotter.snapshot(
                     source: .captured,
                     imageSize: image.size,
@@ -131,6 +133,8 @@ final class CameraViewModel: ObservableObject {
                     previewFilterId: self.selectedFilterPreset.id,
                     lensOption: self.selectedLensOption,
                     liveGuidanceSignals: self.latestLocalFrameSignals,
+                    deviceSignalSnapshot: self.captureSignalMonitor.snapshot(),
+                    analyzedImageSignals: analyzedImageSignals,
                     compositionHelpers: CameraCompositionHelperContext(
                         gridEnabled: false,
                         levelGuideEnabled: false,
@@ -160,11 +164,15 @@ final class CameraViewModel: ObservableObject {
                   let image = UIImage(data: data) else {
                 throw CameraCaptureError.imageDataUnavailable
             }
+            let analyzedImageSignals = LocalImageSignalAnalyzer.analyze(image)
             setSelectedPhoto(
                 CapturedPhoto(
                     image: image,
                     source: .photoLibrary,
-                    captureContext: CameraCaptureContext.imported(imageSize: image.size)
+                    captureContext: CameraCaptureContext.imported(
+                        imageSize: image.size,
+                        localImageSignals: analyzedImageSignals
+                    )
                 )
             )
         } catch {
@@ -260,6 +268,7 @@ final class CameraViewModel: ObservableObject {
     }
 
     func stopCamera() {
+        captureSignalMonitor.stop()
         service.setFrameSignalAnalysisEnabled(false)
         service.stopSession()
     }
@@ -354,6 +363,7 @@ final class CameraViewModel: ObservableObject {
         do {
             try service.configureSessionIfNeeded()
             service.startSession()
+            captureSignalMonitor.start()
             permissionState = .authorized
             updateFrameSignalAnalysisAvailability()
         } catch {
