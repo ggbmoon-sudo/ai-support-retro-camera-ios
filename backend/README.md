@@ -288,6 +288,17 @@ Phase 18-B6 adds the operator runbook for this workflow:
 
 Phase 18-B6 is docs-only. It does not change backend provider request payloads, iOS upload payloads, capture-context upload behavior, provider credential handling, app behavior, Camera UI, cloud availability, or production rollout status.
 
+Phase 18-B7 records the final B0-B6 provider QA chain audit:
+
+- read `../docs/photo-advisor-provider-qa-chain-readiness.md` before Phase 18-C planning
+- B0-B6 are considered coherent when backend tests, synthetic QA, dry-run gate, and QA gate helper pass
+- Phase 18-C may start only as post-capture Advisor beta hardening / internal QA work
+- real-provider QA is not required to start Phase 18-C
+- backend provider request payloads and iOS upload payloads must remain unchanged unless a future phase explicitly approves a change
+- `productionReady` remains `false`
+
+Phase 18-B7 is docs-only and does not enable production cloud AI.
+
 Phase 17C-R3 local QA used five ignored synthetic JPEGs:
 
 - `warm-rooftop.jpg`

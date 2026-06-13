@@ -1,5 +1,22 @@
 # Manual Smoke Tests
 
+## Phase 18-B7
+
+Provider QA chain final audit and Phase 18-C readiness gate:
+
+- [ ] Open `docs/photo-advisor-provider-qa-chain-readiness.md`.
+- [ ] Confirm B0 provider language contract, B1 regression fixtures, B2 sanitized QA runner/reporting, B3 dry-run gate, B4 review thresholds, B5 QA gate helper, and B6 operator runbook are all listed.
+- [ ] Run backend tests: `cd backend && npm test`.
+- [ ] Run safe synthetic QA: `cd backend && npm run qa:photo-advisor`.
+- [ ] Run dry-run gate: `cd backend && npm run qa:photo-advisor:gate`.
+- [ ] Run gate helper: `cd backend && npm run qa:photo-advisor:review`.
+- [ ] Confirm gate helper reports no hard blockers.
+- [ ] Confirm any warnings are reviewed and documented before larger internal QA.
+- [ ] Confirm real-provider QA is not required to start Phase 18-C.
+- [ ] Confirm Phase 18-C readiness is limited to post-capture Advisor beta hardening / internal QA work.
+- [ ] Confirm `productionReady=false`.
+- [ ] Confirm no backend provider request payload change, iOS upload payload change, capture-context upload, iOS provider key/direct call, Camera cloud entry, generated report commit, real photo commit, or production rollout is introduced.
+
 ## Phase 18-B6
 
 Provider QA operator runbook and pre-integration checklist:
