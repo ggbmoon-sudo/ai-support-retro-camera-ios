@@ -78,7 +78,7 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 18-A0 Photo Advisor app language + capability audit completed; ready for review
+- Phase 18-A1 Photo Advisor language pack implementation completed; ready for review
 
 Next phase:
 
@@ -178,6 +178,8 @@ Phase 17D-C hardens that local capture intelligence lifecycle for real-device QA
 Phase 17D-D adds a commit-safe real-device QA kit for capture intelligence. Reviewers can follow the expanded manual smoke checklist and copy `tests/manual/capture-intelligence-real-device-qa-template.md` into ignored local notes before testing level / motion / light / blur / creative-intent behavior on device. The local mock Photo Advisor no longer marks bright / overexposed mock scenes as automatic retakes; advice remains optional and intent-aware. Real-device QA photos, filled reports, generated images, and device artifacts must stay local / ignored unless a later safe-asset policy explicitly approves committing them.
 
 Phase 18-A0 audits Photo Advisor language and capability coverage before any capture-context backend integration. The new `docs/ai-photo-advisor-language-audit.md` records implemented / partial / missing / unclear capabilities, current multilingual photography language, gaps, the recommended app voice, the future real AI language contract, and recommended next phases. It is documentation-only: no app source, localization, backend payload, provider key, direct provider call, Camera cloud entry, capture-context upload, GPS/location, raw EXIF, sensor persistence, or production rollout was added.
+
+Phase 18-A1 implements the first app-side Photo Advisor language pack. The local/mock advisor now uses structured `advisor.*` language keys for mood, visual signals, retro intent, optional crop / straighten / retake wording, imported-photo fallback, local-only / provider-unavailable fallback, and filter recommendation reasons. The language follows Observation -> Mood -> Retro intent -> Optional action, not Score -> Problem -> Fix -> Retake. It does not add cloud AI functionality, change backend provider payloads, upload capture context, add provider keys to iOS, add a Camera cloud entry, or enable production rollout.
 
 ## Phase 12A Filter Planning Status
 

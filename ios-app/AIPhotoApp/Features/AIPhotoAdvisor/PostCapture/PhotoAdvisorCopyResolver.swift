@@ -18,6 +18,13 @@ nonisolated struct PhotoAdvisorCopyResolver: Sendable {
         language: AppLanguageMode,
         requestedTone: ToneMode
     ) -> String {
+        if category == .unavailable {
+            return PhotoAdvisorLanguagePack.providerUnavailableKey(
+                language: language,
+                requestedTone: requestedTone
+            )
+        }
+
         let tone = resolvedTone(
             language: language,
             requestedTone: requestedTone,
@@ -50,7 +57,9 @@ nonisolated struct PhotoAdvisorCopyResolver: Sendable {
             id: result.id,
             schemaVersion: result.schemaVersion,
             mode: result.mode,
-            summaryKey: messageKey(for: .moodSummary, language: input.languageMode, requestedTone: input.toneMode),
+            summaryKey: shouldPreserveKey(result.summaryKey)
+                ? result.summaryKey
+                : messageKey(for: .moodSummary, language: input.languageMode, requestedTone: input.toneMode),
             strengthsKeys: result.strengthsKeys,
             suggestions: localizedSuggestions(result.suggestions, input: input),
             recommendedFilters: localizedRecommendations(result.recommendedFilters, input: input),
@@ -104,14 +113,16 @@ nonisolated struct PhotoAdvisorCopyResolver: Sendable {
             PhotoAdvisorFilterRecommendation(
                 id: recommendation.id,
                 filterId: recommendation.filterId,
-                reasonKey: messageKey(for: .filterRecommendation, language: input.languageMode, requestedTone: input.toneMode),
+                reasonKey: shouldPreserveKey(recommendation.reasonKey)
+                    ? recommendation.reasonKey
+                    : PhotoAdvisorLanguagePack.filterReasonKey(filterId: recommendation.filterId, input: input),
                 confidence: recommendation.confidence
             )
         }
     }
 
     private func shouldPreserveKey(_ key: String) -> Bool {
-        key.hasPrefix("photo_advisor.intent.")
+        key.hasPrefix("photo_advisor.intent.") || key.hasPrefix("advisor.")
     }
 
     private func resolvedTone(

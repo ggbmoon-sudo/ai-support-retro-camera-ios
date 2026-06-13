@@ -12,7 +12,7 @@ enum PhotoAdvisorHeuristicResolver {
             id: "\(base.id)_\(input.selectedFilterId ?? "none")_\(input.imageSignal.aspectRatioBucket.rawValue)",
             schemaVersion: PhotoAdvisorResultValidator.schemaVersion,
             mode: .postCapture,
-            summaryKey: summaryKey(for: input, base: base),
+            summaryKey: summaryKey(for: input, scene: scene, base: base),
             strengthsKeys: base.strengthsKeys,
             suggestions: suggestions,
             recommendedFilters: recommendations,
@@ -71,25 +71,16 @@ enum PhotoAdvisorHeuristicResolver {
         }
     }
 
-    private static func summaryKey(for input: PhotoAdvisorInput, base: PhotoAdvisorResult) -> String {
-        switch filterFamily(for: input.selectedFilterId) {
-        case .warmPortrait:
-            return "photo_advisor.heuristic.summary.warm"
-        case .streetChrome:
-            return "photo_advisor.heuristic.summary.street"
-        case .nightNeon:
-            return "photo_advisor.heuristic.summary.night"
-        case .cinematic:
-            return "photo_advisor.heuristic.summary.cinematic"
-        case .ccd:
-            return "photo_advisor.fixture.ccd_party.summary"
-        case .travel:
-            return "photo_advisor.heuristic.summary.travel"
-        case .chromeMono:
-            return "photo_advisor.heuristic.summary.chrome"
-        case .generic:
-            return base.summaryKey
+    private static func summaryKey(
+        for input: PhotoAdvisorInput,
+        scene: PhotoAdvisorMockScene,
+        base: PhotoAdvisorResult
+    ) -> String {
+        if input.imageSignal.hasPreviewImage {
+            return PhotoAdvisorLanguagePack.moodSummaryKey(for: scene, input: input)
         }
+
+        return base.summaryKey
     }
 
     private static func suggestions(for input: PhotoAdvisorInput, base: PhotoAdvisorResult) -> [PhotoAdvisorSuggestion] {
@@ -99,7 +90,11 @@ enum PhotoAdvisorHeuristicResolver {
             suggestions.insert(intentSuggestion, at: 0)
         }
 
-        if let aspectSuggestion = aspectSuggestion(for: input.imageSignal.aspectRatioBucket) {
+        if input.source == .imported {
+            suggestions.insert(importedPhotoSuggestion(for: input), at: min(1, suggestions.count))
+        }
+
+        if let aspectSuggestion = aspectSuggestion(for: input.imageSignal.aspectRatioBucket, input: input) {
             suggestions.insert(aspectSuggestion, at: min(1, suggestions.count))
         }
 
@@ -107,18 +102,13 @@ enum PhotoAdvisorHeuristicResolver {
     }
 
     private static func intentSuggestion(for input: PhotoAdvisorInput) -> PhotoAdvisorSuggestion? {
-        let copyResolver = PhotoAdvisorCopyResolver()
         let signals = input.captureContext.creativeIntent.styleSignals
 
         if signals.contains(.lowLight) {
             return PhotoAdvisorSuggestion(
                 id: "intent_low_light",
                 type: .lighting,
-                textKey: copyResolver.intentMessageKey(
-                    for: "low_light",
-                    language: input.languageMode,
-                    requestedTone: input.toneMode
-                ),
+                textKey: PhotoAdvisorLanguagePack.signalKey(for: .lowLight, input: input),
                 priority: .medium
             )
         }
@@ -127,11 +117,7 @@ enum PhotoAdvisorHeuristicResolver {
             return PhotoAdvisorSuggestion(
                 id: "intent_motion",
                 type: .composition,
-                textKey: copyResolver.intentMessageKey(
-                    for: "motion",
-                    language: input.languageMode,
-                    requestedTone: input.toneMode
-                ),
+                textKey: PhotoAdvisorLanguagePack.signalKey(for: .motionBlur, input: input),
                 priority: .medium
             )
         }
@@ -140,11 +126,7 @@ enum PhotoAdvisorHeuristicResolver {
             return PhotoAdvisorSuggestion(
                 id: "intent_tilt",
                 type: .composition,
-                textKey: copyResolver.intentMessageKey(
-                    for: "tilt",
-                    language: input.languageMode,
-                    requestedTone: input.toneMode
-                ),
+                textKey: PhotoAdvisorLanguagePack.signalKey(for: .tilt, input: input),
                 priority: .medium
             )
         }
@@ -153,11 +135,7 @@ enum PhotoAdvisorHeuristicResolver {
             return PhotoAdvisorSuggestion(
                 id: "intent_soft_focus",
                 type: .composition,
-                textKey: copyResolver.intentMessageKey(
-                    for: "soft_focus",
-                    language: input.languageMode,
-                    requestedTone: input.toneMode
-                ),
+                textKey: PhotoAdvisorLanguagePack.signalKey(for: .softFocus, input: input),
                 priority: .medium
             )
         }
@@ -166,11 +144,7 @@ enum PhotoAdvisorHeuristicResolver {
             return PhotoAdvisorSuggestion(
                 id: "intent_grain",
                 type: .filter,
-                textKey: copyResolver.intentMessageKey(
-                    for: "grain",
-                    language: input.languageMode,
-                    requestedTone: input.toneMode
-                ),
+                textKey: PhotoAdvisorLanguagePack.signalKey(for: .retroGrain, input: input),
                 priority: .medium
             )
         }
@@ -179,11 +153,7 @@ enum PhotoAdvisorHeuristicResolver {
             return PhotoAdvisorSuggestion(
                 id: "intent_high_contrast",
                 type: .filter,
-                textKey: copyResolver.intentMessageKey(
-                    for: "high_contrast",
-                    language: input.languageMode,
-                    requestedTone: input.toneMode
-                ),
+                textKey: PhotoAdvisorLanguagePack.signalKey(for: .highContrast, input: input),
                 priority: .medium
             )
         }
@@ -192,11 +162,7 @@ enum PhotoAdvisorHeuristicResolver {
             return PhotoAdvisorSuggestion(
                 id: "intent_faded_color",
                 type: .filter,
-                textKey: copyResolver.intentMessageKey(
-                    for: "faded_color",
-                    language: input.languageMode,
-                    requestedTone: input.toneMode
-                ),
+                textKey: PhotoAdvisorLanguagePack.signalKey(for: .fadedColor, input: input),
                 priority: .medium
             )
         }
@@ -205,11 +171,7 @@ enum PhotoAdvisorHeuristicResolver {
             return PhotoAdvisorSuggestion(
                 id: "intent_framing",
                 type: .composition,
-                textKey: copyResolver.intentMessageKey(
-                    for: "framing",
-                    language: input.languageMode,
-                    requestedTone: input.toneMode
-                ),
+                textKey: PhotoAdvisorLanguagePack.signalKey(for: .unusualFraming, input: input),
                 priority: .medium
             )
         }
@@ -217,27 +179,43 @@ enum PhotoAdvisorHeuristicResolver {
         return nil
     }
 
-    private static func aspectSuggestion(for bucket: PhotoAdvisorAspectRatioBucket) -> PhotoAdvisorSuggestion? {
+    private static func importedPhotoSuggestion(for input: PhotoAdvisorInput) -> PhotoAdvisorSuggestion {
+        PhotoAdvisorSuggestion(
+            id: "imported_photo_context",
+            type: .composition,
+            textKey: PhotoAdvisorLanguagePack.importedFallbackKey(for: input),
+            priority: .low
+        )
+    }
+
+    private static func aspectSuggestion(
+        for bucket: PhotoAdvisorAspectRatioBucket,
+        input: PhotoAdvisorInput
+    ) -> PhotoAdvisorSuggestion? {
+        guard let textKey = PhotoAdvisorLanguagePack.aspectSuggestionKey(for: bucket, input: input) else {
+            return nil
+        }
+
         switch bucket {
         case .landscape, .wideLandscape:
             return PhotoAdvisorSuggestion(
                 id: "heuristic_landscape_space",
                 type: .crop,
-                textKey: "photo_advisor.heuristic.suggestion.landscape",
+                textKey: textKey,
                 priority: .medium
             )
         case .portrait:
             return PhotoAdvisorSuggestion(
                 id: "heuristic_portrait_space",
                 type: .composition,
-                textKey: "photo_advisor.heuristic.suggestion.portrait",
+                textKey: textKey,
                 priority: .medium
             )
         case .tallPortrait:
             return PhotoAdvisorSuggestion(
                 id: "heuristic_tall_portrait_space",
                 type: .composition,
-                textKey: "photo_advisor.heuristic.suggestion.tall_portrait",
+                textKey: textKey,
                 priority: .medium
             )
         case .square, .unavailable:
@@ -252,11 +230,7 @@ enum PhotoAdvisorHeuristicResolver {
         if input.captureContext.creativeIntent.avoidOvercorrecting {
             return PhotoAdvisorRetakeAdvice(
                 shouldRetake: false,
-                reasonKey: PhotoAdvisorCopyResolver().intentMessageKey(
-                    for: "retake_optional",
-                    language: input.languageMode,
-                    requestedTone: input.toneMode
-                )
+                reasonKey: PhotoAdvisorLanguagePack.retakeOptionalKey(for: input)
             )
         }
 
@@ -264,17 +238,17 @@ enum PhotoAdvisorHeuristicResolver {
         case .landscape, .wideLandscape:
             return PhotoAdvisorRetakeAdvice(
                 shouldRetake: false,
-                reasonKey: "photo_advisor.heuristic.retake.landscape"
+                reasonKey: PhotoAdvisorLanguagePack.keepStyleKey(for: input)
             )
         case .portrait, .tallPortrait:
             return PhotoAdvisorRetakeAdvice(
                 shouldRetake: false,
-                reasonKey: "photo_advisor.heuristic.retake.portrait"
+                reasonKey: PhotoAdvisorLanguagePack.keepStyleKey(for: input)
             )
         case .square:
             return PhotoAdvisorRetakeAdvice(
                 shouldRetake: false,
-                reasonKey: "photo_advisor.heuristic.retake.square"
+                reasonKey: PhotoAdvisorLanguagePack.keepStyleKey(for: input)
             )
         case .unavailable:
             return base.retakeAdvice
@@ -289,11 +263,7 @@ enum PhotoAdvisorHeuristicResolver {
             || input.captureContext.creativeIntent.styleSignals.contains(.unusualFraming) {
             return PhotoAdvisorCropAdvice(
                 recommended: false,
-                textKey: PhotoAdvisorCopyResolver().intentMessageKey(
-                    for: "crop_optional",
-                    language: input.languageMode,
-                    requestedTone: input.toneMode
-                )
+                textKey: PhotoAdvisorLanguagePack.straightenAdviceKey(for: input)
             )
         }
 
@@ -301,22 +271,22 @@ enum PhotoAdvisorHeuristicResolver {
         case .landscape, .wideLandscape:
             return PhotoAdvisorCropAdvice(
                 recommended: false,
-                textKey: "photo_advisor.heuristic.crop.landscape"
+                textKey: PhotoAdvisorLanguagePack.cropAdviceKey(for: input)
             )
         case .portrait:
             return PhotoAdvisorCropAdvice(
                 recommended: false,
-                textKey: "photo_advisor.heuristic.crop.portrait"
+                textKey: PhotoAdvisorLanguagePack.cropAdviceKey(for: input)
             )
         case .tallPortrait:
             return PhotoAdvisorCropAdvice(
-                recommended: true,
-                textKey: "photo_advisor.heuristic.crop.tall_portrait"
+                recommended: false,
+                textKey: PhotoAdvisorLanguagePack.cropAdviceKey(for: input)
             )
         case .square:
             return PhotoAdvisorCropAdvice(
                 recommended: false,
-                textKey: "photo_advisor.heuristic.crop.square"
+                textKey: PhotoAdvisorLanguagePack.keepStyleKey(for: input)
             )
         case .unavailable:
             return base.cropAdvice

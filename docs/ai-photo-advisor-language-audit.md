@@ -225,3 +225,16 @@ Future Phase 18 real AI prompts and backend validators should follow this contra
 The app is ready for a language-pack phase before deeper real AI integration. The current local/mock implementation already proves the product direction: Photo Advisor can preserve creative intent, recommend filters, and use capture context without becoming a lazy critic. The next step should strengthen the app-owned vocabulary first, then let real AI follow that language contract.
 
 Production rollout remains blocked.
+
+## Phase 18-A1 Implementation Note
+
+Phase 18-A1 implements the first app-side language pack recommended by this audit. The local/mock Photo Advisor now uses structured `advisor.*` localization keys for mood, visual signals, retro intent, optional crop / straighten / retake wording, imported-photo fallback, provider-unavailable fallback, and filter recommendation reasons.
+
+The implemented wording follows:
+
+1. Observation.
+2. Mood.
+3. Retro intent.
+4. Optional action.
+
+It explicitly avoids treating blur, tilt, low light, grain, high contrast, faded color, soft focus, motion, or unusual framing as automatic mistakes. Backend provider payloads remain unchanged, capture context is not uploaded, Camera remains local-only, and production rollout remains blocked.

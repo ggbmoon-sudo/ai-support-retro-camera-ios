@@ -1,5 +1,36 @@
 # Manual Smoke Tests
 
+## Phase 18-A1
+
+Photo Advisor language pack check:
+
+- [ ] Launch the app and confirm Camera opens normally.
+- [ ] Confirm Camera remains local-only and no AI Snapshot / Quick Advice / Cloud AI entry appears.
+- [ ] Capture or import a photo and open mock/local Photo Advisor.
+- [ ] Confirm Photo Advisor language starts with mood / style where appropriate.
+- [ ] Confirm blur, tilt, low light, grain, high contrast, faded color, soft focus, motion, and unusual framing are treated as possible retro style.
+- [ ] Confirm technical advice uses optional wording such as “if you want...” / “如果你想...”.
+- [ ] Confirm retake advice appears only as optional / conservative wording, not a default instruction.
+- [ ] Confirm filter recommendations include a short photographic reason, not only “try this filter.”
+- [ ] Select English, 繁體中文, 简体中文, 廣東話 / 香港口語, and 廣東話 / 麻煩友 where practical, then confirm no raw `advisor.*` localization keys appear.
+- [ ] Confirm imported photos say capture context is limited and only light / color / framing are being read.
+- [ ] Confirm unavailable / cloud fallback copy is short, safe, and does not expose raw provider errors.
+- [ ] Confirm UI does not show score / rating, numeric confidence, raw JSON, raw provider output, chain-of-thought, raw sensor streams, raw EXIF, provider keys, or direct provider URLs.
+- [ ] Confirm no banned or sensitive wording appears: face / skin / age / gender / attractiveness / beauty / emotion / health / identity / ethnicity / religion / disability / body judgment.
+
+Manual grep checks:
+
+- [ ] `rg -n "advisor\\." ios-app/AIPhotoApp/Resources/Localization` confirms the new language pack keys exist in supported locale files.
+- [ ] `rg -n "7/10|8/10|score|rating|bad photo|wrong exposure|failed photo|must fix|retake it|retake required|chain-of-thought" ios-app/AIPhotoApp/Features/AIPhotoAdvisor ios-app/AIPhotoApp/Resources/Localization` should not find production UI copy.
+- [ ] `rg -n "face recognition|skin quality|beauty|attractive|gender|emotion|health|race|ethnicity|religion|disability|body shaming" ios-app/AIPhotoApp/Features/AIPhotoAdvisor ios-app/AIPhotoApp/Resources/Localization` should not find production UI copy.
+
+Boundary check:
+
+- [ ] Backend `/v1/ai/photo-advisor` payloads remain unchanged.
+- [ ] Capture context is not uploaded.
+- [ ] iOS still has no provider key, provider SDK import, or direct provider URL call.
+- [ ] No GPS/location collection, raw EXIF dump, raw sensor persistence, StoreKit, Gemini Live, WebSocket, export, or production cloud rollout is enabled.
+
 ## Phase 18-A0
 
 Documentation / language audit check:

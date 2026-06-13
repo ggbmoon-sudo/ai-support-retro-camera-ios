@@ -176,6 +176,17 @@ Phase 18-A0 is documentation-only. It audits the current Photo Advisor app langu
 
 The audit recommends strengthening app-owned Photo Advisor language before sending capture context into real provider prompts. No Swift source, localization strings, backend request payload, provider key, direct provider call, Camera cloud entry, capture-context upload, GPS/location collection, raw EXIF dump, sensor persistence, or production rollout is added.
 
+## Phase 18-A1 Photo Advisor Language Pack
+
+Phase 18-A1 adds the first app-side Photo Advisor language pack for the local/mock advisor:
+
+- `advisor.*` localization keys cover mood, light, blur, motion, tilt, grain, contrast, color, framing, crop, optional retake, imported-photo fallback, provider-unavailable fallback, and filter recommendation reasons.
+- The local/mock advisor now maps capture context and CreativeIntentGuard signals into Observation -> Mood -> Retro intent -> Optional action wording.
+- English, Traditional Chinese, Simplified Chinese, Cantonese conversational, and non-explicit Cantonese troublemaker key variants are available through the existing localization files.
+- Retake copy remains conservative and optional; blur, tilt, low light, grain, high contrast, faded color, soft focus, motion, and unusual framing are treated as possible retro style.
+
+This phase does not add a provider SDK or key to iOS, direct provider calls, Camera cloud AI entry points, backend payload changes, capture-context upload, GPS/location collection, raw EXIF dump, raw sensor persistence, or production cloud rollout.
+
 ## Phase 12A Filter Planning
 
 Phase 12A adds filter research and schema planning documents only. It does not change iOS app source code.
