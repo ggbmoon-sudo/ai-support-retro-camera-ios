@@ -114,6 +114,8 @@ Phase 17C-R1 keeps the iOS app provider-key-free and production/default mock/loc
 
 There is still no Gemini / OpenAI SDK import in iOS, no provider key in iOS, no direct QweAPI call in iOS, no production cloud AI rollout, no Camera cloud AI entry, no storage upload, no export, and no StoreKit integration.
 
+Phase 17C-R2 keeps iOS behavior unchanged. Provider QA runs in the backend only and writes sanitized ignored reports; production/default Photo Advisor remains mock/local and Camera remains local-only.
+
 ## Phase 12A Filter Planning
 
 Phase 12A adds filter research and schema planning documents only. It does not change iOS app source code.

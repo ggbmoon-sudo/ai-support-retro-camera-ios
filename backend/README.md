@@ -123,6 +123,48 @@ The probe sends a text-only OpenAI-compatible chat completion request to `https:
 
 Current internal verification: text-only QweAPI chat completions succeed, and the `gemini-3.1-flash-image-preview` OpenAI-compatible `image_url` payload returns a validated `source=cloud` Photo Advisor response through `/v1/ai/photo-advisor`.
 
+## Photo Advisor Provider QA
+
+Phase 17C-R2 adds a repeatable provider QA batch workflow for the internal Photo Advisor beta.
+
+Run backend tests first:
+
+```sh
+npm test
+```
+
+Run provider QA:
+
+```sh
+npm run qa:photo-advisor
+```
+
+If this runtime does not have `npm`, run the script directly:
+
+```sh
+node scripts/run-photo-advisor-provider-qa.mjs
+```
+
+The QA script:
+
+- loads local `.env`
+- requires `CLOUD_AI_PROVIDER_MODE=qweInternal`
+- requires `ALLOW_INTERNAL_CLOUD_AI=true`
+- sends only internal/debug Photo Advisor requests
+- runs the backend route path, including request validation, provider retry, response validation, safety validation, and fallback
+- writes a sanitized report to `backend/reports/provider-qa/photo-advisor-qa-report.json`
+
+Local image policy:
+
+- optional local QA JPEGs go in `backend/tests/local-images/`
+- `backend/tests/local-images/` is ignored except for its README
+- use only non-sensitive, approved, metadata-stripped, small JPEGs
+- do not commit private photos, large originals, EXIF / GPS metadata, or real user images
+
+If no local QA images are present, the script uses a tiny built-in JPEG smoke image across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`.
+
+The generated report is ignored and must remain metadata-only. It includes counts for cloud success, fallback, latency, schema failures, safety failures, invalid filter IDs, and manual language review flags. It must not include API keys, base64 images, raw request bodies, provider raw responses, EXIF, GPS, or face data.
+
 ## No Payload Logging
 
 Do not log:

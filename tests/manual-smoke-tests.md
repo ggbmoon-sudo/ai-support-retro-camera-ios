@@ -15,6 +15,15 @@ Check:
 - [ ] Run `backend/scripts/probe-qwe-endpoint.mjs` before image smoke testing; it should call `https://qweapi.com/v1/chat/completions`.
 - [ ] Confirm text-only QweAPI probe succeeds before testing image analysis.
 - [ ] Confirm image Photo Advisor smoke returns a validated `source=cloud` response when internal QweAPI config is enabled and backend is running.
+- [ ] Run `backend/scripts/run-photo-advisor-provider-qa.mjs` or `npm run qa:photo-advisor`.
+- [ ] Confirm provider QA report is written to ignored `backend/reports/provider-qa/photo-advisor-qa-report.json`.
+- [ ] Confirm provider QA report contains no API key, base64 image, raw image, request body, provider raw response, EXIF, GPS, or face data.
+- [ ] Review provider QA summary: cloud success, fallback count, average / p50 / p95 latency, schema failures, safety failures, invalid filter IDs.
+- [ ] Manually review 3-5 real approved local QA image results when available.
+- [ ] Manually check language quality for English, Traditional Chinese, Simplified Chinese, and Cantonese.
+- [ ] Check captions are short and not weird.
+- [ ] Check filter recommendations are valid and reasonable.
+- [ ] Check no sensitive inference, face recognition, identity inference, or appearance/body/identity attack appears.
 - [ ] Probe script prints sanitized status / latency only and does not print API key, request body, base64 image, or provider raw response.
 - [ ] No QweAPI API key or QweAPI base URL appears in iOS source.
 - [ ] Result language follows Settings where supported.
@@ -31,6 +40,8 @@ Known TODOs:
 
 - [ ] Phase 17C is internal/debug only, not production rollout.
 - [ ] QweAPI `gemini-3.1-flash-image-preview` image_url smoke now returns a validated cloud response; production rollout still requires explicit approval, QA, and cost/safety guard review.
+- [ ] Phase 17C-R2 QA batch currently uses built-in tiny JPEG smoke cases unless approved local images are placed in ignored `backend/tests/local-images/`.
+- [ ] R2 initial QA p95 latency was high; review latency with real approved sample images before any production rollout.
 - [ ] Next safe step is provider latency / QA tuning, not Camera cloud AI, Gemini Live, Filter Generator real backend, 改圖師, StoreKit, or production cloud AI.
 
 ## Phase 17C-Prep

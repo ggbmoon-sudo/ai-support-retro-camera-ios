@@ -13,6 +13,11 @@ import { resolveProviderKind } from "../src/routes/photoAdvisor.mjs";
 import { validateCloudAIResponse } from "../src/validators/validateCloudAIResponse.mjs";
 import { validatePhotoAdvisorRequest } from "../src/validators/validatePhotoAdvisorRequest.mjs";
 import { safeErrorMetadata } from "../src/logging/safeLog.mjs";
+import {
+  assertQAReportRedacted,
+  sanitizePhotoAdvisorQACase,
+  summarizePhotoAdvisorQA
+} from "../src/qa/photoAdvisorQAReport.mjs";
 
 test("health returns mock-only status", () => {
   assert.deepEqual(healthResponse(), {
@@ -407,6 +412,8 @@ test("photo advisor prompt bans sensitive inference and arbitrary filters", () =
   assert.equal(prompt.includes("Do not identify people"), true);
   assert.equal(prompt.includes("Do not infer age, gender, race"), true);
   assert.equal(prompt.includes("Recommended filter IDs must be chosen only from this whitelist"), true);
+  assert.equal(prompt.includes("Avoid poetic copy, overclaiming, and generic filler"), true);
+  assert.equal(prompt.includes("Retake advice must be soft"), true);
   assert.equal(prompt.includes("instant_dream"), true);
 });
 
@@ -434,6 +441,79 @@ test("safe logging metadata does not include payload fields", () => {
   ].sort());
   assert.equal("dataBase64" in metadata, false);
   assert.equal("requestBody" in metadata, false);
+});
+
+test("photo advisor qa report redacts sensitive fields", () => {
+  const report = summarizePhotoAdvisorQA({
+    provider: "qweapi",
+    model: "gemini-3.1-flash-image-preview",
+    baseURL: "https://qweapi.com",
+    cases: [
+      sanitizePhotoAdvisorQACase({
+        caseId: "warm-rooftop-01",
+        locale: "zh-Hant",
+        source: "cloud",
+        latencyMs: 5600,
+        schemaValid: true,
+        safetyValid: true,
+        fallbackCode: null,
+        recommendedFilterIds: ["instant_dream"],
+        captionLength: 18,
+        summaryLength: 44,
+        suggestionCount: 2,
+        confidence: "high",
+        needsManualLanguageReview: true,
+        dataBase64: "/9j/",
+        requestBody: { image: "redact" },
+        apiKey: "redact"
+      })
+    ]
+  });
+
+  assert.equal(report.totalCases, 1);
+  assert.equal(report.cloudSuccess, 1);
+  assert.equal(report.fallback, 0);
+  assert.equal(report.languageCasesNeedingManualReview, 1);
+  assert.equal(JSON.stringify(report).includes("/9j/"), false);
+  assert.equal(JSON.stringify(report).includes("requestBody"), false);
+  assert.equal(JSON.stringify(report).includes("apiKey"), false);
+  assert.equal(assertQAReportRedacted(report).ok, true);
+});
+
+test("photo advisor qa report summarizes fallback metrics", () => {
+  const report = summarizePhotoAdvisorQA({
+    provider: "qweapi",
+    model: "gemini-3.1-flash-image-preview",
+    baseURL: "https://qweapi.com",
+    cases: [
+      sanitizePhotoAdvisorQACase({
+        caseId: "valid",
+        locale: "en",
+        source: "cloud",
+        latencyMs: 5000,
+        schemaValid: true,
+        safetyValid: true,
+        recommendedFilterIds: ["instant_dream"]
+      }),
+      sanitizePhotoAdvisorQACase({
+        caseId: "fallback",
+        locale: "zh-Hant",
+        source: "fallback",
+        latencyMs: 1200,
+        schemaValid: true,
+        safetyValid: true,
+        fallbackCode: "provider_timeout"
+      })
+    ]
+  });
+
+  assert.equal(report.totalCases, 2);
+  assert.equal(report.cloudSuccess, 1);
+  assert.equal(report.fallback, 1);
+  assert.equal(report.providerTimeouts, 1);
+  assert.equal(report.averageLatencyMs, 3100);
+  assert.equal(report.p50LatencyMs, 1200);
+  assert.equal(report.p95LatencyMs, 5000);
 });
 
 async function fixture(name) {

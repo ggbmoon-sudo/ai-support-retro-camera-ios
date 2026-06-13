@@ -9,8 +9,8 @@ Every Codex task must update this file before finishing.
 ## Current Status
 
 Current phase: Phase 17C - Gemini Photo Advisor Internal Beta
-Status: Backend-only Photo Advisor internal beta path through QweAPI gateway added; text-only and image provider smoke pass with gemini-3.1-flash-image-preview
-Latest implementation: Added internal/debug-guarded Gemini Photo Advisor provider adapter on the backend, server-side config / secret reads, prompt contract, structured JSON parsing, response validation, retry / fallback handling, updated consent copy, and tests while keeping production/default Photo Advisor mock/local, iOS provider-key-free, and Camera local-only
+Status: Phase 17C-R2 provider QA batch workflow added for QweAPI / gemini-3.1-flash-image-preview internal Photo Advisor beta
+Latest implementation: Added internal/debug-guarded Gemini Photo Advisor provider adapter plus provider QA batch reporting, server-side config / secret reads, prompt contract tuning, structured JSON parsing, response validation, retry / fallback handling, updated consent copy, and tests while keeping production/default Photo Advisor mock/local, iOS provider-key-free, and Camera local-only
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -68,7 +68,58 @@ Phase 17A verification: Cloud AI backend boundary skeleton only; no real provide
 Phase 17B verification: debug-only remote chain added for local backend mock endpoint; production/default remains mock/local; no provider call, no provider API key, no Camera cloud AI entry, no storage upload, and no request payload logging.
 Phase 17C-Prep verification: provider adapter boundary remains mock-only; backend request / response validation, filter whitelist validation, unsafe response guard, fallback contract, rate-limit / quota / timeout placeholders, redaction helpers, fixtures, and backend tests are in place; no real provider call, no provider API key, no production remote enablement, no storage upload, no request payload logging, and Camera remains local-only.
 Phase 17C-R1 verification: active provider contract switched from the failed Code0 gateway attempt to the QweAPI OpenAI-compatible gateway; a safe text-only provider probe script was added; backend-only Photo Advisor internal beta path remains behind `ALLOW_INTERNAL_CLOUD_AI=true`, `CLOUD_AI_PROVIDER_MODE=qweInternal`, internal debug header, server-side `QWE_API_KEY`, validated `QWE_BASE_URL=https://qweapi.com`, and `QWE_PHOTO_ADVISOR_MODEL=gemini-3.1-flash-image-preview`; text-only QweAPI probe succeeds, and `gemini-3.1-flash-image-preview` image_url multimodal request returns a validated `source=cloud` Photo Advisor response; default remains mock/local; iOS has no provider key / SDK / direct QweAPI call; Camera remains local-only; no storage upload, request payload logging, provider raw response logging, Gemini Live, WebSocket, StoreKit, export, or production rollout was added.
+Phase 17C-R2 verification: provider QA batch workflow added; local QA images and generated provider QA reports are ignored; QA script records sanitized latency / schema / safety / fallback metrics only; prompt wording was tightened for short, practical, non-poetic, locale-aware Photo Advisor output; backend tests and a four-locale tiny-image QA batch passed with no schema, safety, or invalid-filter failures; production/default remains mock/local; iOS has no provider key / SDK / direct QweAPI call; Camera remains local-only.
 Next phase: Phase 17C still needs user visual QA and provider latency / quality review before any production rollout. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, or save-to-Photos until explicitly requested.
+
+---
+
+## Phase 17C-R2 - Provider QA Batch + Prompt Tuning
+
+Status: Provider QA batch workflow added; production/default remains mock/local
+Date completed: 2026-06-13
+
+### Completed
+
+- Added backend Photo Advisor provider QA script at `backend/scripts/run-photo-advisor-provider-qa.mjs`.
+- Added sanitized QA report helpers at `backend/src/qa/photoAdvisorQAReport.mjs`.
+- Added `npm run qa:photo-advisor` backend script.
+- Added ignored local QA image policy at `backend/tests/local-images/`.
+- Added ignored generated report location at `backend/reports/provider-qa/`.
+- QA script uses backend route handling so request validation, internal/debug guard, provider retry, response validation, safety validation, and fallback are exercised together.
+- QA script records total cases, cloud success, fallback count, average / p50 / p95 latency, schema failures, safety failures, invalid filter IDs, provider errors, provider timeouts, invalid JSON/schema fallback counts, and manual language review flags.
+- QA reports do not include API keys, base64 image payloads, raw request bodies, provider raw responses, EXIF, GPS, or face data.
+- Prompt wording tightened to keep Photo Advisor output short, practical, gentle, non-poetic, non-overconfident, and not generation-oriented.
+- Added backend tests for QA report redaction and fallback metrics.
+- Updated backend README, README, iOS README, handoff, phase log, and manual smoke tests.
+
+### QA Observation
+
+- Local QA batch used the built-in tiny JPEG smoke image across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`.
+- Result: 4 total cases, 3 cloud successes, 1 fallback, 0 schema failures, 0 safety failures, 0 invalid filter IDs.
+- Latency: average 15429 ms, p50 6606 ms, p95 34403 ms.
+- Language quality remains manual-review only; script intentionally does not attempt automatic language-quality judgment.
+- The p95 latency is high and should be reviewed before any production rollout.
+
+### Safety Notes
+
+R2 does not add production remote enablement, provider keys to iOS, direct QweAPI calls from iOS, Camera cloud AI, AI Snapshot, Filter Generator real backend, 改圖師, image generation, Gemini Live, WebSocket, cloud storage upload, request payload logging, provider raw response logging, raw image persistence, account / payment / StoreKit, or production rollout.
+
+### Verification
+
+- [x] Backend tests passed with bundled Node runtime.
+- [x] QA script ran with sanitized output and generated an ignored report.
+- [x] QA report redaction checks passed.
+- [x] `git diff --check` passed.
+- [x] Xcode generic iOS Simulator build passed.
+- [x] Secret scan passed.
+- [x] Payload logging scan passed.
+- [x] iOS direct provider scan passed.
+- [x] Camera cloud entry regression scan passed.
+- [x] Unsafe phrase scan found only backend banned-term guard entries.
+
+### Ready to Commit Phase 17C-R2
+
+No. Wait until the user reviews the QA workflow and Xcode / Simulator behavior.
 
 ---
 

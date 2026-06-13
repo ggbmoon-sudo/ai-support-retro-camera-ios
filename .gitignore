@@ -42,3 +42,6 @@ yarn-error.log*
 coverage/
 dist/
 tmp/
+backend/reports/provider-qa/
+backend/tests/local-images/*
+!backend/tests/local-images/README.md

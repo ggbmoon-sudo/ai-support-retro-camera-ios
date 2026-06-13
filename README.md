@@ -160,6 +160,8 @@ Phase 17C-Prep keeps provider integration blocked. It only prepares the backend 
 
 Phase 17C is still not a production rollout. It adds backend-only QweAPI OpenAI-compatible internal beta support for Photo Advisor, with structured output validation, safety validation, retry/fallback, and server-side secrets only. Current verification confirms QweAPI text-only chat works and `gemini-3.1-flash-image-preview` returns a validated Photo Advisor image result in internal testing.
 
+Phase 17C-R2 adds a backend provider QA batch workflow for the internal Photo Advisor beta. It records sanitized latency / schema / safety / fallback metrics only; generated QA reports and local QA images are ignored, and production/default remains mock/local.
+
 ## Phase 12A Filter Planning Status
 
 Phase 12A is documentation-only planning for the next filter system step.
