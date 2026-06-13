@@ -1,5 +1,34 @@
 # Manual Smoke Tests
 
+## Phase 18-B1
+
+Provider contract regression and fallback parity check:
+
+- [ ] Open `backend/tests/fixtures/provider-contract-regression-cases.json`.
+- [ ] Confirm fixtures are synthetic JSON / text only and contain no photos, base64 images, provider reports, screenshots, local QA reports, EXIF, GPS, or secrets.
+- [ ] Confirm valid fixtures cover low light / night grain, warm indoor light, cool quiet tone, soft focus, slight tilt / snapshot, high contrast / street, faded color, and imported limited-context scenarios.
+- [ ] Confirm invalid fixtures cover invalid JSON, markdown prose, missing fields, unsupported filter IDs, overlong summary / filter reason text, score/rating wording, harsh fix-it / retake-first copy, sensitive inference, chain-of-thought, provider/debug leakage, raw stack-trace-style text, raw localization keys, and raw filter-family IDs in displayable text.
+- [ ] Confirm provider failure fixtures cover provider unavailable and timeout / network fallback behavior.
+- [ ] Confirm `docs/photo-advisor-provider-language-contract.md` includes the Phase 18-B1 fixture matrix and fallback parity requirements.
+
+Automated local checks:
+
+- [ ] `cd backend && npm test` passes, or use the bundled Node fallback: `/Users/a1234/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --test tests/*.test.mjs`.
+- [ ] `scripts/validate-photo-advisor-copy-regression.sh` passes.
+- [ ] `scripts/validate-photo-advisor-card-language.sh` passes.
+- [ ] `scripts/validate-creative-intent-language.sh` passes.
+- [ ] `scripts/validate-photo-advisor-filter-reasons.sh` passes.
+
+Boundary check:
+
+- [ ] Backend `/v1/ai/photo-advisor` request payload shape remains unchanged.
+- [ ] iOS Cloud AI request/upload payload remains unchanged.
+- [ ] Capture context is not uploaded.
+- [ ] iOS still has no provider key, provider SDK import, or direct provider URL call.
+- [ ] Camera remains local-only with no AI Snapshot / Quick Advice / Cloud AI entry.
+- [ ] Production UI does not show raw provider errors, raw JSON, provider names, chain-of-thought, raw localization keys, score/rating, internal classification names, raw EXIF, or raw sensor values.
+- [ ] No GPS/location collection, raw EXIF dump, raw sensor persistence, StoreKit, Gemini Live, WebSocket, export, generated reports, real photos, or production cloud rollout is enabled.
+
 ## Phase 18-B0
 
 Provider language contract alignment check:

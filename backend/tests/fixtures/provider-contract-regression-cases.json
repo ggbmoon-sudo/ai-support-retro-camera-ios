@@ -1,0 +1,457 @@
+{
+  "schemaVersion": "1.0",
+  "validResponses": [
+    {
+      "id": "valid-low-light-night-grain",
+      "scenario": "low light mood with safe night/grain language",
+      "override": {
+        "source": "cloud",
+        "locale": "en",
+        "summary": "Deep shadows give this a quiet night-film mood.",
+        "suggestions": [
+          {
+            "type": "filter",
+            "text": "Keep the low-light mood and let the grain read as retro texture.",
+            "priority": "high",
+            "action": "apply_filter"
+          }
+        ],
+        "recommendedFilters": [
+          {
+            "filterId": "amber_night_800",
+            "reason": "Keeps the deep shadows and adds a warmer night-film texture.",
+            "confidence": "medium"
+          }
+        ],
+        "retakeAdvice": {
+          "shouldRetake": false,
+          "reason": "No need to retake unless you want a cleaner brighter version."
+        }
+      }
+    },
+    {
+      "id": "valid-warm-indoor-warm-film",
+      "scenario": "warm indoor light with warm film reason",
+      "override": {
+        "source": "cloud",
+        "locale": "en",
+        "summary": "Warm indoor light gives the frame a soft film feel.",
+        "suggestions": [
+          {
+            "type": "filter",
+            "text": "Keep the warmth and soften the contrast slightly.",
+            "priority": "high",
+            "action": "apply_filter"
+          }
+        ],
+        "recommendedFilters": [
+          {
+            "filterId": "soft_warm_400",
+            "reason": "Preserves warm light while making contrast feel gentler.",
+            "confidence": "high"
+          }
+        ]
+      }
+    },
+    {
+      "id": "valid-cool-quiet-tone",
+      "scenario": "cool quiet tone with cool fade reason",
+      "override": {
+        "source": "cloud",
+        "locale": "en",
+        "summary": "The cooler color gives the photo a quiet faded mood.",
+        "suggestions": [
+          {
+            "type": "filter",
+            "text": "Keep the calm cool tone and let the frame stay understated.",
+            "priority": "medium",
+            "action": "apply_filter"
+          }
+        ],
+        "recommendedFilters": [
+          {
+            "filterId": "faded-chrome",
+            "reason": "Keeps the cool tone and adds a worn film finish.",
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "valid-soft-focus-dreamy",
+      "scenario": "soft focus / dreamy with optional cleaner version",
+      "override": {
+        "source": "cloud",
+        "locale": "en",
+        "summary": "The soft focus gives this a dreamy retro mood.",
+        "suggestions": [
+          {
+            "type": "filter",
+            "text": "Keep the softness and use a gentle filter to make it feel intentional.",
+            "priority": "high",
+            "action": "apply_filter"
+          }
+        ],
+        "recommendedFilters": [
+          {
+            "filterId": "instant_dream",
+            "reason": "Matches the soft focus and adds a gentle instant-film glow.",
+            "confidence": "high"
+          }
+        ],
+        "retakeAdvice": {
+          "shouldRetake": false,
+          "reason": "Keep this one for the mood; take another only if you want sharper detail."
+        }
+      }
+    },
+    {
+      "id": "valid-tilt-snapshot",
+      "scenario": "tilt / snapshot with optional straighten only",
+      "override": {
+        "source": "cloud",
+        "locale": "en",
+        "summary": "The slight tilt adds a quick snapshot energy.",
+        "suggestions": [
+          {
+            "type": "composition",
+            "text": "Keep the angle for a candid feel, or straighten only for a cleaner frame.",
+            "priority": "medium",
+            "action": "adjust_crop"
+          }
+        ],
+        "recommendedFilters": [
+          {
+            "filterId": "street_chrome",
+            "reason": "Adds a crisper street-film feel to the angled frame.",
+            "confidence": "medium"
+          }
+        ],
+        "cropAdvice": {
+          "recommended": true,
+          "text": "A tiny crop can tidy the edge while keeping the snapshot energy."
+        }
+      }
+    },
+    {
+      "id": "valid-high-contrast-street",
+      "scenario": "high contrast / street with cinematic reason",
+      "override": {
+        "source": "cloud",
+        "locale": "en",
+        "summary": "Strong contrast gives the frame a bold street mood.",
+        "suggestions": [
+          {
+            "type": "filter",
+            "text": "Keep the punchy shadows and let the highlights stay crisp.",
+            "priority": "high",
+            "action": "apply_filter"
+          }
+        ],
+        "recommendedFilters": [
+          {
+            "filterId": "cinema_flat",
+            "reason": "Keeps the bold contrast while giving the photo a cinematic film edge.",
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "valid-faded-color-pastel",
+      "scenario": "faded color / low saturation with faded pastel reason",
+      "override": {
+        "source": "cloud",
+        "locale": "en",
+        "summary": "The faded color gives this a worn old-photo mood.",
+        "suggestions": [
+          {
+            "type": "filter",
+            "text": "Keep the low saturation and add a light pastel finish.",
+            "priority": "medium",
+            "action": "apply_filter"
+          }
+        ],
+        "recommendedFilters": [
+          {
+            "filterId": "memory_negative",
+            "reason": "Leans into the faded color and adds a nostalgic film cast.",
+            "confidence": "medium"
+          }
+        ]
+      }
+    },
+    {
+      "id": "valid-imported-limited-context",
+      "scenario": "imported limited-context response",
+      "override": {
+        "source": "cloud",
+        "locale": "en",
+        "summary": "This imported photo has limited capture context, so the advice reads light, color, and framing only.",
+        "suggestions": [
+          {
+            "type": "composition",
+            "text": "Use the visible light and framing cues; avoid guessing the capture moment.",
+            "priority": "medium",
+            "action": "none"
+          }
+        ],
+        "recommendedFilters": [
+          {
+            "filterId": "classic-film",
+            "reason": "Gives the visible light and color a simple classic film finish.",
+            "confidence": "low"
+          }
+        ]
+      }
+    }
+  ],
+  "parserRejections": [
+    {
+      "id": "invalid-json",
+      "scenario": "invalid JSON",
+      "content": "{\"schemaVersion\":\"1.0\",",
+      "expectedErrorCode": "provider_invalid_json"
+    },
+    {
+      "id": "markdown-prose-instead-of-json",
+      "scenario": "markdown prose instead of structured JSON",
+      "content": "### Photo advice\nThis frame has a warm mood, but no JSON object is returned.",
+      "expectedErrorCode": "provider_invalid_json"
+    }
+  ],
+  "validatorRejections": [
+    {
+      "id": "missing-required-summary",
+      "scenario": "missing required summary field",
+      "deletePaths": ["summary"],
+      "expectedErrorCode": "invalid_summary"
+    },
+    {
+      "id": "unsupported-filter-id",
+      "scenario": "unsupported filterId",
+      "override": {
+        "recommendedFilters": [
+          {
+            "filterId": "provider_made_this_up",
+            "reason": "Keeps the night mood with a soft retro finish.",
+            "confidence": "medium"
+          }
+        ]
+      },
+      "expectedErrorCode": "unknown_filter_id"
+    },
+    {
+      "id": "filter-id-not-in-catalog",
+      "scenario": "filterId not in app catalog",
+      "override": {
+        "recommendedFilters": [
+          {
+            "filterId": "warm_film",
+            "reason": "Keeps warm light with a soft retro finish.",
+            "confidence": "medium"
+          }
+        ]
+      },
+      "expectedErrorCode": "unknown_filter_id"
+    },
+    {
+      "id": "overlong-mood-summary",
+      "scenario": "overlong moodSummary / summary",
+      "override": {
+        "summary": "This summary is intentionally too long for the Photo Advisor card because it keeps adding more and more prose about light, color, framing, grain, contrast, crop, filters, and mood until it no longer feels like a concise retro camera suggestion that can fit safely inside the app result card without crowding the layout or sounding like a generic AI critique."
+      },
+      "expectedErrorCode": "invalid_summary"
+    },
+    {
+      "id": "overlong-filter-reason",
+      "scenario": "overlong filter reason",
+      "override": {
+        "recommendedFilters": [
+          {
+            "filterId": "instant_dream",
+            "reason": "This reason is intentionally too long because it tries to explain every possible lighting, contrast, color, grain, crop, and framing detail instead of staying as one short UI-ready sentence for a filter card.",
+            "confidence": "medium"
+          }
+        ]
+      },
+      "expectedErrorCode": "invalid_filter_reason"
+    },
+    {
+      "id": "numeric-score-rating",
+      "scenario": "numeric confidence / score / rating wording",
+      "override": {
+        "summary": "Photo score: 7/10."
+      },
+      "expectedErrorCode": "unsafe_response",
+      "expectedUnsafeCategory": "unknown_safety_guard",
+      "rawLeak": "7/10"
+    },
+    {
+      "id": "bad-photo-wording",
+      "scenario": "bad photo wording",
+      "override": {
+        "summary": "This is a bad photo."
+      },
+      "expectedErrorCode": "unsafe_response",
+      "expectedUnsafeCategory": "unknown_safety_guard",
+      "rawLeak": "bad photo"
+    },
+    {
+      "id": "wrong-exposure-wording",
+      "scenario": "wrong exposure wording",
+      "override": {
+        "suggestions": [
+          {
+            "type": "lighting",
+            "text": "Wrong exposure. Must fix the light.",
+            "priority": "high",
+            "action": "none"
+          }
+        ]
+      },
+      "expectedErrorCode": "unsafe_response",
+      "expectedUnsafeCategory": "unknown_safety_guard",
+      "rawLeak": "Wrong exposure"
+    },
+    {
+      "id": "retake-this-wording",
+      "scenario": "retake-first wording",
+      "override": {
+        "retakeAdvice": {
+          "shouldRetake": true,
+          "reason": "Retake this."
+        }
+      },
+      "expectedErrorCode": "unsafe_response",
+      "expectedUnsafeCategory": "unknown_safety_guard",
+      "rawLeak": "Retake this"
+    },
+    {
+      "id": "out-of-focus-harsh-wording",
+      "scenario": "out of focus harsh wording",
+      "override": {
+        "summary": "The photo is out of focus."
+      },
+      "expectedErrorCode": "unsafe_response",
+      "expectedUnsafeCategory": "unknown_safety_guard",
+      "rawLeak": "out of focus"
+    },
+    {
+      "id": "face-skin-beauty-wording",
+      "scenario": "face / skin / beauty wording",
+      "override": {
+        "summary": "The skin looks smooth and the face looks beautiful."
+      },
+      "expectedErrorCode": "unsafe_response",
+      "expectedUnsafeCategory": "appearance_or_identity_guard",
+      "rawLeak": "skin"
+    },
+    {
+      "id": "sensitive-demographic-wording",
+      "scenario": "age / gender / emotion / health / race / religion / disability wording",
+      "override": {
+        "summary": "The age appears detected and the gender appears detected."
+      },
+      "expectedErrorCode": "unsafe_response",
+      "expectedUnsafeCategory": "sensitive_attribute_guard",
+      "rawLeak": "gender"
+    },
+    {
+      "id": "chain-of-thought-leakage",
+      "scenario": "chain-of-thought wording",
+      "override": {
+        "summary": "Here is my chain-of-thought before the answer."
+      },
+      "expectedErrorCode": "unsafe_response",
+      "expectedUnsafeCategory": "unknown_safety_guard",
+      "rawLeak": "chain-of-thought"
+    },
+    {
+      "id": "provider-debug-leakage",
+      "scenario": "provider / system / debug leakage",
+      "override": {
+        "summary": "Provider debug field: system prompt matched."
+      },
+      "expectedErrorCode": "unsafe_response",
+      "expectedUnsafeCategory": "unknown_safety_guard",
+      "rawLeak": "Provider debug"
+    },
+    {
+      "id": "raw-error-stack-trace",
+      "scenario": "raw error / stack trace style output",
+      "override": {
+        "summary": "Stack trace: exception at API endpoint."
+      },
+      "expectedErrorCode": "unsafe_response",
+      "expectedUnsafeCategory": "unknown_safety_guard",
+      "rawLeak": "Stack trace"
+    },
+    {
+      "id": "unknown-mode",
+      "scenario": "unknown mode",
+      "override": {
+        "mode": "portrait_mode"
+      },
+      "expectedErrorCode": "unsupported_mode"
+    },
+    {
+      "id": "unknown-locale",
+      "scenario": "unknown / missing locale fallback",
+      "override": {
+        "locale": ""
+      },
+      "expectedErrorCode": "invalid_locale"
+    },
+    {
+      "id": "generic-try-this-filter",
+      "scenario": "generic primary filter reason",
+      "override": {
+        "recommendedFilters": [
+          {
+            "filterId": "instant_dream",
+            "reason": "Try this filter.",
+            "confidence": "medium"
+          }
+        ]
+      },
+      "expectedErrorCode": "unsafe_response",
+      "expectedUnsafeCategory": "unknown_safety_guard",
+      "rawLeak": "Try this filter"
+    },
+    {
+      "id": "raw-localization-key",
+      "scenario": "raw localization key in displayable fields",
+      "override": {
+        "summary": "advisor.mood.low_light"
+      },
+      "expectedErrorCode": "unsafe_response",
+      "expectedUnsafeCategory": "unknown_safety_guard",
+      "rawLeak": "advisor.mood"
+    },
+    {
+      "id": "raw-family-id-display",
+      "scenario": "raw filter family id in displayable fields",
+      "override": {
+        "summary": "Use the warm_film family for this frame."
+      },
+      "expectedErrorCode": "unsafe_response",
+      "expectedUnsafeCategory": "unknown_safety_guard",
+      "rawLeak": "warm_film"
+    }
+  ],
+  "providerFailures": [
+    {
+      "id": "provider-unavailable",
+      "scenario": "provider unavailable fallback",
+      "providerErrorCode": "provider_unavailable",
+      "expectedFallbackCode": "provider_unavailable"
+    },
+    {
+      "id": "provider-timeout",
+      "scenario": "timeout / network fallback",
+      "providerErrorCode": "timeout",
+      "expectedFallbackCode": "provider_timeout"
+    }
+  ]
+}

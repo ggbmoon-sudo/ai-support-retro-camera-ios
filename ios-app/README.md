@@ -261,6 +261,20 @@ The provider contract in `../docs/photo-advisor-provider-language-contract.md` r
 
 The normal iOS Photo Advisor card remains mock/local unless the existing DEBUG/internal remote path is explicitly used.
 
+## Phase 18-B1 Provider Contract Regression Fixtures
+
+Phase 18-B1 is a backend/provider regression test phase. It does not change iOS runtime behavior:
+
+- no provider key in iOS
+- no direct QweAPI / provider call from iOS
+- no Camera cloud AI entry
+- no production remote rollout
+- no iOS upload payload change
+- no capture context upload
+- no production UI exposure of provider names, raw JSON, raw provider errors, raw localization keys, chain-of-thought, internal classification names, raw EXIF, or raw sensor values
+
+The backend regression fixtures verify that invalid, unsafe, overlong, generic, or provider-leaking real-provider output is rejected or mapped to app-safe structured fallback before the existing iOS validator / result card can show it.
+
 ## Phase 12A Filter Planning
 
 Phase 12A adds filter research and schema planning documents only. It does not change iOS app source code.

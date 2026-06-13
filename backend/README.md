@@ -117,6 +117,15 @@ Phase 18-B0 aligns the backend-mediated provider language contract with the app-
 - validator coverage blocks score/rating language, harsh fix-it wording, provider/debug leakage, chain-of-thought wording, sensitive inference, banned terms, unsupported filter IDs, and overlong filter reasons
 - fallback responses remain structured, short, recoverable, and free of raw provider details
 
+Phase 18-B1 adds backend/provider contract regression fixtures and fallback parity checks:
+
+- committed fixtures are synthetic JSON / text only; no photos, provider reports, or real user data are included
+- valid fixtures cover low-light mood, warm indoor light, cool quiet tone, soft focus, slight tilt, high contrast, faded color, and imported limited-context responses
+- invalid fixtures cover invalid JSON, markdown prose, missing fields, unsupported filter IDs, overlong summary / filter reason text, score/rating wording, harsh fix-it / retake-first copy, sensitive inference, chain-of-thought, provider/debug leakage, raw stack-trace-style text, raw localization keys, and raw filter-family IDs in displayable text
+- provider failure fixtures cover provider unavailable and timeout / network fallback mapping
+- rejected provider output maps to structured fallback before iOS can display it
+- fallback parity tests confirm responses stay app-safe, short, validated, and free of raw provider text
+
 See `../docs/photo-advisor-provider-language-contract.md`.
 
 Run:

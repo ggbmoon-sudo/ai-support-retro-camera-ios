@@ -6,6 +6,8 @@ The QA goal is to keep the app-owned Photo Advisor voice consistent across Engli
 
 Phase 18-B0 adds `docs/photo-advisor-provider-language-contract.md`, which makes the backend/provider contract downstream of the same copy regression rules. Real provider output must satisfy this matrix before it can be considered for production rollout.
 
+Phase 18-B1 adds synthetic backend/provider regression fixtures that assert provider output is accepted only when it follows these copy rules, and that invalid / unsafe / overlong / provider-leaking output falls back safely before reaching the iOS result card.
+
 The card should follow:
 
 1. Observation.

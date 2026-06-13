@@ -80,6 +80,10 @@ export function validateCloudAIResponse(response) {
     return invalid("unsupported_source", "Response source is invalid");
   }
 
+  if (typeof response.locale !== "string" || response.locale.trim().length === 0) {
+    return invalid("invalid_locale", "Response locale must be a non-empty string");
+  }
+
   if (response.safety?.containsSensitiveInference !== false) {
     return invalid("sensitive_inference", "Response must not contain sensitive inference");
   }

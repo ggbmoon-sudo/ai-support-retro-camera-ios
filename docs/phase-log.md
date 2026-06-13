@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 18-B0 - Real AI Provider Language Contract + Schema Alignment Audit
-Status: Phase 18-B0 completed and locally committed; push is blocked by GitHub HTTPS credential error
-Latest implementation: Aligned the backend-mediated Photo Advisor provider language contract with the Phase 18-A1 through Phase 18-A5 app-side language system; added provider contract docs, prompt alignment, validator guards for score / fix-it / provider leakage, overlong filter reason validation, and backend tests while leaving backend request payloads, iOS upload payloads, capture-context upload, provider keys, Camera cloud entry, and production rollout unchanged
+Current phase: Phase 18-B1 - Provider Contract Regression Fixtures + Fallback Parity
+Status: Phase 18-B1 completed and ready to commit
+Latest implementation: Added synthetic provider contract regression fixtures, backend validator regression tests, fallback parity checks, and provider contract docs for valid app-voice outputs plus invalid JSON, schema failures, unsupported filter IDs, overlong text, score / fix-it / provider leakage, sensitive inference, raw localization key, raw filter-family id, and provider failure fallback cases while leaving backend request payloads, iOS upload payloads, capture-context upload, provider keys, Camera cloud entry, and production rollout unchanged
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -72,7 +72,46 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Recommended next step is Phase 18-B1 provider QA fixture review / prompt QA or Phase 18-C capture-context schema planning, not production rollout. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, or save-to-Photos until explicitly requested.
+Next phase: Recommended next step is Phase 18-B2 provider QA fixture review / prompt QA or Phase 18-C capture-context schema planning, not production rollout. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, or save-to-Photos until explicitly requested.
+
+---
+
+## Phase 18-B1 - Provider Contract Regression Fixtures + Fallback Parity
+
+Status: Completed and ready to commit
+Date: 2026-06-13
+
+### Completed
+
+- Added `backend/tests/fixtures/provider-contract-regression-cases.json` with committed-safe synthetic provider response cases.
+- Added valid provider output fixtures for low light / night grain, warm indoor light, cool quiet tone, soft focus, slight tilt / snapshot, high contrast / street, faded color, and imported limited-context scenarios.
+- Added parser rejection fixtures for invalid JSON and markdown prose instead of structured JSON.
+- Added validator rejection fixtures for missing required fields, unsupported filter IDs, overlong summary / filter reason text, score/rating wording, harsh fix-it / retake-first wording, sensitive inference, chain-of-thought, provider/debug leakage, raw stack-trace-style text, unknown mode / missing locale, generic filter reason, raw localization key, and raw filter-family id in displayable text.
+- Added provider failure fixtures for provider unavailable and timeout / network fallback mapping.
+- Extended backend tests so valid fixtures pass, invalid fixtures fail with expected codes, rejected provider output maps to structured fallback without raw provider text, and fallback responses remain `CloudAIResponse`-valid.
+- Refined the backend safe-text guard so app-language leakage checks scan displayable text only, avoiding false positives on internal enum fields such as `filterId`.
+- Added backend response validation that requires non-empty response locale.
+- Updated provider language contract documentation with a Phase 18-B1 regression fixture matrix and fallback parity requirements.
+- Updated README, iOS README, backend README, handoff, and manual smoke tests.
+
+### Safety Notes
+
+- Synthetic JSON / text fixtures only; no real photos, provider reports, screenshots, generated QA images, local QA reports, or device artifacts were added.
+- Backend provider request payloads are unchanged.
+- iOS upload payloads are unchanged.
+- Capture context is not uploaded.
+- No provider key, provider SDK, direct provider call, Camera cloud AI entry, production remote rollout, GPS/location collection, raw EXIF dump, raw sensor persistence, raw provider output display, chain-of-thought display, StoreKit, export, Gemini Live, WebSocket, or AI Filter Generator backend was added.
+- Invalid, unsafe, overlong, generic, or provider-leaking output is rejected or mapped to safe structured fallback before iOS can display it.
+- Sensitive inference remains forbidden; backend guard rejects face, skin, age, gender, attractiveness / beauty, emotion / mental state, health, identity, ethnicity, religion, disability, and body judgment.
+
+### Verification
+
+- Backend tests passed with bundled Node: `/Users/a1234/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --test tests/*.test.mjs` reported 46/46 passing.
+- Additional verification is recorded in the final Codex response for this phase.
+
+### Ready to Commit Phase 18-B1
+
+Yes.
 
 ---
 

@@ -12,6 +12,7 @@ import { buildPhotoAdvisorPrompt } from "../src/prompts/photoAdvisorPrompt.mjs";
 import { resolveProviderKind } from "../src/routes/photoAdvisor.mjs";
 import { validateCloudAIResponse } from "../src/validators/validateCloudAIResponse.mjs";
 import { validatePhotoAdvisorRequest } from "../src/validators/validatePhotoAdvisorRequest.mjs";
+import { fallbackCloudAIResponse } from "../src/responses/fallbackResponse.mjs";
 import { safeErrorMetadata } from "../src/logging/safeLog.mjs";
 import {
   assertQAReportRedacted,
@@ -141,6 +142,146 @@ test("cloud ai response validator rejects provider and chain-of-thought leakage"
   assert.equal(providerLeakResult.error.code, "unsafe_response");
   assert.equal(providerLeakResult.error.unsafeCategory, "unknown_safety_guard");
   assert.equal(JSON.stringify(providerLeakResult).includes("chain-of-thought"), false);
+});
+
+test("provider contract regression fixtures accept valid app-voice responses", async () => {
+  const cases = await providerContractCases();
+  const base = await fixture("cloud-ai-valid-response.json");
+
+  for (const item of cases.validResponses) {
+    const response = responseFromRegressionCase(base, item);
+    const result = validateCloudAIResponse(response);
+
+    assert.equal(result.ok, true, item.id);
+    assert.equal(response.source, "cloud", item.id);
+    assert.equal(response.summary.length <= 280, true, item.id);
+    assert.equal(response.recommendedFilters.length <= 3, true, item.id);
+  }
+});
+
+test("provider contract regression fixtures reject invalid provider content", async () => {
+  const cases = await providerContractCases();
+
+  for (const item of cases.parserRejections) {
+    assert.throws(() => parseQweCloudAIResponse({
+      choices: [
+        {
+          message: {
+            content: item.content
+          }
+        }
+      ]
+    }), (error) => {
+      assert.equal(error.code, item.expectedErrorCode, item.id);
+      assert.equal(String(error.message).includes(item.content), false, item.id);
+      return true;
+    }, item.id);
+  }
+});
+
+test("provider contract regression fixtures reject unsafe or invalid schema output", async () => {
+  const cases = await providerContractCases();
+  const base = await fixture("cloud-ai-valid-response.json");
+
+  for (const item of cases.validatorRejections) {
+    const response = responseFromRegressionCase(base, item);
+    const result = validateCloudAIResponse(response);
+
+    assert.equal(result.ok, false, item.id);
+    assert.equal(result.error.code, item.expectedErrorCode, item.id);
+    if (item.expectedUnsafeCategory) {
+      assert.equal(result.error.unsafeCategory, item.expectedUnsafeCategory, item.id);
+    }
+    if (item.rawLeak) {
+      assert.equal(JSON.stringify(result).includes(item.rawLeak), false, item.id);
+    }
+  }
+});
+
+test("provider contract rejected fixtures map to safe fallback without raw provider text", async () => {
+  const cases = await providerContractCases();
+  const base = await fixture("cloud-ai-valid-response.json");
+
+  for (const item of cases.validatorRejections) {
+    const provider = {
+      async analyzePhotoAdvisor() {
+        return responseFromRegressionCase(base, item);
+      }
+    };
+
+    const result = await handlePhotoAdvisorRequest(validRequest(), {
+      provider,
+      config: enabledQweAPIConfig(),
+      headers: { "x-internal-debug-cloudai": "true" }
+    });
+
+    const expectedFallbackCode = item.expectedErrorCode === "unsafe_response"
+      ? "unsafe_response"
+      : "provider_invalid_schema";
+
+    assert.equal(result.status, 200, item.id);
+    assert.equal(result.body.mode, "unavailable", item.id);
+    assert.equal(result.body.source, "fallback", item.id);
+    assert.equal(result.body.error.code, expectedFallbackCode, item.id);
+    assert.equal(result.body.error.message.includes("Cloud analysis is unavailable"), true, item.id);
+    assert.equal(validateCloudAIResponse(result.body).ok, true, item.id);
+    if (item.rawLeak) {
+      assert.equal(JSON.stringify(result.body).includes(item.rawLeak), false, item.id);
+      assert.equal(JSON.stringify(result.metadata ?? {}).includes(item.rawLeak), false, item.id);
+    }
+  }
+});
+
+test("provider failure fixtures map to structured fallback parity responses", async () => {
+  const cases = await providerContractCases();
+
+  for (const item of cases.providerFailures) {
+    let calls = 0;
+    const provider = {
+      async analyzePhotoAdvisor() {
+        calls += 1;
+        const error = new Error("Synthetic provider failure");
+        error.code = item.providerErrorCode;
+        throw error;
+      }
+    };
+
+    const result = await handlePhotoAdvisorRequest(validRequest(), {
+      provider,
+      config: enabledQweAPIConfig(),
+      headers: { "x-internal-debug-cloudai": "true" }
+    });
+
+    assert.equal(result.status, 200, item.id);
+    assert.equal(result.body.mode, "unavailable", item.id);
+    assert.equal(result.body.source, "fallback", item.id);
+    assert.equal(result.body.error.code, item.expectedFallbackCode, item.id);
+    assert.equal(result.body.error.message.includes("Synthetic provider failure"), false, item.id);
+    assert.equal(validateCloudAIResponse(result.body).ok, true, item.id);
+    assert.equal(calls >= 1, true, item.id);
+  }
+});
+
+test("fallback response contract stays app-safe and result-card compatible", () => {
+  const response = fallbackCloudAIResponse({
+    locale: "en",
+    code: "provider_invalid_schema",
+    message: "Cloud analysis is unavailable right now. Showing local advice instead."
+  });
+
+  const serialized = JSON.stringify(response);
+  const validation = validateCloudAIResponse(response);
+
+  assert.equal(validation.ok, true);
+  assert.equal(response.mode, "unavailable");
+  assert.equal(response.source, "fallback");
+  assert.equal(response.summary, "");
+  assert.equal(response.suggestions.length, 0);
+  assert.equal(response.recommendedFilters.length, 0);
+  assert.equal(response.error.recoverable, true);
+  assert.equal(serialized.includes("QweAPI"), false);
+  assert.equal(serialized.includes("stack trace"), false);
+  assert.equal(serialized.includes("raw provider"), false);
 });
 
 test("cloud ai response validator labels appearance and sensitive unsafe text without raw output", async () => {
@@ -660,6 +801,51 @@ test("safety guard returns sanitized diagnostic labels", () => {
 async function fixture(name) {
   const json = await readFile(new URL(`./fixtures/${name}`, import.meta.url), "utf8");
   return JSON.parse(json);
+}
+
+async function providerContractCases() {
+  return fixture("provider-contract-regression-cases.json");
+}
+
+function responseFromRegressionCase(baseResponse, item) {
+  const response = deepClone(baseResponse);
+  if (item.override) {
+    deepMerge(response, item.override);
+  }
+  for (const path of item.deletePaths ?? []) {
+    deletePath(response, path);
+  }
+  return response;
+}
+
+function deepClone(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function deepMerge(target, patch) {
+  for (const [key, value] of Object.entries(patch)) {
+    if (value && typeof value === "object" && !Array.isArray(value)) {
+      if (!target[key] || typeof target[key] !== "object" || Array.isArray(target[key])) {
+        target[key] = {};
+      }
+      deepMerge(target[key], value);
+    } else {
+      target[key] = value;
+    }
+  }
+  return target;
+}
+
+function deletePath(target, path) {
+  const parts = path.split(".");
+  const last = parts.pop();
+  let node = target;
+  for (const part of parts) {
+    node = node?.[part];
+  }
+  if (node && last) {
+    delete node[last];
+  }
 }
 
 function okJSON(body) {

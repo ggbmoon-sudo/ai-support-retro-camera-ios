@@ -178,6 +178,56 @@ Required categories:
 17. invalid JSON attempt
 18. provider unavailable fallback
 
+## Phase 18-B1 Regression Fixture Matrix
+
+Phase 18-B1 turns the fixture plan into committed synthetic regression fixtures at:
+
+- `backend/tests/fixtures/provider-contract-regression-cases.json`
+- `backend/tests/cloud-ai-boundary.test.mjs`
+
+The fixture file is safe to commit because it contains JSON/text only. It contains no photos, image payloads, provider reports, API keys, raw provider responses from a live service, EXIF, GPS, or device-specific artifacts.
+
+### Valid Provider Output Fixtures
+
+| Fixture | Scenario | Expected validator result | A1-A5 / B0 rule |
+| --- | --- | --- | --- |
+| `valid-low-light-night-grain` | low light mood with night / grain language | accepted | preserve low-light retro mood before optional action |
+| `valid-warm-indoor-warm-film` | warm indoor light with warm film reason | accepted | filter reason = warm light + softer film result |
+| `valid-cool-quiet-tone` | cool quiet tone with faded finish | accepted | mood-first, short, non-generic copy |
+| `valid-soft-focus-dreamy` | soft focus / dreamy mood | accepted | blur / softness can be intentional style |
+| `valid-tilt-snapshot` | tilt / snapshot energy | accepted | straighten only if user wants a cleaner frame |
+| `valid-high-contrast-street` | high contrast / street mood | accepted | high contrast can be cinematic or street-like |
+| `valid-faded-color-pastel` | faded color / low saturation | accepted | faded color can be worn film style |
+| `valid-imported-limited-context` | imported limited-context response | accepted | imported photos do not overclaim capture-time context |
+
+### Rejected Provider Output Fixtures
+
+| Fixture group | Examples | Expected behavior |
+| --- | --- | --- |
+| Parser failures | invalid JSON, markdown prose instead of JSON | throw `provider_invalid_json`, retry once in provider route, then safe fallback |
+| Schema failures | missing summary, unknown mode, missing locale | reject as invalid schema and return safe fallback |
+| Filter failures | unsupported filterId, filterId not in catalog | reject; provider cannot invent filters |
+| Length failures | overlong summary, overlong filter reason | reject; output must stay UI-ready |
+| App-voice failures | score/rating, generic "Try this filter", raw family id | reject; provider must not become a score / generic AI critique |
+| Fix-it failures | bad photo, wrong exposure, retake-first wording, harsh out-of-focus copy | reject; provider must not use Score -> Problem -> Fix -> Retake language |
+| Sensitive inference failures | face, skin, beauty, age, gender, emotion, health, race, religion, disability wording | reject as unsafe response |
+| Leakage failures | chain-of-thought, provider/system/debug wording, stack-trace-style text, raw localization key | reject; raw internals must never reach iOS |
+| Provider failures | provider unavailable, timeout / network failure | map to structured fallback without raw error text |
+
+### Fallback Parity Requirements
+
+B1 tests assert rejected provider output maps to a `CloudAIResponse` fallback that is:
+
+- `mode: "unavailable"`
+- `source: "fallback"`
+- recoverable when appropriate
+- schema-valid
+- short and calm
+- free of raw provider text
+- free of stack traces, endpoint details, prompt contents, provider names, raw JSON, raw localization keys, score/rating, chain-of-thought, and sensitive inference wording
+
+If backend fallback cannot provide final localized app copy, it must return only safe structured fallback fields. iOS then maps that state through the app-side language pack / result card model.
+
 ## A1-A5 Integration
 
 Provider contract review should be run together with:

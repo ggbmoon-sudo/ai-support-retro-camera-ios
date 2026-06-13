@@ -56,13 +56,35 @@ const APP_LANGUAGE_GUARD_PATTERNS = Object.freeze([
   { pattern: /\b\d{1,3}\s*%\b/i, category: "unknown_safety_guard" },
   { pattern: /\b(score|rating)\b/i, category: "unknown_safety_guard" },
   { pattern: /\b(bad photo|wrong exposure|failed photo|retake this|retake it|must fix|please retake|out of focus)\b/i, category: "unknown_safety_guard" },
+  { pattern: /\b(Try this filter|best filter|perfect filter)\b/i, category: "unknown_safety_guard" },
+  { pattern: /\b(stack trace|traceback|exception|api endpoint|status code|http\s+\d{3})\b/i, category: "unknown_safety_guard" },
   { pattern: /水平錯誤|構圖錯誤|曝光錯誤|照片太暗|光線不足|噪點太多|對焦失敗|相片模糊|你手震/, category: "unknown_safety_guard" },
-  { pattern: /\b(provider|system prompt|debug field|raw json|raw provider|chain[- ]?of[- ]?thought)\b/i, category: "unknown_safety_guard" }
+  { pattern: /\b(provider|system prompt|debug field|raw json|raw provider|chain[- ]?of[- ]?thought)\b/i, category: "unknown_safety_guard" },
+  { pattern: /\badvisor\.[a-z0-9_.-]+/i, category: "unknown_safety_guard" },
+  { pattern: /\b(warm_film|faded_pastel|cinematic_contrast|night_grain|soft_dream|street_chrome|amber_glow|cool_fade|classic_film)\b/i, category: "unknown_safety_guard" }
+]);
+
+const NON_DISPLAY_TEXT_KEYS = new Set([
+  "action",
+  "blockedReason",
+  "code",
+  "confidence",
+  "consentVersion",
+  "filterId",
+  "id",
+  "locale",
+  "mode",
+  "priority",
+  "schemaVersion",
+  "source",
+  "type"
 ]);
 
 export function validateSafeTextOutput(value) {
   const texts = collectText(value);
   const joined = texts.join("\n");
+  const displayTexts = collectDisplayText(value);
+  const joinedDisplayText = displayTexts.join("\n");
 
   for (const term of BANNED_TERMS) {
     if (joined.includes(term)) {
@@ -77,7 +99,7 @@ export function validateSafeTextOutput(value) {
   }
 
   for (const { pattern, category } of APP_LANGUAGE_GUARD_PATTERNS) {
-    if (pattern.test(joined)) {
+    if (pattern.test(joinedDisplayText)) {
       return invalid("unsafe_app_language", category);
     }
   }
@@ -106,6 +128,22 @@ function collectText(value) {
 
   if (value && typeof value === "object") {
     return Object.values(value).flatMap(collectText);
+  }
+
+  return [];
+}
+
+function collectDisplayText(value, key = "") {
+  if (typeof value === "string") {
+    return NON_DISPLAY_TEXT_KEYS.has(key) ? [] : [value];
+  }
+
+  if (Array.isArray(value)) {
+    return value.flatMap((item) => collectDisplayText(item, key));
+  }
+
+  if (value && typeof value === "object") {
+    return Object.entries(value).flatMap(([childKey, childValue]) => collectDisplayText(childValue, childKey));
   }
 
   return [];
