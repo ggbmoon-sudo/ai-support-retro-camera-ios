@@ -157,6 +157,57 @@ Not ready for production when:
 - Any manual language/filter-fit review is incomplete.
 - Cost, abuse, privacy, monitoring, and product rollout gates are not complete.
 
+## Gate Summary Helper
+
+Phase 18-B5 adds a lightweight helper that reads only the sanitized QA report JSON and evaluates it against this policy:
+
+```sh
+cd backend
+npm run qa:photo-advisor:review
+```
+
+Equivalent direct command:
+
+```sh
+cd backend
+node scripts/check-photo-advisor-provider-qa-gate.mjs
+```
+
+The helper reads the ignored report at:
+
+```text
+backend/reports/provider-qa/photo-advisor-qa-report.json
+```
+
+It may also read an explicit sanitized report path:
+
+```sh
+node scripts/check-photo-advisor-provider-qa-gate.mjs --report=reports/provider-qa/photo-advisor-qa-report.json
+```
+
+Safe output fields:
+
+- `productionReady: false`
+- `eligibleForDebugInternalReview`
+- `statusCategories[]`
+- `hardBlockers[]`
+- `warnings[]`
+- `reviewedMetrics`
+
+The helper must not print raw provider text, raw prompts, raw image/base64, request payloads, secrets, or real sample paths.
+
+Expected flow:
+
+```sh
+cd backend
+npm run qa:photo-advisor
+npm run qa:photo-advisor:review
+```
+
+For synthetic-contract QA, a healthy report should return `eligibleForDebugInternalReview: true`, include `pass_for_synthetic_contract`, and keep `productionReady: false`.
+
+For real-provider QA, warning thresholds should be reviewed manually before any larger internal run. Hard blockers stop review.
+
 ## Reviewer Checklist
 
 For each QA report, reviewers should record:

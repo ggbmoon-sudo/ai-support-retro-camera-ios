@@ -1,5 +1,20 @@
 # Manual Smoke Tests
 
+## Phase 18-B5
+
+Provider QA gate summary helper:
+
+- [ ] Run safe synthetic QA first: `cd backend && npm run qa:photo-advisor`.
+- [ ] Run the summary helper: `cd backend && npm run qa:photo-advisor:review`.
+- [ ] Confirm helper output includes `productionReady: false`.
+- [ ] Confirm helper output includes `eligibleForDebugInternalReview`.
+- [ ] Confirm helper output includes `statusCategories`, `hardBlockers`, `warnings`, and `reviewedMetrics`.
+- [ ] Confirm a healthy synthetic-contract report includes `pass_for_synthetic_contract`.
+- [ ] Confirm helper output does not include raw provider text, raw prompts, raw image/base64, request payloads, API keys, Authorization headers, GPS/raw EXIF, unsafe provider text, or real sample paths.
+- [ ] Confirm hard blockers stop review and warnings require manual review before expanding real-provider QA.
+- [ ] Confirm helper does not mark production-ready.
+- [ ] Confirm Phase 18-B5 does not change backend provider request payloads, iOS upload payloads, capture-context upload, iOS provider key/direct provider call, Camera cloud entry, or production rollout status.
+
 ## Phase 18-B4
 
 Provider QA review thresholds:

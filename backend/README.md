@@ -259,6 +259,23 @@ Phase 18-B4 defines how to review sanitized provider QA metrics:
 
 See `../docs/photo-advisor-provider-qa-review-thresholds.md`.
 
+Phase 18-B5 adds a small gate summary helper for sanitized reports:
+
+```sh
+npm run qa:photo-advisor:review
+```
+
+The helper reads `backend/reports/provider-qa/photo-advisor-qa-report.json` and prints only:
+
+- `productionReady: false`
+- `eligibleForDebugInternalReview`
+- `statusCategories`
+- `hardBlockers`
+- `warnings`
+- reviewed aggregate metric counts
+
+It does not print raw provider text, raw prompts, raw image/base64, request payloads, secrets, or real sample paths. It is a review helper only; passing it is not production approval.
+
 Phase 17C-R3 local QA used five ignored synthetic JPEGs:
 
 - `warm-rooftop.jpg`

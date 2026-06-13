@@ -19,6 +19,7 @@ import {
   sanitizePhotoAdvisorQACase,
   summarizePhotoAdvisorQA
 } from "../src/qa/photoAdvisorQAReport.mjs";
+import { evaluatePhotoAdvisorQAGate } from "../src/qa/photoAdvisorQAGate.mjs";
 import { validateSafeTextOutput } from "../src/security/safetyTextGuard.mjs";
 
 test("health returns mock-only status", () => {
@@ -919,6 +920,111 @@ test("photo advisor provider qa runner requires explicit real-provider opt in", 
   assert.equal(source.includes("rawPromptPersisted: false"), true);
   assert.equal(source.includes("console.log(request"), false);
   assert.equal(source.includes("console.log(response"), false);
+});
+
+test("photo advisor provider qa gate accepts sanitized synthetic contract report", () => {
+  const report = summarizePhotoAdvisorQA({
+    runMode: "synthetic",
+    provider: "synthetic",
+    providerConfigured: false,
+    model: "provider-contract-regression-fixtures",
+    cases: [
+      sanitizePhotoAdvisorQACase({
+        caseId: "valid-low-light",
+        locale: "en",
+        source: "cloud",
+        schemaValid: true,
+        safetyValid: true,
+        recommendedFilterIds: ["instant_dream"]
+      }),
+      sanitizePhotoAdvisorQACase({
+        caseId: "invalid-json",
+        locale: "en",
+        source: "fallback",
+        schemaValid: false,
+        safetyValid: true,
+        fallbackCode: "provider_invalid_json",
+        validationCategory: "invalid_json"
+      })
+    ]
+  });
+
+  const result = evaluatePhotoAdvisorQAGate(report);
+
+  assert.equal(result.productionReady, false);
+  assert.equal(result.eligibleForDebugInternalReview, true);
+  assert.equal(result.statusCategories.includes("pass_for_synthetic_contract"), true);
+  assert.equal(result.statusCategories.includes("not_production_ready"), true);
+  assert.equal(result.hardBlockers.length, 0);
+  assert.equal(result.reviewedMetrics.totalCases, 2);
+  assert.equal(result.reviewedMetrics.invalidJsonCount, 1);
+});
+
+test("photo advisor provider qa gate flags unsafe report state without raw leakage", () => {
+  const result = evaluatePhotoAdvisorQAGate({
+    schemaVersion: "1.0",
+    runMode: "provider",
+    totalCases: 1,
+    productionReady: true,
+    payloadLoggingDisabled: false,
+    rawImagePersisted: true,
+    rawPromptPersisted: true,
+    rawProviderResponsePersisted: true,
+    reportContainsRawUserContent: true
+  });
+
+  assert.equal(result.productionReady, false);
+  assert.equal(result.eligibleForDebugInternalReview, false);
+  assert.equal(result.statusCategories.includes("blocked_for_artifact_leakage"), true);
+  assert.equal(result.statusCategories.includes("not_production_ready"), true);
+  assert.equal(result.hardBlockers.some((item) => item.code === "production_ready_true"), true);
+  assert.equal(result.hardBlockers.some((item) => item.code === "raw_image_persisted"), true);
+  assert.equal(JSON.stringify(result).includes("rawProviderText"), false);
+});
+
+test("photo advisor provider qa gate marks provider warnings for review", () => {
+  const report = summarizePhotoAdvisorQA({
+    runMode: "provider",
+    provider: "qweapi",
+    providerConfigured: true,
+    model: "gemini-3.1-flash-image-preview",
+    baseURL: "https://qweapi.com",
+    cases: [
+      sanitizePhotoAdvisorQACase({
+        caseId: "timeout",
+        sampleType: "approved_real_sample",
+        locale: "zh-Hant",
+        source: "fallback",
+        latencyMs: 21_000,
+        schemaValid: true,
+        safetyValid: true,
+        fallbackCode: "provider_timeout",
+        validationCategory: "timeout",
+        needsManualLanguageReview: true
+      })
+    ]
+  });
+
+  const result = evaluatePhotoAdvisorQAGate(report);
+
+  assert.equal(result.productionReady, false);
+  assert.equal(result.eligibleForDebugInternalReview, true);
+  assert.equal(result.statusCategories.includes("needs_review"), true);
+  assert.equal(result.warnings.some((item) => item.code === "timeout_count"), true);
+  assert.equal(result.warnings.some((item) => item.code === "manual_language_review"), true);
+  assert.equal(result.reviewedMetrics.timeoutCount, 1);
+});
+
+test("photo advisor provider qa gate helper script exists and avoids raw logging", async () => {
+  const scriptURL = new URL("./../scripts/check-photo-advisor-provider-qa-gate.mjs", import.meta.url);
+  assert.equal(existsSync(scriptURL), true);
+  const source = await readFile(scriptURL, "utf8");
+
+  assert.equal(source.includes("evaluatePhotoAdvisorQAGate"), true);
+  assert.equal(source.includes("console.log(request"), false);
+  assert.equal(source.includes("console.log(response"), false);
+  assert.equal(source.includes("QWE_API_KEY="), false);
+  assert.equal(source.includes("dataBase64"), false);
 });
 
 test("safety guard returns sanitized diagnostic labels", () => {

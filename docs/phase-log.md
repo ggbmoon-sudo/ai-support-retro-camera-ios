@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 18-B4 - Define Provider QA Review Thresholds
-Status: Phase 18-B4 completed and ready to commit
-Latest implementation: Added `docs/photo-advisor-provider-qa-review-thresholds.md` to define Photo Advisor provider QA status categories, hard blockers, warning thresholds, synthetic-contract acceptance rules, optional real-provider QA acceptance rules, and next-phase readiness. Updated README, backend README, manual smoke tests, phase log, and handoff references. This is documentation-only and does not change app behavior, backend provider request payloads, iOS upload payloads, capture-context upload, cloud functionality, Camera cloud entry, or production rollout status
+Current phase: Phase 18-B5 - Add Provider QA Gate Summary Helper
+Status: Phase 18-B5 completed and ready to commit
+Latest implementation: Added a lightweight backend provider QA gate summary helper. `backend/src/qa/photoAdvisorQAGate.mjs` maps sanitized Photo Advisor QA report metrics to B4 hard blockers, warnings, status categories, and `eligibleForDebugInternalReview`; `backend/scripts/check-photo-advisor-provider-qa-gate.mjs` reads sanitized report JSON only; `npm run qa:photo-advisor:review` runs the helper. Updated backend tests and docs while leaving app behavior, backend provider request payloads, iOS upload payloads, capture-context upload, Camera cloud entry, cloud availability, provider credential handling, and production rollout unchanged
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -73,6 +73,53 @@ Phase 17C-R3 verification: generated five ignored synthetic local QA images and 
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
 Next phase: Provider QA threshold review / optional approved-sample QA planning only if explicitly requested, or Phase 18-C capture-context schema planning only if explicitly requested. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, or save-to-Photos until explicitly requested.
+
+---
+
+## Phase 18-B5 - Add Provider QA Gate Summary Helper
+
+Status: Completed and ready to commit
+Date: 2026-06-14
+
+### Completed
+
+- Added `backend/src/qa/photoAdvisorQAGate.mjs`.
+- Added `backend/scripts/check-photo-advisor-provider-qa-gate.mjs`.
+- Added `npm run qa:photo-advisor:review`.
+- The helper reads sanitized QA report JSON and outputs `productionReady: false`, `eligibleForDebugInternalReview`, `statusCategories`, `hardBlockers`, `warnings`, and reviewed aggregate metrics.
+- Mapped B4 thresholds into hard blockers for artifact leakage, unsafe report flags, provider integration issues, synthetic fixture failures, unsupported provider filters, and `productionReady=true`.
+- Mapped provider QA warnings for invalid JSON/schema, high fallback count, timeouts, provider errors, overlong text, unsafe-response fallbacks, manual language review, repeated fallback categories, and p95/max latency thresholds.
+- Added backend tests for synthetic-contract pass, unsafe report hard blockers, provider warning summaries, and script safety.
+- Updated README, backend README, manual smoke tests, handoff, phase log, and threshold docs.
+
+### Safety Notes
+
+- The helper reads sanitized QA report JSON only.
+- It does not print raw provider text, raw prompts, raw image/base64, request payloads, secrets, or real sample paths.
+- App behavior is unchanged.
+- Backend provider request payloads are unchanged.
+- iOS upload payloads are unchanged.
+- Capture context is not uploaded.
+- No provider key, direct provider call, Camera cloud AI entry, cloud functionality, GPS/location collection, raw EXIF dump, raw sensor persistence, or production rollout was added.
+- `productionReady` remains false.
+
+### Verification
+
+- Backend tests passed.
+- Synthetic provider QA mode passed.
+- Dry-run gate passed.
+- Provider QA gate summary helper passed.
+- Photo Advisor copy regression, filter reason coverage, CreativeIntent language, and result-card language scripts passed.
+- `git diff --check` passed.
+- Secret scan passed.
+- iOS direct provider scan stayed clean.
+- Camera cloud entry scan stayed clean.
+- Payload unchanged scans stayed clean.
+- Artifact scan confirmed local env, reports, local images, and generated artifacts remain ignored.
+
+### Ready to Commit Phase 18-B5
+
+Yes.
 
 ---
 
