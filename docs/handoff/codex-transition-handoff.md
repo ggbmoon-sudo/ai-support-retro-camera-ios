@@ -53,6 +53,18 @@ Phase 16H-Recovery status fix:
 - Repo documents are the source of truth. Do not rely on earlier chat memory or user-stated phase status when it conflicts with committed / local repo files.
 - This recovery is documentation-only. It does not add Swift feature implementation, real AI, backend code, network calls, upload, persistence, export, provider SDKs, or secrets.
 
+Latest Phase 18 handoff refresh check on 2026-06-14:
+
+- Branch: `feat/phase-02-auth`.
+- `git status --short` was clean before this handoff refresh edit.
+- `origin/main` may not exist in this clone; use upstream shorthand commands such as `git log --oneline @{u}..HEAD` and `git rev-list --left-right --count @{u}...HEAD`.
+- `git log --oneline @{u}..HEAD` showed one local-only commit: `a9b386b hase 18-B4-pre: consolidate Codex project rules`.
+- `git rev-list --left-right --count @{u}...HEAD` showed `0 1`, meaning the branch was 0 behind and 1 ahead of its configured upstream.
+- Phase 18-B2 is upstream-synced / pushed according to the latest upstream comparison.
+- Phase 18-B3 is upstream-synced / pushed according to the latest upstream comparison.
+- Phase 18-B4-pre is completed and locally committed, but not pushed at the time of this handoff refresh. Note the local commit message appears to have a typo: `hase 18-B4-pre: consolidate Codex project rules`.
+- This handoff refresh itself is documentation-only and should be committed separately if accepted.
+
 Confirmed locally:
 
 - Phase 16E - Static Pose Overlay MVP
@@ -610,12 +622,15 @@ Important docs already added or expected in this roadmap:
 - Phase 18-B2 aligns the real-provider QA runner and sanitized report contract with B0/B1. `backend/scripts/run-photo-advisor-provider-qa.mjs --synthetic-contract` runs committed B1 fixtures without credentials, network, real images, raw prompts, or raw provider responses. Real-provider QA remains explicit internal/debug-only with local QweAPI credentials and internal guard config. Reports are ignored, metadata-only, include validation-category counters and redaction flags, and always keep `productionReady: false`. Backend request payloads and iOS upload payloads are unchanged, capture context is still not uploaded, iOS still has no provider key / direct provider call, Camera remains local-only, and production rollout remains blocked.
 - Phase 18-B3 adds the internal real-provider QA dry-run gate. `docs/photo-advisor-provider-qa-dry-run-gate.md` defines pre-run, run, and post-run operator checks; `backend/scripts/run-photo-advisor-provider-qa.mjs --check-safety-gate` prints sanitized gate status; `npm run qa:photo-advisor` now runs safe synthetic-contract QA; real-provider QA requires explicit `--run-provider`. Reports and samples remain ignored, generated artifacts must not be committed, `productionReady` remains false, backend request payloads and iOS upload payloads are unchanged, capture context is still not uploaded, iOS still has no provider key / direct provider call, Camera remains local-only, and production rollout remains blocked.
 - Phase 18-B4-pre consolidates recurring project rules into `AGENTS.md`. Future Codex prompts can say "Read AGENTS.md and follow all project rules" to inherit provider-key/direct-call bans, Camera cloud-entry restrictions, capture-context upload restrictions, raw logging/persistence bans, GPS/raw EXIF/sensor persistence bans, sensitive-inference bans, provider QA artifact hygiene, `productionReady=false`, and the Photo Advisor Observation -> Mood -> Retro intent -> Optional action language rule. This phase is docs/instructions only; app behavior, backend provider payloads, iOS upload payloads, capture-context upload, cloud functionality, and production rollout are unchanged.
+- Phase 18 handoff refresh records that Phase 18-A0 through Phase 18-A5 are completed and pushed, Phase 18-B0 and Phase 18-B1 are completed and pushed, Phase 18-B2 and Phase 18-B3 are upstream-synced / pushed by the latest upstream comparison, and Phase 18-B4-pre is local-only unless the operator pushes `a9b386b`.
 - Future production rollout may start only after explicit approval, real image provider success, secret management hardening, provider policy review, timeout / cancellation, moderation, validation, and cost guard work.
 - No Gemini Live / streaming, AI Filter Generator real backend, 改圖師 provider integration, or Camera cloud AI entry is approved by Phase 17A.
 - App-wide language switching remains not implemented.
 - Filter Lab / 改圖師 copy integration remains future-only.
 - Explicit profanity remains future review-only and not runtime-enabled.
-- Next safe step may be Phase 18-B4 provider QA dry-run review / approved-sample analysis, or Phase 18-C capture-context schema planning only if explicitly requested; production rollout remains blocked.
+- Next planned phase after this handoff refresh: Phase 18-B4 - define provider QA review thresholds.
+- Longer-term direction: LocalAIAnalysisReport, live viewfinder local AI, Core ML, or a fine-tuned own model should come only after the foundation, schema, QA, privacy, and performance gates are ready.
+- Next safe step may be Phase 18-B4 provider QA dry-run review threshold definition, or Phase 18-C capture-context schema planning only if explicitly requested; production rollout remains blocked.
 
 ---
 
