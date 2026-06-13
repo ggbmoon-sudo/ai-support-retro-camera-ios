@@ -51,6 +51,15 @@ const SENSITIVE_INFERENCE_PATTERNS = Object.freeze([
   { pattern: /身份(辨識|識別|推斷)/, category: "sensitive_attribute_guard" }
 ]);
 
+const APP_LANGUAGE_GUARD_PATTERNS = Object.freeze([
+  { pattern: /\b\d{1,3}\s*\/\s*10\b/i, category: "unknown_safety_guard" },
+  { pattern: /\b\d{1,3}\s*%\b/i, category: "unknown_safety_guard" },
+  { pattern: /\b(score|rating)\b/i, category: "unknown_safety_guard" },
+  { pattern: /\b(bad photo|wrong exposure|failed photo|retake this|retake it|must fix|please retake|out of focus)\b/i, category: "unknown_safety_guard" },
+  { pattern: /水平錯誤|構圖錯誤|曝光錯誤|照片太暗|光線不足|噪點太多|對焦失敗|相片模糊|你手震/, category: "unknown_safety_guard" },
+  { pattern: /\b(provider|system prompt|debug field|raw json|raw provider|chain[- ]?of[- ]?thought)\b/i, category: "unknown_safety_guard" }
+]);
+
 export function validateSafeTextOutput(value) {
   const texts = collectText(value);
   const joined = texts.join("\n");
@@ -64,6 +73,12 @@ export function validateSafeTextOutput(value) {
   for (const { pattern, category } of SENSITIVE_INFERENCE_PATTERNS) {
     if (pattern.test(joined)) {
       return invalid("unsafe_sensitive_inference", category);
+    }
+  }
+
+  for (const { pattern, category } of APP_LANGUAGE_GUARD_PATTERNS) {
+    if (pattern.test(joined)) {
+      return invalid("unsafe_app_language", category);
     }
   }
 

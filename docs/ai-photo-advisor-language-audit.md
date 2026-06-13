@@ -310,3 +310,23 @@ The QA kit checks that the local/mock advisor keeps the Phase 18-A1/A2/A3/A4 con
 - Raw provider/debug/internal wording, score/rating language, harsh fix-it copy, and sensitive inference remain forbidden.
 
 Backend provider payloads remain unchanged, capture context and QA metadata are not uploaded, Camera remains local-only, and production rollout remains blocked.
+
+## Phase 18-B0 Implementation Note
+
+Phase 18-B0 aligns the backend-mediated real AI Photo Advisor contract with the app-owned language system before any production provider output can affect UI.
+
+The new `docs/photo-advisor-provider-language-contract.md` records:
+
+- provider voice requirements
+- CloudAIResponse v1 to PhotoAdvisor result-card alignment
+- prompt requirements
+- backend validator requirements
+- safe fallback contract
+- provider QA fixture planning
+- A1-A5 validator / copy-regression integration
+
+The backend prompt now explicitly requires Observation -> Mood -> Retro intent -> Optional action, short UI-ready copy, whitelisted filter recommendations with reasons, optional refinements, conservative retake advice, and creative-intent preservation for blur / tilt / low light / grain / soft focus / high contrast / faded color / unusual framing.
+
+The backend safety validator now also blocks score/rating language, harsh fix-it / retake-first wording, provider/debug leakage, chain-of-thought wording, and overlong filter reasons in addition to the existing sensitive-inference and filter whitelist guards.
+
+This phase does not enable production cloud AI, change iOS upload payloads, upload capture context, add provider keys/direct calls to iOS, add Camera cloud AI, collect GPS/location, dump raw EXIF, persist raw sensor streams, or change production UI.

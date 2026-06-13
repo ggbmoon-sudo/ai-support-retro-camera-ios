@@ -107,6 +107,18 @@ Phase 17C-R1 adds:
 - one retry for invalid JSON / invalid schema / transient provider error / timeout
 - fallback response for missing key, disabled internal cloud, provider failure, invalid schema, and unsafe output
 
+Phase 18-B0 aligns the backend-mediated provider language contract with the app-side Photo Advisor language system from Phase 18-A1 through Phase 18-A5:
+
+- provider output must follow Observation -> Mood -> Retro intent -> Optional action
+- provider output must not use Score -> Problem -> Fix -> Retake
+- filter recommendations must include a short safe reason connecting photo signal + retro aesthetic result
+- blur, tilt, low light, grain, soft focus, high contrast, faded color, and unusual framing remain possible creative style
+- retake advice must be rare, conservative, optional, and lower priority than mood / filter / style preservation
+- validator coverage blocks score/rating language, harsh fix-it wording, provider/debug leakage, chain-of-thought wording, sensitive inference, banned terms, unsupported filter IDs, and overlong filter reasons
+- fallback responses remain structured, short, recoverable, and free of raw provider details
+
+See `../docs/photo-advisor-provider-language-contract.md`.
+
 Run:
 
 ```sh
@@ -309,5 +321,6 @@ Allowed operational metadata, if needed in a future phase:
 - Phase 18-A3 is an iOS app-side CreativeIntentGuard language / retake restraint polish. Backend request payloads remain unchanged; capture context, creative-intent classifications, and filter reason metadata are not uploaded, and provider prompts / endpoints are not changed in this phase.
 - Phase 18-A4 is an iOS app-side Photo Advisor result card language model polish. Backend request payloads remain unchanged; capture context, result-card display priority, creative-intent classifications, and filter reason metadata are not uploaded, and provider prompts / endpoints are not changed in this phase.
 - Phase 18-A5 is an iOS app-side multilingual Photo Advisor copy QA / regression kit. Backend request payloads remain unchanged; copy QA scenarios, result-card expectations, and language review notes are not uploaded, and provider prompts / endpoints are not changed in this phase.
+- Phase 18-B0 is a backend/provider language contract and schema alignment audit. Backend request payloads remain unchanged; iOS upload payloads remain unchanged; capture context is still not uploaded; provider output is aligned to the A1-A5 app language system before any production rollout.
 - Do not add Gemini Live, WebSocket, Camera cloud AI, Filter Generator real backend, or 改圖師 image editing in this backend phase.
 - Do not commit secrets, `.env`, provider keys, Firebase config, or production storage config.

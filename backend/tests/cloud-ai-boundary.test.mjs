@@ -94,12 +94,53 @@ test("cloud ai response validator rejects invalid filter id", async () => {
   assert.equal(result.error.code, "unknown_filter_id");
 });
 
+test("cloud ai response validator rejects overlong filter reasons", async () => {
+  const response = await fixture("cloud-ai-valid-response.json");
+  response.recommendedFilters[0].reason = "A".repeat(141);
+
+  const result = validateCloudAIResponse(response);
+
+  assert.equal(result.ok, false);
+  assert.equal(result.error.code, "invalid_filter_reason");
+});
+
 test("cloud ai response validator rejects unsafe text", async () => {
   const result = validateCloudAIResponse(await fixture("cloud-ai-unsafe-response.json"));
 
   assert.equal(result.ok, false);
   assert.equal(result.error.code, "unsafe_response");
   assert.equal(result.error.unsafeCategory, "banned_term_guard");
+});
+
+test("cloud ai response validator rejects score and harsh fix-it language", async () => {
+  const scoredResponse = await fixture("cloud-ai-valid-response.json");
+  scoredResponse.summary = "Photo score: 8/10.";
+  const scoredResult = validateCloudAIResponse(scoredResponse);
+
+  assert.equal(scoredResult.ok, false);
+  assert.equal(scoredResult.error.code, "unsafe_response");
+  assert.equal(scoredResult.error.unsafeCategory, "unknown_safety_guard");
+  assert.equal(JSON.stringify(scoredResult).includes("8/10"), false);
+
+  const harshResponse = await fixture("cloud-ai-valid-response.json");
+  harshResponse.suggestions[0].text = "Wrong exposure. Retake this.";
+  const harshResult = validateCloudAIResponse(harshResponse);
+
+  assert.equal(harshResult.ok, false);
+  assert.equal(harshResult.error.code, "unsafe_response");
+  assert.equal(harshResult.error.unsafeCategory, "unknown_safety_guard");
+  assert.equal(JSON.stringify(harshResult).includes("Wrong exposure"), false);
+});
+
+test("cloud ai response validator rejects provider and chain-of-thought leakage", async () => {
+  const providerLeakResponse = await fixture("cloud-ai-valid-response.json");
+  providerLeakResponse.summary = "Provider debug field: chain-of-thought omitted.";
+  const providerLeakResult = validateCloudAIResponse(providerLeakResponse);
+
+  assert.equal(providerLeakResult.ok, false);
+  assert.equal(providerLeakResult.error.code, "unsafe_response");
+  assert.equal(providerLeakResult.error.unsafeCategory, "unknown_safety_guard");
+  assert.equal(JSON.stringify(providerLeakResult).includes("chain-of-thought"), false);
 });
 
 test("cloud ai response validator labels appearance and sensitive unsafe text without raw output", async () => {
@@ -441,8 +482,12 @@ test("photo advisor prompt bans sensitive inference and arbitrary filters", () =
   assert.equal(prompt.includes("Avoid words related to attractiveness"), true);
   assert.equal(prompt.includes("Use neutral object/photo terms"), true);
   assert.equal(prompt.includes("Recommended filter IDs must be chosen only from this whitelist"), true);
-  assert.equal(prompt.includes("Avoid poetic copy, overclaiming, and generic filler"), true);
-  assert.equal(prompt.includes("Retake advice must be soft"), true);
+  assert.equal(prompt.includes("Keep output short, practical, gentle, and retro-camera-aware"), true);
+  assert.equal(prompt.includes("Observation -> Mood -> Retro intent -> Optional action"), true);
+  assert.equal(prompt.includes("Do not use Score -> Problem -> Fix -> Retake language"), true);
+  assert.equal(prompt.includes("Filter recommendations must include a short reason"), true);
+  assert.equal(prompt.includes("Treat blur, tilt, low light, grain"), true);
+  assert.equal(prompt.includes("Retake advice must be rare"), true);
   assert.equal(prompt.includes("instant_dream"), true);
 });
 

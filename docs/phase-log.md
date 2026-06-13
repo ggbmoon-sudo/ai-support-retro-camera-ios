@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 18-A5 - Multilingual Advisor Copy QA + Regression Kit
-Status: Phase 18-A5 completed and locally committed; push is blocked by GitHub HTTPS credential error
-Latest implementation: Added a multilingual Photo Advisor copy regression matrix and wrapper validation script covering A1 language pack, A2 filter reasons, A3 CreativeIntentGuard rules, and A4 result card display priority while leaving backend payloads, capture-context upload, provider keys, Camera cloud entry, and production rollout unchanged
+Current phase: Phase 18-B0 - Real AI Provider Language Contract + Schema Alignment Audit
+Status: Phase 18-B0 completed and locally committed; push is blocked by GitHub HTTPS credential error
+Latest implementation: Aligned the backend-mediated Photo Advisor provider language contract with the Phase 18-A1 through Phase 18-A5 app-side language system; added provider contract docs, prompt alignment, validator guards for score / fix-it / provider leakage, overlong filter reason validation, and backend tests while leaving backend request payloads, iOS upload payloads, capture-context upload, provider keys, Camera cloud entry, and production rollout unchanged
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -72,7 +72,62 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Recommended next step is Phase 18-A6 language fixture review / prompt alignment planning or Phase 18-B provider prompt alignment planning, not production rollout. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, or save-to-Photos until explicitly requested.
+Next phase: Recommended next step is Phase 18-B1 provider QA fixture review / prompt QA or Phase 18-C capture-context schema planning, not production rollout. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, or save-to-Photos until explicitly requested.
+
+---
+
+## Phase 18-B0 - Real AI Provider Language Contract + Schema Alignment Audit
+
+Status: Completed and locally committed; push blocked by GitHub HTTPS credential error
+Date: 2026-06-13
+
+### Completed
+
+- Added `docs/photo-advisor-provider-language-contract.md` to define the backend-mediated real AI Photo Advisor provider voice contract.
+- Audited `CloudAIResponse` v1 against the Phase 18-A4 `PhotoAdvisorResultCardModel` display needs.
+- Documented current direct mappings, partial mappings, and future-only fields such as `moodHeadline`, `visualObservations`, `creativeIntentNotes`, and `straightenAdvice`.
+- Updated the backend Photo Advisor provider prompt to explicitly require Observation -> Mood -> Retro intent -> Optional action.
+- Updated the backend prompt to forbid Score -> Problem -> Fix -> Retake, harsh correction wording, generic AI filler, score/rating language, provider/system/debug details, and chain-of-thought.
+- Updated the backend prompt to require short filter reasons that connect a safe photo signal to a retro aesthetic result.
+- Updated the backend prompt to preserve creative intent for blur, tilt, low light, grain, soft focus, high contrast, faded color, unusual framing, underexposure, and overexposure.
+- Extended backend safe text validation to reject score/rating wording, harsh fix-it / retake-first wording, provider/debug leakage, and chain-of-thought wording.
+- Added backend response validation for overlong recommended filter reasons.
+- Added backend tests for score/fix-it guard behavior, provider/chain-of-thought leakage, overlong filter reasons, and prompt contract wording.
+- Updated README, iOS README, backend README, handoff, A0 audit notes, A5 copy regression matrix bridge note, and manual smoke tests.
+
+### Safety Notes
+
+- Provider language contract / schema alignment audit only.
+- Backend request payloads are unchanged.
+- iOS upload payloads are unchanged.
+- Capture context is not uploaded.
+- No provider key, provider SDK, direct provider call, Camera cloud AI entry, production remote rollout, GPS/location collection, raw EXIF dump, raw sensor persistence, raw provider output display, chain-of-thought display, StoreKit, export, Gemini Live, WebSocket, or AI Filter Generator backend was added.
+- Production UI remains governed by the Phase 18-A4 result card model and does not display raw JSON, provider/source labels, raw provider errors, raw localization keys, raw capture context, raw EXIF, numeric confidence, score/rating, or internal classification names.
+- Sensitive inference remains forbidden; provider contract and backend guards reject face, skin, age, gender, attractiveness / beauty, emotion / mental state, health, identity, ethnicity, religion, disability, and body judgment.
+
+### Verification
+
+- Backend tests passed with bundled Node: `/Users/a1234/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --test tests/*.test.mjs` reported 40/40 passing.
+- `scripts/validate-photo-advisor-card-language.sh` passed.
+- `scripts/validate-creative-intent-language.sh` passed.
+- `scripts/validate-photo-advisor-filter-reasons.sh` passed.
+- `scripts/validate-photo-advisor-copy-regression.sh` passed.
+- `plutil -lint` passed for English and Traditional Chinese localization files.
+- `git diff --check` passed.
+- `xcodebuild -project ios-app/AIPhotoApp.xcodeproj -scheme AIPhotoApp -destination 'generic/platform=iOS Simulator' build` passed.
+- iOS provider key / direct provider URL scan passed; no QweAPI / Intenext / Code0 / Gemini / OpenAI key, URL, or SDK import was found in iOS source.
+- Visible Camera UI cloud-entry scan passed for the Camera feature directory.
+- Backend request payload unchanged scan passed; `photo-advisor-request.v1.schema.json`, backend route shape, and `validatePhotoAdvisorRequest.mjs` were not changed.
+- iOS upload payload unchanged scan passed; no `ios-app/AIPhotoApp/Services/CloudAI` files were changed.
+- Payload logging scan passed; no request body / base64 / raw image / provider raw response logging was added.
+- GPS/location, raw EXIF, raw sensor persistence/logging scans found no runtime source additions. Documentation matches are safety-boundary statements only.
+- Unsafe phrase / score / fix-it / sensitive-inference scan over changed runtime files found only prompt prohibitions, backend denylist guard entries, and tests that verify blocking / redaction; no user-visible app UI/localization copy was changed.
+- Artifact scan found no accidental photos, screenshots, recordings, generated QA reports, local images, approved real samples, or device-specific artifacts.
+- Secrets / config scans found no committed real secrets; existing placeholder/docs references remain expected.
+
+### Ready to Commit Phase 18-B0
+
+Yes locally; remote push is pending GitHub HTTPS credential repair.
 
 ---
 

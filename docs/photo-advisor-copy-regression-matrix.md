@@ -4,6 +4,8 @@ Phase 18-A5 adds this matrix as a repeatable local/mock Photo Advisor copy QA ki
 
 The QA goal is to keep the app-owned Photo Advisor voice consistent across English, Traditional Chinese, Cantonese-style Traditional Chinese, and Simplified Chinese key variants already present in the existing localization files.
 
+Phase 18-B0 adds `docs/photo-advisor-provider-language-contract.md`, which makes the backend/provider contract downstream of the same copy regression rules. Real provider output must satisfy this matrix before it can be considered for production rollout.
+
 The card should follow:
 
 1. Observation.

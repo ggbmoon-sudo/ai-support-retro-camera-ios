@@ -78,7 +78,7 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 18-A5 multilingual Photo Advisor copy QA kit completed; ready for review
+- Phase 18-B0 provider language contract and schema alignment audit completed; ready for review
 
 Next phase:
 
@@ -113,6 +113,7 @@ Current MVP demo / QA readiness docs:
 - `docs/product-roadmap-next.md`
 - `docs/feature-change-requests.md`
 - `docs/ai-photo-advisor-language-audit.md`
+- `docs/photo-advisor-provider-language-contract.md`
 - `docs/filter-research-popular-film-looks.md`
 - `docs/filter-preset-schema.md`
 - `docs/filter-roadmap.md`
@@ -188,6 +189,8 @@ Phase 18-A3 formalizes CreativeIntentGuard language rules for the local/mock Pho
 Phase 18-A4 adds a UI-facing Photo Advisor result card language model that consolidates the Phase 18-A1 language pack, Phase 18-A2 filter reason library, and Phase 18-A3 CreativeIntentGuard rules. The local/mock card now prioritizes a mood headline, one short visual reason, one primary filter recommendation with a reason, one optional refinement, and only then optional crop / straighten / retake advice when useful. Production UI no longer displays provider/source labels, raw JSON, raw localization keys, raw capture context, raw EXIF, numeric confidence, score/rating, or internal classification names. Backend payloads are unchanged, capture context is not uploaded, iOS has no provider key / direct provider call, Camera remains local-only, and production rollout remains blocked.
 
 Phase 18-A5 adds a multilingual local/mock Photo Advisor copy QA and regression kit. `docs/photo-advisor-copy-regression-matrix.md` covers 30 captured / imported / fallback scenarios across English, Traditional Chinese, Cantonese-style, and Simplified Chinese review notes, including copy length guidance, captured-vs-imported rules, CreativeIntentGuard regression rules, and filter reason regression rules. `scripts/validate-photo-advisor-copy-regression.sh` wraps the A2/A3/A4 checks and scans UI-facing advisor code/localization for missing namespaces, raw keys, provider/debug wording, score/rating language, generic filter advice, harsh fix-it copy, and sensitive inference wording. This is app-side QA/documentation/script work only: backend payloads are unchanged, capture context is not uploaded, iOS has no provider key / direct provider call, Camera remains local-only, and production rollout remains blocked.
+
+Phase 18-B0 aligns the backend-mediated real AI Photo Advisor contract with the Phase 18-A1 through Phase 18-A5 app language system before any production provider output is allowed. `docs/photo-advisor-provider-language-contract.md` records the provider voice contract, CloudAIResponse-to-result-card schema alignment, prompt/validator/fallback audit, and provider QA fixture plan. Backend validation now rejects score/rating wording, harsh fix-it / retake-first language, provider/debug leakage, chain-of-thought wording, and overlong filter reasons. This does not enable production cloud AI, does not change the iOS upload payload, does not upload capture context, does not add provider keys/direct calls to iOS, and does not add a Camera cloud AI entry.
 
 ## Phase 12A Filter Planning Status
 

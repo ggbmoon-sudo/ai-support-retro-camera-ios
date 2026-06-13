@@ -66,6 +66,10 @@ export function validateCloudAIResponse(response) {
     if (!isKnownFilterId(item.filterId)) {
       return invalid("unknown_filter_id", "recommendedFilters contains an unknown filterId");
     }
+
+    if (typeof item.reason !== "string" || item.reason.length > 140) {
+      return invalid("invalid_filter_reason", "recommendedFilters contains an invalid reason");
+    }
   }
 
   if (!ALLOWED_CONFIDENCE.has(response.confidence)) {

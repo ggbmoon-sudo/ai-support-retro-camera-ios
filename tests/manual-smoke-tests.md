@@ -1,5 +1,35 @@
 # Manual Smoke Tests
 
+## Phase 18-B0
+
+Provider language contract alignment check:
+
+- [ ] Open `docs/photo-advisor-provider-language-contract.md`.
+- [ ] Confirm the provider contract follows Observation -> Mood -> Retro intent -> Optional action.
+- [ ] Confirm the contract explicitly forbids Score -> Problem -> Fix -> Retake.
+- [ ] Confirm schema alignment maps `summary`, `suggestions`, `recommendedFilters`, `cropAdvice`, `retakeAdvice`, `safety`, and `error` to the app result-card needs.
+- [ ] Confirm missing future fields such as `moodHeadline`, `visualObservations`, `creativeIntentNotes`, and `straightenAdvice` are documented as future-only and not implemented in the payload.
+- [ ] Confirm provider output must use whitelisted filter IDs and short filter reasons with safe photo signal + retro aesthetic result.
+- [ ] Confirm fallback copy remains calm and does not expose raw provider errors, raw JSON, provider endpoints, prompts, stack traces, or provider names in production UI.
+- [ ] Confirm provider QA fixture planning uses synthetic descriptions or ignored local images only.
+
+Automated local checks:
+
+- [ ] `cd backend && npm test` passes.
+- [ ] `scripts/validate-photo-advisor-copy-regression.sh` passes.
+- [ ] `scripts/validate-photo-advisor-card-language.sh` passes.
+- [ ] `scripts/validate-creative-intent-language.sh` passes.
+- [ ] `scripts/validate-photo-advisor-filter-reasons.sh` passes.
+
+Boundary check:
+
+- [ ] Backend `/v1/ai/photo-advisor` request payload shape remains unchanged.
+- [ ] iOS Cloud AI request/upload payload remains unchanged.
+- [ ] Capture context is not uploaded.
+- [ ] iOS still has no provider key, provider SDK import, or direct provider URL call.
+- [ ] Camera remains local-only with no AI Snapshot / Quick Advice / Cloud AI entry.
+- [ ] No GPS/location collection, raw EXIF dump, raw sensor persistence, StoreKit, Gemini Live, WebSocket, export, or production cloud rollout is enabled.
+
 ## Phase 18-A5
 
 Multilingual Photo Advisor copy regression check:

@@ -239,6 +239,28 @@ Phase 18-A5 adds a repeatable QA and regression kit for local/mock Photo Advisor
 
 This phase does not change backend provider payloads, upload capture context, add provider keys, add direct provider calls, add Camera cloud AI, collect GPS/location, dump raw EXIF, persist raw sensor streams, or enable production cloud rollout.
 
+## Phase 18-B0 Provider Language Contract Alignment
+
+Phase 18-B0 is a backend/provider contract audit for future real AI Photo Advisor output. It does not change iOS runtime behavior:
+
+- no provider key in iOS
+- no direct QweAPI / provider call from iOS
+- no Camera cloud AI entry
+- no production remote rollout
+- no iOS upload payload change
+- no capture context upload
+
+The provider contract in `../docs/photo-advisor-provider-language-contract.md` requires real provider output to match the app-side A1-A5 language system:
+
+- Observation -> Mood -> Retro intent -> Optional action
+- no Score -> Problem -> Fix -> Retake
+- short mood-first result card language
+- whitelisted filter recommendation with a reason
+- conservative optional retake only
+- no sensitive inference, score/rating, provider/debug leakage, raw JSON, or chain-of-thought
+
+The normal iOS Photo Advisor card remains mock/local unless the existing DEBUG/internal remote path is explicitly used.
+
 ## Phase 12A Filter Planning
 
 Phase 12A adds filter research and schema planning documents only. It does not change iOS app source code.
