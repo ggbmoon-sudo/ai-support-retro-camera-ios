@@ -1,5 +1,30 @@
 # Manual Smoke Tests
 
+## Phase 17D-A
+
+Check:
+
+- [ ] App launches normally.
+- [ ] Camera still opens and captures photos normally.
+- [ ] Camera remains local-only and no AI Snapshot / Quick Advice / Cloud AI entry appears.
+- [ ] Capture a photo and open the mock/local Photo Advisor.
+- [ ] Import a photo and open the mock/local Photo Advisor.
+- [ ] Confirm imported photos still work with unavailable / unknown capture context.
+- [ ] Confirm local/mock Photo Advisor does not default to retake for blur, tilt, low light, grain, motion, or unusual framing.
+- [ ] Confirm advice uses optional wording such as “if you want...” / “如果你想...”.
+- [ ] Confirm Photo Advisor suggestions preserve possible retro intent before offering technical refinement.
+- [ ] Confirm UI does not show raw sensor values, raw EXIF, raw JSON, provider errors, raw localization keys, banned copy, or identity-adjacent wording.
+- [ ] Confirm DEBUG-only cloud path, if used, still asks consent first and remains separate from local capture context.
+- [ ] Confirm no GPS/location, raw EXIF dump, continuous sensor logging, or raw photo persistence is visible in behavior.
+- [ ] Confirm no production remote AI rollout is enabled.
+
+Known TODOs:
+
+- [ ] Phase 17D-A does not upload capture context to backend.
+- [ ] Future backend schema support for capture context requires a separate explicit phase.
+- [ ] Future real motion / level sensor sampling must remain summarized, local-only, and non-persistent unless separately approved.
+- [ ] Physical-device validation should check that capture still works and local advice stays intent-aware.
+
 ## Phase 17C
 
 Check:

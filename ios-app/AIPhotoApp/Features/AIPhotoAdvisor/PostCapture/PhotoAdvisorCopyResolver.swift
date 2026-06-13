@@ -27,8 +27,26 @@ nonisolated struct PhotoAdvisorCopyResolver: Sendable {
         return "photo_advisor.copy.\(language.keyComponent).\(tone.keyComponent).\(category.rawValue)"
     }
 
+    func intentMessageKey(
+        for component: String,
+        language: AppLanguageMode,
+        requestedTone: ToneMode
+    ) -> String {
+        let tone = resolvedTone(
+            language: language,
+            requestedTone: requestedTone,
+            category: .compositionAdvice
+        )
+
+        return "photo_advisor.intent.\(language.keyComponent).\(tone.keyComponent).\(component)"
+    }
+
     func localizedResult(_ result: PhotoAdvisorResult, input: PhotoAdvisorInput) -> PhotoAdvisorResult {
-        PhotoAdvisorResult(
+        let retakeReasonKey = shouldPreserveKey(result.retakeAdvice.reasonKey)
+            ? result.retakeAdvice.reasonKey
+            : messageKey(for: result.retakeAdvice.shouldRetake ? .retakeAdvice : .keepAdvice, language: input.languageMode, requestedTone: input.toneMode)
+
+        return PhotoAdvisorResult(
             id: result.id,
             schemaVersion: result.schemaVersion,
             mode: result.mode,
@@ -38,12 +56,14 @@ nonisolated struct PhotoAdvisorCopyResolver: Sendable {
             recommendedFilters: localizedRecommendations(result.recommendedFilters, input: input),
             retakeAdvice: PhotoAdvisorRetakeAdvice(
                 shouldRetake: result.retakeAdvice.shouldRetake,
-                reasonKey: messageKey(for: result.retakeAdvice.shouldRetake ? .retakeAdvice : .keepAdvice, language: input.languageMode, requestedTone: input.toneMode)
+                reasonKey: retakeReasonKey
             ),
             cropAdvice: result.cropAdvice.map { cropAdvice in
                 PhotoAdvisorCropAdvice(
                     recommended: cropAdvice.recommended,
-                    textKey: messageKey(for: .cropAdvice, language: input.languageMode, requestedTone: input.toneMode)
+                    textKey: shouldPreserveKey(cropAdvice.textKey)
+                        ? cropAdvice.textKey
+                        : messageKey(for: .cropAdvice, language: input.languageMode, requestedTone: input.toneMode)
                 )
             },
             confidence: result.confidence,
@@ -62,6 +82,10 @@ nonisolated struct PhotoAdvisorCopyResolver: Sendable {
         ]
 
         return suggestions.enumerated().map { index, suggestion in
+            if shouldPreserveKey(suggestion.textKey) {
+                return suggestion
+            }
+
             let category = categories[min(index, categories.count - 1)]
             return PhotoAdvisorSuggestion(
                 id: suggestion.id,
@@ -84,6 +108,10 @@ nonisolated struct PhotoAdvisorCopyResolver: Sendable {
                 confidence: recommendation.confidence
             )
         }
+    }
+
+    private func shouldPreserveKey(_ key: String) -> Bool {
+        key.hasPrefix("photo_advisor.intent.")
     }
 
     private func resolvedTone(
@@ -112,7 +140,7 @@ nonisolated struct PhotoAdvisorCopyResolver: Sendable {
 }
 
 private extension AppLanguageMode {
-    var keyComponent: String {
+    nonisolated var keyComponent: String {
         switch self {
         case .english:
             return "en"
@@ -127,7 +155,7 @@ private extension AppLanguageMode {
 }
 
 private extension ToneMode {
-    var keyComponent: String {
+    nonisolated var keyComponent: String {
         switch self {
         case .neutral:
             return "neutral"

@@ -122,6 +122,17 @@ Phase 17C-R4 also keeps iOS behavior unchanged. It hardens backend QA latency / 
 
 Phase 17C-R5 also keeps iOS behavior unchanged. It only tightens backend Photo Advisor provider prompt / safety diagnostics and adds a local approved-real-sample QA workflow; iOS still has no provider key, no direct QweAPI call, no Camera cloud AI entry, and no production rollout.
 
+## Phase 17D-A Local Camera Capture Context
+
+Phase 17D-A adds local-only summarized capture context for captured / imported photos:
+
+- captured photos can carry bucketed local context for orientation, lens, selected filter, local exposure signals, composition helper flags, and creative intent guard signals
+- imported photos default to unavailable / unknown capture context
+- mock/local Photo Advisor can use the context to avoid overcorrecting intentional retro blur, low light, tilt, grain, soft focus, strong contrast, or unusual framing
+- local advice uses optional wording such as “if you want...” / “如果你想...” rather than defaulting to retake / fix-it advice
+
+This phase does not collect GPS/location, dump raw EXIF, persist continuous sensor streams, upload capture context to the backend, change backend provider payloads, add provider SDKs or keys to iOS, add direct provider calls from iOS, add Camera cloud AI, or enable production rollout.
+
 ## Phase 12A Filter Planning
 
 Phase 12A adds filter research and schema planning documents only. It does not change iOS app source code.

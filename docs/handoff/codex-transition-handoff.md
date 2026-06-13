@@ -404,6 +404,11 @@ This update records work completed by the new Codex / Codex API session after th
 - Phase 17C-R5 tightens the provider prompt to allowed photo-only topics, adds safe unsafe diagnostic labels, extends QA reports with `unsafeByCategory` / per-case `unsafeCategory`, and adds an ignored approved-real-sample workflow under `backend/tests/approved-real-samples/`.
 - R5 QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; it warns about and ignores macOS `._*.jpg` resource-fork files.
 - R5 real-provider synthetic QA run produced 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs.
+- Phase 17D-A adds a local-only Camera Capture Context model and snapshot path for captured / imported photos.
+- Capture context is summarized and bucketed; it does not collect GPS/location, raw EXIF dumps, raw photo data, continuous motion logs, face/skin/identity data, or sensitive personal inference.
+- Mock/local Photo Advisor now treats blur, low light, tilt, grain, soft focus, high contrast, and unusual framing as possible intentional retro style instead of automatic mistakes.
+- Phase 17D-A does not upload capture context to backend and does not change backend provider request payloads.
+- Advisor retake/crop wording remains optional and intent-aware; retake is not defaulted for creative signals.
 - Manual language review, approved real sample review, filter / crop usefulness review, and repeated unsafe-response validation are production rollout blockers; next work should review provider quality and approved sample-image QA, not production rollout.
 - iOS must not contain a QweAPI key or direct QweAPI base URL call.
 - Default provider mode remains mock.
@@ -590,6 +595,7 @@ Important docs already added or expected in this roadmap:
 - Phase 17C-R3 completed a synthetic local image QA pass; future QA should use approved realistic local images, manually review 3-5 outputs, and avoid committing generated reports or real photos.
 - Phase 17C-R4 adds provider QA latency / fallback hardening and manual review readiness; future QA should use the expanded report fields and manual review template before changing product rollout status.
 - Phase 17C-R5 reduces unsafe-response fallback risk in the latest synthetic QA run and adds the approved-real-sample workflow; future QA should run approved real samples locally without committing photos or reports.
+- Phase 17D-A adds local capture context for mock/local advisor intent awareness; future cloud schema expansion for capture context requires a separate explicit phase.
 - Future production rollout may start only after explicit approval, real image provider success, secret management hardening, provider policy review, timeout / cancellation, moderation, validation, and cost guard work.
 - No Gemini Live / streaming, AI Filter Generator real backend, 改圖師 provider integration, or Camera cloud AI entry is approved by Phase 17A.
 - App-wide language switching remains not implemented.

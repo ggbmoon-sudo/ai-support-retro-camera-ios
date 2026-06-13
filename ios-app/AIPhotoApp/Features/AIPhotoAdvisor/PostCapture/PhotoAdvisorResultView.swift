@@ -7,6 +7,7 @@ struct PhotoAdvisorResultView: View {
     let selectedPreset: FilterPreset
     let presets: [FilterPreset]
     let imageSignal: PhotoAdvisorImageSignal
+    let captureContext: CameraCaptureContext
     let debugSourceImage: UIImage?
     let isRendering: Bool
     let onApplyFilter: (FilterPreset) -> Void
@@ -24,6 +25,7 @@ struct PhotoAdvisorResultView: View {
         selectedPreset: FilterPreset,
         presets: [FilterPreset],
         imageSignal: PhotoAdvisorImageSignal = .unavailable,
+        captureContext: CameraCaptureContext = .mock,
         debugSourceImage: UIImage? = nil,
         isRendering: Bool,
         onApplyFilter: @escaping (FilterPreset) -> Void
@@ -33,6 +35,7 @@ struct PhotoAdvisorResultView: View {
         self.selectedPreset = selectedPreset
         self.presets = presets
         self.imageSignal = imageSignal
+        self.captureContext = captureContext
         self.debugSourceImage = debugSourceImage
         self.isRendering = isRendering
         self.onApplyFilter = onApplyFilter
@@ -394,7 +397,8 @@ struct PhotoAdvisorResultView: View {
             selectedFilterId: selectedPreset.id,
             imageSignal: imageSignal,
             languageMode: toneSettings.runtimeLanguageMode,
-            toneMode: toneSettings.runtimeToneMode
+            toneMode: toneSettings.runtimeToneMode,
+            captureContext: captureContext
         )
     }
 

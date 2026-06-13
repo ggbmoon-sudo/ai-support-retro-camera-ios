@@ -117,6 +117,7 @@ struct ImportedPhotoResultView: View {
                         selectedPreset: selectedPreset,
                         presets: presets,
                         imageSignal: imageSignal,
+                        captureContext: photo.captureContext,
                         debugSourceImage: photo.image,
                         isRendering: isFiltering,
                         onApplyFilter: { preset in
@@ -175,7 +176,8 @@ struct ImportedPhotoResultView: View {
             photoId: advisorPhotoId,
             source: .imported,
             selectedFilterId: selectedPreset.id,
-            imageSignal: imageSignal
+            imageSignal: imageSignal,
+            captureContext: photo.captureContext
         )
         let result = PhotoAdvisorHeuristicResolver.result(for: input, allowedFilterIds: Set(presets.map(\.id)))
 

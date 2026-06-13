@@ -124,7 +124,26 @@ final class CameraViewModel: ObservableObject {
                     self.errorMessage = CameraCaptureError.imageDataUnavailable.localizedDescription
                     return
                 }
-                self.setSelectedPhoto(CapturedPhoto(image: image, source: .camera))
+                let captureContext = CameraCaptureContextSnapshotter.snapshot(
+                    source: .captured,
+                    imageSize: image.size,
+                    selectedFilterId: self.selectedFilterPreset.id,
+                    previewFilterId: self.selectedFilterPreset.id,
+                    lensOption: self.selectedLensOption,
+                    liveGuidanceSignals: self.latestLocalFrameSignals,
+                    compositionHelpers: CameraCompositionHelperContext(
+                        gridEnabled: false,
+                        levelGuideEnabled: false,
+                        centerGuideEnabled: self.liveGuidanceMode == .local
+                    )
+                )
+                self.setSelectedPhoto(
+                    CapturedPhoto(
+                        image: image,
+                        source: .camera,
+                        captureContext: captureContext
+                    )
+                )
             case .failure(let error):
                 self.errorMessage = error.localizedDescription
             }
@@ -141,7 +160,13 @@ final class CameraViewModel: ObservableObject {
                   let image = UIImage(data: data) else {
                 throw CameraCaptureError.imageDataUnavailable
             }
-            setSelectedPhoto(CapturedPhoto(image: image, source: .photoLibrary))
+            setSelectedPhoto(
+                CapturedPhoto(
+                    image: image,
+                    source: .photoLibrary,
+                    captureContext: CameraCaptureContext.imported(imageSize: image.size)
+                )
+            )
         } catch {
             errorMessage = error.localizedDescription
         }

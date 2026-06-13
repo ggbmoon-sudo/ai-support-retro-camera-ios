@@ -95,11 +95,113 @@ enum PhotoAdvisorHeuristicResolver {
     private static func suggestions(for input: PhotoAdvisorInput, base: PhotoAdvisorResult) -> [PhotoAdvisorSuggestion] {
         var suggestions = base.suggestions
 
+        if let intentSuggestion = intentSuggestion(for: input) {
+            suggestions.insert(intentSuggestion, at: 0)
+        }
+
         if let aspectSuggestion = aspectSuggestion(for: input.imageSignal.aspectRatioBucket) {
             suggestions.insert(aspectSuggestion, at: min(1, suggestions.count))
         }
 
         return Array(suggestions.prefix(3))
+    }
+
+    private static func intentSuggestion(for input: PhotoAdvisorInput) -> PhotoAdvisorSuggestion? {
+        let copyResolver = PhotoAdvisorCopyResolver()
+        let signals = input.captureContext.creativeIntent.styleSignals
+
+        if signals.contains(.lowLight) {
+            return PhotoAdvisorSuggestion(
+                id: "intent_low_light",
+                type: .lighting,
+                textKey: copyResolver.intentMessageKey(
+                    for: "low_light",
+                    language: input.languageMode,
+                    requestedTone: input.toneMode
+                ),
+                priority: .medium
+            )
+        }
+
+        if signals.contains(.motionBlur) {
+            return PhotoAdvisorSuggestion(
+                id: "intent_motion",
+                type: .composition,
+                textKey: copyResolver.intentMessageKey(
+                    for: "motion",
+                    language: input.languageMode,
+                    requestedTone: input.toneMode
+                ),
+                priority: .medium
+            )
+        }
+
+        if signals.contains(.tilt) {
+            return PhotoAdvisorSuggestion(
+                id: "intent_tilt",
+                type: .composition,
+                textKey: copyResolver.intentMessageKey(
+                    for: "tilt",
+                    language: input.languageMode,
+                    requestedTone: input.toneMode
+                ),
+                priority: .medium
+            )
+        }
+
+        if signals.contains(.softFocus) {
+            return PhotoAdvisorSuggestion(
+                id: "intent_soft_focus",
+                type: .composition,
+                textKey: copyResolver.intentMessageKey(
+                    for: "soft_focus",
+                    language: input.languageMode,
+                    requestedTone: input.toneMode
+                ),
+                priority: .medium
+            )
+        }
+
+        if signals.contains(.retroGrain) {
+            return PhotoAdvisorSuggestion(
+                id: "intent_grain",
+                type: .filter,
+                textKey: copyResolver.intentMessageKey(
+                    for: "grain",
+                    language: input.languageMode,
+                    requestedTone: input.toneMode
+                ),
+                priority: .medium
+            )
+        }
+
+        if signals.contains(.highContrast) {
+            return PhotoAdvisorSuggestion(
+                id: "intent_high_contrast",
+                type: .filter,
+                textKey: copyResolver.intentMessageKey(
+                    for: "high_contrast",
+                    language: input.languageMode,
+                    requestedTone: input.toneMode
+                ),
+                priority: .medium
+            )
+        }
+
+        if signals.contains(.unusualFraming) {
+            return PhotoAdvisorSuggestion(
+                id: "intent_framing",
+                type: .composition,
+                textKey: copyResolver.intentMessageKey(
+                    for: "framing",
+                    language: input.languageMode,
+                    requestedTone: input.toneMode
+                ),
+                priority: .medium
+            )
+        }
+
+        return nil
     }
 
     private static func aspectSuggestion(for bucket: PhotoAdvisorAspectRatioBucket) -> PhotoAdvisorSuggestion? {
@@ -134,6 +236,17 @@ enum PhotoAdvisorHeuristicResolver {
         for input: PhotoAdvisorInput,
         base: PhotoAdvisorResult
     ) -> PhotoAdvisorRetakeAdvice {
+        if input.captureContext.creativeIntent.avoidOvercorrecting {
+            return PhotoAdvisorRetakeAdvice(
+                shouldRetake: false,
+                reasonKey: PhotoAdvisorCopyResolver().intentMessageKey(
+                    for: "retake_optional",
+                    language: input.languageMode,
+                    requestedTone: input.toneMode
+                )
+            )
+        }
+
         switch input.imageSignal.aspectRatioBucket {
         case .landscape, .wideLandscape:
             return PhotoAdvisorRetakeAdvice(
@@ -159,6 +272,18 @@ enum PhotoAdvisorHeuristicResolver {
         for input: PhotoAdvisorInput,
         base: PhotoAdvisorResult
     ) -> PhotoAdvisorCropAdvice? {
+        if input.captureContext.creativeIntent.styleSignals.contains(.tilt)
+            || input.captureContext.creativeIntent.styleSignals.contains(.unusualFraming) {
+            return PhotoAdvisorCropAdvice(
+                recommended: false,
+                textKey: PhotoAdvisorCopyResolver().intentMessageKey(
+                    for: "crop_optional",
+                    language: input.languageMode,
+                    requestedTone: input.toneMode
+                )
+            )
+        }
+
         switch input.imageSignal.aspectRatioBucket {
         case .landscape, .wideLandscape:
             return PhotoAdvisorCropAdvice(

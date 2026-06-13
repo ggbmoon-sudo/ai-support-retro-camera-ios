@@ -1250,6 +1250,7 @@ struct CameraView: View {
                         selectedPreset: viewModel.selectedFilterPreset,
                         presets: viewModel.filterPresets,
                         imageSignal: imageSignal(for: photo),
+                        captureContext: photo.captureContext,
                         debugSourceImage: photo.image,
                         isRendering: viewModel.isFiltering,
                         onApplyFilter: { preset in
@@ -1315,7 +1316,8 @@ struct CameraView: View {
             photoId: advisorPhotoId(for: photo),
             source: advisorPhotoSource(for: photo),
             selectedFilterId: viewModel.selectedFilterPreset.id,
-            imageSignal: imageSignal(for: photo)
+            imageSignal: imageSignal(for: photo),
+            captureContext: photo.captureContext
         )
         let result = PhotoAdvisorHeuristicResolver.result(
             for: input,

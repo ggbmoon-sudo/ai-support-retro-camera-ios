@@ -7,6 +7,7 @@ struct FloatingPhotoAdvisorSheet: View {
     let selectedPreset: FilterPreset
     let presets: [FilterPreset]
     let imageSignal: PhotoAdvisorImageSignal
+    let captureContext: CameraCaptureContext
     let debugSourceImage: UIImage?
     let isRendering: Bool
     let onApplyFilter: (FilterPreset) -> Void
@@ -23,6 +24,7 @@ struct FloatingPhotoAdvisorSheet: View {
                     selectedPreset: selectedPreset,
                     presets: presets,
                     imageSignal: imageSignal,
+                    captureContext: captureContext,
                     debugSourceImage: debugSourceImage,
                     isRendering: isRendering,
                     onApplyFilter: onApplyFilter
@@ -79,6 +81,7 @@ struct FloatingPhotoAdvisorSheet: View {
         selectedPreset: FilterPresetCatalog.instantDream,
         presets: FilterPresetCatalog.all,
         imageSignal: PhotoAdvisorImageSignal(size: CGSize(width: 1200, height: 1600)),
+        captureContext: .mock,
         debugSourceImage: nil,
         isRendering: false,
         onApplyFilter: { _ in },

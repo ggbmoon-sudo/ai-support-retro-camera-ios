@@ -114,7 +114,8 @@ final class PhotoAdvisorViewModel: ObservableObject {
             variantSeed: variantSeed,
             localeIdentifier: lastInput.localeIdentifier,
             languageMode: lastInput.languageMode,
-            toneMode: lastInput.toneMode
+            toneMode: lastInput.toneMode,
+            captureContext: lastInput.captureContext
         )
         await analyze(nextInput)
     }
