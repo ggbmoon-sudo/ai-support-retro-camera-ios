@@ -168,16 +168,18 @@ struct PhotoAdvisorResultView: View {
     }
 
     private func resultContent(_ result: PhotoAdvisorResult) -> some View {
-        VStack(alignment: .leading, spacing: AppSpacing.md) {
+        let card = PhotoAdvisorResultCardModel(result: result, input: currentInput)
+
+        return VStack(alignment: .leading, spacing: AppSpacing.md) {
             VStack(alignment: .leading, spacing: AppSpacing.sm) {
-                Text(LocalizedStringKey(result.summaryKey))
+                Text(LocalizedStringKey(card.moodHeadlineKey))
                     .font(AppTypography.bodyEmphasis)
                     .foregroundStyle(AppColors.textPrimary)
                     .fixedSize(horizontal: false, vertical: true)
 
-                if let firstSuggestion = result.suggestions.first {
+                if let visualReasonKey = card.visualReasonKey {
                     Label {
-                        Text(LocalizedStringKey(firstSuggestion.textKey))
+                        Text(LocalizedStringKey(visualReasonKey))
                             .fixedSize(horizontal: false, vertical: true)
                     } icon: {
                         Image(systemName: "sparkles")
@@ -191,10 +193,15 @@ struct PhotoAdvisorResultView: View {
             captureContextDebugPreview
             #endif
 
-            strengthsSection(result.strengthsKeys)
-            suggestionsSection(result.suggestions)
-            filterSection(result.recommendedFilters)
-            adviceSection(result)
+            if let fallbackMessageKey = card.fallbackMessageKey {
+                fallbackContextRow(fallbackMessageKey)
+            }
+
+            if let recommendation = card.primaryFilterRecommendation {
+                filterSection(recommendation)
+            }
+
+            adviceSection(card)
 
             #if DEBUG
             if let messageKey = viewModel.cloudDebugFallbackMessageKey {
@@ -224,67 +231,48 @@ struct PhotoAdvisorResultView: View {
                 .disabled(viewModel.state.isAnalyzing)
 
                 Spacer()
-
-                Text(sourceKey(result.source))
-                    .font(AppTypography.micro)
-                    .foregroundStyle(AppColors.textSecondary)
             }
         }
     }
 
-    private func strengthsSection(_ strengths: [String]) -> some View {
-        compactSection(titleKey: "photo_advisor.section.strengths", icon: "checkmark.seal") {
-            VStack(alignment: .leading, spacing: AppSpacing.xs) {
-                ForEach(strengths, id: \.self) { key in
-                    bulletText(key)
-                }
-            }
-        }
-    }
-
-    private func suggestionsSection(_ suggestions: [PhotoAdvisorSuggestion]) -> some View {
-        compactSection(titleKey: "photo_advisor.section.suggestions", icon: "wand.and.stars") {
-            VStack(alignment: .leading, spacing: AppSpacing.xs) {
-                ForEach(suggestions) { suggestion in
-                    bulletText(suggestion.textKey)
-                }
-            }
-        }
-    }
-
-    private func filterSection(_ recommendations: [PhotoAdvisorFilterRecommendation]) -> some View {
+    private func filterSection(_ recommendation: PhotoAdvisorFilterRecommendation) -> some View {
         compactSection(titleKey: "photo_advisor.section.filters", icon: "camera.filters") {
-            VStack(spacing: AppSpacing.sm) {
-                ForEach(recommendations) { recommendation in
-                    let preset = preset(for: recommendation.filterId)
-                    PhotoAdvisorFilterRecommendationView(
-                        recommendation: recommendation,
-                        preset: preset,
-                        isSelected: preset?.id == selectedPreset.id,
-                        isRendering: isRendering,
-                        onApply: applyRecommendedFilter
-                    )
-                }
+            let preset = preset(for: recommendation.filterId)
+            PhotoAdvisorFilterRecommendationView(
+                recommendation: recommendation,
+                preset: preset,
+                isSelected: preset?.id == selectedPreset.id,
+                isRendering: isRendering,
+                onApply: applyRecommendedFilter
+            )
+        }
+    }
+
+    private func adviceSection(_ card: PhotoAdvisorResultCardModel) -> some View {
+        VStack(alignment: .leading, spacing: AppSpacing.sm) {
+            if let optionalRefinement = card.optionalRefinement {
+                adviceRow(optionalRefinement)
+            }
+
+            if let secondaryAdvice = card.secondaryAdvice {
+                adviceRow(secondaryAdvice)
             }
         }
     }
 
-    private func adviceSection(_ result: PhotoAdvisorResult) -> some View {
-        VStack(alignment: .leading, spacing: AppSpacing.sm) {
-            adviceRow(
-                titleKey: "photo_advisor.section.retake",
-                icon: result.retakeAdvice.shouldRetake ? "arrow.triangle.2.circlepath" : "checkmark.circle",
-                textKey: result.retakeAdvice.reasonKey
-            )
-
-            if let cropAdvice = result.cropAdvice {
-                adviceRow(
-                    titleKey: "photo_advisor.section.crop",
-                    icon: cropAdvice.recommended ? "crop" : "rectangle.dashed",
-                    textKey: cropAdvice.textKey
-                )
-            }
+    private func fallbackContextRow(_ messageKey: String) -> some View {
+        Label {
+            Text(LocalizedStringKey(messageKey))
+                .fixedSize(horizontal: false, vertical: true)
+        } icon: {
+            Image(systemName: "info.circle")
         }
+        .font(AppTypography.caption)
+        .foregroundStyle(AppColors.textSecondary)
+        .padding(AppSpacing.sm)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(AppColors.surface.opacity(0.5))
+        .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.md))
     }
 
     private func recoveryState(
@@ -359,17 +347,6 @@ struct PhotoAdvisorResultView: View {
         .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.md))
     }
 
-    private func bulletText(_ key: String) -> some View {
-        HStack(alignment: .top, spacing: AppSpacing.xs) {
-            Text("•")
-                .foregroundStyle(AppColors.accent)
-            Text(LocalizedStringKey(key))
-                .foregroundStyle(AppColors.textSecondary)
-                .fixedSize(horizontal: false, vertical: true)
-        }
-        .font(AppTypography.caption)
-    }
-
     private func adviceRow(titleKey: LocalizedStringKey, icon: String, textKey: String) -> some View {
         HStack(alignment: .top, spacing: AppSpacing.sm) {
             Image(systemName: icon)
@@ -394,6 +371,14 @@ struct PhotoAdvisorResultView: View {
         .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.md))
     }
 
+    private func adviceRow(_ advice: PhotoAdvisorCardAdvice) -> some View {
+        adviceRow(
+            titleKey: LocalizedStringKey(advice.titleKey),
+            icon: advice.icon,
+            textKey: advice.textKey
+        )
+    }
+
     private var currentInput: PhotoAdvisorInput {
         PhotoAdvisorInput(
             photoId: photoId,
@@ -414,19 +399,6 @@ struct PhotoAdvisorResultView: View {
         guard !isRendering else { return }
         onApplyFilter(preset)
         applyMessageKey = "photo_advisor.action.applied_message"
-    }
-
-    private func sourceKey(_ source: PhotoAdvisorSource) -> LocalizedStringKey {
-        switch source {
-        case .mock:
-            return "photo_advisor.source.mock"
-        case .local:
-            return "photo_advisor.source.local"
-        case .cloud:
-            return "photo_advisor.source.cloud"
-        case .fallback:
-            return "photo_advisor.source.fallback"
-        }
     }
 
     #if DEBUG

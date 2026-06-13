@@ -212,6 +212,19 @@ Phase 18-A3 formalizes local/mock Photo Advisor creative-intent language rules:
 
 This phase does not change backend provider payloads, upload capture context, add provider keys, add direct provider calls, add Camera cloud AI, collect GPS/location, dump raw EXIF, persist raw sensor streams, or enable production cloud rollout.
 
+## Phase 18-A4 Photo Advisor Result Card Language Model
+
+Phase 18-A4 adds a UI-facing result card language model for the local/mock Photo Advisor:
+
+- The card prioritizes mood headline, one short visual reason, one primary filter recommendation with a reason, one optional refinement, and optional crop / straighten / retake only when appropriate.
+- The card consolidates the Phase 18-A1 language pack, Phase 18-A2 filter reason library, and Phase 18-A3 CreativeIntentGuard rules.
+- Filter display keeps filter name + one short reason, with no raw family id or confidence percentage.
+- Retake remains lower priority than mood / filter / style preservation and appears only as optional copy.
+- Imported photos can show a calm limited-context note without pretending capture-time motion / tilt / exposure data is known.
+- Production UI does not display provider/source labels, raw JSON, raw provider errors, raw localization keys, raw capture context, raw EXIF, numeric confidence, score/rating, or internal classification names.
+
+This phase does not change backend provider payloads, upload capture context, add provider keys, add direct provider calls, add Camera cloud AI, collect GPS/location, dump raw EXIF, persist raw sensor streams, or enable production cloud rollout.
+
 ## Phase 12A Filter Planning
 
 Phase 12A adds filter research and schema planning documents only. It does not change iOS app source code.

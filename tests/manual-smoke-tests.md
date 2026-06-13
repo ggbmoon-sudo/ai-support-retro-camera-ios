@@ -1,5 +1,35 @@
 # Manual Smoke Tests
 
+## Phase 18-A4
+
+Photo Advisor result card language model check:
+
+- [ ] Launch the app and confirm Camera opens normally.
+- [ ] Confirm Camera remains local-only and no AI Snapshot / Quick Advice / Cloud AI entry appears.
+- [ ] Capture or import a photo and open mock/local Photo Advisor.
+- [ ] Confirm the result card starts with a short mood / style headline where available.
+- [ ] Confirm the card shows one short visual reason, not a long generic AI critique.
+- [ ] Confirm the filter recommendation shows filter name + one short reason.
+- [ ] Confirm the filter reason mentions a safe photo signal and retro aesthetic result.
+- [ ] Confirm optional crop / straighten / refinement wording is not framed as a correction.
+- [ ] Confirm retake advice appears only as optional and conservative.
+- [ ] Confirm imported photos do not pretend to know capture-time motion / tilt / exposure context.
+- [ ] Confirm fallback copy is calm and app-safe.
+- [ ] Confirm UI does not show provider/source labels, score / rating, numeric confidence, raw sensor streams, raw EXIF, raw JSON, provider errors, raw localization keys, internal classification names, chain-of-thought, banned copy, or identity-adjacent wording.
+
+Automated local checks:
+
+- [ ] `scripts/validate-photo-advisor-card-language.sh` passes.
+- [ ] `scripts/validate-creative-intent-language.sh` passes.
+- [ ] `scripts/validate-photo-advisor-filter-reasons.sh` passes.
+
+Boundary check:
+
+- [ ] Backend `/v1/ai/photo-advisor` payloads remain unchanged.
+- [ ] Capture context and result-card display metadata are not uploaded.
+- [ ] iOS still has no provider key, provider SDK import, or direct provider URL call.
+- [ ] No GPS/location collection, raw EXIF dump, raw sensor persistence, StoreKit, Gemini Live, WebSocket, export, or production cloud rollout is enabled.
+
 ## Phase 18-A3
 
 CreativeIntentGuard language / retake restraint check:

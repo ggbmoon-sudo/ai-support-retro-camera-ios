@@ -525,7 +525,10 @@
 "photo_advisor.section.strengths" = "優點";
 "photo_advisor.section.suggestions" = "建議";
 "photo_advisor.section.filters" = "推薦濾鏡";
-"photo_advisor.section.retake" = "重拍建議";
+"photo_advisor.section.filter_note" = "濾鏡理由";
+"photo_advisor.section.optional_refinement" = "可選微調";
+"photo_advisor.section.optional_retake" = "可選多拍一張";
+"photo_advisor.section.retake" = "可選多拍一張";
 "photo_advisor.section.crop" = "裁切建議";
 "photo_advisor.footer.no_upload" = "Mock demo，不會上傳或保存相片。";
 "photo_advisor.footer.future_cloud" = "日後雲端 AI 版本會先詢問同意。";

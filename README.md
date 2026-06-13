@@ -78,7 +78,7 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 18-A3 CreativeIntentGuard language rules completed; ready for review
+- Phase 18-A4 Photo Advisor result card language model completed; ready for review
 
 Next phase:
 
@@ -184,6 +184,8 @@ Phase 18-A1 implements the first app-side Photo Advisor language pack. The local
 Phase 18-A2 adds a local Filter Recommendation Reason Library for the mock/local Photo Advisor. Every current filter catalog preset is mapped to a language family such as warm film, night grain, street chrome, soft dream, cool fade, or classic film, and recommendation copy now resolves from filter family + safe photo signal + retro aesthetic result. It is app-side/local language work only: no backend provider payload changed, capture context is still not uploaded, iOS still has no provider key / direct provider call, Camera remains local-only, and production rollout remains blocked.
 
 Phase 18-A3 formalizes CreativeIntentGuard language rules for the local/mock Photo Advisor. Capture signals are classified as `style_positive`, `acceptable_imperfection`, `technical_risk`, or `unknown` before advice is selected. Blur, motion, tilt, low light, grain, soft focus, high contrast, faded color, overexposure, underexposure, and unusual framing are treated as possible retro creative style unless a severe technical risk is likely. Retake advice remains rare, conservative, and optional. This phase does not add cloud AI functionality, change backend provider payloads, upload capture context, add provider keys to iOS, add a Camera cloud entry, or enable production rollout.
+
+Phase 18-A4 adds a UI-facing Photo Advisor result card language model that consolidates the Phase 18-A1 language pack, Phase 18-A2 filter reason library, and Phase 18-A3 CreativeIntentGuard rules. The local/mock card now prioritizes a mood headline, one short visual reason, one primary filter recommendation with a reason, one optional refinement, and only then optional crop / straighten / retake advice when useful. Production UI no longer displays provider/source labels, raw JSON, raw localization keys, raw capture context, raw EXIF, numeric confidence, score/rating, or internal classification names. Backend payloads are unchanged, capture context is not uploaded, iOS has no provider key / direct provider call, Camera remains local-only, and production rollout remains blocked.
 
 ## Phase 12A Filter Planning Status
 

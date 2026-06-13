@@ -280,3 +280,16 @@ The app-side language mapping remains:
 4. Optional action.
 
 Retake advice is reserved for likely severe technical risk and remains optional. Non-severe blur, tilt, low light, grain, high contrast, faded color, motion, soft focus, overexposure, underexposure, and unusual framing preserve style first. Backend provider payloads remain unchanged, capture context and creative-intent metadata are not uploaded, Camera remains local-only, and production rollout remains blocked.
+
+## Phase 18-A4 Implementation Note
+
+Phase 18-A4 implements a UI-facing Photo Advisor result card language model. It consolidates the app-owned language pack, filter reason library, and CreativeIntentGuard rules into a concise card priority:
+
+1. Mood headline.
+2. One short visual reason.
+3. One primary filter recommendation with a reason.
+4. One optional refinement.
+5. Optional crop / straighten / retake only when appropriate.
+6. Calm fallback context when needed.
+
+The production card does not expose provider/source labels or internal result details. It avoids raw JSON, raw localization keys, raw capture context, raw EXIF, numeric confidence, score/rating language, and internal classification names. Imported photos can show limited-context copy without pretending to know capture-time motion / tilt / exposure. Backend provider payloads remain unchanged, capture context and result-card metadata are not uploaded, Camera remains local-only, and production rollout remains blocked.

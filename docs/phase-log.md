@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 18-A3 - CreativeIntentGuard Language Rules + Retake Restraint Polish
-Status: Phase 18-A3 completed and locally committed; push is pending GitHub HTTPS credential repair
-Latest implementation: Formalized CreativeIntentGuard classifications and signal language rules for the local/mock Photo Advisor, added conservative technical-risk retake restraint, and expanded validation coverage while leaving backend payloads, capture-context upload, provider keys, Camera cloud entry, and production rollout unchanged
+Current phase: Phase 18-A4 - UI Result Card Language Model
+Status: Phase 18-A4 completed and locally committed; push is pending GitHub HTTPS credential repair
+Latest implementation: Added a UI-facing Photo Advisor result card language model that prioritizes mood headline, one short visual reason, one primary filter recommendation with a reason, one optional refinement, and optional crop / straighten / retake only when appropriate while leaving backend payloads, capture-context upload, provider keys, Camera cloud entry, and production rollout unchanged
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -72,7 +72,55 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Recommended next step is Phase 18-A4 language QA / fixture review or Phase 18-B provider prompt alignment planning, not production rollout. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, or save-to-Photos until explicitly requested.
+Next phase: Recommended next step is Phase 18-A5 language QA / fixture review or Phase 18-B provider prompt alignment planning, not production rollout. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, or save-to-Photos until explicitly requested.
+
+---
+
+## Phase 18-A4 - UI Result Card Language Model
+
+Status: Completed and locally committed; push blocked by GitHub HTTPS credential error
+Date: 2026-06-13
+
+### Completed
+
+- Added `PhotoAdvisorResultCardModel` as a UI-facing display model for local/mock Photo Advisor results.
+- Consolidated Phase 18-A1 language pack, Phase 18-A2 filter reason library, and Phase 18-A3 CreativeIntentGuard rules into result-card display priority.
+- Updated `PhotoAdvisorResultView` to show a mood headline, one short visual reason, one primary filter recommendation with a reason, one optional refinement, and optional crop / straighten / retake only when appropriate.
+- Removed production result-card provider/source label display.
+- Added calm fallback context display for imported photos and fallback results without raw provider/system details.
+- Added `photo_advisor.section.filter_note`, `photo_advisor.section.optional_refinement`, and `photo_advisor.section.optional_retake` localization keys.
+- Added `scripts/validate-photo-advisor-card-language.sh` to check card model usage, card localization keys, and source-label hiding.
+- Updated README, iOS README, backend README, handoff, manual smoke tests, and the Phase 18-A0 audit implementation notes.
+
+### Safety Notes
+
+- App-side local/mock advisor UI language work only.
+- Backend `/v1/ai/photo-advisor` payloads are unchanged.
+- Capture context, result-card display priority, creative-intent classifications, and filter reason metadata are not uploaded.
+- No provider key, provider SDK, direct provider call, Camera cloud AI entry, production remote rollout, GPS/location collection, raw EXIF dump, raw sensor persistence, score/rating UI, raw provider output, chain-of-thought display, StoreKit, export, Gemini Live, WebSocket, or AI Filter Generator backend was added.
+- Production UI does not display raw JSON, provider/source labels, raw provider errors, raw localization keys, raw capture context, raw EXIF, numeric confidence, score/rating, or internal classification names.
+- Retake advice remains conservative, optional, and lower priority than mood / filter / style preservation.
+- Sensitive inference remains forbidden; copy avoids face, skin, age, gender, attractiveness / beauty, emotion / mental state, health, identity, ethnicity, religion, disability, and body judgment.
+
+### Verification
+
+- `scripts/validate-photo-advisor-card-language.sh` passed.
+- `scripts/validate-creative-intent-language.sh` passed.
+- `scripts/validate-photo-advisor-filter-reasons.sh` passed.
+- `plutil -lint` passed for English and Traditional Chinese localization files.
+- `git diff --check` passed.
+- `xcodebuild -project ios-app/AIPhotoApp.xcodeproj -scheme AIPhotoApp -destination 'generic/platform=iOS Simulator' build` passed.
+- Xcode project inspection found only the `AIPhotoApp` app target / scheme and no XCTest target to run.
+- iOS Swift provider key / direct provider URL / provider SDK import scan passed.
+- Visible Camera UI cloud-entry scan passed for `CameraView`, `CameraControlOverlayView`, and `LiveGuidanceOverlayView`.
+- Backend source / package payload scan passed; only `backend/README.md` changed under `backend/`.
+- GPS/location, raw EXIF, raw sensor persistence/logging scans across changed Swift files passed.
+- Precise changed UI sensitive / score / fix-it wording scan passed.
+- Git status artifact scan found no accidental photos, reports, generated QA images, local images, or device QA artifacts.
+
+### Ready to Commit Phase 18-A4
+
+Yes locally; remote push is pending GitHub HTTPS credential repair.
 
 ---
 

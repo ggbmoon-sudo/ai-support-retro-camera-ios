@@ -525,7 +525,10 @@
 "photo_advisor.section.strengths" = "Strengths";
 "photo_advisor.section.suggestions" = "Suggestions";
 "photo_advisor.section.filters" = "Recommended filters";
-"photo_advisor.section.retake" = "Retake advice";
+"photo_advisor.section.filter_note" = "Filter note";
+"photo_advisor.section.optional_refinement" = "Optional refinement";
+"photo_advisor.section.optional_retake" = "Optional extra shot";
+"photo_advisor.section.retake" = "Optional extra shot";
 "photo_advisor.section.crop" = "Crop advice";
 "photo_advisor.footer.no_upload" = "Mock demo. This does not upload or save your photo.";
 "photo_advisor.footer.future_cloud" = "A future cloud AI version will ask before analyzing.";
