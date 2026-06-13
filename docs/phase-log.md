@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 18-B7 - Provider QA Chain Final Audit + Phase 18-C Readiness Gate
-Status: Phase 18-B7 completed and ready to commit
-Latest implementation: Added `docs/photo-advisor-provider-qa-chain-readiness.md` to audit B0-B6 consistency and define Phase 18-C readiness criteria. Updated README, backend README, manual smoke tests, handoff, and phase log while leaving app behavior, backend provider request payloads, iOS upload payloads, capture-context upload, Camera cloud entry, cloud availability, provider credential handling, and production rollout unchanged
+Current phase: Phase 18-C0 - Post-capture Advisor Beta Hardening Plan
+Status: Phase 18-C0 completed and ready to commit
+Latest implementation: Added `docs/photo-advisor-beta-hardening-plan.md` to define post-capture Advisor beta hardening areas, acceptance criteria, internal QA scenario matrix, regression checks, and Phase 18-C starting gates. Updated README, backend README, iOS README, manual smoke tests, handoff, and phase log while leaving app behavior, backend provider request payloads, iOS upload payloads, capture-context upload, Camera cloud entry, cloud availability, provider credential handling, and production rollout unchanged
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -72,13 +72,57 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Phase 18-C - Post-capture Advisor Beta Hardening may start only as internal/debug beta hardening after B7 is committed. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, or save-to-Photos until explicitly requested.
+Next phase: Phase 18-C1 may start only as app-side/local post-capture Advisor beta QA polish if explicitly requested. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, real-provider QA, or save-to-Photos until explicitly requested.
+
+---
+
+## Phase 18-C0 - Post-capture Advisor Beta Hardening Plan
+
+Status: Completed and ready to commit
+Date: 2026-06-14
+
+### Completed
+
+- Added `docs/photo-advisor-beta-hardening-plan.md`.
+- Defined beta hardening areas for captured Photo Advisor flow, imported Photo Advisor flow, fallback/provider-unavailable UX, local/mock advisor consistency, result-card readability, filter recommendation + reason quality, CreativeIntentGuard behavior, crop/straighten/retake restraint, multilingual QA, manual real-device QA, and regression scripts.
+- Defined beta acceptance criteria requiring short mood-first useful copy, no score/rating wording, no sensitive inference, no harsh fix-it language, no retake-first behavior, no imported-photo capture-context overclaiming, calm app-safe fallback copy, internal/debug-only provider path, and `productionReady=false`.
+- Added an internal QA scenario matrix covering captured bright scene, captured low light, intentional blur/motion, intentional tilt, grainy retro look, high contrast, faded color, imported limited context, provider unavailable fallback, unknown/unsupported filter fallback, and missing localization key fallback.
+- Updated README, backend README, iOS README, manual smoke tests, handoff, and phase log references.
+
+### Safety Notes
+
+- Planning-only documentation phase.
+- App behavior is unchanged.
+- Backend provider request payloads are unchanged.
+- iOS upload payloads are unchanged.
+- Capture context is not uploaded.
+- Real-provider QA was not run.
+- No provider key, direct provider call, Camera cloud AI entry, cloud functionality, GPS/location collection, raw EXIF dump, raw sensor persistence, generated artifact commit, or production rollout was added.
+- `productionReady` remains false.
+
+### Verification
+
+- `git diff --check` passed.
+- Photo Advisor copy regression, filter reason coverage, CreativeIntent language, and result-card language scripts passed.
+- Synthetic provider QA mode passed.
+- Provider QA gate summary helper passed.
+- Secret scan passed.
+- iOS direct provider scan stayed clean.
+- Camera cloud entry scan stayed clean.
+- Payload unchanged scans stayed clean.
+- Artifact scan confirmed local env, reports, local images, and generated artifacts remain ignored.
+- Backend tests were not required because backend source/package files were not changed.
+- Xcode build was not required because iOS source/project/localization files were not changed.
+
+### Ready to Commit Phase 18-C0
+
+Yes.
 
 ---
 
 ## Phase 18-B7 - Provider QA Chain Final Audit + Phase 18-C Readiness Gate
 
-Status: Completed and ready to commit
+Status: Completed and upstream-synced
 Date: 2026-06-14
 
 ### Completed
@@ -119,9 +163,9 @@ Phase 18-C is not production rollout approval, not Camera cloud AI approval, not
 - Payload unchanged scans stayed clean.
 - Artifact scan confirmed local env, reports, local images, and generated artifacts remain ignored.
 
-### Ready to Commit Phase 18-B7
+### Commit Status Phase 18-B7
 
-Yes.
+Upstream-synced according to the latest `@{u}` comparison.
 
 ---
 

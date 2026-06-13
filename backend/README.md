@@ -299,6 +299,17 @@ Phase 18-B7 records the final B0-B6 provider QA chain audit:
 
 Phase 18-B7 is docs-only and does not enable production cloud AI.
 
+Phase 18-C0 adds the post-capture Advisor beta hardening plan:
+
+- read `../docs/photo-advisor-beta-hardening-plan.md` before Phase 18-C implementation work
+- hardening scope covers captured/imported Advisor flow, fallback UX, local/mock consistency, result-card readability, filter reasons, CreativeIntentGuard, retake restraint, multilingual QA, real-device QA, and regression scripts
+- real-provider QA is not required for Phase 18-C start and must not run unless explicitly approved
+- backend provider request payloads and iOS upload payloads remain unchanged
+- capture context is still not uploaded
+- `productionReady` remains `false`
+
+Phase 18-C0 is planning-only and does not change backend runtime behavior or provider payloads.
+
 Phase 17C-R3 local QA used five ignored synthetic JPEGs:
 
 - `warm-rooftop.jpg`

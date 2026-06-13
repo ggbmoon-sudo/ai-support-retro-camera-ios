@@ -78,10 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 18-B7 provider QA chain final audit completed; ready for review
+- Phase 18-C0 post-capture Advisor beta hardening plan completed; ready for review
 
 Next phase:
 
+- Phase 18-C1 may start only as app-side/local post-capture Advisor beta QA polish if explicitly requested
 - Do not start production cloud rollout without explicit approval
 - Production rollout remains blocked until a later explicit release phase
 
@@ -118,6 +119,7 @@ Current MVP demo / QA readiness docs:
 - `docs/photo-advisor-provider-qa-review-thresholds.md`
 - `docs/photo-advisor-provider-qa-operator-runbook.md`
 - `docs/photo-advisor-provider-qa-chain-readiness.md`
+- `docs/photo-advisor-beta-hardening-plan.md`
 - `docs/filter-research-popular-film-looks.md`
 - `docs/filter-preset-schema.md`
 - `docs/filter-roadmap.md`
@@ -211,6 +213,8 @@ Phase 18-B5 adds a lightweight backend provider QA gate summary helper. `backend
 Phase 18-B6 adds a concise provider QA operator runbook and final pre-integration checklist in `docs/photo-advisor-provider-qa-operator-runbook.md`. It tells operators how to run synthetic QA, the dry-run gate, the QA gate summary helper, and optional real-provider QA only with explicit approval, ignored local credentials, and approved ignored samples. It also defines when to stop immediately, what must never be committed, how to report skipped real-provider QA honestly, and the final checklist before any future debug/internal remote advisor integration. This is docs-only: app behavior, backend provider request payloads, iOS upload payloads, capture-context upload, Camera UI, cloud availability, provider credential handling, and production rollout are unchanged.
 
 Phase 18-B7 performs the final B0-B6 provider QA chain audit in `docs/photo-advisor-provider-qa-chain-readiness.md`. The audit confirms the provider language contract, regression fixtures, sanitized QA runner/reporting, dry-run gate, review thresholds, gate summary helper, and operator runbook form a coherent internal QA safety chain. Phase 18-C is safe to start only as post-capture Advisor beta hardening / internal QA work after the synthetic QA, dry-run gate, and QA helper pass with no hard blockers. This does not enable production cloud AI, change backend/iOS payloads, upload capture context, add iOS provider keys/direct calls, add a Camera cloud entry, or mark production ready.
+
+Phase 18-C0 adds the post-capture Advisor beta hardening plan in `docs/photo-advisor-beta-hardening-plan.md`. The plan defines captured/imported Advisor flow checks, fallback/provider-unavailable UX checks, local/mock consistency, result-card readability, filter recommendation reason quality, CreativeIntentGuard behavior, crop/straighten/retake restraint, multilingual QA, real-device manual QA, regression scripts, acceptance criteria, and an internal QA scenario matrix. It is planning-only: no app/backend runtime behavior changes, no backend provider request payload changes, no iOS upload payload changes, no capture-context upload, no provider key/direct provider call in iOS, no Camera cloud AI entry, no real-provider QA run, and no production rollout.
 
 ## Phase 12A Filter Planning Status
 

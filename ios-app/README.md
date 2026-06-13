@@ -124,6 +124,8 @@ Phase 17C-R5 also keeps iOS behavior unchanged. It only tightens backend Photo A
 
 Phase 18-B3 also keeps iOS behavior unchanged. It adds a backend/internal real-provider QA dry-run gate and explicit provider QA opt-in only. iOS still has no provider key, no direct QweAPI call, no provider SDK, no Camera cloud AI entry, no capture-context upload, no iOS upload payload change, and no production rollout.
 
+Phase 18-C0 also keeps iOS behavior unchanged. It adds a documentation-only post-capture Advisor beta hardening plan for captured/imported Advisor QA, fallback UX, result-card readability, CreativeIntentGuard behavior, filter reason quality, multilingual copy review, and manual real-device QA. iOS still has no provider key, no direct QweAPI/provider call, no provider SDK, no Camera cloud AI entry, no capture-context upload, no iOS upload payload change, and no production rollout.
+
 ## Phase 17D-A Local Camera Capture Context
 
 Phase 17D-A adds local-only summarized capture context for captured / imported photos:

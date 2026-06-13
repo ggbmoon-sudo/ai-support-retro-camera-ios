@@ -1,5 +1,22 @@
 # Manual Smoke Tests
 
+## Phase 18-C0
+
+Post-capture Advisor beta hardening plan:
+
+- [ ] Open `docs/photo-advisor-beta-hardening-plan.md`.
+- [ ] Confirm the plan covers captured Photo Advisor flow, imported Photo Advisor flow, fallback/provider-unavailable UX, local/mock consistency, result-card readability, filter recommendation reason quality, CreativeIntentGuard behavior, crop/straighten/retake restraint, multilingual QA, manual real-device QA, and regression scripts.
+- [ ] Confirm beta acceptance criteria require a short, mood-first, useful Advisor card.
+- [ ] Confirm beta acceptance criteria forbid score/rating wording, sensitive inference, harsh fix-it language, and retake-first behavior.
+- [ ] Confirm imported-photo criteria forbid overclaiming capture-time motion, tilt, focus, lens, or exposure context.
+- [ ] Confirm fallback criteria require calm app-safe copy with no provider name, status code, raw error, raw JSON, or debug detail.
+- [ ] Confirm the internal QA scenario matrix includes captured bright scene, captured low light, intentional blur/motion, intentional tilt, grainy retro look, high contrast, faded color, imported limited context, provider unavailable fallback, unknown/unsupported filter fallback, and missing localization key fallback.
+- [ ] Run copy QA scripts when preparing a Phase 18-C implementation: `scripts/validate-photo-advisor-copy-regression.sh`, `scripts/validate-photo-advisor-filter-reasons.sh`, `scripts/validate-creative-intent-language.sh`, and `scripts/validate-photo-advisor-card-language.sh`.
+- [ ] Run provider readiness checks only when relevant: `cd backend && npm run qa:photo-advisor`, `cd backend && npm run qa:photo-advisor:gate`, and `cd backend && npm run qa:photo-advisor:review`.
+- [ ] Confirm real-provider QA is not required for C0 and is not run unless explicitly approved.
+- [ ] Confirm no app/backend runtime behavior, backend provider request payload, iOS upload payload, capture-context upload, iOS provider key/direct call, Camera cloud entry, generated artifact commit, or production rollout is introduced.
+- [ ] Confirm `productionReady=false`.
+
 ## Phase 18-B7
 
 Provider QA chain final audit and Phase 18-C readiness gate:
