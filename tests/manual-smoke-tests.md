@@ -21,8 +21,12 @@ Check:
 - [ ] Review provider QA summary: cloud success, fallback count, average / p50 / p95 latency, schema failures, safety failures, invalid filter IDs.
 - [ ] Confirm R3 local QA image set stays ignored under `backend/tests/local-images/`.
 - [ ] Confirm R3 report includes `maxLatencyMs` and `fallbackByCode`.
+- [ ] Confirm R4 report includes `p90LatencyMs`, `timeoutCount`, `unsafeResponseCount`, `fallbackByCategory`, per-case `latencyBucket`, per-case `fallbackCategory`, and `latencyAssessment`.
+- [ ] Confirm `latencyAssessment.productionRollout` remains blocked when p95 / max latency or fallback risk is high.
 - [ ] Confirm fallback reasons are reviewed, especially `unsafe_response` and `provider_timeout`.
+- [ ] Confirm fallback classifications distinguish provider timeout, unsafe response, invalid JSON, invalid schema, invalid filter ID, provider / network error, and unknown error where applicable.
 - [ ] Manually review 3-5 real approved local QA image results when available.
+- [ ] Use `backend/tests/local-images/manual-review-template.json` to record fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter recommendation fit, crop / framing usefulness, safety concern, and notes.
 - [ ] Manually check language quality for English, Traditional Chinese, Simplified Chinese, and Cantonese.
 - [ ] Check captions are short and not weird.
 - [ ] Check filter recommendations are valid and reasonable.
@@ -46,6 +50,7 @@ Known TODOs:
 - [ ] Phase 17C-R2 QA batch currently uses built-in tiny JPEG smoke cases unless approved local images are placed in ignored `backend/tests/local-images/`.
 - [ ] R2 initial QA p95 latency was high; review latency with real approved sample images before any production rollout.
 - [ ] R3 synthetic QA pass showed p95 / max latency and unsafe fallbacks remain production rollout blockers.
+- [ ] R4 hardens latency / fallback reporting and manual review readiness, but production rollout remains blocked.
 - [ ] Next safe step is provider latency / QA tuning, not Camera cloud AI, Gemini Live, Filter Generator real backend, 改圖師, StoreKit, or production cloud AI.
 
 ## Phase 17C-Prep

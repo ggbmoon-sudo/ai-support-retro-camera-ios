@@ -1,3 +1,10 @@
+import {
+  assessLatencyForQA,
+  classifyFallbackCode,
+  latencyBucket,
+  PHOTO_ADVISOR_QA_LATENCY_THRESHOLDS
+} from "./photoAdvisorQAConfig.mjs";
+
 export const PHOTO_ADVISOR_QA_SCHEMA_VERSION = "1.0";
 
 export function summarizePhotoAdvisorQA({
@@ -15,6 +22,16 @@ export function summarizePhotoAdvisorQA({
   const totalCases = cases.length;
   const fallbackCases = cases.filter((item) => item.source === "fallback" || item.fallbackCode);
   const cloudCases = cases.filter((item) => item.source === "cloud");
+  const fallbackByCode = fallbackCounts(fallbackCases);
+  const timeoutCount = fallbackCases.filter((item) => classifyFallbackCode(item.fallbackCode) === "timeout").length;
+  const unsafeResponseCount = fallbackCases.filter((item) => classifyFallbackCode(item.fallbackCode) === "unsafe_response").length;
+  const invalidJSONCount = fallbackCases.filter((item) => classifyFallbackCode(item.fallbackCode) === "invalid_json").length;
+  const invalidSchemaCount = fallbackCases.filter((item) => classifyFallbackCode(item.fallbackCode) === "invalid_schema").length;
+  const invalidFilterIdCount = fallbackCases.filter((item) => classifyFallbackCode(item.fallbackCode) === "invalid_filter_id").length;
+  const networkOrProviderErrorCount = fallbackCases.filter((item) => classifyFallbackCode(item.fallbackCode) === "network_or_provider_error").length;
+  const unknownFallbackCount = fallbackCases.filter((item) => classifyFallbackCode(item.fallbackCode) === "unknown").length;
+  const p95LatencyMs = percentile(latencies, 0.95);
+  const maxLatencyMs = latencies.at(-1) ?? null;
 
   return {
     schemaVersion: PHOTO_ADVISOR_QA_SCHEMA_VERSION,
@@ -23,20 +40,37 @@ export function summarizePhotoAdvisorQA({
     baseUrlHost: safeHost(baseURL),
     totalCases,
     cloudSuccess: cloudCases.length,
+    cloudSuccessCount: cloudCases.length,
     fallback: fallbackCases.length,
+    fallbackCount: fallbackCases.length,
     averageLatencyMs: roundedAverage(latencies),
     p50LatencyMs: percentile(latencies, 0.5),
-    p95LatencyMs: percentile(latencies, 0.95),
-    maxLatencyMs: latencies.at(-1) ?? null,
+    p90LatencyMs: percentile(latencies, 0.9),
+    p95LatencyMs,
+    maxLatencyMs,
+    latencyThresholds: PHOTO_ADVISOR_QA_LATENCY_THRESHOLDS,
     schemaFailures: cases.filter((item) => item.schemaValid === false).length,
     safetyFailures: cases.filter((item) => item.safetyValid === false).length,
     invalidFilterIds: cases.reduce((sum, item) => sum + (item.invalidFilterIds ?? 0), 0),
-    fallbackByCode: fallbackCounts(fallbackCases),
-    providerErrors: cases.filter((item) => item.fallbackCode === "provider_error").length,
-    providerTimeouts: cases.filter((item) => item.fallbackCode === "provider_timeout" || item.fallbackCode === "timeout").length,
-    invalidJSON: cases.filter((item) => item.fallbackCode === "provider_invalid_json" || item.fallbackCode === "invalid_json").length,
-    invalidSchema: cases.filter((item) => item.fallbackCode === "provider_invalid_schema" || item.fallbackCode === "invalid_schema").length,
+    fallbackByCode,
+    fallbackByCategory: fallbackCategoryCounts(fallbackCases),
+    providerErrors: networkOrProviderErrorCount,
+    providerTimeouts: timeoutCount,
+    timeoutCount,
+    unsafeResponseCount,
+    invalidJSON: invalidJSONCount,
+    invalidSchema: invalidSchemaCount,
+    invalidFilterIdCount,
+    networkOrProviderErrorCount,
+    unknownFallbackCount,
     languageCasesNeedingManualReview: cases.filter((item) => item.needsManualLanguageReview).length,
+    latencyAssessment: assessLatencyForQA({
+      p95LatencyMs,
+      maxLatencyMs,
+      timeoutCount,
+      unsafeResponseCount,
+      fallbackCount: fallbackCases.length
+    }),
     notes,
     cases: cases.map(sanitizePhotoAdvisorQACase)
   };
@@ -48,6 +82,7 @@ export function sanitizePhotoAdvisorQACase(input = {}) {
     locale: String(input.locale ?? ""),
     source: input.source ?? "unknown",
     latencyMs: finiteOrNull(input.latencyMs),
+    latencyBucket: input.latencyBucket ?? latencyBucket(input.latencyMs),
     schemaValid: Boolean(input.schemaValid),
     safetyValid: Boolean(input.safetyValid),
     fallbackCode: input.fallbackCode ?? null,
@@ -55,6 +90,7 @@ export function sanitizePhotoAdvisorQACase(input = {}) {
       ? input.recommendedFilterIds.filter((item) => typeof item === "string")
       : [],
     invalidFilterIds: Number.isFinite(input.invalidFilterIds) ? input.invalidFilterIds : 0,
+    fallbackCategory: classifyFallbackCode(input.fallbackCode),
     captionLength: Number.isFinite(input.captionLength) ? input.captionLength : 0,
     summaryLength: Number.isFinite(input.summaryLength) ? input.summaryLength : 0,
     suggestionCount: Number.isFinite(input.suggestionCount) ? input.suggestionCount : 0,
@@ -122,6 +158,15 @@ function fallbackCounts(cases) {
   for (const item of cases) {
     const code = item.fallbackCode ?? "unknown";
     counts[code] = (counts[code] ?? 0) + 1;
+  }
+  return counts;
+}
+
+function fallbackCategoryCounts(cases) {
+  const counts = {};
+  for (const item of cases) {
+    const category = classifyFallbackCode(item.fallbackCode);
+    counts[category] = (counts[category] ?? 0) + 1;
   }
   return counts;
 }

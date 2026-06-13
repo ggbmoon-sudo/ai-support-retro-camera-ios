@@ -9,8 +9,8 @@ Every Codex task must update this file before finishing.
 ## Current Status
 
 Current phase: Phase 17C - Gemini Photo Advisor Internal Beta
-Status: Phase 17C-R3 local QA image set and latency review completed for QweAPI / gemini-3.1-flash-image-preview internal Photo Advisor beta
-Latest implementation: Added internal/debug-guarded Gemini Photo Advisor provider adapter plus provider QA batch reporting, local QA image workflow, server-side config / secret reads, prompt contract tuning, structured JSON parsing, response validation, retry / fallback handling, updated consent copy, and tests while keeping production/default Photo Advisor mock/local, iOS provider-key-free, and Camera local-only
+Status: Phase 17C-R4 latency / fallback QA hardening completed for QweAPI / gemini-3.1-flash-image-preview internal Photo Advisor beta
+Latest implementation: Added internal/debug-guarded Gemini Photo Advisor provider adapter plus provider QA batch reporting, local QA image workflow, server-side config / secret reads, prompt contract tuning, structured JSON parsing, response validation, retry / fallback handling, latency / fallback QA classification, updated consent copy, and tests while keeping production/default Photo Advisor mock/local, iOS provider-key-free, and Camera local-only
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -70,7 +70,57 @@ Phase 17C-Prep verification: provider adapter boundary remains mock-only; backen
 Phase 17C-R1 verification: active provider contract switched from the failed Code0 gateway attempt to the QweAPI OpenAI-compatible gateway; a safe text-only provider probe script was added; backend-only Photo Advisor internal beta path remains behind `ALLOW_INTERNAL_CLOUD_AI=true`, `CLOUD_AI_PROVIDER_MODE=qweInternal`, internal debug header, server-side `QWE_API_KEY`, validated `QWE_BASE_URL=https://qweapi.com`, and `QWE_PHOTO_ADVISOR_MODEL=gemini-3.1-flash-image-preview`; text-only QweAPI probe succeeds, and `gemini-3.1-flash-image-preview` image_url multimodal request returns a validated `source=cloud` Photo Advisor response; default remains mock/local; iOS has no provider key / SDK / direct QweAPI call; Camera remains local-only; no storage upload, request payload logging, provider raw response logging, Gemini Live, WebSocket, StoreKit, export, or production rollout was added.
 Phase 17C-R2 verification: provider QA batch workflow added; local QA images and generated provider QA reports are ignored; QA script records sanitized latency / schema / safety / fallback metrics only; prompt wording was tightened for short, practical, non-poetic, locale-aware Photo Advisor output; backend tests and a four-locale tiny-image QA batch passed with no schema, safety, or invalid-filter failures; production/default remains mock/local; iOS has no provider key / SDK / direct QweAPI call; Camera remains local-only.
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
+Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Next phase: Phase 17C still needs user visual QA and provider latency / quality review before any production rollout. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, or save-to-Photos until explicitly requested.
+
+---
+
+## Phase 17C-R4 - Provider QA Latency / Fallback Hardening
+
+Status: Provider QA report hardening completed; production rollout remains blocked
+Date completed: 2026-06-13
+
+### Completed
+
+- Added centralized Photo Advisor QA latency / fallback classification config at `backend/src/qa/photoAdvisorQAConfig.mjs`.
+- Extended sanitized provider QA reports with `cloudSuccessCount`, `fallbackCount`, `p90LatencyMs`, `maxLatencyMs`, `timeoutCount`, `unsafeResponseCount`, `fallbackByCategory`, per-case `latencyBucket`, per-case `fallbackCategory`, and `latencyAssessment`.
+- Kept timeout behavior explicit and measurable; R4 does not raise provider timeouts to mask slow provider calls.
+- Improved fallback classification for provider timeouts, unsafe responses, invalid JSON, invalid schema, invalid filter IDs, provider / network errors, and unknown errors.
+- Expanded backend tests for sanitized QA report redaction, fallback summaries, latency buckets, fallback categories, and latency assessment.
+- Expanded `backend/tests/local-images/manual-review-template.json` so reviewers can record image fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter recommendation fit, crop / framing usefulness, safety concern, and notes.
+- Updated backend README, phase log, handoff, manual smoke tests, README, and iOS README.
+
+### Safety Notes
+
+R4 does not add production remote enablement, provider keys to iOS, direct QweAPI calls from iOS, Camera cloud AI, AI Snapshot, Filter Generator real backend, 改圖師, image generation, Gemini Live, WebSocket, cloud storage upload, request payload logging, provider raw response logging, raw image persistence, account / payment / StoreKit, or production rollout.
+
+### Production Blockers
+
+- Latest R4 latency is acceptable for internal/debug QA, but prior R3 latency instability means more runs are needed before rollout.
+- Fallback rate and unsafe-response paths need manual review.
+- Language quality, caption quality, filter fit, and crop / framing usefulness require manual QA.
+- Production rollout remains blocked pending latency tuning, cost guard, abuse guard, privacy review, and explicit user approval.
+
+### QA Observation
+
+- Ran 20 cases across the ignored local QA image set.
+- Cloud success: 18.
+- Fallback: 2.
+- Fallback reasons: 2 `unsafe_response`.
+- Average latency: 4969 ms.
+- p50 latency: 4958 ms.
+- p90 latency: 5421 ms.
+- p95 latency: 5894 ms.
+- Max latency: 6778 ms.
+- Timeout count: 0.
+- Schema failures: 0.
+- Safety metadata failures: 0.
+- Invalid filter IDs: 0.
+- `latencyAssessment.productionRollout`: `blocked`.
+
+### Ready to Commit Phase 17C-R4
+
+Yes, after user review. Codex has not committed or pushed.
 
 ---
 

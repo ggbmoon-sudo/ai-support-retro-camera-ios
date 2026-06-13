@@ -474,8 +474,11 @@ test("photo advisor qa report redacts sensitive fields", () => {
 
   assert.equal(report.totalCases, 1);
   assert.equal(report.cloudSuccess, 1);
+  assert.equal(report.cloudSuccessCount, 1);
   assert.equal(report.fallback, 0);
+  assert.equal(report.fallbackCount, 0);
   assert.equal(report.languageCasesNeedingManualReview, 1);
+  assert.equal(report.cases[0].latencyBucket, "5s_to_10s");
   assert.equal(JSON.stringify(report).includes("/9j/"), false);
   assert.equal(JSON.stringify(report).includes("requestBody"), false);
   assert.equal(JSON.stringify(report).includes("apiKey"), false);
@@ -511,13 +514,22 @@ test("photo advisor qa report summarizes fallback metrics", () => {
 
   assert.equal(report.totalCases, 2);
   assert.equal(report.cloudSuccess, 1);
+  assert.equal(report.cloudSuccessCount, 1);
   assert.equal(report.fallback, 1);
+  assert.equal(report.fallbackCount, 1);
   assert.equal(report.providerTimeouts, 1);
+  assert.equal(report.timeoutCount, 1);
+  assert.equal(report.unsafeResponseCount, 0);
   assert.deepEqual(report.fallbackByCode, { provider_timeout: 1 });
+  assert.deepEqual(report.fallbackByCategory, { timeout: 1 });
   assert.equal(report.averageLatencyMs, 3100);
   assert.equal(report.p50LatencyMs, 1200);
+  assert.equal(report.p90LatencyMs, 5000);
   assert.equal(report.p95LatencyMs, 5000);
   assert.equal(report.maxLatencyMs, 5000);
+  assert.equal(report.latencyAssessment.providerTimeoutMs, 30000);
+  assert.equal(report.latencyAssessment.productionRollout, "blocked");
+  assert.equal(report.cases[1].fallbackCategory, "timeout");
 });
 
 async function fixture(name) {

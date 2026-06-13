@@ -96,12 +96,17 @@ printSanitized({
   fallback: report.fallback,
   averageLatencyMs: report.averageLatencyMs,
   p50LatencyMs: report.p50LatencyMs,
+  p90LatencyMs: report.p90LatencyMs,
   p95LatencyMs: report.p95LatencyMs,
   maxLatencyMs: report.maxLatencyMs,
+  timeoutCount: report.timeoutCount,
+  unsafeResponseCount: report.unsafeResponseCount,
   schemaFailures: report.schemaFailures,
   safetyFailures: report.safetyFailures,
   invalidFilterIds: report.invalidFilterIds,
   fallbackByCode: report.fallbackByCode,
+  fallbackByCategory: report.fallbackByCategory,
+  latencyAssessment: report.latencyAssessment,
   languageCasesNeedingManualReview: report.languageCasesNeedingManualReview
 });
 

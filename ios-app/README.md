@@ -118,6 +118,8 @@ Phase 17C-R2 keeps iOS behavior unchanged. Provider QA runs in the backend only 
 
 Phase 17C-R3 also keeps iOS behavior unchanged. Local QA images and provider QA reports remain backend-only / ignored; no provider key, direct provider call, Camera cloud AI entry, or production rollout is added to iOS.
 
+Phase 17C-R4 also keeps iOS behavior unchanged. It hardens backend QA latency / fallback reporting and manual review readiness only; iOS still has no provider key, no direct QweAPI call, no Camera cloud AI entry, and no production rollout.
+
 ## Phase 12A Filter Planning
 
 Phase 12A adds filter research and schema planning documents only. It does not change iOS app source code.

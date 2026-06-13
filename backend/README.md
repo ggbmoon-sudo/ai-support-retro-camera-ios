@@ -190,6 +190,44 @@ Latest R3 QA observation:
 
 The p95 / max latency and remaining unsafe fallbacks are blockers for production rollout. Keep using internal QA before any public cloud AI release.
 
+Phase 17C-R4 hardens the same internal/debug QA workflow. It does not change the product surface and does not enable production rollout.
+
+R4 QA reports now include:
+
+- `cloudSuccessCount` and `fallbackCount`
+- average, p50, p90, p95, and max latency
+- explicit timeout / unsafe-response / invalid-JSON / invalid-schema / invalid-filter / provider-error / unknown fallback counters
+- `fallbackByCode` and normalized `fallbackByCategory`
+- per-case `latencyBucket` and `fallbackCategory`
+- `latencyAssessment` with separate recommendations for debug QA, internal testing, and production rollout
+
+Timeout thresholds are centralized in `src/qa/photoAdvisorQAConfig.mjs` for reporting and review only. R4 does not raise provider timeouts to hide slow cases.
+
+Manual review readiness:
+
+- use the committed `backend/tests/local-images/manual-review-template.json`
+- record image fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes
+- keep approved real sample photos local and ignored unless a future explicit safe asset policy allows committing them
+
+Latest R4 QA observation:
+
+- 20 total cases across the ignored local QA image set
+- 18 cloud successes
+- 2 fallbacks
+- fallback reasons: 2 `unsafe_response`
+- average latency 4969 ms
+- p50 latency 4958 ms
+- p90 latency 5421 ms
+- p95 latency 5894 ms
+- max latency 6778 ms
+- timeout count 0
+- 0 schema failures
+- 0 safety metadata failures
+- 0 invalid filter IDs
+- `latencyAssessment.productionRollout` remains `blocked`
+
+Production rollout remains blocked until latency instability, fallback rate, unsafe-response QA, and manual language / filter-fit review are resolved.
+
 ## No Payload Logging
 
 Do not log:
