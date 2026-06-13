@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 17D-B - Local Capture Intelligence Pack
-Status: Phase 17D-B completed; ready for commit review
-Latest implementation: Extended local capture context with bucketed level / motion snapshots, local image signal buckets, stronger CreativeIntentGuard, DEBUG-only context bucket preview, and intent-aware mock/local Photo Advisor behavior while keeping backend payloads unchanged, capture context local-only, iOS provider-key-free, and Camera cloud-entry-free
+Current phase: Phase 17D-C - Capture Intelligence Real-device QA + Stability Polish
+Status: Phase 17D-C completed; ready for commit review
+Latest implementation: Hardened local capture intelligence lifecycle for scene background / foreground, permission-denied / unavailable states, selected-photo and import flows, stale motion snapshots, tiny-image signal analysis, and DEBUG-only bucket preview safety while keeping backend payloads unchanged, capture context local-only, iOS provider-key-free, and Camera cloud-entry-free
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -72,7 +72,51 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Phase 17D-B still needs user visual QA before commit; production rollout remains blocked. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, or save-to-Photos until explicitly requested.
+Next phase: Phase 17D-C still needs user real-device visual QA before commit; production rollout remains blocked. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, or save-to-Photos until explicitly requested.
+
+---
+
+## Phase 17D-C - Capture Intelligence Real-device QA + Stability Polish
+
+Status: Completed; ready for commit review
+Date: 2026-06-13
+
+### Completed
+
+- Added Camera scene-phase handling so background / inactive states cancel capture countdowns, stop Camera, and clear the local motion monitor.
+- Added foreground resume behavior that restarts Camera / motion monitoring only when the active capture flow is visible and no selected photo is open.
+- Hardened permission-denied, restricted, unavailable, selected-photo, import, and Camera configuration-failure paths so motion monitoring stops or stays unavailable safely.
+- Hardened `CameraCaptureDeviceSignalMonitor` with stale-snapshot rejection and unavailable fallback when device motion is unavailable.
+- Kept CoreMotion sampling short-window and in-memory only; samples are cleared on stop and are not logged or persisted.
+- Hardened `LocalImageSignalAnalyzer` with small-image / invalid-value guards that return unknown buckets instead of guessing.
+- Polished DEBUG capture context preview labels so Light maps to low / balanced / bright / unknown bucket wording.
+- Preserved intent-aware Photo Advisor behavior from 17D-B; no lazy retake / fix-it advice was introduced.
+- Updated README, iOS README, backend README, phase log, handoff, and manual smoke tests.
+
+### Safety Notes
+
+- Local-only; no capture context or image intelligence signals are uploaded to the backend in this phase.
+- Backend `/v1/ai/photo-advisor` payloads are unchanged.
+- No provider key, provider SDK, direct provider call, Camera cloud AI entry, production remote rollout, GPS/location collection, raw EXIF dump, raw photo persistence, continuous sensor stream persistence, raw sensor stream logging, Gemini Live, WebSocket, StoreKit, or export behavior was added.
+- DEBUG preview is bucket-only and guarded by `#if DEBUG`; production UI does not expose raw sensor values, raw EXIF, raw JSON, provider errors, or raw localization keys.
+- Capture intelligence remains context, not a score system.
+
+### Verification
+
+- `git diff --check` passed.
+- `xcodebuild -project ios-app/AIPhotoApp.xcodeproj -scheme AIPhotoApp -destination 'generic/platform=iOS Simulator' build` passed. The build still reports the existing unrelated Swift 6 warning in `LocalRuleBasedGuidanceProvider.swift` about `CameraCoachToneSettingsStore.shared`.
+- No iOS XCTest target exists in this repo structure, so no iOS unit tests were run.
+- Backend source / package files were not changed; backend provider payloads remain unchanged, so backend tests were not required for this phase.
+- Secret / provider scan found no new iOS provider keys, provider URLs, provider SDK imports, or direct provider calls in the app source diff.
+- Camera cloud-entry scan found no Camera AI Snapshot / Quick Advice / Cloud AI entry in Camera UI files.
+- GPS/location/raw EXIF/continuous sensor scan found no CoreLocation, GPS collection, raw EXIF dump, raw image / base64 logging, raw sensor stream logging, sensor persistence, or new settings persistence in the app source diff.
+- Unsafe phrase scan found no banned phrase, explicit profanity, face recognition, identity recognition, attractiveness score, body shaming, skin wording, "bad photo", "wrong exposure", or default "retake it" copy in the updated app surface.
+- Raw sensor production UI scan found the DEBUG preview remains wrapped in `#if DEBUG` and displays bucket labels only.
+- Ignored `.env`, local synthetic QA images, approved real sample folders, and generated provider QA reports remain untracked.
+
+### Ready to Commit Phase 17D-C
+
+Yes, after final verification and user review. Codex has not committed or pushed.
 
 ---
 

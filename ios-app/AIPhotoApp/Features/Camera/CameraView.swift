@@ -17,6 +17,7 @@ private enum CameraCallout {
 
 struct CameraView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.scenePhase) private var scenePhase
     let showsCloseButton: Bool
     let navigateToAppDestination: ((CameraAppDestination) -> Void)?
     @StateObject private var viewModel: CameraViewModel
@@ -33,6 +34,7 @@ struct CameraView: View {
     @State private var isLiveGuidanceExpanded = false
     @State private var activeCameraCallout: CameraCallout = .none
     @State private var activeSelectedPhotoPanel: FloatingPhotoActionPanel?
+    @State private var isCameraViewVisible = false
 
     init(
         showsCloseButton: Bool = true,
@@ -112,10 +114,17 @@ struct CameraView: View {
         .task {
             await viewModel.prepareCamera()
         }
+        .onAppear {
+            isCameraViewVisible = true
+        }
         .onDisappear {
+            isCameraViewVisible = false
             captureCountdownTask?.cancel()
             timerCountdown = nil
             viewModel.stopCamera()
+        }
+        .onChange(of: scenePhase) { _, newPhase in
+            handleScenePhase(newPhase)
         }
         .onChange(of: viewModel.pickerItem) { _, _ in
             Task {
@@ -132,6 +141,23 @@ struct CameraView: View {
         }
         .onChange(of: toneSettings.toneMode) { _, _ in
             viewModel.refreshLiveGuidanceCopyForCurrentTone()
+        }
+    }
+
+    private func handleScenePhase(_ phase: ScenePhase) {
+        switch phase {
+        case .active:
+            guard isCameraViewVisible,
+                  viewModel.selectedPhoto == nil else { return }
+            Task {
+                await viewModel.resumeCameraIfNeeded()
+            }
+        case .inactive, .background:
+            captureCountdownTask?.cancel()
+            timerCountdown = nil
+            viewModel.stopCamera()
+        @unknown default:
+            viewModel.stopCamera()
         }
     }
 

@@ -84,17 +84,27 @@ final class CameraViewModel: ObservableObject {
     func prepareCamera() async {
         errorMessage = nil
 
+        guard selectedPhoto == nil else {
+            captureSignalMonitor.stop()
+            updateFrameSignalAnalysisAvailability()
+            return
+        }
+
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
             permissionState = .authorized
             configureAndStart()
         case .notDetermined:
+            captureSignalMonitor.stop()
             permissionState = .notDetermined
         case .denied:
+            captureSignalMonitor.stop()
             permissionState = .denied
         case .restricted:
+            captureSignalMonitor.stop()
             permissionState = .restricted
         @unknown default:
+            captureSignalMonitor.stop()
             permissionState = .unavailable
         }
     }
@@ -107,7 +117,18 @@ final class CameraViewModel: ObservableObject {
         permissionState = granted ? .authorized : .denied
         if granted {
             configureAndStart()
+        } else {
+            captureSignalMonitor.stop()
         }
+    }
+
+    func resumeCameraIfNeeded() async {
+        guard selectedPhoto == nil else {
+            captureSignalMonitor.stop()
+            return
+        }
+
+        await prepareCamera()
     }
 
     func capturePhoto() {
@@ -264,6 +285,11 @@ final class CameraViewModel: ObservableObject {
         resetSaveState()
         resetCloudSnapshotGuidance()
         updateFrameSignalAnalysisAvailability()
+        if permissionState == .authorized {
+            configureAndStart()
+        } else {
+            startCaptureSignalMonitoringIfNeeded()
+        }
         refreshLiveGuidanceSuggestions(resetStability: true)
     }
 
@@ -363,10 +389,11 @@ final class CameraViewModel: ObservableObject {
         do {
             try service.configureSessionIfNeeded()
             service.startSession()
-            captureSignalMonitor.start()
             permissionState = .authorized
+            startCaptureSignalMonitoringIfNeeded()
             updateFrameSignalAnalysisAvailability()
         } catch {
+            captureSignalMonitor.stop()
             permissionState = .unavailable
             updateFrameSignalAnalysisAvailability()
             errorMessage = error.localizedDescription
@@ -383,6 +410,7 @@ final class CameraViewModel: ObservableObject {
         resetSaveState()
         resetCloudSnapshotGuidance()
         updateFrameSignalAnalysisAvailability()
+        captureSignalMonitor.stop()
 
         if pendingPreset.isOriginal {
             selectedFilterPreset = FilterPresetCatalog.original
@@ -453,5 +481,15 @@ final class CameraViewModel: ObservableObject {
             latestLocalFrameSignals = nil
             liveGuidanceStabilityController.reset()
         }
+    }
+
+    private func startCaptureSignalMonitoringIfNeeded() {
+        guard permissionState == .authorized,
+              selectedPhoto == nil else {
+            captureSignalMonitor.stop()
+            return
+        }
+
+        captureSignalMonitor.start()
     }
 }

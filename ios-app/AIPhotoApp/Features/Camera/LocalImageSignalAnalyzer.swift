@@ -6,6 +6,10 @@ enum LocalImageSignalAnalyzer {
         guard let cgImage = image.cgImage else {
             return .unknown
         }
+        guard cgImage.width >= 4,
+              cgImage.height >= 4 else {
+            return .unknown
+        }
 
         let sampleWidth = 32
         let sampleHeight = 32
@@ -118,6 +122,10 @@ enum LocalImageSignalAnalyzer {
         low: Double,
         high: Double
     ) -> LocalImageSignalBucket {
+        guard value.isFinite else {
+            return .unknown
+        }
+
         if value < low {
             return .low
         }
@@ -133,6 +141,11 @@ enum LocalImageSignalAnalyzer {
         edgeEnergy: Double,
         contrast: Double
     ) -> LocalImageSignalBucket {
+        guard edgeEnergy.isFinite,
+              contrast.isFinite else {
+            return .unknown
+        }
+
         if edgeEnergy < 0.035 && contrast < 0.18 {
             return .high
         }
@@ -145,6 +158,10 @@ enum LocalImageSignalAnalyzer {
     }
 
     private static func warmthBucket(_ warmth: Double) -> LocalImageWarmth {
+        guard warmth.isFinite else {
+            return .unknown
+        }
+
         if warmth < -0.045 {
             return .cool
         }
@@ -160,6 +177,11 @@ enum LocalImageSignalAnalyzer {
         edgeEnergy: Double,
         contrast: Double
     ) -> LocalImageSignalBucket {
+        guard edgeEnergy.isFinite,
+              contrast.isFinite else {
+            return .unknown
+        }
+
         if edgeEnergy > 0.13 && contrast > 0.2 {
             return .high
         }

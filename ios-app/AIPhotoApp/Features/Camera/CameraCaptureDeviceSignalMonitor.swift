@@ -24,10 +24,19 @@ final class CameraCaptureDeviceSignalMonitor {
     private var samples: [Sample] = []
     private let maxSamples = 36
     private let updateInterval: TimeInterval = 1.0 / 12.0
+    private let maxSnapshotAge: TimeInterval = 2.0
+
+    deinit {
+        motionManager.stopDeviceMotionUpdates()
+    }
 
     func start() {
-        guard motionManager.isDeviceMotionAvailable,
-              !motionManager.isDeviceMotionActive else {
+        guard motionManager.isDeviceMotionAvailable else {
+            samples.removeAll(keepingCapacity: false)
+            return
+        }
+
+        guard !motionManager.isDeviceMotionActive else {
             return
         }
 
@@ -52,6 +61,10 @@ final class CameraCaptureDeviceSignalMonitor {
         }
 
         let latestTimestamp = samples[samples.count - 1].timestamp
+        guard ProcessInfo.processInfo.systemUptime - latestTimestamp <= maxSnapshotAge else {
+            return .unavailable
+        }
+
         let windowStart = latestTimestamp - Double(captureWindowMs) / 1000.0
         let windowSamples = samples.filter { $0.timestamp >= windowStart }
         let activeSamples = windowSamples.isEmpty ? samples : windowSamples

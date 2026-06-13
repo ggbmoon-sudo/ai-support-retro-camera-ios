@@ -145,6 +145,19 @@ Phase 17D-B keeps the app local-only while making captured / imported Photo Advi
 
 This phase does not upload capture context, change backend provider payloads, collect GPS/location, dump raw EXIF, persist raw sensor streams, add provider SDKs or keys to iOS, add direct provider calls from iOS, add Camera cloud AI, or enable production rollout.
 
+## Phase 17D-C Capture Intelligence QA + Stability Polish
+
+Phase 17D-C keeps the Capture Intelligence Pack local-only while hardening lifecycle behavior for real-device QA:
+
+- Camera scene changes stop local motion monitoring when the app backgrounds / becomes inactive and resume only when the active capture flow returns
+- selected-photo, permission-denied, interrupted / unavailable, and import paths stop or avoid motion monitoring safely
+- short-window motion samples stay in memory only, are cleared on stop, and stale samples fall back to unavailable
+- local image signal analysis returns unknown for very small / invalid images and remains lightweight
+- DEBUG capture context preview remains bucket-only and production / release UI does not show it
+- mock/local Photo Advisor still preserves creative intent and avoids default retake / fix-it advice
+
+This phase does not upload capture context, change backend provider payloads, collect GPS/location, dump raw EXIF, persist raw sensor streams, add provider SDKs or keys to iOS, add direct provider calls from iOS, add Camera cloud AI, or enable production rollout.
+
 ## Phase 12A Filter Planning
 
 Phase 12A adds filter research and schema planning documents only. It does not change iOS app source code.

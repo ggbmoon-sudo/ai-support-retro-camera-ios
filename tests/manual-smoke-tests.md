@@ -1,5 +1,35 @@
 # Manual Smoke Tests
 
+## Phase 17D-C
+
+Check:
+
+- [ ] App launches normally.
+- [ ] Camera opens and captures normally.
+- [ ] Camera remains local-only and no AI Snapshot / Quick Advice / Cloud AI entry appears.
+- [ ] Capture a photo and confirm the mock/local Photo Advisor opens normally.
+- [ ] Import a photo and confirm the mock/local Photo Advisor opens normally.
+- [ ] Hold the device level, capture, and confirm DEBUG preview / advice remains bucketed and optional.
+- [ ] Tilt the device slightly, capture, and confirm tilt is treated as optional refinement, not a fix-it failure.
+- [ ] Move the device slightly before capture and confirm motion / blur advice remains optional and does not default to retake.
+- [ ] Capture in low light or with a warm / retro filter and confirm advice preserves mood before offering a cleaner alternative.
+- [ ] Import a photo and confirm imported source behavior does not invent capture-only level / motion claims.
+- [ ] Background the app from Camera, return to foreground, and confirm Camera resumes safely without stale motion context.
+- [ ] Switch tabs away from Camera and return; confirm motion monitoring does not leak state or leave stale capture context running.
+- [ ] Deny camera permission in a fresh install / simulator reset if feasible and confirm no motion context crash occurs.
+- [ ] In DEBUG builds, confirm capture context preview shows only bucket labels: Level, Motion, Light, Blur hint, Creative intent.
+- [ ] Confirm release / production UI does not show the DEBUG capture context preview.
+- [ ] Confirm UI does not show raw roll / pitch, raw stability score, raw sensor streams, raw EXIF, raw JSON, provider errors, raw localization keys, image payloads, banned copy, or identity-adjacent wording.
+- [ ] Confirm no GPS/location, raw EXIF dump, continuous sensor logging, continuous sensor persistence, raw photo persistence, or backend capture-context upload is visible in behavior.
+- [ ] Confirm no provider key / direct provider call was added to iOS.
+- [ ] Confirm no production remote AI rollout is enabled.
+
+Known TODOs:
+
+- [ ] Physical-device QA should verify CoreMotion availability and level / motion bucket reasonableness.
+- [ ] Phase 17D-C keeps backend provider payloads unchanged and does not upload capture context.
+- [ ] Future backend schema support for capture context requires a separate explicit phase.
+
 ## Phase 17D-B
 
 Check:

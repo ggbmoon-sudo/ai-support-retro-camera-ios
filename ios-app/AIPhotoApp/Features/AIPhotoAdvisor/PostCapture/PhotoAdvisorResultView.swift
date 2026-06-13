@@ -435,7 +435,7 @@ struct PhotoAdvisorResultView: View {
             VStack(alignment: .leading, spacing: AppSpacing.xs) {
                 debugBucketRow("Level", value: debugLevelLabel)
                 debugBucketRow("Motion", value: debugMotionLabel)
-                debugBucketRow("Light", value: captureContext.localImageSignals.brightness.rawValue)
+                debugBucketRow("Light", value: debugLightLabel)
                 debugBucketRow("Blur hint", value: captureContext.localImageSignals.blurRisk.rawValue)
                 debugBucketRow("Creative intent", value: captureContext.creativeIntent.adviceMode.rawValue)
             }
@@ -462,6 +462,23 @@ struct PhotoAdvisorResultView: View {
         captureContext.motion.available
             ? captureContext.motion.motionBucket.rawValue
             : "unknown"
+    }
+
+    private var debugLightLabel: String {
+        if captureContext.exposure.available {
+            return captureContext.exposure.exposureBucket.rawValue
+        }
+
+        switch captureContext.localImageSignals.brightness {
+        case .low:
+            return "low"
+        case .medium:
+            return "balanced"
+        case .high:
+            return "bright"
+        case .unknown:
+            return "unknown"
+        }
     }
 
     private func runCloudDebug(consent: CloudAIConsent) {
