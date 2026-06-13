@@ -1,5 +1,17 @@
 # Manual Smoke Tests
 
+## Phase 18-A0
+
+Documentation / language audit check:
+
+- [ ] Open `docs/ai-photo-advisor-language-audit.md`.
+- [ ] Confirm the capability coverage table marks implemented / partial / missing / unclear areas.
+- [ ] Review current app language categories: mood, composition, lighting, filter fit, retake / refinement, creative intent, fallback / unavailable.
+- [ ] Confirm gaps include generic AI wording, weak filter reasons, missing imported-photo-specific copy, Cantonese / Simplified review needs, and production-facing mock label cleanup.
+- [ ] Confirm recommended app voice is warm, practical, retro-camera-aware, non-judgmental, not a score system, and not generic AI.
+- [ ] Confirm the future real AI language contract says capture context is non-sensitive technical metadata and must not be used for identity, face, emotion, beauty, health, age, gender, or protected-attribute inference.
+- [ ] Confirm Phase 18-A0 makes no app behavior, backend payload, provider, Camera cloud, GPS/location, raw EXIF, or sensor persistence changes.
+
 ## Phase 17D-D
 
 Real-device QA kit:

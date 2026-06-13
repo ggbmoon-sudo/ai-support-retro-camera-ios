@@ -170,6 +170,12 @@ Phase 17D-D adds the manual QA kit for validating capture intelligence on real d
 
 This phase is still local-only. It does not upload capture context, change backend provider payloads, collect GPS/location, dump raw EXIF, persist raw sensor streams, add provider SDKs or keys to iOS, add direct provider calls from iOS, add Camera cloud AI, or enable production rollout.
 
+## Phase 18-A0 Photo Advisor Language + Capability Audit
+
+Phase 18-A0 is documentation-only. It audits the current Photo Advisor app language, local/mock capability coverage, capture context use, localization, fallback copy, and future real AI language contract in `../docs/ai-photo-advisor-language-audit.md`.
+
+The audit recommends strengthening app-owned Photo Advisor language before sending capture context into real provider prompts. No Swift source, localization strings, backend request payload, provider key, direct provider call, Camera cloud entry, capture-context upload, GPS/location collection, raw EXIF dump, sensor persistence, or production rollout is added.
+
 ## Phase 12A Filter Planning
 
 Phase 12A adds filter research and schema planning documents only. It does not change iOS app source code.
