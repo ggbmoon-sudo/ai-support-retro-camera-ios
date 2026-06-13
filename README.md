@@ -78,7 +78,7 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 18-B4-pre Codex project-rule consolidation completed; ready for review
+- Phase 18-B4 provider QA review thresholds completed; ready for review
 
 Next phase:
 
@@ -115,6 +115,7 @@ Current MVP demo / QA readiness docs:
 - `docs/ai-photo-advisor-language-audit.md`
 - `docs/photo-advisor-provider-language-contract.md`
 - `docs/photo-advisor-provider-qa-dry-run-gate.md`
+- `docs/photo-advisor-provider-qa-review-thresholds.md`
 - `docs/filter-research-popular-film-looks.md`
 - `docs/filter-preset-schema.md`
 - `docs/filter-roadmap.md`
@@ -198,6 +199,8 @@ Phase 18-B2 aligns the real-provider QA runner with the B0/B1 provider contract.
 Phase 18-B3 adds an internal real-provider QA dry-run gate. `backend/scripts/run-photo-advisor-provider-qa.mjs --check-safety-gate` prints sanitized operator gate status, `npm run qa:photo-advisor` is safe-by-default synthetic-contract QA, and real-provider QA now requires explicit `--run-provider` opt-in plus local ignored credentials and approved ignored samples. No production cloud AI is enabled, backend provider request payloads and iOS upload payloads are unchanged, capture context is not uploaded, iOS has no provider key / direct provider call, Camera remains local-only, generated reports/photos remain ignored, and `productionReady` remains false.
 
 Phase 18-B4-pre consolidates long-term Codex project rules into `AGENTS.md` so future phase prompts can reference that file instead of repeating every safety boundary. The consolidated rules cover iOS provider-key/direct-call bans, Camera cloud-entry restrictions, capture-context upload restrictions, raw payload/provider logging bans, GPS/raw EXIF/sensor persistence bans, sensitive-inference bans, provider QA artifact hygiene, `productionReady=false`, and the Photo Advisor language pattern: Observation -> Mood -> Retro intent -> Optional action, never Score -> Problem -> Fix -> Retake. This is documentation/instruction work only and does not change app behavior, backend provider payloads, cloud functionality, or production rollout status.
+
+Phase 18-B4 defines provider QA review thresholds for Photo Advisor in `docs/photo-advisor-provider-qa-review-thresholds.md`. The policy classifies sanitized QA runs as synthetic-contract pass, needs-review, or blocked by safety, schema, filter integrity, language contract, artifact leakage, or provider integration. It records hard blockers, warning thresholds, synthetic-contract acceptance, optional real-provider QA acceptance, and next-phase readiness while keeping `productionReady=false`. This is documentation-only: backend provider request payloads and iOS upload payloads are unchanged, capture context is not uploaded, iOS has no provider key / direct provider call, Camera remains local-only, and production rollout remains blocked.
 
 Phase 18-B1 adds synthetic provider contract regression fixtures and fallback parity checks for the backend-mediated Photo Advisor path. The fixtures cover valid app-voice responses plus invalid JSON, markdown prose, schema errors, unsupported filter IDs, overlong text, score/rating language, harsh fix-it / retake-first wording, sensitive inference, chain-of-thought, provider/debug leakage, raw localization keys, raw filter-family IDs, and provider failure fallbacks. Invalid, unsafe, overlong, or provider-leaking output is rejected or mapped to structured fallback before iOS can display it. This does not enable production cloud AI, does not change backend provider request payloads or iOS upload payloads, does not upload capture context, does not add provider keys/direct calls to iOS, and does not add a Camera cloud AI entry.
 

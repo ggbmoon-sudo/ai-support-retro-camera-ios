@@ -1,5 +1,26 @@
 # Manual Smoke Tests
 
+## Phase 18-B4
+
+Provider QA review thresholds:
+
+- [ ] Open `docs/photo-advisor-provider-qa-review-thresholds.md`.
+- [ ] Confirm the status categories include `pass_for_synthetic_contract`, `needs_review`, `blocked_for_safety`, `blocked_for_schema`, `blocked_for_filter_integrity`, `blocked_for_language_contract`, `blocked_for_artifact_leakage`, `blocked_for_provider_integration`, and `not_production_ready`.
+- [ ] Confirm hard blockers include raw image/base64/prompt/provider response/request payload/secrets leakage, real photos or provider reports staged/committed, GPS/raw EXIF persistence, unsupported filter acceptance, sensitive inference, chain-of-thought/provider leakage, raw localization keys, raw filter-family IDs, iOS provider key/direct call, Camera cloud entry, unapproved payload changes, and `productionReady=true`.
+- [ ] Confirm warning thresholds include invalid JSON/schema above 0, high fallback count, timeout/provider error above 0, overlong text above 0, repeated fallback by scenario group, high p95 latency, and locale mismatch.
+- [ ] Confirm synthetic-contract QA acceptance requires no network/API key, invalid/unsafe fixtures falling back safely, redaction checks passing, and `productionReady=false`.
+- [ ] Confirm optional real-provider QA requires explicit `--run-provider`, ignored local credentials, approved ignored samples, sanitized aggregate metrics only, ignored generated reports, and no production approval.
+- [ ] Confirm Phase 18-B4 does not change backend provider request payloads, iOS upload payloads, capture-context upload, iOS provider key/direct provider call, Camera cloud entry, or production rollout status.
+
+Automated local checks:
+
+- [ ] `cd backend && npm run qa:photo-advisor` runs synthetic-contract QA only.
+- [ ] `cd backend && npm run qa:photo-advisor:gate` prints sanitized dry-run gate status.
+- [ ] `scripts/validate-photo-advisor-copy-regression.sh` passes.
+- [ ] `scripts/validate-photo-advisor-card-language.sh` passes.
+- [ ] `scripts/validate-creative-intent-language.sh` passes.
+- [ ] `scripts/validate-photo-advisor-filter-reasons.sh` passes.
+
 ## Phase 18-B3
 
 Internal real-provider QA dry-run gate:

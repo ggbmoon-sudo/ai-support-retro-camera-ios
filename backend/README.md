@@ -250,6 +250,15 @@ Phase 18-B3 adds an internal dry-run gate for this workflow:
 
 See `../docs/photo-advisor-provider-qa-dry-run-gate.md`.
 
+Phase 18-B4 defines how to review sanitized provider QA metrics:
+
+- hard blockers include raw artifact leakage, unsupported filters accepted, score/rating or sensitive inference passing validation, raw localization keys, iOS provider keys/direct calls, Camera cloud entries, unapproved payload changes, and `productionReady=true`
+- warning thresholds include invalid JSON/schema counts above 0, unexpectedly high fallback count, provider errors/timeouts above 0, overlong text above 0, repeated fallback by scenario, p95 latency above internal review thresholds, and locale mismatch
+- synthetic-contract QA may pass only when it runs without network/API keys, rejects invalid/unsafe fixtures, passes redaction checks, and keeps `productionReady=false`
+- optional real-provider QA remains internal/debug only, requires explicit `--run-provider`, local ignored credentials, approved ignored samples, sanitized aggregate metrics, ignored reports, and manual review
+
+See `../docs/photo-advisor-provider-qa-review-thresholds.md`.
+
 Phase 17C-R3 local QA used five ignored synthetic JPEGs:
 
 - `warm-rooftop.jpg`
