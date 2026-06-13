@@ -158,6 +158,18 @@ Phase 17D-C keeps the Capture Intelligence Pack local-only while hardening lifec
 
 This phase does not upload capture context, change backend provider payloads, collect GPS/location, dump raw EXIF, persist raw sensor streams, add provider SDKs or keys to iOS, add direct provider calls from iOS, add Camera cloud AI, or enable production rollout.
 
+## Phase 17D-D Real-device Manual QA Kit + Tuning
+
+Phase 17D-D adds the manual QA kit for validating capture intelligence on real devices:
+
+- `tests/manual-smoke-tests.md` now includes a 17D-D real-device flow for Camera lifecycle, capture scenarios, advisor behavior, and DEBUG preview safety
+- `tests/manual/capture-intelligence-real-device-qa-template.md` is a commit-safe template reviewers can copy to ignored local notes before filling in device results
+- local result folders and Xcode result bundles are ignored so photos, generated QA images, filled reports, and device artifacts do not enter git
+- the bright / overexposed local mock Photo Advisor fixture now stays optional instead of defaulting to retake
+- bucket labels remain non-judgmental and DEBUG-only preview remains compact and bucket-only
+
+This phase is still local-only. It does not upload capture context, change backend provider payloads, collect GPS/location, dump raw EXIF, persist raw sensor streams, add provider SDKs or keys to iOS, add direct provider calls from iOS, add Camera cloud AI, or enable production rollout.
+
 ## Phase 12A Filter Planning
 
 Phase 12A adds filter research and schema planning documents only. It does not change iOS app source code.

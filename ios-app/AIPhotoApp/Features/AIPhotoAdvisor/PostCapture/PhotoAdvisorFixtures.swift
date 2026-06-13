@@ -336,7 +336,7 @@ enum PhotoAdvisorFixtures {
             )
         ],
         retakeAdvice: PhotoAdvisorRetakeAdvice(
-            shouldRetake: true,
+            shouldRetake: false,
             reasonKey: "photo_advisor.fixture.overexposed_highlight.retake"
         ),
         cropAdvice: PhotoAdvisorCropAdvice(

@@ -1,5 +1,69 @@
 # Manual Smoke Tests
 
+## Phase 17D-D
+
+Real-device QA kit:
+
+- [ ] Copy `tests/manual/capture-intelligence-real-device-qa-template.md` into ignored `tests/manual/local-results/` before filling in device results.
+- [ ] Confirm no filled report, real test photo, generated QA image, `.xcresult`, or device-specific artifact is staged for commit.
+
+Camera lifecycle:
+
+- [ ] Launch app and open Camera.
+- [ ] Switch away from Camera tab, return to Camera, and confirm capture still works.
+- [ ] Background app from Camera, foreground app, and confirm Camera resumes safely.
+- [ ] Deny / revoke Camera permission if practical and confirm the app does not crash or show stale capture context.
+- [ ] Confirm motion monitoring stops / clears safely when Camera is not active.
+
+Capture scenarios:
+
+- [ ] Hold device level and capture.
+- [ ] Slightly tilt device and capture.
+- [ ] Strongly tilt device and capture.
+- [ ] Hold device still and capture.
+- [ ] Move device slightly before capture.
+- [ ] Capture in low light.
+- [ ] Capture in bright light.
+- [ ] Capture a high-contrast scene.
+- [ ] Capture a low-saturation / faded-looking scene.
+- [ ] Capture with soft / dreamy / retro filter selected.
+- [ ] Capture with no filter or neutral filter selected.
+
+Advisor behavior:
+
+- [ ] Captured Photo Advisor opens normally.
+- [ ] Imported Photo Advisor opens normally.
+- [ ] Advice starts with mood / style where possible.
+- [ ] Advice remains optional and intent-aware.
+- [ ] Advice does not default to retake / fix-it for blur, tilt, low light, grain, underexposure, overexposure, unusual framing, or motion.
+- [ ] Technical refinement uses wording such as “if you want...” / “如果你想...”.
+- [ ] No identity-adjacent or sensitive wording appears.
+- [ ] No wording like bad / wrong / failed / poor / retake required appears.
+
+DEBUG preview:
+
+- [ ] DEBUG capture context preview appears only in DEBUG builds.
+- [ ] Release / production UI does not show the DEBUG capture context preview.
+- [ ] Preview shows bucket labels only: Level, Motion, Light, Blur hint, Creative intent.
+- [ ] Preview does not expose raw accelerometer values, raw gyro values, raw roll / pitch, raw stability score, raw EXIF, raw JSON, provider errors, localization keys, secrets, or API keys.
+
+Safety / boundary:
+
+- [ ] Camera remains local-only and no AI Snapshot / Quick Advice / Cloud AI entry appears.
+- [ ] No GPS/location collection is visible.
+- [ ] No raw EXIF dump is visible.
+- [ ] No continuous sensor stream persistence or logging is visible.
+- [ ] No capture context or local image signal upload is visible.
+- [ ] Backend provider payload remains unchanged.
+- [ ] No provider key / direct provider call was added to iOS.
+- [ ] No production remote AI rollout is enabled.
+
+Known TODOs:
+
+- [ ] Real-device QA results should remain local unless a future safe-asset policy explicitly approves sanitized commits.
+- [ ] Future threshold changes should be based on repeated real-device observations, not a single photo.
+- [ ] Future backend schema support for capture context requires a separate explicit phase.
+
 ## Phase 17D-C
 
 Check:

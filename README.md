@@ -78,7 +78,7 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 17D-C Capture Intelligence real-device QA + stability polish completed; ready for review
+- Phase 17D-D Capture Intelligence real-device manual QA kit + tuning completed; ready for review
 
 Next phase:
 
@@ -173,6 +173,8 @@ Phase 17D-A adds a local-only Camera Capture Context model for safe summarized c
 Phase 17D-B extends that local-only context into a Capture Intelligence Pack. Captured photos now snapshot safe bucketed level / motion summaries, local image signal buckets, selected filter context, and a stronger CreativeIntentGuard; imported photos can receive local image buckets while capture-only fields stay unavailable / unknown. DEBUG builds may show a compact bucket preview in Photo Advisor, but production UI does not expose raw sensor streams, raw EXIF, or JSON. Backend provider payloads are unchanged, capture context is not uploaded, Camera remains local-only, and advisor copy still frames blur / tilt / low light / grain / faded color / high contrast as possible retro style rather than automatic retake problems.
 
 Phase 17D-C hardens that local capture intelligence lifecycle for real-device QA. Camera scene changes now stop local motion monitoring when the app backgrounds / becomes inactive and resume only when returning to the active Camera capture flow. Selected-photo, permission-denied, interrupted / unavailable, and import paths clear or avoid motion monitoring safely. The local image signal analyzer now falls back to unknown for very small / invalid inputs and keeps its analysis lightweight. DEBUG context preview remains bucket-only and non-production. Backend provider payloads are still unchanged, capture context is not uploaded, and production rollout remains blocked.
+
+Phase 17D-D adds a commit-safe real-device QA kit for capture intelligence. Reviewers can follow the expanded manual smoke checklist and copy `tests/manual/capture-intelligence-real-device-qa-template.md` into ignored local notes before testing level / motion / light / blur / creative-intent behavior on device. The local mock Photo Advisor no longer marks bright / overexposed mock scenes as automatic retakes; advice remains optional and intent-aware. Real-device QA photos, filled reports, generated images, and device artifacts must stay local / ignored unless a later safe-asset policy explicitly approves committing them.
 
 ## Phase 12A Filter Planning Status
 
