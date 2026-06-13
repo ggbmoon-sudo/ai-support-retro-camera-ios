@@ -187,6 +187,18 @@ Phase 18-A1 adds the first app-side Photo Advisor language pack for the local/mo
 
 This phase does not add a provider SDK or key to iOS, direct provider calls, Camera cloud AI entry points, backend payload changes, capture-context upload, GPS/location collection, raw EXIF dump, raw sensor persistence, or production cloud rollout.
 
+## Phase 18-A2 Filter Recommendation Reason Library
+
+Phase 18-A2 adds a structured local filter reason library for the mock/local Photo Advisor:
+
+- Every current filter catalog preset, including `original`, research presets, and legacy starter filters, has a filter language family mapping.
+- Filter reasons now resolve from filter family + safe local photo signal + retro aesthetic result, rather than generic “try this filter” wording.
+- Families include warm film, faded pastel, cinematic contrast, night grain, soft dream, street chrome, amber glow, cool fade, and classic film.
+- Recommendation copy stays intent-aware: low light, blur, grain, tilt, high contrast, faded color, and soft focus are treated as possible style, not automatic mistakes.
+- A lightweight validation script checks catalog/profile coverage and localized reason keys.
+
+This phase does not change filter rendering, backend provider payloads, capture-context upload, provider keys, direct provider calls, Camera cloud AI, GPS/location collection, raw EXIF dump, raw sensor persistence, or production cloud rollout.
+
 ## Phase 12A Filter Planning
 
 Phase 12A adds filter research and schema planning documents only. It does not change iOS app source code.

@@ -238,3 +238,25 @@ The implemented wording follows:
 4. Optional action.
 
 It explicitly avoids treating blur, tilt, low light, grain, high contrast, faded color, soft focus, motion, or unusual framing as automatic mistakes. Backend provider payloads remain unchanged, capture context is not uploaded, Camera remains local-only, and production rollout remains blocked.
+
+## Phase 18-A2 Implementation Note
+
+Phase 18-A2 implements the filter recommendation reason library recommended by this audit. The local/mock Photo Advisor now maps every current app filter to a language family and resolves filter reasons from:
+
+1. Filter family.
+2. Matched safe photo signal.
+3. Retro aesthetic result.
+
+The first family set is:
+
+- warm film
+- faded pastel
+- cinematic contrast
+- night grain
+- soft dream
+- street chrome
+- amber glow
+- cool fade
+- classic film
+
+Filter reason wording is designed to explain why a filter fits without turning local image signals into a score or correction demand. Low light, blur, grain, tilt, faded color, high contrast, and soft focus remain possible retro style choices. Backend provider payloads remain unchanged, capture context and filter reason metadata are not uploaded, Camera remains local-only, and production rollout remains blocked.

@@ -78,7 +78,7 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 18-A1 Photo Advisor language pack implementation completed; ready for review
+- Phase 18-A2 Filter Recommendation Reason Library completed; ready for review
 
 Next phase:
 
@@ -180,6 +180,8 @@ Phase 17D-D adds a commit-safe real-device QA kit for capture intelligence. Revi
 Phase 18-A0 audits Photo Advisor language and capability coverage before any capture-context backend integration. The new `docs/ai-photo-advisor-language-audit.md` records implemented / partial / missing / unclear capabilities, current multilingual photography language, gaps, the recommended app voice, the future real AI language contract, and recommended next phases. It is documentation-only: no app source, localization, backend payload, provider key, direct provider call, Camera cloud entry, capture-context upload, GPS/location, raw EXIF, sensor persistence, or production rollout was added.
 
 Phase 18-A1 implements the first app-side Photo Advisor language pack. The local/mock advisor now uses structured `advisor.*` language keys for mood, visual signals, retro intent, optional crop / straighten / retake wording, imported-photo fallback, local-only / provider-unavailable fallback, and filter recommendation reasons. The language follows Observation -> Mood -> Retro intent -> Optional action, not Score -> Problem -> Fix -> Retake. It does not add cloud AI functionality, change backend provider payloads, upload capture context, add provider keys to iOS, add a Camera cloud entry, or enable production rollout.
+
+Phase 18-A2 adds a local Filter Recommendation Reason Library for the mock/local Photo Advisor. Every current filter catalog preset is mapped to a language family such as warm film, night grain, street chrome, soft dream, cool fade, or classic film, and recommendation copy now resolves from filter family + safe photo signal + retro aesthetic result. It is app-side/local language work only: no backend provider payload changed, capture context is still not uploaded, iOS still has no provider key / direct provider call, Camera remains local-only, and production rollout remains blocked.
 
 ## Phase 12A Filter Planning Status
 

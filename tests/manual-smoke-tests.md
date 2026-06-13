@@ -1,5 +1,32 @@
 # Manual Smoke Tests
 
+## Phase 18-A2
+
+Photo Advisor filter reason library check:
+
+- [ ] Launch the app and confirm Camera opens normally.
+- [ ] Confirm Camera remains local-only and no AI Snapshot / Quick Advice / Cloud AI entry appears.
+- [ ] Capture or import a photo and open mock/local Photo Advisor.
+- [ ] Confirm filter recommendations show a filter name plus one short reason.
+- [ ] Confirm filter reasons mention a photo signal and retro aesthetic result, not only “try this filter.”
+- [ ] Check low light, warm light, high contrast, faded color, soft / dreamy, and street / busy scenes where practical.
+- [ ] Confirm low light, blur, grain, tilt, faded color, and high contrast are not described as automatic mistakes.
+- [ ] Confirm retake advice remains optional / conservative and does not become the default.
+- [ ] Select English, 繁體中文, 简体中文, 廣東話 / 香港口語, and 廣東話 / 麻煩友 where practical, then confirm no raw `advisor.filter.*` localization keys appear.
+- [ ] Confirm UI does not show score / rating, numeric confidence, raw JSON, raw provider output, chain-of-thought, raw sensor streams, raw EXIF, provider keys, direct provider URLs, or identity-adjacent wording.
+
+Automated local check:
+
+- [ ] `scripts/validate-photo-advisor-filter-reasons.sh` passes.
+- [ ] `rg -n "Try this filter|Best filter|best filter|bad photo|wrong exposure|failed photo|must fix|retake it|retake required|7/10|8/10|score|rating" ios-app/AIPhotoApp/Features/AIPhotoAdvisor ios-app/AIPhotoApp/Resources/Localization` should not find production UI copy.
+
+Boundary check:
+
+- [ ] Backend `/v1/ai/photo-advisor` payloads remain unchanged.
+- [ ] Capture context and filter reason metadata are not uploaded.
+- [ ] iOS still has no provider key, provider SDK import, or direct provider URL call.
+- [ ] No GPS/location collection, raw EXIF dump, raw sensor persistence, StoreKit, Gemini Live, WebSocket, export, or production cloud rollout is enabled.
+
 ## Phase 18-A1
 
 Photo Advisor language pack check:

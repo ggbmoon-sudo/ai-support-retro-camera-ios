@@ -107,20 +107,7 @@ enum PhotoAdvisorLanguagePack {
     }
 
     static func filterReasonKey(filterId: String, input: PhotoAdvisorInput) -> String {
-        switch filterId {
-        case "soft_warm_400", "soft_sun_portrait", "instant_dream", "warm-vintage", "classic-film":
-            return localizedKey("advisor.filter.reason.warm_light", input: input)
-        case "amber_night_800", "neon_tungsten_800":
-            return localizedKey("advisor.filter.reason.low_light", input: input)
-        case "street_chrome", "metro_pop", "slide_pop", "faded-chrome", "silver_gradation", "tri_grit_400":
-            return localizedKey("advisor.filter.reason.street_contrast", input: input)
-        case "cinema_flat", "editor_classic":
-            return localizedKey("advisor.filter.reason.soft_shadow", input: input)
-        case "ccd_party_2008", "flash_party", "diana_soft":
-            return localizedKey("advisor.filter.reason.grain_snapshot", input: input)
-        default:
-            return localizedKey("advisor.filter.reason.generic", input: input)
-        }
+        PhotoAdvisorFilterReasonLibrary.reasonKey(filterId: filterId, input: input)
     }
 
     static func localizedKey(_ base: String, input: PhotoAdvisorInput) -> String {
