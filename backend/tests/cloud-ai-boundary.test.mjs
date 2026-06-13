@@ -660,7 +660,9 @@ test("safe logging metadata does not include payload fields", () => {
 
 test("photo advisor qa report redacts sensitive fields", () => {
   const report = summarizePhotoAdvisorQA({
+    runMode: "provider",
     provider: "qweapi",
+    providerConfigured: true,
     model: "gemini-3.1-flash-image-preview",
     baseURL: "https://qweapi.com",
     cases: [
@@ -687,6 +689,11 @@ test("photo advisor qa report redacts sensitive fields", () => {
   });
 
   assert.equal(report.totalCases, 1);
+  assert.equal(report.runMode, "provider");
+  assert.equal(report.providerConfigured, true);
+  assert.equal(report.providerNameBucket, "qweapi");
+  assert.equal(report.modelNameBucket, "gemini-3.1-flash-image-preview");
+  assert.equal(report.successCount, 1);
   assert.equal(report.cloudSuccess, 1);
   assert.equal(report.cloudSuccessCount, 1);
   assert.equal(report.fallback, 0);
@@ -694,6 +701,14 @@ test("photo advisor qa report redacts sensitive fields", () => {
   assert.equal(report.languageCasesNeedingManualReview, 1);
   assert.equal(report.cases[0].sampleType, "approved_real_sample");
   assert.equal(report.cases[0].latencyBucket, "5s_to_10s");
+  assert.equal(report.cases[0].validationCategory, "none");
+  assert.equal(report.payloadLoggingDisabled, true);
+  assert.equal(report.rawImagePersisted, false);
+  assert.equal(report.rawProviderResponsePersisted, false);
+  assert.equal(report.rawPromptPersisted, false);
+  assert.equal(report.reportContainsRawUserContent, false);
+  assert.equal(report.productionReady, false);
+  assert.equal(report.contractChecks.usesCloudAIResponseValidator, true);
   assert.equal(JSON.stringify(report).includes("/9j/"), false);
   assert.equal(JSON.stringify(report).includes("requestBody"), false);
   assert.equal(JSON.stringify(report).includes("apiKey"), false);
@@ -702,7 +717,9 @@ test("photo advisor qa report redacts sensitive fields", () => {
 
 test("photo advisor qa report summarizes fallback metrics", () => {
   const report = summarizePhotoAdvisorQA({
+    runMode: "provider",
     provider: "qweapi",
+    providerConfigured: true,
     model: "gemini-3.1-flash-image-preview",
     baseURL: "https://qweapi.com",
     cases: [
@@ -722,7 +739,8 @@ test("photo advisor qa report summarizes fallback metrics", () => {
         latencyMs: 1200,
         schemaValid: true,
         safetyValid: true,
-        fallbackCode: "provider_timeout"
+        fallbackCode: "provider_timeout",
+        validationCategory: "timeout"
       })
     ]
   });
@@ -732,6 +750,7 @@ test("photo advisor qa report summarizes fallback metrics", () => {
   assert.equal(report.cloudSuccessCount, 1);
   assert.equal(report.fallback, 1);
   assert.equal(report.fallbackCount, 1);
+  assert.equal(report.validationFailureCount, 0);
   assert.equal(report.providerTimeouts, 1);
   assert.equal(report.timeoutCount, 1);
   assert.equal(report.unsafeResponseCount, 0);
@@ -745,6 +764,79 @@ test("photo advisor qa report summarizes fallback metrics", () => {
   assert.equal(report.latencyAssessment.providerTimeoutMs, 30000);
   assert.equal(report.latencyAssessment.productionRollout, "blocked");
   assert.equal(report.cases[1].fallbackCategory, "timeout");
+});
+
+test("photo advisor qa report counts B2 contract validation categories", () => {
+  const report = summarizePhotoAdvisorQA({
+    runMode: "synthetic",
+    provider: "synthetic",
+    providerConfigured: false,
+    model: "provider-contract-regression-fixtures",
+    cases: [
+      sanitizePhotoAdvisorQACase({
+        caseId: "invalid-json",
+        locale: "en",
+        source: "fallback",
+        schemaValid: false,
+        safetyValid: true,
+        fallbackCode: "provider_invalid_json",
+        validationCategory: "invalid_json"
+      }),
+      sanitizePhotoAdvisorQACase({
+        caseId: "unsafe-score",
+        locale: "en",
+        source: "fallback",
+        schemaValid: false,
+        safetyValid: false,
+        fallbackCode: "unsafe_response",
+        validationCategory: "unsafe_response",
+        unsafeCategory: "unknown_safety_guard"
+      }),
+      sanitizePhotoAdvisorQACase({
+        caseId: "unsupported-filter",
+        locale: "en",
+        source: "fallback",
+        schemaValid: false,
+        safetyValid: true,
+        fallbackCode: "provider_invalid_schema",
+        validationCategory: "unsupported_filter",
+        invalidFilterIds: 1
+      }),
+      sanitizePhotoAdvisorQACase({
+        caseId: "overlong-reason",
+        locale: "en",
+        source: "fallback",
+        schemaValid: false,
+        safetyValid: true,
+        fallbackCode: "provider_invalid_schema",
+        validationCategory: "overlong_text"
+      }),
+      sanitizePhotoAdvisorQACase({
+        caseId: "provider-unavailable",
+        locale: "en",
+        source: "fallback",
+        schemaValid: true,
+        safetyValid: true,
+        fallbackCode: "provider_unavailable",
+        validationCategory: "provider_error"
+      })
+    ]
+  });
+
+  assert.equal(report.runMode, "synthetic");
+  assert.equal(report.providerConfigured, false);
+  assert.equal(report.providerNameBucket, "synthetic");
+  assert.equal(report.modelNameBucket, "provider-contract-regression-fixtures");
+  assert.equal(report.successCount, 0);
+  assert.equal(report.validationFailureCount, 4);
+  assert.equal(report.invalidJsonCount, 1);
+  assert.equal(report.unsafeResponseCount, 1);
+  assert.equal(report.unsupportedFilterCount, 1);
+  assert.equal(report.overlongTextCount, 1);
+  assert.equal(report.providerErrorCount, 1);
+  assert.equal(report.productionReady, false);
+  assert.equal(report.cases.every((item) => item.validationCategory !== "unknown"), true);
+  assert.equal(assertQAReportRedacted(report).ok, true);
 });
 
 test("photo advisor qa report records safe unsafe diagnostic labels only", () => {
@@ -785,6 +877,33 @@ test("photo advisor qa report records safe unsafe diagnostic labels only", () =>
   assert.equal(report.cases[0].unsafeCategory, "appearance_or_identity_guard");
   assert.equal(JSON.stringify(report).includes("redact this"), false);
   assert.equal(assertQAReportRedacted(report).ok, true);
+});
+
+test("photo advisor qa report redaction rejects raw prompt and provider artifacts", () => {
+  const redaction = assertQAReportRedacted({
+    schemaVersion: "1.0",
+    cases: [
+      {
+        caseId: "bad",
+        rawProviderText: "should not be here"
+      }
+    ]
+  });
+
+  assert.equal(redaction.ok, false);
+  assert.equal(redaction.error.code, "qa_report_not_redacted");
+});
+
+test("photo advisor provider qa runner supports synthetic contract mode without credentials", async () => {
+  const scriptURL = new URL("./../scripts/run-photo-advisor-provider-qa.mjs", import.meta.url);
+  assert.equal(existsSync(scriptURL), true);
+  const source = await readFile(scriptURL, "utf8");
+
+  assert.equal(source.includes("--synthetic-contract"), true);
+  assert.equal(source.includes("provider-contract-regression-cases.json"), true);
+  assert.equal(source.includes("QWE_API_KEY="), false);
+  assert.equal(source.includes("rawProviderText:"), false);
+  assert.equal(source.includes("console.log(request"), false);
 });
 
 test("safety guard returns sanitized diagnostic labels", () => {

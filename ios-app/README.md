@@ -275,6 +275,19 @@ Phase 18-B1 is a backend/provider regression test phase. It does not change iOS 
 
 The backend regression fixtures verify that invalid, unsafe, overlong, generic, or provider-leaking real-provider output is rejected or mapped to app-safe structured fallback before the existing iOS validator / result card can show it.
 
+## Phase 18-B2 Provider QA Runner Contract Alignment
+
+Phase 18-B2 is backend QA runner alignment only. It does not change iOS runtime behavior:
+
+- no provider key in iOS
+- no direct QweAPI / provider call from iOS
+- no Camera cloud AI entry
+- no production remote rollout
+- no iOS upload payload change
+- no capture context upload
+
+The backend QA runner now has a synthetic contract mode for the B1 fixtures and a real-provider mode for explicit internal/debug QA. Generated backend reports remain ignored and sanitized; iOS production UI still must not show provider names, raw JSON, raw provider errors, raw localization keys, chain-of-thought, internal classification names, raw EXIF, or raw sensor values.
+
 ## Phase 12A Filter Planning
 
 Phase 12A adds filter research and schema planning documents only. It does not change iOS app source code.

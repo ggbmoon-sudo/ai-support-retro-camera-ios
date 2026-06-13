@@ -174,12 +174,30 @@ node scripts/run-photo-advisor-provider-qa.mjs --image-set=approved-real
 node scripts/run-photo-advisor-provider-qa.mjs --image-set=all
 ```
 
+Run the provider contract QA without credentials or network:
+
+```sh
+node scripts/run-photo-advisor-provider-qa.mjs --synthetic-contract
+```
+
+The synthetic-contract mode uses the committed B1 fixture file only:
+
+- `backend/tests/fixtures/provider-contract-regression-cases.json`
+- no provider credentials
+- no network request
+- no real photo
+- no prompt with image data
+- no raw provider response
+
+Use this mode for local / CI-style contract preflight before any real-provider QA run.
+
 The QA script:
 
 - loads local `.env`
-- requires `CLOUD_AI_PROVIDER_MODE=qweInternal`
-- requires `ALLOW_INTERNAL_CLOUD_AI=true`
-- sends only internal/debug Photo Advisor requests
+- runs in either `provider` mode or explicit `synthetic-contract` mode
+- requires `CLOUD_AI_PROVIDER_MODE=qweInternal` only for real-provider QA
+- requires `ALLOW_INTERNAL_CLOUD_AI=true` only for real-provider QA
+- sends only internal/debug Photo Advisor requests in real-provider mode
 - runs the backend route path, including request validation, provider retry, response validation, safety validation, and fallback
 - writes a sanitized report to `backend/reports/provider-qa/photo-advisor-qa-report.json`
 
@@ -198,6 +216,27 @@ Local image policy:
 If no local QA images are present, the script uses a tiny built-in JPEG smoke image across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`.
 
 The generated report is ignored and must remain metadata-only. It includes counts for cloud success, fallback, latency, schema failures, safety failures, invalid filter IDs, safe unsafe-diagnostic labels, and manual language review flags. It must not include API keys, base64 images, raw request bodies, provider raw responses, EXIF, GPS, or face data.
+
+Phase 18-B2 aligns the provider QA runner with the B0/B1 contract:
+
+- real-provider QA and synthetic-contract QA use the same `CloudAIResponse` validator, safe-text guard, and filter whitelist expectations
+- reports include `runMode`, `providerConfigured`, safe provider / model buckets, `successCount`, `validationFailureCount`, invalid JSON / schema / unsupported filter / overlong text / unsafe / timeout / provider-error counters, and latency buckets
+- reports include explicit safety flags: `payloadLoggingDisabled: true`, `rawImagePersisted: false`, `rawProviderResponsePersisted: false`, `rawPromptPersisted: false`, `reportContainsRawUserContent: false`, and `productionReady: false`
+- console output prints only sanitized aggregate status, categories, and latency metrics
+- production readiness remains false even when synthetic-contract QA passes
+
+Real-provider QA still requires explicit local credentials and internal/debug config:
+
+```sh
+QWE_API_KEY=replace_me
+QWE_BASE_URL=https://qweapi.com
+QWE_PHOTO_ADVISOR_MODEL=gemini-3.1-flash-image-preview
+CLOUD_AI_PROVIDER_MODE=qweInternal
+ALLOW_INTERNAL_CLOUD_AI=true
+node scripts/run-photo-advisor-provider-qa.mjs --image-set=synthetic
+```
+
+Do not commit the generated report. Do not paste raw provider output into docs, tests, reports, or issue comments.
 
 Phase 17C-R3 local QA used five ignored synthetic JPEGs:
 

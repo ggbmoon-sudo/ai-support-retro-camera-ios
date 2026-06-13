@@ -383,6 +383,12 @@ Check:
 - [ ] Confirm provider QA report is written to ignored `backend/reports/provider-qa/photo-advisor-qa-report.json`.
 - [ ] Confirm provider QA report contains no API key, base64 image, raw image, request body, provider raw response, EXIF, GPS, or face data.
 - [ ] Review provider QA summary: cloud success, fallback count, average / p50 / p95 latency, schema failures, safety failures, invalid filter IDs.
+- [ ] Run synthetic provider contract QA without credentials: `cd backend && node scripts/run-photo-advisor-provider-qa.mjs --synthetic-contract`.
+- [ ] Confirm synthetic provider contract QA uses committed fixtures only, reports `runMode=synthetic`, `providerConfigured=false`, and `productionReady=false`.
+- [ ] Confirm the synthetic report includes invalid JSON, invalid schema, unsupported filter, overlong text, unsafe response, timeout, provider error, fallback, and latency counters.
+- [ ] Confirm provider-mode QA refuses to run when `CLOUD_AI_PROVIDER_MODE=qweInternal`, `ALLOW_INTERNAL_CLOUD_AI=true`, and `QWE_API_KEY` / base URL / model are not configured.
+- [ ] Confirm real-provider QA console output shows only sanitized case IDs, categories, aggregate metrics, and latency values.
+- [ ] Confirm no raw prompt, full request payload, raw provider response, unsafe provider text, Authorization header, API key, GPS, raw EXIF, face descriptors, or identity/sensitive inference details appear in console output or ignored report artifacts.
 - [ ] Confirm R3 local QA image set stays ignored under `backend/tests/local-images/`.
 - [ ] Confirm R3 report includes `maxLatencyMs` and `fallbackByCode`.
 - [ ] Confirm R4 report includes `p90LatencyMs`, `timeoutCount`, `unsafeResponseCount`, `fallbackByCategory`, per-case `latencyBucket`, per-case `fallbackCategory`, and `latencyAssessment`.

@@ -4,6 +4,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { basename, extname } from "node:path";
 import { cloudAIConfig } from "../src/config/cloudAIConfig.mjs";
 import { ProviderKind } from "../src/providers/ProviderRegistry.mjs";
+import { parseQweCloudAIResponse } from "../src/providers/QwePhotoAdvisorProvider.mjs";
 import { handlePhotoAdvisorRequest } from "../src/routes/photoAdvisor.mjs";
 import {
   assertQAReportRedacted,
@@ -16,6 +17,8 @@ import { isKnownFilterId } from "../src/filters/filterWhitelist.mjs";
 
 const LOCAL_IMAGE_DIR = new URL("../tests/local-images/", import.meta.url);
 const APPROVED_REAL_SAMPLE_DIR = new URL("../tests/approved-real-samples/", import.meta.url);
+const CONTRACT_FIXTURE_URL = new URL("../tests/fixtures/provider-contract-regression-cases.json", import.meta.url);
+const VALID_RESPONSE_FIXTURE_URL = new URL("../tests/fixtures/cloud-ai-valid-response.json", import.meta.url);
 const REPORT_DIR = new URL("../reports/provider-qa/", import.meta.url);
 const REPORT_URL = new URL("./photo-advisor-qa-report.json", REPORT_DIR);
 const DEFAULT_LOCALES = ["en", "zh-Hant", "zh-Hans", "yue-Hant-HK"];
@@ -23,8 +26,16 @@ const TINY_JPEG_BASE64 = "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAP////////////////////
 
 loadDotEnv(new URL("../../.env", import.meta.url));
 
-const config = cloudAIConfig(process.env);
 const qaOptions = parseArgs(process.argv.slice(2));
+const config = cloudAIConfig(process.env);
+
+if (qaOptions.runMode === "synthetic") {
+  const report = await runSyntheticContractQA();
+  await writeSanitizedReport(report);
+  printReportSummary(report);
+  process.exit(0);
+}
+
 const cases = await loadQACases(qaOptions);
 
 if (!isQweInternalConfigured(config)) {
@@ -69,7 +80,9 @@ for (const item of cases) {
 }
 
 const report = summarizePhotoAdvisorQA({
+  runMode: "provider",
   provider: "qweapi",
+  providerConfigured: true,
   model: config.qwePhotoAdvisorModel,
   baseURL: config.qweBaseURL,
   cases: results,
@@ -86,34 +99,8 @@ if (!redaction.ok) {
   process.exit(1);
 }
 
-await mkdir(REPORT_DIR, { recursive: true });
-await writeFile(REPORT_URL, `${JSON.stringify(report, null, 2)}\n`);
-
-printSanitized({
-  ok: true,
-  reportPath: "backend/reports/provider-qa/photo-advisor-qa-report.json",
-  provider: report.provider,
-  model: report.model,
-  baseUrlHost: report.baseUrlHost,
-  totalCases: report.totalCases,
-  cloudSuccess: report.cloudSuccess,
-  fallback: report.fallback,
-  averageLatencyMs: report.averageLatencyMs,
-  p50LatencyMs: report.p50LatencyMs,
-  p90LatencyMs: report.p90LatencyMs,
-  p95LatencyMs: report.p95LatencyMs,
-  maxLatencyMs: report.maxLatencyMs,
-  timeoutCount: report.timeoutCount,
-  unsafeResponseCount: report.unsafeResponseCount,
-  unsafeByCategory: report.unsafeByCategory,
-  schemaFailures: report.schemaFailures,
-  safetyFailures: report.safetyFailures,
-  invalidFilterIds: report.invalidFilterIds,
-  fallbackByCode: report.fallbackByCode,
-  fallbackByCategory: report.fallbackByCategory,
-  latencyAssessment: report.latencyAssessment,
-  languageCasesNeedingManualReview: report.languageCasesNeedingManualReview
-});
+await writeSanitizedReport(report);
+printReportSummary(report);
 
 function isQweInternalConfigured(value) {
   return value.providerMode === ProviderKind.qweInternal
@@ -125,6 +112,18 @@ function isQweInternalConfigured(value) {
 }
 
 function parseArgs(args) {
+  const syntheticContract = args.includes("--synthetic-contract");
+  const modeArg = args.find((item) => item.startsWith("--mode="));
+  const runMode = syntheticContract ? "synthetic" : modeArg?.split("=")[1] ?? "provider";
+  if (!["provider", "synthetic"].includes(runMode)) {
+    printSanitized({
+      ok: false,
+      errorCode: "invalid_run_mode",
+      message: "Use --mode=provider, --mode=synthetic, or --synthetic-contract."
+    });
+    process.exit(1);
+  }
+
   const imageSetArg = args.find((item) => item.startsWith("--image-set="));
   const imageSet = imageSetArg?.split("=")[1] ?? "synthetic";
   if (!["synthetic", "approved-real", "all"].includes(imageSet)) {
@@ -135,7 +134,133 @@ function parseArgs(args) {
     });
     process.exit(1);
   }
-  return { imageSet };
+  return { runMode, imageSet };
+}
+
+async function runSyntheticContractQA() {
+  const contract = await readJSON(CONTRACT_FIXTURE_URL);
+  const base = await readJSON(VALID_RESPONSE_FIXTURE_URL);
+  const syntheticCases = [];
+
+  for (const item of contract.validResponses ?? []) {
+    const response = responseFromRegressionCase(base, item);
+    const validation = validateCloudAIResponse(response);
+    const safety = validateSafeTextOutput(response);
+    syntheticCases.push(sanitizePhotoAdvisorQACase({
+      caseId: item.id,
+      sampleType: "synthetic",
+      locale: response.locale ?? "en",
+      source: validation.ok ? "cloud" : "fallback",
+      latencyMs: 0,
+      schemaValid: validation.ok,
+      safetyValid: safety.ok,
+      fallbackCode: validation.ok ? null : fallbackCodeForValidation(validation.error?.code),
+      validationCategory: validation.ok ? "none" : validationCategoryForValidation(validation.error?.code),
+      unsafeCategory: validation.error?.unsafeCategory ?? null,
+      recommendedFilterIds: recommendedFilterIds(response),
+      invalidFilterIds: invalidFilterIds(response).length,
+      captionLength: captionLength(response),
+      summaryLength: response.summary?.length ?? 0,
+      suggestionCount: Array.isArray(response.suggestions) ? response.suggestions.length : 0,
+      confidence: response.confidence ?? null,
+      needsManualLanguageReview: false
+    }));
+  }
+
+  for (const item of contract.parserRejections ?? []) {
+    let fallbackCode = "provider_invalid_json";
+    let validationCategory = "invalid_json";
+    try {
+      const parsed = parseQweCloudAIResponse({
+        choices: [{ message: { content: item.content } }]
+      });
+      const validation = validateCloudAIResponse(parsed);
+      fallbackCode = validation.ok ? null : fallbackCodeForValidation(validation.error?.code);
+      validationCategory = validation.ok ? "none" : validationCategoryForValidation(validation.error?.code);
+    } catch (error) {
+      fallbackCode = fallbackCodeForParserError(error?.code);
+      validationCategory = "invalid_json";
+    }
+
+    syntheticCases.push(sanitizePhotoAdvisorQACase({
+      caseId: item.id,
+      sampleType: "synthetic",
+      locale: "en",
+      source: "fallback",
+      latencyMs: 0,
+      schemaValid: false,
+      safetyValid: true,
+      fallbackCode,
+      validationCategory,
+      recommendedFilterIds: [],
+      invalidFilterIds: 0,
+      needsManualLanguageReview: false
+    }));
+  }
+
+  for (const item of contract.validatorRejections ?? []) {
+    const response = responseFromRegressionCase(base, item);
+    const validation = validateCloudAIResponse(response);
+    const safety = validateSafeTextOutput(response);
+    syntheticCases.push(sanitizePhotoAdvisorQACase({
+      caseId: item.id,
+      sampleType: "synthetic",
+      locale: response.locale ?? "en",
+      source: "fallback",
+      latencyMs: 0,
+      schemaValid: false,
+      safetyValid: safety.ok,
+      fallbackCode: fallbackCodeForValidation(validation.error?.code),
+      validationCategory: validationCategoryForValidation(validation.error?.code, item),
+      unsafeCategory: validation.error?.unsafeCategory ?? null,
+      recommendedFilterIds: recommendedFilterIds(response).filter(isKnownFilterId),
+      invalidFilterIds: invalidFilterIds(response).length,
+      captionLength: captionLength(response),
+      summaryLength: response.summary?.length ?? 0,
+      suggestionCount: Array.isArray(response.suggestions) ? response.suggestions.length : 0,
+      confidence: response.confidence ?? null,
+      needsManualLanguageReview: false
+    }));
+  }
+
+  for (const item of contract.providerFailures ?? []) {
+    syntheticCases.push(sanitizePhotoAdvisorQACase({
+      caseId: item.id,
+      sampleType: "synthetic",
+      locale: "en",
+      source: "fallback",
+      latencyMs: 0,
+      schemaValid: true,
+      safetyValid: true,
+      fallbackCode: item.expectedFallbackCode,
+      validationCategory: item.expectedFallbackCode === "provider_timeout" ? "timeout" : "provider_error",
+      recommendedFilterIds: [],
+      invalidFilterIds: 0,
+      needsManualLanguageReview: false
+    }));
+  }
+
+  const report = summarizePhotoAdvisorQA({
+    runMode: "synthetic",
+    provider: "synthetic",
+    providerConfigured: false,
+    model: "provider-contract-regression-fixtures",
+    baseURL: "",
+    cases: syntheticCases,
+    notes: [
+      "Synthetic contract QA uses committed provider regression fixtures only.",
+      "No provider credentials, network request, real image, prompt-with-image data, or live output text is used.",
+      "Production readiness must remain false; real-provider QA remains internal/debug only."
+    ]
+  });
+
+  const redaction = assertQAReportRedacted(report);
+  if (!redaction.ok) {
+    printSanitized({ ok: false, errorCode: redaction.error.code, message: redaction.error.message });
+    process.exit(1);
+  }
+
+  return report;
 }
 
 async function loadQACases(options = {}) {
@@ -246,6 +371,149 @@ function captionLength(body) {
   }
   const caption = body.suggestions.find((item) => item.type === "caption" || item.action === "caption");
   return caption?.text?.length ?? 0;
+}
+
+async function readJSON(url) {
+  return JSON.parse(await readFile(url, "utf8"));
+}
+
+async function writeSanitizedReport(report) {
+  await mkdir(REPORT_DIR, { recursive: true });
+  await writeFile(REPORT_URL, `${JSON.stringify(report, null, 2)}\n`);
+}
+
+function printReportSummary(report) {
+  printSanitized({
+    ok: true,
+    reportPath: "backend/reports/provider-qa/photo-advisor-qa-report.json",
+    runMode: report.runMode,
+    providerConfigured: report.providerConfigured,
+    providerNameBucket: report.providerNameBucket,
+    modelNameBucket: report.modelNameBucket,
+    baseUrlHost: report.baseUrlHost,
+    totalCases: report.totalCases,
+    successCount: report.successCount,
+    cloudSuccess: report.cloudSuccess,
+    fallback: report.fallback,
+    validationFailureCount: report.validationFailureCount,
+    invalidJsonCount: report.invalidJsonCount,
+    invalidSchemaCount: report.invalidSchemaCount,
+    unsupportedFilterCount: report.unsupportedFilterCount,
+    overlongTextCount: report.overlongTextCount,
+    providerErrorCount: report.providerErrorCount,
+    averageLatencyMs: report.averageLatencyMs,
+    p50LatencyMs: report.p50LatencyMs,
+    p90LatencyMs: report.p90LatencyMs,
+    p95LatencyMs: report.p95LatencyMs,
+    maxLatencyMs: report.maxLatencyMs,
+    timeoutCount: report.timeoutCount,
+    unsafeResponseCount: report.unsafeResponseCount,
+    unsafeByCategory: report.unsafeByCategory,
+    schemaFailures: report.schemaFailures,
+    safetyFailures: report.safetyFailures,
+    invalidFilterIds: report.invalidFilterIds,
+    fallbackByCode: report.fallbackByCode,
+    fallbackByCategory: report.fallbackByCategory,
+    latencyAssessment: report.latencyAssessment,
+    languageCasesNeedingManualReview: report.languageCasesNeedingManualReview,
+    payloadLoggingDisabled: report.payloadLoggingDisabled,
+    rawImagePersisted: report.rawImagePersisted,
+    rawProviderResponsePersisted: report.rawProviderResponsePersisted,
+    rawPromptPersisted: report.rawPromptPersisted,
+    reportContainsRawUserContent: report.reportContainsRawUserContent,
+    productionReady: report.productionReady
+  });
+}
+
+function responseFromRegressionCase(baseResponse, item) {
+  const response = deepClone(baseResponse);
+  if (item.override) {
+    deepMerge(response, item.override);
+  }
+  for (const path of item.deletePaths ?? []) {
+    deletePath(response, path);
+  }
+  return response;
+}
+
+function deepClone(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function deepMerge(target, patch) {
+  for (const [key, value] of Object.entries(patch)) {
+    if (value && typeof value === "object" && !Array.isArray(value)) {
+      if (!target[key] || typeof target[key] !== "object" || Array.isArray(target[key])) {
+        target[key] = {};
+      }
+      deepMerge(target[key], value);
+    } else {
+      target[key] = value;
+    }
+  }
+  return target;
+}
+
+function deletePath(target, path) {
+  const parts = path.split(".");
+  const last = parts.pop();
+  let node = target;
+  for (const part of parts) {
+    node = node?.[part];
+  }
+  if (node && last) {
+    delete node[last];
+  }
+}
+
+function fallbackCodeForParserError(code) {
+  return code === "provider_invalid_json" || code === "invalid_json"
+    ? "provider_invalid_json"
+    : "provider_error";
+}
+
+function fallbackCodeForValidation(code) {
+  switch (code) {
+  case "unsafe_response":
+    return "unsafe_response";
+  case "provider_invalid_json":
+  case "invalid_json":
+    return "provider_invalid_json";
+  case "timeout":
+  case "provider_timeout":
+    return "provider_timeout";
+  case "provider_error":
+  case "provider_unavailable":
+    return "provider_unavailable";
+  default:
+    return "provider_invalid_schema";
+  }
+}
+
+function validationCategoryForValidation(code, item = {}) {
+  switch (code) {
+  case "unsafe_response":
+    return "unsafe_response";
+  case "provider_invalid_json":
+  case "invalid_json":
+    return "invalid_json";
+  case "unknown_filter_id":
+    return "unsupported_filter";
+  case "invalid_summary":
+    return String(item.id ?? "").includes("overlong") ? "overlong_text" : "invalid_schema";
+  case "invalid_suggestion_text":
+  case "invalid_filter_reason":
+  case "invalid_error_message":
+    return "overlong_text";
+  case "timeout":
+  case "provider_timeout":
+    return "timeout";
+  case "provider_error":
+  case "provider_unavailable":
+    return "provider_error";
+  default:
+    return "invalid_schema";
+  }
 }
 
 function printSanitized(payload) {

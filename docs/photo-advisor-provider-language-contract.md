@@ -240,6 +240,74 @@ Provider contract review should be run together with:
 
 The provider contract is downstream of the app language system, not a replacement for it.
 
+## Phase 18-B2 Provider QA Runner Alignment
+
+Phase 18-B2 aligns the real provider QA runner and sanitized report with this contract.
+
+The runner has two modes:
+
+- `synthetic`: runs the B1 committed regression fixtures without credentials, network, real images, raw prompts, or raw provider responses.
+- `provider`: runs the internal/debug backend route against the configured real provider only when local credentials and internal guard config are explicitly present.
+
+Synthetic mode command:
+
+```sh
+cd backend
+node scripts/run-photo-advisor-provider-qa.mjs --synthetic-contract
+```
+
+Real-provider mode command:
+
+```sh
+cd backend
+node scripts/run-photo-advisor-provider-qa.mjs --image-set=synthetic
+```
+
+Real-provider mode must fail closed when the internal provider config is missing. Missing credentials must not cause normal tests to fail unexpectedly.
+
+### B2 Report Contract
+
+Generated QA reports are ignored under `backend/reports/provider-qa/` and must remain sanitized metadata only.
+
+Allowed report fields include:
+
+- `schemaVersion`
+- `runMode`
+- `providerConfigured`
+- safe provider / model buckets
+- total, success, fallback, validation-failure, invalid-JSON, invalid-schema, unsupported-filter, overlong-text, timeout, unsafe-response, and provider-error counters
+- fallback counts by safe code / category
+- latency buckets and p50 / p90 / p95 / max latency
+- sanitized case IDs
+- safe unsafe diagnostic labels
+- redaction flags: `payloadLoggingDisabled`, `rawImagePersisted`, `rawProviderResponsePersisted`, `rawPromptPersisted`, `reportContainsRawUserContent`
+- `productionReady: false`
+
+Forbidden report and console fields include:
+
+- raw image or base64 image payload
+- raw prompt or full request payload
+- raw provider response or unsafe provider text
+- API key, Authorization header, provider secret, or `.env` contents
+- GPS/location, raw EXIF, face descriptors, or identity/sensitive inference details
+- stack traces from provider responses
+
+### B2 QA Gates
+
+Provider QA must track these counts before any future rollout decision:
+
+- `invalidJsonCount`
+- `invalidSchemaCount`
+- `unsupportedFilterCount`
+- `overlongTextCount`
+- `unsafeResponseCount`
+- `providerErrorCount`
+- `timeoutCount`
+- `fallbackCount`
+- p95 and max latency
+
+Internal QA can use these metrics for review, but `productionReady` must remain `false` in this phase. A production rollout still needs a separate explicit approval phase with cost, abuse, monitoring, privacy, latency, fallback, and App Store-facing UX review.
+
 ## Production Status
 
 Production rollout remains blocked. A future production phase needs explicit approval plus provider QA, privacy review, cost/abuse guards, latency review, fallback review, and App Store-facing UX review.
