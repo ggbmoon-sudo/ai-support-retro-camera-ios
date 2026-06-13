@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 18-B5 - Add Provider QA Gate Summary Helper
-Status: Phase 18-B5 completed and ready to commit
-Latest implementation: Added a lightweight backend provider QA gate summary helper. `backend/src/qa/photoAdvisorQAGate.mjs` maps sanitized Photo Advisor QA report metrics to B4 hard blockers, warnings, status categories, and `eligibleForDebugInternalReview`; `backend/scripts/check-photo-advisor-provider-qa-gate.mjs` reads sanitized report JSON only; `npm run qa:photo-advisor:review` runs the helper. Updated backend tests and docs while leaving app behavior, backend provider request payloads, iOS upload payloads, capture-context upload, Camera cloud entry, cloud availability, provider credential handling, and production rollout unchanged
+Current phase: Phase 18-B6 - Provider QA Operator Runbook + Final Pre-Integration Checklist
+Status: Phase 18-B6 completed and ready to commit
+Latest implementation: Added `docs/photo-advisor-provider-qa-operator-runbook.md` with a concise operator workflow for synthetic QA, dry-run gate, QA gate helper review, optional real-provider QA, stop conditions, artifact rules, skipped-run reporting, and final pre-integration checklist. Updated README, backend README, manual smoke tests, handoff, and phase log while leaving app behavior, backend provider request payloads, iOS upload payloads, capture-context upload, Camera cloud entry, cloud availability, provider credential handling, and production rollout unchanged
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -76,9 +76,54 @@ Next phase: Provider QA threshold review / optional approved-sample QA planning 
 
 ---
 
-## Phase 18-B5 - Add Provider QA Gate Summary Helper
+## Phase 18-B6 - Provider QA Operator Runbook + Final Pre-Integration Checklist
 
 Status: Completed and ready to commit
+Date: 2026-06-14
+
+### Completed
+
+- Added `docs/photo-advisor-provider-qa-operator-runbook.md`.
+- Documented pre-run safety checks for B0-B5 readiness, ignored local credentials, approved ignored samples, ignored reports, raw-artifact bans, and `productionReady=false`.
+- Documented safe command order: synthetic QA, dry-run gate, QA gate summary helper, then optional real-provider QA only with explicit approval.
+- Documented how to review `hardBlockers[]`, `warnings[]`, `statusCategories[]`, and `eligibleForDebugInternalReview`.
+- Added stop-immediately conditions for raw artifact leakage, staged photos/reports, missing ignored credentials/samples, validation bypass, iOS provider key/direct call, Camera cloud entry, unapproved payload changes, and `productionReady=true`.
+- Added the final pre-integration checklist before any future debug/internal remote advisor integration.
+- Updated README, backend README, manual smoke tests, and handoff references.
+
+### Safety Notes
+
+- Documentation-only operator workflow.
+- App behavior is unchanged.
+- Backend provider request payloads are unchanged.
+- iOS upload payloads are unchanged.
+- Capture context is not uploaded.
+- No provider key, direct provider call, Camera cloud AI entry, cloud functionality, GPS/location collection, raw EXIF dump, raw sensor persistence, real-provider QA run, or production rollout was added.
+- `productionReady` remains false.
+
+### Verification
+
+- `git diff --check` passed.
+- Synthetic provider QA mode passed.
+- Dry-run gate passed.
+- Provider QA gate summary helper passed.
+- Photo Advisor copy regression, filter reason coverage, CreativeIntent language, and result-card language scripts passed.
+- Secret scan passed.
+- iOS direct provider scan stayed clean.
+- Camera cloud entry scan stayed clean.
+- Payload unchanged scans stayed clean.
+- Artifact scan confirmed local env, reports, local images, and generated artifacts remain ignored.
+- Backend/iOS tests were not required because runtime source files were not changed.
+
+### Ready to Commit Phase 18-B6
+
+Yes.
+
+---
+
+## Phase 18-B5 - Add Provider QA Gate Summary Helper
+
+Status: Completed and committed as `6c814b1 Phase 18-B5: add provider QA gate summary helper`
 Date: 2026-06-14
 
 ### Completed

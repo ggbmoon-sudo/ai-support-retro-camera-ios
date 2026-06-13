@@ -1,5 +1,23 @@
 # Manual Smoke Tests
 
+## Phase 18-B6
+
+Provider QA operator runbook and pre-integration checklist:
+
+- [ ] Open `docs/photo-advisor-provider-qa-operator-runbook.md`.
+- [ ] Confirm pre-run safety checklist requires B0-B5 contract/gate readiness, ignored local credentials, ignored approved samples, ignored generated reports, and `productionReady=false`.
+- [ ] Run safe synthetic QA first: `cd backend && npm run qa:photo-advisor`.
+- [ ] Run the dry-run gate: `cd backend && npm run qa:photo-advisor:gate`.
+- [ ] Run the gate summary helper: `cd backend && npm run qa:photo-advisor:review`.
+- [ ] Confirm helper output has no `hardBlockers[]` before any debug/internal integration planning.
+- [ ] Confirm warnings are reviewed and documented, not treated as production approval.
+- [ ] Confirm optional real-provider QA is skipped unless explicitly approved for this run with ignored local credentials and approved ignored samples.
+- [ ] If real-provider QA is skipped, report the reason honestly without inventing metrics.
+- [ ] Confirm no raw image/base64, raw prompt, request payload, raw provider response, unsafe provider text, API key, Authorization header, GPS/raw EXIF, stack trace, real sample path, or generated report content appears in console or docs.
+- [ ] Confirm no provider reports, real photos, local QA reports, screenshots, recordings, generated images, or device artifacts are staged/committed.
+- [ ] Confirm the final pre-integration checklist blocks work unless synthetic QA passes, dry-run gate passes, gate helper has no hard blockers, warnings are reviewed, no artifact leakage exists, backend/iOS payloads are unchanged, no iOS provider key/direct call exists, no Camera cloud entry exists, capture context is not uploaded, and `productionReady=false`.
+- [ ] Confirm Phase 18-B6 does not change app/backend runtime behavior, backend provider request payloads, iOS upload payloads, capture-context upload, iOS provider key/direct provider call, Camera cloud entry, or production rollout status.
+
 ## Phase 18-B5
 
 Provider QA gate summary helper:

@@ -276,6 +276,18 @@ The helper reads `backend/reports/provider-qa/photo-advisor-qa-report.json` and 
 
 It does not print raw provider text, raw prompts, raw image/base64, request payloads, secrets, or real sample paths. It is a review helper only; passing it is not production approval.
 
+Phase 18-B6 adds the operator runbook for this workflow:
+
+- read `../docs/photo-advisor-provider-qa-operator-runbook.md` before optional real-provider QA
+- run synthetic QA first with `npm run qa:photo-advisor`
+- run the dry-run gate with `npm run qa:photo-advisor:gate`
+- run the gate summary helper with `npm run qa:photo-advisor:review`
+- run real-provider QA only when explicitly approved for the current run, with ignored local credentials and approved ignored samples
+- stop immediately on any hard blocker, raw artifact leakage, staged real photo/report, iOS provider key/direct call, Camera cloud entry, unapproved payload change, or `productionReady=true`
+- keep generated provider reports, real samples, local reports, screenshots, recordings, and debug exports ignored/untracked
+
+Phase 18-B6 is docs-only. It does not change backend provider request payloads, iOS upload payloads, capture-context upload behavior, provider credential handling, app behavior, Camera UI, cloud availability, or production rollout status.
+
 Phase 17C-R3 local QA used five ignored synthetic JPEGs:
 
 - `warm-rooftop.jpg`

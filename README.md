@@ -78,7 +78,7 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 18-B5 provider QA gate summary helper completed; ready for review
+- Phase 18-B6 provider QA operator runbook completed; ready for review
 
 Next phase:
 
@@ -116,6 +116,7 @@ Current MVP demo / QA readiness docs:
 - `docs/photo-advisor-provider-language-contract.md`
 - `docs/photo-advisor-provider-qa-dry-run-gate.md`
 - `docs/photo-advisor-provider-qa-review-thresholds.md`
+- `docs/photo-advisor-provider-qa-operator-runbook.md`
 - `docs/filter-research-popular-film-looks.md`
 - `docs/filter-preset-schema.md`
 - `docs/filter-roadmap.md`
@@ -205,6 +206,8 @@ Phase 18-B4-pre consolidates long-term Codex project rules into `AGENTS.md` so f
 Phase 18-B4 defines provider QA review thresholds for Photo Advisor in `docs/photo-advisor-provider-qa-review-thresholds.md`. The policy classifies sanitized QA runs as synthetic-contract pass, needs-review, or blocked by safety, schema, filter integrity, language contract, artifact leakage, or provider integration. It records hard blockers, warning thresholds, synthetic-contract acceptance, optional real-provider QA acceptance, and next-phase readiness while keeping `productionReady=false`. This is documentation-only: backend provider request payloads and iOS upload payloads are unchanged, capture context is not uploaded, iOS has no provider key / direct provider call, Camera remains local-only, and production rollout remains blocked.
 
 Phase 18-B5 adds a lightweight backend provider QA gate summary helper. `backend/scripts/check-photo-advisor-provider-qa-gate.mjs` reads only sanitized Photo Advisor QA report JSON and prints `productionReady: false`, `eligibleForDebugInternalReview`, status categories, hard blockers, warnings, and aggregate metrics. `npm run qa:photo-advisor:review` runs the helper after synthetic or optional real-provider QA. It does not print raw provider text, raw prompts, raw image/base64, request payloads, secrets, or real sample paths. Backend provider request payloads and iOS upload payloads are unchanged, capture context is not uploaded, iOS has no provider key / direct provider call, Camera remains local-only, and production rollout remains blocked.
+
+Phase 18-B6 adds a concise provider QA operator runbook and final pre-integration checklist in `docs/photo-advisor-provider-qa-operator-runbook.md`. It tells operators how to run synthetic QA, the dry-run gate, the QA gate summary helper, and optional real-provider QA only with explicit approval, ignored local credentials, and approved ignored samples. It also defines when to stop immediately, what must never be committed, how to report skipped real-provider QA honestly, and the final checklist before any future debug/internal remote advisor integration. This is docs-only: app behavior, backend provider request payloads, iOS upload payloads, capture-context upload, Camera UI, cloud availability, provider credential handling, and production rollout are unchanged.
 
 ## Phase 12A Filter Planning Status
 

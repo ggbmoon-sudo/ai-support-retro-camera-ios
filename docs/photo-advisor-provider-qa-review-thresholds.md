@@ -208,6 +208,16 @@ For synthetic-contract QA, a healthy report should return `eligibleForDebugInter
 
 For real-provider QA, warning thresholds should be reviewed manually before any larger internal run. Hard blockers stop review.
 
+## Operator Runbook
+
+Phase 18-B6 adds the concise operator runbook for applying these thresholds:
+
+```text
+docs/photo-advisor-provider-qa-operator-runbook.md
+```
+
+Use the runbook before any optional real-provider QA or future debug/internal remote advisor integration planning. It defines the safe command sequence, ignored local credential/sample requirements, stop-immediately conditions, never-commit artifacts, skipped-run reporting, and final pre-integration checklist.
+
 ## Reviewer Checklist
 
 For each QA report, reviewers should record:
