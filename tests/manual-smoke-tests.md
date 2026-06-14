@@ -1,5 +1,24 @@
 # Manual Smoke Tests
 
+## Phase 18-C2
+
+Captured / imported / fallback Advisor flow QA pass:
+
+- [ ] App launches normally.
+- [ ] Camera opens and captures normally.
+- [ ] Captured photo opens local/mock Photo Advisor.
+- [ ] Captured Advisor may use safe local capture/image context through localized mood/style wording only.
+- [ ] Imported photo opens local/mock Photo Advisor.
+- [ ] Imported Advisor does not claim capture-time motion, tilt, exposure, device stability, focus, lens, or camera conditions.
+- [ ] Imported limited-context message is calm, short, and only mentions reading light, color, and framing.
+- [ ] Provider-unavailable / fallback state is calm, short, and app-safe.
+- [ ] Fallback copy does not show raw provider errors, raw JSON, debug internals, stack traces, endpoint names, or raw localization keys.
+- [ ] Unknown/missing filter recommendation shows the unavailable note and no unusable apply action.
+- [ ] Fallback filter recommendation stays inside the local filter catalog.
+- [ ] Result card remains mood-first and does not show score/rating, numeric confidence, sensitive inference, harsh fix-it wording, or retake-first advice.
+- [ ] No backend provider request payload change, iOS upload payload change, capture-context upload, iOS provider key/direct call, Camera cloud entry, generated artifact commit, or production rollout is introduced.
+- [ ] Confirm `productionReady=false`.
+
 ## Phase 18-C1
 
 Post-capture Advisor result card beta polish:

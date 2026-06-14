@@ -318,6 +318,15 @@ Phase 18-C1 is iOS local/mock result-card polish only:
 - real-provider QA is not required and must not run unless explicitly approved
 - `productionReady` remains `false`
 
+Phase 18-C2 is an iOS local/mock captured / imported / fallback Advisor QA pass only:
+
+- backend provider request payloads remain unchanged
+- iOS upload payloads remain unchanged
+- capture context is still not uploaded
+- provider credentials and backend provider mode are unchanged
+- real-provider QA is not required and must not run unless explicitly approved
+- `productionReady` remains `false`
+
 Phase 17C-R3 local QA used five ignored synthetic JPEGs:
 
 - `warm-rooftop.jpg`

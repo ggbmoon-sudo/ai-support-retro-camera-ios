@@ -41,10 +41,13 @@ enum PhotoAdvisorResultValidator {
     }
 
     static func fallback(allowedFilterIds: Set<String>) -> PhotoAdvisorResult {
-        let fixture = PhotoAdvisorFixtures.result(for: PhotoAdvisorFixtures.fallbackScene)
-
-        if fixture.recommendedFilters.contains(where: { allowedFilterIds.contains($0.filterId) }) {
-            return fixture
+        let fallbackFilterId: String
+        if allowedFilterIds.contains("soft_warm_400") {
+            fallbackFilterId = "soft_warm_400"
+        } else if allowedFilterIds.contains("original") {
+            fallbackFilterId = "original"
+        } else {
+            fallbackFilterId = allowedFilterIds.sorted().first ?? "original"
         }
 
         return PhotoAdvisorResult(
@@ -66,7 +69,7 @@ enum PhotoAdvisorResultValidator {
             recommendedFilters: [
                 PhotoAdvisorFilterRecommendation(
                     id: "fallback_soft_warm",
-                    filterId: allowedFilterIds.contains("soft_warm_400") ? "soft_warm_400" : "original",
+                    filterId: fallbackFilterId,
                     reasonKey: "photo_advisor.fallback.filter_reason",
                     confidence: .low
                 )

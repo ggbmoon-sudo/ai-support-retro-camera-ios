@@ -517,11 +517,11 @@
 "photo_advisor.action.applied_filter" = "Applied";
 "photo_advisor.action.applied_message" = "Applied the recommended filter to this preview.";
 "photo_advisor.state.analyzing" = "Analyzing this photo...";
-"photo_advisor.state.analyzing_detail" = "Organizing composition and filter suggestions for the mock result.";
-"photo_advisor.state.failed" = "Could not prepare mock advice";
+"photo_advisor.state.analyzing_detail" = "Organizing composition and filter suggestions for this photo.";
+"photo_advisor.state.failed" = "Could not prepare advice";
 "photo_advisor.state.unavailable" = "Advisor unavailable";
-"photo_advisor.error.unavailable" = "Mock advisor is temporarily unavailable. You can still use local suggestions.";
-"photo_advisor.error.invalid_result" = "Mock advisor returned an invalid result, so the app can fall back safely.";
+"photo_advisor.error.unavailable" = "The advisor is temporarily unavailable. You can still use a local suggestion.";
+"photo_advisor.error.invalid_result" = "The advisor needs a local reset. You can still use a calm local suggestion.";
 "photo_advisor.section.strengths" = "Strengths";
 "photo_advisor.section.suggestions" = "Suggestions";
 "photo_advisor.section.filters" = "Recommended filters";
@@ -547,7 +547,7 @@
 "photo_advisor.fallback.summary" = "This photo has a soft retro direction. Start with a gentle warm filter.";
 "photo_advisor.fallback.strength" = "The photo is ready for a simple local filter test.";
 "photo_advisor.fallback.suggestion" = "Try a warm film preset first, then adjust from there.";
-"photo_advisor.fallback.filter_reason" = "Safe fallback filter from the existing catalog.";
+"photo_advisor.fallback.filter_reason" = "A gentle warm film look keeps the photo soft and easy to compare.";
 "photo_advisor.fallback.retake" = "You can keep this photo and compare filters first.";
 "photo_advisor.copy.en.neutral.mood_summary" = "This photo has a warm, relaxed mood.";
 "photo_advisor.copy.en.neutral.composition_advice" = "The composition already works. Crop the edge slightly to make the subject feel more focused.";

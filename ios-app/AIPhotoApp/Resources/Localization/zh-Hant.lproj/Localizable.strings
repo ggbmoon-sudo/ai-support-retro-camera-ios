@@ -517,11 +517,11 @@
 "photo_advisor.action.applied_filter" = "已套用";
 "photo_advisor.action.applied_message" = "已把推薦濾鏡套用到目前預覽。";
 "photo_advisor.state.analyzing" = "正在分析這張相…";
-"photo_advisor.state.analyzing_detail" = "正在整理構圖和濾鏡建議，準備 mock 結果。";
-"photo_advisor.state.failed" = "暫時未能準備 mock 建議";
+"photo_advisor.state.analyzing_detail" = "正在整理構圖和濾鏡建議。";
+"photo_advisor.state.failed" = "暫時未能準備建議";
 "photo_advisor.state.unavailable" = "相片顧問暫時不可用";
-"photo_advisor.error.unavailable" = "Mock 相片顧問暫時未能分析，仍可先用本地建議。";
-"photo_advisor.error.invalid_result" = "Mock 結果格式不完整，app 會安全改用 fallback。";
+"photo_advisor.error.unavailable" = "相片顧問暫時未能分析，仍可先用本機建議。";
+"photo_advisor.error.invalid_result" = "相片顧問需要重新整理，仍可先用溫和的本機建議。";
 "photo_advisor.section.strengths" = "優點";
 "photo_advisor.section.suggestions" = "建議";
 "photo_advisor.section.filters" = "推薦濾鏡";
@@ -547,7 +547,7 @@
 "photo_advisor.fallback.summary" = "這張相有柔和復古方向，可以先試暖色底片濾鏡。";
 "photo_advisor.fallback.strength" = "這張相適合先做一次簡單本機濾鏡測試。";
 "photo_advisor.fallback.suggestion" = "先試一個暖色底片 preset，再慢慢比較。";
-"photo_advisor.fallback.filter_reason" = "從現有濾鏡庫選出的安全 fallback。";
+"photo_advisor.fallback.filter_reason" = "柔和暖色菲林感，適合先保留相片氣氛再比較。";
 "photo_advisor.fallback.retake" = "可以先保留這張，再比較不同濾鏡。";
 "photo_advisor.copy.en.neutral.mood_summary" = "This photo has a warm, relaxed mood.";
 "photo_advisor.copy.en.neutral.composition_advice" = "The composition already works. Crop the edge slightly to make the subject feel more focused.";

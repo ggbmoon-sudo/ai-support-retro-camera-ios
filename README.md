@@ -78,7 +78,7 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 18-C1 post-capture Advisor result card beta polish completed; ready for review
+- Phase 18-C2 captured / imported / fallback Advisor flow QA pass completed; ready for review
 
 Next phase:
 
@@ -217,6 +217,8 @@ Phase 18-B7 performs the final B0-B6 provider QA chain audit in `docs/photo-advi
 Phase 18-C0 adds the post-capture Advisor beta hardening plan in `docs/photo-advisor-beta-hardening-plan.md`. The plan defines captured/imported Advisor flow checks, fallback/provider-unavailable UX checks, local/mock consistency, result-card readability, filter recommendation reason quality, CreativeIntentGuard behavior, crop/straighten/retake restraint, multilingual QA, real-device manual QA, regression scripts, acceptance criteria, and an internal QA scenario matrix. It is planning-only: no app/backend runtime behavior changes, no backend provider request payload changes, no iOS upload payload changes, no capture-context upload, no provider key/direct provider call in iOS, no Camera cloud AI entry, no real-provider QA run, and no production rollout.
 
 Phase 18-C1 polishes the local/mock post-capture Advisor result card for beta readability. The UI-facing card keeps the mood headline first, one visual reason, one filter recommendation with a short reason, and at most two optional advice rows. Crop/straighten advice is prioritized before optional retake, non-retake keep-style copy can appear as a gentle secondary note, and missing filters show a calm unavailable note instead of an unusable apply action. This does not change backend provider request payloads, iOS upload payloads, capture-context upload behavior, provider credential handling, Camera UI cloud entry, production remote AI availability, or `productionReady=false`.
+
+Phase 18-C2 hardens the captured / imported / fallback Advisor QA path. Captured photos may still use safe local capture/image context, imported photos keep limited-context wording and do not claim capture-time motion / tilt / exposure / stability, fallback results are explicitly marked as fallback, fallback/error copy avoids mock/internal-result wording, and fallback filters choose from the allowed local catalog when possible. Backend provider request payloads, iOS upload payloads, capture-context upload behavior, provider credential handling, Camera UI cloud entry, production remote AI availability, and `productionReady=false` are unchanged.
 
 ## Phase 12A Filter Planning Status
 
