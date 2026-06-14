@@ -66,6 +66,14 @@ export function evaluateOpenWeightVlmLocalSmokeGate({
     ));
   }
 
+  if (configSummary.servingStack !== "transformers_fastapi") {
+    hardBlockers.push(blocker(
+      "unsupported_local_serving_stack",
+      "blocked_for_provider_integration",
+      "Phase 20-D1 real-model smoke gate only allows the Transformers FastAPI local adapter path."
+    ));
+  }
+
   if (configSummary.fixtureMode !== "approved_local_only") {
     hardBlockers.push(blocker(
       "non_approved_fixture_mode",
@@ -205,6 +213,8 @@ function sanitizeConfigSummary(summary = {}) {
     modelServerUrlBucket: sanitizeToken(summary.modelServerUrlBucket || "missing"),
     timeoutMs: Number.isFinite(summary.timeoutMs) ? summary.timeoutMs : 0,
     fixtureMode: sanitizeToken(summary.fixtureMode || "unknown"),
+    fixtureIdBucket: sanitizeToken(summary.fixtureIdBucket || "missing"),
+    fixtureConfigured: summary.fixtureConfigured === true,
     allowNetworkCalls: summary.allowNetworkCalls === true,
     payloadLoggingDisabled: summary.payloadLoggingDisabled === true,
     rawPromptLoggingDisabled: summary.rawPromptLoggingDisabled === true,

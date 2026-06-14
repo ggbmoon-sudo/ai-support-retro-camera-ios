@@ -43,6 +43,7 @@ Before any future real-model smoke run:
 - `npm run qa:open-weight-vlm:local-config` still prints sanitized config buckets only.
 - `npm run qa:open-weight-vlm:local-smoke` passes in default no-network mode.
 - `npm run qa:open-weight-vlm:local-smoke-gate` is reviewed and blocks until ignored local config is intentionally prepared.
+- Phase 20-D1 adapter prep is present; read `docs/open-weight-vlm-transformers-fastapi-local-adapter.md`.
 - The operator has explicit approval to prepare a local real-model smoke run.
 
 ## Approved local fixture policy
@@ -66,6 +67,8 @@ The real local config must stay ignored:
 - Do not commit the real local config.
 - Do not commit model server URLs, model registry tokens, provider credentials, API keys, private model paths, or `.env` files.
 - Keep `enabled:false` and `allowNetworkCalls:false` unless an approved local smoke run is being prepared.
+- Use `servingStack:"transformers_fastapi"` for the first approved real-model smoke path.
+- Use a short non-sensitive `fixtureId` token only; do not store raw fixture paths in config.
 - Use loopback or explicitly approved private/internal model hosts only.
 - Do not use public model URLs by default.
 
@@ -108,7 +111,9 @@ The smoke gate checks:
 - `allowNetworkCalls:true` is present only in local ignored config
 - model server URL is sanitized into a bucket and must be loopback/private-approved
 - no public model URL by default
+- serving stack is `transformers_fastapi`
 - `fixtureMode` is `approved_local_only`
+- fixture token is configured without printing the real fixture path or name
 - synthetic benchmark gate has passed
 - local sandbox smoke passes in default no-network mode
 - output redacts URL/path/secret-like values
@@ -191,6 +196,7 @@ Then confirm no staged/untracked artifacts include:
 - `sandbox_disabled`: set `enabled:true` only for an approved local run.
 - `network_opt_in_missing`: set `allowNetworkCalls:true` only for an approved local run.
 - `model_server_missing`: the ignored local config needs a validated local/private model server URL bucket.
+- `unsupported_local_serving_stack`: use the Phase 20-D1 `transformers_fastapi` adapter path for the first local smoke.
 - `synthetic_benchmark_gate_not_passed`: rerun the synthetic benchmark and gate before trying local model work.
 - `local_smoke_default_not_passed`: fix the no-network stub smoke path before any real-model work.
 - `local_smoke_gate_redaction_failed`: stop and inspect only code, not raw reports; do not commit generated output.
@@ -219,6 +225,7 @@ Phase 20-D may start only after explicit approval and only if:
 - local config dry-run is sanitized
 - local sandbox smoke passes in no-network mode
 - local smoke gate has no hard blockers under ignored local config
+- local config uses `servingStack:"transformers_fastapi"`
 - approved local fixtures are present only in ignored folders
 - operator confirms no real/user photos will be committed
 - operator confirms raw prompt/model output/image/path/request payload logging is disabled

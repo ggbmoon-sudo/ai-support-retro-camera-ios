@@ -478,7 +478,7 @@ Future local-model command name:
 npm run qa:open-weight-vlm:local
 ```
 
-In Phase 20-A this command intentionally fails closed with `local_model_adapter_not_implemented` and sends no network request. Phase 20-B keeps the command explicit and fail-closed through the local sandbox smoke client. A later explicit phase must implement and approve any real local/self-hosted model call.
+Phase 20-A/20-B kept this command explicit and fail-closed. Phase 20-D1 prepares the `transformers_fastapi` local adapter path, but the command still fails closed unless ignored local config, approved local fixture policy, local/private URL validation, and structured response validation all pass.
 
 Ignored local paths:
 
@@ -550,7 +550,7 @@ The explicit future local-model command remains:
 npm run qa:open-weight-vlm:local
 ```
 
-In Phase 20-B this command must still fail closed unless an ignored local config exists and a future phase implements and approves local/self-hosted model calls. The default repository path sends no network request and reports sanitized hard blockers such as missing ignored config / disabled sandbox / local client not enabled.
+In default repository state this command still fails closed unless an ignored local config exists, network opt-in is true, the serving stack is `transformers_fastapi`, and a local/private FastAPI server returns valid candidate JSON. The default repository path sends no network request and reports sanitized hard blockers such as missing ignored config / disabled sandbox / unsupported serving stack.
 
 Boundary notes:
 
@@ -609,6 +609,49 @@ Observed safe result:
 - `productionReady:false` and `networkCallsMade:false` remained true for the gate output.
 
 Because the local smoke gate did not pass, `--run-local-model` was not run. No model server was contacted, no raw prompt/model output/image/path/request payload was logged or persisted, and no generated report was created.
+
+## Phase 20-D1 Transformers FastAPI Local Adapter Prep
+
+Phase 20-D1 selects Transformers + FastAPI as the first backend-only real-model smoke path. The adapter is for local correctness/reference testing only and remains disabled by default.
+
+Added / updated components:
+
+- `../docs/open-weight-vlm-transformers-fastapi-local-adapter.md`
+  - documents the local FastAPI server contract, candidate JSON response contract, safe request shape, and redaction rules
+- `config/open-weight-vlm.local.example.json`
+  - remains disabled with `enabled:false` and `allowNetworkCalls:false`
+  - uses `servingStack:"transformers_fastapi"` as the selected first smoke path
+  - includes a non-sensitive `fixtureId` token only
+- `src/qa/openWeightVlmLocalSandboxConfig.mjs`
+  - accepts `transformers_fastapi`
+  - validates `fixtureId`
+  - exposes only `fixtureIdBucket`, never the fixture token/path
+- `src/qa/openWeightVlmLocalSandboxClient.mjs`
+  - keeps default `stub_no_network` behavior
+  - only uses the local FastAPI adapter behind explicit `--run-local-model`
+  - sends a minimal local request with fixture token, model id, and output contract
+  - validates returned candidate JSON through the existing open-weight VLM schema
+  - emits sanitized aggregate smoke results only
+- `src/qa/openWeightVlmLocalSmokeGate.mjs`
+  - treats non-`transformers_fastapi` serving stacks as blocked for this first adapter path
+
+Expected default commands:
+
+```sh
+npm run qa:open-weight-vlm:local-config
+npm run qa:open-weight-vlm:local-smoke
+npm run qa:open-weight-vlm:local-smoke-gate
+```
+
+Default behavior remains no-network unless the operator explicitly prepares ignored local config and runs:
+
+```sh
+npm run qa:open-weight-vlm:local
+```
+
+That explicit command still blocks if the ignored config is absent, disabled, missing `allowNetworkCalls:true`, not using `transformers_fastapi`, using a public/non-local URL, missing approved-local fixture mode, or receiving invalid/unsafe model output.
+
+Phase 20-D1 does not start a FastAPI server, download model weights, run a real model, commit model URLs, commit credentials, commit local fixtures, commit generated reports, add app-facing endpoints, add production endpoints, add iOS integration, change backend provider request payloads, change iOS upload payloads, upload capture context, add Camera cloud AI, train/fine-tune, or enable production rollout. `productionReady:false` remains required.
 
 Phase 18-B5 adds a small gate summary helper for sanitized reports:
 

@@ -16,7 +16,7 @@ const report = await runOpenWeightVlmLocalSandboxSmoke({
 
 printSanitized(report);
 
-if (report.hardBlockers.length > 0 || options.runLocalModel) {
+if (report.hardBlockers.length > 0) {
   process.exit(1);
 }
 

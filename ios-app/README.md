@@ -138,6 +138,8 @@ Phase 19-B is documentation-only and also keeps iOS behavior unchanged. It adds 
 
 Phase 19-C is backend-only and keeps iOS behavior unchanged. It adds a local/synthetic VLM benchmark harness skeleton in `backend/` with enum/key candidate validation, synthetic fixtures, sanitized aggregate reporting, and backend tests. It does not add model server integration, iOS provider/model keys, direct model/provider calls, Camera cloud AI entry points, capture-context upload, iOS upload payload changes, real VLM/provider QA, training/fine-tuning, or production rollout.
 
+Phase 20-D1 is backend-only and keeps iOS behavior unchanged. It prepares a Transformers + FastAPI local adapter path in `backend/` for a future approved local/self-hosted VLM smoke run, but default scripts remain no-network and no real model is run by default. It does not add iOS provider/model keys, direct model/provider calls, Camera cloud AI entry points, capture-context upload, iOS upload payload changes, app-facing endpoints, or production rollout.
+
 ## Phase 17D-A Local Camera Capture Context
 
 Phase 17D-A adds local-only summarized capture context for captured / imported photos:

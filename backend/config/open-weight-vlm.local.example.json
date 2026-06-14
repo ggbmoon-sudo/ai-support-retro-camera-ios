@@ -1,9 +1,10 @@
 {
   "enabled": false,
-  "servingStack": "vllm",
+  "servingStack": "transformers_fastapi",
   "modelId": "qwen2.5-vl-7b-instruct",
   "modelServerUrl": "http://127.0.0.1:8000",
   "timeoutMs": 30000,
   "fixtureMode": "approved_local_only",
-  "allowNetworkCalls": false
+  "allowNetworkCalls": false,
+  "fixtureId": "local_smoke_fixture"
 }

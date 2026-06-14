@@ -95,6 +95,22 @@ Latest Phase 20-D preflight check on 2026-06-14:
 - `productionReady:false` remains required.
 - Next recommended step is not Phase 20-E real-model expansion yet. Either retry Phase 20-D after the operator prepares ignored local config, approved ignored local fixtures, and a safe local/private model server, or explicitly choose a docs-only / fixture-only continuation.
 
+Latest Phase 20-D1 adapter prep check on 2026-06-15:
+
+- Branch: `feat/phase-02-auth`.
+- Use upstream shorthand such as `@{u}`; do not assume `origin/main` exists in this clone.
+- Phase 20-D1 prepares the backend-only Transformers + FastAPI local adapter path for the next approved Phase 20-D retry.
+- Added `docs/open-weight-vlm-transformers-fastapi-local-adapter.md`.
+- The committed example config remains disabled/no-network and now uses `servingStack:"transformers_fastapi"` plus a non-sensitive `fixtureId` token.
+- The sandbox config validator accepts `transformers_fastapi`, validates `fixtureId`, and redacts fixture identity into buckets.
+- The explicit local sandbox smoke command can validate a local FastAPI candidate JSON response through the existing open-weight VLM schema only behind `--run-local-model`.
+- Default scripts remain synthetic/stubbed/no-network.
+- Local smoke gate still fails closed when ignored local config is absent, disabled, not using `transformers_fastapi`, missing network opt-in, missing approved fixture mode, or using unsafe URLs.
+- Backend tests passed with 83/83 via bundled Node during implementation.
+- No real VLM was run, no local FastAPI server was started, no model URL/config/credentials/fixture image/report was committed, no app-facing endpoint or production endpoint was added, and no iOS integration, backend/iOS payload change, capture-context upload, Camera cloud AI, training/fine-tuning, or production rollout was added.
+- `productionReady:false` remains required.
+- Next recommended step is a Phase 20-D retry only after the operator prepares ignored local config, exactly one approved ignored local fixture, and a safe local/private Transformers + FastAPI model server. Do not start Phase 20-E until a real smoke result exists or the user explicitly changes direction.
+
 Confirmed locally:
 
 - Phase 16E - Static Pose Overlay MVP

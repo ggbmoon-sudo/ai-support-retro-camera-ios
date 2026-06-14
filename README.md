@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 20-D First Approved Local Real-model Smoke Run preflight completed; real-model smoke was blocked safely because ignored local config is absent
+- Phase 20-D1 Transformers + FastAPI local adapter prep implemented; default remains no-network/fail-closed
 
 Next phase:
 
-- Retry Phase 20-D only after ignored local config, approved ignored local fixtures, and a safe local/private model server are prepared; otherwise continue only with an explicitly requested docs-only / fixture-only phase
+- Retry Phase 20-D only after ignored local config, approved ignored local fixtures, and a safe local/private Transformers + FastAPI model server are prepared; otherwise continue only with an explicitly requested docs-only / fixture-only phase
 - Do not start production cloud rollout without explicit approval
 - Production rollout remains blocked until a later explicit release phase
 
@@ -122,6 +122,7 @@ Current MVP demo / QA readiness docs:
 - `docs/photo-advisor-beta-hardening-plan.md`
 - `docs/open-weight-vlm-backend-architecture-adr.md`
 - `docs/open-weight-vlm-structured-advisor-benchmark-plan.md`
+- `docs/open-weight-vlm-transformers-fastapi-local-adapter.md`
 - `docs/filter-research-popular-film-looks.md`
 - `docs/filter-preset-schema.md`
 - `docs/filter-roadmap.md`
@@ -245,6 +246,8 @@ Phase 20-B adds a backend-only local VLM sandbox client smoke path. It introduce
 Phase 20-C adds `docs/open-weight-vlm-local-operator-runbook.md` and a backend-only local smoke gate helper for future approved local real-model smoke runs. `npm run qa:open-weight-vlm:local-smoke-gate` checks ignored local config, synthetic benchmark gate status, default no-network smoke status, approved fixture mode, URL/config buckets, redaction flags, and `productionReady:false` without calling a model. The gate fails closed until an ignored local config is explicitly prepared for a later approved Phase 20-D run. No app-facing endpoint, real model call, model server implementation, provider/model credential, iOS integration, backend provider request payload change, iOS upload payload change, capture-context upload, Camera cloud AI entry, real photo, generated report, training/fine-tuning, or production rollout is added.
 
 Phase 20-D ran the first local real-model smoke preflight and stopped safely before any model call. The branch was clean and upstream-synced, backend tests passed, the synthetic benchmark and benchmark gate passed, the local config dry-run passed against the example config, and the default local sandbox smoke passed in no-network mode. The ignored real local config path `backend/config/open-weight-vlm.local.json` is ignored by git but absent on disk, untracked, and unstaged, so the local smoke gate failed closed with sanitized blockers and `networkCallsMade:false`. No real VLM/provider call, app-facing endpoint, model server implementation, provider/model credential, iOS integration, backend provider request payload change, iOS upload payload change, capture-context upload, Camera cloud AI entry, real photo, generated report, training/fine-tuning, or production rollout is added.
+
+Phase 20-D1 prepares the backend-only Transformers + FastAPI local adapter path for a future approved local VLM smoke run. It adds `docs/open-weight-vlm-transformers-fastapi-local-adapter.md`, updates the local sandbox config to recognize `servingStack:"transformers_fastapi"` and a safe fixture token bucket, and lets the explicit local smoke command validate a local FastAPI candidate JSON response through the existing open-weight VLM schema. Default scripts remain no-network/stubbed; no real VLM is run, no model server URL/config is committed, no raw image/path/base64/prompt/model output is logged, and no app-facing endpoint, iOS integration, backend/iOS payload change, capture-context upload, Camera cloud AI, training/fine-tuning, or production rollout is added. `productionReady` remains `false`.
 
 ## Phase 12A Filter Planning Status
 

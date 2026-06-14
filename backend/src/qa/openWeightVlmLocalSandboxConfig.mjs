@@ -11,10 +11,11 @@ const ALLOWED_CONFIG_KEYS = new Set([
   "modelServerUrl",
   "timeoutMs",
   "fixtureMode",
-  "allowNetworkCalls"
+  "allowNetworkCalls",
+  "fixtureId"
 ]);
 
-const ALLOWED_SERVING_STACKS = new Set(["vllm", "sglang", "transformers", "ollama"]);
+const ALLOWED_SERVING_STACKS = new Set(["vllm", "sglang", "transformers", "transformers_fastapi", "ollama"]);
 const ALLOWED_MODEL_IDS = new Set([
   "qwen2.5-vl-7b-instruct",
   "qwen3-vl-8b-instruct",
@@ -31,7 +32,8 @@ const DEFAULT_CONFIG = Object.freeze({
   modelServerUrl: "",
   timeoutMs: 30000,
   fixtureMode: "approved_local_only",
-  allowNetworkCalls: false
+  allowNetworkCalls: false,
+  fixtureId: "local_smoke_fixture"
 });
 
 export async function loadOpenWeightVlmLocalSandboxConfig(configPath, options = {}) {
@@ -137,6 +139,13 @@ export function validateOpenWeightVlmLocalSandboxConfig(input, options = {}) {
     });
   }
 
+  if (typeof config.fixtureId !== "string" || !/^[a-z0-9][a-z0-9_-]{0,63}$/u.test(config.fixtureId)) {
+    return invalidConfig("invalid_fixture_id", "fixtureId must be a short non-sensitive fixture token.", {
+      ...options,
+      field: "fixtureId"
+    });
+  }
+
   const urlCheck = validateModelServerUrl(config.modelServerUrl, {
     requireConcreteUrl: config.enabled || config.allowNetworkCalls
   });
@@ -149,6 +158,16 @@ export function validateOpenWeightVlmLocalSandboxConfig(input, options = {}) {
 
   return {
     ok: true,
+    runtimeValue: {
+      enabled: config.enabled,
+      servingStack: config.servingStack,
+      modelId: config.modelId,
+      modelServerUrl: config.modelServerUrl.trim(),
+      timeoutMs: config.timeoutMs,
+      fixtureMode: config.fixtureMode,
+      allowNetworkCalls: config.allowNetworkCalls,
+      fixtureId: config.fixtureId
+    },
     value: summarizeLocalSandboxConfig(config, {
       ...options,
       modelServerUrlBucket: urlCheck.bucket,
@@ -258,11 +277,13 @@ export function evaluateOpenWeightVlmLocalSandboxGate(summary = {}, options = {}
     ));
   }
 
-  hardBlockers.push(blocker(
-    "local_model_adapter_not_implemented",
-    "blocked_for_provider_integration",
-    "Phase 20-A does not implement model calls. No network request was sent."
-  ));
+  if (summary.servingStack !== "transformers_fastapi") {
+    hardBlockers.push(blocker(
+      "unsupported_local_serving_stack",
+      "blocked_for_provider_integration",
+      "Phase 20-D1 only prepares the Transformers FastAPI local adapter path."
+    ));
+  }
 
   return {
     schemaVersion: OPEN_WEIGHT_VLM_LOCAL_SANDBOX_CHECK_SCHEMA_VERSION,
@@ -294,6 +315,8 @@ function summarizeLocalSandboxConfig(config, options = {}) {
     modelServerUrlBucket: options.modelServerUrlBucket || "missing",
     timeoutMs: config.timeoutMs,
     fixtureMode: config.fixtureMode,
+    fixtureIdBucket: config.fixtureId ? "configured" : "missing",
+    fixtureConfigured: Boolean(config.fixtureId),
     allowNetworkCalls: config.allowNetworkCalls === true,
     payloadLoggingDisabled: true,
     rawPromptLoggingDisabled: true,
@@ -412,6 +435,8 @@ function sanitizeSummary(summary = {}) {
     modelServerUrlBucket: sanitizeToken(summary.modelServerUrlBucket || "unknown"),
     timeoutMs: Number.isFinite(summary.timeoutMs) ? summary.timeoutMs : 0,
     fixtureMode: sanitizeToken(summary.fixtureMode || "unknown"),
+    fixtureIdBucket: sanitizeToken(summary.fixtureIdBucket || "missing"),
+    fixtureConfigured: summary.fixtureConfigured === true,
     allowNetworkCalls: summary.allowNetworkCalls === true,
     payloadLoggingDisabled: summary.payloadLoggingDisabled === true,
     rawPromptLoggingDisabled: summary.rawPromptLoggingDisabled === true,

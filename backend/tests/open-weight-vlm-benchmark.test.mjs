@@ -246,6 +246,8 @@ test("open-weight VLM local sandbox config dry-run prints sanitized disabled sum
   assert.equal(gate.reviewedConfig.configEnabled, false);
   assert.equal(gate.reviewedConfig.allowNetworkCalls, false);
   assert.equal(gate.reviewedConfig.modelServerUrlBucket, "local_loopback_ip");
+  assert.equal(gate.reviewedConfig.servingStack, "transformers_fastapi");
+  assert.equal(gate.reviewedConfig.fixtureIdBucket, "configured");
   assert.equal(output.includes("http://127.0.0.1:8000"), false);
   assert.equal(output.includes("modelOutput"), false);
   assert.equal(output.includes("fullPrompt"), false);
@@ -303,7 +305,7 @@ test("open-weight VLM local sandbox gate fails closed without explicit network o
   assert.equal(JSON.stringify(gate).includes("http://localhost:8000"), false);
 });
 
-test("open-weight VLM future local model command fails closed without model call", () => {
+test("open-weight VLM future local model config gate blocks unsupported serving stacks", () => {
   const result = spawnSync(process.execPath, [LOCAL_SANDBOX_CONFIG_SCRIPT_URL.pathname, "--run-local-model"], {
     cwd: new URL("..", import.meta.url),
     encoding: "utf8"
@@ -316,7 +318,7 @@ test("open-weight VLM future local model command fails closed without model call
   assert.equal(gate.runMode, "run_local_model");
   assert.equal(gate.networkCallsMade, false);
   assert.equal(gate.eligibleForFutureLocalModelRun, false);
-  assert.equal(blockerCodes.has("local_model_adapter_not_implemented"), true);
+  assert.equal(blockerCodes.has("sandbox_disabled"), true);
   assert.equal(result.stdout.includes("http://127.0.0.1:8000"), false);
   assert.equal(result.stdout.includes("modelOutput"), false);
   assert.equal(result.stdout.includes("Authorization"), false);
@@ -363,7 +365,7 @@ test("open-weight VLM local sandbox smoke client fails closed when config is mis
   assert.equal(report.eligibleForLocalSandboxSmoke, false);
   assert.equal(report.eligibleForFutureLocalModelRun, false);
   assert.equal(blockerCodes.has("config_missing"), true);
-  assert.equal(blockerCodes.has("local_model_client_not_enabled"), true);
+  assert.equal(blockerCodes.has("unsupported_local_serving_stack"), true);
   assert.equal(result.stdout.includes("open-weight-vlm.local.json"), false);
   assert.equal(result.stdout.includes("http://127.0.0.1:8000"), false);
   assert.equal(result.stdout.includes("modelOutput"), false);
@@ -392,7 +394,6 @@ test("open-weight VLM local sandbox smoke client fails closed for disabled confi
   assert.equal(report.reviewedConfig.configEnabled, false);
   assert.equal(blockerCodes.has("sandbox_disabled"), true);
   assert.equal(blockerCodes.has("network_opt_in_missing"), true);
-  assert.equal(blockerCodes.has("local_model_client_not_enabled"), true);
   assert.equal(JSON.stringify(report).includes("http://localhost:8000"), false);
 });
 
@@ -419,7 +420,6 @@ test("open-weight VLM local sandbox smoke client fails closed when network opt-i
   assert.equal(report.reviewedConfig.configEnabled, true);
   assert.equal(report.reviewedConfig.allowNetworkCalls, false);
   assert.equal(blockerCodes.has("network_opt_in_missing"), true);
-  assert.equal(blockerCodes.has("local_model_client_not_enabled"), true);
   assert.equal(JSON.stringify(report).includes("http://127.0.0.1:8000"), false);
 });
 
@@ -444,7 +444,6 @@ test("open-weight VLM local sandbox smoke client rejects public URL without leak
   assert.equal(report.productionReady, false);
   assert.equal(report.networkCallsMade, false);
   assert.equal(blockerCodes.has("unsafe_model_server_url"), true);
-  assert.equal(blockerCodes.has("local_model_client_not_enabled"), true);
   assert.equal(serialized.includes("token@example"), false);
   assert.equal(serialized.includes("https://example.com/v1"), false);
   assert.equal(serialized.includes("debug=true"), false);
@@ -562,7 +561,7 @@ test("open-weight VLM local smoke gate blocks non-approved fixture mode", async 
 test("open-weight VLM local smoke gate can pass for safe ignored local config prerequisites", async () => {
   const configPath = await writeTempSandboxConfig({
     enabled: true,
-    servingStack: "vllm",
+    servingStack: "transformers_fastapi",
     modelId: "qwen2.5-vl-7b-instruct",
     modelServerUrl: "http://127.0.0.1:8000",
     timeoutMs: 30000,
@@ -585,6 +584,122 @@ test("open-weight VLM local smoke gate can pass for safe ignored local config pr
   assert.equal(serialized.includes(configPath), false);
   assert.equal(serialized.includes("modelOutput"), false);
   assert.equal(serialized.includes("base64"), false);
+});
+
+test("open-weight VLM local sandbox smoke rejects non FastAPI serving stacks without network", async () => {
+  const configPath = await writeTempSandboxConfig({
+    enabled: true,
+    servingStack: "vllm",
+    modelId: "qwen2.5-vl-7b-instruct",
+    modelServerUrl: "http://127.0.0.1:8000",
+    timeoutMs: 30000,
+    fixtureMode: "approved_local_only",
+    allowNetworkCalls: true,
+    fixtureId: "fixture_one"
+  });
+  const report = await runOpenWeightVlmLocalSandboxSmoke({
+    configPath,
+    requireConfig: true,
+    runLocalModel: true
+  });
+  const blockerCodes = new Set(report.hardBlockers.map((item) => item.code));
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.eligibleForFutureLocalModelRun, false);
+  assert.equal(blockerCodes.has("unsupported_local_serving_stack"), true);
+  assert.equal(JSON.stringify(report).includes("http://127.0.0.1:8000"), false);
+});
+
+test("open-weight VLM local sandbox smoke validates Transformers FastAPI candidate output", async () => {
+  const received = [];
+  const configPath = await writeTempSandboxConfig({
+    enabled: true,
+    servingStack: "transformers_fastapi",
+    modelId: "qwen2.5-vl-7b-instruct",
+    modelServerUrl: "http://127.0.0.1:8000",
+    timeoutMs: 30000,
+    fixtureMode: "approved_local_only",
+    allowNetworkCalls: true,
+    fixtureId: "fixture_one"
+  });
+  const report = await runOpenWeightVlmLocalSandboxSmoke({
+    configPath,
+    requireConfig: true,
+    runLocalModel: true,
+    fetchImpl: async (_url, request) => {
+      received.push(JSON.parse(request.body));
+      return jsonResponse(validFixture("valid_bright_daylight", await benchmarkCases()).modelOutput);
+    }
+  });
+  const serialized = JSON.stringify(report);
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.networkCallsMade, true);
+  assert.equal(report.localModelSmoke.acceptedCount, 1);
+  assert.equal(report.localModelSmoke.rejectedCount, 0);
+  assert.equal(report.hardBlockers.length, 0);
+  assert.equal(received.length, 1);
+  assert.equal(received[0].fixtureId, "fixture_one");
+  assert.equal(received[0].outputContract, OPEN_WEIGHT_VLM_PHOTO_ADVISOR_SCHEMA_VERSION);
+  assert.equal(serialized.includes("http://127.0.0.1:8000"), false);
+  assert.equal(serialized.includes(configPath), false);
+  assert.equal(serialized.includes("modelOutput"), false);
+  assert.equal(serialized.includes("fixture_one"), false);
+  assert.equal(serialized.includes("base64"), false);
+});
+
+test("open-weight VLM local sandbox smoke rejects invalid FastAPI candidate output", async () => {
+  const invalidCandidate = {
+    schemaVersion: OPEN_WEIGHT_VLM_PHOTO_ADVISOR_SCHEMA_VERSION,
+    sourceType: "imported",
+    allowedContext: "imageOnly",
+    moodKey: "mood.low_light_night",
+    visualObservationKey: "observation.motion_blur",
+    creativeIntent: {
+      classification: "style_positive",
+      preserveSignals: ["motion"]
+    },
+    technicalRisk: {
+      level: "none",
+      reasonKey: null
+    },
+    filterFamilyCandidate: "night_grain",
+    optionalActionKey: "action.keep_style",
+    retakeAllowed: false,
+    retakeReasonKey: null,
+    safety: {
+      sensitiveInferenceDetected: false,
+      forbiddenInferenceTypes: [],
+      scoreOrRatingDetected: false,
+      chainOfThoughtDetected: false,
+      debugLeakageDetected: false
+    }
+  };
+  const configPath = await writeTempSandboxConfig({
+    enabled: true,
+    servingStack: "transformers_fastapi",
+    modelId: "qwen2.5-vl-7b-instruct",
+    modelServerUrl: "http://127.0.0.1:8000",
+    timeoutMs: 30000,
+    fixtureMode: "approved_local_only",
+    allowNetworkCalls: true,
+    fixtureId: "fixture_one"
+  });
+  const report = await runOpenWeightVlmLocalSandboxSmoke({
+    configPath,
+    requireConfig: true,
+    runLocalModel: true,
+    fetchImpl: async () => jsonResponse({ candidate: invalidCandidate })
+  });
+  const blockerCodes = new Set(report.hardBlockers.map((item) => item.code));
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.networkCallsMade, true);
+  assert.equal(report.localModelSmoke.acceptedCount, 0);
+  assert.equal(report.localModelSmoke.validationCode, "source_context_overclaim");
+  assert.equal(blockerCodes.has("source_context_overclaim"), true);
+  assert.equal(JSON.stringify(report).includes("http://127.0.0.1:8000"), false);
 });
 
 async function benchmarkCases() {
@@ -625,4 +740,11 @@ async function localSmokeGateForConfig(configPath) {
     syntheticBenchmarkGate,
     localSmokeReport
   });
+}
+
+function jsonResponse(value) {
+  return {
+    ok: true,
+    json: async () => value
+  };
 }

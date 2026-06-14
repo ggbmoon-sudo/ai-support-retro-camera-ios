@@ -1,5 +1,26 @@
 # Manual Smoke Tests
 
+## Phase 20-D1
+
+Backend-only Transformers + FastAPI local adapter prep:
+
+- [ ] Open `docs/open-weight-vlm-transformers-fastapi-local-adapter.md`.
+- [ ] Confirm the selected first local serving path is `transformers_fastapi`.
+- [ ] Confirm the committed example config has `enabled:false` and `allowNetworkCalls:false`.
+- [ ] Confirm the real local config path remains ignored and untracked.
+- [ ] Run backend tests.
+- [ ] Run synthetic benchmark and benchmark gate.
+- [ ] Run local sandbox config dry-run.
+- [ ] Run local sandbox smoke in default no-network mode and confirm `runMode:stub_no_network`.
+- [ ] Run local smoke gate and confirm it fails closed unless ignored local config is prepared.
+- [ ] Confirm non-`transformers_fastapi` serving stacks are blocked for the first adapter path.
+- [ ] Confirm adapter tests use injected fetch / stubs and do not require a real model server.
+- [ ] Confirm local FastAPI response is candidate JSON only and is validated by `openWeightVlmPhotoAdvisorSchema`.
+- [ ] Confirm invalid/unsafe FastAPI candidate output is rejected with sanitized categories.
+- [ ] Confirm output does not print raw prompt, raw model output, raw image/base64/path, request payload, full model server URL, credentials, tokens, GPS/raw EXIF, or generated raw reports.
+- [ ] Confirm no app-facing endpoint, production endpoint, iOS integration, backend provider request payload change, iOS upload payload change, capture-context upload, Camera cloud AI entry, real photo, local fixture image, generated report, training/fine-tuning, or production rollout is introduced.
+- [ ] Confirm `productionReady=false`.
+
 ## Phase 20-D
 
 Backend-only first approved local real-model smoke preflight:

@@ -5,7 +5,8 @@ import {
   assertOpenWeightVlmBenchmarkReportRedacted,
   evaluateOpenWeightVlmBenchmarkCase,
   OPEN_WEIGHT_VLM_PHOTO_ADVISOR_SCHEMA_VERSION,
-  summarizeOpenWeightVlmBenchmark
+  summarizeOpenWeightVlmBenchmark,
+  validateOpenWeightVlmPhotoAdvisorCandidate
 } from "./openWeightVlmPhotoAdvisorSchema.mjs";
 import {
   evaluateOpenWeightVlmLocalSandboxGate,
@@ -21,6 +22,7 @@ export async function runOpenWeightVlmLocalSandboxSmoke(options = {}) {
     requireConfig: runLocalModel || options.requireConfig === true
   });
   const configSummary = loaded.value;
+  const runtimeConfig = loaded.runtimeValue;
   const configGate = evaluateOpenWeightVlmLocalSandboxGate(configSummary, {
     runLocalModel
   });
@@ -40,12 +42,25 @@ export async function runOpenWeightVlmLocalSandboxSmoke(options = {}) {
     ));
   }
 
-  if (runLocalModel) {
+  let localModelSmoke = null;
+  if (runLocalModel && hardBlockers.length === 0 && runtimeConfig?.servingStack === "transformers_fastapi") {
+    localModelSmoke = await runTransformersFastApiSmoke(runtimeConfig, {
+      fetchImpl: options.fetchImpl
+    });
+    if (localModelSmoke.acceptedCount !== 1) {
+      hardBlockers.push(blocker(
+        localModelSmoke.validationCode || localModelSmoke.errorCode || "local_model_smoke_rejected",
+        "local_client",
+        localModelSmoke.fallbackCategory || "blocked_for_schema",
+        "Local Transformers FastAPI smoke output was rejected by the structured candidate validator."
+      ));
+    }
+  } else if (runLocalModel && hardBlockers.length === 0) {
     hardBlockers.push(blocker(
-      "local_model_client_not_enabled",
+      "unsupported_local_serving_stack",
       "local_client",
       "blocked_for_provider_integration",
-      "Phase 20-B smoke path does not send model-server requests. No network call was made."
+      "Phase 20-D1 only prepares the Transformers FastAPI local adapter path."
     ));
   }
 
@@ -56,7 +71,7 @@ export async function runOpenWeightVlmLocalSandboxSmoke(options = {}) {
     productionReady: false,
     providerConfigured: false,
     modelServerConfigured: configSummary.modelServerConfigured === true,
-    networkCallsMade: false,
+    networkCallsMade: Boolean(localModelSmoke?.networkCallsMade),
     eligibleForLocalSandboxSmoke: !runLocalModel && uniqueHardBlockers.length === 0,
     eligibleForFutureLocalModelRun: runLocalModel
       ? false
@@ -111,7 +126,26 @@ export async function runOpenWeightVlmLocalSandboxSmoke(options = {}) {
       rawImagePersisted: false,
       rawImagePathPersisted: false,
       requestPayloadPersisted: false
-    }
+    },
+    localModelSmoke: localModelSmoke
+      ? {
+        runMode: localModelSmoke.runMode,
+        servingStack: localModelSmoke.servingStack,
+        modelId: localModelSmoke.modelId,
+        fixtureCount: localModelSmoke.fixtureCount,
+        acceptedCount: localModelSmoke.acceptedCount,
+        rejectedCount: localModelSmoke.rejectedCount,
+        validationCode: localModelSmoke.validationCode,
+        fallbackCategory: localModelSmoke.fallbackCategory,
+        latencyBucket: localModelSmoke.latencyBucket,
+        networkCallsMade: localModelSmoke.networkCallsMade === true,
+        rawPromptPersisted: false,
+        rawModelResponsePersisted: false,
+        rawImagePersisted: false,
+        rawImagePathPersisted: false,
+        requestPayloadPersisted: false
+      }
+      : null
   };
 
   const redaction = assertOpenWeightVlmLocalSandboxSmokeReportRedacted(report);
@@ -127,6 +161,91 @@ export async function runOpenWeightVlmLocalSandboxSmoke(options = {}) {
   }
 
   return report;
+}
+
+async function runTransformersFastApiSmoke(config, options = {}) {
+  const startedAt = Date.now();
+  const timeoutMs = config.timeoutMs;
+  const fetchImpl = options.fetchImpl || fetch;
+  const requestBody = {
+    schemaVersion: "open_weight_vlm_local_fastapi_request.v1",
+    fixtureId: config.fixtureId,
+    modelId: config.modelId,
+    outputContract: OPEN_WEIGHT_VLM_PHOTO_ADVISOR_SCHEMA_VERSION
+  };
+
+  let response;
+  try {
+    response = await fetchImpl(config.modelServerUrl, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        accept: "application/json"
+      },
+      body: JSON.stringify(requestBody),
+      signal: AbortSignal.timeout(timeoutMs)
+    });
+  } catch {
+    return localSmokeResult({
+      accepted: false,
+      errorCode: "local_model_unavailable",
+      fallbackCategory: "blocked_for_provider_integration",
+      latencyMs: Date.now() - startedAt
+    });
+  }
+
+  if (!response.ok) {
+    return localSmokeResult({
+      accepted: false,
+      errorCode: "local_model_unavailable",
+      fallbackCategory: "blocked_for_provider_integration",
+      latencyMs: Date.now() - startedAt
+    });
+  }
+
+  let parsed;
+  try {
+    parsed = await response.json();
+  } catch {
+    return localSmokeResult({
+      accepted: false,
+      errorCode: "invalid_json",
+      fallbackCategory: "invalid_json",
+      latencyMs: Date.now() - startedAt
+    });
+  }
+
+  const candidate = isPlainObject(parsed) && "candidate" in parsed ? parsed.candidate : parsed;
+  const validation = validateOpenWeightVlmPhotoAdvisorCandidate(candidate);
+  return localSmokeResult({
+    accepted: validation.ok,
+    errorCode: validation.ok ? null : validation.error.code,
+    fallbackCategory: validation.ok ? null : validation.error.fallbackCategory,
+    validationCode: validation.ok ? null : validation.error.code,
+    latencyMs: Date.now() - startedAt
+  });
+
+  function localSmokeResult({
+    accepted,
+    errorCode = null,
+    fallbackCategory = null,
+    validationCode = null,
+    latencyMs = 0
+  }) {
+    return {
+      runMode: "local_model_smoke",
+      servingStack: "transformers_fastapi",
+      modelId: config.modelId,
+      fixtureCount: 1,
+      acceptedCount: accepted ? 1 : 0,
+      rejectedCount: accepted ? 0 : 1,
+      errorCode,
+      validationCode,
+      fallbackCategory,
+      latencyBucket: latencyBucket(latencyMs),
+      networkCallsMade: true
+    };
+  }
 }
 
 export function assertOpenWeightVlmLocalSandboxSmokeReportRedacted(report = {}) {
@@ -269,6 +388,8 @@ function sanitizeConfig(value = {}) {
     modelServerUrlBucket: sanitizeToken(value.modelServerUrlBucket || "unknown"),
     timeoutMs: Number.isFinite(value.timeoutMs) ? value.timeoutMs : 0,
     fixtureMode: sanitizeToken(value.fixtureMode || "unknown"),
+    fixtureIdBucket: sanitizeToken(value.fixtureIdBucket || "missing"),
+    fixtureConfigured: value.fixtureConfigured === true,
     allowNetworkCalls: value.allowNetworkCalls === true,
     payloadLoggingDisabled: value.payloadLoggingDisabled === true,
     rawPromptLoggingDisabled: value.rawPromptLoggingDisabled === true,
@@ -282,6 +403,26 @@ function sanitizeConfig(value = {}) {
   };
 }
 
+function latencyBucket(latencyMs) {
+  if (!Number.isFinite(latencyMs)) {
+    return "unknown";
+  }
+  if (latencyMs < 1000) {
+    return "lt_1s";
+  }
+  if (latencyMs < 5000) {
+    return "1s_to_5s";
+  }
+  if (latencyMs < 15000) {
+    return "5s_to_15s";
+  }
+  return "gt_15s";
+}
+
 function sanitizeToken(value) {
   return String(value ?? "unknown").replace(/[^a-zA-Z0-9._:-]/g, "_").slice(0, 80) || "unknown";
+}
+
+function isPlainObject(value) {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
 }
