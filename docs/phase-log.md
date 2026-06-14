@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 20-B - Backend-only Local VLM Sandbox Client Smoke Path
-Status: Phase 20-B completed and ready to commit
-Latest implementation: Added a backend-only local/self-hosted VLM sandbox client smoke path with a stub/no-network client module, smoke script, package command, tests, and docs. The default smoke path validates one safe stubbed candidate through the existing open-weight VLM schema and benchmark gate, prints sanitized aggregate output only, and keeps `networkCallsMade:false`. The explicit future local-model command remains opt-in and fail-closed unless ignored local config, approved local fixtures, synthetic gate success, and a later phase approve real local/self-hosted model calls. No app-facing endpoint, model server implementation, active model server URL runtime config, provider/model credential, real VLM/provider QA, image upload, iOS integration, backend provider request payload change, iOS upload payload change, capture-context upload, Camera cloud entry, model download, training/fine-tuning, generated report commit, or production rollout was added.
+Current phase: Future Phase Roadmap vs Existing Markdown Planning Gap Audit
+Status: Docs-only roadmap gap audit completed and ready to commit
+Latest implementation: Added `docs/future-phase-roadmap-gap-audit.md` to compare the proposed Phase 20-B through Phase 27+ open-weight/self-hosted VLM roadmap against existing Markdown planning. The audit identifies missing older-planned features, newly proposed phases not yet documented elsewhere, completed capabilities still listed as future, outdated provider-first assumptions, safety/privacy boundaries to preserve, and a revised roadmap. Phase 20-B is already present in the repo history according to current upstream status checks. Recommended next phase remains `Phase 20-C: Local VLM operator runbook + real-model smoke gate`. No app/backend runtime behavior, iOS source, backend provider request payload, iOS upload payload, capture-context upload, Camera cloud entry, model server code, model URL config, provider/model credential, real VLM/provider run, training/fine-tuning, generated artifact, or production rollout was added.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -73,6 +73,50 @@ Phase 17C-R3 verification: generated five ignored synthetic local QA images and 
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
 Next phase: Future real-model sandbox work may start only if explicitly requested and must stay backend-only/local-self-hosted, ignored-config-only, approved-fixture-only, and explicit-operator-opt-in unless a later prompt explicitly approves broader integration. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, real-provider/VLM QA, save-to-Photos, app integration, public endpoint, model downloads, model cache changes, or user-photo training / fine-tuning until explicitly requested.
+
+---
+
+## Future Phase Roadmap vs Existing Markdown Planning Gap Audit
+
+Status: Completed and ready to commit
+Date: 2026-06-14
+
+### Completed
+
+- Added `docs/future-phase-roadmap-gap-audit.md`.
+- Compared the proposed Phase 20-B through Phase 27+ roadmap against current Markdown planning for Photo Advisor, AI Snapshot, AI Filter Generator, Inspiration AI, live guidance, open-weight VLM, local/on-device AI, fine-tuning, privacy, StoreKit/quota, history, and production rollout.
+- Identified missing roadmap items: production Firebase/history, StoreKit/quota, account deletion/privacy release gates, History intelligence, paid AI image editing / 改圖師, encrypted transfer/export, LiDAR/Core ML specifics, advanced retro effects, and app-wide Hong Kong / 麻煩友 language-mode follow-through.
+- Identified outdated assumptions: older Gemini/OpenAI provider-first MVP docs, older Gemini Live phase ordering, old Camera snapshot cloud concepts, and old caption/social-copy ideas that conflict with current guardrails.
+- Produced a revised roadmap that keeps Phase 20-C as the immediate next phase and delays Camera cloud AI, live/voice AI, AI Filter Generator real backend, image editing, LoRA/QLoRA, and on-device model work until their own gated phases.
+
+### Safety Notes
+
+- Documentation-only audit.
+- No iOS source/project/localization files changed.
+- No backend runtime code changed.
+- No backend provider request payload changed.
+- No iOS upload payload changed.
+- No capture-context upload added.
+- No provider/model key, direct provider/model call, model server code, model server URL config, Camera cloud entry, real photos, generated reports, real VLM/provider calls, training, fine-tuning, or production rollout added.
+- `productionReady` remains `false`.
+
+### Verification
+
+- [x] `git diff --check` passed.
+- [x] New audit doc trailing-whitespace check passed.
+- [x] Existing phase-log trailing-whitespace scan found only pre-existing old entries outside this audit section.
+- [x] Secret scan found no key-like secret values.
+- [x] Provider/model key scan on changed docs found policy/boundary mentions only; no credentials were added.
+- [x] iOS direct provider/model scan passed because no iOS files changed.
+- [x] Camera cloud entry scan passed because no Camera files changed and no Camera cloud entry was added.
+- [x] Backend/iOS payload unchanged scan passed because no backend runtime, backend script, backend config, functions, or iOS files changed.
+- [x] Artifact scan found no real photos, generated reports, screenshots, recordings, model outputs, local samples, or generated images in the changed/untracked set.
+- [x] Xcode build not required because no iOS source/project/localization files changed.
+- [x] Backend tests not required because no backend source/package files changed.
+
+### Ready to Commit
+
+Yes, after final verification passes.
 
 ---
 
