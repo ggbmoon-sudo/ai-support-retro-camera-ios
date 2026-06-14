@@ -440,6 +440,71 @@ Runtime safety requirements for a future real-model sandbox:
 
 Phase 19-F itself does not add model server code, model server URL config, provider/model credentials, image upload, network calls, local samples, generated reports, backend provider request payload changes, iOS upload payload changes, capture-context upload, or production rollout.
 
+## Phase 20-A Local Self-hosted VLM Sandbox Setup
+
+Phase 20-A adds a backend-only local/self-hosted VLM sandbox setup. It remains disabled by default and does not add an app-facing endpoint.
+
+Added files / commands:
+
+- `config/open-weight-vlm.local.example.json`
+  - committed example only
+  - `enabled:false`
+  - `allowNetworkCalls:false`
+  - uses local-loopback example URL only
+- `src/qa/openWeightVlmLocalSandboxConfig.mjs`
+  - validates local config shape
+  - rejects unsupported serving stacks, unsupported model IDs, invalid fixture modes, unsafe timeouts, public/non-local URLs, URL credentials, query strings, and fragments
+  - summarizes config using safe buckets only
+- `scripts/check-open-weight-vlm-local-sandbox-config.mjs`
+  - default dry-run validates the example config
+  - prints sanitized config / gate status only
+  - never prints the full model server URL, raw image paths, prompts, model output, request payloads, credentials, or secrets
+
+Run the local config dry-run:
+
+```sh
+npm run qa:open-weight-vlm:local-config
+```
+
+If `npm` is unavailable:
+
+```sh
+node scripts/check-open-weight-vlm-local-sandbox-config.mjs --dry-run
+```
+
+Future local-model command name:
+
+```sh
+npm run qa:open-weight-vlm:local
+```
+
+In Phase 20-A this command intentionally fails closed with `local_model_adapter_not_implemented` and sends no network request. A later explicit phase must implement and approve any real local/self-hosted model call.
+
+Ignored local paths:
+
+- `config/open-weight-vlm.local.json`
+- `config/open-weight-vlm.local.*.json`
+- `reports/vlm-local-sandbox/`
+- `reports/vlm-benchmark/`
+- `tests/vlm-local-samples/`
+- `tests/generated-images/`
+
+Boundary notes:
+
+- Default scripts/tests remain synthetic/no-network.
+- Actual local config must stay ignored.
+- Approved local image fixtures must stay ignored.
+- No model server URL runtime config is committed.
+- No provider/model credentials are committed.
+- No backend provider request payload changes are made.
+- No iOS upload payload changes are made.
+- No capture context is uploaded.
+- No iOS provider/model key or direct provider/model call is added.
+- No Camera cloud AI entry is added.
+- No production endpoint or public endpoint is added.
+- No training or fine-tuning is added.
+- `productionReady` remains `false`.
+
 Phase 18-B5 adds a small gate summary helper for sanitized reports:
 
 ```sh

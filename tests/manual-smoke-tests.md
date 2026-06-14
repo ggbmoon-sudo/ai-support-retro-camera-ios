@@ -1,5 +1,23 @@
 # Manual Smoke Tests
 
+## Phase 20-A
+
+Backend-only local/self-hosted VLM sandbox setup:
+
+- [ ] Confirm `backend/config/open-weight-vlm.local.example.json` is an example only with `enabled:false` and `allowNetworkCalls:false`.
+- [ ] Confirm actual local config files such as `backend/config/open-weight-vlm.local.json` remain ignored.
+- [ ] Run backend tests: `cd backend && npm test`.
+- [ ] Run synthetic benchmark: `cd backend && npm run qa:open-weight-vlm:synthetic`.
+- [ ] Run synthetic gate summary: `cd backend && npm run qa:open-weight-vlm:gate`.
+- [ ] Run local sandbox config dry-run: `cd backend && npm run qa:open-weight-vlm:local-config`.
+- [ ] Confirm dry-run output is sanitized and does not print the full model server URL, raw image paths, raw prompts, raw model output, base64, request payloads, credentials, or secrets.
+- [ ] Confirm future local-model command fails closed in Phase 20-A: `cd backend && npm run qa:open-weight-vlm:local`.
+- [ ] Confirm no network/model request is sent by the dry-run or fail-closed command.
+- [ ] Confirm public/non-local model server URLs, URL credentials, query strings, and fragments are rejected.
+- [ ] Confirm ignored report/image folders protect `backend/reports/vlm-local-sandbox/`, `backend/reports/vlm-benchmark/`, `backend/tests/vlm-local-samples/`, and `backend/tests/generated-images/`.
+- [ ] Confirm no app-facing backend endpoint, backend provider request payload change, iOS upload payload change, capture-context upload, iOS provider/model key/direct call, Camera cloud AI entry, real photo, generated report, training/fine-tuning, or production rollout is introduced.
+- [ ] Confirm `productionReady=false`.
+
 ## Phase 19-F
 
 Open-weight VLM real-model sandbox preflight:

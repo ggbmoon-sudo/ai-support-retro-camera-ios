@@ -46,6 +46,10 @@ tmp/
 tests/manual/local-results/
 backend/reports/provider-qa/
 backend/reports/vlm-benchmark/
+backend/reports/vlm-local-sandbox/
+backend/config/open-weight-vlm.local.json
+backend/config/open-weight-vlm.local.*.json
+!backend/config/open-weight-vlm.local.example.json
 backend/tests/local-images/*
 !backend/tests/local-images/README.md
 !backend/tests/local-images/manual-review-template.json

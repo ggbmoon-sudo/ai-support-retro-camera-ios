@@ -4,6 +4,8 @@ Status: Preflight plan only
 Date: 2026-06-14
 Phase: 19-F
 
+Update: Phase 20-A implemented the safe backend-only local sandbox setup described here. It added an example config, ignored real local config/report/sample paths, a config validator, a dry-run script, and fail-closed future command name. Phase 20-A still does not add model server code, real model calls, app-facing endpoints, iOS integration, payload changes, training, fine-tuning, or production rollout.
+
 ## Goal
 
 Define the safety gate before any future real-model sandbox for open-weight VLM Photo Advisor benchmarking.

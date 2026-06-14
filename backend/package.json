@@ -11,7 +11,9 @@
     "qa:photo-advisor:review": "node scripts/check-photo-advisor-provider-qa-gate.mjs",
     "qa:photo-advisor:provider": "node scripts/run-photo-advisor-provider-qa.mjs --run-provider",
     "qa:open-weight-vlm:synthetic": "node scripts/run-open-weight-vlm-photo-advisor-benchmark.mjs --synthetic",
-    "qa:open-weight-vlm:gate": "node scripts/check-open-weight-vlm-photo-advisor-benchmark-gate.mjs --synthetic"
+    "qa:open-weight-vlm:gate": "node scripts/check-open-weight-vlm-photo-advisor-benchmark-gate.mjs --synthetic",
+    "qa:open-weight-vlm:local-config": "node scripts/check-open-weight-vlm-local-sandbox-config.mjs --dry-run",
+    "qa:open-weight-vlm:local": "node scripts/check-open-weight-vlm-local-sandbox-config.mjs --run-local-model"
   },
   "dependencies": {},
   "devDependencies": {}
