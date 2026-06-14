@@ -1,8 +1,11 @@
 import assert from "node:assert/strict";
 import { execFileSync, spawnSync } from "node:child_process";
-import { readFile } from "node:fs/promises";
+import { mkdtemp, readFile, writeFile } from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
 import test from "node:test";
 import { evaluateOpenWeightVlmBenchmarkGate } from "../src/qa/openWeightVlmBenchmarkGate.mjs";
+import { runOpenWeightVlmLocalSandboxSmoke } from "../src/qa/openWeightVlmLocalSandboxClient.mjs";
 import {
   evaluateOpenWeightVlmLocalSandboxGate,
   validateOpenWeightVlmLocalSandboxConfig
@@ -19,6 +22,7 @@ const FIXTURE_URL = new URL("./fixtures/open-weight-vlm-photo-advisor-benchmark-
 const SCRIPT_URL = new URL("../scripts/run-open-weight-vlm-photo-advisor-benchmark.mjs", import.meta.url);
 const GATE_SCRIPT_URL = new URL("../scripts/check-open-weight-vlm-photo-advisor-benchmark-gate.mjs", import.meta.url);
 const LOCAL_SANDBOX_CONFIG_SCRIPT_URL = new URL("../scripts/check-open-weight-vlm-local-sandbox-config.mjs", import.meta.url);
+const LOCAL_SANDBOX_SMOKE_SCRIPT_URL = new URL("../scripts/run-open-weight-vlm-local-sandbox-smoke.mjs", import.meta.url);
 
 test("open-weight VLM validator accepts valid synthetic benchmark fixtures", async () => {
   const cases = await benchmarkCases();
@@ -314,6 +318,134 @@ test("open-weight VLM future local model command fails closed without model call
   assert.equal(result.stdout.includes("Bearer "), false);
 });
 
+test("open-weight VLM local sandbox smoke script validates stubbed output without network", () => {
+  const output = execFileSync(process.execPath, [LOCAL_SANDBOX_SMOKE_SCRIPT_URL.pathname, "--dry-run"], {
+    cwd: new URL("..", import.meta.url),
+    encoding: "utf8"
+  });
+  const report = JSON.parse(output);
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.runMode, "stub_no_network");
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.eligibleForLocalSandboxSmoke, true);
+  assert.equal(report.hardBlockers.length, 0);
+  assert.equal(report.stubbedBenchmark.totalCases, 1);
+  assert.equal(report.stubbedBenchmark.acceptedCount, 1);
+  assert.equal(report.stubbedBenchmark.expectationFailureCount, 0);
+  assert.equal(report.benchmarkGate.eligibleForSyntheticContractReview, true);
+  assert.equal(report.localClient.stubResponseValidated, true);
+  assert.equal(output.includes("http://127.0.0.1:8000"), false);
+  assert.equal(output.includes("modelOutput"), false);
+  assert.equal(output.includes("fullPrompt"), false);
+  assert.equal(output.includes("Authorization"), false);
+  assert.equal(output.includes("Bearer "), false);
+  assert.equal(output.includes("base64"), false);
+});
+
+test("open-weight VLM local sandbox smoke client fails closed when config is missing", () => {
+  const result = spawnSync(process.execPath, [LOCAL_SANDBOX_SMOKE_SCRIPT_URL.pathname, "--run-local-model"], {
+    cwd: new URL("..", import.meta.url),
+    encoding: "utf8"
+  });
+  const report = JSON.parse(result.stdout);
+  const blockerCodes = new Set(report.hardBlockers.map((item) => item.code));
+
+  assert.notEqual(result.status, 0);
+  assert.equal(report.productionReady, false);
+  assert.equal(report.runMode, "run_local_model");
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.eligibleForLocalSandboxSmoke, false);
+  assert.equal(report.eligibleForFutureLocalModelRun, false);
+  assert.equal(blockerCodes.has("config_missing"), true);
+  assert.equal(blockerCodes.has("local_model_client_not_enabled"), true);
+  assert.equal(result.stdout.includes("open-weight-vlm.local.json"), false);
+  assert.equal(result.stdout.includes("http://127.0.0.1:8000"), false);
+  assert.equal(result.stdout.includes("modelOutput"), false);
+});
+
+test("open-weight VLM local sandbox smoke client fails closed for disabled config", async () => {
+  const configPath = await writeTempSandboxConfig({
+    enabled: false,
+    servingStack: "vllm",
+    modelId: "qwen2.5-vl-7b-instruct",
+    modelServerUrl: "http://localhost:8000",
+    timeoutMs: 30000,
+    fixtureMode: "approved_local_only",
+    allowNetworkCalls: false
+  });
+  const report = await runOpenWeightVlmLocalSandboxSmoke({
+    configPath,
+    requireConfig: true,
+    runLocalModel: true
+  });
+  const blockerCodes = new Set(report.hardBlockers.map((item) => item.code));
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.eligibleForFutureLocalModelRun, false);
+  assert.equal(report.reviewedConfig.configEnabled, false);
+  assert.equal(blockerCodes.has("sandbox_disabled"), true);
+  assert.equal(blockerCodes.has("network_opt_in_missing"), true);
+  assert.equal(blockerCodes.has("local_model_client_not_enabled"), true);
+  assert.equal(JSON.stringify(report).includes("http://localhost:8000"), false);
+});
+
+test("open-weight VLM local sandbox smoke client fails closed when network opt-in is missing", async () => {
+  const configPath = await writeTempSandboxConfig({
+    enabled: true,
+    servingStack: "sglang",
+    modelId: "qwen3-vl-8b-instruct",
+    modelServerUrl: "http://127.0.0.1:8000",
+    timeoutMs: 30000,
+    fixtureMode: "approved_local_only",
+    allowNetworkCalls: false
+  });
+  const report = await runOpenWeightVlmLocalSandboxSmoke({
+    configPath,
+    requireConfig: true,
+    runLocalModel: true
+  });
+  const blockerCodes = new Set(report.hardBlockers.map((item) => item.code));
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.eligibleForFutureLocalModelRun, false);
+  assert.equal(report.reviewedConfig.configEnabled, true);
+  assert.equal(report.reviewedConfig.allowNetworkCalls, false);
+  assert.equal(blockerCodes.has("network_opt_in_missing"), true);
+  assert.equal(blockerCodes.has("local_model_client_not_enabled"), true);
+  assert.equal(JSON.stringify(report).includes("http://127.0.0.1:8000"), false);
+});
+
+test("open-weight VLM local sandbox smoke client rejects public URL without leaking secrets", async () => {
+  const configPath = await writeTempSandboxConfig({
+    enabled: true,
+    servingStack: "ollama",
+    modelId: "minicpm-v-4.5",
+    modelServerUrl: "https://token@example.com/v1?debug=true",
+    timeoutMs: 30000,
+    fixtureMode: "approved_local_only",
+    allowNetworkCalls: true
+  });
+  const report = await runOpenWeightVlmLocalSandboxSmoke({
+    configPath,
+    requireConfig: true,
+    runLocalModel: true
+  });
+  const serialized = JSON.stringify(report);
+  const blockerCodes = new Set(report.hardBlockers.map((item) => item.code));
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(blockerCodes.has("unsafe_model_server_url"), true);
+  assert.equal(blockerCodes.has("local_model_client_not_enabled"), true);
+  assert.equal(serialized.includes("token@example"), false);
+  assert.equal(serialized.includes("https://example.com/v1"), false);
+  assert.equal(serialized.includes("debug=true"), false);
+  assert.equal(serialized.includes(configPath), false);
+});
+
 async function benchmarkCases() {
   const fixture = JSON.parse(await readFile(FIXTURE_URL, "utf8"));
   return fixture.cases;
@@ -323,4 +455,11 @@ function validFixture(id, cases) {
   const item = cases.find((fixture) => fixture.id === id);
   assert.ok(item, `Missing fixture ${id}`);
   return item;
+}
+
+async function writeTempSandboxConfig(value) {
+  const dir = await mkdtemp(path.join(os.tmpdir(), "vlm-local-sandbox-"));
+  const filePath = path.join(dir, "open-weight-vlm.local.json");
+  await writeFile(filePath, JSON.stringify(value), "utf8");
+  return filePath;
 }

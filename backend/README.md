@@ -478,7 +478,7 @@ Future local-model command name:
 npm run qa:open-weight-vlm:local
 ```
 
-In Phase 20-A this command intentionally fails closed with `local_model_adapter_not_implemented` and sends no network request. A later explicit phase must implement and approve any real local/self-hosted model call.
+In Phase 20-A this command intentionally fails closed with `local_model_adapter_not_implemented` and sends no network request. Phase 20-B keeps the command explicit and fail-closed through the local sandbox smoke client. A later explicit phase must implement and approve any real local/self-hosted model call.
 
 Ignored local paths:
 
@@ -503,6 +503,62 @@ Boundary notes:
 - No Camera cloud AI entry is added.
 - No production endpoint or public endpoint is added.
 - No training or fine-tuning is added.
+- `productionReady` remains `false`.
+
+## Phase 20-B Local VLM Sandbox Client Smoke Path
+
+Phase 20-B adds a backend-only local VLM sandbox client smoke path. It remains disabled by default and does not add an app-facing endpoint, production endpoint, model server implementation, or real model call.
+
+Added components:
+
+- `src/qa/openWeightVlmLocalSandboxClient.mjs`
+  - loads the safe local sandbox config summary
+  - runs one stubbed candidate through the existing open-weight VLM schema validator and benchmark gate
+  - emits sanitized aggregate smoke metrics only
+  - keeps `productionReady:false`, `providerConfigured:false`, and `networkCallsMade:false`
+- `scripts/run-open-weight-vlm-local-sandbox-smoke.mjs`
+  - default mode is stub/no-network
+  - never uploads an image
+  - never calls a model server
+  - never prints raw prompt, raw model output, raw image/base64/path, full model URL, request payload, credentials, or secrets
+
+Run the safe local smoke path:
+
+```sh
+npm run qa:open-weight-vlm:local-smoke
+```
+
+If `npm` is unavailable:
+
+```sh
+node scripts/run-open-weight-vlm-local-sandbox-smoke.mjs --dry-run
+```
+
+Expected safe output includes:
+
+- `runMode:"stub_no_network"`
+- `eligibleForLocalSandboxSmoke:true`
+- `stubbedBenchmark.totalCases:1`
+- `stubbedBenchmark.acceptedCount:1`
+- `benchmarkGate.eligibleForSyntheticContractReview:true`
+- `productionReady:false`
+- `networkCallsMade:false`
+
+The explicit future local-model command remains:
+
+```sh
+npm run qa:open-weight-vlm:local
+```
+
+In Phase 20-B this command must still fail closed unless an ignored local config exists and a future phase implements and approves local/self-hosted model calls. The default repository path sends no network request and reports sanitized hard blockers such as missing ignored config / disabled sandbox / local client not enabled.
+
+Boundary notes:
+
+- Default scripts/tests remain synthetic or stubbed no-network.
+- Actual local config must stay ignored.
+- Approved local image fixtures must stay ignored.
+- No full model server URL, raw image path, prompt, model response, base64, request payload, credential, or secret is printed.
+- No model server code, public endpoint, production endpoint, iOS integration, backend provider request payload change, iOS upload payload change, capture-context upload, Camera cloud AI entry, training, fine-tuning, real photo commit, generated report commit, or production rollout is added.
 - `productionReady` remains `false`.
 
 Phase 18-B5 adds a small gate summary helper for sanitized reports:

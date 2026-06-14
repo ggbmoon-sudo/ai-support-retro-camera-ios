@@ -1,5 +1,22 @@
 # Manual Smoke Tests
 
+## Phase 20-B
+
+Backend-only local VLM sandbox client smoke path:
+
+- [ ] Run backend tests: `cd backend && npm test`.
+- [ ] Run synthetic benchmark: `cd backend && npm run qa:open-weight-vlm:synthetic`.
+- [ ] Run synthetic gate summary: `cd backend && npm run qa:open-weight-vlm:gate`.
+- [ ] Run local sandbox config dry-run: `cd backend && npm run qa:open-weight-vlm:local-config`.
+- [ ] Run local sandbox smoke path: `cd backend && npm run qa:open-weight-vlm:local-smoke`.
+- [ ] Confirm smoke output shows `runMode:stub_no_network`, `eligibleForLocalSandboxSmoke:true`, `networkCallsMade:false`, `productionReady:false`, one accepted stubbed benchmark case, and no hard blockers.
+- [ ] Confirm smoke output does not print the full model server URL, raw image path, raw prompt, raw model output, base64, request payload, credentials, or secrets.
+- [ ] Confirm explicit local-model command still fails closed unless a later phase approves real local/self-hosted calls: `cd backend && npm run qa:open-weight-vlm:local`.
+- [ ] Confirm the fail-closed local command sends no network/model request and reports sanitized blockers only.
+- [ ] Confirm missing config, `enabled:false`, `allowNetworkCalls:false`, public/non-local URLs, URL credentials, query strings, and fragments block real local-model mode.
+- [ ] Confirm no app-facing backend endpoint, backend provider request payload change, iOS upload payload change, capture-context upload, iOS provider/model key/direct call, Camera cloud AI entry, real photo, generated report, training/fine-tuning, or production rollout is introduced.
+- [ ] Confirm `productionReady=false`.
+
 ## Phase 20-A
 
 Backend-only local/self-hosted VLM sandbox setup:
@@ -10,8 +27,9 @@ Backend-only local/self-hosted VLM sandbox setup:
 - [ ] Run synthetic benchmark: `cd backend && npm run qa:open-weight-vlm:synthetic`.
 - [ ] Run synthetic gate summary: `cd backend && npm run qa:open-weight-vlm:gate`.
 - [ ] Run local sandbox config dry-run: `cd backend && npm run qa:open-weight-vlm:local-config`.
+- [ ] Run local sandbox smoke path: `cd backend && npm run qa:open-weight-vlm:local-smoke`.
 - [ ] Confirm dry-run output is sanitized and does not print the full model server URL, raw image paths, raw prompts, raw model output, base64, request payloads, credentials, or secrets.
-- [ ] Confirm future local-model command fails closed in Phase 20-A: `cd backend && npm run qa:open-weight-vlm:local`.
+- [ ] Confirm future local-model command fails closed unless explicitly approved later: `cd backend && npm run qa:open-weight-vlm:local`.
 - [ ] Confirm no network/model request is sent by the dry-run or fail-closed command.
 - [ ] Confirm public/non-local model server URLs, URL credentials, query strings, and fragments are rejected.
 - [ ] Confirm ignored report/image folders protect `backend/reports/vlm-local-sandbox/`, `backend/reports/vlm-benchmark/`, `backend/tests/vlm-local-samples/`, and `backend/tests/generated-images/`.

@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 20-A Backend-only Local Self-hosted VLM Sandbox Setup completed; ready for review
+- Phase 20-B Backend-only Local VLM Sandbox Client Smoke Path completed; ready for review
 
 Next phase:
 
-- Future real-model sandbox execution may start only if explicitly requested and must remain backend-only/local-self-hosted unless a later prompt explicitly approves broader integration
+- Future real-model sandbox execution may start only if explicitly requested and must remain backend-only/local-self-hosted, ignored-config-only, and explicit-operator-opt-in unless a later prompt explicitly approves broader integration
 - Do not start production cloud rollout without explicit approval
 - Production rollout remains blocked until a later explicit release phase
 
@@ -239,6 +239,8 @@ Phase 19-E expands the backend-only synthetic open-weight VLM benchmark fixture 
 Phase 19-F adds `docs/open-weight-vlm-real-model-sandbox-preflight.md`, a documentation-only safety plan for a future backend-only local/self-hosted real-model sandbox. It defines what a later Phase 20-A may safely do, allowed model candidates, allowed serving paths, ignored local config rules, approved local image fixture policy, runtime logging/redaction requirements, hard gates, and an operator checklist. Phase 19-F does not add model server code, model server URL config, provider/model credentials, real VLM/provider calls, image upload, iOS integration, payload changes, capture-context upload, Camera cloud AI, training/fine-tuning, or production rollout.
 
 Phase 20-A adds a backend-only local/self-hosted VLM sandbox setup. It introduces an ignored local config pattern with `backend/config/open-weight-vlm.local.example.json`, a config validator / dry-run gate, and package scripts for safe local sandbox checks. The default path remains synthetic/no-network; the future real-model command fails closed in this phase and sends no model request. No app-facing endpoint, model server implementation, model server URL runtime config, provider/model credential, iOS integration, backend provider request payload change, iOS upload payload change, capture-context upload, Camera cloud AI entry, real photo, generated report, training/fine-tuning, or production rollout is added.
+
+Phase 20-B adds a backend-only local VLM sandbox client smoke path. It introduces a stub/no-network client module and smoke script that validates one safe synthetic candidate through the existing VLM schema and benchmark gate, prints sanitized aggregate metrics only, and keeps `networkCallsMade:false`. The explicit future local-model command remains opt-in and fail-closed unless ignored local config, approved local fixtures, synthetic gate success, and a later phase approve real local/self-hosted calls. No app-facing endpoint, real model call, model server implementation, provider/model credential, iOS integration, backend provider request payload change, iOS upload payload change, capture-context upload, Camera cloud AI entry, real photo, generated report, training/fine-tuning, or production rollout is added.
 
 ## Phase 12A Filter Planning Status
 
