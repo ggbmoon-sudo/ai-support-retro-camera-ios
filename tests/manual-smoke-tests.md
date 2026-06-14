@@ -1,5 +1,20 @@
 # Manual Smoke Tests
 
+## Phase 19-A
+
+Open-weight VLM Backend Architecture ADR:
+
+- [ ] Open `docs/open-weight-vlm-backend-architecture-adr.md`.
+- [ ] Confirm the ADR is architecture / research only and does not approve implementation.
+- [ ] Confirm candidate model comparison covers Qwen2.5-VL-7B, Qwen2-VL-7B, MiniCPM-V, and future watchlist candidates.
+- [ ] Confirm serving comparison covers Ollama, vLLM, SGLang, and Transformers / FastAPI.
+- [ ] Confirm target architecture requires explicit post-capture consent, backend metadata stripping, size/type limits, self-hosted VLM adapter, structured PhotoAdvisor JSON, backend validation, safe fallback, and existing app language-pack/result-card rendering.
+- [ ] Confirm non-goals forbid production rollout, Camera live cloud AI, iOS provider keys, iOS direct model/provider calls, capture-context upload unless explicitly approved later, backend/iOS payload changes, raw image/prompt/model response logging, and user-photo training without explicit consent.
+- [ ] Confirm future fine-tuning path is prompt/schema tuning first, evaluation dataset next, and LoRA/QLoRA later only with curated, consented, non-sensitive data.
+- [ ] Confirm Phase 19-B recommendation is a local / ignored backend VLM sandbox or benchmark plan with no app integration unless explicitly approved.
+- [ ] Confirm no app/backend runtime behavior, backend provider request payload, iOS upload payload, capture-context upload, iOS provider key/direct call, Camera cloud entry, generated artifact commit, real-provider QA, or production rollout is introduced.
+- [ ] Confirm `productionReady=false`.
+
 ## Phase 18-C3
 
 Multilingual Advisor copy beta QA pass:

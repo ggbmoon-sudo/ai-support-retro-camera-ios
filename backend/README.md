@@ -259,6 +259,30 @@ Phase 18-B4 defines how to review sanitized provider QA metrics:
 
 See `../docs/photo-advisor-provider-qa-review-thresholds.md`.
 
+## Phase 19-A Open-weight VLM Backend ADR
+
+Phase 19-A is documentation-only. It adds `../docs/open-weight-vlm-backend-architecture-adr.md` for a future self-hosted / open-weight VLM Photo Advisor backend direction.
+
+The ADR compares:
+
+- Qwen2.5-VL-7B, Qwen2-VL-7B, and MiniCPM-V as candidate models
+- InternVL and LLaVA-next as later watchlist candidates
+- Ollama, vLLM, SGLang, and Transformers / FastAPI as possible serving paths
+
+The target architecture is still future-only:
+
+- iOS uploads an image only after explicit post-capture consent
+- backend strips metadata and enforces size/type limits
+- backend calls a self-hosted VLM adapter
+- VLM returns structured PhotoAdvisor JSON
+- backend validates the JSON against the existing Photo Advisor contract
+- unsafe / invalid / timeout output falls back safely
+- iOS renders through the existing language pack and result card
+
+Phase 19-A does not add model server code, run real-provider QA, change backend provider request payloads, change iOS upload payloads, upload capture context, add cloud availability, add iOS provider keys/direct calls, add a Camera cloud AI entry, or change `productionReady=false`.
+
+Recommended next step is Phase 19-B: a local / ignored backend VLM sandbox or benchmark plan with no app integration unless explicitly approved.
+
 Phase 18-B5 adds a small gate summary helper for sanitized reports:
 
 ```sh

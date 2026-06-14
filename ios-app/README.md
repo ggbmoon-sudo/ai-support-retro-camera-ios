@@ -132,6 +132,8 @@ Phase 18-C2 keeps iOS behavior local/mock while tightening captured / imported /
 
 Phase 18-C3 polishes the local/mock Photo Advisor multilingual beta copy only. The visible Advisor card no longer labels the experience as a mock/demo, imported-photo copy uses natural capture-detail wording, provider-unavailable fallback copy is calmer, and Cantonese-style / 麻煩友 Advisor strings keep personality without heavy slang or harsh judgment. iOS still has no provider key, no direct QweAPI/provider call, no provider SDK, no Camera cloud AI entry, no capture-context upload, no iOS upload payload change, and no production rollout.
 
+Phase 19-A is documentation-only and keeps iOS behavior unchanged. It adds an architecture ADR for a future self-hosted / open-weight VLM backend research path, but does not add model server integration, iOS provider keys, direct model/provider calls, Camera cloud AI entry points, capture-context upload, iOS upload payload changes, or production rollout. Any future VLM work must remain backend-mediated, consented post-capture only, validated against the Photo Advisor contract, and rendered through the existing app language pack / result card.
+
 ## Phase 17D-A Local Camera Capture Context
 
 Phase 17D-A adds local-only summarized capture context for captured / imported photos:
