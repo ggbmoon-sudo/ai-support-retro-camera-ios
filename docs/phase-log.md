@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Future Phase Roadmap vs Existing Markdown Planning Gap Audit
-Status: Docs-only roadmap gap audit completed and ready to commit
-Latest implementation: Added `docs/future-phase-roadmap-gap-audit.md` to compare the proposed Phase 20-B through Phase 27+ open-weight/self-hosted VLM roadmap against existing Markdown planning. The audit identifies missing older-planned features, newly proposed phases not yet documented elsewhere, completed capabilities still listed as future, outdated provider-first assumptions, safety/privacy boundaries to preserve, and a revised roadmap. Phase 20-B is already present in the repo history according to current upstream status checks. Recommended next phase remains `Phase 20-C: Local VLM operator runbook + real-model smoke gate`. No app/backend runtime behavior, iOS source, backend provider request payload, iOS upload payload, capture-context upload, Camera cloud entry, model server code, model URL config, provider/model credential, real VLM/provider run, training/fine-tuning, generated artifact, or production rollout was added.
+Current phase: Phase 20-C - Local VLM Operator Runbook + Real-model Smoke Gate
+Status: Implemented; verification passed; ready to commit
+Latest implementation: Added `docs/open-weight-vlm-local-operator-runbook.md`, a backend-only local smoke gate helper, a safe `npm run qa:open-weight-vlm:local-smoke-gate` command, and tests for missing/disabled/no-network/public-URL/non-approved-fixture fail-closed behavior. The gate checks ignored local config, synthetic benchmark success, default no-network smoke success, approved fixture mode, sanitized config buckets, redaction flags, `productionReady:false`, and `networkCallsMade:false` before any future Phase 20-D real-model smoke run. No app/backend production runtime route, iOS source, backend provider request payload, iOS upload payload, capture-context upload, Camera cloud entry, model server implementation, active model URL config, provider/model credential, real VLM/provider run, real photo, generated raw model report, training/fine-tuning, or production rollout was added.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -73,6 +73,71 @@ Phase 17C-R3 verification: generated five ignored synthetic local QA images and 
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
 Next phase: Future real-model sandbox work may start only if explicitly requested and must stay backend-only/local-self-hosted, ignored-config-only, approved-fixture-only, and explicit-operator-opt-in unless a later prompt explicitly approves broader integration. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, real-provider/VLM QA, save-to-Photos, app integration, public endpoint, model downloads, model cache changes, or user-photo training / fine-tuning until explicitly requested.
+
+---
+
+## Phase 20-C - Local VLM Operator Runbook + Real-model Smoke Gate
+
+Status: Implemented; verification passed; ready to commit
+Date: 2026-06-14
+
+### Completed
+
+- Added `docs/open-weight-vlm-local-operator-runbook.md`.
+- Added `backend/src/qa/openWeightVlmLocalSmokeGate.mjs`.
+- Added `backend/scripts/check-open-weight-vlm-local-smoke-gate.mjs`.
+- Added `npm run qa:open-weight-vlm:local-smoke-gate`.
+- Added backend tests for smoke gate missing config, disabled config, missing network opt-in, public/unsafe URL rejection, non-approved fixture mode, sanitized output, and safe eligible config behavior.
+- Updated README, backend README, the Phase 19-F preflight doc, manual smoke tests, and this handoff/phase log.
+
+### Smoke Gate Behavior
+
+- The default smoke gate checks the ignored local config path `backend/config/open-weight-vlm.local.json`.
+- The gate runs synthetic benchmark and local sandbox smoke prerequisites in no-network mode.
+- The gate fails closed until ignored local config is intentionally prepared with `enabled:true`, `allowNetworkCalls:true`, a validated local/private model server URL bucket, and `fixtureMode:approved_local_only`.
+- The gate prints sanitized status, blockers, warnings, config buckets, prerequisite booleans, `productionReady:false`, and `networkCallsMade:false`.
+- The gate does not call a model, upload an image, print a raw URL/path/prompt/model output/base64/request payload, or persist generated reports.
+
+### Safety Notes
+
+- Backend-only operator safety work.
+- No iOS source/project/localization files changed.
+- No app-facing endpoint or production endpoint added.
+- No model server implementation or active model server URL runtime config added.
+- No provider/model credentials added.
+- No real VLM/provider calls run.
+- No backend provider request payload changed.
+- No iOS upload payload changed.
+- No capture-context upload added.
+- No Camera cloud AI entry added.
+- No real photos, generated images, screenshots, recordings, local samples, or raw model reports committed.
+- No training/fine-tuning added.
+- `productionReady` remains `false`.
+
+### Verification
+
+- [x] Backend tests passed via bundled Node: 80/80.
+- [x] Synthetic benchmark runner passed: 40 cases, 40 expectation passes, 0 expectation failures, `networkCallsMade:false`, `productionReady:false`.
+- [x] Benchmark gate summary script passed with no hard blockers.
+- [x] Local sandbox config dry-run script passed with sanitized output.
+- [x] Local sandbox smoke script passed in default no-network mode.
+- [x] Local smoke gate script failed closed as expected because ignored local config is absent; output stayed sanitized with `networkCallsMade:false` and `productionReady:false`.
+- [x] `git diff --check` passed.
+- [x] Photo Advisor copy regression script passed.
+- [x] Filter reason coverage script passed.
+- [x] CreativeIntent language script passed.
+- [x] Photo Advisor card language script passed.
+- [x] Secret scan found no key-like secrets.
+- [x] Provider/model key scan found only docs/test/policy placeholder references and no credentials.
+- [x] iOS direct provider/model scan found only pre-existing debug/internal CloudAI scaffold and placeholder/provider localization references; no iOS files changed in Phase 20-C.
+- [x] Camera cloud entry scan found no changed Camera/CloudAI/localization files.
+- [x] Backend/iOS payload unchanged scan found no changed iOS files and no changed backend route/provider/server/config payload files.
+- [x] Artifact scan found no real photos, generated reports, screenshots, recordings, local samples, generated images, env files, or real local VLM config in the changed/untracked set.
+- [x] Xcode build not required because no iOS source/project/localization files changed.
+
+### Ready for Phase 20-D
+
+No. Phase 20-D should start only after Phase 20-C is reviewed, committed, pushed, and explicitly requested. It must remain backend-only, local/self-hosted, ignored-config-only, approved-local-fixture-only, sanitized-output-only, and production-blocked.
 
 ---
 

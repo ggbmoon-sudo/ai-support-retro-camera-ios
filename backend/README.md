@@ -561,6 +561,38 @@ Boundary notes:
 - No model server code, public endpoint, production endpoint, iOS integration, backend provider request payload change, iOS upload payload change, capture-context upload, Camera cloud AI entry, training, fine-tuning, real photo commit, generated report commit, or production rollout is added.
 - `productionReady` remains `false`.
 
+## Phase 20-C Local VLM Operator Runbook + Smoke Gate
+
+Phase 20-C adds an operator runbook and a backend-only real-model smoke gate for future approved local/self-hosted VLM testing. The gate does not call a model and does not create an app-facing endpoint.
+
+Run the local smoke gate:
+
+```sh
+npm run qa:open-weight-vlm:local-smoke-gate
+```
+
+If `npm` is unavailable:
+
+```sh
+node scripts/check-open-weight-vlm-local-smoke-gate.mjs --dry-run
+```
+
+Expected current behavior:
+
+- The command runs synthetic benchmark and default local smoke prerequisites without network.
+- The command reads the ignored local config path `config/open-weight-vlm.local.json`.
+- If the ignored local config is absent, disabled, missing network opt-in, missing a validated loopback/private URL bucket, or not in approved fixture mode, the gate fails closed with sanitized blockers.
+- The command prints only sanitized buckets and booleans; it does not print raw URLs, image paths, prompts, model output, base64, request payloads, credentials, or secrets.
+- `productionReady:false` and `networkCallsMade:false` remain present in output.
+
+The operator runbook is:
+
+```text
+../docs/open-weight-vlm-local-operator-runbook.md
+```
+
+Phase 20-D may only run a real local model if explicitly requested, with ignored local config, approved ignored fixtures, synthetic gate success, default local smoke success, no raw artifact logging, and sanitized aggregate output only.
+
 Phase 18-B5 adds a small gate summary helper for sanitized reports:
 
 ```sh

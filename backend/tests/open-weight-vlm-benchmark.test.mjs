@@ -11,6 +11,10 @@ import {
   validateOpenWeightVlmLocalSandboxConfig
 } from "../src/qa/openWeightVlmLocalSandboxConfig.mjs";
 import {
+  assertOpenWeightVlmLocalSmokeGateReportRedacted,
+  evaluateOpenWeightVlmLocalSmokeGate
+} from "../src/qa/openWeightVlmLocalSmokeGate.mjs";
+import {
   assertOpenWeightVlmBenchmarkReportRedacted,
   evaluateOpenWeightVlmBenchmarkCase,
   OPEN_WEIGHT_VLM_PHOTO_ADVISOR_SCHEMA_VERSION,
@@ -23,6 +27,7 @@ const SCRIPT_URL = new URL("../scripts/run-open-weight-vlm-photo-advisor-benchma
 const GATE_SCRIPT_URL = new URL("../scripts/check-open-weight-vlm-photo-advisor-benchmark-gate.mjs", import.meta.url);
 const LOCAL_SANDBOX_CONFIG_SCRIPT_URL = new URL("../scripts/check-open-weight-vlm-local-sandbox-config.mjs", import.meta.url);
 const LOCAL_SANDBOX_SMOKE_SCRIPT_URL = new URL("../scripts/run-open-weight-vlm-local-sandbox-smoke.mjs", import.meta.url);
+const LOCAL_SMOKE_GATE_SCRIPT_URL = new URL("../scripts/check-open-weight-vlm-local-smoke-gate.mjs", import.meta.url);
 
 test("open-weight VLM validator accepts valid synthetic benchmark fixtures", async () => {
   const cases = await benchmarkCases();
@@ -446,6 +451,142 @@ test("open-weight VLM local sandbox smoke client rejects public URL without leak
   assert.equal(serialized.includes(configPath), false);
 });
 
+test("open-weight VLM local smoke gate blocks missing config without network", () => {
+  const result = spawnSync(process.execPath, [LOCAL_SMOKE_GATE_SCRIPT_URL.pathname, "--dry-run"], {
+    cwd: new URL("..", import.meta.url),
+    encoding: "utf8"
+  });
+  const gate = JSON.parse(result.stdout);
+  const blockerCodes = new Set(gate.hardBlockers.map((item) => item.code));
+
+  assert.notEqual(result.status, 0);
+  assert.equal(gate.productionReady, false);
+  assert.equal(gate.networkCallsMade, false);
+  assert.equal(gate.eligibleForRealModelSmoke, false);
+  assert.equal(blockerCodes.has("config_missing"), true);
+  assert.equal(blockerCodes.has("sandbox_disabled"), true);
+  assert.equal(blockerCodes.has("network_opt_in_missing"), true);
+  assert.equal(gate.prerequisites.syntheticBenchmarkGatePassed, true);
+  assert.equal(gate.prerequisites.localSmokeDefaultPassed, true);
+  assert.equal(result.stdout.includes("open-weight-vlm.local.json"), false);
+  assert.equal(result.stdout.includes("http://127.0.0.1:8000"), false);
+  assert.equal(result.stdout.includes("modelOutput"), false);
+  assert.equal(result.stdout.includes("Authorization"), false);
+});
+
+test("open-weight VLM local smoke gate blocks disabled config", async () => {
+  const configPath = await writeTempSandboxConfig({
+    enabled: false,
+    servingStack: "vllm",
+    modelId: "qwen2.5-vl-7b-instruct",
+    modelServerUrl: "http://localhost:8000",
+    timeoutMs: 30000,
+    fixtureMode: "approved_local_only",
+    allowNetworkCalls: false
+  });
+  const gate = await localSmokeGateForConfig(configPath);
+  const blockerCodes = new Set(gate.hardBlockers.map((item) => item.code));
+
+  assert.equal(gate.productionReady, false);
+  assert.equal(gate.networkCallsMade, false);
+  assert.equal(gate.eligibleForRealModelSmoke, false);
+  assert.equal(blockerCodes.has("sandbox_disabled"), true);
+  assert.equal(blockerCodes.has("network_opt_in_missing"), true);
+  assert.equal(JSON.stringify(gate).includes("http://localhost:8000"), false);
+});
+
+test("open-weight VLM local smoke gate blocks network opt-in missing", async () => {
+  const configPath = await writeTempSandboxConfig({
+    enabled: true,
+    servingStack: "sglang",
+    modelId: "qwen3-vl-8b-instruct",
+    modelServerUrl: "http://127.0.0.1:8000",
+    timeoutMs: 30000,
+    fixtureMode: "approved_local_only",
+    allowNetworkCalls: false
+  });
+  const gate = await localSmokeGateForConfig(configPath);
+  const blockerCodes = new Set(gate.hardBlockers.map((item) => item.code));
+
+  assert.equal(gate.productionReady, false);
+  assert.equal(gate.networkCallsMade, false);
+  assert.equal(gate.eligibleForRealModelSmoke, false);
+  assert.equal(blockerCodes.has("network_opt_in_missing"), true);
+  assert.equal(JSON.stringify(gate).includes("http://127.0.0.1:8000"), false);
+});
+
+test("open-weight VLM local smoke gate blocks public or unsafe URL without leakage", async () => {
+  const configPath = await writeTempSandboxConfig({
+    enabled: true,
+    servingStack: "ollama",
+    modelId: "minicpm-v-4.5",
+    modelServerUrl: "https://token@example.com/v1?debug=true",
+    timeoutMs: 30000,
+    fixtureMode: "approved_local_only",
+    allowNetworkCalls: true
+  });
+  const gate = await localSmokeGateForConfig(configPath);
+  const serialized = JSON.stringify(gate);
+  const blockerCodes = new Set(gate.hardBlockers.map((item) => item.code));
+
+  assert.equal(gate.productionReady, false);
+  assert.equal(gate.networkCallsMade, false);
+  assert.equal(gate.eligibleForRealModelSmoke, false);
+  assert.equal(blockerCodes.has("unsafe_model_server_url"), true);
+  assert.equal(serialized.includes("token@example"), false);
+  assert.equal(serialized.includes("https://example.com/v1"), false);
+  assert.equal(serialized.includes("debug=true"), false);
+  assert.equal(serialized.includes(configPath), false);
+});
+
+test("open-weight VLM local smoke gate blocks non-approved fixture mode", async () => {
+  const configPath = await writeTempSandboxConfig({
+    enabled: true,
+    servingStack: "transformers",
+    modelId: "qwen2.5-vl-7b-instruct",
+    modelServerUrl: "http://localhost:8000",
+    timeoutMs: 30000,
+    fixtureMode: "user_photos",
+    allowNetworkCalls: true
+  });
+  const gate = await localSmokeGateForConfig(configPath);
+  const blockerCodes = new Set(gate.hardBlockers.map((item) => item.code));
+
+  assert.equal(gate.productionReady, false);
+  assert.equal(gate.networkCallsMade, false);
+  assert.equal(gate.eligibleForRealModelSmoke, false);
+  assert.equal(blockerCodes.has("invalid_fixture_mode"), true);
+  assert.equal(blockerCodes.has("non_approved_fixture_mode"), true);
+});
+
+test("open-weight VLM local smoke gate can pass for safe ignored local config prerequisites", async () => {
+  const configPath = await writeTempSandboxConfig({
+    enabled: true,
+    servingStack: "vllm",
+    modelId: "qwen2.5-vl-7b-instruct",
+    modelServerUrl: "http://127.0.0.1:8000",
+    timeoutMs: 30000,
+    fixtureMode: "approved_local_only",
+    allowNetworkCalls: true
+  });
+  const gate = await localSmokeGateForConfig(configPath);
+  const serialized = JSON.stringify(gate);
+
+  assert.equal(gate.productionReady, false);
+  assert.equal(gate.networkCallsMade, false);
+  assert.equal(gate.eligibleForRealModelSmoke, true);
+  assert.equal(gate.hardBlockers.length, 0);
+  assert.equal(gate.statusCategories.includes("pass_for_real_model_smoke_gate"), true);
+  assert.equal(gate.reviewedConfig.modelServerUrlBucket, "local_loopback_ip");
+  assert.equal(gate.prerequisites.syntheticBenchmarkGatePassed, true);
+  assert.equal(gate.prerequisites.localSmokeDefaultPassed, true);
+  assert.equal(assertOpenWeightVlmLocalSmokeGateReportRedacted(gate).ok, true);
+  assert.equal(serialized.includes("http://127.0.0.1:8000"), false);
+  assert.equal(serialized.includes(configPath), false);
+  assert.equal(serialized.includes("modelOutput"), false);
+  assert.equal(serialized.includes("base64"), false);
+});
+
 async function benchmarkCases() {
   const fixture = JSON.parse(await readFile(FIXTURE_URL, "utf8"));
   return fixture.cases;
@@ -462,4 +603,26 @@ async function writeTempSandboxConfig(value) {
   const filePath = path.join(dir, "open-weight-vlm.local.json");
   await writeFile(filePath, JSON.stringify(value), "utf8");
   return filePath;
+}
+
+async function localSmokeGateForConfig(configPath) {
+  const loaded = validateOpenWeightVlmLocalSandboxConfig(
+    JSON.parse(await readFile(configPath, "utf8")),
+    {
+      configPresent: true,
+      configPathBucket: "local_config"
+    }
+  );
+  const cases = await benchmarkCases();
+  const syntheticReport = summarizeOpenWeightVlmBenchmark(cases.map(evaluateOpenWeightVlmBenchmarkCase));
+  const syntheticBenchmarkGate = evaluateOpenWeightVlmBenchmarkGate(syntheticReport);
+  const localSmokeReport = await runOpenWeightVlmLocalSandboxSmoke({ runLocalModel: false });
+
+  return evaluateOpenWeightVlmLocalSmokeGate({
+    configSummary: loaded.value,
+    configLoadedOk: loaded.ok,
+    configErrorCode: loaded.error?.code,
+    syntheticBenchmarkGate,
+    localSmokeReport
+  });
 }

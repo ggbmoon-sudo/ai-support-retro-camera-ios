@@ -4,7 +4,7 @@ Status: Preflight plan only
 Date: 2026-06-14
 Phase: 19-F
 
-Update: Phase 20-A implemented the safe backend-only local sandbox setup described here. It added an example config, ignored real local config/report/sample paths, a config validator, a dry-run script, and fail-closed future command name. Phase 20-B adds a backend-only stub/no-network sandbox client smoke path that validates a safe synthetic candidate through the existing VLM schema/gate and keeps the explicit future local-model command fail-closed. These phases still do not add model server code, real model calls, app-facing endpoints, iOS integration, payload changes, training, fine-tuning, or production rollout.
+Update: Phase 20-A implemented the safe backend-only local sandbox setup described here. It added an example config, ignored real local config/report/sample paths, a config validator, a dry-run script, and fail-closed future command name. Phase 20-B adds a backend-only stub/no-network sandbox client smoke path that validates a safe synthetic candidate through the existing VLM schema/gate and keeps the explicit future local-model command fail-closed. Phase 20-C adds `docs/open-weight-vlm-local-operator-runbook.md` and `npm run qa:open-weight-vlm:local-smoke-gate` so a future Phase 20-D real-model smoke run has an operator checklist and a no-network pre-run gate. These phases still do not add model server code, real model calls, app-facing endpoints, iOS integration, payload changes, training, fine-tuning, or production rollout.
 
 ## Goal
 
@@ -209,6 +209,7 @@ Before any future Phase 20-A real-model sandbox:
 - [ ] Operator explicitly opts into a real-model run.
 - [ ] Report output is sanitized aggregate metrics only.
 - [ ] No generated report, image, model output, prompt, payload, or credential is staged.
+- [ ] Phase 20-C local smoke gate has no hard blockers under ignored local config.
 
 ## Phase 20-A Readiness Recommendation
 

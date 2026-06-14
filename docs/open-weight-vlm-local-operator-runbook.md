@@ -1,0 +1,231 @@
+# Open-weight VLM Local Operator Runbook
+
+Status: Backend-only operator runbook
+Date: 2026-06-14
+Phase: 20-C
+
+This runbook prepares a future approved local real-model smoke run for the self-hosted/open-weight VLM Photo Advisor path. It does not approve a production rollout, app-facing endpoint, iOS integration, Camera cloud AI, training/fine-tuning, or user-photo use.
+
+## Purpose
+
+Give an operator a repeatable way to prepare, gate, and review a backend-only local VLM smoke run without leaking raw images, prompts, model output, request payloads, secrets, private paths, GPS/raw EXIF, or generated reports into git, logs, docs, or app UI.
+
+The safe default remains synthetic/stubbed/no-network.
+
+## What this phase does
+
+- Adds an operator checklist for future local/self-hosted VLM smoke testing.
+- Adds a real-model smoke gate command that checks config, prerequisites, and redaction without calling a model.
+- Keeps synthetic benchmark and local stub smoke checks as prerequisites.
+- Keeps `productionReady:false`.
+- Keeps the work backend-only.
+
+## What this phase does not do
+
+- It does not run a real VLM.
+- It does not add model server code.
+- It does not add an app-facing or production endpoint.
+- It does not add iOS integration.
+- It does not add iOS provider/model keys or direct calls.
+- It does not change backend provider request payloads or iOS upload payloads.
+- It does not upload capture context.
+- It does not add Camera cloud AI.
+- It does not commit model server URLs, credentials, real photos, local fixtures, raw reports, prompts, model output, or generated artifacts.
+- It does not train or fine-tune a model.
+
+## Prerequisites
+
+Before any future real-model smoke run:
+
+- Phase 19-C through Phase 20-B checks are passing.
+- `npm run qa:open-weight-vlm:synthetic` passes.
+- `npm run qa:open-weight-vlm:gate` passes with no hard blockers.
+- `npm run qa:open-weight-vlm:local-config` still prints sanitized config buckets only.
+- `npm run qa:open-weight-vlm:local-smoke` passes in default no-network mode.
+- `npm run qa:open-weight-vlm:local-smoke-gate` is reviewed and blocks until ignored local config is intentionally prepared.
+- The operator has explicit approval to prepare a local real-model smoke run.
+
+## Approved local fixture policy
+
+Future local real-model smoke fixtures must follow these rules:
+
+- Use only approved local fixtures.
+- Keep fixtures in an ignored folder such as `backend/tests/vlm-local-samples/`.
+- Do not use user photos by default.
+- Do not commit private real photos, generated images, screenshots, recordings, or local samples.
+- Strip metadata before any future model request path.
+- Do not persist GPS/location or raw EXIF.
+- Use non-sensitive scenario names.
+- Do not label people by identity, face, skin, age, gender, emotion, health, beauty, body, race, religion, disability, or other sensitive attributes.
+
+## Ignored config policy
+
+The real local config must stay ignored:
+
+- Use `backend/config/open-weight-vlm.local.json`.
+- Do not commit the real local config.
+- Do not commit model server URLs, model registry tokens, provider credentials, API keys, private model paths, or `.env` files.
+- Keep `enabled:false` and `allowNetworkCalls:false` unless an approved local smoke run is being prepared.
+- Use loopback or explicitly approved private/internal model hosts only.
+- Do not use public model URLs by default.
+
+The committed example remains only a template:
+
+```sh
+backend/config/open-weight-vlm.local.example.json
+```
+
+## Safe command sequence
+
+Run these commands from `backend/`:
+
+```sh
+npm test
+npm run qa:open-weight-vlm:synthetic
+npm run qa:open-weight-vlm:gate
+npm run qa:open-weight-vlm:local-config
+npm run qa:open-weight-vlm:local-smoke
+npm run qa:open-weight-vlm:local-smoke-gate
+```
+
+Expected current behavior:
+
+- Synthetic benchmark passes.
+- Synthetic benchmark gate passes.
+- Local config dry-run is sanitized.
+- Local smoke passes in no-network stub mode.
+- Local smoke gate fails closed until ignored local config is present, enabled, network opt-in is true, approved local fixture mode is set, and all prerequisites pass.
+
+Do not run a real model from this phase.
+
+## Real-model smoke gate checks
+
+The smoke gate checks:
+
+- ignored local config exists
+- config path is the local ignored config pattern
+- `enabled:true` is present only in local ignored config
+- `allowNetworkCalls:true` is present only in local ignored config
+- model server URL is sanitized into a bucket and must be loopback/private-approved
+- no public model URL by default
+- `fixtureMode` is `approved_local_only`
+- synthetic benchmark gate has passed
+- local sandbox smoke passes in default no-network mode
+- output redacts URL/path/secret-like values
+- `productionReady:false`
+- `networkCallsMade:false`
+
+The gate does not call a model.
+
+## Stop conditions
+
+Stop immediately if any of these occur:
+
+- config is missing or unsafe
+- public model URL appears
+- credentials or token-like values appear in config, output, docs, or staged files
+- real photo, user photo, screenshot, recording, generated image, or local sample appears in staged files
+- raw image, base64, private path, prompt, request payload, or model output appears in output or docs
+- synthetic benchmark gate fails
+- local smoke default no-network check fails
+- any hard blocker appears from the benchmark gate
+- any payload change appears
+- any iOS integration diff appears
+- any Camera cloud entry diff appears
+- `productionReady` is set to true
+- raw EXIF/GPS is persisted
+- training or fine-tuning starts
+
+## Sanitized reporting rules
+
+Allowed output:
+
+- sanitized status categories
+- sanitized blocker/warning codes
+- config buckets, not raw config values
+- prerequisite pass/fail booleans
+- aggregate benchmark/smoke counts
+- `productionReady:false`
+- `networkCallsMade:false` unless a later approved phase explicitly runs a local model
+
+Forbidden output:
+
+- raw image
+- base64 image
+- raw prompt
+- raw request payload
+- raw model output
+- raw provider/model response
+- model server URL
+- credentials, tokens, Authorization headers, or secrets
+- private file paths
+- GPS/location
+- raw EXIF
+- stack traces containing model output
+- unsafe model text
+
+## Post-run artifact scan
+
+Before committing after any operator QA work:
+
+```sh
+git status --short --untracked-files=all
+git diff --check
+```
+
+Then confirm no staged/untracked artifacts include:
+
+- real photos
+- approved local samples
+- generated images
+- screenshots or recordings
+- raw reports
+- model outputs
+- prompts or request payloads
+- `.env` files
+- local config files
+
+## Troubleshooting
+
+- `config_missing`: expected until `backend/config/open-weight-vlm.local.json` is created locally and remains ignored.
+- `sandbox_disabled`: set `enabled:true` only for an approved local run.
+- `network_opt_in_missing`: set `allowNetworkCalls:true` only for an approved local run.
+- `model_server_missing`: the ignored local config needs a validated local/private model server URL bucket.
+- `synthetic_benchmark_gate_not_passed`: rerun the synthetic benchmark and gate before trying local model work.
+- `local_smoke_default_not_passed`: fix the no-network stub smoke path before any real-model work.
+- `local_smoke_gate_redaction_failed`: stop and inspect only code, not raw reports; do not commit generated output.
+
+## Boundary confirmations
+
+- No iOS integration is added.
+- No app-facing endpoint is added.
+- No production endpoint is added.
+- No model server URL config is committed.
+- No provider/model credentials are committed.
+- No backend provider request payload is changed.
+- No iOS upload payload is changed.
+- No capture context upload is added.
+- No Camera cloud AI entry is added.
+- No real photos or generated raw model reports are committed.
+- No training/fine-tuning is added.
+- `productionReady:false` remains required.
+
+## Phase 20-D handoff checklist
+
+Phase 20-D may start only after explicit approval and only if:
+
+- synthetic benchmark passes
+- synthetic benchmark gate has no hard blockers
+- local config dry-run is sanitized
+- local sandbox smoke passes in no-network mode
+- local smoke gate has no hard blockers under ignored local config
+- approved local fixtures are present only in ignored folders
+- operator confirms no real/user photos will be committed
+- operator confirms raw prompt/model output/image/path/request payload logging is disabled
+- generated reports remain ignored
+- app/backend payloads are unchanged
+- iOS has no provider/model key or direct call
+- Camera has no cloud AI entry
+- `productionReady:false`
+
+Passing this checklist is not production approval. It only prepares a backend-only local real-model smoke run.

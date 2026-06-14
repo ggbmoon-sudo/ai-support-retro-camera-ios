@@ -1,5 +1,24 @@
 # Manual Smoke Tests
 
+## Phase 20-C
+
+Backend-only local VLM operator runbook and real-model smoke gate:
+
+- [ ] Open `docs/open-weight-vlm-local-operator-runbook.md`.
+- [ ] Confirm the runbook covers purpose, scope, prerequisites, approved local fixture policy, ignored config policy, safe commands, smoke gate checks, stop conditions, sanitized reporting, artifact scan, troubleshooting, boundary confirmations, and Phase 20-D handoff.
+- [ ] Run backend tests: `cd backend && npm test`.
+- [ ] Run synthetic benchmark: `cd backend && npm run qa:open-weight-vlm:synthetic`.
+- [ ] Run synthetic gate summary: `cd backend && npm run qa:open-weight-vlm:gate`.
+- [ ] Run local sandbox config dry-run: `cd backend && npm run qa:open-weight-vlm:local-config`.
+- [ ] Run local sandbox smoke path: `cd backend && npm run qa:open-weight-vlm:local-smoke`.
+- [ ] Run local smoke gate: `cd backend && npm run qa:open-weight-vlm:local-smoke-gate`.
+- [ ] Confirm local smoke gate fails closed when ignored local config is absent, disabled, missing `allowNetworkCalls:true`, using a public/non-local URL, or using a non-approved fixture mode.
+- [ ] Confirm local smoke gate output includes `productionReady:false`, `networkCallsMade:false`, sanitized `hardBlockers[]`, sanitized config buckets, and prerequisite booleans.
+- [ ] Confirm local smoke gate output does not print a full model server URL, raw image path, raw prompt, raw model output, base64, request payload, credentials, token-like values, secrets, or real sample names.
+- [ ] Confirm no real VLM/provider call is run and no model server is contacted.
+- [ ] Confirm no app-facing backend endpoint, production endpoint, backend provider request payload change, iOS upload payload change, capture-context upload, iOS provider/model key/direct call, Camera cloud AI entry, real photo, generated raw model report, training/fine-tuning, or production rollout is introduced.
+- [ ] Confirm `productionReady=false`.
+
 ## Phase 20-B
 
 Backend-only local VLM sandbox client smoke path:
