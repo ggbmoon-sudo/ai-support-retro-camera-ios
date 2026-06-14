@@ -1,5 +1,22 @@
 # Manual Smoke Tests
 
+## Phase 19-D
+
+Open-weight VLM synthetic benchmark report and gate summary:
+
+- [ ] Run backend tests: `cd backend && npm test`.
+- [ ] Run synthetic benchmark: `cd backend && npm run qa:open-weight-vlm:synthetic`.
+- [ ] Run synthetic gate summary: `cd backend && npm run qa:open-weight-vlm:gate`.
+- [ ] If `npm` is unavailable, run the same commands through local Node: `node --test tests/*.test.mjs`, `node scripts/run-open-weight-vlm-photo-advisor-benchmark.mjs --synthetic`, and `node scripts/check-open-weight-vlm-photo-advisor-benchmark-gate.mjs --synthetic`.
+- [ ] Confirm gate output includes `productionReady:false`, `eligibleForSyntheticContractReview`, `statusCategories`, `hardBlockers`, `blockedFixtureCounts`, and reviewed metrics.
+- [ ] Confirm gate output shows `providerConfigured:false`, `modelServerConfigured:false`, and `networkCallsMade:false`.
+- [ ] Confirm clean synthetic fixtures report no hard blockers and `pass_for_synthetic_contract`.
+- [ ] Confirm blocked fixture counts include safety, schema, filter integrity, language contract, source-context overclaim, retake gate, and leakage categories.
+- [ ] Confirm gate would fail on expectation failures, accepted sensitive inference, accepted score/rating, accepted chain-of-thought, accepted debug/provider leakage, accepted imported overclaim, accepted unsupported filter, `networkCallsMade:true`, or `productionReady:true`.
+- [ ] Confirm output does not include raw prompt, raw model output, raw image path, base64, request payload, provider/model credentials, secrets, real photo references, GPS, raw EXIF, or stack traces.
+- [ ] Confirm no backend provider request payload change, iOS upload payload change, capture-context upload, iOS provider/model key/direct call, Camera cloud entry, real VLM/provider QA, training/fine-tuning, generated artifact commit, or production rollout is introduced.
+- [ ] Confirm `productionReady=false`.
+
 ## Phase 19-C
 
 Backend-only open-weight VLM synthetic benchmark harness:

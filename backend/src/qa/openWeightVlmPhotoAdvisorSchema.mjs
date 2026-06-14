@@ -287,6 +287,7 @@ export function evaluateOpenWeightVlmBenchmarkCase(item = {}) {
   return {
     caseId: sanitizeCaseId(item.id),
     scenario: sanitizeCaseId(item.scenario ?? item.id),
+    scenarioGroup: scenarioGroupFor(item.scenario ?? item.id),
     expectedStatus,
     actualStatus,
     passedExpectation,
@@ -323,6 +324,16 @@ export function summarizeOpenWeightVlmBenchmark(results = []) {
     sourceContextOverclaimCount: countByCode(results, "source_context_overclaim"),
     retakeGateCount: countByCode(results, "retake_gate"),
     unsafeResponseCount: countByCode(results, "unsafe_response"),
+    sensitiveInferenceBlockerCount: countRejectedScenarioGroup(results, "sensitive_inference"),
+    scoreRatingBlockerCount: countRejectedScenarioGroup(results, "score_rating"),
+    chainOfThoughtBlockerCount: countRejectedScenarioGroup(results, "chain_of_thought"),
+    debugLeakageBlockerCount: countRejectedScenarioGroup(results, "debug_provider_leakage"),
+    acceptedSensitiveInferenceCount: countAcceptedScenarioGroup(results, "sensitive_inference"),
+    acceptedScoreRatingCount: countAcceptedScenarioGroup(results, "score_rating"),
+    acceptedChainOfThoughtCount: countAcceptedScenarioGroup(results, "chain_of_thought"),
+    acceptedDebugLeakageCount: countAcceptedScenarioGroup(results, "debug_provider_leakage"),
+    acceptedSourceContextOverclaimCount: countAcceptedScenarioGroup(results, "source_context_overclaim"),
+    acceptedUnsupportedFilterCount: countAcceptedScenarioGroup(results, "unsupported_filter"),
     fallbackByCategory: countByCategory(results),
     payloadLoggingDisabled: true,
     rawImagePersisted: false,
@@ -576,12 +587,43 @@ function countByCategory(results) {
   return counts;
 }
 
+function countAcceptedScenarioGroup(results, scenarioGroup) {
+  return results.filter((item) => item.actualStatus === "accepted" && item.scenarioGroup === scenarioGroup).length;
+}
+
+function countRejectedScenarioGroup(results, scenarioGroup) {
+  return results.filter((item) => item.actualStatus === "rejected" && item.scenarioGroup === scenarioGroup).length;
+}
+
 function isPlainObject(value) {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
 }
 
 function sanitizeCaseId(value) {
   return String(value ?? "unknown").replace(/[^a-zA-Z0-9._:-]/g, "_").slice(0, 120) || "unknown";
+}
+
+function scenarioGroupFor(value) {
+  const scenario = sanitizeCaseId(value);
+  if (scenario.includes("sensitive_inference")) {
+    return "sensitive_inference";
+  }
+  if (scenario.includes("score_rating")) {
+    return "score_rating";
+  }
+  if (scenario.includes("chain_of_thought")) {
+    return "chain_of_thought";
+  }
+  if (scenario.includes("debug_provider_leakage")) {
+    return "debug_provider_leakage";
+  }
+  if (scenario.includes("source_context_overclaim")) {
+    return "source_context_overclaim";
+  }
+  if (scenario.includes("unsupported_filter")) {
+    return "unsupported_filter";
+  }
+  return scenario;
 }
 
 function sanitizeEnumBucket(value) {

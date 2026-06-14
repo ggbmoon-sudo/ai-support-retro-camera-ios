@@ -328,10 +328,17 @@ Run the synthetic harness:
 npm run qa:open-weight-vlm:synthetic
 ```
 
+Run the synthetic gate summary:
+
+```sh
+npm run qa:open-weight-vlm:gate
+```
+
 If this runtime does not have `npm`, run the script directly:
 
 ```sh
 node scripts/run-open-weight-vlm-photo-advisor-benchmark.mjs --synthetic
+node scripts/check-open-weight-vlm-photo-advisor-benchmark-gate.mjs --synthetic
 ```
 
 Run all backend tests:
@@ -351,6 +358,22 @@ Boundary notes:
 - Camera remains local-only.
 - No training or fine-tuning is started.
 - `productionReady` remains `false`.
+
+Phase 19-D adds the gate helper for the synthetic benchmark report. The helper prints:
+
+- `productionReady:false`
+- `eligibleForSyntheticContractReview`
+- `statusCategories`
+- `hardBlockers`
+- `blockedFixtureCounts`
+- reviewed metrics for total / accepted / rejected / expectation pass-fail / rejection categories
+- `providerConfigured:false`
+- `modelServerConfigured:false`
+- `networkCallsMade:false`
+
+Gate hard blockers include expectation failures, accepted sensitive inference, accepted score/rating, accepted chain-of-thought, accepted debug/provider leakage, accepted imported context overclaim, accepted unsupported filter family, network calls, or `productionReady:true`.
+
+The gate helper does not print raw prompts, raw model output, raw images, base64, request payloads, credentials, secrets, private file paths, real photo references, GPS, raw EXIF, or stack traces.
 
 Phase 18-B5 adds a small gate summary helper for sanitized reports:
 

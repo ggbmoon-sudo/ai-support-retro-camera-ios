@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
+import { evaluateOpenWeightVlmBenchmarkGate } from "../src/qa/openWeightVlmBenchmarkGate.mjs";
 import {
   assertOpenWeightVlmBenchmarkReportRedacted,
   evaluateOpenWeightVlmBenchmarkCase,
@@ -12,6 +13,7 @@ import {
 
 const FIXTURE_URL = new URL("./fixtures/open-weight-vlm-photo-advisor-benchmark-cases.json", import.meta.url);
 const SCRIPT_URL = new URL("../scripts/run-open-weight-vlm-photo-advisor-benchmark.mjs", import.meta.url);
+const GATE_SCRIPT_URL = new URL("../scripts/check-open-weight-vlm-photo-advisor-benchmark-gate.mjs", import.meta.url);
 
 test("open-weight VLM validator accepts valid synthetic benchmark fixtures", async () => {
   const cases = await benchmarkCases();
@@ -100,6 +102,78 @@ test("open-weight VLM synthetic benchmark script prints sanitized metrics only",
   assert.equal(output.includes("{ not valid json"), false);
   assert.equal(output.includes("provider debug output"), false);
   assert.equal(output.includes("score.8/10"), false);
+});
+
+test("open-weight VLM benchmark gate passes clean synthetic report", async () => {
+  const cases = await benchmarkCases();
+  const results = cases.map(evaluateOpenWeightVlmBenchmarkCase);
+  const report = summarizeOpenWeightVlmBenchmark(results);
+  const gate = evaluateOpenWeightVlmBenchmarkGate(report);
+
+  assert.equal(gate.productionReady, false);
+  assert.equal(gate.eligibleForSyntheticContractReview, true);
+  assert.deepEqual(gate.hardBlockers, []);
+  assert.equal(gate.statusCategories.includes("pass_for_synthetic_contract"), true);
+  assert.equal(gate.reviewedMetrics.totalCases, 20);
+  assert.equal(gate.reviewedMetrics.expectationFailureCount, 0);
+  assert.equal(gate.blockedFixtureCounts.safetyBlockers, 1);
+  assert.equal(gate.blockedFixtureCounts.schemaBlockers, 2);
+  assert.equal(gate.blockedFixtureCounts.sourceContextOverclaimBlockers, 1);
+  assert.equal(gate.blockedFixtureCounts.retakeGateBlockers, 1);
+  assert.equal(gate.blockedFixtureCounts.leakageBlockers, 1);
+});
+
+test("open-weight VLM benchmark gate blocks synthetic regressions", async () => {
+  const cases = await benchmarkCases();
+  const results = cases.map(evaluateOpenWeightVlmBenchmarkCase);
+  const report = summarizeOpenWeightVlmBenchmark(results);
+  const gate = evaluateOpenWeightVlmBenchmarkGate({
+    ...report,
+    expectationFailureCount: 1,
+    acceptedSensitiveInferenceCount: 1,
+    acceptedScoreRatingCount: 1,
+    acceptedChainOfThoughtCount: 1,
+    acceptedDebugLeakageCount: 1,
+    acceptedSourceContextOverclaimCount: 1,
+    acceptedUnsupportedFilterCount: 1,
+    networkCallsMade: true,
+    productionReady: true
+  });
+  const blockerCodes = new Set(gate.hardBlockers.map((item) => item.code));
+
+  assert.equal(gate.productionReady, false);
+  assert.equal(gate.eligibleForSyntheticContractReview, false);
+  assert.equal(blockerCodes.has("expectation_failures"), true);
+  assert.equal(blockerCodes.has("accepted_sensitive_inference"), true);
+  assert.equal(blockerCodes.has("accepted_score_rating"), true);
+  assert.equal(blockerCodes.has("accepted_chain_of_thought"), true);
+  assert.equal(blockerCodes.has("accepted_debug_leakage"), true);
+  assert.equal(blockerCodes.has("accepted_imported_overclaim"), true);
+  assert.equal(blockerCodes.has("accepted_unsupported_filter"), true);
+  assert.equal(blockerCodes.has("network_calls_made"), true);
+  assert.equal(blockerCodes.has("production_ready_true"), true);
+});
+
+test("open-weight VLM benchmark gate script prints sanitized pass/fail summary only", () => {
+  const output = execFileSync(process.execPath, [GATE_SCRIPT_URL.pathname, "--synthetic"], {
+    cwd: new URL("..", import.meta.url),
+    encoding: "utf8"
+  });
+  const gate = JSON.parse(output);
+
+  assert.equal(gate.productionReady, false);
+  assert.equal(gate.eligibleForSyntheticContractReview, true);
+  assert.equal(gate.hardBlockers.length, 0);
+  assert.equal(gate.blockedFixtureCounts.safetyBlockers, 1);
+  assert.equal(gate.blockedFixtureCounts.leakageBlockers, 1);
+  assert.equal(gate.reviewedMetrics.networkCallsMade, false);
+  assert.equal(output.includes("modelOutput"), false);
+  assert.equal(output.includes("{ not valid json"), false);
+  assert.equal(output.includes("provider debug output"), false);
+  assert.equal(output.includes("score.8/10"), false);
+  assert.equal(output.includes("Authorization"), false);
+  assert.equal(output.includes("Bearer "), false);
+  assert.equal(output.includes("dataBase64"), false);
 });
 
 async function benchmarkCases() {
