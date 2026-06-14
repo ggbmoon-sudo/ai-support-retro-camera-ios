@@ -79,6 +79,22 @@ Latest Phase 20-C handoff refresh check on 2026-06-14:
 - Next planned phase is `Phase 20-D: First approved local real-model smoke run`, but it must start only after explicit user request. It must remain backend-only, local/self-hosted, ignored-config-only, approved-local-fixture-only, sanitized-output-only, and production-blocked.
 - This handoff refresh itself is documentation-only and should be committed separately if accepted.
 
+Latest Phase 20-D preflight check on 2026-06-14:
+
+- Branch: `feat/phase-02-auth`.
+- Use upstream shorthand such as `@{u}`; do not assume `origin/main` exists in this clone.
+- `git status` was clean before Phase 20-D docs were updated.
+- `git log --oneline @{u}..HEAD` showed no local-only commits.
+- `git rev-list --left-right --count @{u}...HEAD` returned `0 0`, meaning Phase 20-C was already committed and upstream-synced / pushed before Phase 20-D began.
+- Phase 20-D ran the backend-only local VLM real-model smoke preflight and stopped safely before any model call.
+- `backend/config/open-weight-vlm.local.json` is ignored by git, but the real ignored local config file was absent on disk, untracked, and unstaged.
+- Backend tests passed, synthetic benchmark passed, benchmark gate passed, local config dry-run passed against the example config, and default local sandbox smoke passed in no-network mode.
+- Local smoke gate failed closed as expected with sanitized blockers: `config_missing`, `sandbox_disabled`, `network_opt_in_missing`, `model_server_missing`, and `non_approved_fixture_mode`.
+- Because the gate failed, `--run-local-model` was not run. No model server was contacted and no raw prompt, raw model output, raw image/base64/path, request payload, full model server URL, credential, token, GPS/raw EXIF, or generated raw report was printed or persisted.
+- Phase 20-D did not add iOS integration, app-facing endpoints, production endpoints, model server implementation, active model URL config, provider/model credentials, backend provider request payload changes, iOS upload payload changes, capture-context upload, Camera cloud AI, real photos, generated reports, training/fine-tuning, or production rollout.
+- `productionReady:false` remains required.
+- Next recommended step is not Phase 20-E real-model expansion yet. Either retry Phase 20-D after the operator prepares ignored local config, approved ignored local fixtures, and a safe local/private model server, or explicitly choose a docs-only / fixture-only continuation.
+
 Confirmed locally:
 
 - Phase 16E - Static Pose Overlay MVP

@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 20-C Local VLM Operator Runbook + Real-model Smoke Gate completed; ready for review
+- Phase 20-D First Approved Local Real-model Smoke Run preflight completed; real-model smoke was blocked safely because ignored local config is absent
 
 Next phase:
 
-- Phase 20-D first approved local real-model smoke run may start only if explicitly requested and must remain backend-only/local-self-hosted, ignored-config-only, approved-local-fixture-only, sanitized-output-only, and explicit-operator-opt-in unless a later prompt explicitly approves broader integration
+- Retry Phase 20-D only after ignored local config, approved ignored local fixtures, and a safe local/private model server are prepared; otherwise continue only with an explicitly requested docs-only / fixture-only phase
 - Do not start production cloud rollout without explicit approval
 - Production rollout remains blocked until a later explicit release phase
 
@@ -243,6 +243,8 @@ Phase 20-A adds a backend-only local/self-hosted VLM sandbox setup. It introduce
 Phase 20-B adds a backend-only local VLM sandbox client smoke path. It introduces a stub/no-network client module and smoke script that validates one safe synthetic candidate through the existing VLM schema and benchmark gate, prints sanitized aggregate metrics only, and keeps `networkCallsMade:false`. The explicit future local-model command remains opt-in and fail-closed unless ignored local config, approved local fixtures, synthetic gate success, and a later phase approve real local/self-hosted calls. No app-facing endpoint, real model call, model server implementation, provider/model credential, iOS integration, backend provider request payload change, iOS upload payload change, capture-context upload, Camera cloud AI entry, real photo, generated report, training/fine-tuning, or production rollout is added.
 
 Phase 20-C adds `docs/open-weight-vlm-local-operator-runbook.md` and a backend-only local smoke gate helper for future approved local real-model smoke runs. `npm run qa:open-weight-vlm:local-smoke-gate` checks ignored local config, synthetic benchmark gate status, default no-network smoke status, approved fixture mode, URL/config buckets, redaction flags, and `productionReady:false` without calling a model. The gate fails closed until an ignored local config is explicitly prepared for a later approved Phase 20-D run. No app-facing endpoint, real model call, model server implementation, provider/model credential, iOS integration, backend provider request payload change, iOS upload payload change, capture-context upload, Camera cloud AI entry, real photo, generated report, training/fine-tuning, or production rollout is added.
+
+Phase 20-D ran the first local real-model smoke preflight and stopped safely before any model call. The branch was clean and upstream-synced, backend tests passed, the synthetic benchmark and benchmark gate passed, the local config dry-run passed against the example config, and the default local sandbox smoke passed in no-network mode. The ignored real local config path `backend/config/open-weight-vlm.local.json` is ignored by git but absent on disk, untracked, and unstaged, so the local smoke gate failed closed with sanitized blockers and `networkCallsMade:false`. No real VLM/provider call, app-facing endpoint, model server implementation, provider/model credential, iOS integration, backend provider request payload change, iOS upload payload change, capture-context upload, Camera cloud AI entry, real photo, generated report, training/fine-tuning, or production rollout is added.
 
 ## Phase 12A Filter Planning Status
 

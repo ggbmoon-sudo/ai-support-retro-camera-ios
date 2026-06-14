@@ -593,6 +593,23 @@ The operator runbook is:
 
 Phase 20-D may only run a real local model if explicitly requested, with ignored local config, approved ignored fixtures, synthetic gate success, default local smoke success, no raw artifact logging, and sanitized aggregate output only.
 
+## Phase 20-D Local Real-model Smoke Preflight
+
+Phase 20-D ran the backend-only real-model smoke preflight and stopped before any model call because the ignored real local config was not present.
+
+Observed safe result:
+
+- `backend/config/open-weight-vlm.local.json` is covered by `.gitignore`.
+- The ignored real local config was absent on disk, untracked, and unstaged.
+- Backend tests passed.
+- Synthetic benchmark and benchmark gate passed.
+- Local config dry-run passed against the committed example config.
+- Local sandbox smoke passed in default no-network mode.
+- Local smoke gate failed closed with sanitized blockers: `config_missing`, `sandbox_disabled`, `network_opt_in_missing`, `model_server_missing`, and `non_approved_fixture_mode`.
+- `productionReady:false` and `networkCallsMade:false` remained true for the gate output.
+
+Because the local smoke gate did not pass, `--run-local-model` was not run. No model server was contacted, no raw prompt/model output/image/path/request payload was logged or persisted, and no generated report was created.
+
 Phase 18-B5 adds a small gate summary helper for sanitized reports:
 
 ```sh
