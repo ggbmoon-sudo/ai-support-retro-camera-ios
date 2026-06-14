@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 19-A - Open-weight VLM Backend Architecture ADR
-Status: Phase 19-A completed and ready to commit
-Latest implementation: Added a documentation-only architecture ADR for a future self-hosted / open-weight VLM Photo Advisor backend. The ADR compares Qwen2.5-VL-7B, Qwen2-VL-7B, MiniCPM-V, and future watchlist candidates; compares Ollama, vLLM, SGLang, and Transformers / FastAPI serving paths; defines a future explicit-consent post-capture backend architecture with metadata stripping, structured PhotoAdvisor JSON, backend validation, and safe fallback; and documents prompt/schema tuning first, evaluation dataset next, and LoRA/QLoRA later only with curated, consented, non-sensitive data. App/backend runtime behavior, backend provider request payloads, iOS upload payloads, capture-context upload, Camera cloud entry, provider credential handling, real-provider QA, cloud functionality, user-photo training, and production rollout remain unchanged
+Current phase: Phase 19-B - Open-weight VLM Structured Advisor Benchmark Plan
+Status: Phase 19-B completed and ready to commit
+Latest implementation: Added a documentation-only benchmark plan for evaluating future open-weight VLMs as structured Photo Advisor backends. The plan defines Qwen2.5-VL-7B-Instruct, Qwen3-VL-8B-Instruct, MiniCPM-V 4.5, and optional InternVL3-8B benchmark candidates; compares Transformers/FastAPI, Ollama/LM Studio, vLLM, and SGLang serving roles; scopes synthetic/internal benchmark categories; proposes enum/key-based VLM candidate JSON with no final UI prose; assigns backend validator/fallback responsibilities; and records metrics/gates for JSON validity, schema compliance, safety, filter family fit, creative intent preservation, retake restraint, imported-context overclaim, latency, VRAM/model-loading notes, and artifact hygiene. App/backend runtime behavior, backend provider request payloads, iOS upload payloads, capture-context upload, Camera cloud entry, provider credential handling, real-provider/VLM QA, model training/fine-tuning, cloud functionality, user-photo training, and production rollout remain unchanged
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -72,7 +72,63 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Phase 19-B may start only if explicitly requested and should be an open-weight VLM local sandbox / benchmark plan. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, real-provider QA, save-to-Photos, app integration, or user-photo training / fine-tuning until explicitly requested.
+Next phase: Phase 19-C may start only if explicitly requested and should be an open-weight VLM local benchmark harness plan. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, real-provider/VLM QA, save-to-Photos, app integration, model server implementation, or user-photo training / fine-tuning until explicitly requested.
+
+---
+
+## Phase 19-B - Open-weight VLM Structured Advisor Benchmark Plan
+
+Status: Completed and ready to commit
+Date: 2026-06-14
+
+### Completed
+
+- Added `docs/open-weight-vlm-structured-advisor-benchmark-plan.md`.
+- Read and incorporated the Open-weight VLM Candidate Report, VLM Serving Stack Report, and Photo Advisor Fine-tuning Dataset + Evaluation Report.
+- Defined first benchmark candidates: Qwen2.5-VL-7B-Instruct, Qwen3-VL-8B-Instruct, MiniCPM-V 4.5, and optional InternVL3-8B.
+- Defined serving stack roles: Transformers + FastAPI for correctness/reference, Ollama / LM Studio for local smoke/manual QA only, vLLM as primary internal benchmark serving stack, and SGLang as structured-output / performance challenger.
+- Defined synthetic/internal benchmark dataset categories covering bright scenes, low light, intentional blur, motion, tilt, grain, high contrast, faded color, imported limited context, severe blur, black image, unsupported filter, prompt injection, and safety cases.
+- Defined a docs-only structured VLM candidate JSON shape where the model returns enum/key-based labels only, not final UI prose.
+- Defined backend validator/fallback responsibilities for JSON parsing, schema validation, `additionalProperties=false`, enum whitelist, source/context validation, filter-family-to-whitelisted-filter mapping, retake gate, safety scan, and fallback.
+- Defined metrics and gates for valid JSON, schema pass, safety pass, fallback, filter family match, creative intent preservation, retake false positives, imported-context overclaims, latency p50/p90/p95, VRAM/model-loading notes, and artifact hygiene.
+- Recommended Phase 19-C as an explicitly approved local benchmark harness plan with ignored fixtures/reports and no iOS app integration.
+- Updated README, backend README, iOS README, manual smoke tests, handoff, and phase log references.
+
+### Safety Notes
+
+- This phase is documentation-only.
+- No model server code was added.
+- No real-provider QA or real VLM QA was run.
+- No model download, model cache, benchmark report, or generated image was added.
+- No training or fine-tuning was started.
+- Backend provider request payloads were not changed.
+- iOS upload payloads were not changed.
+- Capture context is not uploaded.
+- iOS has no provider/model key, no provider/model SDK, and no direct provider/model call.
+- Camera remains local-only with no cloud AI entry.
+- No GPS/location collection, raw EXIF dump, raw sensor persistence, raw image/base64 logging, raw prompt logging, model/provider raw response logging, user-photo training, cloud functionality, or production rollout was added.
+- `productionReady` remains `false`.
+
+### Verification
+
+- [x] `git diff --check` passed.
+- [x] Photo Advisor copy regression script passed.
+- [x] Filter reason coverage script passed.
+- [x] CreativeIntent language script passed.
+- [x] Photo Advisor card language script passed.
+- [x] Secret scan passed.
+- [x] iOS direct provider/model scan was clean.
+- [x] Camera cloud-entry scan was clean.
+- [x] Backend/iOS payload unchanged scan showed no changed payload paths.
+- [x] GPS / raw EXIF / sensor persistence scan found only existing safety-denylist/report text, not new collection or persistence code.
+- [x] Artifact scan confirmed `.env`, provider QA reports, local QA images, approved-real sample placeholders, and generated/report folders remain ignored.
+- [x] New benchmark plan doc has no trailing whitespace.
+- [x] Backend tests not required because backend source/package files were not changed.
+- [x] Xcode build not required because iOS source/project/localization files were not changed.
+
+### Ready to Commit Phase 19-B
+
+Yes.
 
 ---
 

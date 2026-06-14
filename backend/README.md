@@ -283,6 +283,23 @@ Phase 19-A does not add model server code, run real-provider QA, change backend 
 
 Recommended next step is Phase 19-B: a local / ignored backend VLM sandbox or benchmark plan with no app integration unless explicitly approved.
 
+## Phase 19-B Structured Advisor Benchmark Plan
+
+Phase 19-B is documentation-only. It adds `../docs/open-weight-vlm-structured-advisor-benchmark-plan.md` for evaluating future open-weight VLMs as structured Photo Advisor backends.
+
+The plan defines:
+
+- first benchmark candidates: Qwen2.5-VL-7B-Instruct, Qwen3-VL-8B-Instruct, MiniCPM-V 4.5, and optional InternVL3-8B
+- serving stack roles: Transformers + FastAPI for correctness, Ollama / LM Studio for local smoke/manual QA, vLLM as primary internal benchmark stack, and SGLang as structured-output / performance challenger
+- synthetic/internal benchmark scenario categories covering bright, low-light, intentional blur, motion, tilt, grain, high contrast, faded color, imported limited context, severe blur, black image, unsupported filter, prompt injection, and safety cases
+- a future enum/key-based VLM candidate JSON shape that does not include final UI prose
+- backend validator/fallback responsibilities for JSON parsing, schema validation, `additionalProperties=false`, enum whitelists, source/context validation, filter-family-to-whitelisted-filter mapping, retake gating, safety scanning, and fallback
+- metrics and gates for JSON validity, schema pass rate, safety, fallback, filter family match, creative intent preservation, retake false positives, imported-context overclaims, latency, VRAM/model-loading notes, and artifact hygiene
+
+Phase 19-B does not add model server code, run real VLM/provider QA, train or fine-tune models, change backend provider request payloads, change iOS upload payloads, upload capture context, add cloud availability, add iOS provider/model keys or direct calls, add a Camera cloud AI entry, or change `productionReady=false`.
+
+Recommended next step is Phase 19-C: an explicitly approved local benchmark harness plan with ignored fixtures/reports and no iOS app integration.
+
 Phase 18-B5 adds a small gate summary helper for sanitized reports:
 
 ```sh

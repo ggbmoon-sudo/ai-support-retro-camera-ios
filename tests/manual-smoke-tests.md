@@ -1,5 +1,21 @@
 # Manual Smoke Tests
 
+## Phase 19-B
+
+Open-weight VLM structured Advisor benchmark plan:
+
+- [ ] Open `docs/open-weight-vlm-structured-advisor-benchmark-plan.md`.
+- [ ] Confirm the plan is documentation-only and does not approve model server implementation.
+- [ ] Confirm first benchmark candidates are Qwen2.5-VL-7B-Instruct, Qwen3-VL-8B-Instruct, MiniCPM-V 4.5, and optional InternVL3-8B.
+- [ ] Confirm serving stack roles are Transformers + FastAPI for correctness, Ollama / LM Studio for local smoke/manual QA, vLLM as primary internal benchmark stack, and SGLang as performance / structured-output challenger.
+- [ ] Confirm benchmark dataset categories cover bright, low light, intentional blur, motion, tilt, grain, high contrast, faded color, imported limited context, severe blur, black image, unsupported filter, prompt injection, and safety cases.
+- [ ] Confirm structured VLM candidate JSON is enum/key-based only and does not include final UI prose.
+- [ ] Confirm validator responsibilities include JSON parsing, schema validation, `additionalProperties=false`, enum whitelist, source/context validation, filter-family mapping to whitelisted filter IDs, retake gate, safety scan, and fallback.
+- [ ] Confirm metrics include valid JSON, schema pass, safety pass, fallback, filter family match, creative intent preservation, retake false positive, imported-context overclaim, latency, and VRAM/model-loading notes.
+- [ ] Confirm hard gates block accepted sensitive inference, score/rating, chain-of-thought, provider/debug leakage, unsupported filters, imported capture-context overclaim, raw artifact leakage, iOS provider/model keys/direct calls, Camera cloud entry, payload changes, capture-context upload, and `productionReady=true`.
+- [ ] Confirm no app/backend runtime behavior, model server code, backend provider request payload, iOS upload payload, capture-context upload, iOS provider/model key/direct call, Camera cloud entry, generated artifact commit, real VLM/provider QA, training/fine-tuning, or production rollout is introduced.
+- [ ] Confirm `productionReady=false`.
+
 ## Phase 19-A
 
 Open-weight VLM Backend Architecture ADR:

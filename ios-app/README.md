@@ -134,6 +134,8 @@ Phase 18-C3 polishes the local/mock Photo Advisor multilingual beta copy only. T
 
 Phase 19-A is documentation-only and keeps iOS behavior unchanged. It adds an architecture ADR for a future self-hosted / open-weight VLM backend research path, but does not add model server integration, iOS provider keys, direct model/provider calls, Camera cloud AI entry points, capture-context upload, iOS upload payload changes, or production rollout. Any future VLM work must remain backend-mediated, consented post-capture only, validated against the Photo Advisor contract, and rendered through the existing app language pack / result card.
 
+Phase 19-B is documentation-only and also keeps iOS behavior unchanged. It adds a structured Advisor benchmark plan for future open-weight VLM evaluation, where models would output enum/key-based candidate JSON only and the existing iOS language pack / result card would render final UI copy. It does not add model server integration, iOS provider/model keys, direct model/provider calls, Camera cloud AI entry points, capture-context upload, iOS upload payload changes, real VLM/provider QA, training/fine-tuning, or production rollout.
+
 ## Phase 17D-A Local Camera Capture Context
 
 Phase 17D-A adds local-only summarized capture context for captured / imported photos:
