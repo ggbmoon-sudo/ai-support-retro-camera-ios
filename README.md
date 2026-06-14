@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 18-C3 multilingual Advisor copy beta QA pass completed; ready for review
+- Phase 18-C4 Post-capture Advisor beta readiness audit completed; ready for review
 
 Next phase:
 
-- Future Phase 18-C follow-up work must stay app-side/local or internal/debug-only unless explicitly approved
+- Phase 19-A may start as an Open-weight VLM Backend Architecture ADR only if explicitly requested
 - Do not start production cloud rollout without explicit approval
 - Production rollout remains blocked until a later explicit release phase
 
@@ -221,6 +221,8 @@ Phase 18-C1 polishes the local/mock post-capture Advisor result card for beta re
 Phase 18-C2 hardens the captured / imported / fallback Advisor QA path. Captured photos may still use safe local capture/image context, imported photos keep limited-context wording and do not claim capture-time motion / tilt / exposure / stability, fallback results are explicitly marked as fallback, fallback/error copy avoids mock/internal-result wording, and fallback filters choose from the allowed local catalog when possible. Backend provider request payloads, iOS upload payloads, capture-context upload behavior, provider credential handling, Camera UI cloud entry, production remote AI availability, and `productionReady=false` are unchanged.
 
 Phase 18-C3 polishes multilingual local/mock Photo Advisor copy for beta QA. English, Traditional Chinese, Simplified Chinese, and Cantonese-style Advisor strings were reviewed for short mood-first language, calmer imported/fallback wording, clearer local/on-device labels, and less slang-heavy Cantonese-style phrasing. Backend provider request payloads, iOS upload payloads, capture-context upload behavior, provider credential handling, Camera UI cloud entry, production remote AI availability, and `productionReady=false` are unchanged.
+
+Phase 18-C4 closes the Post-capture Advisor beta hardening track with a readiness audit and Phase 19-A handoff. The local/mock Advisor beta baseline is ready for future architecture planning: mood-first result card, captured/imported/fallback flow rules, multilingual copy baseline, filter reasons, and CreativeIntentGuard behavior are aligned. The next planned phase is `Phase 19-A: Open-weight VLM Backend Architecture ADR`, focused on comparing Qwen2.5-VL / Qwen2-VL / MiniCPM-V candidates, Ollama prototype vs vLLM/SGLang serving, structured JSON output, backend validation/fallback, explicit post-capture consent, no raw image/prompt/provider logging, and no user-photo training without explicit consent. This does not approve production rollout, Camera cloud AI, iOS provider keys/direct model calls, capture-context upload, backend/iOS payload changes, or real-provider production exposure.
 
 ## Phase 12A Filter Planning Status
 

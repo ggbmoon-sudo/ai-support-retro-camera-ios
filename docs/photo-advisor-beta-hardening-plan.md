@@ -205,10 +205,37 @@ Phase 18-C can proceed as beta hardening when:
 
 ## Suggested Next Phase Shape
 
-The next implementation phase should stay app-side/local unless explicitly approved otherwise.
+Phase 18-C0 through Phase 18-C3 now form the local/mock Post-capture Advisor beta baseline:
 
-Possible next step:
+- Phase 18-C0 defined the beta hardening plan and acceptance criteria.
+- Phase 18-C1 polished the mood-first result card display priority.
+- Phase 18-C2 hardened captured / imported / fallback Advisor flow rules.
+- Phase 18-C3 polished multilingual Advisor copy across English, Traditional Chinese, Simplified Chinese, Cantonese-style, and non-explicit 麻煩友 strings.
 
-- Phase 18-C1: Post-capture Advisor beta QA polish for captured/imported flows, result-card readability, fallback calmness, and multilingual copy review.
+Ready for future planning:
+
+- local/mock post-capture Advisor beta QA baseline
+- mood-first result card language model
+- captured / imported / fallback flow behavior rules
+- multilingual copy baseline for future VLM output style
+- filter recommendation reason style
+- CreativeIntentGuard retake restraint and intent-preserving language
+
+Not approved:
+
+- production cloud AI rollout
+- Camera cloud AI entry
+- iOS provider keys or direct model/provider calls
+- capture-context upload
+- backend provider request payload changes
+- iOS upload payload changes
+- real-provider production exposure
+- user-photo training or fine-tuning without explicit consent
+
+Next planned phase:
+
+- Phase 19-A: Open-weight VLM Backend Architecture ADR.
+
+Phase 19-A should compare Qwen2.5-VL / Qwen2-VL / MiniCPM-V candidates, Ollama prototype vs vLLM/SGLang production-style serving, structured JSON output, backend validator/fallback boundaries, explicit post-capture consent, no raw image/prompt/provider-response logging, no user-photo training without explicit consent, and iOS remaining free of provider keys / direct model calls.
 
 Production rollout, Camera cloud AI, capture-context upload, backend/iOS payload changes, and real-provider expansion remain blocked until explicitly requested.
