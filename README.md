@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 19-B Open-weight VLM Structured Advisor Benchmark Plan completed; ready for review
+- Phase 19-C Backend-only VLM Benchmark Harness Skeleton completed; ready for review
 
 Next phase:
 
-- Phase 19-C may start as an open-weight VLM local benchmark harness plan only if explicitly requested
+- Phase 19-D may start only if explicitly requested and should remain local / synthetic / backend-only unless a later prompt explicitly approves model-server calls
 - Do not start production cloud rollout without explicit approval
 - Production rollout remains blocked until a later explicit release phase
 
@@ -229,6 +229,8 @@ Phase 18-C4 closes the Post-capture Advisor beta hardening track with a readines
 Phase 19-A adds `docs/open-weight-vlm-backend-architecture-adr.md`, a documentation-only architecture ADR for a future self-hosted / open-weight VLM Photo Advisor backend. It compares Qwen2.5-VL-7B, Qwen2-VL-7B, MiniCPM-V, and future watchlist candidates; compares Ollama, vLLM, SGLang, and Transformers / FastAPI serving paths; defines a consented post-capture backend architecture with metadata stripping, structured PhotoAdvisor JSON, backend validation, and safe fallback; and documents a prompt/schema-first, evaluation-dataset-next, LoRA/QLoRA-later fine-tuning path. Phase 19-A does not add model server code, cloud functionality, real-provider QA, iOS provider keys/direct model calls, Camera cloud AI, capture-context upload, backend provider request payload changes, iOS upload payload changes, or production rollout.
 
 Phase 19-B adds `docs/open-weight-vlm-structured-advisor-benchmark-plan.md`, a documentation-only benchmark plan for evaluating open-weight VLMs as structured Photo Advisor backends. It narrows the first benchmark candidates to Qwen2.5-VL-7B-Instruct, Qwen3-VL-8B-Instruct, MiniCPM-V 4.5, and optional InternVL3-8B; compares Transformers/FastAPI, Ollama/LM Studio, vLLM, and SGLang roles; defines synthetic/internal fixture categories; proposes enum/key-based VLM candidate JSON with no final UI prose; assigns backend validator/fallback responsibilities; and records metrics/gates for JSON validity, schema compliance, safety, filter family fit, creative intent preservation, retake restraint, imported-context overclaim, latency, and artifact hygiene. Phase 19-B does not add model server code, run real VLM/provider QA, train or fine-tune models, change backend provider request payloads, change iOS upload payloads, upload capture context, add iOS provider/model keys or direct calls, add Camera cloud AI, or enable production rollout.
+
+Phase 19-C adds a backend-only synthetic open-weight VLM benchmark harness skeleton. It includes a candidate JSON schema / validator helper, committed synthetic fixtures, a local no-network benchmark runner, backend tests, and a package script for sanitized aggregate metrics. The harness does not add a model server URL, provider/model credentials, real VLM calls, real provider calls, image upload, iOS integration, backend provider request payload changes, iOS upload payload changes, capture-context upload, Camera cloud AI, training/fine-tuning, or production rollout.
 
 ## Phase 12A Filter Planning Status
 

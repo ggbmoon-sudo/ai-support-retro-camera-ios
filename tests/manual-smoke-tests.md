@@ -1,5 +1,23 @@
 # Manual Smoke Tests
 
+## Phase 19-C
+
+Backend-only open-weight VLM synthetic benchmark harness:
+
+- [ ] Run backend tests: `cd backend && npm test`.
+- [ ] Run synthetic benchmark: `cd backend && npm run qa:open-weight-vlm:synthetic`.
+- [ ] If `npm` is unavailable, run `cd backend && node --test tests/*.test.mjs` and `cd backend && node scripts/run-open-weight-vlm-photo-advisor-benchmark.mjs --synthetic`.
+- [ ] Confirm the synthetic benchmark uses committed fixtures only and does not require a model server URL, provider/model key, network call, image upload, or real photos.
+- [ ] Confirm output includes sanitized aggregate metrics only, including `productionReady:false`, `providerConfigured:false`, `modelServerConfigured:false`, `networkCallsMade:false`, accepted/rejected counts, and fallback categories.
+- [ ] Confirm report output does not include raw image/base64, raw prompt, raw model/provider response, request payload, secrets, private paths, GPS, raw EXIF, stack trace, or real sample names.
+- [ ] Confirm valid fixtures cover bright daylight, low light, intentional blur, motion blur, tilted snapshot, grainy retro, high contrast, faded color, imported limited context, severe blur, and black image.
+- [ ] Confirm invalid fixtures cover invalid JSON, schema failure, unsupported filter family, sensitive inference, score/rating, chain-of-thought, debug/provider leakage, imported capture-context overclaim, and retake false positive.
+- [ ] Confirm imported fixtures use `allowedContext:imageOnly` and do not claim capture-time motion, tilt, focus, lens, stability, or exposure context.
+- [ ] Confirm retake is allowed only for severe unusable technical risk and remains optional.
+- [ ] Confirm `.gitignore` protects future VLM benchmark reports, generated images, and local VLM sample folders.
+- [ ] Confirm no backend provider request payload change, iOS upload payload change, capture-context upload, iOS provider/model key/direct call, Camera cloud entry, real VLM/provider QA, training/fine-tuning, generated artifact commit, or production rollout is introduced.
+- [ ] Confirm `productionReady=false`.
+
 ## Phase 19-B
 
 Open-weight VLM structured Advisor benchmark plan:

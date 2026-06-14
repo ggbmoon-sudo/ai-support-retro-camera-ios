@@ -45,8 +45,11 @@ tmp/
 *.xcresult/
 tests/manual/local-results/
 backend/reports/provider-qa/
+backend/reports/vlm-benchmark/
 backend/tests/local-images/*
 !backend/tests/local-images/README.md
 !backend/tests/local-images/manual-review-template.json
 backend/tests/approved-real-samples/*
 !backend/tests/approved-real-samples/README.md
+backend/tests/generated-images/
+backend/tests/vlm-local-samples/

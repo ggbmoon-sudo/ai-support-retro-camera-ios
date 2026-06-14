@@ -300,6 +300,58 @@ Phase 19-B does not add model server code, run real VLM/provider QA, train or fi
 
 Recommended next step is Phase 19-C: an explicitly approved local benchmark harness plan with ignored fixtures/reports and no iOS app integration.
 
+## Phase 19-C Open-weight VLM Synthetic Benchmark Harness
+
+Phase 19-C adds a backend-only, local/synthetic benchmark harness skeleton for future open-weight VLM Photo Advisor evaluation.
+
+Added components:
+
+- `src/qa/openWeightVlmPhotoAdvisorSchema.mjs`
+  - defines the candidate schema version and enum/key-based validation rules
+  - validates `additionalProperties=false` behavior manually without adding dependencies
+  - rejects invalid JSON, schema failures, unsupported enum values, unsupported filter families, imported capture-context overclaims, retake false positives, score/rating wording, sensitive inference flags, chain-of-thought flags, and debug/provider leakage
+  - summarizes sanitized aggregate benchmark metrics only
+- `tests/fixtures/open-weight-vlm-photo-advisor-benchmark-cases.json`
+  - committed synthetic fixture cases only
+  - no photos, private image paths, base64, user data, prompts, provider responses, or model outputs from real runs
+- `scripts/run-open-weight-vlm-photo-advisor-benchmark.mjs`
+  - default Phase 19-C mode is synthetic only
+  - no model server URL
+  - no provider/model key
+  - no image upload
+  - no network call
+  - prints sanitized aggregate metrics with `productionReady: false`
+
+Run the synthetic harness:
+
+```sh
+npm run qa:open-weight-vlm:synthetic
+```
+
+If this runtime does not have `npm`, run the script directly:
+
+```sh
+node scripts/run-open-weight-vlm-photo-advisor-benchmark.mjs --synthetic
+```
+
+Run all backend tests:
+
+```sh
+npm test
+```
+
+Boundary notes:
+
+- This is not real model serving.
+- Do not add model server URLs, provider/model credentials, image upload, network calls, or generated benchmark reports without a future explicit phase.
+- Backend provider request payloads are unchanged.
+- iOS upload payloads are unchanged.
+- Capture context is not uploaded.
+- iOS has no provider/model key and no direct provider/model call.
+- Camera remains local-only.
+- No training or fine-tuning is started.
+- `productionReady` remains `false`.
+
 Phase 18-B5 adds a small gate summary helper for sanitized reports:
 
 ```sh

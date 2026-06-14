@@ -136,6 +136,8 @@ Phase 19-A is documentation-only and keeps iOS behavior unchanged. It adds an ar
 
 Phase 19-B is documentation-only and also keeps iOS behavior unchanged. It adds a structured Advisor benchmark plan for future open-weight VLM evaluation, where models would output enum/key-based candidate JSON only and the existing iOS language pack / result card would render final UI copy. It does not add model server integration, iOS provider/model keys, direct model/provider calls, Camera cloud AI entry points, capture-context upload, iOS upload payload changes, real VLM/provider QA, training/fine-tuning, or production rollout.
 
+Phase 19-C is backend-only and keeps iOS behavior unchanged. It adds a local/synthetic VLM benchmark harness skeleton in `backend/` with enum/key candidate validation, synthetic fixtures, sanitized aggregate reporting, and backend tests. It does not add model server integration, iOS provider/model keys, direct model/provider calls, Camera cloud AI entry points, capture-context upload, iOS upload payload changes, real VLM/provider QA, training/fine-tuning, or production rollout.
+
 ## Phase 17D-A Local Camera Capture Context
 
 Phase 17D-A adds local-only summarized capture context for captured / imported photos:

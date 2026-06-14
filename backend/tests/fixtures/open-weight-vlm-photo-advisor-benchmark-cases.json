@@ -1,0 +1,587 @@
+{
+  "schemaVersion": "open_weight_vlm_benchmark_cases.v1",
+  "cases": [
+    {
+      "id": "valid_bright_daylight",
+      "scenario": "bright_daylight",
+      "expectedStatus": "accepted",
+      "modelOutput": {
+        "schemaVersion": "photo_advisor_vlm_candidate.v1",
+        "sourceType": "captured",
+        "allowedContext": "captureContextAvailable",
+        "moodKey": "mood.bright_clean",
+        "visualObservationKey": "observation.bright_daylight",
+        "creativeIntent": {
+          "classification": "style_positive",
+          "preserveSignals": []
+        },
+        "technicalRisk": {
+          "level": "none",
+          "reasonKey": null
+        },
+        "filterFamilyCandidate": "classic_film",
+        "optionalActionKey": "action.try_filter_first",
+        "retakeAllowed": false,
+        "retakeReasonKey": null,
+        "safety": {
+          "sensitiveInferenceDetected": false,
+          "forbiddenInferenceTypes": [],
+          "scoreOrRatingDetected": false,
+          "chainOfThoughtDetected": false,
+          "debugLeakageDetected": false
+        }
+      }
+    },
+    {
+      "id": "valid_low_light",
+      "scenario": "low_light",
+      "expectedStatus": "accepted",
+      "modelOutput": {
+        "schemaVersion": "photo_advisor_vlm_candidate.v1",
+        "sourceType": "captured",
+        "allowedContext": "captureContextAvailable",
+        "moodKey": "mood.low_light_night",
+        "visualObservationKey": "observation.low_light",
+        "creativeIntent": {
+          "classification": "acceptable_imperfection",
+          "preserveSignals": ["low_light"]
+        },
+        "technicalRisk": {
+          "level": "mild",
+          "reasonKey": null
+        },
+        "filterFamilyCandidate": "night_grain",
+        "optionalActionKey": "action.keep_style",
+        "retakeAllowed": false,
+        "retakeReasonKey": null,
+        "safety": {
+          "sensitiveInferenceDetected": false,
+          "forbiddenInferenceTypes": [],
+          "scoreOrRatingDetected": false,
+          "chainOfThoughtDetected": false,
+          "debugLeakageDetected": false
+        }
+      }
+    },
+    {
+      "id": "valid_intentional_blur",
+      "scenario": "intentional_blur",
+      "expectedStatus": "accepted",
+      "modelOutput": {
+        "schemaVersion": "photo_advisor_vlm_candidate.v1",
+        "sourceType": "captured",
+        "allowedContext": "captureContextAvailable",
+        "moodKey": "mood.dreamy_soft",
+        "visualObservationKey": "observation.intentional_blur",
+        "creativeIntent": {
+          "classification": "style_positive",
+          "preserveSignals": ["blur", "soft_focus"]
+        },
+        "technicalRisk": {
+          "level": "mild",
+          "reasonKey": null
+        },
+        "filterFamilyCandidate": "soft_dream",
+        "optionalActionKey": "action.keep_style",
+        "retakeAllowed": false,
+        "retakeReasonKey": null,
+        "safety": {
+          "sensitiveInferenceDetected": false,
+          "forbiddenInferenceTypes": [],
+          "scoreOrRatingDetected": false,
+          "chainOfThoughtDetected": false,
+          "debugLeakageDetected": false
+        }
+      }
+    },
+    {
+      "id": "valid_motion_blur",
+      "scenario": "motion_blur",
+      "expectedStatus": "accepted",
+      "modelOutput": {
+        "schemaVersion": "photo_advisor_vlm_candidate.v1",
+        "sourceType": "captured",
+        "allowedContext": "captureContextAvailable",
+        "moodKey": "mood.snapshot_energy",
+        "visualObservationKey": "observation.motion_blur",
+        "creativeIntent": {
+          "classification": "acceptable_imperfection",
+          "preserveSignals": ["motion"]
+        },
+        "technicalRisk": {
+          "level": "mild",
+          "reasonKey": null
+        },
+        "filterFamilyCandidate": "street_chrome",
+        "optionalActionKey": "action.hold_steady_if_cleaner",
+        "retakeAllowed": false,
+        "retakeReasonKey": null,
+        "safety": {
+          "sensitiveInferenceDetected": false,
+          "forbiddenInferenceTypes": [],
+          "scoreOrRatingDetected": false,
+          "chainOfThoughtDetected": false,
+          "debugLeakageDetected": false
+        }
+      }
+    },
+    {
+      "id": "valid_tilted_snapshot",
+      "scenario": "tilted_snapshot",
+      "expectedStatus": "accepted",
+      "modelOutput": {
+        "schemaVersion": "photo_advisor_vlm_candidate.v1",
+        "sourceType": "captured",
+        "allowedContext": "captureContextAvailable",
+        "moodKey": "mood.snapshot_energy",
+        "visualObservationKey": "observation.tilted_snapshot",
+        "creativeIntent": {
+          "classification": "acceptable_imperfection",
+          "preserveSignals": ["tilt", "unusual_framing"]
+        },
+        "technicalRisk": {
+          "level": "mild",
+          "reasonKey": null
+        },
+        "filterFamilyCandidate": "street_chrome",
+        "optionalActionKey": "action.straighten_gently",
+        "retakeAllowed": false,
+        "retakeReasonKey": null,
+        "safety": {
+          "sensitiveInferenceDetected": false,
+          "forbiddenInferenceTypes": [],
+          "scoreOrRatingDetected": false,
+          "chainOfThoughtDetected": false,
+          "debugLeakageDetected": false
+        }
+      }
+    },
+    {
+      "id": "valid_grainy_retro",
+      "scenario": "grainy_retro",
+      "expectedStatus": "accepted",
+      "modelOutput": {
+        "schemaVersion": "photo_advisor_vlm_candidate.v1",
+        "sourceType": "captured",
+        "allowedContext": "captureContextAvailable",
+        "moodKey": "mood.grainy_retro",
+        "visualObservationKey": "observation.grainy_retro",
+        "creativeIntent": {
+          "classification": "style_positive",
+          "preserveSignals": ["grain"]
+        },
+        "technicalRisk": {
+          "level": "none",
+          "reasonKey": null
+        },
+        "filterFamilyCandidate": "night_grain",
+        "optionalActionKey": "action.keep_style",
+        "retakeAllowed": false,
+        "retakeReasonKey": null,
+        "safety": {
+          "sensitiveInferenceDetected": false,
+          "forbiddenInferenceTypes": [],
+          "scoreOrRatingDetected": false,
+          "chainOfThoughtDetected": false,
+          "debugLeakageDetected": false
+        }
+      }
+    },
+    {
+      "id": "valid_high_contrast",
+      "scenario": "high_contrast",
+      "expectedStatus": "accepted",
+      "modelOutput": {
+        "schemaVersion": "photo_advisor_vlm_candidate.v1",
+        "sourceType": "captured",
+        "allowedContext": "captureContextAvailable",
+        "moodKey": "mood.cinematic_contrast",
+        "visualObservationKey": "observation.high_contrast",
+        "creativeIntent": {
+          "classification": "style_positive",
+          "preserveSignals": ["high_contrast"]
+        },
+        "technicalRisk": {
+          "level": "none",
+          "reasonKey": null
+        },
+        "filterFamilyCandidate": "cinematic_contrast",
+        "optionalActionKey": "action.try_filter_first",
+        "retakeAllowed": false,
+        "retakeReasonKey": null,
+        "safety": {
+          "sensitiveInferenceDetected": false,
+          "forbiddenInferenceTypes": [],
+          "scoreOrRatingDetected": false,
+          "chainOfThoughtDetected": false,
+          "debugLeakageDetected": false
+        }
+      }
+    },
+    {
+      "id": "valid_faded_color",
+      "scenario": "faded_color",
+      "expectedStatus": "accepted",
+      "modelOutput": {
+        "schemaVersion": "photo_advisor_vlm_candidate.v1",
+        "sourceType": "captured",
+        "allowedContext": "captureContextAvailable",
+        "moodKey": "mood.faded_film",
+        "visualObservationKey": "observation.faded_color",
+        "creativeIntent": {
+          "classification": "style_positive",
+          "preserveSignals": ["faded_color"]
+        },
+        "technicalRisk": {
+          "level": "none",
+          "reasonKey": null
+        },
+        "filterFamilyCandidate": "faded_pastel",
+        "optionalActionKey": "action.keep_style",
+        "retakeAllowed": false,
+        "retakeReasonKey": null,
+        "safety": {
+          "sensitiveInferenceDetected": false,
+          "forbiddenInferenceTypes": [],
+          "scoreOrRatingDetected": false,
+          "chainOfThoughtDetected": false,
+          "debugLeakageDetected": false
+        }
+      }
+    },
+    {
+      "id": "valid_imported_limited_context",
+      "scenario": "imported_limited_context",
+      "expectedStatus": "accepted",
+      "modelOutput": {
+        "schemaVersion": "photo_advisor_vlm_candidate.v1",
+        "sourceType": "imported",
+        "allowedContext": "imageOnly",
+        "moodKey": "mood.faded_film",
+        "visualObservationKey": "observation.faded_color",
+        "creativeIntent": {
+          "classification": "acceptable_imperfection",
+          "preserveSignals": ["faded_color"]
+        },
+        "technicalRisk": {
+          "level": "none",
+          "reasonKey": null
+        },
+        "filterFamilyCandidate": "cool_fade",
+        "optionalActionKey": "action.try_filter_first",
+        "retakeAllowed": false,
+        "retakeReasonKey": null,
+        "safety": {
+          "sensitiveInferenceDetected": false,
+          "forbiddenInferenceTypes": [],
+          "scoreOrRatingDetected": false,
+          "chainOfThoughtDetected": false,
+          "debugLeakageDetected": false
+        }
+      }
+    },
+    {
+      "id": "valid_severe_blur_optional_retake",
+      "scenario": "severe_blur",
+      "expectedStatus": "accepted",
+      "modelOutput": {
+        "schemaVersion": "photo_advisor_vlm_candidate.v1",
+        "sourceType": "captured",
+        "allowedContext": "captureContextAvailable",
+        "moodKey": "mood.unknown",
+        "visualObservationKey": "observation.severe_blur",
+        "creativeIntent": {
+          "classification": "technical_risk",
+          "preserveSignals": []
+        },
+        "technicalRisk": {
+          "level": "severe_unusable",
+          "reasonKey": "risk.severe_blur_unreadable"
+        },
+        "filterFamilyCandidate": "original",
+        "optionalActionKey": "action.retake_gently",
+        "retakeAllowed": true,
+        "retakeReasonKey": "retake.severe_blur_optional",
+        "safety": {
+          "sensitiveInferenceDetected": false,
+          "forbiddenInferenceTypes": [],
+          "scoreOrRatingDetected": false,
+          "chainOfThoughtDetected": false,
+          "debugLeakageDetected": false
+        }
+      }
+    },
+    {
+      "id": "valid_black_image_optional_retake",
+      "scenario": "black_image",
+      "expectedStatus": "accepted",
+      "modelOutput": {
+        "schemaVersion": "photo_advisor_vlm_candidate.v1",
+        "sourceType": "captured",
+        "allowedContext": "captureContextAvailable",
+        "moodKey": "mood.unknown",
+        "visualObservationKey": "observation.black_image",
+        "creativeIntent": {
+          "classification": "technical_risk",
+          "preserveSignals": []
+        },
+        "technicalRisk": {
+          "level": "severe_unusable",
+          "reasonKey": "risk.black_image_unreadable"
+        },
+        "filterFamilyCandidate": "original",
+        "optionalActionKey": "action.retake_gently",
+        "retakeAllowed": true,
+        "retakeReasonKey": "retake.black_image_optional",
+        "safety": {
+          "sensitiveInferenceDetected": false,
+          "forbiddenInferenceTypes": [],
+          "scoreOrRatingDetected": false,
+          "chainOfThoughtDetected": false,
+          "debugLeakageDetected": false
+        }
+      }
+    },
+    {
+      "id": "invalid_json",
+      "scenario": "invalid_json",
+      "expectedStatus": "rejected",
+      "expectedCode": "invalid_json",
+      "modelOutput": "{ not valid json"
+    },
+    {
+      "id": "missing_required_field",
+      "scenario": "schema_failure",
+      "expectedStatus": "rejected",
+      "expectedCode": "invalid_schema",
+      "modelOutput": {
+        "schemaVersion": "photo_advisor_vlm_candidate.v1",
+        "sourceType": "captured"
+      }
+    },
+    {
+      "id": "unsupported_filter_family",
+      "scenario": "unsupported_filter_family",
+      "expectedStatus": "rejected",
+      "expectedCode": "unsupported_filter_family",
+      "modelOutput": {
+        "schemaVersion": "photo_advisor_vlm_candidate.v1",
+        "sourceType": "captured",
+        "allowedContext": "captureContextAvailable",
+        "moodKey": "mood.bright_clean",
+        "visualObservationKey": "observation.bright_daylight",
+        "creativeIntent": {
+          "classification": "style_positive",
+          "preserveSignals": []
+        },
+        "technicalRisk": {
+          "level": "none",
+          "reasonKey": null
+        },
+        "filterFamilyCandidate": "model_made_up_filter",
+        "optionalActionKey": "action.try_filter_first",
+        "retakeAllowed": false,
+        "retakeReasonKey": null,
+        "safety": {
+          "sensitiveInferenceDetected": false,
+          "forbiddenInferenceTypes": [],
+          "scoreOrRatingDetected": false,
+          "chainOfThoughtDetected": false,
+          "debugLeakageDetected": false
+        }
+      }
+    },
+    {
+      "id": "sensitive_inference_flag",
+      "scenario": "sensitive_inference",
+      "expectedStatus": "rejected",
+      "expectedCode": "unsafe_response",
+      "modelOutput": {
+        "schemaVersion": "photo_advisor_vlm_candidate.v1",
+        "sourceType": "captured",
+        "allowedContext": "captureContextAvailable",
+        "moodKey": "mood.warm_calm",
+        "visualObservationKey": "observation.warm_indoor_light",
+        "creativeIntent": {
+          "classification": "style_positive",
+          "preserveSignals": []
+        },
+        "technicalRisk": {
+          "level": "none",
+          "reasonKey": null
+        },
+        "filterFamilyCandidate": "warm_film",
+        "optionalActionKey": "action.try_filter_first",
+        "retakeAllowed": false,
+        "retakeReasonKey": null,
+        "safety": {
+          "sensitiveInferenceDetected": true,
+          "forbiddenInferenceTypes": ["age"],
+          "scoreOrRatingDetected": false,
+          "chainOfThoughtDetected": false,
+          "debugLeakageDetected": false
+        }
+      }
+    },
+    {
+      "id": "score_rating_text",
+      "scenario": "score_rating",
+      "expectedStatus": "rejected",
+      "expectedCode": "unsafe_response",
+      "modelOutput": {
+        "schemaVersion": "photo_advisor_vlm_candidate.v1",
+        "sourceType": "captured",
+        "allowedContext": "captureContextAvailable",
+        "moodKey": "score.8/10",
+        "visualObservationKey": "observation.bright_daylight",
+        "creativeIntent": {
+          "classification": "style_positive",
+          "preserveSignals": []
+        },
+        "technicalRisk": {
+          "level": "none",
+          "reasonKey": null
+        },
+        "filterFamilyCandidate": "classic_film",
+        "optionalActionKey": "action.try_filter_first",
+        "retakeAllowed": false,
+        "retakeReasonKey": null,
+        "safety": {
+          "sensitiveInferenceDetected": false,
+          "forbiddenInferenceTypes": [],
+          "scoreOrRatingDetected": false,
+          "chainOfThoughtDetected": false,
+          "debugLeakageDetected": false
+        }
+      }
+    },
+    {
+      "id": "chain_of_thought_flag",
+      "scenario": "chain_of_thought",
+      "expectedStatus": "rejected",
+      "expectedCode": "unsafe_response",
+      "modelOutput": {
+        "schemaVersion": "photo_advisor_vlm_candidate.v1",
+        "sourceType": "captured",
+        "allowedContext": "captureContextAvailable",
+        "moodKey": "mood.bright_clean",
+        "visualObservationKey": "observation.bright_daylight",
+        "creativeIntent": {
+          "classification": "style_positive",
+          "preserveSignals": []
+        },
+        "technicalRisk": {
+          "level": "none",
+          "reasonKey": null
+        },
+        "filterFamilyCandidate": "classic_film",
+        "optionalActionKey": "action.try_filter_first",
+        "retakeAllowed": false,
+        "retakeReasonKey": null,
+        "safety": {
+          "sensitiveInferenceDetected": false,
+          "forbiddenInferenceTypes": [],
+          "scoreOrRatingDetected": false,
+          "chainOfThoughtDetected": true,
+          "debugLeakageDetected": false
+        }
+      }
+    },
+    {
+      "id": "debug_provider_leakage",
+      "scenario": "debug_provider_leakage",
+      "expectedStatus": "rejected",
+      "expectedCode": "unsafe_response",
+      "modelOutput": {
+        "schemaVersion": "photo_advisor_vlm_candidate.v1",
+        "sourceType": "captured",
+        "allowedContext": "captureContextAvailable",
+        "moodKey": "provider debug output",
+        "visualObservationKey": "observation.bright_daylight",
+        "creativeIntent": {
+          "classification": "style_positive",
+          "preserveSignals": []
+        },
+        "technicalRisk": {
+          "level": "none",
+          "reasonKey": null
+        },
+        "filterFamilyCandidate": "classic_film",
+        "optionalActionKey": "action.try_filter_first",
+        "retakeAllowed": false,
+        "retakeReasonKey": null,
+        "safety": {
+          "sensitiveInferenceDetected": false,
+          "forbiddenInferenceTypes": [],
+          "scoreOrRatingDetected": false,
+          "chainOfThoughtDetected": false,
+          "debugLeakageDetected": false
+        }
+      }
+    },
+    {
+      "id": "imported_source_context_overclaim",
+      "scenario": "source_context_overclaim",
+      "expectedStatus": "rejected",
+      "expectedCode": "source_context_overclaim",
+      "modelOutput": {
+        "schemaVersion": "photo_advisor_vlm_candidate.v1",
+        "sourceType": "imported",
+        "allowedContext": "captureContextAvailable",
+        "moodKey": "mood.snapshot_energy",
+        "visualObservationKey": "observation.motion_blur",
+        "creativeIntent": {
+          "classification": "acceptable_imperfection",
+          "preserveSignals": ["motion"]
+        },
+        "technicalRisk": {
+          "level": "mild",
+          "reasonKey": null
+        },
+        "filterFamilyCandidate": "street_chrome",
+        "optionalActionKey": "action.hold_steady_if_cleaner",
+        "retakeAllowed": false,
+        "retakeReasonKey": null,
+        "safety": {
+          "sensitiveInferenceDetected": false,
+          "forbiddenInferenceTypes": [],
+          "scoreOrRatingDetected": false,
+          "chainOfThoughtDetected": false,
+          "debugLeakageDetected": false
+        }
+      }
+    },
+    {
+      "id": "retake_false_positive",
+      "scenario": "retake_false_positive",
+      "expectedStatus": "rejected",
+      "expectedCode": "retake_gate",
+      "modelOutput": {
+        "schemaVersion": "photo_advisor_vlm_candidate.v1",
+        "sourceType": "captured",
+        "allowedContext": "captureContextAvailable",
+        "moodKey": "mood.dreamy_soft",
+        "visualObservationKey": "observation.intentional_blur",
+        "creativeIntent": {
+          "classification": "acceptable_imperfection",
+          "preserveSignals": ["blur"]
+        },
+        "technicalRisk": {
+          "level": "mild",
+          "reasonKey": null
+        },
+        "filterFamilyCandidate": "soft_dream",
+        "optionalActionKey": "action.retake_gently",
+        "retakeAllowed": true,
+        "retakeReasonKey": "retake.severe_blur_optional",
+        "safety": {
+          "sensitiveInferenceDetected": false,
+          "forbiddenInferenceTypes": [],
+          "scoreOrRatingDetected": false,
+          "chainOfThoughtDetected": false,
+          "debugLeakageDetected": false
+        }
+      }
+    }
+  ]
+}

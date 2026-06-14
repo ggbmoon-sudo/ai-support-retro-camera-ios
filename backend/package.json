@@ -9,7 +9,8 @@
     "qa:photo-advisor": "node scripts/run-photo-advisor-provider-qa.mjs --synthetic-contract",
     "qa:photo-advisor:gate": "node scripts/run-photo-advisor-provider-qa.mjs --check-safety-gate",
     "qa:photo-advisor:review": "node scripts/check-photo-advisor-provider-qa-gate.mjs",
-    "qa:photo-advisor:provider": "node scripts/run-photo-advisor-provider-qa.mjs --run-provider"
+    "qa:photo-advisor:provider": "node scripts/run-photo-advisor-provider-qa.mjs --run-provider",
+    "qa:open-weight-vlm:synthetic": "node scripts/run-open-weight-vlm-photo-advisor-benchmark.mjs --synthetic"
   },
   "dependencies": {},
   "devDependencies": {}
