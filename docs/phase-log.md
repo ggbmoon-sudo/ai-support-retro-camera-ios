@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 18-C0 - Post-capture Advisor Beta Hardening Plan
-Status: Phase 18-C0 completed and ready to commit
-Latest implementation: Added `docs/photo-advisor-beta-hardening-plan.md` to define post-capture Advisor beta hardening areas, acceptance criteria, internal QA scenario matrix, regression checks, and Phase 18-C starting gates. Updated README, backend README, iOS README, manual smoke tests, handoff, and phase log while leaving app behavior, backend provider request payloads, iOS upload payloads, capture-context upload, Camera cloud entry, cloud availability, provider credential handling, and production rollout unchanged
+Current phase: Phase 18-C1 - Post-capture Advisor Result Card Beta Polish
+Status: Phase 18-C1 completed and ready to commit
+Latest implementation: Polished the iOS local/mock Photo Advisor result card so it remains mood-first, shows one visual reason, one primary filter recommendation with a short reason, and at most two optional advice rows. Crop/straighten guidance now stays ahead of optional retake, keep-style copy can appear as a gentle non-retake secondary note, missing filters show a calm unavailable note instead of an unusable apply action, and docs/manual checks were updated while backend provider request payloads, iOS upload payloads, capture-context upload, Camera cloud entry, provider credential handling, and production rollout remain unchanged
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -72,13 +72,62 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Phase 18-C1 may start only as app-side/local post-capture Advisor beta QA polish if explicitly requested. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, real-provider QA, or save-to-Photos until explicitly requested.
+Next phase: future Phase 18-C follow-up work may continue only as app-side/local or internal/debug post-capture Advisor beta hardening if explicitly requested. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, real-provider QA, or save-to-Photos until explicitly requested.
+
+---
+
+## Phase 18-C1 - Post-capture Advisor Result Card Beta Polish
+
+Status: Completed and ready to commit
+Date: 2026-06-14
+
+### Completed
+
+- Updated `PhotoAdvisorResultCardModel` so UI-facing advice remains bounded to at most two optional advice rows.
+- Kept the display priority as mood headline, one visual reason, primary filter recommendation with reason, then optional advice.
+- Prioritized crop/straighten advice before optional retake advice.
+- Allowed non-retake keep-style copy to appear as a gentle secondary note when no higher-priority crop/retake item is present.
+- Updated `PhotoAdvisorResultView` to render the bounded advice list instead of individually hardcoding two slots.
+- Polished `PhotoAdvisorFilterRecommendationView` so long filter names/reasons wrap more safely and missing filters show a calm unavailable note instead of a disabled apply button.
+- Updated README, iOS README, manual smoke tests, handoff, and phase log references.
+
+### Captured / Imported / Fallback Behavior
+
+- Captured Photo Advisor remains local/mock by default and may use safe local capture/image context.
+- Imported Photo Advisor still must not claim capture-time motion, tilt, focus, lens, or exposure context.
+- Fallback/provider-unavailable copy remains calm, local-safe, and free of raw provider/internal/debug details.
+
+### Safety Notes
+
+- iOS UI polish only.
+- Backend provider request payloads are unchanged.
+- iOS upload payloads are unchanged.
+- Capture context is not uploaded.
+- No provider key, direct provider call, Camera cloud AI entry, cloud functionality, GPS/location collection, raw EXIF dump, raw sensor persistence, generated artifact commit, real-provider QA run, or production rollout was added.
+- `productionReady` remains false.
+
+### Verification
+
+- `xcodebuild -quiet -project ios-app/AIPhotoApp.xcodeproj -scheme AIPhotoApp -destination 'generic/platform=iOS Simulator' build` passed on 2026-06-14.
+- Photo Advisor copy regression, filter reason coverage, CreativeIntent language, and card language scripts passed.
+- `git diff --check` passed.
+- Secret scan found documented placeholders / denylist references only; no real provider secrets were committed.
+- iOS direct provider scan was clean.
+- Camera cloud-entry scan was clean.
+- Backend provider request payload and iOS upload payload boundary scan showed no changed payload paths.
+- GPS / raw EXIF / raw sensor persistence scan on changed Swift files was clean.
+- Artifact scan confirmed local env, provider QA reports, approved-real sample placeholders, local QA images, AppleDouble files, and generated/report folders remain ignored.
+- Backend tests were not required because no backend source or package files changed.
+
+### Ready to Commit Phase 18-C1
+
+Yes.
 
 ---
 
 ## Phase 18-C0 - Post-capture Advisor Beta Hardening Plan
 
-Status: Completed and ready to commit
+Status: Completed and committed as `eedb27d Phase 18-C0: plan post-capture advisor beta hardening`
 Date: 2026-06-14
 
 ### Completed

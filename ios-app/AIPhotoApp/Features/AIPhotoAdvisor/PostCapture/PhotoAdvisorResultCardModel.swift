@@ -1,12 +1,21 @@
 import Foundation
 
 struct PhotoAdvisorResultCardModel: Hashable {
+    static let maxAdviceItems = 2
+
     let moodHeadlineKey: String
     let visualReasonKey: String?
     let primaryFilterRecommendation: PhotoAdvisorFilterRecommendation?
     let optionalRefinement: PhotoAdvisorCardAdvice?
     let secondaryAdvice: PhotoAdvisorCardAdvice?
     let fallbackMessageKey: String?
+
+    var adviceItems: [PhotoAdvisorCardAdvice] {
+        [optionalRefinement, secondaryAdvice]
+            .compactMap { $0 }
+            .prefix(Self.maxAdviceItems)
+            .map { $0 }
+    }
 
     init(result: PhotoAdvisorResult, input: PhotoAdvisorInput) {
         moodHeadlineKey = result.summaryKey
@@ -59,16 +68,6 @@ struct PhotoAdvisorResultCardModel: Hashable {
         from result: PhotoAdvisorResult,
         excluding usedKeys: Set<String>
     ) -> PhotoAdvisorCardAdvice? {
-        if result.retakeAdvice.shouldRetake,
-           !usedKeys.contains(result.retakeAdvice.reasonKey) {
-            return PhotoAdvisorCardAdvice(
-                id: "retake_optional",
-                titleKey: "photo_advisor.section.optional_retake",
-                icon: "arrow.triangle.2.circlepath",
-                textKey: result.retakeAdvice.reasonKey
-            )
-        }
-
         if let cropAdvice = result.cropAdvice,
            !usedKeys.contains(cropAdvice.textKey) {
             return PhotoAdvisorCardAdvice(
@@ -78,6 +77,24 @@ struct PhotoAdvisorResultCardModel: Hashable {
                     : "photo_advisor.section.optional_refinement",
                 icon: cropAdvice.recommended ? "crop" : "rectangle.dashed",
                 textKey: cropAdvice.textKey
+            )
+        }
+
+        if !usedKeys.contains(result.retakeAdvice.reasonKey) {
+            if result.retakeAdvice.shouldRetake {
+                return PhotoAdvisorCardAdvice(
+                    id: "retake_optional",
+                    titleKey: "photo_advisor.section.optional_retake",
+                    icon: "arrow.triangle.2.circlepath",
+                    textKey: result.retakeAdvice.reasonKey
+                )
+            }
+
+            return PhotoAdvisorCardAdvice(
+                id: "keep_style",
+                titleKey: "photo_advisor.section.optional_refinement",
+                icon: "sparkles",
+                textKey: result.retakeAdvice.reasonKey
             )
         }
 

@@ -19,33 +19,41 @@ struct PhotoAdvisorFilterRecommendationView: View {
                     Text(presetName)
                         .font(AppTypography.caption.weight(.semibold))
                         .foregroundStyle(AppColors.textPrimary)
-                        .lineLimit(1)
+                        .lineLimit(2)
+                        .fixedSize(horizontal: false, vertical: true)
 
                     Text(LocalizedStringKey(recommendation.reasonKey))
                         .font(AppTypography.caption)
                         .foregroundStyle(AppColors.textSecondary)
+                        .lineLimit(3)
                         .fixedSize(horizontal: false, vertical: true)
                 }
 
                 Spacer(minLength: AppSpacing.sm)
             }
 
-            Button {
-                guard let preset else { return }
-                onApply(preset)
-            } label: {
-                Label(applyTitleKey, systemImage: isSelected ? "checkmark.circle.fill" : "camera.filters")
-                    .font(AppTypography.caption.weight(.semibold))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.76)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, AppSpacing.sm)
-                    .background(isSelected ? AppColors.success.opacity(0.18) : AppColors.accent)
-                    .foregroundStyle(isSelected ? AppColors.success : Color.black)
-                    .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.md))
+            if let preset {
+                Button {
+                    onApply(preset)
+                } label: {
+                    Label(applyTitleKey, systemImage: isSelected ? "checkmark.circle.fill" : "camera.filters")
+                        .font(AppTypography.caption.weight(.semibold))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.76)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, AppSpacing.sm)
+                        .background(isSelected ? AppColors.success.opacity(0.18) : AppColors.accent)
+                        .foregroundStyle(isSelected ? AppColors.success : Color.black)
+                        .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.md))
+                }
+                .buttonStyle(.plain)
+                .disabled(isRendering)
+            } else {
+                Label("photo_advisor.filter.missing", systemImage: "exclamationmark.triangle")
+                    .font(AppTypography.caption)
+                    .foregroundStyle(AppColors.textSecondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .buttonStyle(.plain)
-            .disabled(preset == nil || isRendering)
         }
         .padding(AppSpacing.sm)
         .background(AppColors.surface)

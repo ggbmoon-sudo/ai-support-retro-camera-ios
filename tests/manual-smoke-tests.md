@@ -1,5 +1,27 @@
 # Manual Smoke Tests
 
+## Phase 18-C1
+
+Post-capture Advisor result card beta polish:
+
+- [ ] App launches normally.
+- [ ] Camera opens and captures normally.
+- [ ] Captured photo opens local/mock Photo Advisor.
+- [ ] Imported photo opens local/mock Photo Advisor.
+- [ ] Result card starts with a short mood/style headline.
+- [ ] Result card shows one clear visual reason, not a long critique.
+- [ ] Filter recommendation shows filter name plus one short reason.
+- [ ] Long localized filter names/reasons wrap cleanly without clipping important text.
+- [ ] Unknown/missing filter recommendation shows a calm unavailable note and no unusable apply action.
+- [ ] Optional crop/straighten/refinement appears below the primary mood/filter advice.
+- [ ] Crop/straighten advice is framed as optional, not as correction.
+- [ ] Retake advice remains optional, conservative, and lower priority than crop/straighten/keep-style guidance.
+- [ ] Imported photo does not claim capture-time motion, tilt, focus, lens, or exposure context.
+- [ ] Fallback/provider-unavailable copy is calm and app-safe.
+- [ ] UI does not show raw JSON, provider error, raw localization key, internal classification, score/rating, numeric confidence, chain-of-thought, banned copy, or identity-adjacent wording.
+- [ ] No backend provider request payload change, iOS upload payload change, capture-context upload, iOS provider key/direct call, Camera cloud entry, generated artifact commit, or production rollout is introduced.
+- [ ] Confirm `productionReady=false`.
+
 ## Phase 18-C0
 
 Post-capture Advisor beta hardening plan:

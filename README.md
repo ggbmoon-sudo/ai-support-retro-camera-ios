@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 18-C0 post-capture Advisor beta hardening plan completed; ready for review
+- Phase 18-C1 post-capture Advisor result card beta polish completed; ready for review
 
 Next phase:
 
-- Phase 18-C1 may start only as app-side/local post-capture Advisor beta QA polish if explicitly requested
+- Future Phase 18-C follow-up work must stay app-side/local or internal/debug-only unless explicitly approved
 - Do not start production cloud rollout without explicit approval
 - Production rollout remains blocked until a later explicit release phase
 
@@ -215,6 +215,8 @@ Phase 18-B6 adds a concise provider QA operator runbook and final pre-integratio
 Phase 18-B7 performs the final B0-B6 provider QA chain audit in `docs/photo-advisor-provider-qa-chain-readiness.md`. The audit confirms the provider language contract, regression fixtures, sanitized QA runner/reporting, dry-run gate, review thresholds, gate summary helper, and operator runbook form a coherent internal QA safety chain. Phase 18-C is safe to start only as post-capture Advisor beta hardening / internal QA work after the synthetic QA, dry-run gate, and QA helper pass with no hard blockers. This does not enable production cloud AI, change backend/iOS payloads, upload capture context, add iOS provider keys/direct calls, add a Camera cloud entry, or mark production ready.
 
 Phase 18-C0 adds the post-capture Advisor beta hardening plan in `docs/photo-advisor-beta-hardening-plan.md`. The plan defines captured/imported Advisor flow checks, fallback/provider-unavailable UX checks, local/mock consistency, result-card readability, filter recommendation reason quality, CreativeIntentGuard behavior, crop/straighten/retake restraint, multilingual QA, real-device manual QA, regression scripts, acceptance criteria, and an internal QA scenario matrix. It is planning-only: no app/backend runtime behavior changes, no backend provider request payload changes, no iOS upload payload changes, no capture-context upload, no provider key/direct provider call in iOS, no Camera cloud AI entry, no real-provider QA run, and no production rollout.
+
+Phase 18-C1 polishes the local/mock post-capture Advisor result card for beta readability. The UI-facing card keeps the mood headline first, one visual reason, one filter recommendation with a short reason, and at most two optional advice rows. Crop/straighten advice is prioritized before optional retake, non-retake keep-style copy can appear as a gentle secondary note, and missing filters show a calm unavailable note instead of an unusable apply action. This does not change backend provider request payloads, iOS upload payloads, capture-context upload behavior, provider credential handling, Camera UI cloud entry, production remote AI availability, or `productionReady=false`.
 
 ## Phase 12A Filter Planning Status
 

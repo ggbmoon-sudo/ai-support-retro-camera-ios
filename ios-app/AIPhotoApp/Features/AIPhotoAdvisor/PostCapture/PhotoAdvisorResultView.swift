@@ -250,12 +250,8 @@ struct PhotoAdvisorResultView: View {
 
     private func adviceSection(_ card: PhotoAdvisorResultCardModel) -> some View {
         VStack(alignment: .leading, spacing: AppSpacing.sm) {
-            if let optionalRefinement = card.optionalRefinement {
-                adviceRow(optionalRefinement)
-            }
-
-            if let secondaryAdvice = card.secondaryAdvice {
-                adviceRow(secondaryAdvice)
+            ForEach(card.adviceItems) { advice in
+                adviceRow(advice)
             }
         }
     }

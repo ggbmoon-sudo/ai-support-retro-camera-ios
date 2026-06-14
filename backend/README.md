@@ -310,6 +310,14 @@ Phase 18-C0 adds the post-capture Advisor beta hardening plan:
 
 Phase 18-C0 is planning-only and does not change backend runtime behavior or provider payloads.
 
+Phase 18-C1 is iOS local/mock result-card polish only:
+
+- backend provider request payloads remain unchanged
+- iOS upload payloads remain unchanged
+- capture context is still not uploaded
+- real-provider QA is not required and must not run unless explicitly approved
+- `productionReady` remains `false`
+
 Phase 17C-R3 local QA used five ignored synthetic JPEGs:
 
 - `warm-rooftop.jpg`
