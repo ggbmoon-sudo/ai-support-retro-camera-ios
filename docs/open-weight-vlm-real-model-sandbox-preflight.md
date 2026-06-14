@@ -4,7 +4,7 @@ Status: Preflight plan only
 Date: 2026-06-14
 Phase: 19-F
 
-Update: Phase 20-A implemented the safe backend-only local sandbox setup described here. It added an example config, ignored real local config/report/sample paths, a config validator, a dry-run script, and fail-closed future command name. Phase 20-B adds a backend-only stub/no-network sandbox client smoke path that validates a safe synthetic candidate through the existing VLM schema/gate and keeps the explicit future local-model command fail-closed. Phase 20-C adds `docs/open-weight-vlm-local-operator-runbook.md` and `npm run qa:open-weight-vlm:local-smoke-gate` so a future Phase 20-D real-model smoke run has an operator checklist and a no-network pre-run gate. Phase 20-D1 selects Transformers + FastAPI as the first local adapter path, documents `docs/open-weight-vlm-transformers-fastapi-local-adapter.md`, and prepares the explicit sandbox client branch while keeping default scripts no-network. These phases still do not add model server code, real model calls by default, app-facing endpoints, iOS integration, payload changes, training, fine-tuning, or production rollout.
+Update: Phase 20-A implemented the safe backend-only local sandbox setup described here. It added an example config, ignored real local config/report/sample paths, a config validator, a dry-run script, and fail-closed future command name. Phase 20-B adds a backend-only stub/no-network sandbox client smoke path that validates a safe synthetic candidate through the existing VLM schema/gate and keeps the explicit future local-model command fail-closed. Phase 20-C adds `docs/open-weight-vlm-local-operator-runbook.md` and `npm run qa:open-weight-vlm:local-smoke-gate` so a future Phase 20-D real-model smoke run has an operator checklist and a no-network pre-run gate. Phase 20-D1 selects Transformers + FastAPI as the first local adapter path, documents `docs/open-weight-vlm-transformers-fastapi-local-adapter.md`, and prepares the explicit sandbox client branch while keeping default scripts no-network. Phase 20-D2A adds `docs/open-weight-vlm-transformers-fastapi-smoke-server-setup.md`, a docs-only local operator setup guide for a future loopback-only Qwen2.5-VL FastAPI smoke server, ignored fixture registry, and `smoke_001` fixture policy. These phases still do not add model server code, real model calls by default, app-facing endpoints, iOS integration, payload changes, training, fine-tuning, or production rollout.
 
 ## Goal
 
@@ -93,7 +93,10 @@ Recommended future ignored locations:
 
 - `backend/.env`
 - `backend/.env.local`
+- `backend/config/open-weight-vlm.fixtures.local.json`
 - `backend/reports/vlm-benchmark/`
+- `backend/reports/open-weight-vlm-local-*.json`
+- `backend/reports/local-vlm-*.json`
 - `backend/tests/vlm-local-samples/`
 - `backend/tests/generated-images/`
 

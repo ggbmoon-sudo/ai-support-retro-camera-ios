@@ -183,4 +183,6 @@ Phase 20-D remains blocked until the operator prepares:
 - passing default local smoke
 - passing local smoke gate
 
+For local server setup details, use `docs/open-weight-vlm-transformers-fastapi-smoke-server-setup.md`. That guide defines the first model target, loopback-only endpoint, `fixtureId` request style, ignored fixture registry policy, `smoke_001` first fixture token, and candidate-JSON-only response contract.
+
 Passing Phase 20-D1 does not approve production rollout. `productionReady:false` remains required.

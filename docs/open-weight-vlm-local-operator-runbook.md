@@ -44,6 +44,7 @@ Before any future real-model smoke run:
 - `npm run qa:open-weight-vlm:local-smoke` passes in default no-network mode.
 - `npm run qa:open-weight-vlm:local-smoke-gate` is reviewed and blocks until ignored local config is intentionally prepared.
 - Phase 20-D1 adapter prep is present; read `docs/open-weight-vlm-transformers-fastapi-local-adapter.md`.
+- Phase 20-D2A setup guidance is present; read `docs/open-weight-vlm-transformers-fastapi-smoke-server-setup.md`.
 - The operator has explicit approval to prepare a local real-model smoke run.
 
 ## Approved local fixture policy
@@ -77,6 +78,14 @@ The committed example remains only a template:
 ```sh
 backend/config/open-weight-vlm.local.example.json
 ```
+
+The first Transformers FastAPI smoke should also use an ignored local fixture registry:
+
+```sh
+backend/config/open-weight-vlm.fixtures.local.json
+```
+
+Use exactly one first-smoke fixture token, `smoke_001`, mapped by the local server to an approved ignored image under `backend/tests/vlm-local-samples/`. Do not commit the registry or fixture image.
 
 ## Safe command sequence
 
@@ -226,6 +235,8 @@ Phase 20-D may start only after explicit approval and only if:
 - local sandbox smoke passes in no-network mode
 - local smoke gate has no hard blockers under ignored local config
 - local config uses `servingStack:"transformers_fastapi"`
+- the local setup follows `docs/open-weight-vlm-transformers-fastapi-smoke-server-setup.md`
+- the first fixture token is `smoke_001`
 - approved local fixtures are present only in ignored folders
 - operator confirms no real/user photos will be committed
 - operator confirms raw prompt/model output/image/path/request payload logging is disabled

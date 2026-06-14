@@ -1,5 +1,23 @@
 # Manual Smoke Tests
 
+## Phase 20-D2A
+
+Docs-only local Transformers FastAPI smoke server setup guide:
+
+- [ ] Open `docs/open-weight-vlm-transformers-fastapi-smoke-server-setup.md`.
+- [ ] Confirm the first model target is `Qwen2.5-VL-7B-Instruct`.
+- [ ] Confirm fallback options are `Qwen2.5-VL-3B-Instruct` or 7B 4-bit / 8-bit only if hardware is insufficient.
+- [ ] Confirm the local server is Transformers + FastAPI and must bind to `127.0.0.1` only.
+- [ ] Confirm the endpoint contract is `POST /local/vlm/photo-advisor`.
+- [ ] Confirm request style is `fixtureId` token only and does not use raw paths, base64, multipart image, raw prompt, or final UI prose.
+- [ ] Confirm response style is candidate JSON only and must pass `openWeightVlmPhotoAdvisorSchema`.
+- [ ] Confirm ignored fixture folder is `backend/tests/vlm-local-samples/`.
+- [ ] Confirm ignored fixture registry is `backend/config/open-weight-vlm.fixtures.local.json`.
+- [ ] Confirm first smoke uses exactly one fixture token: `smoke_001`.
+- [ ] Confirm `.gitignore` protects local config, fixture registry, local fixture folder, and local VLM report patterns.
+- [ ] Confirm no FastAPI server implementation, model server URL config, local fixture image, model output, generated report, app-facing endpoint, production endpoint, iOS integration, backend provider request payload change, iOS upload payload change, capture-context upload, Camera cloud AI entry, training/fine-tuning, or production rollout is introduced.
+- [ ] Confirm `productionReady=false`.
+
 ## Phase 20-D1
 
 Backend-only Transformers + FastAPI local adapter prep:

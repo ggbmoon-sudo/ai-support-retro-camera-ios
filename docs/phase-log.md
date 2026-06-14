@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 20-D1 - Transformers + FastAPI Local Adapter Prep
-Status: Implemented; verification pending final closeout
-Latest implementation: Prepared the backend-only Transformers + FastAPI local adapter path for a future approved local VLM smoke. The committed example config remains disabled/no-network but now names `servingStack:"transformers_fastapi"` and a non-sensitive fixture token. The sandbox config validator accepts the selected serving stack and redacts fixture identity into buckets; the explicit local sandbox client can validate a local FastAPI candidate JSON response through the existing open-weight VLM schema only behind `--run-local-model`; default smoke/gate scripts remain no-network/fail-closed. Added the adapter contract doc and updated runbook/preflight/docs. No real VLM was run, no model server URL/config was committed, no app/backend production route, iOS source, backend provider request payload, iOS upload payload, capture-context upload, Camera cloud entry, provider/model credential, real photo, generated raw model report, training/fine-tuning, or production rollout was added.
+Current phase: Phase 20-D2A - Local Transformers FastAPI Smoke Server Setup Guide
+Status: Docs/operator-prep implemented; verification pending final closeout
+Latest implementation: Added a docs-only local operator setup guide for a future Transformers + FastAPI Qwen2.5-VL smoke server. The guide selects Qwen2.5-VL-7B-Instruct as the first target, documents 3B / quantized 7B fallback options, requires `127.0.0.1` loopback-only serving, defines `POST /local/vlm/photo-advisor`, keeps requests to a non-sensitive `fixtureId` token, requires candidate JSON only, documents prompt/rejection policy, and adds ignored local fixture registry guidance for `backend/config/open-weight-vlm.fixtures.local.json` with first fixture token `smoke_001`. Updated docs and ignore protections only. No FastAPI server was added, no real model was run, no local config/fixture/report was created, no model server URL/config was committed, no app/backend production route, iOS source, backend provider request payload, iOS upload payload, capture-context upload, Camera cloud entry, provider/model credential, real photo, generated raw model report, training/fine-tuning, or production rollout was added.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -73,6 +73,52 @@ Phase 17C-R3 verification: generated five ignored synthetic local QA images and 
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
 Next phase: Retry Phase 20-D only after the operator prepares ignored local config, exactly one approved ignored local fixture, and a safe local/private Transformers + FastAPI model server. Phase 20-E should not start until a real-model smoke result exists or the user explicitly chooses a docs-only / fixture-only continuation. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, public endpoint, model downloads, model cache changes, or user-photo training / fine-tuning until explicitly requested.
+
+---
+
+## Phase 20-D2A - Local Transformers FastAPI Smoke Server Setup Guide
+
+Status: Docs/operator-prep implemented
+Date: 2026-06-15
+
+### Completed
+
+- Added `docs/open-weight-vlm-transformers-fastapi-smoke-server-setup.md`.
+- Documented why Transformers + FastAPI is the first correctness/reference smoke path.
+- Documented the hardware/runtime decision tree:
+  - first model: `Qwen2.5-VL-7B-Instruct`
+  - fallback: `Qwen2.5-VL-3B-Instruct` or 7B quantized local experiment if hardware is insufficient
+  - CPU-only keeps D2 blocked
+- Documented the local server architecture:
+  - bind to `127.0.0.1` only
+  - endpoint `POST /local/vlm/photo-advisor`
+  - request uses `fixtureId` token only
+  - response is candidate JSON only
+- Documented minimal prompt policy, deterministic JSON cleanup limits, and rejection categories.
+- Documented approved ignored fixture policy:
+  - `backend/tests/vlm-local-samples/`
+  - `backend/config/open-weight-vlm.fixtures.local.json`
+  - first fixture token `smoke_001`
+- Updated `.gitignore` for the ignored fixture registry and local VLM report filename patterns.
+- Updated README, backend README, iOS README, local operator runbook, real-model preflight, adapter doc, manual smoke tests, phase log, and handoff.
+
+### Safety Notes
+
+- Docs/operator-prep only.
+- No FastAPI server implementation added.
+- No real VLM/model call run.
+- No `--run-local-model` run.
+- No local config, fixture registry, fixture image, model output, generated report, model weights, model cache, or model server URL committed.
+- No app-facing endpoint or production endpoint added.
+- No iOS source/project/localization files changed.
+- No backend provider request payload or iOS upload payload changed.
+- No capture-context upload or Camera cloud AI entry added.
+- No training/fine-tuning added.
+- `productionReady` remains `false`.
+
+### Ready for Phase 20-D2B
+
+Operator-ready, but still blocked until the operator prepares ignored local config, exactly one approved ignored fixture using `smoke_001`, and a safe local/private Transformers FastAPI server. Phase 20-E should not start until a real smoke result exists or the user explicitly changes direction.
 
 ---
 

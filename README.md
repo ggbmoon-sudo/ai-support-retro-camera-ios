@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 20-D1 Transformers + FastAPI local adapter prep implemented; default remains no-network/fail-closed
+- Phase 20-D2A local Transformers FastAPI smoke server setup guide; docs-only, no real model run
 
 Next phase:
 
-- Retry Phase 20-D only after ignored local config, approved ignored local fixtures, and a safe local/private Transformers + FastAPI model server are prepared; otherwise continue only with an explicitly requested docs-only / fixture-only phase
+- Phase 20-D2B can attempt exactly one local Transformers FastAPI smoke only after ignored local config, one approved ignored fixture, and a safe local/private server are prepared; otherwise remain blocked
 - Do not start production cloud rollout without explicit approval
 - Production rollout remains blocked until a later explicit release phase
 
@@ -123,6 +123,7 @@ Current MVP demo / QA readiness docs:
 - `docs/open-weight-vlm-backend-architecture-adr.md`
 - `docs/open-weight-vlm-structured-advisor-benchmark-plan.md`
 - `docs/open-weight-vlm-transformers-fastapi-local-adapter.md`
+- `docs/open-weight-vlm-transformers-fastapi-smoke-server-setup.md`
 - `docs/filter-research-popular-film-looks.md`
 - `docs/filter-preset-schema.md`
 - `docs/filter-roadmap.md`

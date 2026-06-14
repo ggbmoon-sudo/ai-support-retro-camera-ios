@@ -111,6 +111,22 @@ Latest Phase 20-D1 adapter prep check on 2026-06-15:
 - `productionReady:false` remains required.
 - Next recommended step is a Phase 20-D retry only after the operator prepares ignored local config, exactly one approved ignored local fixture, and a safe local/private Transformers + FastAPI model server. Do not start Phase 20-E until a real smoke result exists or the user explicitly changes direction.
 
+Latest Phase 20-D2A setup guide check on 2026-06-15:
+
+- Branch: `feat/phase-02-auth`.
+- Use upstream shorthand such as `@{u}`; do not assume `origin/main` exists in this clone.
+- Phase 20-D2A is docs/operator-prep only.
+- Added `docs/open-weight-vlm-transformers-fastapi-smoke-server-setup.md`.
+- The guide documents the first local smoke target as `Qwen2.5-VL-7B-Instruct`, with `Qwen2.5-VL-3B-Instruct` or quantized 7B as hardware fallback.
+- The guide keeps the selected serving path as Transformers + FastAPI, loopback-only on `127.0.0.1`, with `POST /local/vlm/photo-advisor`.
+- The future request contract remains `fixtureId` token only; no raw image path, base64, multipart image, raw prompt, request payload with image data, or final UI prose is allowed.
+- The future response contract remains structured candidate JSON only, validated by `backend/src/qa/openWeightVlmPhotoAdvisorSchema.mjs`.
+- The first approved local fixture token is `smoke_001`; the fixture folder `backend/tests/vlm-local-samples/` and fixture registry `backend/config/open-weight-vlm.fixtures.local.json` must stay ignored.
+- `.gitignore` now explicitly protects the fixture registry and local VLM report filename patterns.
+- No FastAPI server code was added, no real model was run, no `--run-local-model` command was run, no local config/fixture/report/model URL/credential was committed, no app-facing endpoint or production endpoint was added, and no iOS integration, backend/iOS payload change, capture-context upload, Camera cloud AI, training/fine-tuning, or production rollout was added.
+- `productionReady:false` remains required.
+- Next recommended step is Phase 20-D2B only after the operator prepares ignored local config, exactly one approved ignored fixture, and a safe loopback Transformers FastAPI server. Phase 20-E should not start yet.
+
 Confirmed locally:
 
 - Phase 16E - Static Pose Overlay MVP

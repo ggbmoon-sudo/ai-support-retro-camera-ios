@@ -561,6 +561,25 @@ Boundary notes:
 - No model server code, public endpoint, production endpoint, iOS integration, backend provider request payload change, iOS upload payload change, capture-context upload, Camera cloud AI entry, training, fine-tuning, real photo commit, generated report commit, or production rollout is added.
 - `productionReady` remains `false`.
 
+## Phase 20-D2A Transformers FastAPI Smoke Server Setup Guide
+
+Phase 20-D2A adds `docs/open-weight-vlm-transformers-fastapi-smoke-server-setup.md` as a local operator setup guide for a future first approved Qwen2.5-VL smoke.
+
+It documents:
+
+- first model target: `Qwen2.5-VL-7B-Instruct`
+- fallback options: `Qwen2.5-VL-3B-Instruct` or 7B quantized local experiments if hardware is insufficient
+- local server path: Transformers + FastAPI, bound to `127.0.0.1` only
+- expected endpoint: `POST /local/vlm/photo-advisor`
+- request style: `fixtureId` token only
+- response style: candidate JSON compatible with `openWeightVlmPhotoAdvisorSchema`
+- approved ignored fixture folder: `backend/tests/vlm-local-samples/`
+- ignored fixture registry: `backend/config/open-weight-vlm.fixtures.local.json`
+- first smoke fixture token: `smoke_001`
+- no raw prompt/model output/image path/base64/request payload logging
+
+The phase is docs/operator-prep only. It does not add server runtime code, start FastAPI, run Qwen2.5-VL, create local config, create fixture images, make a network/model call, change backend provider request payloads, change iOS upload payloads, add iOS integration, or enable production rollout.
+
 ## Phase 20-C Local VLM Operator Runbook + Smoke Gate
 
 Phase 20-C adds an operator runbook and a backend-only real-model smoke gate for future approved local/self-hosted VLM testing. The gate does not call a model and does not create an app-facing endpoint.
