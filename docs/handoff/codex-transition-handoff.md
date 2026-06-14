@@ -65,6 +65,20 @@ Latest Phase 18 handoff refresh check on 2026-06-14:
 - Phase 18-B4-pre is completed and locally committed, but not pushed at the time of this handoff refresh. Note the local commit message appears to have a typo: `hase 18-B4-pre: consolidate Codex project rules`.
 - This handoff refresh itself is documentation-only and should be committed separately if accepted.
 
+Latest Phase 20-C handoff refresh check on 2026-06-14:
+
+- Branch: `feat/phase-02-auth`.
+- Use upstream shorthand such as `@{u}`; do not assume `origin/main` exists in this clone.
+- `git status --short --branch --untracked-files=all` showed the branch ahead of upstream by 1 commit and no working-tree file changes before this handoff refresh edit.
+- `git log --oneline @{u}..HEAD` showed one local-only commit: `56d61a0 Phase 20-C: add local VLM operator runbook and smoke gate`.
+- `git rev-list --left-right --count @{u}...HEAD` showed `0 1`, meaning the branch was 0 behind and 1 ahead of its configured upstream.
+- Phase 19-A through Phase 19-F are completed.
+- Phase 20-A and Phase 20-B are completed and upstream-synced / pushed according to the latest upstream comparison.
+- Phase 20-C is completed and locally committed, but not pushed at the time of this handoff refresh.
+- Phase 20-C added a backend-only local VLM operator runbook and real-model smoke gate. It does not run a real model, add iOS integration, add an app-facing endpoint, add production endpoint, add model server implementation, commit model server URL config, commit credentials, change backend/iOS payloads, upload capture context, add Camera cloud AI, commit real photos/reports, train/fine-tune, or mark production ready.
+- Next planned phase is `Phase 20-D: First approved local real-model smoke run`, but it must start only after explicit user request. It must remain backend-only, local/self-hosted, ignored-config-only, approved-local-fixture-only, sanitized-output-only, and production-blocked.
+- This handoff refresh itself is documentation-only and should be committed separately if accepted.
+
 Confirmed locally:
 
 - Phase 16E - Static Pose Overlay MVP
