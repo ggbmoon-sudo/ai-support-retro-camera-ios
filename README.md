@@ -78,7 +78,7 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 18-C2 captured / imported / fallback Advisor flow QA pass completed; ready for review
+- Phase 18-C3 multilingual Advisor copy beta QA pass completed; ready for review
 
 Next phase:
 
@@ -219,6 +219,8 @@ Phase 18-C0 adds the post-capture Advisor beta hardening plan in `docs/photo-adv
 Phase 18-C1 polishes the local/mock post-capture Advisor result card for beta readability. The UI-facing card keeps the mood headline first, one visual reason, one filter recommendation with a short reason, and at most two optional advice rows. Crop/straighten advice is prioritized before optional retake, non-retake keep-style copy can appear as a gentle secondary note, and missing filters show a calm unavailable note instead of an unusable apply action. This does not change backend provider request payloads, iOS upload payloads, capture-context upload behavior, provider credential handling, Camera UI cloud entry, production remote AI availability, or `productionReady=false`.
 
 Phase 18-C2 hardens the captured / imported / fallback Advisor QA path. Captured photos may still use safe local capture/image context, imported photos keep limited-context wording and do not claim capture-time motion / tilt / exposure / stability, fallback results are explicitly marked as fallback, fallback/error copy avoids mock/internal-result wording, and fallback filters choose from the allowed local catalog when possible. Backend provider request payloads, iOS upload payloads, capture-context upload behavior, provider credential handling, Camera UI cloud entry, production remote AI availability, and `productionReady=false` are unchanged.
+
+Phase 18-C3 polishes multilingual local/mock Photo Advisor copy for beta QA. English, Traditional Chinese, Simplified Chinese, and Cantonese-style Advisor strings were reviewed for short mood-first language, calmer imported/fallback wording, clearer local/on-device labels, and less slang-heavy Cantonese-style phrasing. Backend provider request payloads, iOS upload payloads, capture-context upload behavior, provider credential handling, Camera UI cloud entry, production remote AI availability, and `productionReady=false` are unchanged.
 
 ## Phase 12A Filter Planning Status
 

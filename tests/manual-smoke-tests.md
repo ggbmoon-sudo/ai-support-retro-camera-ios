@@ -1,5 +1,26 @@
 # Manual Smoke Tests
 
+## Phase 18-C3
+
+Multilingual Advisor copy beta QA pass:
+
+- [ ] App launches normally.
+- [ ] Captured photo opens local/mock Photo Advisor.
+- [ ] Imported photo opens local/mock Photo Advisor.
+- [ ] English Advisor copy is short, natural, mood-first, and not generic AI critique.
+- [ ] Traditional Chinese copy is natural, concise, and not overly literal.
+- [ ] Simplified Chinese copy is natural and uses appropriate local terms such as 拍摄信息 / 氛围 / 画面 where relevant.
+- [ ] Cantonese-style copy feels natural for production UI but is not too slang-heavy or harsh.
+- [ ] Imported-photo copy does not claim capture-time motion, tilt, exposure, stability, focus, lens, or camera conditions.
+- [ ] Fallback/provider-unavailable copy is calm, short, and non-technical.
+- [ ] Missing/unknown filter copy remains calm and does not show raw filter IDs or unusable actions.
+- [ ] Filter reasons mention safe photo signal plus retro aesthetic result.
+- [ ] Crop/straighten/refinement copy is optional, not corrective.
+- [ ] Retake advice remains conservative, optional, and lower priority than mood/filter advice.
+- [ ] UI does not show raw JSON, raw provider error, raw localization key, internal classification, numeric confidence, score/rating, sensitive inference, or identity-adjacent wording.
+- [ ] No backend provider request payload change, iOS upload payload change, capture-context upload, iOS provider key/direct call, Camera cloud entry, generated artifact commit, or production rollout is introduced.
+- [ ] Confirm `productionReady=false`.
+
 ## Phase 18-C2
 
 Captured / imported / fallback Advisor flow QA pass:

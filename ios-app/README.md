@@ -130,6 +130,8 @@ Phase 18-C1 polishes the iOS local/mock Photo Advisor result card only. The card
 
 Phase 18-C2 keeps iOS behavior local/mock while tightening captured / imported / fallback Advisor flow QA. Captured photos may use safe local capture/image context, imported photos keep limited-context language without claiming capture-time motion / tilt / exposure / stability, fallback/provider-unavailable copy is calm and short, and missing/unknown filters avoid unusable actions. iOS still has no provider key, no direct QweAPI/provider call, no provider SDK, no Camera cloud AI entry, no capture-context upload, no iOS upload payload change, and no production rollout.
 
+Phase 18-C3 polishes the local/mock Photo Advisor multilingual beta copy only. The visible Advisor card no longer labels the experience as a mock/demo, imported-photo copy uses natural capture-detail wording, provider-unavailable fallback copy is calmer, and Cantonese-style / 麻煩友 Advisor strings keep personality without heavy slang or harsh judgment. iOS still has no provider key, no direct QweAPI/provider call, no provider SDK, no Camera cloud AI entry, no capture-context upload, no iOS upload payload change, and no production rollout.
+
 ## Phase 17D-A Local Camera Capture Context
 
 Phase 17D-A adds local-only summarized capture context for captured / imported photos:
