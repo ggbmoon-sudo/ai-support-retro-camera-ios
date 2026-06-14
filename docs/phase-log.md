@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 19-E - Open-weight VLM Synthetic Benchmark Expansion + Failure Taxonomy
-Status: Phase 19-E completed and ready to commit
-Latest implementation: Expanded the backend-only synthetic open-weight VLM Photo Advisor benchmark from 20 to 40 committed JSON/text-only cases and formalized failure taxonomy coverage for invalid JSON, schema failure, unsupported enum, unsupported filter family, sensitive inference, score/rating, chain-of-thought, debug/provider leakage, source-context overclaim, retake false positive, overlong output, prompt injection, raw localization key, unsafe free text, and timeout stub. The synthetic benchmark and gate still pass with 0 expectation failures, 0 hard blockers, `productionReady:false`, `providerConfigured:false`, `modelServerConfigured:false`, and `networkCallsMade:false`. No real model server code, model server URL config, provider/model credentials, real VLM/provider call, image upload, iOS integration, backend provider request payload change, iOS upload payload change, capture-context upload, Camera cloud entry, training/fine-tuning, generated report commit, or production rollout was added.
+Current phase: Phase 19-F - Open-weight VLM Real-model Sandbox Preflight
+Status: Phase 19-F completed and ready to commit
+Latest implementation: Added a documentation-only real-model sandbox preflight plan for future backend-only local/self-hosted open-weight VLM benchmarking. The plan defines what a later Phase 20-A may safely do, approved model candidates, allowed serving paths, ignored local config rules, approved local image fixture policy, runtime logging/redaction safety, hard gates, and an operator checklist. No real model server code, model server URL config, provider/model credentials, real VLM/provider call, image upload, iOS integration, backend provider request payload change, iOS upload payload change, capture-context upload, Camera cloud entry, training/fine-tuning, generated report commit, or production rollout was added.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -72,13 +72,80 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Phase 19-F may start only if explicitly requested and should remain backend-only / local-synthetic unless the prompt explicitly approves a real local model benchmark. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, real-provider/VLM QA, save-to-Photos, app integration, model server implementation, model downloads, model cache changes, or user-photo training / fine-tuning until explicitly requested.
+Next phase: Phase 20-A may start only if explicitly requested and should remain backend-only local/self-hosted VLM sandbox work with ignored local config and explicit operator opt-in. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, real-provider/VLM QA, save-to-Photos, app integration, model server implementation, model downloads, model cache changes, or user-photo training / fine-tuning until explicitly requested.
+
+---
+
+## Phase 19-F - Open-weight VLM Real-model Sandbox Preflight
+
+Status: Completed and ready to commit
+Date: 2026-06-14
+
+### Completed
+
+- Added `docs/open-weight-vlm-real-model-sandbox-preflight.md`.
+- Defined safe future Phase 20-A scope for backend-only local/self-hosted VLM sandbox work.
+- Documented allowed model candidates: Qwen2.5-VL-7B-Instruct, Qwen3-VL-8B-Instruct, MiniCPM-V 4.5, and optional InternVL3-8B.
+- Documented allowed serving paths: Transformers + FastAPI, vLLM, SGLang, and Ollama / LM Studio for local smoke/manual QA only.
+- Documented ignored local config rules for model server URL, local model paths, local reports, `.env`, private model paths, and generated artifacts.
+- Documented approved local image fixture policy, including ignored local folder, no user photos by default, no private photos in git, metadata stripping before model requests, no GPS/raw EXIF persistence, and no sensitive labels.
+- Documented runtime safety preflight for raw prompt/model response/image/base64/request payload/path logging bans and sanitized aggregate metrics only.
+- Documented Phase 20-A hard gates and local operator checklist.
+- Updated README, backend README, manual smoke tests, handoff, and phase log references.
+
+### Phase 20-A Readiness Recommendation
+
+- Phase 20-A may only be backend-only local/self-hosted VLM sandbox work if explicitly requested.
+- Synthetic benchmark and gate must pass before any real-model test.
+- Any model server URL must live only in ignored local config.
+- Any approved local images must live only in ignored local folders.
+- Real-model network calls may occur only to an explicitly configured local/self-hosted model server if Phase 20-A explicitly approves them.
+- No iOS integration, public endpoint, production endpoint, payload change, capture-context upload, Camera cloud entry, training/fine-tuning, user-photo training, or `productionReady:true` is allowed.
+
+### Safety Notes
+
+- No real model server code was added.
+- No model server URL config was added.
+- No provider/model credentials were added.
+- No image upload or network call was added.
+- No real-provider QA or real VLM QA was run.
+- No model download, model cache, benchmark report, real photo, generated image, or local VLM sample was added.
+- No training or fine-tuning was started.
+- Backend provider request payloads were not changed.
+- iOS upload payloads were not changed.
+- Capture context is not uploaded.
+- iOS has no provider/model key, no provider/model SDK, and no direct provider/model call.
+- Camera remains local-only with no cloud AI entry.
+- No GPS/location collection, raw EXIF dump, raw sensor persistence, raw image/base64 logging, raw prompt logging, raw model/provider response logging, user-photo training, cloud functionality, or production rollout was added.
+- `productionReady` remains `false`.
+
+### Verification
+
+- [x] Full backend tests passed: 65/65 tests.
+- [x] Synthetic benchmark runner passed: 40 total cases, 40 expectation passes, `productionReady:false`, `providerConfigured:false`, `modelServerConfigured:false`, `networkCallsMade:false`.
+- [x] Synthetic gate summary script passed with no hard blockers and `pass_for_synthetic_contract`.
+- [x] Final `git diff --check` passed.
+- [x] Photo Advisor copy regression script passed.
+- [x] Filter reason coverage script passed.
+- [x] CreativeIntent language script passed.
+- [x] Photo Advisor card language script passed.
+- [x] Secret scan passed.
+- [x] Provider/model key scan found only existing backend documentation placeholders / historical server-side provider notes; no new provider/model credential, model server URL config, or active runtime config was added.
+- [x] iOS direct provider/model scan passed.
+- [x] Camera cloud-entry scan passed.
+- [x] Backend/iOS payload unchanged scan passed.
+- [x] Artifact scan found only ignored local artifacts; no real photos, generated reports, model outputs, screenshots, recordings, or device artifacts were staged.
+- [x] Xcode build not required because iOS source/project/localization files were not changed.
+
+### Ready to Commit Phase 19-F
+
+Yes, after final closeout scans pass.
 
 ---
 
 ## Phase 19-E - Open-weight VLM Synthetic Benchmark Expansion + Failure Taxonomy
 
-Status: Completed and ready to commit
+Status: Completed and pushed / upstream-synced as `5dee098`
 Date: 2026-06-14
 
 ### Completed

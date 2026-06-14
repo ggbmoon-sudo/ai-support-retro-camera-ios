@@ -406,6 +406,40 @@ Failure taxonomy coverage includes:
 
 The synthetic report and gate remain sanitized aggregate output only. They keep `productionReady:false`, `providerConfigured:false`, `modelServerConfigured:false`, and `networkCallsMade:false`, and they do not add real model serving, model server URL config, provider/model credentials, image upload, network calls, backend provider request payload changes, iOS upload payload changes, capture-context upload, or production rollout.
 
+Phase 19-F adds a real-model sandbox preflight plan in `../docs/open-weight-vlm-real-model-sandbox-preflight.md`.
+
+This is documentation-only and does not add runtime model calls. It defines the safety boundary for a possible future Phase 20-A backend-only local/self-hosted VLM sandbox.
+
+Future Phase 20-A may only proceed if explicitly requested and must keep these gates:
+
+- backend-only local/self-hosted sandbox
+- explicit operator opt-in before any model call
+- ignored local config for any model server URL
+- ignored approved local image folder
+- synthetic benchmark and gate pass before real-model testing
+- no iOS integration
+- no public endpoint
+- no production endpoint
+- no backend provider request payload change
+- no iOS upload payload change
+- no Camera cloud AI entry
+- no `productionReady:true`
+- no training or fine-tuning
+- no user-photo training
+
+Runtime safety requirements for a future real-model sandbox:
+
+- no raw prompt logging
+- no raw model response logging
+- no raw image/base64 logging
+- no image path logging unless sanitized
+- no request payload logging
+- no GPS/raw EXIF persistence
+- sanitized aggregate metrics only
+- generated reports and local fixtures remain ignored
+
+Phase 19-F itself does not add model server code, model server URL config, provider/model credentials, image upload, network calls, local samples, generated reports, backend provider request payload changes, iOS upload payload changes, capture-context upload, or production rollout.
+
 Phase 18-B5 adds a small gate summary helper for sanitized reports:
 
 ```sh

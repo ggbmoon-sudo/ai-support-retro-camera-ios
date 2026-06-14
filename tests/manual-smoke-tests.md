@@ -1,5 +1,21 @@
 # Manual Smoke Tests
 
+## Phase 19-F
+
+Open-weight VLM real-model sandbox preflight:
+
+- [ ] Open `docs/open-weight-vlm-real-model-sandbox-preflight.md`.
+- [ ] Confirm Phase 19-F is documentation-only and does not add model server code, model server URL config, provider/model credentials, image upload, network calls, local samples, generated reports, iOS integration, training, fine-tuning, or production rollout.
+- [ ] Confirm future Phase 20-A scope is backend-only local/self-hosted VLM sandbox work with explicit operator opt-in.
+- [ ] Confirm allowed model candidates are Qwen2.5-VL-7B-Instruct, Qwen3-VL-8B-Instruct, MiniCPM-V 4.5, and optional InternVL3-8B.
+- [ ] Confirm allowed serving paths are Transformers + FastAPI, vLLM, SGLang, and Ollama / LM Studio for local smoke/manual QA only.
+- [ ] Confirm model server URL, local config, local sample images, private model paths, generated reports, and model output artifacts must stay ignored/local-only.
+- [ ] Confirm approved image fixtures must not include user photos by default, private real photos in git, raw image artifacts in git, GPS/raw EXIF persistence, face/person identity labels, or sensitive attribute labels.
+- [ ] Confirm future runtime rules forbid raw prompt logging, raw model response logging, raw image/base64 logging, request payload logging, unsanitized image path logging, GPS/raw EXIF persistence, secrets, and unsafe model text in reports.
+- [ ] Confirm future Phase 20-A hard gates include no iOS payload change, no backend provider payload change, no Camera cloud entry, no public endpoint, no `productionReady:true`, no training/fine-tuning, and no user-photo training.
+- [ ] Confirm synthetic benchmark and gate must pass before any future real-model test.
+- [ ] Confirm no Camera cloud entry, iOS provider/model key/direct call, iOS upload payload change, capture-context upload, or production remote rollout is introduced.
+
 ## Phase 19-E
 
 Open-weight VLM synthetic benchmark expansion and failure taxonomy:
