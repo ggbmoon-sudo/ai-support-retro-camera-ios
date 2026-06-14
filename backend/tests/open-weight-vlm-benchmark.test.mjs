@@ -30,7 +30,7 @@ test("open-weight VLM validator accepts valid synthetic benchmark fixtures", asy
 test("open-weight VLM validator rejects invalid benchmark fixtures with expected codes", async () => {
   const cases = await benchmarkCases();
 
-  for (const item of cases.filter((fixture) => fixture.expectedStatus === "rejected")) {
+  for (const item of cases.filter((fixture) => fixture.expectedStatus === "rejected" && !fixture.stubFailure)) {
     const result = validateOpenWeightVlmPhotoAdvisorCandidate(item.modelOutput);
 
     assert.equal(result.ok, false, item.id);
@@ -88,6 +88,35 @@ test("open-weight VLM benchmark report is sanitized aggregate output", async () 
   assert.equal(serialized.includes("score.8/10"), false);
 });
 
+test("open-weight VLM benchmark fixtures cover the expanded failure taxonomy", async () => {
+  const cases = await benchmarkCases();
+  const results = cases.map(evaluateOpenWeightVlmBenchmarkCase);
+  const report = summarizeOpenWeightVlmBenchmark(results);
+  const requiredCategories = [
+    "invalid_json",
+    "schema_failed",
+    "unsupported_enum",
+    "unsupported_filter_family",
+    "sensitive_inference",
+    "score_or_rating",
+    "chain_of_thought",
+    "debug_or_provider_leakage",
+    "source_context_overclaim",
+    "retake_false_positive",
+    "overlong_output",
+    "prompt_injection",
+    "raw_localization_key",
+    "unsafe_free_text",
+    "timeout_stub"
+  ];
+
+  assert.equal(cases.length >= 34, true);
+  assert.equal(report.totalCases, 40);
+  for (const category of requiredCategories) {
+    assert.equal(report.failureTaxonomyCoverage[category] > 0, true, category);
+  }
+});
+
 test("open-weight VLM synthetic benchmark script prints sanitized metrics only", () => {
   const output = execFileSync(process.execPath, [SCRIPT_URL.pathname, "--synthetic"], {
     cwd: new URL("..", import.meta.url),
@@ -114,13 +143,14 @@ test("open-weight VLM benchmark gate passes clean synthetic report", async () =>
   assert.equal(gate.eligibleForSyntheticContractReview, true);
   assert.deepEqual(gate.hardBlockers, []);
   assert.equal(gate.statusCategories.includes("pass_for_synthetic_contract"), true);
-  assert.equal(gate.reviewedMetrics.totalCases, 20);
+  assert.equal(gate.reviewedMetrics.totalCases, 40);
   assert.equal(gate.reviewedMetrics.expectationFailureCount, 0);
-  assert.equal(gate.blockedFixtureCounts.safetyBlockers, 1);
-  assert.equal(gate.blockedFixtureCounts.schemaBlockers, 2);
+  assert.equal(gate.blockedFixtureCounts.safetyBlockers, 3);
+  assert.equal(gate.blockedFixtureCounts.schemaBlockers, 4);
   assert.equal(gate.blockedFixtureCounts.sourceContextOverclaimBlockers, 1);
   assert.equal(gate.blockedFixtureCounts.retakeGateBlockers, 1);
   assert.equal(gate.blockedFixtureCounts.leakageBlockers, 1);
+  assert.equal(gate.blockedFixtureCounts.providerIntegrationBlockers, 1);
 });
 
 test("open-weight VLM benchmark gate blocks synthetic regressions", async () => {
@@ -136,6 +166,11 @@ test("open-weight VLM benchmark gate blocks synthetic regressions", async () => 
     acceptedDebugLeakageCount: 1,
     acceptedSourceContextOverclaimCount: 1,
     acceptedUnsupportedFilterCount: 1,
+    acceptedOverlongOutputCount: 1,
+    acceptedPromptInjectionCount: 1,
+    acceptedRawLocalizationKeyCount: 1,
+    acceptedUnsafeFreeTextCount: 1,
+    acceptedTimeoutStubCount: 1,
     networkCallsMade: true,
     productionReady: true
   });
@@ -150,6 +185,11 @@ test("open-weight VLM benchmark gate blocks synthetic regressions", async () => 
   assert.equal(blockerCodes.has("accepted_debug_leakage"), true);
   assert.equal(blockerCodes.has("accepted_imported_overclaim"), true);
   assert.equal(blockerCodes.has("accepted_unsupported_filter"), true);
+  assert.equal(blockerCodes.has("accepted_overlong_output"), true);
+  assert.equal(blockerCodes.has("accepted_prompt_injection"), true);
+  assert.equal(blockerCodes.has("accepted_raw_localization_key"), true);
+  assert.equal(blockerCodes.has("accepted_unsafe_free_text"), true);
+  assert.equal(blockerCodes.has("accepted_timeout_stub"), true);
   assert.equal(blockerCodes.has("network_calls_made"), true);
   assert.equal(blockerCodes.has("production_ready_true"), true);
 });
@@ -164,9 +204,11 @@ test("open-weight VLM benchmark gate script prints sanitized pass/fail summary o
   assert.equal(gate.productionReady, false);
   assert.equal(gate.eligibleForSyntheticContractReview, true);
   assert.equal(gate.hardBlockers.length, 0);
-  assert.equal(gate.blockedFixtureCounts.safetyBlockers, 1);
+  assert.equal(gate.blockedFixtureCounts.safetyBlockers, 3);
   assert.equal(gate.blockedFixtureCounts.leakageBlockers, 1);
   assert.equal(gate.reviewedMetrics.networkCallsMade, false);
+  assert.equal(gate.reviewedMetrics.totalCases, 40);
+  assert.equal(gate.reviewedMetrics.failureTaxonomyCoverage.timeout_stub, 1);
   assert.equal(output.includes("modelOutput"), false);
   assert.equal(output.includes("{ not valid json"), false);
   assert.equal(output.includes("provider debug output"), false);

@@ -1,5 +1,22 @@
 # Manual Smoke Tests
 
+## Phase 19-E
+
+Open-weight VLM synthetic benchmark expansion and failure taxonomy:
+
+- [ ] Run backend tests: `cd backend && npm test`.
+- [ ] Run synthetic benchmark: `cd backend && npm run qa:open-weight-vlm:synthetic`.
+- [ ] Run synthetic gate summary: `cd backend && npm run qa:open-weight-vlm:gate`.
+- [ ] If `npm` is unavailable, run the same commands through local Node: `node --test tests/*.test.mjs`, `node scripts/run-open-weight-vlm-photo-advisor-benchmark.mjs --synthetic`, and `node scripts/check-open-weight-vlm-photo-advisor-benchmark-gate.mjs --synthetic`.
+- [ ] Confirm the fixture set has 40 synthetic JSON/text-only cases and no photos, image paths, base64, user data, real model outputs, provider reports, or private content.
+- [ ] Confirm accepted scenarios cover daylight, low light, warm indoor light, neon/night street, intentional blur, accidental motion blur, soft focus, tilt, grain, high contrast, faded color, backlight/silhouette, clutter, minimal composition, food/object, street, landscape, pet, architecture, imported limited context, severe blur, black image, and overexposed image.
+- [ ] Confirm failure taxonomy coverage includes `invalid_json`, `schema_failed`, `unsupported_enum`, `unsupported_filter_family`, `sensitive_inference`, `score_or_rating`, `chain_of_thought`, `debug_or_provider_leakage`, `source_context_overclaim`, `retake_false_positive`, `overlong_output`, `prompt_injection`, `raw_localization_key`, `unsafe_free_text`, and `timeout_stub`.
+- [ ] Confirm synthetic benchmark reports 40 expectation passes, 0 expectation failures, 0 accepted sensitive inference, 0 accepted score/rating, 0 accepted chain-of-thought, 0 accepted debug/provider leakage, 0 accepted imported overclaim, 0 accepted unsupported filter, and `productionReady:false`.
+- [ ] Confirm gate summary reports no hard blockers, `eligibleForSyntheticContractReview:true`, `providerConfigured:false`, `modelServerConfigured:false`, and `networkCallsMade:false`.
+- [ ] Confirm output does not include raw prompt, raw model output, raw image path, base64, request payload, provider/model credentials, secrets, real photo references, GPS, raw EXIF, stack traces, or generated report artifacts.
+- [ ] Confirm no backend provider request payload change, iOS upload payload change, capture-context upload, iOS provider/model key/direct call, Camera cloud entry, real VLM/provider QA, training/fine-tuning, generated artifact commit, or production rollout is introduced.
+- [ ] Confirm `productionReady=false`.
+
 ## Phase 19-D
 
 Open-weight VLM synthetic benchmark report and gate summary:

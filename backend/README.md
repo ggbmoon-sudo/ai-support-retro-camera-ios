@@ -375,6 +375,37 @@ Gate hard blockers include expectation failures, accepted sensitive inference, a
 
 The gate helper does not print raw prompts, raw model output, raw images, base64, request payloads, credentials, secrets, private file paths, real photo references, GPS, raw EXIF, or stack traces.
 
+Phase 19-E expands the synthetic benchmark fixture set and formalizes the failure taxonomy used by the benchmark report and gate helper.
+
+Expanded synthetic coverage:
+
+- 40 committed JSON/text-only cases
+- 24 accepted cases
+- 16 rejected contract/failure cases
+- no photos, image paths, base64, user data, prompts, real model responses, provider reports, or private content
+
+Accepted scenario coverage includes daylight, low light, warm indoor light, neon/night street, intentional blur, accidental motion blur, soft focus, tilt, grain, high contrast, faded color, backlight/silhouette, clutter, minimal composition, food/object, street, landscape, pet, architecture, imported limited context, severe blur, black image, and overexposed image.
+
+Failure taxonomy coverage includes:
+
+- `invalid_json`
+- `schema_failed`
+- `unsupported_enum`
+- `unsupported_filter_family`
+- `sensitive_inference`
+- `score_or_rating`
+- `chain_of_thought`
+- `debug_or_provider_leakage`
+- `source_context_overclaim`
+- `retake_false_positive`
+- `overlong_output`
+- `prompt_injection`
+- `raw_localization_key`
+- `unsafe_free_text`
+- `timeout_stub`
+
+The synthetic report and gate remain sanitized aggregate output only. They keep `productionReady:false`, `providerConfigured:false`, `modelServerConfigured:false`, and `networkCallsMade:false`, and they do not add real model serving, model server URL config, provider/model credentials, image upload, network calls, backend provider request payload changes, iOS upload payload changes, capture-context upload, or production rollout.
+
 Phase 18-B5 adds a small gate summary helper for sanitized reports:
 
 ```sh

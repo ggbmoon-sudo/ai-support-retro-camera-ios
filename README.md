@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 19-D Open-weight VLM Synthetic Benchmark Report + Gate Summary completed; ready for review
+- Phase 19-E Open-weight VLM Synthetic Benchmark Expansion + Failure Taxonomy completed; ready for review
 
 Next phase:
 
-- Phase 19-E may start only if explicitly requested and should remain local / synthetic / backend-only unless a later prompt explicitly approves model-server calls
+- Phase 19-F may start only if explicitly requested and should remain local / synthetic / backend-only unless a later prompt explicitly approves model-server calls
 - Do not start production cloud rollout without explicit approval
 - Production rollout remains blocked until a later explicit release phase
 
@@ -233,6 +233,8 @@ Phase 19-B adds `docs/open-weight-vlm-structured-advisor-benchmark-plan.md`, a d
 Phase 19-C adds a backend-only synthetic open-weight VLM benchmark harness skeleton. It includes a candidate JSON schema / validator helper, committed synthetic fixtures, a local no-network benchmark runner, backend tests, and a package script for sanitized aggregate metrics. The harness does not add a model server URL, provider/model credentials, real VLM calls, real provider calls, image upload, iOS integration, backend provider request payload changes, iOS upload payload changes, capture-context upload, Camera cloud AI, training/fine-tuning, or production rollout.
 
 Phase 19-D adds a synthetic benchmark report gate summary for the backend-only open-weight VLM harness. The gate summarizes accepted/rejected counts, expectation pass/fail, rejection categories, safety/schema/source-context/retake/leakage blocker counts, hard blockers, and reviewed metrics while preserving `productionReady:false`, `providerConfigured:false`, `modelServerConfigured:false`, and `networkCallsMade:false`. It does not add model server code, model server URL config, provider/model credentials, real VLM/provider calls, image upload, iOS integration, payload changes, capture-context upload, Camera cloud AI, training/fine-tuning, or production rollout.
+
+Phase 19-E expands the backend-only synthetic open-weight VLM benchmark fixture set from 20 to 40 cases and formalizes failure taxonomy coverage. The expanded fixtures remain JSON/text-only and cover daylight, low light, warm indoor light, neon/night street, blur/motion, soft focus, tilt, grain, high contrast, faded color, backlight/silhouette, clutter/minimal composition, food/object, street, landscape, pet, architecture, imported limited context, severe blur, black image, overexposed image, unsupported filters/enums, sensitive inference, body/appearance judgement, score/rating, chain-of-thought, debug/provider leakage, source-context overclaim, retake false positive, prompt injection, raw localization key leakage, overlong output, unsafe free text, malformed JSON, and timeout stub behavior. The synthetic gate remains passing with `productionReady:false`, no network/model server calls, no provider/model credentials, no real photos, no app integration, and no production rollout.
 
 ## Phase 12A Filter Planning Status
 
