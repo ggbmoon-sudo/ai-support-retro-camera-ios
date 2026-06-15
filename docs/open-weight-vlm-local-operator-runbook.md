@@ -286,3 +286,30 @@ Phase 20-E-B may be planned only after explicit request and only as a backend-on
 - [ ] Record sanitized aggregate metrics only.
 - [ ] Keep raw prompt/model output/image path/base64/request payload/server logs out of git, docs, and reports.
 - [ ] Keep iOS unchanged and `productionReady:false`.
+
+## Phase 20-E-B2 Completed 3-Fixture Note
+
+Phase 20-E-B2 completed the first approved 3-fixture local/private Qwen-backed smoke expansion on 2026-06-16.
+
+Sanitized root cause of the initial `smoke_002` / `smoke_003` block:
+
+- the external Windows server workspace had only `smoke_001` available
+- `smoke_002` and `smoke_003` failed before inference with provider-integration fallback buckets
+- adding approved local fixture availability in the external Windows server workspace resolved the block
+- no backend validator, backend request-contract, or iOS change was required
+
+Sanitized completed result:
+
+- `fixtureCount:3`
+- `acceptedCount:3`
+- `rejectedCount:0`
+- `acceptanceRate:100%`
+- `validationCodeCounts:null x3`
+- `fallbackCategoryCounts:null x3`
+- `schemaErrorBucketCounts:none`
+- `schemaFieldBucketCounts:none`
+- `latencyBucketCounts:gt_15s x1, 5s_to_15s x2`
+- `networkCallsMade:true`
+- `productionReady:false`
+
+For any future expansion, keep the same controls: fixture IDs only, one model call per fixture, no retries to chase pass rate, no raw prompt/model output/image path/base64/request payload/config/registry/log printing, and no committed local fixtures or reports.

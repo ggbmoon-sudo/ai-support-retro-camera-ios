@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 20-E-A - Accepted Local VLM Smoke Record and Expansion Gate
+Current phase: Phase 20-E-B2 - Completed 3-Fixture Local VLM Smoke
 Status: Implemented; repo-side verification passed
-Latest implementation: Recorded the Phase 20-D2J first accepted Qwen-backed private LAN local VLM smoke and added `docs/open-weight-vlm-local-smoke-expansion-gate.md`. D2J used the Windows GPU Qwen2.5-VL Transformers/FastAPI server and the MacBook backend sandbox client; contract echo passed first, then one `smoke_001` Qwen-backed candidate passed backend schema/safety validation with `acceptedCount:1`, `rejectedCount:0`, `validationCode:null`, `fallbackCategory:null`, `schemaDiagnostic:null`, `latencyBucket:gt_15s`, `networkCallsMade:true`, no hard blockers, and `productionReady:false`. Raw prompt/model output/image/base64/path/request payload/full model URL/local config/fixture registry/fixture image/report/secrets were not printed, persisted, or committed. Phase 20-E-A prepares a conservative Phase 20-E-B expansion gate for 3-5 approved ignored fixtures, fixture IDs only, one run per fixture, sanitized aggregate metrics only, no retries to chase pass rate, no iOS integration, and `productionReady:false`.
+Latest implementation: Completed Phase 20-E-B2 after diagnosing the `smoke_002` / `smoke_003` block as missing approved fixture availability in the external Windows server workspace, not a backend validator or iOS issue. The Windows server workspace was updated outside this repo with approved ignored local fixture availability for `smoke_002` and `smoke_003`; no Windows `server.py` change was required. The 3-fixture Qwen-backed local smoke then ran exactly once per fixture with fixture IDs only and accepted all 3 candidates: aggregate `fixtureCount:3`, `acceptedCount:3`, `rejectedCount:0`, `acceptanceRate:100%`, `validationCodeCounts:null x3`, `fallbackCategoryCounts:null x3`, no schema diagnostic buckets, latency buckets `gt_15s x1` and `5s_to_15s x2`, `networkCallsMade:true`, and `productionReady:false`. Raw prompt/model output/image/base64/path/request payload/full model URL/local config/fixture registry/fixture image/report/secrets were not printed, persisted, or committed.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -72,7 +72,66 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Phase 20-E-B may be planned only after explicit request as a backend-only small approved fixture expansion. It must remain local/private LAN only, use approved ignored fixtures and fixture IDs only, run at most one model call per fixture, report sanitized aggregate metrics only, keep `productionReady:false`, and add no iOS integration or production endpoint. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, public endpoint, model downloads, model cache changes, or user-photo training / fine-tuning until explicitly requested.
+Next phase: Phase 20-E-C is planning-ready only after the Phase 20-E-B2 documentation is reviewed and committed. It must remain backend-only/local-private unless explicitly scoped otherwise, keep fixture IDs and sanitized metrics only, keep `productionReady:false`, and add no iOS integration or production endpoint. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, public endpoint, model downloads, model cache changes, or user-photo training / fine-tuning until explicitly requested.
+
+---
+
+## Phase 20-E-B2 - Completed 3-Fixture Local VLM Smoke
+
+Status: Implemented
+Date: 2026-06-16
+
+### Completed
+
+- Confirmed Phase 20-E-B1 Windows file URL/path handling commit was upstream-synced before the B2 investigation.
+- Diagnosed the `smoke_002` / `smoke_003` block as external Windows server workspace fixture availability, not a repo validator, backend request-contract, or iOS issue.
+- Updated only the external Windows server workspace local fixture availability for the two missing approved fixture tokens.
+- Reran the 3-fixture Qwen-backed local smoke exactly once per fixture:
+  - `smoke_001`: accepted, `latencyBucket:gt_15s`
+  - `smoke_002`: accepted, `latencyBucket:5s_to_15s`
+  - `smoke_003`: accepted, `latencyBucket:5s_to_15s`
+
+### Sanitized Aggregate
+
+- `fixtureCount:3`
+- `acceptedCount:3`
+- `rejectedCount:0`
+- `acceptanceRate:100%`
+- `validationCodeCounts:null x3`
+- `fallbackCategoryCounts:null x3`
+- `schemaErrorBucketCounts:none`
+- `schemaFieldBucketCounts:none`
+- `latencyBucketCounts:gt_15s x1, 5s_to_15s x2`
+- `networkCallsMade:true`
+- `productionReady:false`
+
+### Verification
+
+- Backend tests passed.
+- Synthetic benchmark passed.
+- Synthetic benchmark gate passed.
+- Local config dry-run passed.
+- Default local sandbox smoke passed in stub/no-network mode.
+- Local smoke gate passed.
+- `git diff --check` passed.
+- Secret, iOS direct provider/model, Camera cloud entry, backend/iOS payload, artifact, Photo Advisor copy, filter reason, CreativeIntent language, and Photo Advisor card language coverage scans did not identify a new boundary violation.
+
+### Safety Notes
+
+- No backend validator weakening.
+- No local smoke gate weakening.
+- No approved fixture check weakening.
+- No raw prompt, raw model output, image/base64/path, request payload, local config, fixture registry, fixture image, generated report, credential, token, or secret was committed.
+- No iOS source/project/localization files changed.
+- No app-facing endpoint or production endpoint added.
+- No backend provider request payload or iOS upload payload changed.
+- No capture-context upload or Camera cloud AI entry added.
+- No training/fine-tuning added.
+- `productionReady` remains `false`.
+
+### Ready for Phase 20-E-C
+
+Planning-ready only after review and commit of this documentation update. Phase 20-E-C is not production rollout and must keep the same backend-only, local/private, sanitized-reporting boundaries unless explicitly changed.
 
 ---
 

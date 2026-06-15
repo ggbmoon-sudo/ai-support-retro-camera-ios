@@ -185,6 +185,19 @@ Latest Phase 20-E-A accepted local VLM smoke record on 2026-06-16:
 - The Windows server implementation and patched mapper remain outside this repo unless a future phase explicitly approves an operator-managed location.
 - Production rollout remains blocked. Do not start Phase 21, app integration, Camera cloud AI, backend/iOS payload changes, public endpoints, training/fine-tuning, or App Store/beta production rollout without explicit approval.
 
+Latest Phase 20-E-B2 completed 3-fixture local VLM smoke on 2026-06-16:
+
+- Phase 20-E-B1 Windows file URL/path handling was already committed and upstream-synced before B2.
+- The initial `smoke_002` / `smoke_003` `blocked_for_provider_integration` result was diagnosed as missing approved fixture availability in the external Windows server workspace.
+- The external Windows server workspace was updated with approved local fixture availability for `smoke_002` and `smoke_003`; no repo validator, backend request-contract, or iOS source change was required.
+- The 3-fixture Qwen-backed local smoke ran exactly once per fixture with fixture IDs only:
+  - `smoke_001`: accepted, `latencyBucket:gt_15s`
+  - `smoke_002`: accepted, `latencyBucket:5s_to_15s`
+  - `smoke_003`: accepted, `latencyBucket:5s_to_15s`
+- Sanitized aggregate: `fixtureCount:3`, `acceptedCount:3`, `rejectedCount:0`, `acceptanceRate:100%`, `validationCodeCounts:null x3`, `fallbackCategoryCounts:null x3`, `schemaErrorBucketCounts:none`, `schemaFieldBucketCounts:none`, `latencyBucketCounts:gt_15s x1, 5s_to_15s x2`, `networkCallsMade:true`, and `productionReady:false`.
+- Raw prompt/model output/image/base64/path/request payload/full model URL/local config/fixture registry/fixture image/generated report/secrets were not printed, persisted, or committed.
+- Phase 20-E-C is planning-ready only after B2 docs are reviewed and committed; production rollout remains blocked.
+
 Confirmed locally:
 
 - Phase 16E - Static Pose Overlay MVP

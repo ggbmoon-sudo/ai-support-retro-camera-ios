@@ -1,14 +1,16 @@
 # Open-weight VLM Local Smoke Expansion Gate
 
-Status: Phase 20-E-A gate-prep
+Status: Phase 20-E-B2 completed
 Date: 2026-06-16
-Phase: 20-E-A
+Phase: 20-E-B2
 
 ## Purpose
 
 Phase 20-E-A records the first accepted Qwen-backed private LAN local VLM smoke and defines the conservative gate for a future Phase 20-E-B small fixture expansion.
 
 This document does not approve iOS integration, an app-facing endpoint, a production endpoint, Camera cloud AI, training/fine-tuning, or production rollout. `productionReady:false` remains required.
+
+Phase 20-E-B2 completed the first approved 3-fixture local/private Qwen-backed expansion after fixing fixture availability in the external Windows server workspace. The run remains backend-only and sanitized.
 
 ## D2J Accepted Smoke Record
 
@@ -138,4 +140,49 @@ Stop immediately if:
 
 ## Phase 20-E-B Readiness
 
-Ready for planning only. Phase 20-E-B should be a small local/private LAN benchmark expansion, not a product integration. It should not start until explicitly requested.
+Completed for the first approved 3-fixture set. Phase 20-E-B was a small local/private LAN benchmark expansion, not a product integration.
+
+## Phase 20-E-B2 Completed Smoke Record
+
+Root cause of the initial `smoke_002` / `smoke_003` block:
+
+- the external Windows server workspace exposed only `smoke_001`
+- `smoke_002` and `smoke_003` were unavailable before inference
+- the backend summarized those pre-inference HTTP failures as `blocked_for_provider_integration`
+- the backend request contract, validator, and iOS boundary did not require changes
+
+Sanitized health check after the fix:
+
+- `ok:true`
+- `modelLoaded:true`
+- `modelFamily:qwen2.5-vl`
+- `rawLoggingDisabled:true`
+- `publicExposure:no`
+
+Sanitized per-fixture results:
+
+| fixtureIdBucket | acceptedCount | rejectedCount | validationCode | fallbackCategory | schemaDiagnostic | latencyBucket | networkCallsMade | productionReady |
+| --- | ---: | ---: | --- | --- | --- | --- | --- | --- |
+| `smoke_001` | 1 | 0 | `null` | `null` | none | `gt_15s` | `true` | `false` |
+| `smoke_002` | 1 | 0 | `null` | `null` | none | `5s_to_15s` | `true` | `false` |
+| `smoke_003` | 1 | 0 | `null` | `null` | none | `5s_to_15s` | `true` | `false` |
+
+Sanitized aggregate:
+
+- `fixtureCount:3`
+- `acceptedCount:3`
+- `rejectedCount:0`
+- `acceptanceRate:100%`
+- `validationCodeCounts:null x3`
+- `fallbackCategoryCounts:null x3`
+- `schemaErrorBucketCounts:none`
+- `schemaFieldBucketCounts:none`
+- `latencyBucketCounts:gt_15s x1, 5s_to_15s x2`
+- `networkCallsMade:true`
+- `productionReady:false`
+
+Raw prompt, raw model output, raw image path, base64, request payload, local config contents, fixture registry contents, fixture images, generated reports, credentials, and server logs must remain out of git and docs.
+
+## Phase 20-E-C Readiness
+
+Phase 20-E-C is planning-ready only after this B2 documentation update is reviewed and committed. It is not production rollout.

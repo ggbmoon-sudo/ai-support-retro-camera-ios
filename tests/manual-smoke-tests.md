@@ -13,6 +13,17 @@ Accepted local VLM smoke record and expansion gate:
 - [ ] Confirm no iOS integration, app-facing endpoint, production endpoint, backend provider request payload change, iOS upload payload change, capture-context upload, Camera cloud AI entry, training/fine-tuning, or production rollout is introduced.
 - [ ] Confirm `productionReady=false`.
 
+## Phase 20-E-B2
+
+Completed 3-fixture local VLM smoke expansion:
+
+- [ ] Confirm the initial `smoke_002` / `smoke_003` block was due to missing approved fixture availability in the external Windows server workspace, not a backend validator or iOS issue.
+- [ ] Confirm the 3-fixture run completed exactly once per fixture with `smoke_001`, `smoke_002`, and `smoke_003`.
+- [ ] Confirm the sanitized aggregate was `fixtureCount:3`, `acceptedCount:3`, `rejectedCount:0`, `acceptanceRate:100%`, `validationCodeCounts:null x3`, `fallbackCategoryCounts:null x3`, no schema diagnostic buckets, `latencyBucketCounts:gt_15s x1, 5s_to_15s x2`, `networkCallsMade:true`, and `productionReady:false`.
+- [ ] Confirm no raw prompt, raw model output, raw image/base64/path, request payload, local config, fixture registry, fixture image, credentials, or Windows server logs were printed.
+- [ ] Confirm no iOS integration, app-facing endpoint, production endpoint, backend provider request payload change, iOS upload payload change, capture-context upload, Camera cloud AI entry, training/fine-tuning, or production rollout is introduced.
+- [ ] Confirm `productionReady=false`.
+
 ## Phase 20-D2G
 
 Local VLM schema mismatch diagnostics:
