@@ -186,6 +186,38 @@ const SAFETY_KEYS = new Set([
   "chainOfThoughtDetected",
   "debugLeakageDetected"
 ]);
+const DIAGNOSTIC_ROOT_KEYS = new Set([
+  ...OPEN_WEIGHT_VLM_SCHEMA.required,
+  "observationKey",
+  "safetyFlags"
+]);
+const DIAGNOSTIC_FIELD_BUCKETS = new Set([
+  "candidate",
+  "schemaVersion",
+  "sourceType",
+  "allowedContext",
+  "moodKey",
+  "visualObservationKey",
+  "observationKey",
+  "creativeIntent",
+  "creativeIntent.classification",
+  "creativeIntent.preserveSignals",
+  "technicalRisk",
+  "technicalRisk.level",
+  "technicalRisk.reasonKey",
+  "filterFamilyCandidate",
+  "optionalActionKey",
+  "retakeAllowed",
+  "retakeReasonKey",
+  "safety",
+  "safety.sensitiveInferenceDetected",
+  "safety.forbiddenInferenceTypes",
+  "safety.scoreOrRatingDetected",
+  "safety.chainOfThoughtDetected",
+  "safety.debugLeakageDetected",
+  "safetyFlags",
+  "top_level"
+]);
 
 const FORBIDDEN_TEXT_PATTERNS = Object.freeze([
   { pattern: /\b(ignore previous instructions|ignore the schema|jailbreak|developer mode|system override)\b/i, code: "prompt_injection" },
@@ -313,6 +345,185 @@ export function validateOpenWeightVlmPhotoAdvisorCandidate(candidate) {
     ok: true,
     value: normalizeCandidate(value)
   };
+}
+
+export function buildOpenWeightVlmSchemaDiagnostic(candidate, validationError = {}) {
+  const parsed = parseOpenWeightVlmCandidateJSON(candidate);
+  if (!parsed.ok) {
+    return schemaDiagnostic(validationError.code || "invalid_json", ["invalid_json"], []);
+  }
+
+  const value = parsed.value;
+  const errorBuckets = new Set();
+  const fieldBuckets = new Set();
+
+  if (!isPlainObject(value)) {
+    errorBuckets.add("wrong_type");
+    fieldBuckets.add("candidate");
+    return schemaDiagnostic(validationError.code || "invalid_schema", errorBuckets, fieldBuckets);
+  }
+
+  for (const key of Object.keys(value)) {
+    if (!ROOT_KEYS.has(key)) {
+      errorBuckets.add("additional_property");
+      fieldBuckets.add(DIAGNOSTIC_ROOT_KEYS.has(key) ? key : "top_level");
+    }
+  }
+
+  for (const key of OPEN_WEIGHT_VLM_SCHEMA.required) {
+    if (!(key in value)) {
+      errorBuckets.add("missing_required_field");
+      fieldBuckets.add(key);
+    }
+  }
+
+  diagnoseEnum(value, "schemaVersion", new Set([OPEN_WEIGHT_VLM_PHOTO_ADVISOR_SCHEMA_VERSION]));
+  diagnoseEnum(value, "sourceType", ALLOWED_SOURCE_TYPES);
+  diagnoseEnum(value, "allowedContext", ALLOWED_CONTEXTS);
+  diagnoseEnum(value, "moodKey", ALLOWED_MOOD_KEYS);
+  diagnoseEnum(value, "visualObservationKey", ALLOWED_VISUAL_OBSERVATION_KEYS);
+  diagnoseEnum(value, "filterFamilyCandidate", ALLOWED_FILTER_FAMILIES, "unsupported_filter_family");
+  diagnoseEnum(value, "optionalActionKey", ALLOWED_OPTIONAL_ACTION_KEYS);
+  diagnoseEnum(value, "retakeReasonKey", ALLOWED_RETAKE_REASON_KEYS);
+
+  if ("retakeAllowed" in value && typeof value.retakeAllowed !== "boolean") {
+    errorBuckets.add("wrong_type");
+    fieldBuckets.add("retakeAllowed");
+  }
+
+  diagnoseCreativeIntent(value.creativeIntent);
+  diagnoseTechnicalRisk(value.technicalRisk);
+  diagnoseSafety(value.safety);
+
+  if (validationError.field) {
+    fieldBuckets.add(sanitizeDiagnosticFieldBucket(validationError.field));
+  }
+
+  if (validationError.code === "unsupported_enum") {
+    errorBuckets.add("unsupported_enum");
+  } else if (validationError.code === "unsupported_filter_family") {
+    errorBuckets.add("unsupported_filter_family");
+  } else if (validationError.code === "source_context_overclaim") {
+    errorBuckets.add("source_context_overclaim");
+  } else if (validationError.code === "retake_gate") {
+    errorBuckets.add("retake_false_positive");
+  } else if (validationError.code === "unsafe_response") {
+    errorBuckets.add("unsafe_response");
+  } else if (validationError.code === "overlong_output") {
+    errorBuckets.add("overlong_output");
+  }
+
+  if (errorBuckets.size === 0) {
+    errorBuckets.add(validationError.code === "invalid_schema" ? "schema_failed" : "validator_rejected");
+  }
+
+  return schemaDiagnostic(validationError.code || "invalid_schema", errorBuckets, fieldBuckets);
+
+  function diagnoseEnum(object, field, allowedValues, unsupportedBucket = "unsupported_enum") {
+    if (!(field in object)) {
+      return;
+    }
+    if (!allowedValues.has(object[field])) {
+      errorBuckets.add(typeof object[field] === "string" || object[field] === null
+        ? unsupportedBucket
+        : "wrong_type");
+      fieldBuckets.add(field);
+    }
+  }
+
+  function diagnoseCreativeIntent(value) {
+    if (!("creativeIntent" in parsed.value)) {
+      return;
+    }
+    if (!isPlainObject(value)) {
+      errorBuckets.add("wrong_type");
+      fieldBuckets.add("creativeIntent");
+      return;
+    }
+    for (const key of Object.keys(value)) {
+      if (!CREATIVE_INTENT_KEYS.has(key)) {
+        errorBuckets.add("additional_property");
+        fieldBuckets.add("creativeIntent");
+      }
+    }
+    if (!ALLOWED_CREATIVE_CLASSIFICATIONS.has(value.classification)) {
+      errorBuckets.add(typeof value.classification === "string" ? "unsupported_enum" : "wrong_type");
+      fieldBuckets.add("creativeIntent.classification");
+    }
+    if (!Array.isArray(value.preserveSignals) || value.preserveSignals.length > 4) {
+      errorBuckets.add("wrong_type");
+      fieldBuckets.add("creativeIntent.preserveSignals");
+      return;
+    }
+    for (const signal of value.preserveSignals) {
+      if (!ALLOWED_PRESERVE_SIGNALS.has(signal)) {
+        errorBuckets.add("unsupported_enum");
+        fieldBuckets.add("creativeIntent.preserveSignals");
+      }
+    }
+  }
+
+  function diagnoseTechnicalRisk(value) {
+    if (!("technicalRisk" in parsed.value)) {
+      return;
+    }
+    if (!isPlainObject(value)) {
+      errorBuckets.add("wrong_type");
+      fieldBuckets.add("technicalRisk");
+      return;
+    }
+    for (const key of Object.keys(value)) {
+      if (!TECHNICAL_RISK_KEYS.has(key)) {
+        errorBuckets.add("additional_property");
+        fieldBuckets.add("technicalRisk");
+      }
+    }
+    if (!ALLOWED_RISK_LEVELS.has(value.level)) {
+      errorBuckets.add(typeof value.level === "string" ? "unsupported_enum" : "wrong_type");
+      fieldBuckets.add("technicalRisk.level");
+    }
+    if (!ALLOWED_RISK_REASON_KEYS.has(value.reasonKey)) {
+      errorBuckets.add(typeof value.reasonKey === "string" || value.reasonKey === null ? "unsupported_enum" : "wrong_type");
+      fieldBuckets.add("technicalRisk.reasonKey");
+    }
+  }
+
+  function diagnoseSafety(value) {
+    if (!("safety" in parsed.value)) {
+      return;
+    }
+    if (!isPlainObject(value)) {
+      errorBuckets.add("wrong_type");
+      fieldBuckets.add("safety");
+      return;
+    }
+    for (const key of Object.keys(value)) {
+      if (!SAFETY_KEYS.has(key)) {
+        errorBuckets.add("additional_property");
+        fieldBuckets.add("safety");
+      }
+    }
+    for (const field of [
+      "sensitiveInferenceDetected",
+      "scoreOrRatingDetected",
+      "chainOfThoughtDetected",
+      "debugLeakageDetected"
+    ]) {
+      if (value[field] !== false) {
+        errorBuckets.add(typeof value[field] === "boolean" ? "unsafe_response" : "wrong_type");
+        fieldBuckets.add(`safety.${field}`);
+      }
+    }
+    if (!Array.isArray(value.forbiddenInferenceTypes)) {
+      errorBuckets.add("wrong_type");
+      fieldBuckets.add("safety.forbiddenInferenceTypes");
+      return;
+    }
+    if (value.forbiddenInferenceTypes.length > 0) {
+      errorBuckets.add("unsafe_response");
+      fieldBuckets.add("safety.forbiddenInferenceTypes");
+    }
+  }
 }
 
 export function evaluateOpenWeightVlmBenchmarkCase(item = {}) {
@@ -778,6 +989,21 @@ function sanitizeEnumBucket(value) {
 
 function sanitizeToken(value) {
   return String(value ?? "unknown").replace(/[^a-zA-Z0-9._:-]/g, "_").slice(0, 80) || "unknown";
+}
+
+function schemaDiagnostic(category, errorBuckets, fieldBuckets) {
+  return {
+    category: sanitizeToken(category || "invalid_schema"),
+    errorBuckets: Array.from(errorBuckets).map(sanitizeToken).sort(),
+    fieldBuckets: Array.from(fieldBuckets).map(sanitizeDiagnosticFieldBucket).sort(),
+    rawOutputPersisted: false,
+    rawOutputPrinted: false
+  };
+}
+
+function sanitizeDiagnosticFieldBucket(value) {
+  const field = sanitizeToken(value);
+  return DIAGNOSTIC_FIELD_BUCKETS.has(field) ? field : "top_level";
 }
 
 function invalid(code, message, details = {}) {

@@ -594,6 +594,34 @@ Validation behavior:
 
 This phase does not start a server, run Qwen, run `--run-local-model`, commit local config/fixture/report/model URLs, add app-facing endpoints, add production endpoints, add iOS integration, change backend provider request payloads, change iOS upload payloads, add capture-context upload, train/fine-tune, or enable production rollout.
 
+## Phase 20-D2G Local VLM Schema Mismatch Diagnostics
+
+Phase 20-D2G adds sanitized diagnostics for a private LAN local VLM smoke that reached the Windows Transformers FastAPI Qwen2.5-VL server but was safely rejected by the backend validator as `invalid_schema`.
+
+The validator remains the source of truth. D2G does not loosen required fields, enum whitelists, closed-schema behavior, safety scanning, source-context checks, retake gating, or filter-family validation.
+
+Local smoke reports may now include a `schemaDiagnostic` object with only:
+
+- `category`
+- `errorBuckets`
+- `fieldBuckets`
+- `rawOutputPersisted:false`
+- `rawOutputPrinted:false`
+
+Expected buckets include `missing_required_field`, `additional_property`, `wrong_type`, `unsupported_enum`, `allowedContext`, `visualObservationKey`, `creativeIntent`, `technicalRisk`, and `safety`. The report must not include raw model output, raw enum values, raw prompt, request payload, image/base64/path, full server URL, fixture path, credentials, or secrets.
+
+Windows server mapper alignment notes:
+
+- Return `visualObservationKey`, not `observationKey`.
+- Return string `allowedContext`, not an object.
+- Return object `creativeIntent`, object `technicalRisk`, and object `safety`.
+- Return `retakeReasonKey:null` when retake is not allowed.
+- Do not return `safetyFlags`.
+- Do deterministic enum mapping before returning candidate JSON, after safety screening.
+- Do not use LLM repair or ask the backend validator to accept unsupported values.
+
+Phase 20-E remains blocked until a later approved retry produces either an accepted candidate or a fully documented sanitized rejection with no raw leakage. `productionReady:false` remains required.
+
 ## Phase 20-C Local VLM Operator Runbook + Smoke Gate
 
 Phase 20-C adds an operator runbook and a backend-only real-model smoke gate for future approved local/self-hosted VLM testing. The gate does not call a model and does not create an app-facing endpoint.

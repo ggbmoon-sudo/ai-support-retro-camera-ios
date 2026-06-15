@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 20-D2E private LAN Transformers FastAPI smoke server support; backend validation/docs/tests only, no real model run
+- Phase 20-D2G local VLM candidate schema mismatch diagnostics; backend validation/docs/tests only, no real model retry in this phase
 
 Next phase:
 
-- Phase 20-D2B/D2C can attempt exactly one local Transformers FastAPI smoke only after ignored local config, one approved ignored fixture, and a safe loopback or explicitly allowed private LAN server are prepared; otherwise remain blocked
+- Phase 20-D2 retry can attempt exactly one local Transformers FastAPI smoke only after the Windows server response mapper is aligned to the repo schema and all gates pass; otherwise remain blocked
 - Do not start production cloud rollout without explicit approval
 - Production rollout remains blocked until a later explicit release phase
 
@@ -251,6 +251,8 @@ Phase 20-D ran the first local real-model smoke preflight and stopped safely bef
 Phase 20-D1 prepares the backend-only Transformers + FastAPI local adapter path for a future approved local VLM smoke run. It adds `docs/open-weight-vlm-transformers-fastapi-local-adapter.md`, updates the local sandbox config to recognize `servingStack:"transformers_fastapi"` and a safe fixture token bucket, and lets the explicit local smoke command validate a local FastAPI candidate JSON response through the existing open-weight VLM schema. Default scripts remain no-network/stubbed; no real VLM is run, no model server URL/config is committed, no raw image/path/base64/prompt/model output is logged, and no app-facing endpoint, iOS integration, backend/iOS payload change, capture-context upload, Camera cloud AI, training/fine-tuning, or production rollout is added. `productionReady` remains `false`.
 
 Phase 20-D2E supports a Windows GPU private LAN Transformers FastAPI smoke server for the backend-only local VLM sandbox. Loopback URLs remain accepted by default, while private LAN IPv4 URLs require ignored local config with `allowPrivateLanModelServer:true` and are limited to `10.0.0.0/8`, `172.16.0.0/12`, and `192.168.0.0/16`. Public IPs/domains, tunnel/ngrok/cloud-looking URLs, HTTPS URLs, credentialed URLs, query-string secrets, and `0.0.0.0` are rejected, and reports show only sanitized buckets such as `private_lan_ipv4`. This phase does not run a model, start a server, call `--run-local-model`, commit local config/fixtures/reports/model URLs, add app-facing endpoints, add iOS integration, change payloads, upload capture context, add Camera cloud AI, train/fine-tune, or enable production rollout.
+
+Phase 20-D2G keeps the validator strict and adds sanitized schema mismatch diagnostics for local Transformers FastAPI smoke rejects. A D2F private LAN smoke reached the Windows Qwen2.5-VL server and made exactly one local model call, but the backend safely rejected the candidate as `invalid_schema`; raw model output stayed unprinted and unpersisted. D2G diagnostics report only bucketed categories and field names such as `missing_required_field`, `additional_property`, `wrong_type`, `unsupported_enum`, `allowedContext`, `visualObservationKey`, `creativeIntent`, `technicalRisk`, and `safety`. The Windows FastAPI mapper must return the exact repo schema: `visualObservationKey`, string `allowedContext`, object `creativeIntent`, object `technicalRisk`, object `safety`, required `retakeReasonKey`, and no unsupported fields such as `observationKey` or `safetyFlags`. This phase does not loosen validation, retry the model by default, add iOS integration, change payloads, add app-facing endpoints, train/fine-tune, or enable production rollout.
 
 ## Phase 12A Filter Planning Status
 

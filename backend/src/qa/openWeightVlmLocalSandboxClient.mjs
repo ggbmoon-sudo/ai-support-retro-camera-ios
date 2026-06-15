@@ -3,6 +3,7 @@ import {
 } from "./openWeightVlmBenchmarkGate.mjs";
 import {
   assertOpenWeightVlmBenchmarkReportRedacted,
+  buildOpenWeightVlmSchemaDiagnostic,
   evaluateOpenWeightVlmBenchmarkCase,
   OPEN_WEIGHT_VLM_PHOTO_ADVISOR_SCHEMA_VERSION,
   summarizeOpenWeightVlmBenchmark,
@@ -137,6 +138,7 @@ export async function runOpenWeightVlmLocalSandboxSmoke(options = {}) {
         rejectedCount: localModelSmoke.rejectedCount,
         validationCode: localModelSmoke.validationCode,
         fallbackCategory: localModelSmoke.fallbackCategory,
+        schemaDiagnostic: localModelSmoke.schemaDiagnostic,
         latencyBucket: localModelSmoke.latencyBucket,
         networkCallsMade: localModelSmoke.networkCallsMade === true,
         rawPromptPersisted: false,
@@ -222,6 +224,9 @@ async function runTransformersFastApiSmoke(config, options = {}) {
     errorCode: validation.ok ? null : validation.error.code,
     fallbackCategory: validation.ok ? null : validation.error.fallbackCategory,
     validationCode: validation.ok ? null : validation.error.code,
+    schemaDiagnostic: validation.ok
+      ? null
+      : buildOpenWeightVlmSchemaDiagnostic(candidate, validation.error),
     latencyMs: Date.now() - startedAt
   });
 
@@ -230,6 +235,7 @@ async function runTransformersFastApiSmoke(config, options = {}) {
     errorCode = null,
     fallbackCategory = null,
     validationCode = null,
+    schemaDiagnostic = null,
     latencyMs = 0
   }) {
     return {
@@ -242,6 +248,7 @@ async function runTransformersFastApiSmoke(config, options = {}) {
       errorCode,
       validationCode,
       fallbackCategory,
+      schemaDiagnostic,
       latencyBucket: latencyBucket(latencyMs),
       networkCallsMade: true
     };

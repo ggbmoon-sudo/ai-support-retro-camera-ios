@@ -140,6 +140,34 @@ Latest Phase 20-D2E private LAN support check on 2026-06-15:
 - `productionReady:false` remains required.
 - Next recommended step is Phase 20-D2B/D2C retry only after the operator prepares ignored local config, `smoke_001`, and a safe loopback or explicitly allowed private LAN Transformers FastAPI server. Phase 20-E should not start yet.
 
+Latest Phase 20-D2F / D2G local VLM schema mismatch check on 2026-06-15:
+
+- Phase 20-D2F reached the Windows GPU private LAN Transformers FastAPI Qwen2.5-VL server from the MacBook and made exactly one approved local model call.
+- The D2F call used the existing backend local sandbox client, `fixtureId` token flow, ignored local config/fixture paths, and private LAN URL bucket.
+- The D2F result was a safe rejection:
+  - `networkCallsMade:true`
+  - `latencyBucket:5s_to_15s`
+  - `fixtureCount:1`
+  - `acceptedCount:0`
+  - `rejectedCount:1`
+  - `validationCode:invalid_schema`
+  - `fallbackCategory:invalid_schema`
+  - `productionReady:false`
+- Raw model output, raw prompt, raw request payload, image/base64/path, full fixture path, full server URL, local config, fixture registry, generated reports, credentials, and secrets were not printed or persisted.
+- Phase 20-D2G adds sanitized schema mismatch diagnostics only. The backend validator remains strict and authoritative.
+- D2G diagnostics expose only error buckets and field buckets, for example `missing_required_field`, `additional_property`, `wrong_type`, `unsupported_enum`, `allowedContext`, `visualObservationKey`, `creativeIntent`, `technicalRisk`, and `safety`.
+- D2G documents likely Windows mapper fixes:
+  - return `visualObservationKey`, not `observationKey`
+  - return string `allowedContext`, not an object
+  - return object `creativeIntent`
+  - return object `technicalRisk`
+  - return object `safety`
+  - return `retakeReasonKey:null` when retake is not allowed
+  - do not return `safetyFlags`
+  - do deterministic enum mapping only after safety screening
+- No validation rule was weakened, no retry smoke was run in D2G, no app-facing endpoint or production endpoint was added, and no iOS integration, backend/iOS payload change, capture-context upload, Camera cloud AI, training/fine-tuning, or production rollout was added.
+- Phase 20-E remains blocked. Next recommended step is another explicit D2 retry only after the Windows FastAPI mapper is aligned to `backend/src/qa/openWeightVlmPhotoAdvisorSchema.mjs` and all gates pass.
+
 Confirmed locally:
 
 - Phase 16E - Static Pose Overlay MVP

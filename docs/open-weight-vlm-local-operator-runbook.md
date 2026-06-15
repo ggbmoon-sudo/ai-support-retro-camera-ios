@@ -214,6 +214,11 @@ Then confirm no staged/untracked artifacts include:
 - `synthetic_benchmark_gate_not_passed`: rerun the synthetic benchmark and gate before trying local model work.
 - `local_smoke_default_not_passed`: fix the no-network stub smoke path before any real-model work.
 - `local_smoke_gate_redaction_failed`: stop and inspect only code, not raw reports; do not commit generated output.
+- `invalid_schema`: align the Windows FastAPI response mapper to `openWeightVlmPhotoAdvisorSchema`. Review only sanitized `schemaDiagnostic` buckets. Common field buckets are `allowedContext`, `visualObservationKey`, `creativeIntent`, `technicalRisk`, `safety`, `observationKey`, and `safetyFlags`.
+- `missing_required_field`: return every required schema field, including `visualObservationKey`, `retakeReasonKey`, and `safety`.
+- `additional_property`: remove unsupported response fields such as `observationKey` or `safetyFlags` before returning the candidate, but only after safety screening and without hiding unsafe content.
+- `wrong_type`: use the repo shape exactly: string `allowedContext`, object `creativeIntent`, object `technicalRisk`, object `safety`.
+- `unsupported_enum`: map local model labels deterministically to allowed enum values before returning JSON; do not ask the backend validator to accept new values.
 
 ## Boundary confirmations
 

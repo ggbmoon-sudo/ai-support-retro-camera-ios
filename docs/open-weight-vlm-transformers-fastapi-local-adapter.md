@@ -101,6 +101,19 @@ The FastAPI server may return the candidate directly or wrap it in a `candidate`
 
 The backend validator rejects free-form prose, markdown, chain-of-thought, score/rating, sensitive inference, provider/debug leakage, unsupported filter families, imported-context overclaim, retake false positives, raw localization key leakage, and unsupported fields.
 
+Phase 20-D2G adds sanitized schema mismatch diagnostics for local smoke rejects. The diagnostics are intentionally limited to error buckets and field buckets, for example `missing_required_field`, `additional_property`, `wrong_type`, `unsupported_enum`, `allowedContext`, `visualObservationKey`, `creativeIntent`, `technicalRisk`, and `safety`. They do not include raw model text, raw enum values, prompts, request payloads, fixture paths, or server URLs.
+
+Windows server alignment guidance:
+
+- Treat `backend/src/qa/openWeightVlmPhotoAdvisorSchema.mjs` as the source of truth.
+- Return `visualObservationKey`, not `observationKey`.
+- Return string `allowedContext`, not an object.
+- Return object `creativeIntent`, object `technicalRisk`, and object `safety`.
+- Return `retakeReasonKey:null` when retake is not allowed.
+- Do not return `safetyFlags`.
+- Do deterministic server-side enum mapping only after safety screening.
+- Do not use LLM repair, do not weaken backend validation, and do not convert unsafe prose into accepted JSON.
+
 ## Local Config
 
 The committed example remains disabled:

@@ -147,6 +147,18 @@ The candidate must match `backend/src/qa/openWeightVlmPhotoAdvisorSchema.mjs`. U
 
 The server must not return final UI prose, localized strings, markdown, chain-of-thought, score/rating, sensitive inference, provider/debug leakage, raw localization keys, unsupported filter families, or unknown fields.
 
+Important Phase 20-D2G alignment note: backend validation is authoritative. The Windows FastAPI server must map model output to this exact schema before returning it to the MacBook sandbox client. Shorthand objects used in planning prompts are not accepted. Common invalid-schema buckets include:
+
+- `allowedContext` must be a string enum such as `imageOnly` or `captureContextAvailable`, not an object.
+- `visualObservationKey` is required; `observationKey` is an unsupported extra field.
+- `creativeIntent` must be an object with `classification` and `preserveSignals`, not a scalar string.
+- `technicalRisk` must be an object with `level` and `reasonKey`, not a scalar string.
+- `safety` must be an object with the five safety fields shown above; `safetyFlags` is not accepted.
+- `retakeReasonKey` is required even when its value is `null`.
+- Additional unknown fields are rejected because the candidate schema is closed.
+
+When the backend rejects a real local smoke as `invalid_schema`, it may report only sanitized buckets such as `missing_required_field`, `additional_property`, `wrong_type`, `unsupported_enum`, and field buckets such as `allowedContext`, `visualObservationKey`, `creativeIntent`, `technicalRisk`, or `safety`. It must not print raw model output or raw enum values.
+
 ## Minimal Prompt Policy
 
 Keep the local prompt short and contract-focused:
@@ -177,15 +189,16 @@ Allowed deterministic cleanup:
 - trim whitespace
 - remove a surrounding JSON code fence only if the entire output is fenced JSON
 - parse exactly one top-level JSON object only if no extra prose exists
+- map known local server-side model labels to the exact repo enum values before returning candidate JSON, after safety screening
 
 Not allowed:
 
 - LLM-based repair
 - invent missing fields
-- accept partial objects
-- rename unsupported enum values
+- accept partial objects from the backend validator
+- ask the backend validator to accept unsupported enum values
 - convert prose into JSON
-- ignore unknown fields
+- hide safety violations by dropping fields
 - accept chain-of-thought plus JSON
 
 If output is still invalid, reject it and report only a sanitized category such as `invalid_json`, `schema_failed`, `unsupported_enum`, or `unsafe_response`.

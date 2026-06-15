@@ -16,6 +16,7 @@ import {
 } from "../src/qa/openWeightVlmLocalSmokeGate.mjs";
 import {
   assertOpenWeightVlmBenchmarkReportRedacted,
+  buildOpenWeightVlmSchemaDiagnostic,
   evaluateOpenWeightVlmBenchmarkCase,
   OPEN_WEIGHT_VLM_PHOTO_ADVISOR_SCHEMA_VERSION,
   summarizeOpenWeightVlmBenchmark,
@@ -63,6 +64,46 @@ test("open-weight VLM validator rejects unsupported enum values", async () => {
 
   assert.equal(result.ok, false);
   assert.equal(result.error.code, "unsupported_enum");
+});
+
+test("open-weight VLM schema diagnostics report sanitized mismatch buckets", () => {
+  const shorthandCandidate = {
+    schemaVersion: OPEN_WEIGHT_VLM_PHOTO_ADVISOR_SCHEMA_VERSION,
+    sourceType: "captured",
+    allowedContext: {
+      captureContextAvailable: true
+    },
+    moodKey: "quiet_warmth",
+    observationKey: "soft_window_light",
+    creativeIntent: "preserve",
+    technicalRisk: "mild",
+    filterFamilyCandidate: "warm_film",
+    optionalActionKey: "hold_steady_if_cleaner",
+    retakeAllowed: false,
+    safetyFlags: []
+  };
+  const result = validateOpenWeightVlmPhotoAdvisorCandidate(shorthandCandidate);
+  const diagnostic = buildOpenWeightVlmSchemaDiagnostic(shorthandCandidate, result.error);
+  const serialized = JSON.stringify(diagnostic);
+
+  assert.equal(result.ok, false);
+  assert.equal(diagnostic.category, "invalid_schema");
+  assert.equal(diagnostic.errorBuckets.includes("additional_property"), true);
+  assert.equal(diagnostic.errorBuckets.includes("missing_required_field"), true);
+  assert.equal(diagnostic.errorBuckets.includes("wrong_type"), true);
+  assert.equal(diagnostic.errorBuckets.includes("unsupported_enum"), true);
+  assert.equal(diagnostic.fieldBuckets.includes("allowedContext"), true);
+  assert.equal(diagnostic.fieldBuckets.includes("visualObservationKey"), true);
+  assert.equal(diagnostic.fieldBuckets.includes("observationKey"), true);
+  assert.equal(diagnostic.fieldBuckets.includes("creativeIntent"), true);
+  assert.equal(diagnostic.fieldBuckets.includes("technicalRisk"), true);
+  assert.equal(diagnostic.fieldBuckets.includes("safety"), true);
+  assert.equal(diagnostic.fieldBuckets.includes("safetyFlags"), true);
+  assert.equal(diagnostic.rawOutputPersisted, false);
+  assert.equal(diagnostic.rawOutputPrinted, false);
+  assert.equal(serialized.includes("quiet_warmth"), false);
+  assert.equal(serialized.includes("soft_window_light"), false);
+  assert.equal(serialized.includes("hold_steady_if_cleaner"), false);
 });
 
 test("open-weight VLM validator rejects imported capture-context overclaims", async () => {
@@ -862,6 +903,59 @@ test("open-weight VLM local sandbox smoke rejects invalid FastAPI candidate outp
   assert.equal(report.localModelSmoke.validationCode, "source_context_overclaim");
   assert.equal(blockerCodes.has("source_context_overclaim"), true);
   assert.equal(JSON.stringify(report).includes("http://127.0.0.1:8000"), false);
+});
+
+test("open-weight VLM local sandbox smoke includes sanitized schema diagnostics", async () => {
+  const shorthandCandidate = {
+    schemaVersion: OPEN_WEIGHT_VLM_PHOTO_ADVISOR_SCHEMA_VERSION,
+    sourceType: "captured",
+    allowedContext: {
+      captureContextAvailable: true
+    },
+    moodKey: "quiet_warmth",
+    observationKey: "soft_window_light",
+    creativeIntent: "preserve",
+    technicalRisk: "mild",
+    filterFamilyCandidate: "warm_film",
+    optionalActionKey: "hold_steady_if_cleaner",
+    retakeAllowed: false,
+    safetyFlags: []
+  };
+  const configPath = await writeTempSandboxConfig({
+    enabled: true,
+    servingStack: "transformers_fastapi",
+    modelId: "qwen2.5-vl-7b-instruct",
+    modelServerUrl: "http://127.0.0.1:8000",
+    timeoutMs: 30000,
+    fixtureMode: "approved_local_only",
+    allowNetworkCalls: true,
+    fixtureId: "fixture_one"
+  });
+  const report = await runOpenWeightVlmLocalSandboxSmoke({
+    configPath,
+    requireConfig: true,
+    runLocalModel: true,
+    fetchImpl: async () => jsonResponse({ candidate: shorthandCandidate })
+  });
+  const diagnostic = report.localModelSmoke.schemaDiagnostic;
+  const serialized = JSON.stringify(report);
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.networkCallsMade, true);
+  assert.equal(report.localModelSmoke.acceptedCount, 0);
+  assert.equal(report.localModelSmoke.validationCode, "invalid_schema");
+  assert.equal(diagnostic.category, "invalid_schema");
+  assert.equal(diagnostic.errorBuckets.includes("missing_required_field"), true);
+  assert.equal(diagnostic.errorBuckets.includes("wrong_type"), true);
+  assert.equal(diagnostic.fieldBuckets.includes("visualObservationKey"), true);
+  assert.equal(diagnostic.fieldBuckets.includes("safety"), true);
+  assert.equal(diagnostic.rawOutputPersisted, false);
+  assert.equal(diagnostic.rawOutputPrinted, false);
+  assert.equal(serialized.includes("quiet_warmth"), false);
+  assert.equal(serialized.includes("soft_window_light"), false);
+  assert.equal(serialized.includes("hold_steady_if_cleaner"), false);
+  assert.equal(serialized.includes("http://127.0.0.1:8000"), false);
+  assert.equal(serialized.includes("fixture_one"), false);
 });
 
 async function benchmarkCases() {

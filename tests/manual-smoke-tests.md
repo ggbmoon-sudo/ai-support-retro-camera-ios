@@ -1,5 +1,19 @@
 # Manual Smoke Tests
 
+## Phase 20-D2G
+
+Local VLM schema mismatch diagnostics:
+
+- [ ] Confirm a D2F-style invalid-schema local smoke rejection reports only sanitized buckets.
+- [ ] Confirm `schemaDiagnostic.errorBuckets` may include `missing_required_field`, `additional_property`, `wrong_type`, or `unsupported_enum`.
+- [ ] Confirm `schemaDiagnostic.fieldBuckets` may include `allowedContext`, `visualObservationKey`, `creativeIntent`, `technicalRisk`, `safety`, `observationKey`, or `safetyFlags`.
+- [ ] Confirm diagnostics do not include raw model output, raw enum values, raw prompt, request payload, image/base64/path, full server URL, fixture path, credentials, or secrets.
+- [ ] Confirm the backend validator still rejects shorthand candidates that use object `allowedContext`, `observationKey`, scalar `creativeIntent`, scalar `technicalRisk`, or `safetyFlags`.
+- [ ] Confirm Windows FastAPI mapper guidance points back to `backend/src/qa/openWeightVlmPhotoAdvisorSchema.mjs` as the source of truth.
+- [ ] Confirm no retry smoke is run unless the Windows mapper is aligned and all gates pass.
+- [ ] Confirm no app-facing endpoint, production endpoint, iOS integration, backend provider request payload change, iOS upload payload change, capture-context upload, Camera cloud AI entry, raw report commit, training/fine-tuning, or production rollout is introduced.
+- [ ] Confirm `productionReady=false`.
+
 ## Phase 20-D2E
 
 Private LAN Transformers FastAPI smoke server support:
