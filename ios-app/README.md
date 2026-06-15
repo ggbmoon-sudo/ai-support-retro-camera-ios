@@ -118,6 +118,10 @@ Phase 17C-R2 keeps iOS behavior unchanged. Provider QA runs in the backend only 
 
 Phase 17C-R3 also keeps iOS behavior unchanged. Local QA images and provider QA reports remain backend-only / ignored; no provider key, direct provider call, Camera cloud AI entry, or production rollout is added to iOS.
 
+## Backend-only Open-weight VLM Sandbox Boundary
+
+Phase 20-D2E supports an explicitly opted-in private LAN Transformers FastAPI smoke server for backend/operator testing only. The Windows GPU server path is not an iOS integration: iOS still has no provider/model key, no direct model/provider call, no Camera cloud AI entry, no iOS upload payload change, no capture-context upload, and no production remote rollout.
+
 Phase 17C-R4 also keeps iOS behavior unchanged. It hardens backend QA latency / fallback reporting and manual review readiness only; iOS still has no provider key, no direct QweAPI call, no Camera cloud AI entry, and no production rollout.
 
 Phase 17C-R5 also keeps iOS behavior unchanged. It only tightens backend Photo Advisor provider prompt / safety diagnostics and adds a local approved-real-sample QA workflow; iOS still has no provider key, no direct QweAPI call, no Camera cloud AI entry, and no production rollout.

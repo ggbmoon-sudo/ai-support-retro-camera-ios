@@ -6,5 +6,6 @@
   "timeoutMs": 30000,
   "fixtureMode": "approved_local_only",
   "allowNetworkCalls": false,
+  "allowPrivateLanModelServer": false,
   "fixtureId": "local_smoke_fixture"
 }

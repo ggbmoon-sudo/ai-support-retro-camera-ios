@@ -580,6 +580,20 @@ It documents:
 
 The phase is docs/operator-prep only. It does not add server runtime code, start FastAPI, run Qwen2.5-VL, create local config, create fixture images, make a network/model call, change backend provider request payloads, change iOS upload payloads, add iOS integration, or enable production rollout.
 
+## Phase 20-D2E Private LAN Transformers FastAPI Smoke Server Support
+
+Phase 20-D2E keeps the same backend-only local sandbox path but allows the model server to run on a Windows GPU machine on the same private LAN while the MacBook runs Codex, Xcode, backend validators, and iOS testing.
+
+Validation behavior:
+
+- loopback URLs remain accepted: `http://127.0.0.1:8025/local/vlm/photo-advisor` and `http://localhost:8025/local/vlm/photo-advisor`
+- private LAN IPv4 URLs require ignored local config with `allowPrivateLanModelServer:true`
+- accepted private LAN ranges are `10.0.0.0/8`, `172.16.0.0/12`, and `192.168.0.0/16`
+- public IPs/domains, tunnel/ngrok/cloud-looking URLs, HTTPS URLs, credentialed URLs, query-string secrets, and `0.0.0.0` are rejected
+- report output uses sanitized buckets such as `private_lan_ipv4`; it must not print the raw model URL or LAN IP
+
+This phase does not start a server, run Qwen, run `--run-local-model`, commit local config/fixture/report/model URLs, add app-facing endpoints, add production endpoints, add iOS integration, change backend provider request payloads, change iOS upload payloads, add capture-context upload, train/fine-tune, or enable production rollout.
+
 ## Phase 20-C Local VLM Operator Runbook + Smoke Gate
 
 Phase 20-C adds an operator runbook and a backend-only real-model smoke gate for future approved local/self-hosted VLM testing. The gate does not call a model and does not create an app-facing endpoint.

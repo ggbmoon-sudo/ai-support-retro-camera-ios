@@ -1,5 +1,19 @@
 # Manual Smoke Tests
 
+## Phase 20-D2E
+
+Private LAN Transformers FastAPI smoke server support:
+
+- [ ] Confirm loopback URLs such as `http://127.0.0.1:8025/local/vlm/photo-advisor` and `http://localhost:8025/local/vlm/photo-advisor` remain accepted.
+- [ ] Confirm private LAN IPv4 URLs are rejected unless ignored local config sets `allowPrivateLanModelServer:true`.
+- [ ] Confirm private LAN support is limited to `10.0.0.0/8`, `172.16.0.0/12`, and `192.168.0.0/16`.
+- [ ] Confirm public IPs/domains, tunnel/ngrok/cloud-looking URLs, HTTPS URLs, credentialed URLs, query-string secrets, and `0.0.0.0` are rejected.
+- [ ] Confirm smoke gate output uses sanitized buckets such as `private_lan_ipv4` and does not print full model server URLs or LAN IPs.
+- [ ] Confirm the MacBook + Windows GPU split remains backend-only: MacBook runs Codex/Xcode/backend validators, Windows may run the local Transformers FastAPI model server, and iOS never calls the server directly.
+- [ ] Confirm no real model is run by default and `--run-local-model` is not used in this phase.
+- [ ] Confirm no app-facing endpoint, production endpoint, iOS integration, backend provider request payload change, iOS upload payload change, capture-context upload, Camera cloud AI entry, local config commit, fixture commit, report commit, training/fine-tuning, or production rollout is introduced.
+- [ ] Confirm `productionReady=false`.
+
 ## Phase 20-D2A
 
 Docs-only local Transformers FastAPI smoke server setup guide:
@@ -7,7 +21,7 @@ Docs-only local Transformers FastAPI smoke server setup guide:
 - [ ] Open `docs/open-weight-vlm-transformers-fastapi-smoke-server-setup.md`.
 - [ ] Confirm the first model target is `Qwen2.5-VL-7B-Instruct`.
 - [ ] Confirm fallback options are `Qwen2.5-VL-3B-Instruct` or 7B 4-bit / 8-bit only if hardware is insufficient.
-- [ ] Confirm the local server is Transformers + FastAPI and must bind to `127.0.0.1` only.
+- [ ] Confirm the local server is Transformers + FastAPI and must bind to `127.0.0.1` only for same-machine smoke, or to an explicitly allowed private LAN IPv4 path for the Windows GPU split.
 - [ ] Confirm the endpoint contract is `POST /local/vlm/photo-advisor`.
 - [ ] Confirm request style is `fixtureId` token only and does not use raw paths, base64, multipart image, raw prompt, or final UI prose.
 - [ ] Confirm response style is candidate JSON only and must pass `openWeightVlmPhotoAdvisorSchema`.

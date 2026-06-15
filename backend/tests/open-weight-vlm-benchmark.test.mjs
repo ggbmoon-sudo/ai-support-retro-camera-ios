@@ -260,7 +260,7 @@ test("open-weight VLM local sandbox config rejects public or unsafe model URLs",
     enabled: true,
     servingStack: "vllm",
     modelId: "qwen2.5-vl-7b-instruct",
-    modelServerUrl: "https://example.com/v1",
+    modelServerUrl: "http://example.com/v1",
     timeoutMs: 30000,
     fixtureMode: "approved_local_only",
     allowNetworkCalls: true
@@ -278,10 +278,113 @@ test("open-weight VLM local sandbox config rejects public or unsafe model URLs",
 
   assert.equal(publicUrl.ok, false);
   assert.equal(publicUrl.error.code, "non_local_model_server_url");
-  assert.equal(JSON.stringify(publicUrl).includes("https://example.com/v1"), false);
+  assert.equal(JSON.stringify(publicUrl).includes("http://example.com/v1"), false);
   assert.equal(credentialUrl.ok, false);
   assert.equal(credentialUrl.error.code, "unsafe_model_server_url");
   assert.equal(JSON.stringify(credentialUrl).includes("token@example"), false);
+});
+
+test("open-weight VLM local sandbox config allows loopback model server URLs", () => {
+  const loopbackIp = validateOpenWeightVlmLocalSandboxConfig({
+    enabled: true,
+    servingStack: "transformers_fastapi",
+    modelId: "qwen2.5-vl-7b-instruct",
+    modelServerUrl: "http://127.0.0.1:8025/local/vlm/photo-advisor",
+    timeoutMs: 30000,
+    fixtureMode: "approved_local_only",
+    allowNetworkCalls: true
+  });
+  const loopbackName = validateOpenWeightVlmLocalSandboxConfig({
+    enabled: true,
+    servingStack: "transformers_fastapi",
+    modelId: "qwen2.5-vl-7b-instruct",
+    modelServerUrl: "http://localhost:8025/local/vlm/photo-advisor",
+    timeoutMs: 30000,
+    fixtureMode: "approved_local_only",
+    allowNetworkCalls: true
+  });
+
+  assert.equal(loopbackIp.ok, true);
+  assert.equal(loopbackIp.value.modelServerUrlBucket, "local_loopback_ip");
+  assert.equal(loopbackIp.value.allowPrivateLanModelServer, false);
+  assert.equal(loopbackName.ok, true);
+  assert.equal(loopbackName.value.modelServerUrlBucket, "local_loopback_name");
+});
+
+test("open-weight VLM local sandbox config requires explicit private LAN opt-in", () => {
+  const missingOptIn = validateOpenWeightVlmLocalSandboxConfig({
+    enabled: true,
+    servingStack: "transformers_fastapi",
+    modelId: "qwen2.5-vl-7b-instruct",
+    modelServerUrl: "http://192.168.1.50:8025/local/vlm/photo-advisor",
+    timeoutMs: 30000,
+    fixtureMode: "approved_local_only",
+    allowNetworkCalls: true
+  });
+  const explicitFalse = validateOpenWeightVlmLocalSandboxConfig({
+    enabled: true,
+    servingStack: "transformers_fastapi",
+    modelId: "qwen2.5-vl-7b-instruct",
+    modelServerUrl: "http://10.1.2.3:8025/local/vlm/photo-advisor",
+    timeoutMs: 30000,
+    fixtureMode: "approved_local_only",
+    allowNetworkCalls: true,
+    allowPrivateLanModelServer: false
+  });
+  const explicitTrue = validateOpenWeightVlmLocalSandboxConfig({
+    enabled: true,
+    servingStack: "transformers_fastapi",
+    modelId: "qwen2.5-vl-7b-instruct",
+    modelServerUrl: "http://172.16.5.10:8025/local/vlm/photo-advisor",
+    timeoutMs: 30000,
+    fixtureMode: "approved_local_only",
+    allowNetworkCalls: true,
+    allowPrivateLanModelServer: true
+  });
+  const serialized = JSON.stringify(explicitTrue.value);
+
+  assert.equal(missingOptIn.ok, false);
+  assert.equal(missingOptIn.error.code, "private_lan_not_allowed");
+  assert.equal(JSON.stringify(missingOptIn).includes("192.168.1.50"), false);
+  assert.equal(explicitFalse.ok, false);
+  assert.equal(explicitFalse.error.code, "private_lan_not_allowed");
+  assert.equal(explicitTrue.ok, true);
+  assert.equal(explicitTrue.value.modelServerUrlBucket, "private_lan_ipv4");
+  assert.equal(explicitTrue.value.allowPrivateLanModelServer, true);
+  assert.equal(serialized.includes("172.16.5.10"), false);
+});
+
+test("open-weight VLM local sandbox config rejects public, tunnel, wildcard, credentialed, and secret URLs", () => {
+  const cases = [
+    ["public_ip", "http://8.8.8.8:8025/local/vlm/photo-advisor", "non_local_model_server_url"],
+    ["public_domain", "http://models.example.com/local/vlm/photo-advisor", "non_local_model_server_url"],
+    ["tunnel_domain", "http://photo-advisor.ngrok-free.app/local/vlm/photo-advisor", "non_local_model_server_url"],
+    ["wildcard_host", "http://0.0.0.0:8025/local/vlm/photo-advisor", "unsafe_model_server_url"],
+    ["credentialed", "http://user:secret@127.0.0.1:8025/local/vlm/photo-advisor", "unsafe_model_server_url"],
+    ["query_secret", "http://127.0.0.1:8025/local/vlm/photo-advisor?token=secret", "unsafe_model_server_url"],
+    ["https_private_lan", "https://192.168.1.50:8025/local/vlm/photo-advisor", "unsupported_model_server_protocol"]
+  ];
+
+  for (const [name, modelServerUrl, expectedCode] of cases) {
+    const result = validateOpenWeightVlmLocalSandboxConfig({
+      enabled: true,
+      servingStack: "transformers_fastapi",
+      modelId: "qwen2.5-vl-7b-instruct",
+      modelServerUrl,
+      timeoutMs: 30000,
+      fixtureMode: "approved_local_only",
+      allowNetworkCalls: true,
+      allowPrivateLanModelServer: true
+    });
+    const serialized = JSON.stringify(result);
+
+    assert.equal(result.ok, false, name);
+    assert.equal(result.error.code, expectedCode, name);
+    assert.equal(serialized.includes("secret"), false, name);
+    assert.equal(serialized.includes("ngrok-free"), false, name);
+    assert.equal(serialized.includes("8.8.8.8"), false, name);
+    assert.equal(serialized.includes("192.168.1.50"), false, name);
+  }
 });
 
 test("open-weight VLM local sandbox gate fails closed without explicit network opt-in", () => {
@@ -351,7 +454,12 @@ test("open-weight VLM local sandbox smoke script validates stubbed output withou
 });
 
 test("open-weight VLM local sandbox smoke client fails closed when config is missing", () => {
-  const result = spawnSync(process.execPath, [LOCAL_SANDBOX_SMOKE_SCRIPT_URL.pathname, "--run-local-model"], {
+  const result = spawnSync(process.execPath, [
+    LOCAL_SANDBOX_SMOKE_SCRIPT_URL.pathname,
+    "--run-local-model",
+    "--config",
+    missingTempConfigPath()
+  ], {
     cwd: new URL("..", import.meta.url),
     encoding: "utf8"
   });
@@ -451,7 +559,12 @@ test("open-weight VLM local sandbox smoke client rejects public URL without leak
 });
 
 test("open-weight VLM local smoke gate blocks missing config without network", () => {
-  const result = spawnSync(process.execPath, [LOCAL_SMOKE_GATE_SCRIPT_URL.pathname, "--dry-run"], {
+  const result = spawnSync(process.execPath, [
+    LOCAL_SMOKE_GATE_SCRIPT_URL.pathname,
+    "--dry-run",
+    "--config",
+    missingTempConfigPath()
+  ], {
     cwd: new URL("..", import.meta.url),
     encoding: "utf8"
   });
@@ -512,6 +625,28 @@ test("open-weight VLM local smoke gate blocks network opt-in missing", async () 
   assert.equal(gate.eligibleForRealModelSmoke, false);
   assert.equal(blockerCodes.has("network_opt_in_missing"), true);
   assert.equal(JSON.stringify(gate).includes("http://127.0.0.1:8000"), false);
+});
+
+test("open-weight VLM local sandbox gate blocks productionReady true", () => {
+  const validation = validateOpenWeightVlmLocalSandboxConfig({
+    enabled: true,
+    servingStack: "transformers_fastapi",
+    modelId: "qwen2.5-vl-7b-instruct",
+    modelServerUrl: "http://127.0.0.1:8025/local/vlm/photo-advisor",
+    timeoutMs: 30000,
+    fixtureMode: "approved_local_only",
+    allowNetworkCalls: true
+  });
+  const gate = evaluateOpenWeightVlmLocalSandboxGate({
+    ...validation.value,
+    productionReady: true
+  });
+  const blockerCodes = new Set(gate.hardBlockers.map((item) => item.code));
+
+  assert.equal(validation.ok, true);
+  assert.equal(gate.productionReady, false);
+  assert.equal(gate.eligibleForFutureLocalModelRun, false);
+  assert.equal(blockerCodes.has("production_ready_true"), true);
 });
 
 test("open-weight VLM local smoke gate blocks public or unsafe URL without leakage", async () => {
@@ -584,6 +719,33 @@ test("open-weight VLM local smoke gate can pass for safe ignored local config pr
   assert.equal(serialized.includes(configPath), false);
   assert.equal(serialized.includes("modelOutput"), false);
   assert.equal(serialized.includes("base64"), false);
+});
+
+test("open-weight VLM local smoke gate can pass for explicit private LAN model server", async () => {
+  const configPath = await writeTempSandboxConfig({
+    enabled: true,
+    servingStack: "transformers_fastapi",
+    modelId: "qwen2.5-vl-7b-instruct",
+    modelServerUrl: "http://192.168.1.50:8025/local/vlm/photo-advisor",
+    timeoutMs: 30000,
+    fixtureMode: "approved_local_only",
+    allowNetworkCalls: true,
+    allowPrivateLanModelServer: true
+  });
+  const gate = await localSmokeGateForConfig(configPath);
+  const serialized = JSON.stringify(gate);
+
+  assert.equal(gate.productionReady, false);
+  assert.equal(gate.networkCallsMade, false);
+  assert.equal(gate.eligibleForRealModelSmoke, true);
+  assert.equal(gate.hardBlockers.length, 0);
+  assert.equal(gate.reviewedConfig.modelServerUrlBucket, "private_lan_ipv4");
+  assert.equal(gate.reviewedConfig.allowPrivateLanModelServer, true);
+  assert.equal(assertOpenWeightVlmLocalSmokeGateReportRedacted(gate).ok, true);
+  assert.equal(serialized.includes("192.168.1.50"), false);
+  assert.equal(serialized.includes(configPath), false);
+  assert.equal(serialized.includes("http://"), false);
+  assert.equal(serialized.includes("modelOutput"), false);
 });
 
 test("open-weight VLM local sandbox smoke rejects non FastAPI serving stacks without network", async () => {
@@ -718,6 +880,10 @@ async function writeTempSandboxConfig(value) {
   const filePath = path.join(dir, "open-weight-vlm.local.json");
   await writeFile(filePath, JSON.stringify(value), "utf8");
   return filePath;
+}
+
+function missingTempConfigPath() {
+  return path.join(os.tmpdir(), `missing-vlm-local-config-${Date.now()}-${Math.random().toString(16).slice(2)}.json`);
 }
 
 async function localSmokeGateForConfig(configPath) {

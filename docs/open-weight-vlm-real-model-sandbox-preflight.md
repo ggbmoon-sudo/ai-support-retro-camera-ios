@@ -4,7 +4,7 @@ Status: Preflight plan only
 Date: 2026-06-14
 Phase: 19-F
 
-Update: Phase 20-A implemented the safe backend-only local sandbox setup described here. It added an example config, ignored real local config/report/sample paths, a config validator, a dry-run script, and fail-closed future command name. Phase 20-B adds a backend-only stub/no-network sandbox client smoke path that validates a safe synthetic candidate through the existing VLM schema/gate and keeps the explicit future local-model command fail-closed. Phase 20-C adds `docs/open-weight-vlm-local-operator-runbook.md` and `npm run qa:open-weight-vlm:local-smoke-gate` so a future Phase 20-D real-model smoke run has an operator checklist and a no-network pre-run gate. Phase 20-D1 selects Transformers + FastAPI as the first local adapter path, documents `docs/open-weight-vlm-transformers-fastapi-local-adapter.md`, and prepares the explicit sandbox client branch while keeping default scripts no-network. Phase 20-D2A adds `docs/open-weight-vlm-transformers-fastapi-smoke-server-setup.md`, a docs-only local operator setup guide for a future loopback-only Qwen2.5-VL FastAPI smoke server, ignored fixture registry, and `smoke_001` fixture policy. These phases still do not add model server code, real model calls by default, app-facing endpoints, iOS integration, payload changes, training, fine-tuning, or production rollout.
+Update: Phase 20-A implemented the safe backend-only local sandbox setup described here. It added an example config, ignored real local config/report/sample paths, a config validator, a dry-run script, and fail-closed future command name. Phase 20-B adds a backend-only stub/no-network sandbox client smoke path that validates a safe synthetic candidate through the existing VLM schema/gate and keeps the explicit future local-model command fail-closed. Phase 20-C adds `docs/open-weight-vlm-local-operator-runbook.md` and `npm run qa:open-weight-vlm:local-smoke-gate` so a future Phase 20-D real-model smoke run has an operator checklist and a no-network pre-run gate. Phase 20-D1 selects Transformers + FastAPI as the first local adapter path, documents `docs/open-weight-vlm-transformers-fastapi-local-adapter.md`, and prepares the explicit sandbox client branch while keeping default scripts no-network. Phase 20-D2A adds `docs/open-weight-vlm-transformers-fastapi-smoke-server-setup.md`, a docs-only local operator setup guide for a future loopback-only Qwen2.5-VL FastAPI smoke server, ignored fixture registry, and `smoke_001` fixture policy. Phase 20-D2E supports an explicitly opted-in private LAN IPv4 Transformers FastAPI server for a Windows GPU machine while the MacBook continues to run Codex/Xcode/backend validation. These phases still do not add model server code, real model calls by default, app-facing endpoints, iOS integration, payload changes, training, fine-tuning, or production rollout.
 
 ## Goal
 
@@ -22,6 +22,7 @@ Allowed later scope:
 
 - backend-only benchmark sandbox
 - local/self-hosted VLM endpoint calls only through ignored local config
+- loopback by default, or private LAN IPv4 only with explicit ignored-config opt-in
 - approved local test images only
 - explicit operator opt-in before any real-model run
 - sanitized aggregate metrics only
@@ -31,6 +32,7 @@ Allowed later scope:
 - no production endpoint
 - no Camera cloud AI entry
 - no production rollout
+- no public/tunnel/cloud model endpoint
 
 Not allowed without a separate explicit phase:
 
@@ -82,6 +84,8 @@ Required rules:
 - model server URL must live only in ignored local config
 - no model server URL committed to source, docs examples, or package scripts as an active runtime config
 - first real smoke config should use `servingStack:"transformers_fastapi"` and a non-sensitive fixture token
+- private LAN mode requires `allowPrivateLanModelServer:true` in ignored local config and only permits IPv4 ranges `10.0.0.0/8`, `172.16.0.0/12`, or `192.168.0.0/16`
+- public IPs/domains, tunnel/ngrok/cloud URLs, HTTPS URLs, credentialed URLs, query-string secrets, and `0.0.0.0` are blocked for local smoke
 - no provider/model credentials committed
 - no `.env` committed
 - no private/local model weight path committed

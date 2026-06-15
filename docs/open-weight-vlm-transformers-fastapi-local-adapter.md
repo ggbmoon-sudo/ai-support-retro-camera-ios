@@ -33,7 +33,7 @@ The default repo behavior remains synthetic/stubbed/no-network. A real local mod
 
 The local server must be operator-managed and outside the repo. It must be local/private only, with no public endpoint and no credentials in the URL.
 
-The local config should point directly at the local candidate endpoint, for example a loopback URL handled outside git. The committed repo must not contain the real endpoint URL.
+The local config should point directly at the local candidate endpoint, for example a loopback URL handled outside git. Phase 20-D2E also permits an explicitly opted-in private LAN IPv4 endpoint for a Windows GPU machine while the MacBook runs Codex, Xcode, backend validators, and iOS testing. The committed repo must not contain the real endpoint URL.
 
 Required server behavior:
 
@@ -114,11 +114,14 @@ The committed example remains disabled:
   "timeoutMs": 30000,
   "fixtureMode": "approved_local_only",
   "allowNetworkCalls": false,
+  "allowPrivateLanModelServer": false,
   "fixtureId": "local_smoke_fixture"
 }
 ```
 
 The real config must stay ignored at `backend/config/open-weight-vlm.local.json`. It may set `enabled:true` and `allowNetworkCalls:true` only for an approved local smoke run.
+
+If the Transformers FastAPI server runs on a Windows GPU machine, the ignored real config may set `allowPrivateLanModelServer:true` and use a private LAN IPv4 URL such as `http://192.168.1.50:8025/local/vlm/photo-advisor`. The validator only accepts private IPv4 ranges `10.0.0.0/8`, `172.16.0.0/12`, and `192.168.0.0/16` with that flag. Public IPs/domains, tunnel/ngrok/cloud-looking hosts, HTTPS URLs, credentialed URLs, query-string secrets, and `0.0.0.0` remain blocked. Only sanitized buckets such as `private_lan_ipv4` may appear in reports.
 
 ## Safe Command Flow
 
@@ -141,7 +144,7 @@ cd backend
 npm run qa:open-weight-vlm:local
 ```
 
-This command still fails closed unless the ignored local config is present, enabled, network opt-in is true, the serving stack is `transformers_fastapi`, the model URL validates as local/private, the fixture mode is `approved_local_only`, the fixture token is configured, and the local server returns valid structured candidate JSON.
+This command still fails closed unless the ignored local config is present, enabled, network opt-in is true, the serving stack is `transformers_fastapi`, the model URL validates as loopback or explicitly allowed private LAN, the fixture mode is `approved_local_only`, the fixture token is configured, and the local server returns valid structured candidate JSON.
 
 ## Sanitized Output
 
@@ -183,6 +186,6 @@ Phase 20-D remains blocked until the operator prepares:
 - passing default local smoke
 - passing local smoke gate
 
-For local server setup details, use `docs/open-weight-vlm-transformers-fastapi-smoke-server-setup.md`. That guide defines the first model target, loopback-only endpoint, `fixtureId` request style, ignored fixture registry policy, `smoke_001` first fixture token, and candidate-JSON-only response contract.
+For local server setup details, use `docs/open-weight-vlm-transformers-fastapi-smoke-server-setup.md`. That guide defines the first model target, loopback or explicitly allowed private LAN endpoint, `fixtureId` request style, ignored fixture registry policy, `smoke_001` first fixture token, and candidate-JSON-only response contract.
 
 Passing Phase 20-D1 does not approve production rollout. `productionReady:false` remains required.

@@ -14,7 +14,7 @@ Phase 20-D2 remains blocked until the operator prepares three local-only pieces 
 - exactly one approved ignored fixture
 - a local/private Transformers + FastAPI server
 
-Phase 20-D2A documents how to prepare those pieces safely so Phase 20-D2B can later run exactly one backend-only local smoke through the existing sandbox client and validator.
+Phase 20-D2A documents how to prepare those pieces safely so Phase 20-D2B can later run exactly one backend-only local smoke through the existing sandbox client and validator. Phase 20-D2E extends that setup for a MacBook + Windows GPU split: the MacBook runs Codex, Xcode, backend schema/gates, and iOS testing, while a Windows GPU machine may run the Transformers + FastAPI server on an explicitly allowed private LAN address.
 
 ## Why Transformers + FastAPI Was Selected For First Smoke
 
@@ -24,7 +24,7 @@ Transformers + FastAPI is the first smoke path because it is the correctness/ref
 - direct prompt and image preprocessing control
 - easiest place to inspect schema-following failures without adding production serving complexity
 - simpler than vLLM/SGLang for the first one-image smoke
-- safer than an app-facing route because it stays loopback-only and operator-managed
+- safer than an app-facing route because it stays local/private and operator-managed
 
 vLLM and SGLang remain later benchmark/serving candidates. Ollama or LM Studio may be useful for manual local smoke only, not as the first automated gate.
 
@@ -55,6 +55,7 @@ The local FastAPI server is not the app backend. It is a local operator-only mod
 ```text
 backend local sandbox client
   -> POST http://127.0.0.1:<port>/local/vlm/photo-advisor
+  -> or an explicitly allowed private LAN IPv4 endpoint
   -> fixtureId token only
 
 local Transformers + FastAPI server
@@ -68,13 +69,13 @@ existing backend validator/gate
   -> prints sanitized aggregate only
 ```
 
-Bind only to:
+Default same-machine smoke should bind only to:
 
 ```text
 127.0.0.1
 ```
 
-Do not bind to `0.0.0.0`, expose a tunnel, use ngrok, add a public endpoint, or add an app-facing backend route.
+For MacBook + Windows GPU smoke, the Windows server may be reachable from the MacBook only through a private LAN IPv4 address in `10.0.0.0/8`, `172.16.0.0/12`, or `192.168.0.0/16`. The ignored MacBook config must set `allowPrivateLanModelServer:true` before that URL bucket is accepted. Prefer binding the Windows server to the specific private LAN interface. Do not use `0.0.0.0` as the client target URL, expose a tunnel, use ngrok, use HTTPS/cloud URLs, add a public endpoint, or add an app-facing backend route.
 
 ## Endpoint Contract
 
@@ -262,9 +263,21 @@ Expected local-only intent for Phase 20-D2B:
   "timeoutMs": 30000,
   "fixtureMode": "approved_local_only",
   "allowNetworkCalls": true,
+  "allowPrivateLanModelServer": false,
   "fixtureId": "smoke_001"
 }
 ```
+
+For a Windows GPU server on private LAN, keep the real URL only in ignored local config and use a placeholder shape like:
+
+```json
+{
+  "modelServerUrl": "http://192.168.1.50:8025/local/vlm/photo-advisor",
+  "allowPrivateLanModelServer": true
+}
+```
+
+Do not commit the real Windows IP if it identifies the operator's network. Public IPs, public domains, tunnel domains, credentialed URLs, query-string secrets, HTTPS URLs, and `0.0.0.0` remain blocked for this smoke path.
 
 Do not commit this file. Do not include credentials, tokens, query strings, URL credentials, public URLs, private model paths, or registry secrets.
 
@@ -280,7 +293,7 @@ Before Phase 20-D2B:
 - [ ] Ignored fixture registry exists and is untracked.
 - [ ] Exactly one approved local fixture exists for `smoke_001`.
 - [ ] Fixture metadata is stripped.
-- [ ] Local FastAPI server binds to `127.0.0.1` only.
+- [ ] Local FastAPI server binds to `127.0.0.1` only, or Windows GPU server is reachable only via explicitly allowed private LAN IPv4.
 - [ ] Server access logs do not print request bodies, prompt, raw output, raw image path, base64, or stack traces with model text.
 - [ ] Server returns candidate JSON only.
 - [ ] No config, registry, fixture, model cache, generated report, prompt, or model output is staged.
@@ -306,6 +319,8 @@ For the future smoke phase only:
 | --- | --- |
 | Missing local config | Stop; keep `networkCallsMade:false`. |
 | Public model URL | Stop; fix ignored local config only. |
+| Private LAN URL without opt-in | Stop; set `allowPrivateLanModelServer:true` only in ignored local config after confirming the server is private LAN only. |
+| Tunnel, cloud, HTTPS, credentialed, query-string, or `0.0.0.0` URL | Stop; these are blocked for the local smoke path. |
 | Fixture missing | Stop; do not print path. |
 | Server unavailable | Stop; record sanitized `local_model_unavailable`. |
 | Model load failure | Stop; do not retry in a loop. |

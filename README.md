@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 20-D2A local Transformers FastAPI smoke server setup guide; docs-only, no real model run
+- Phase 20-D2E private LAN Transformers FastAPI smoke server support; backend validation/docs/tests only, no real model run
 
 Next phase:
 
-- Phase 20-D2B can attempt exactly one local Transformers FastAPI smoke only after ignored local config, one approved ignored fixture, and a safe local/private server are prepared; otherwise remain blocked
+- Phase 20-D2B/D2C can attempt exactly one local Transformers FastAPI smoke only after ignored local config, one approved ignored fixture, and a safe loopback or explicitly allowed private LAN server are prepared; otherwise remain blocked
 - Do not start production cloud rollout without explicit approval
 - Production rollout remains blocked until a later explicit release phase
 
@@ -249,6 +249,8 @@ Phase 20-C adds `docs/open-weight-vlm-local-operator-runbook.md` and a backend-o
 Phase 20-D ran the first local real-model smoke preflight and stopped safely before any model call. The branch was clean and upstream-synced, backend tests passed, the synthetic benchmark and benchmark gate passed, the local config dry-run passed against the example config, and the default local sandbox smoke passed in no-network mode. The ignored real local config path `backend/config/open-weight-vlm.local.json` is ignored by git but absent on disk, untracked, and unstaged, so the local smoke gate failed closed with sanitized blockers and `networkCallsMade:false`. No real VLM/provider call, app-facing endpoint, model server implementation, provider/model credential, iOS integration, backend provider request payload change, iOS upload payload change, capture-context upload, Camera cloud AI entry, real photo, generated report, training/fine-tuning, or production rollout is added.
 
 Phase 20-D1 prepares the backend-only Transformers + FastAPI local adapter path for a future approved local VLM smoke run. It adds `docs/open-weight-vlm-transformers-fastapi-local-adapter.md`, updates the local sandbox config to recognize `servingStack:"transformers_fastapi"` and a safe fixture token bucket, and lets the explicit local smoke command validate a local FastAPI candidate JSON response through the existing open-weight VLM schema. Default scripts remain no-network/stubbed; no real VLM is run, no model server URL/config is committed, no raw image/path/base64/prompt/model output is logged, and no app-facing endpoint, iOS integration, backend/iOS payload change, capture-context upload, Camera cloud AI, training/fine-tuning, or production rollout is added. `productionReady` remains `false`.
+
+Phase 20-D2E supports a Windows GPU private LAN Transformers FastAPI smoke server for the backend-only local VLM sandbox. Loopback URLs remain accepted by default, while private LAN IPv4 URLs require ignored local config with `allowPrivateLanModelServer:true` and are limited to `10.0.0.0/8`, `172.16.0.0/12`, and `192.168.0.0/16`. Public IPs/domains, tunnel/ngrok/cloud-looking URLs, HTTPS URLs, credentialed URLs, query-string secrets, and `0.0.0.0` are rejected, and reports show only sanitized buckets such as `private_lan_ipv4`. This phase does not run a model, start a server, call `--run-local-model`, commit local config/fixtures/reports/model URLs, add app-facing endpoints, add iOS integration, change payloads, upload capture context, add Camera cloud AI, train/fine-tune, or enable production rollout.
 
 ## Phase 12A Filter Planning Status
 

@@ -216,6 +216,7 @@ function sanitizeConfigSummary(summary = {}) {
     fixtureIdBucket: sanitizeToken(summary.fixtureIdBucket || "missing"),
     fixtureConfigured: summary.fixtureConfigured === true,
     allowNetworkCalls: summary.allowNetworkCalls === true,
+    allowPrivateLanModelServer: summary.allowPrivateLanModelServer === true,
     payloadLoggingDisabled: summary.payloadLoggingDisabled === true,
     rawPromptLoggingDisabled: summary.rawPromptLoggingDisabled === true,
     rawModelResponseLoggingDisabled: summary.rawModelResponseLoggingDisabled === true,

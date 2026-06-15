@@ -12,6 +12,7 @@ const ALLOWED_CONFIG_KEYS = new Set([
   "timeoutMs",
   "fixtureMode",
   "allowNetworkCalls",
+  "allowPrivateLanModelServer",
   "fixtureId"
 ]);
 
@@ -33,6 +34,7 @@ const DEFAULT_CONFIG = Object.freeze({
   timeoutMs: 30000,
   fixtureMode: "approved_local_only",
   allowNetworkCalls: false,
+  allowPrivateLanModelServer: false,
   fixtureId: "local_smoke_fixture"
 });
 
@@ -111,6 +113,13 @@ export function validateOpenWeightVlmLocalSandboxConfig(input, options = {}) {
     return invalidConfig("invalid_schema", "allowNetworkCalls must be boolean.", { ...options, field: "allowNetworkCalls" });
   }
 
+  if (typeof config.allowPrivateLanModelServer !== "boolean") {
+    return invalidConfig("invalid_schema", "allowPrivateLanModelServer must be boolean.", {
+      ...options,
+      field: "allowPrivateLanModelServer"
+    });
+  }
+
   if (!ALLOWED_SERVING_STACKS.has(config.servingStack)) {
     return invalidConfig("unsupported_serving_stack", "servingStack is not supported.", {
       ...options,
@@ -147,7 +156,8 @@ export function validateOpenWeightVlmLocalSandboxConfig(input, options = {}) {
   }
 
   const urlCheck = validateModelServerUrl(config.modelServerUrl, {
-    requireConcreteUrl: config.enabled || config.allowNetworkCalls
+    requireConcreteUrl: config.enabled || config.allowNetworkCalls,
+    allowPrivateLanModelServer: config.allowPrivateLanModelServer === true
   });
   if (!urlCheck.ok) {
     return invalidConfig(urlCheck.code, urlCheck.message, {
@@ -166,6 +176,7 @@ export function validateOpenWeightVlmLocalSandboxConfig(input, options = {}) {
       timeoutMs: config.timeoutMs,
       fixtureMode: config.fixtureMode,
       allowNetworkCalls: config.allowNetworkCalls,
+      allowPrivateLanModelServer: config.allowPrivateLanModelServer,
       fixtureId: config.fixtureId
     },
     value: summarizeLocalSandboxConfig(config, {
@@ -318,6 +329,7 @@ function summarizeLocalSandboxConfig(config, options = {}) {
     fixtureIdBucket: config.fixtureId ? "configured" : "missing",
     fixtureConfigured: Boolean(config.fixtureId),
     allowNetworkCalls: config.allowNetworkCalls === true,
+    allowPrivateLanModelServer: config.allowPrivateLanModelServer === true,
     payloadLoggingDisabled: true,
     rawPromptLoggingDisabled: true,
     rawModelResponseLoggingDisabled: true,
@@ -370,34 +382,50 @@ function validateModelServerUrl(value, options = {}) {
     };
   }
 
-  if (url.protocol !== "http:" && url.protocol !== "https:") {
+  if (url.protocol !== "http:") {
     return {
       ok: false,
       code: "unsupported_model_server_protocol",
-      message: "modelServerUrl must use http or https."
+      message: "modelServerUrl must use http for this local/private smoke path."
     };
   }
 
-  if (!LOCAL_HOSTS.has(url.hostname)) {
+  if (url.hostname === "0.0.0.0") {
     return {
       ok: false,
-      code: "non_local_model_server_url",
-      message: "modelServerUrl must be local-only in Phase 20-A."
+      code: "unsafe_model_server_url",
+      message: "modelServerUrl must not target 0.0.0.0."
     };
   }
 
-  if (url.protocol === "https:" && url.hostname !== "localhost") {
+  if (LOCAL_HOSTS.has(url.hostname)) {
     return {
-      ok: false,
-      code: "unsupported_model_server_protocol",
-      message: "https is only allowed for localhost in this local sandbox preflight."
+      ok: true,
+      configured: true,
+      bucket: url.hostname === "localhost" ? "local_loopback_name" : "local_loopback_ip"
+    };
+  }
+
+  const ipv4 = parseIPv4(url.hostname);
+  if (ipv4 && isPrivateLanIPv4(ipv4)) {
+    if (options.allowPrivateLanModelServer !== true) {
+      return {
+        ok: false,
+        code: "private_lan_not_allowed",
+        message: "Private LAN model server URLs require allowPrivateLanModelServer true."
+      };
+    }
+    return {
+      ok: true,
+      configured: true,
+      bucket: "private_lan_ipv4"
     };
   }
 
   return {
-    ok: true,
-    configured: true,
-    bucket: url.hostname === "localhost" ? "local_loopback_name" : "local_loopback_ip"
+    ok: false,
+    code: "non_local_model_server_url",
+    message: "modelServerUrl must be loopback or an explicitly allowed private LAN IPv4 address."
   };
 }
 
@@ -438,6 +466,7 @@ function sanitizeSummary(summary = {}) {
     fixtureIdBucket: sanitizeToken(summary.fixtureIdBucket || "missing"),
     fixtureConfigured: summary.fixtureConfigured === true,
     allowNetworkCalls: summary.allowNetworkCalls === true,
+    allowPrivateLanModelServer: summary.allowPrivateLanModelServer === true,
     payloadLoggingDisabled: summary.payloadLoggingDisabled === true,
     rawPromptLoggingDisabled: summary.rawPromptLoggingDisabled === true,
     rawModelResponseLoggingDisabled: summary.rawModelResponseLoggingDisabled === true,
@@ -496,4 +525,22 @@ function sanitizeToken(value) {
 
 function isPlainObject(value) {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
+
+function parseIPv4(hostname) {
+  if (!/^\d{1,3}(?:\.\d{1,3}){3}$/u.test(hostname)) {
+    return null;
+  }
+  const parts = hostname.split(".").map((part) => Number.parseInt(part, 10));
+  if (parts.some((part) => !Number.isInteger(part) || part < 0 || part > 255)) {
+    return null;
+  }
+  return parts;
+}
+
+function isPrivateLanIPv4(parts) {
+  const [first, second] = parts;
+  return first === 10
+    || first === 192 && second === 168
+    || first === 172 && second >= 16 && second <= 31;
 }

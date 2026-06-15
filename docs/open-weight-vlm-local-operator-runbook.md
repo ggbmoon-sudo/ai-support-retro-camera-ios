@@ -70,8 +70,9 @@ The real local config must stay ignored:
 - Keep `enabled:false` and `allowNetworkCalls:false` unless an approved local smoke run is being prepared.
 - Use `servingStack:"transformers_fastapi"` for the first approved real-model smoke path.
 - Use a short non-sensitive `fixtureId` token only; do not store raw fixture paths in config.
-- Use loopback or explicitly approved private/internal model hosts only.
+- Use loopback by default, or an explicitly approved private LAN IPv4 model host only when `allowPrivateLanModelServer:true` is set in ignored local config.
 - Do not use public model URLs by default.
+- Do not use public IPs/domains, tunnel/ngrok/cloud hosts, HTTPS URLs, credentialed URLs, query-string secrets, or `0.0.0.0` for the local smoke path.
 
 The committed example remains only a template:
 
@@ -119,6 +120,7 @@ The smoke gate checks:
 - `enabled:true` is present only in local ignored config
 - `allowNetworkCalls:true` is present only in local ignored config
 - model server URL is sanitized into a bucket and must be loopback/private-approved
+- private LAN URLs require `allowPrivateLanModelServer:true` and must be IPv4 only in `10.0.0.0/8`, `172.16.0.0/12`, or `192.168.0.0/16`
 - no public model URL by default
 - serving stack is `transformers_fastapi`
 - `fixtureMode` is `approved_local_only`
@@ -137,6 +139,8 @@ Stop immediately if any of these occur:
 
 - config is missing or unsafe
 - public model URL appears
+- private LAN model URL appears without the explicit ignored-config opt-in
+- tunnel, cloud, HTTPS, credentialed, query-string, or `0.0.0.0` model URL appears
 - credentials or token-like values appear in config, output, docs, or staged files
 - real photo, user photo, screenshot, recording, generated image, or local sample appears in staged files
 - raw image, base64, private path, prompt, request payload, or model output appears in output or docs
@@ -204,6 +208,7 @@ Then confirm no staged/untracked artifacts include:
 - `config_missing`: expected until `backend/config/open-weight-vlm.local.json` is created locally and remains ignored.
 - `sandbox_disabled`: set `enabled:true` only for an approved local run.
 - `network_opt_in_missing`: set `allowNetworkCalls:true` only for an approved local run.
+- `private_lan_not_allowed`: set `allowPrivateLanModelServer:true` only in ignored local config after confirming the Windows GPU server is reachable only on private LAN.
 - `model_server_missing`: the ignored local config needs a validated local/private model server URL bucket.
 - `unsupported_local_serving_stack`: use the Phase 20-D1 `transformers_fastapi` adapter path for the first local smoke.
 - `synthetic_benchmark_gate_not_passed`: rerun the synthetic benchmark and gate before trying local model work.
@@ -235,6 +240,7 @@ Phase 20-D may start only after explicit approval and only if:
 - local sandbox smoke passes in no-network mode
 - local smoke gate has no hard blockers under ignored local config
 - local config uses `servingStack:"transformers_fastapi"`
+- Windows GPU hosting, if used, is explicitly private LAN only and the smoke gate reports `private_lan_ipv4` rather than a raw URL/IP
 - the local setup follows `docs/open-weight-vlm-transformers-fastapi-smoke-server-setup.md`
 - the first fixture token is `smoke_001`
 - approved local fixtures are present only in ignored folders

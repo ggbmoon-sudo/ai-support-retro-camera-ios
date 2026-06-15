@@ -127,6 +127,19 @@ Latest Phase 20-D2A setup guide check on 2026-06-15:
 - `productionReady:false` remains required.
 - Next recommended step is Phase 20-D2B only after the operator prepares ignored local config, exactly one approved ignored fixture, and a safe loopback Transformers FastAPI server. Phase 20-E should not start yet.
 
+Latest Phase 20-D2E private LAN support check on 2026-06-15:
+
+- Branch: `feat/phase-02-auth`.
+- Use upstream shorthand such as `@{u}`; do not assume `origin/main` exists in this clone.
+- Phase 20-D2E updates backend local sandbox config validation, smoke gate redaction summaries, tests, and docs for the MacBook + Windows GPU split.
+- Loopback URLs still work by default.
+- A Windows GPU Transformers FastAPI server may be targeted only by an explicitly opted-in private LAN IPv4 URL in ignored local config with `allowPrivateLanModelServer:true`.
+- Accepted private LAN ranges are `10.0.0.0/8`, `172.16.0.0/12`, and `192.168.0.0/16`; public IPs/domains, tunnel/ngrok/cloud-looking URLs, HTTPS URLs, credentialed URLs, query-string secrets, and `0.0.0.0` remain blocked.
+- Reports expose only sanitized buckets such as `private_lan_ipv4`; raw model URLs and LAN IPs must not appear in output.
+- No real VLM was run, no FastAPI server was started, no `--run-local-model` command was run, no local config/fixture/report/model URL/credential was committed, no app-facing endpoint or production endpoint was added, and no iOS integration, backend/iOS payload change, capture-context upload, Camera cloud AI, training/fine-tuning, or production rollout was added.
+- `productionReady:false` remains required.
+- Next recommended step is Phase 20-D2B/D2C retry only after the operator prepares ignored local config, `smoke_001`, and a safe loopback or explicitly allowed private LAN Transformers FastAPI server. Phase 20-E should not start yet.
+
 Confirmed locally:
 
 - Phase 16E - Static Pose Overlay MVP
