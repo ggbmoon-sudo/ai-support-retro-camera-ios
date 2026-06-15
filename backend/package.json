@@ -15,6 +15,7 @@
     "qa:open-weight-vlm:local-config": "node scripts/check-open-weight-vlm-local-sandbox-config.mjs --dry-run",
     "qa:open-weight-vlm:local-smoke": "node scripts/run-open-weight-vlm-local-sandbox-smoke.mjs --dry-run",
     "qa:open-weight-vlm:local-smoke-gate": "node scripts/check-open-weight-vlm-local-smoke-gate.mjs --dry-run",
+    "qa:open-weight-vlm:local-repeatability-gate": "node scripts/check-open-weight-vlm-local-smoke-repeatability-gate.mjs --baseline",
     "qa:open-weight-vlm:local": "node scripts/run-open-weight-vlm-local-sandbox-smoke.mjs --run-local-model"
   },
   "dependencies": {},

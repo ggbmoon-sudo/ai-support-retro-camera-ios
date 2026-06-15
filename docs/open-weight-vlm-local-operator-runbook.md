@@ -313,3 +313,35 @@ Sanitized completed result:
 - `productionReady:false`
 
 For any future expansion, keep the same controls: fixture IDs only, one model call per fixture, no retries to chase pass rate, no raw prompt/model output/image path/base64/request payload/config/registry/log printing, and no committed local fixtures or reports.
+
+## Phase 20-E-C Repeatability Gate
+
+Phase 20-E-C adds a backend-only repeatability/regression gate for sanitized local VLM smoke expansion aggregates.
+
+Run:
+
+```sh
+cd backend
+npm run qa:open-weight-vlm:local-repeatability-gate
+```
+
+The gate reviews only:
+
+- fixture counts
+- accepted/rejected counts
+- acceptance rate
+- validation, fallback, schema error, and schema field buckets
+- latency buckets
+- `networkCallsMade`
+- `productionReady`
+- raw persistence booleans
+
+The B2 baseline passes with:
+
+- `pass_for_local_repeatability_review`
+- `pass_with_latency_note`
+- `productionReady:false`
+
+The latency note is expected for the B2 baseline because one accepted fixture was `gt_15s`. Treat it as sandbox review information, not production readiness.
+
+The gate blocks schema regressions, provider-integration fallback buckets, raw persistence, unapproved fixture counts, and `productionReady:true`. It does not call a model, read local config contents, inspect fixture registry contents, print raw prompts/model output/image paths/base64/request payloads, or approve iOS/product rollout.

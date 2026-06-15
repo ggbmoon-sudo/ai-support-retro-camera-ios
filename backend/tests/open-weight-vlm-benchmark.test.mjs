@@ -16,6 +16,11 @@ import {
   evaluateOpenWeightVlmLocalSmokeGate
 } from "../src/qa/openWeightVlmLocalSmokeGate.mjs";
 import {
+  assertOpenWeightVlmLocalSmokeRepeatabilityGateReportRedacted,
+  evaluateOpenWeightVlmLocalSmokeRepeatabilityGate,
+  summarizeOpenWeightVlmLocalSmokeRepeatability
+} from "../src/qa/openWeightVlmLocalSmokeRepeatabilityGate.mjs";
+import {
   assertOpenWeightVlmBenchmarkReportRedacted,
   buildOpenWeightVlmSchemaDiagnostic,
   evaluateOpenWeightVlmBenchmarkCase,
@@ -30,6 +35,7 @@ const GATE_SCRIPT_URL = new URL("../scripts/check-open-weight-vlm-photo-advisor-
 const LOCAL_SANDBOX_CONFIG_SCRIPT_URL = new URL("../scripts/check-open-weight-vlm-local-sandbox-config.mjs", import.meta.url);
 const LOCAL_SANDBOX_SMOKE_SCRIPT_URL = new URL("../scripts/run-open-weight-vlm-local-sandbox-smoke.mjs", import.meta.url);
 const LOCAL_SMOKE_GATE_SCRIPT_URL = new URL("../scripts/check-open-weight-vlm-local-smoke-gate.mjs", import.meta.url);
+const LOCAL_REPEATABILITY_GATE_SCRIPT_URL = new URL("../scripts/check-open-weight-vlm-local-smoke-repeatability-gate.mjs", import.meta.url);
 
 test("open-weight VLM validator accepts valid synthetic benchmark fixtures", async () => {
   const cases = await benchmarkCases();
@@ -790,6 +796,136 @@ test("open-weight VLM local smoke gate can pass for explicit private LAN model s
   assert.equal(serialized.includes("modelOutput"), false);
 });
 
+test("open-weight VLM local smoke repeatability gate passes B2 aggregate with latency note", () => {
+  const summary = summarizeOpenWeightVlmLocalSmokeRepeatability(b2RepeatabilityFixtureResults());
+  const gate = evaluateOpenWeightVlmLocalSmokeRepeatabilityGate(summary);
+  const serialized = JSON.stringify(gate);
+
+  assert.equal(summary.fixtureCount, 3);
+  assert.equal(summary.acceptedCount, 3);
+  assert.equal(summary.rejectedCount, 0);
+  assert.equal(summary.acceptanceRate, 100);
+  assert.deepEqual(summary.validationCodeCounts, { null: 3 });
+  assert.deepEqual(summary.fallbackCategoryCounts, { null: 3 });
+  assert.deepEqual(summary.schemaErrorBucketCounts, {});
+  assert.deepEqual(summary.schemaFieldBucketCounts, {});
+  assert.equal(gate.productionReady, false);
+  assert.equal(gate.eligibleForLocalRepeatabilityReview, true);
+  assert.equal(gate.hardBlockers.length, 0);
+  assert.equal(gate.statusCategories.includes("pass_for_local_repeatability_review"), true);
+  assert.equal(gate.statusCategories.includes("pass_with_latency_note"), true);
+  assert.equal(gate.warnings.some((item) => item.code === "latency_gt_15s_observed"), true);
+  assert.equal(assertOpenWeightVlmLocalSmokeRepeatabilityGateReportRedacted(gate).ok, true);
+  assert.equal(serialized.includes("modelOutput"), false);
+  assert.equal(serialized.includes("fullPrompt"), false);
+});
+
+test("open-weight VLM local smoke repeatability gate blocks schema diagnostics", () => {
+  const summary = summarizeOpenWeightVlmLocalSmokeRepeatability([
+    ...b2RepeatabilityFixtureResults().slice(0, 2),
+    {
+      ...repeatabilityFixture("5s_to_15s"),
+      acceptedCount: 0,
+      rejectedCount: 1,
+      validationCode: "invalid_schema",
+      fallbackCategory: "invalid_schema",
+      schemaDiagnostic: {
+        errorBuckets: ["unsupported_enum"],
+        fieldBuckets: ["visualObservationKey"]
+      }
+    }
+  ]);
+  const gate = evaluateOpenWeightVlmLocalSmokeRepeatabilityGate(summary);
+  const blockerCategories = new Set(gate.hardBlockers.map((item) => item.category));
+
+  assert.equal(gate.productionReady, false);
+  assert.equal(gate.eligibleForLocalRepeatabilityReview, false);
+  assert.equal(blockerCategories.has("blocked_for_schema_regression"), true);
+  assert.equal(gate.reviewedAggregate.schemaErrorBucketCounts.unsupported_enum, 1);
+  assert.equal(gate.reviewedAggregate.schemaFieldBucketCounts.visualObservationKey, 1);
+});
+
+test("open-weight VLM local smoke repeatability gate blocks provider integration fallback", () => {
+  const summary = summarizeOpenWeightVlmLocalSmokeRepeatability([
+    ...b2RepeatabilityFixtureResults().slice(0, 2),
+    {
+      ...repeatabilityFixture("lt_1s"),
+      acceptedCount: 0,
+      rejectedCount: 1,
+      fallbackCategory: "blocked_for_provider_integration"
+    }
+  ]);
+  const gate = evaluateOpenWeightVlmLocalSmokeRepeatabilityGate(summary);
+  const blockerCodes = new Set(gate.hardBlockers.map((item) => item.code));
+
+  assert.equal(gate.productionReady, false);
+  assert.equal(gate.eligibleForLocalRepeatabilityReview, false);
+  assert.equal(blockerCodes.has("provider_integration_fallback_detected"), true);
+  assert.equal(gate.statusCategories.includes("blocked_for_provider_integration"), true);
+});
+
+test("open-weight VLM local smoke repeatability gate blocks raw persistence", () => {
+  const promptSummary = summarizeOpenWeightVlmLocalSmokeRepeatability([
+    ...b2RepeatabilityFixtureResults().slice(0, 2),
+    {
+      ...repeatabilityFixture("5s_to_15s"),
+      rawPromptPersisted: true
+    }
+  ]);
+  const responseSummary = summarizeOpenWeightVlmLocalSmokeRepeatability([
+    ...b2RepeatabilityFixtureResults().slice(0, 2),
+    {
+      ...repeatabilityFixture("5s_to_15s"),
+      rawModelResponsePersisted: true
+    }
+  ]);
+  const promptGate = evaluateOpenWeightVlmLocalSmokeRepeatabilityGate(promptSummary);
+  const responseGate = evaluateOpenWeightVlmLocalSmokeRepeatabilityGate(responseSummary);
+
+  assert.equal(promptGate.productionReady, false);
+  assert.equal(promptGate.eligibleForLocalRepeatabilityReview, false);
+  assert.equal(promptGate.statusCategories.includes("blocked_for_raw_persistence"), true);
+  assert.equal(responseGate.productionReady, false);
+  assert.equal(responseGate.eligibleForLocalRepeatabilityReview, false);
+  assert.equal(responseGate.statusCategories.includes("blocked_for_raw_persistence"), true);
+});
+
+test("open-weight VLM local smoke repeatability gate blocks productionReady true", () => {
+  const summary = summarizeOpenWeightVlmLocalSmokeRepeatability([
+    ...b2RepeatabilityFixtureResults().slice(0, 2),
+    {
+      ...repeatabilityFixture("5s_to_15s"),
+      productionReady: true
+    }
+  ]);
+  const gate = evaluateOpenWeightVlmLocalSmokeRepeatabilityGate(summary);
+
+  assert.equal(gate.productionReady, false);
+  assert.equal(gate.eligibleForLocalRepeatabilityReview, false);
+  assert.equal(gate.statusCategories.includes("blocked_for_production_flag"), true);
+  assert.equal(gate.hardBlockers.some((item) => item.code === "production_ready_true"), true);
+});
+
+test("open-weight VLM local smoke repeatability gate script prints sanitized baseline", () => {
+  const output = execFileSync(process.execPath, [fileURLToPath(LOCAL_REPEATABILITY_GATE_SCRIPT_URL), "--baseline"], {
+    cwd: new URL("..", import.meta.url),
+    encoding: "utf8"
+  });
+  const gate = JSON.parse(output);
+
+  assert.equal(gate.productionReady, false);
+  assert.equal(gate.eligibleForLocalRepeatabilityReview, true);
+  assert.equal(gate.reviewedAggregate.fixtureCount, 3);
+  assert.equal(gate.reviewedAggregate.acceptedCount, 3);
+  assert.equal(gate.reviewedAggregate.rejectedCount, 0);
+  assert.equal(gate.statusCategories.includes("pass_for_local_repeatability_review"), true);
+  assert.equal(gate.statusCategories.includes("pass_with_latency_note"), true);
+  assert.equal(output.includes("modelOutput"), false);
+  assert.equal(output.includes("fullPrompt"), false);
+  assert.equal(output.includes("http://"), false);
+  assert.equal(output.includes(".jpg"), false);
+});
+
 test("open-weight VLM local sandbox smoke rejects non FastAPI serving stacks without network", async () => {
   const configPath = await writeTempSandboxConfig({
     enabled: true,
@@ -1001,6 +1137,33 @@ async function localSmokeGateForConfig(configPath) {
     syntheticBenchmarkGate,
     localSmokeReport
   });
+}
+
+function b2RepeatabilityFixtureResults() {
+  return [
+    repeatabilityFixture("gt_15s"),
+    repeatabilityFixture("5s_to_15s"),
+    repeatabilityFixture("5s_to_15s")
+  ];
+}
+
+function repeatabilityFixture(latencyBucket) {
+  return {
+    fixtureIdBucket: "configured",
+    acceptedCount: 1,
+    rejectedCount: 0,
+    validationCode: null,
+    fallbackCategory: null,
+    schemaDiagnostic: null,
+    latencyBucket,
+    networkCallsMade: true,
+    productionReady: false,
+    rawPromptPersisted: false,
+    rawModelResponsePersisted: false,
+    rawImagePersisted: false,
+    rawImagePathPersisted: false,
+    requestPayloadPersisted: false
+  };
 }
 
 function jsonResponse(value) {

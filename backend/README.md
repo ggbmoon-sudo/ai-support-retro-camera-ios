@@ -644,6 +644,20 @@ Phase 20-E-A also adds `docs/open-weight-vlm-local-smoke-expansion-gate.md` for 
 
 Passing one D2J smoke is not production readiness. It only makes Phase 20-E-B planning-ready after explicit request.
 
+## Phase 20-E-C Local VLM Smoke Repeatability Gate
+
+Phase 20-E-C adds a backend-only repeatability/regression gate for sanitized local VLM smoke expansion aggregates.
+
+Run:
+
+```sh
+npm run qa:open-weight-vlm:local-repeatability-gate
+```
+
+The gate reviews only fixture count, accepted/rejected counts, acceptance rate, validation/fallback/schema buckets, latency buckets, `networkCallsMade`, `productionReady`, and raw persistence booleans. It does not read or print raw prompt, raw model output, raw image path, base64, request payload, local config contents, fixture registry contents, fixture images, credentials, or server logs.
+
+The Phase 20-E-B2 baseline passes as `pass_for_local_repeatability_review` with `pass_with_latency_note` because one accepted fixture was `gt_15s`. This is sandbox review only. It does not approve iOS integration, app-facing endpoints, production endpoints, Camera cloud AI, payload changes, training/fine-tuning, or production rollout. `productionReady:false` remains required.
+
 ## Phase 20-C Local VLM Operator Runbook + Smoke Gate
 
 Phase 20-C adds an operator runbook and a backend-only real-model smoke gate for future approved local/self-hosted VLM testing. The gate does not call a model and does not create an app-facing endpoint.

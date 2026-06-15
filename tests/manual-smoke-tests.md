@@ -24,6 +24,19 @@ Completed 3-fixture local VLM smoke expansion:
 - [ ] Confirm no iOS integration, app-facing endpoint, production endpoint, backend provider request payload change, iOS upload payload change, capture-context upload, Camera cloud AI entry, training/fine-tuning, or production rollout is introduced.
 - [ ] Confirm `productionReady=false`.
 
+## Phase 20-E-C
+
+Local VLM smoke repeatability gate:
+
+- [ ] Run `cd backend && npm run qa:open-weight-vlm:local-repeatability-gate`.
+- [ ] Confirm the B2 baseline gate reports `pass_for_local_repeatability_review`, `pass_with_latency_note`, no hard blockers, and `productionReady:false`.
+- [ ] Confirm the gate reviews only fixture counts, accepted/rejected counts, acceptance rate, validation/fallback/schema buckets, latency buckets, `networkCallsMade`, `productionReady`, and raw persistence flags.
+- [ ] Confirm tests cover schema diagnostic rejection, provider-integration fallback rejection, raw prompt/model-response persistence rejection, `productionReady:true` rejection, and the `gt_15s` latency note case.
+- [ ] Confirm the gate does not require or print raw prompt, raw model output, raw image/base64/path, request payload, local config contents, fixture registry contents, fixture images, credentials, or Windows server logs.
+- [ ] Confirm no optional repeat smoke is run unless all safe gates and healthz pass and the operator explicitly chooses to spend exactly one call per approved fixture.
+- [ ] Confirm no iOS integration, app-facing endpoint, production endpoint, backend provider request payload change, iOS upload payload change, capture-context upload, Camera cloud AI entry, training/fine-tuning, or production rollout is introduced.
+- [ ] Confirm `productionReady=false`.
+
 ## Phase 20-D2G
 
 Local VLM schema mismatch diagnostics:

@@ -198,6 +198,20 @@ Latest Phase 20-E-B2 completed 3-fixture local VLM smoke on 2026-06-16:
 - Raw prompt/model output/image/base64/path/request payload/full model URL/local config/fixture registry/fixture image/generated report/secrets were not printed, persisted, or committed.
 - Phase 20-E-C is planning-ready only after B2 docs are reviewed and committed; production rollout remains blocked.
 
+Latest Phase 20-E-C local VLM repeatability gate on 2026-06-16:
+
+- Phase 20-E-C adds a backend-only repeatability/regression gate for sanitized local VLM smoke expansion aggregates.
+- New helper: `backend/src/qa/openWeightVlmLocalSmokeRepeatabilityGate.mjs`.
+- New command: `npm run qa:open-weight-vlm:local-repeatability-gate`.
+- The gate reviews fixture counts, accepted/rejected counts, acceptance rate, validation/fallback/schema buckets, latency buckets, `networkCallsMade`, `productionReady`, and raw persistence booleans only.
+- The B2 baseline passes as `pass_for_local_repeatability_review` with `pass_with_latency_note` because one accepted fixture was `gt_15s`.
+- The gate blocks schema regression buckets, provider-integration fallback buckets, raw persistence, unapproved fixture counts, and `productionReady:true`.
+- After all safe gates and healthz passed, E-C ran one controlled repeat call per approved fixture: `smoke_001`, `smoke_002`, and `smoke_003`.
+- Repeat aggregate: `fixtureCount:3`, `acceptedCount:3`, `rejectedCount:0`, `acceptanceRate:100%`, `validationCodeCounts:null x3`, `fallbackCategoryCounts:null x3`, `schemaErrorBucketCounts:none`, `schemaFieldBucketCounts:none`, `latencyBucketCounts:5s_to_15s x3`, `networkCallsMade:true`, and `productionReady:false`.
+- The repeat aggregate passed the new gate as `pass_for_local_repeatability_review` with no hard blockers.
+- No validator, smoke gate, fixture approval, backend/iOS payload, iOS source, Camera cloud entry, app-facing endpoint, production endpoint, training/fine-tuning, or rollout boundary was changed.
+- Phase 20-E-D is planning-ready only after E-C is reviewed, committed, and pushed; production rollout remains blocked.
+
 Confirmed locally:
 
 - Phase 16E - Static Pose Overlay MVP

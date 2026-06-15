@@ -185,4 +185,53 @@ Raw prompt, raw model output, raw image path, base64, request payload, local con
 
 ## Phase 20-E-C Readiness
 
-Phase 20-E-C is planning-ready only after this B2 documentation update is reviewed and committed. It is not production rollout.
+Phase 20-E-C is implemented as a backend-only repeatability/regression review gate. It is not production rollout.
+
+## Phase 20-E-C Repeatability Gate
+
+The repeatability gate evaluates sanitized local VLM smoke expansion aggregates only. It does not require raw model output, raw prompt, raw image path, base64, request payload, local config contents, fixture registry contents, fixture images, or server logs.
+
+Run:
+
+```sh
+cd backend
+npm run qa:open-weight-vlm:local-repeatability-gate
+```
+
+Equivalent direct command:
+
+```sh
+node scripts/check-open-weight-vlm-local-smoke-repeatability-gate.mjs --baseline
+```
+
+Reviewed fields:
+
+- `fixtureCount`
+- `acceptedCount`
+- `rejectedCount`
+- `acceptanceRate`
+- `validationCodeCounts`
+- `fallbackCategoryCounts`
+- `schemaErrorBucketCounts`
+- `schemaFieldBucketCounts`
+- `latencyBucketCounts`
+- `networkCallsMade`
+- `productionReady`
+- raw persistence flags
+
+Gate categories:
+
+- `pass_for_local_repeatability_review`
+- `pass_with_latency_note`
+- `blocked_for_schema_regression`
+- `blocked_for_provider_integration`
+- `blocked_for_raw_persistence`
+- `blocked_for_unapproved_fixture`
+- `blocked_for_production_flag`
+- `not_production_ready`
+
+The B2 baseline passes repeatability review with a latency note because one accepted result was `gt_15s`. Passing this gate only means the sanitized B2 aggregate remains reviewable. It does not approve iOS integration, app-facing endpoints, production endpoints, Camera cloud AI, payload changes, training/fine-tuning, or production rollout.
+
+## Phase 20-E-D Readiness
+
+Phase 20-E-D is planning-ready only after the Phase 20-E-C gate/docs are reviewed and committed. It is not production rollout.
