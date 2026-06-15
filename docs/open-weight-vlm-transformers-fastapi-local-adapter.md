@@ -188,17 +188,10 @@ Forbidden output remains:
 - chain-of-thought
 - generated unsanitized reports
 
-## Phase 20-D Readiness
+## Phase 20-D2J And Phase 20-E-B Readiness
 
-Phase 20-D remains blocked until the operator prepares:
-
-- ignored local config
-- one approved ignored local fixture
-- local/private FastAPI server
-- passing synthetic benchmark and gate
-- passing default local smoke
-- passing local smoke gate
+Phase 20-D2J produced the first accepted Qwen-backed private LAN local smoke after the Windows FastAPI mapper was aligned to this contract. The MacBook backend sandbox client accepted one `smoke_001` candidate with `acceptedCount:1`, `rejectedCount:0`, `schemaDiagnostic:null`, `networkCallsMade:true`, and `productionReady:false`.
 
 For local server setup details, use `docs/open-weight-vlm-transformers-fastapi-smoke-server-setup.md`. That guide defines the first model target, loopback or explicitly allowed private LAN endpoint, `fixtureId` request style, ignored fixture registry policy, `smoke_001` first fixture token, and candidate-JSON-only response contract.
 
-Passing Phase 20-D1 does not approve production rollout. `productionReady:false` remains required.
+Phase 20-E-B is planning-ready only after explicit request. It should remain backend-only and local/private LAN only, use 3-5 approved ignored fixtures, run one model call per fixture, report sanitized aggregate metrics only, avoid retry loops to chase pass rate, and keep `productionReady:false`.

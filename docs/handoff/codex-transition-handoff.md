@@ -168,6 +168,23 @@ Latest Phase 20-D2F / D2G local VLM schema mismatch check on 2026-06-15:
 - No validation rule was weakened, no retry smoke was run in D2G, no app-facing endpoint or production endpoint was added, and no iOS integration, backend/iOS payload change, capture-context upload, Camera cloud AI, training/fine-tuning, or production rollout was added.
 - Phase 20-E remains blocked. Next recommended step is another explicit D2 retry only after the Windows FastAPI mapper is aligned to `backend/src/qa/openWeightVlmPhotoAdvisorSchema.mjs` and all gates pass.
 
+Latest Phase 20-E-A accepted local VLM smoke record on 2026-06-16:
+
+- Branch: `feat/phase-02-auth`.
+- Use upstream shorthand such as `@{u}`; do not assume `origin/main` exists in this clone.
+- Phase 20-D2J succeeded before Phase 20-E-A documentation work:
+  - Windows GPU ran Qwen2.5-VL + Transformers/FastAPI on private LAN.
+  - MacBook ran the backend sandbox client, schema validator, smoke gate, and sanitized reporting.
+  - iOS/Xcode remained separate and unchanged.
+  - Contract echo passed before the Qwen-backed smoke.
+  - Healthz was sanitized as `ok:true`, `modelLoaded:true`, `modelFamily:qwen2.5-vl`, `fixtureSmoke001Available:true`, `rawLoggingDisabled:true`, and `publicExposure:no`.
+  - Local model smoke passed with `acceptedCount:1`, `rejectedCount:0`, `validationCode:null`, `fallbackCategory:null`, `schemaDiagnostic:null`, `latencyBucket:gt_15s`, `networkCallsMade:true`, `hardBlockers:[]`, and `productionReady:false`.
+  - Raw prompt/model output/image/base64/path/request payload/full model URL/local config/fixture registry/fixture image/generated report/secrets were not printed, persisted, or committed.
+- Phase 20-E-A adds `docs/open-weight-vlm-local-smoke-expansion-gate.md` and updates docs only.
+- Phase 20-E-B is planning-ready only. It should remain backend-only, local/private LAN only, 3-5 approved ignored fixtures, fixture IDs only, one run per fixture, no retry loops to chase pass rate, sanitized aggregate metrics only, no iOS integration, and `productionReady:false`.
+- The Windows server implementation and patched mapper remain outside this repo unless a future phase explicitly approves an operator-managed location.
+- Production rollout remains blocked. Do not start Phase 21, app integration, Camera cloud AI, backend/iOS payload changes, public endpoints, training/fine-tuning, or App Store/beta production rollout without explicit approval.
+
 Confirmed locally:
 
 - Phase 16E - Static Pose Overlay MVP

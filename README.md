@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 20-D2G local VLM candidate schema mismatch diagnostics; backend validation/docs/tests only, no real model retry in this phase
+- Phase 20-E-A accepted local VLM smoke record and expansion gate prep; docs-only, no iOS integration or production rollout
 
 Next phase:
 
-- Phase 20-D2 retry can attempt exactly one local Transformers FastAPI smoke only after the Windows server response mapper is aligned to the repo schema and all gates pass; otherwise remain blocked
+- Phase 20-E-B may plan a small backend-only private LAN fixture expansion only after explicit request; keep approved ignored fixtures, fixture IDs only, sanitized aggregate metrics, and `productionReady:false`
 - Do not start production cloud rollout without explicit approval
 - Production rollout remains blocked until a later explicit release phase
 
@@ -124,6 +124,7 @@ Current MVP demo / QA readiness docs:
 - `docs/open-weight-vlm-structured-advisor-benchmark-plan.md`
 - `docs/open-weight-vlm-transformers-fastapi-local-adapter.md`
 - `docs/open-weight-vlm-transformers-fastapi-smoke-server-setup.md`
+- `docs/open-weight-vlm-local-smoke-expansion-gate.md`
 - `docs/filter-research-popular-film-looks.md`
 - `docs/filter-preset-schema.md`
 - `docs/filter-roadmap.md`
@@ -253,6 +254,8 @@ Phase 20-D1 prepares the backend-only Transformers + FastAPI local adapter path 
 Phase 20-D2E supports a Windows GPU private LAN Transformers FastAPI smoke server for the backend-only local VLM sandbox. Loopback URLs remain accepted by default, while private LAN IPv4 URLs require ignored local config with `allowPrivateLanModelServer:true` and are limited to `10.0.0.0/8`, `172.16.0.0/12`, and `192.168.0.0/16`. Public IPs/domains, tunnel/ngrok/cloud-looking URLs, HTTPS URLs, credentialed URLs, query-string secrets, and `0.0.0.0` are rejected, and reports show only sanitized buckets such as `private_lan_ipv4`. This phase does not run a model, start a server, call `--run-local-model`, commit local config/fixtures/reports/model URLs, add app-facing endpoints, add iOS integration, change payloads, upload capture context, add Camera cloud AI, train/fine-tune, or enable production rollout.
 
 Phase 20-D2G keeps the validator strict and adds sanitized schema mismatch diagnostics for local Transformers FastAPI smoke rejects. A D2F private LAN smoke reached the Windows Qwen2.5-VL server and made exactly one local model call, but the backend safely rejected the candidate as `invalid_schema`; raw model output stayed unprinted and unpersisted. D2G diagnostics report only bucketed categories and field names such as `missing_required_field`, `additional_property`, `wrong_type`, `unsupported_enum`, `allowedContext`, `visualObservationKey`, `creativeIntent`, `technicalRisk`, and `safety`. The Windows FastAPI mapper must return the exact repo schema: `visualObservationKey`, string `allowedContext`, object `creativeIntent`, object `technicalRisk`, object `safety`, required `retakeReasonKey`, and no unsupported fields such as `observationKey` or `safetyFlags`. This phase does not loosen validation, retry the model by default, add iOS integration, change payloads, add app-facing endpoints, train/fine-tune, or enable production rollout.
+
+Phase 20-E-A records the first accepted Qwen-backed local VLM smoke from Phase 20-D2J and adds `docs/open-weight-vlm-local-smoke-expansion-gate.md`. The D2J smoke used the Windows GPU Qwen2.5-VL Transformers/FastAPI private LAN server and the MacBook backend sandbox client; contract echo passed first, then one `smoke_001` Qwen-backed candidate passed backend schema/safety validation with `acceptedCount:1`, `rejectedCount:0`, `networkCallsMade:true`, `latencyBucket:gt_15s`, no hard blockers, no schema diagnostic, and all raw artifact persistence flags false. Phase 20-E-A prepares a conservative Phase 20-E-B gate for 3-5 approved ignored fixtures, fixture IDs only, one run per fixture, sanitized aggregate metrics only, no retry loops to chase pass rate, no iOS integration, and `productionReady:false`.
 
 ## Phase 12A Filter Planning Status
 

@@ -620,7 +620,29 @@ Windows server mapper alignment notes:
 - Do deterministic enum mapping before returning candidate JSON, after safety screening.
 - Do not use LLM repair or ask the backend validator to accept unsupported values.
 
-Phase 20-E remains blocked until a later approved retry produces either an accepted candidate or a fully documented sanitized rejection with no raw leakage. `productionReady:false` remains required.
+## Phase 20-E-A Accepted Local VLM Smoke Record And Expansion Gate
+
+Phase 20-E-A records the first accepted Qwen-backed private LAN local VLM smoke from Phase 20-D2J.
+
+Sanitized D2J result:
+
+- Windows Qwen2.5-VL Transformers/FastAPI health check reported model loaded, `qwen2.5-vl`, `smoke_001` available, raw logging disabled, and no public exposure.
+- Contract echo passed before the Qwen-backed smoke.
+- The MacBook backend sandbox client accepted one Qwen-backed candidate:
+  - `acceptedCount:1`
+  - `rejectedCount:0`
+  - `validationCode:null`
+  - `fallbackCategory:null`
+  - `schemaDiagnostic:null`
+  - `latencyBucket:gt_15s`
+  - `networkCallsMade:true`
+  - `productionReady:false`
+  - `hardBlockers:[]`
+- Raw prompt, raw model output, image/base64/path, request payload, local config, fixture registry, fixture image, generated report, full model URL, credentials, and secrets were not printed, persisted, or committed.
+
+Phase 20-E-A also adds `docs/open-weight-vlm-local-smoke-expansion-gate.md` for the future Phase 20-E-B small fixture expansion. Phase 20-E-B should remain backend-only, local/private LAN only, 3-5 approved ignored fixtures, fixture IDs only, one run per fixture, sanitized aggregate metrics only, and `productionReady:false`. It must not add iOS integration, app-facing endpoints, production endpoints, backend provider request payload changes, iOS upload payload changes, capture-context upload, Camera cloud AI, training/fine-tuning, or production rollout.
+
+Passing one D2J smoke is not production readiness. It only makes Phase 20-E-B planning-ready after explicit request.
 
 ## Phase 20-C Local VLM Operator Runbook + Smoke Gate
 

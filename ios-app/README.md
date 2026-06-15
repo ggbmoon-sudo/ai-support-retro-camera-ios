@@ -146,6 +146,8 @@ Phase 20-D1 is backend-only and keeps iOS behavior unchanged. It prepares a Tran
 
 Phase 20-D2A is docs-only and keeps iOS behavior unchanged. It adds a local operator setup guide for a future backend-only Transformers + FastAPI Qwen2.5-VL smoke server, but does not add a FastAPI server, run a real model, create local config/fixtures, add iOS provider/model keys, add direct model/provider calls, add Camera cloud AI entry points, change iOS upload payloads, upload capture context, or enable production rollout.
 
+Phase 20-E-A is docs-only from the iOS app perspective. It records a backend-only accepted local/private LAN Qwen-backed VLM smoke and prepares a conservative future multi-fixture expansion gate. iOS behavior remains unchanged: no provider/model key, no direct model/provider call, no Camera cloud AI entry, no iOS upload payload change, no capture-context upload, and no production remote rollout.
+
 ## Phase 17D-A Local Camera Capture Context
 
 Phase 17D-A adds local-only summarized capture context for captured / imported photos:

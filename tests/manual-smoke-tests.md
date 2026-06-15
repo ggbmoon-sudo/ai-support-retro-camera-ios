@@ -1,5 +1,18 @@
 # Manual Smoke Tests
 
+## Phase 20-E-A
+
+Accepted local VLM smoke record and expansion gate:
+
+- [ ] Open `docs/open-weight-vlm-local-smoke-expansion-gate.md`.
+- [ ] Confirm the D2J record is sanitized and contains no raw prompt, raw model output, raw image/base64/path, request payload, full server URL, local config, fixture registry, fixture image, credentials, or Windows server logs.
+- [ ] Confirm D2J recorded `acceptedCount:1`, `rejectedCount:0`, `validationCode:null`, `fallbackCategory:null`, `schemaDiagnostic:null`, `networkCallsMade:true`, and `productionReady:false`.
+- [ ] Confirm the MacBook + Windows GPU split remains backend-only and iOS does not call the model server.
+- [ ] Confirm Phase 20-E-B is limited to 3-5 approved ignored fixtures, fixture IDs only, one run per fixture, no retry loops to chase pass rate, and sanitized aggregate metrics only.
+- [ ] Confirm Phase 20-E-B still requires backend tests, synthetic benchmark, benchmark gate, local config dry-run, default local smoke, local smoke gate, Windows healthz, and contract echo before Qwen-backed runs.
+- [ ] Confirm no iOS integration, app-facing endpoint, production endpoint, backend provider request payload change, iOS upload payload change, capture-context upload, Camera cloud AI entry, training/fine-tuning, or production rollout is introduced.
+- [ ] Confirm `productionReady=false`.
+
 ## Phase 20-D2G
 
 Local VLM schema mismatch diagnostics:

@@ -326,6 +326,30 @@ For the future smoke phase only:
 9. Stop if the candidate is invalid or unsafe; do not patch around model output silently.
 10. Run secret/artifact/payload scans before any commit.
 
+## Phase 20-D2J Accepted Smoke Record
+
+Phase 20-D2J succeeded after the Windows FastAPI mapper was aligned to the repo candidate schema.
+
+Sanitized record:
+
+- Windows GPU server: Qwen2.5-VL + Transformers/FastAPI on private LAN.
+- MacBook role: backend sandbox client, schema validator, smoke gate, and sanitized reporting.
+- Contract echo passed before the Qwen-backed smoke.
+- Qwen-backed smoke used `smoke_001` and passed validation:
+  - `acceptedCount:1`
+  - `rejectedCount:0`
+  - `validationCode:null`
+  - `fallbackCategory:null`
+  - `schemaDiagnostic:null`
+  - `latencyBucket:gt_15s`
+  - `networkCallsMade:true`
+  - `productionReady:false`
+  - `hardBlockers:[]`
+
+The Windows server implementation and patched mapper remain outside this repo. Preserve the patched server manually or move it only into a future explicitly approved operator-managed location. Do not commit Windows server logs, raw model output, raw prompts, local fixture paths, local config, fixture registry, fixture images, model weights, or generated raw reports into this iOS/backend repo.
+
+Phase 20-E-B should expand only to a small approved ignored fixture set after explicit request. Contract echo remains required after any mapper change before Qwen-backed smoke.
+
 ## Failure Modes
 
 | Failure mode | Safe handling |

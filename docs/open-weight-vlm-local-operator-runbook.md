@@ -111,6 +111,20 @@ Expected current behavior:
 
 Do not run a real model from this phase.
 
+## Phase 20-D2J Accepted Smoke Note
+
+Phase 20-D2J produced the first accepted Qwen-backed private LAN local VLM smoke:
+
+- Windows GPU ran Qwen2.5-VL with Transformers/FastAPI.
+- MacBook ran the repo backend sandbox client and validator.
+- Contract echo passed first.
+- One `smoke_001` Qwen-backed candidate passed with `acceptedCount:1`, `rejectedCount:0`, `validationCode:null`, `fallbackCategory:null`, `schemaDiagnostic:null`, `latencyBucket:gt_15s`, `networkCallsMade:true`, and `productionReady:false`.
+- Raw prompt/model output/image/base64/path/request payload/full URL/local config/fixture registry/fixture image/report/secrets were not persisted or committed.
+
+After any Windows mapper change, require contract echo to pass again before running Qwen-backed smoke.
+
+The D2J result permits planning a conservative Phase 20-E-B expansion only. It does not approve iOS integration, app-facing endpoints, production endpoints, production rollout, training/fine-tuning, or user-photo use.
+
 ## Real-model smoke gate checks
 
 The smoke gate checks:
@@ -258,3 +272,17 @@ Phase 20-D may start only after explicit approval and only if:
 - `productionReady:false`
 
 Passing this checklist is not production approval. It only prepares a backend-only local real-model smoke run.
+
+## Phase 20-E-B Expansion Checklist
+
+Phase 20-E-B may be planned only after explicit request and only as a backend-only local/private LAN expansion:
+
+- [ ] Use 3 to 5 approved ignored fixtures.
+- [ ] Use fixture IDs only; do not send raw image paths, base64, or multipart images from the MacBook repo.
+- [ ] Keep fixture registry and fixture images ignored/untracked/unstaged.
+- [ ] Run one model call per fixture only; do not retry to chase pass rate.
+- [ ] Run backend tests, synthetic benchmark, benchmark gate, local config dry-run, default local smoke, and local smoke gate first.
+- [ ] Run Windows healthz and contract echo before Qwen-backed fixtures.
+- [ ] Record sanitized aggregate metrics only.
+- [ ] Keep raw prompt/model output/image path/base64/request payload/server logs out of git, docs, and reports.
+- [ ] Keep iOS unchanged and `productionReady:false`.
