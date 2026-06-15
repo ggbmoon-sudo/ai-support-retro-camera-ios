@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { readFile } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
 import {
   evaluateOpenWeightVlmBenchmarkGate
 } from "../src/qa/openWeightVlmBenchmarkGate.mjs";
@@ -16,14 +17,14 @@ const EXAMPLE_CONFIG_URL = new URL("../config/open-weight-vlm.local.example.json
 const LOCAL_CONFIG_URL = new URL("../config/open-weight-vlm.local.json", import.meta.url);
 
 const options = parseArgs(process.argv.slice(2));
-const configPath = options.configPath || LOCAL_CONFIG_URL.pathname;
+const configPath = options.configPath || fileURLToPath(LOCAL_CONFIG_URL);
 
 const loaded = await loadOpenWeightVlmLocalSandboxConfig(configPath, {
   requireConfig: true
 });
 const syntheticBenchmarkGate = await runSyntheticBenchmarkGate();
 const localSmokeReport = await runOpenWeightVlmLocalSandboxSmoke({
-  configPath: EXAMPLE_CONFIG_URL.pathname,
+  configPath: fileURLToPath(EXAMPLE_CONFIG_URL),
   requireConfig: true,
   runLocalModel: false
 });

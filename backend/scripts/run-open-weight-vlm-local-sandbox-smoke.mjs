@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { fileURLToPath } from "node:url";
 import { runOpenWeightVlmLocalSandboxSmoke } from "../src/qa/openWeightVlmLocalSandboxClient.mjs";
 
 const EXAMPLE_CONFIG_URL = new URL("../config/open-weight-vlm.local.example.json", import.meta.url);
@@ -6,7 +7,7 @@ const LOCAL_CONFIG_URL = new URL("../config/open-weight-vlm.local.json", import.
 
 const options = parseArgs(process.argv.slice(2));
 const configPath = options.configPath
-  || (options.runLocalModel ? LOCAL_CONFIG_URL.pathname : EXAMPLE_CONFIG_URL.pathname);
+  || fileURLToPath(options.runLocalModel ? LOCAL_CONFIG_URL : EXAMPLE_CONFIG_URL);
 
 const report = await runOpenWeightVlmLocalSandboxSmoke({
   configPath,

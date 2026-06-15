@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { fileURLToPath } from "node:url";
 import {
   evaluateOpenWeightVlmLocalSandboxGate,
   loadOpenWeightVlmLocalSandboxConfig
@@ -7,7 +8,7 @@ import {
 const EXAMPLE_CONFIG_URL = new URL("../config/open-weight-vlm.local.example.json", import.meta.url);
 
 const options = parseArgs(process.argv.slice(2));
-const configPath = options.configPath || EXAMPLE_CONFIG_URL.pathname;
+const configPath = options.configPath || fileURLToPath(EXAMPLE_CONFIG_URL);
 const loaded = await loadOpenWeightVlmLocalSandboxConfig(configPath, {
   requireConfig: options.runLocalModel || Boolean(options.configPath)
 });

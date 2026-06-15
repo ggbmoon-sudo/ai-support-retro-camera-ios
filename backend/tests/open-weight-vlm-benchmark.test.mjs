@@ -3,6 +3,7 @@ import { execFileSync, spawnSync } from "node:child_process";
 import { mkdtemp, readFile, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import test from "node:test";
 import { evaluateOpenWeightVlmBenchmarkGate } from "../src/qa/openWeightVlmBenchmarkGate.mjs";
 import { runOpenWeightVlmLocalSandboxSmoke } from "../src/qa/openWeightVlmLocalSandboxClient.mjs";
@@ -173,7 +174,7 @@ test("open-weight VLM benchmark fixtures cover the expanded failure taxonomy", a
 });
 
 test("open-weight VLM synthetic benchmark script prints sanitized metrics only", () => {
-  const output = execFileSync(process.execPath, [SCRIPT_URL.pathname, "--synthetic"], {
+  const output = execFileSync(process.execPath, [fileURLToPath(SCRIPT_URL), "--synthetic"], {
     cwd: new URL("..", import.meta.url),
     encoding: "utf8"
   });
@@ -250,7 +251,7 @@ test("open-weight VLM benchmark gate blocks synthetic regressions", async () => 
 });
 
 test("open-weight VLM benchmark gate script prints sanitized pass/fail summary only", () => {
-  const output = execFileSync(process.execPath, [GATE_SCRIPT_URL.pathname, "--synthetic"], {
+  const output = execFileSync(process.execPath, [fileURLToPath(GATE_SCRIPT_URL), "--synthetic"], {
     cwd: new URL("..", import.meta.url),
     encoding: "utf8"
   });
@@ -274,7 +275,7 @@ test("open-weight VLM benchmark gate script prints sanitized pass/fail summary o
 });
 
 test("open-weight VLM local sandbox config dry-run prints sanitized disabled summary", () => {
-  const output = execFileSync(process.execPath, [LOCAL_SANDBOX_CONFIG_SCRIPT_URL.pathname, "--dry-run"], {
+  const output = execFileSync(process.execPath, [fileURLToPath(LOCAL_SANDBOX_CONFIG_SCRIPT_URL), "--dry-run"], {
     cwd: new URL("..", import.meta.url),
     encoding: "utf8"
   });
@@ -450,7 +451,7 @@ test("open-weight VLM local sandbox gate fails closed without explicit network o
 });
 
 test("open-weight VLM future local model config gate blocks unsupported serving stacks", () => {
-  const result = spawnSync(process.execPath, [LOCAL_SANDBOX_CONFIG_SCRIPT_URL.pathname, "--run-local-model"], {
+  const result = spawnSync(process.execPath, [fileURLToPath(LOCAL_SANDBOX_CONFIG_SCRIPT_URL), "--run-local-model"], {
     cwd: new URL("..", import.meta.url),
     encoding: "utf8"
   });
@@ -470,7 +471,7 @@ test("open-weight VLM future local model config gate blocks unsupported serving 
 });
 
 test("open-weight VLM local sandbox smoke script validates stubbed output without network", () => {
-  const output = execFileSync(process.execPath, [LOCAL_SANDBOX_SMOKE_SCRIPT_URL.pathname, "--dry-run"], {
+  const output = execFileSync(process.execPath, [fileURLToPath(LOCAL_SANDBOX_SMOKE_SCRIPT_URL), "--dry-run"], {
     cwd: new URL("..", import.meta.url),
     encoding: "utf8"
   });
@@ -496,7 +497,7 @@ test("open-weight VLM local sandbox smoke script validates stubbed output withou
 
 test("open-weight VLM local sandbox smoke client fails closed when config is missing", () => {
   const result = spawnSync(process.execPath, [
-    LOCAL_SANDBOX_SMOKE_SCRIPT_URL.pathname,
+    fileURLToPath(LOCAL_SANDBOX_SMOKE_SCRIPT_URL),
     "--run-local-model",
     "--config",
     missingTempConfigPath()
@@ -601,7 +602,7 @@ test("open-weight VLM local sandbox smoke client rejects public URL without leak
 
 test("open-weight VLM local smoke gate blocks missing config without network", () => {
   const result = spawnSync(process.execPath, [
-    LOCAL_SMOKE_GATE_SCRIPT_URL.pathname,
+    fileURLToPath(LOCAL_SMOKE_GATE_SCRIPT_URL),
     "--dry-run",
     "--config",
     missingTempConfigPath()
