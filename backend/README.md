@@ -755,6 +755,26 @@ Sanitized Phase 20-I result:
 
 Phase 20-I makes a future explicitly approved controlled expanded smoke retry planning-ready only after all gates pass again. It does not approve iOS integration, app-facing endpoints, production endpoints, or production rollout.
 
+## Phase 20-J Controlled Expanded Smoke Retry
+
+Phase 20-J reran the approved Windows-primary local/private Qwen-backed smoke after the fixture routing contract echo passed. The run used exactly eight fixture tokens, one call per fixture, no retries, no extra fixtures, and sanitized reporting only.
+
+Sanitized aggregate:
+
+- `fixtureCount:8`
+- `acceptedCount:8`
+- `rejectedCount:0`
+- `acceptanceRate:100%`
+- `validationCodeCounts:null x8`
+- `fallbackCategoryCounts:null x8`
+- no schema diagnostic buckets
+- `latencyBucketCounts:gt_15s x3, 5s_to_15s x5`
+- `networkCallsMade:true`
+- `productionReady:false`
+- raw persistence flags false
+
+The repeatability gate and failure/latency taxonomy passed with a latency note. This is still sandbox evidence only and does not approve iOS integration, app-facing endpoints, production endpoints, larger fixture expansion, serving-stack benchmarking, or production rollout.
+
 ## Phase 20-C Local VLM Operator Runbook + Smoke Gate
 
 Phase 20-C adds an operator runbook and a backend-only real-model smoke gate for future approved local/self-hosted VLM testing. The gate does not call a model and does not create an app-facing endpoint.

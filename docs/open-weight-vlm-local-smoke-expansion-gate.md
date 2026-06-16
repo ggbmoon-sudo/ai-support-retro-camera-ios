@@ -371,3 +371,21 @@ The diagnostic uses sanitized aggregate and availability buckets only. It report
 Phase 20-I added the no-model fixture routing contract echo route and backend CLI. It verified `smoke_001` through `smoke_008` route successfully with `modelInferenceRun:false`, raw persistence flags false, `networkCallsMade:true`, and `productionReady:false`.
 
 This satisfies the routing prerequisite for a future explicitly approved expanded real smoke retry, but it does not itself run Qwen or authorize production rollout.
+
+## Phase 20-J Accepted Eight-fixture Retry
+
+Phase 20-J ran the approved controlled expanded retry after the routing fix. The run made exactly eight local/private Qwen-backed calls, one per approved fixture token, with no retries and no extra fixtures.
+
+Sanitized aggregate:
+
+- `fixtureCount:8`
+- `acceptedCount:8`
+- `rejectedCount:0`
+- `acceptanceRate:100%`
+- no validation, fallback, or schema diagnostic buckets
+- `latencyBucketCounts:gt_15s x3, 5s_to_15s x5`
+- `networkCallsMade:true`
+- `productionReady:false`
+- raw persistence flags false
+
+The aggregate passed repeatability and failure/latency review with a latency note. It remains backend-only sandbox evidence and does not approve iOS integration or production rollout.

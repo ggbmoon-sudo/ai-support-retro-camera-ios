@@ -228,6 +228,14 @@ Phase 20-I adds a no-model fixture routing contract echo and backend gate. The s
 
 This proves routing only. It does not prove model quality, latency, schema behavior under Qwen output, iOS integration, app-facing endpoints, or production readiness.
 
+## Phase 20-J Accepted Retry Note
+
+Phase 20-J reran the controlled expanded local/private Qwen smoke after the Phase 20-I routing fix. It made exactly eight approved fixture calls, one per token, with no retries and no extra fixtures.
+
+Sanitized result: `fixtureCount:8`, `acceptedCount:8`, `rejectedCount:0`, `acceptanceRate:100%`, no validation/fallback/schema diagnostic buckets, `latencyBucketCounts:gt_15s x3, 5s_to_15s x5`, `networkCallsMade:true`, raw persistence flags false, and `productionReady:false`.
+
+This strengthens sandbox confidence for the current fixture set, but it still does not prove production readiness, iOS integration, real user-photo upload, consent UI, quota/abuse controls, retention/deletion implementation, serving-stack performance, larger dataset coverage, or App Store privacy readiness.
+
 ## Boundary Confirmation
 
 Phase 20-E-E is a review/summary/planning gate only. It does not run real model smoke, expand fixture count, benchmark vLLM/SGLang, start iOS integration, add app-facing or production endpoints, train/fine-tune, weaken validation, loosen fixture approval, commit local artifacts, or change production readiness.

@@ -894,7 +894,9 @@ Use this template:
 - Sanitized external server inspection found only the original fixture token bucket advertised in the Windows FastAPI server implementation, while the backend expanded registry expected the approved eight-token set.
 - Next work should be a local/private no-model contract-echo fixture-routing check. Do not retry real model smoke until fixture routing / server availability passes without Qwen inference.
 - Phase 20-I now adds that no-model fixture routing contract echo. Sanitized result: `totalFixtureTokens:8`, `routeableCount:8`, `unavailableCount:0`, `modelInferenceRun:false`, raw persistence flags false, `networkCallsMade:true`, and `productionReady:false`.
-- Future Phase 20-J may consider a controlled expanded real smoke retry only if explicitly approved and only after all gates pass again.
+- Phase 20-J then ran the explicitly approved controlled expanded local/private Qwen smoke retry: exactly eight calls, one per approved fixture token, no retries, and no extra fixtures.
+- Sanitized Phase 20-J aggregate: `fixtureCount:8`, `acceptedCount:8`, `rejectedCount:0`, `acceptanceRate:100%`, `validationCodeCounts:null x8`, `fallbackCategoryCounts:null x8`, no schema diagnostic buckets, `latencyBucketCounts:gt_15s x3, 5s_to_15s x5`, `networkCallsMade:true`, raw persistence flags false, and `productionReady:false`.
+- Repeatability and failure/latency gates passed with a latency note. Next work should be Phase 20-K review/planning only unless explicitly approved otherwise.
 
 ---
 

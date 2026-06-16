@@ -191,6 +191,14 @@ Sanitized aggregate passed: `totalFixtureTokens:8`, `routeableCount:8`, `unavail
 
 This makes the expanded fixture registry routeability issue resolved for planning purposes only. A future real smoke still requires explicit approval and all existing gates to pass again.
 
+## Phase 20-J Retry Result
+
+Phase 20-J used the approved eight-token fixture set after routeability was proven. Exactly one local/private Qwen-backed call ran per token, with no retries and no extra fixtures.
+
+All eight fixtures were accepted. Sanitized aggregate: `fixtureCount:8`, `acceptedCount:8`, `rejectedCount:0`, `acceptanceRate:100%`, no validation/fallback/schema diagnostic buckets, `latencyBucketCounts:gt_15s x3, 5s_to_15s x5`, `networkCallsMade:true`, raw persistence flags false, and `productionReady:false`.
+
+This confirms the expanded registry can support an eight-fixture sandbox smoke, but it does not approve more fixtures, iOS integration, serving-stack benchmarking, or production rollout.
+
 ## Boundary Confirmation
 
 Phase 20-F is backend-only and Windows-primary. It prepares controlled expanded smoke, but does not run it. No fixture images, local registry, local config, raw paths, prompts, model outputs, request payloads, reports, logs, weights, or credentials are committed. iOS behavior is unchanged. `productionReady:false` remains required.

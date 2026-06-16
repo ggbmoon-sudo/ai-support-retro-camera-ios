@@ -508,3 +508,18 @@ Sanitized passing aggregate:
 - `productionReady:false`
 
 Only after this check and all existing gates pass may a future explicitly approved phase consider another controlled expanded real smoke.
+
+## Phase 20-J Controlled Retry Result
+
+Phase 20-J ran that explicitly approved controlled retry:
+
+- exactly eight local/private Qwen-backed calls
+- one call per approved fixture token
+- no retries
+- no extra fixtures
+- fixture IDs only
+- sanitized metrics only
+
+Sanitized aggregate: `fixtureCount:8`, `acceptedCount:8`, `rejectedCount:0`, `acceptanceRate:100%`, `validationCodeCounts:null x8`, `fallbackCategoryCounts:null x8`, no schema diagnostic buckets, `latencyBucketCounts:gt_15s x3, 5s_to_15s x5`, `networkCallsMade:true`, raw persistence flags false, and `productionReady:false`.
+
+Repeatability and failure/latency gates passed with a latency note. Treat this as backend-only sandbox evidence, not production readiness.
