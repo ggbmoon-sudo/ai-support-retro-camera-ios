@@ -79,6 +79,11 @@ import {
   evaluateOpenWeightVlmDeploymentConfigEnvPreflight
 } from "../src/qa/openWeightVlmDeploymentConfigEnvPreflight.mjs";
 import {
+  assertOpenWeightVlmLocalModelRouteApprovalGateReportRedacted,
+  evaluateOpenWeightVlmLocalModelRouteApprovalGate,
+  localModelRouteApprovalReadyPolicy
+} from "../src/qa/openWeightVlmLocalModelRouteApprovalGate.mjs";
+import {
   assertOpenWeightVlmBenchmarkReportRedacted,
   buildOpenWeightVlmSchemaDiagnostic,
   evaluateOpenWeightVlmBenchmarkCase,
@@ -116,6 +121,8 @@ const CROSS_PLATFORM_DEPLOYMENT_BOUNDARY_SCRIPT_URL =
   new URL("../scripts/check-open-weight-vlm-cross-platform-deployment-boundary.mjs", import.meta.url);
 const DEPLOYMENT_CONFIG_ENV_PREFLIGHT_SCRIPT_URL =
   new URL("../scripts/check-open-weight-vlm-deployment-config-env-preflight.mjs", import.meta.url);
+const LOCAL_MODEL_ROUTE_APPROVAL_GATE_SCRIPT_URL =
+  new URL("../scripts/check-open-weight-vlm-local-model-route-approval-gate.mjs", import.meta.url);
 
 test("open-weight VLM validator accepts valid synthetic benchmark fixtures", async () => {
   const cases = await benchmarkCases();
@@ -2569,6 +2576,199 @@ test("open-weight VLM deployment config env preflight CLI is sanitized and no-ne
   assert.equal(report.eligibleForDeploymentConfigEnvReview, true);
   assert.equal(report.reviewedPolicyCount, 3);
   assert.deepEqual(report.environmentBuckets, ["local", "staging", "production_blocked"]);
+  assert.equal(output.includes("fullPrompt"), false);
+  assert.equal(output.includes("rawPrompt"), false);
+  assert.equal(output.includes("requestPayload"), false);
+  assert.equal(output.includes("modelOutput"), false);
+  assert.equal(output.includes("Authorization"), false);
+  assert.equal(output.includes("Bearer "), false);
+  assert.equal(output.includes("C:\\"), false);
+  assert.equal(output.includes("http://"), false);
+  assert.equal(output.includes("data:image"), false);
+});
+
+test("open-weight VLM local model route approval gate passes future approval-ready policy but keeps model calls blocked", () => {
+  const report = evaluateOpenWeightVlmLocalModelRouteApprovalGate(
+    localModelRouteApprovalReadyPolicy()
+  );
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.approvalEligible, true);
+  assert.equal(report.localModelRouteEnabled, false);
+  assert.equal(report.modelCallsAllowed, false);
+  assert.equal(report.qwenInferenceAllowed, false);
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.benchmarkAllowed, false);
+  assert.equal(report.requiredGateBuckets.repoState, "clean_upstream_synced");
+  assert.equal(report.validatorSafetyBucket, "structured_candidate_validator_fallback_required");
+  assert.equal(assertOpenWeightVlmLocalModelRouteApprovalGateReportRedacted(report).ok, true);
+});
+
+test("open-weight VLM local model route approval gate blocks production and endpoint exposure", () => {
+  const report = evaluateOpenWeightVlmLocalModelRouteApprovalGate({
+    ...localModelRouteApprovalReadyPolicy(),
+    productionReady: true,
+    publicExposure: "public",
+    endpointLocalPrivateOnly: false,
+    appFacingEndpointEnabled: true,
+    productionEndpointEnabled: true
+  });
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.approvalEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_production_flag"), true);
+  assert.equal(report.blockers.includes("blocked_for_public_exposure"), true);
+  assert.equal(report.blockers.includes("blocked_for_public_cloud_tunnel_endpoint"), true);
+  assert.equal(report.blockers.includes("blocked_for_app_facing_endpoint"), true);
+  assert.equal(report.blockers.includes("blocked_for_production_endpoint"), true);
+});
+
+test("open-weight VLM local model route approval gate blocks raw logging persistence and staged local artifacts", () => {
+  const report = evaluateOpenWeightVlmLocalModelRouteApprovalGate({
+    ...localModelRouteApprovalReadyPolicy(),
+    rawLoggingDisabled: false,
+    rawPersistenceDetected: true,
+    stagedLocalConfig: true,
+    stagedFixtureRegistry: true,
+    stagedFixtureImages: true
+  });
+
+  assert.equal(report.approvalEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_raw_logging_enabled"), true);
+  assert.equal(report.blockers.includes("blocked_for_raw_persistence"), true);
+  assert.equal(report.blockers.includes("blocked_for_local_config_staged"), true);
+  assert.equal(report.blockers.includes("blocked_for_fixture_registry_staged"), true);
+  assert.equal(report.blockers.includes("blocked_for_fixture_images_staged"), true);
+});
+
+test("open-weight VLM local model route approval gate blocks iOS boundary and upload policy violations", () => {
+  const report = evaluateOpenWeightVlmLocalModelRouteApprovalGate({
+    ...localModelRouteApprovalReadyPolicy(),
+    iosIntegrationEnabled: true,
+    directIOSProviderModelCall: true,
+    cameraCloudAiEntryEnabled: true,
+    backendIosPayloadChanged: true,
+    realUserPhotoUploadEnabled: true,
+    consentRequired: false,
+    retentionPolicyRequired: false,
+    deletionPolicyRequired: false
+  });
+
+  assert.equal(report.approvalEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_ios_integration"), true);
+  assert.equal(report.blockers.includes("blocked_for_ios_direct_provider"), true);
+  assert.equal(report.blockers.includes("blocked_for_camera_cloud_ai_entry"), true);
+  assert.equal(report.blockers.includes("blocked_for_backend_ios_payload_drift"), true);
+  assert.equal(report.blockers.includes("blocked_for_user_photo_upload"), true);
+  assert.equal(report.blockers.includes("blocked_for_consent_policy_missing"), true);
+  assert.equal(report.blockers.includes("blocked_for_retention_policy_missing"), true);
+  assert.equal(report.blockers.includes("blocked_for_deletion_policy_missing"), true);
+});
+
+test("open-weight VLM local model route approval gate blocks validator and safety bypasses", () => {
+  const report = evaluateOpenWeightVlmLocalModelRouteApprovalGate({
+    ...localModelRouteApprovalReadyPolicy(),
+    structuredCandidateJsonMandatory: false,
+    backendValidatorRequired: false,
+    schemaValidatorBypassed: true,
+    fallbackSafetyRequired: false,
+    fallbackSafetyBypassed: true,
+    freeFormModelTextExposed: true,
+    scoreOrRatingAllowed: true,
+    sensitiveInferenceAllowed: true,
+    chainOfThoughtAllowed: true,
+    debugProviderLeakageAllowed: true
+  });
+
+  assert.equal(report.approvalEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_free_form_model_text"), true);
+  assert.equal(report.blockers.includes("blocked_for_schema_validator_bypass"), true);
+  assert.equal(report.blockers.includes("blocked_for_fallback_safety_bypass"), true);
+  assert.equal(report.blockers.includes("blocked_for_score_or_rating"), true);
+  assert.equal(report.blockers.includes("blocked_for_sensitive_inference"), true);
+  assert.equal(report.blockers.includes("blocked_for_chain_of_thought"), true);
+  assert.equal(report.blockers.includes("blocked_for_debug_provider_leakage"), true);
+});
+
+test("open-weight VLM local model route approval gate blocks execution flags and missing prerequisites", () => {
+  const report = evaluateOpenWeightVlmLocalModelRouteApprovalGate({
+    ...localModelRouteApprovalReadyPolicy(),
+    repoClean: false,
+    upstreamSynced: false,
+    phase21GCommittedAndPushed: false,
+    deploymentConfigEnvPreflightPassed: false,
+    crossPlatformBoundaryGatePassed: false,
+    providerRoutingGatePassed: false,
+    providerAdapterNoModelHttpGatePassed: false,
+    requestedRoute: "local_model_blocked",
+    scopedFixtureTokensDeclared: false,
+    futureExplicitUserApprovalRequired: false,
+    localModelRouteEnabled: true,
+    modelCallsAllowed: true,
+    qwenInferenceAllowed: true,
+    benchmarkAllowed: true
+  });
+
+  assert.equal(report.approvalEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_repo_not_clean"), true);
+  assert.equal(report.blockers.includes("blocked_for_upstream_not_synced"), true);
+  assert.equal(report.blockers.includes("blocked_for_phase21g_not_committed_pushed"), true);
+  assert.equal(report.blockers.includes("blocked_for_deployment_config_env_preflight"), true);
+  assert.equal(report.blockers.includes("blocked_for_cross_platform_boundary_gate"), true);
+  assert.equal(report.blockers.includes("blocked_for_provider_routing_gate"), true);
+  assert.equal(report.blockers.includes("blocked_for_provider_adapter_no_model_http_gate"), true);
+  assert.equal(report.blockers.includes("blocked_for_unsupported_provider_mode"), true);
+  assert.equal(report.blockers.includes("blocked_for_unscoped_fixture_tokens"), true);
+  assert.equal(report.blockers.includes("blocked_for_missing_future_user_approval_requirement"), true);
+  assert.equal(report.blockers.includes("blocked_for_local_model_route_enabled"), true);
+  assert.equal(report.blockers.includes("blocked_for_model_call"), true);
+  assert.equal(report.blockers.includes("blocked_for_qwen_inference"), true);
+  assert.equal(report.blockers.includes("blocked_for_benchmark_execution"), true);
+});
+
+test("open-weight VLM local model route approval gate sanitized output blocks raw policy values", () => {
+  const report = evaluateOpenWeightVlmLocalModelRouteApprovalGate({
+    ...localModelRouteApprovalReadyPolicy(),
+    policyProbeValues: [
+      "C:\\private\\fixture.jpg",
+      "http://127.0.0.1:8025/local/vlm",
+      "Authorization: Bearer secret",
+      "rawPrompt requestPayload modelOutput data:image/png;base64"
+    ]
+  });
+
+  assert.equal(report.approvalEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_committed_raw_policy_value"), true);
+  assert.equal(report.blockers.includes("blocked_for_unsanitized_output"), false);
+  assert.equal(assertOpenWeightVlmLocalModelRouteApprovalGateReportRedacted(report).ok, true);
+  const serialized = JSON.stringify(report);
+  assert.equal(serialized.includes("C:\\"), false);
+  assert.equal(serialized.includes("http://127.0.0.1:8025"), false);
+  assert.equal(serialized.includes("rawPrompt"), false);
+  assert.equal(serialized.includes("requestPayload"), false);
+  assert.equal(serialized.includes("modelOutput"), false);
+  assert.equal(serialized.includes("Authorization"), false);
+  assert.equal(serialized.includes("Bearer "), false);
+});
+
+test("open-weight VLM local model route approval gate CLI is sanitized and no-network", () => {
+  const output = execFileSync(process.execPath, [
+    fileURLToPath(LOCAL_MODEL_ROUTE_APPROVAL_GATE_SCRIPT_URL)
+  ], {
+    cwd: new URL("..", import.meta.url),
+    encoding: "utf8"
+  });
+  const report = JSON.parse(output);
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.modelCallsAllowed, false);
+  assert.equal(report.qwenInferenceAllowed, false);
+  assert.equal(report.benchmarkAllowed, false);
+  assert.equal(report.approvalEligible, true);
+  assert.equal(report.reviewedPolicyCount, 2);
+  assert.equal(report.approvalReadyPolicyCount, 1);
+  assert.equal(report.expectedBlockedPolicyCount, 1);
   assert.equal(output.includes("fullPrompt"), false);
   assert.equal(output.includes("rawPrompt"), false);
   assert.equal(output.includes("requestPayload"), false);

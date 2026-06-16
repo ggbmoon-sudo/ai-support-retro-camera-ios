@@ -138,6 +138,16 @@ Stop immediately if:
 - any iOS integration or Camera cloud entry appears
 - `productionReady` becomes true
 
+## Phase 21-G Local Model Route Approval Gate
+
+Phase 21-G adds a no-network/no-model approval gate for any future `local_model` route review:
+
+```sh
+npm run qa:open-weight-vlm:local-model-route-approval
+```
+
+This gate does not approve another local smoke, does not enable `local_model`, does not call Qwen, does not run fixture inference, does not run serving benchmarks, and does not add iOS integration or endpoints. It keeps all Phase 20 local smoke stop conditions in force and also blocks production readiness, app-facing endpoints, production endpoints, user-photo upload, missing consent/retention/deletion policy, validator bypass, fallback bypass, free-form model text, score/rating, sensitive inference, chain-of-thought, debug/provider leakage, model calls, and Qwen inference.
+
 ## Phase 20-E-B Readiness
 
 Completed for the first approved 3-fixture set. Phase 20-E-B was a small local/private LAN benchmark expansion, not a product integration.

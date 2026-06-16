@@ -1,6 +1,6 @@
 # Backend Internal VLM Gateway Contract Preflight
 
-Status: Phase 21-A contract preflight plus Phase 21-B adapter stub alignment plus Phase 21-C routing plan plus Phase 21-D no-model provider adapter HTTP check plus Phase 21-E deployment boundary audit plus Phase 21-F config/env preflight
+Status: Phase 21-A contract preflight plus Phase 21-B adapter stub alignment plus Phase 21-C routing plan plus Phase 21-D no-model provider adapter HTTP check plus Phase 21-E deployment boundary audit plus Phase 21-F config/env preflight plus Phase 21-G local model route approval gate
 
 Production readiness: `productionReady:false`
 

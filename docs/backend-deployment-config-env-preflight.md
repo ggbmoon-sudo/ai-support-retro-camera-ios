@@ -104,11 +104,19 @@ The preflight fails closed when a policy enables production readiness, endpoints
 
 The CLI prints sanitized bucket summaries only. It must not print raw prompt, raw model output, raw image path, base64, request payload, local config contents, fixture registry contents, server logs, EXIF, raw provider response, real provider URL, or credentials.
 
-## Phase 21-G Recommendation
+## Phase 21-G Local Model Route Approval Gate
 
-Phase 21-G should remain backend-internal and no-model unless explicitly scoped otherwise. A safe next candidate is a gateway fallback/failure taxonomy dry-run that maps contract, route, healthz, echo, validation, privacy, deployment-boundary, and config/env blockers into structured backend fallback categories.
+Phase 21-G adds a backend-internal `local_model` route approval gate:
 
-Do not start iOS integration, app-facing endpoint work, production endpoint work, real user-photo upload, serving benchmark execution, Qwen inference, fixture inference, vLLM/SGLang/Ollama execution, auth/billing/quota runtime, or production rollout without a future explicit prompt.
+```sh
+npm run qa:open-weight-vlm:local-model-route-approval
+```
+
+The gate validates future local-model approval prerequisites only. It does not enable `local_model`, call Qwen, run fixture inference, run a serving benchmark, add iOS integration, add endpoints, accept user-photo uploads, or change production readiness. Passing output still reports `localModelRouteEnabled:false`, `modelCallsAllowed:false`, `qwenInferenceAllowed:false`, `networkCallsMade:false`, and `productionReady:false`.
+
+Phase 21-H should remain backend-internal and no-model unless explicitly scoped otherwise. A safe next candidate is a gateway fallback/failure taxonomy dry-run for local model route approval blockers.
+
+Do not start iOS integration, app-facing endpoint work, production endpoint work, real user-photo upload, serving benchmark execution, Qwen inference, fixture inference, vLLM/SGLang/Ollama execution, auth/billing/quota runtime, local model route enablement, or production rollout without a future explicit prompt.
 
 ## productionReady:false Boundary
 

@@ -1,6 +1,6 @@
 # Cross-platform Backend Deployment Boundary
 
-Status: Phase 21-E cross-platform / deployment boundary audit plus Phase 21-F config/env preflight
+Status: Phase 21-E cross-platform / deployment boundary audit plus Phase 21-F config/env preflight plus Phase 21-G local model route approval gate
 
 Production readiness: `productionReady:false`
 
@@ -141,9 +141,19 @@ Production rollout remains blocked by:
 - no serving benchmark execution
 - no production approval
 
-## Phase 21-G Recommendation
+## Phase 21-G Local Model Route Approval Gate
 
-Phase 21-G should remain backend-internal unless explicitly scoped otherwise. A safe next candidate is a gateway fallback/failure taxonomy dry-run that reviews how contract, route, healthz, echo, validation, privacy, deployment-boundary, and config/env blockers map to structured backend fallback categories. Do not start iOS integration, endpoint work, real upload, auth/billing/quota runtime, serving benchmarks, Qwen inference, fixture inference, or production rollout.
+Phase 21-G adds a backend-internal local model route approval gate. It documents the prerequisites for a future `local_model` route review while keeping the route disabled. Windows remains a local/private sandbox only, MacBook/Xcode remains independent of Windows local paths and model server URLs, and future production still requires backend-mediated env/secrets/config.
+
+Run:
+
+```sh
+npm run qa:open-weight-vlm:local-model-route-approval
+```
+
+The gate is no-network, no-model, no-Qwen, and no-benchmark. It fails closed on public/cloud/tunnel exposure, raw logging, raw persistence, direct iOS provider/model paths, Camera cloud AI entry, payload drift, endpoints, staged local artifacts, missing future upload policies, validator/fallback bypass, model calls, Qwen inference, and `productionReady:true`.
+
+Phase 21-H should remain backend-internal unless explicitly scoped otherwise. A safe next candidate is a gateway fallback/failure taxonomy dry-run for local model route approval blockers. Do not start iOS integration, endpoint work, real upload, auth/billing/quota runtime, serving benchmarks, Qwen inference, fixture inference, local model route enablement, or production rollout.
 
 ## productionReady:false Boundary
 

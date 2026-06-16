@@ -111,6 +111,28 @@ Expected current behavior:
 
 Do not run a real model from this phase.
 
+## Phase 21-G Local Model Route Approval Gate
+
+Phase 21-G adds an approval gate for a future local model route review:
+
+```sh
+npm run qa:open-weight-vlm:local-model-route-approval
+```
+
+The command validates policy objects only. It does not start the external server, call Qwen, read fixture images, run fixture inference, run serving benchmarks, enable `local_model`, add iOS integration, add app-facing endpoints, add production endpoints, or accept user-photo uploads.
+
+Current expected behavior:
+
+- `approvalEligible:true` for the built-in future approval-ready policy.
+- `localModelRouteEnabled:false`.
+- `modelCallsAllowed:false`.
+- `qwenInferenceAllowed:false`.
+- `networkCallsMade:false`.
+- `productionReady:false`.
+- sanitized bucket output only.
+
+If a future prompt explicitly requests local model route enablement, rerun this approval gate first and stop on any blocker.
+
 ## Phase 20-D2J Accepted Smoke Note
 
 Phase 20-D2J produced the first accepted Qwen-backed private LAN local VLM smoke:

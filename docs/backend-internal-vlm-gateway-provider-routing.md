@@ -1,6 +1,6 @@
 # Backend Internal VLM Gateway Provider Routing
 
-Status: Phase 21-C dry-run gate plus Phase 21-D no-model HTTP adapter check plus Phase 21-E deployment boundary audit plus Phase 21-F config/env preflight
+Status: Phase 21-C dry-run gate plus Phase 21-D no-model HTTP adapter check plus Phase 21-E deployment boundary audit plus Phase 21-F config/env preflight plus Phase 21-G local model route approval gate
 
 Production readiness: `productionReady:false`
 
@@ -135,6 +135,14 @@ npm run qa:open-weight-vlm:deployment-config-env-preflight
 
 The preflight validates future deployment policy buckets only. It does not alter provider routing, read real secrets, call local/private HTTP, call Qwen, run model inference, run benchmarks, add endpoints, or start iOS integration. Provider routing still requires backend mediation, structured candidate validation, safety fallback, sanitized output, and `productionReady:false`.
 
-## Phase 21-G Recommendation
+## Phase 21-G Local Model Route Approval Gate
 
-Phase 21-G should remain backend-internal and explicit. A safe candidate is a broader fallback / failure taxonomy review for gateway adapter, deployment-boundary, and config/env blockers that still runs no model calls and no serving benchmarks. Do not start iOS integration, endpoints, upload handling, model routing, auth/billing/quota runtime, or production rollout without a future explicit prompt.
+Phase 21-G adds a backend-internal approval gate for a future `local_model` route:
+
+```sh
+npm run qa:open-weight-vlm:local-model-route-approval
+```
+
+This gate does not alter Phase 21-C routing. The `local_model` path remains disabled by default and still requires a future explicit approval phase before any model call can run. Passing approval-gate output means only that prerequisites are documented and policy-clean for future review; it still reports `localModelRouteEnabled:false`, `modelCallsAllowed:false`, `qwenInferenceAllowed:false`, `networkCallsMade:false`, and `productionReady:false`.
+
+Phase 21-H should remain backend-internal and explicit. A safe candidate is fallback / failure taxonomy review for local model route approval blockers that still runs no model calls and no serving benchmarks. Do not start iOS integration, endpoints, upload handling, model routing enablement, auth/billing/quota runtime, or production rollout without a future explicit prompt.

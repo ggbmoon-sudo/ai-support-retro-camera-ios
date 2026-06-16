@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 21-F - Backend Deployment Config / Env Preflight
+Current phase: Phase 21-G - Backend Gateway Local Model Route Approval Gate
 Status: Implemented
-Latest implementation: Added the backend deployment config/env preflight. The preflight validates sanitized deployment policy buckets only, defines allowed env/config categories and forbidden committed config, blocks committed secrets, runtime local paths, unsafe provider URLs, raw logging, endpoint flags, Camera cloud AI entry, capture-context upload, model calls, Qwen inference, benchmarks, and enforces `productionReady:false`. No real model smoke, Qwen inference, fixture inference, serving benchmark, vLLM/SGLang/Ollama execution, iOS integration, app-facing endpoint, production endpoint, real user-photo upload, auth/billing/quota runtime, raw artifact output, training/fine-tuning, model-stack switch, or production readiness change was added.
+Latest implementation: Added the backend Gateway local model route approval gate. The gate validates sanitized future `local_model` route approval prerequisites only and keeps `localModelRouteEnabled:false`, `modelCallsAllowed:false`, `qwenInferenceAllowed:false`, `networkCallsMade:false`, and `productionReady:false`. It blocks production readiness, public/cloud/tunnel exposure, raw logging/persistence, staged local sandbox artifacts, direct iOS provider/model paths, Camera cloud AI entry, backend/iOS payload drift, endpoints, user-photo upload, missing consent/retention/deletion policy, validator or fallback bypass, free-form model text, score/rating, sensitive inference, chain-of-thought, debug/provider leakage, Qwen inference, model calls, and benchmark execution. No real model smoke, Qwen inference, fixture inference, serving benchmark, vLLM/SGLang/Ollama execution, iOS integration, app-facing endpoint, production endpoint, real user-photo upload, auth/billing/quota runtime, raw artifact output, training/fine-tuning, model route enablement, or production readiness change was added.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -499,16 +499,6 @@ Phase 21-E adds a cross-platform and deployment boundary audit for the Windows-p
 - Cross-platform boundary CLI should report `networkCallsMade:false`, `modelCallsMade:false`, `qwenInferenceRun:false`, `benchmarkRun:false`, `eligibleForDeploymentBoundaryReview:true`, `eligibleForAppIntegration:false`, and `productionReady:false`.
 - Manual checklist updated for Phase 21-E.
 
-### Known TODOs
-
-- Phase 21-F should remain backend-internal unless a future explicit prompt chooses otherwise.
-- Production deployment still needs env/secrets/config design, consent, payload validation, compression, metadata stripping, retention/deletion policy, App Store privacy disclosure, quota/abuse/rate controls, timeout/cancellation, observability redaction, serving benchmark execution, and explicit rollout approval.
-- iOS integration, app-facing endpoints, production endpoints, real user-photo upload, Qwen inference, fixture inference, serving benchmark execution, model-stack switching, training/fine-tuning, and production rollout remain blocked.
-
-### Ready for Phase 21-F
-
-Yes, for another explicitly requested backend-internal no-model planning/check phase only. A safe candidate is gateway fallback/failure taxonomy mapping for route, healthz, echo, validation, privacy, and deployment-boundary blockers. Phase 21-E does not approve iOS integration, app-facing endpoints, production endpoints, real user-photo upload, serving benchmark execution, Qwen inference, fixture inference, model-stack switching, training/fine-tuning, or any change to `productionReady:false`.
-
 ## Phase 21-F - Backend Deployment Config / Env Preflight
 
 Status: Implemented
@@ -539,6 +529,39 @@ Phase 21-F defines backend deployment config/env boundaries and adds a no-networ
 ### Ready for Phase 21-G
 
 Yes, for another explicitly requested backend-internal no-model planning/check phase only. A safe candidate is gateway fallback/failure taxonomy mapping for contract, route, healthz, echo, validation, privacy, deployment-boundary, and config/env blockers. Phase 21-F does not approve iOS integration, app-facing endpoints, production endpoints, real user-photo upload, auth/billing/quota runtime, serving benchmark execution, Qwen inference, fixture inference, model-stack switching, training/fine-tuning, or any change to `productionReady:false`.
+
+---
+
+## Phase 21-G - Backend Gateway Local Model Route Approval Gate
+
+Status: Implemented
+Date: 2026-06-17
+
+### Summary
+
+Phase 21-G defines a backend-internal approval gate for a future `local_model` provider route. It validates approval prerequisites only and does not enable `local_model`.
+
+### Completed
+
+- Added `docs/backend-gateway-local-model-route-approval-gate.md`.
+- Added `backend/src/qa/openWeightVlmLocalModelRouteApprovalGate.mjs`.
+- Added `backend/scripts/check-open-weight-vlm-local-model-route-approval-gate.mjs`.
+- Added `npm run qa:open-weight-vlm:local-model-route-approval`.
+- Defined required approval conditions: clean repo, upstream sync, Phase 21-G committed/pushed, deployment config/env preflight, cross-platform boundary, provider routing, provider adapter no-model HTTP, safe healthz, `publicExposure:no`, `rawLoggingDisabled:true`, local/private endpoint, ignored local config/registry/fixtures, future explicit user approval, scoped fixture tokens, no upload, no iOS integration, no endpoints, structured candidate JSON, backend validator, fallback/safety gates, and `productionReady:false`.
+- Defined blockers for production readiness, public/cloud/tunnel exposure, raw logging/persistence, direct iOS provider/model calls, Camera cloud AI entry, backend/iOS payload drift, endpoints, user-photo upload, missing consent/retention/deletion policy, staged local artifacts, unsupported provider mode, validator bypass, fallback bypass, free-form model text, score/rating, sensitive inference, chain-of-thought, debug/provider leakage, Qwen inference, model calls, and benchmark execution.
+- Extended backend tests for approval-ready pass, blocked production/exposure, raw logging/persistence/artifact staging, iOS boundary/upload policy, validator/safety bypasses, missing prerequisites/execution flags, sanitized raw policy values, and CLI output.
+- Updated backend, iOS, operator, boundary, gateway, serving preflight, handoff, and manual smoke docs.
+
+### Verification
+
+- The new approval gate CLI is no-network, no-model, no-Qwen, no-benchmark, and prints sanitized bucket summaries only.
+- `localModelRouteEnabled:false`, `modelCallsAllowed:false`, `qwenInferenceAllowed:false`, `networkCallsMade:false`, and `productionReady:false` remain required.
+- No external server workspace files were modified.
+- No real model smoke, Qwen inference, fixture inference, serving benchmark, vLLM/SGLang/Ollama execution, iOS integration, app-facing endpoint, production endpoint, real user-photo upload, auth/billing/quota runtime, committed secrets, raw artifacts, training/fine-tuning, local model route enablement, or production rollout was added.
+
+### Ready for Phase 21-H
+
+Yes, for another explicitly requested backend-internal no-model planning/check phase only. A safe candidate is gateway fallback/failure taxonomy mapping for local model route approval blockers. Phase 21-G does not approve local model route enablement, iOS integration, app-facing endpoints, production endpoints, real user-photo upload, auth/billing/quota runtime, serving benchmark execution, Qwen inference, fixture inference, model-stack switching, training/fine-tuning, or any change to `productionReady:false`.
 
 ---
 

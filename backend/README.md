@@ -909,6 +909,22 @@ The gate blocks committed secrets, provider/model key fields, hardcoded Windows 
 
 Phase 21-F does not add production endpoints, app-facing endpoints, iOS integration, model calls, Qwen inference, serving benchmarks, real user-photo upload, auth/billing/quota runtime, committed secrets, raw artifacts, or production rollout.
 
+## Phase 21-G Local Model Route Approval Gate
+
+Phase 21-G adds a backend-internal approval gate for a future `local_model` provider route:
+
+```sh
+npm run qa:open-weight-vlm:local-model-route-approval
+```
+
+The gate validates policy objects only. It is no-network, no-model, no-Qwen, and no-benchmark. A passing approval-ready policy still keeps `localModelRouteEnabled:false`, `modelCallsAllowed:false`, `qwenInferenceAllowed:false`, `networkCallsMade:false`, `eligibleForAppIntegration:false`, and `productionReady:false`.
+
+The gate requires clean/upstream-synced repo state, Phase 21-G committed/pushed status, deployment config/env preflight, cross-platform boundary, provider routing, provider adapter no-model HTTP, safe healthz, `publicExposure:no`, `rawLoggingDisabled:true`, local/private endpoint scope, ignored local config/registry/fixtures, future explicit user approval, scoped fixture tokens, structured candidate JSON, existing backend validator, and fallback/safety gates.
+
+It fails closed for production readiness, public/cloud/tunnel exposure, raw logging, raw persistence, direct iOS provider/model calls, Camera cloud AI entry, backend/iOS payload drift, app-facing endpoints, production endpoints, user-photo upload, missing consent/retention/deletion policy, staged local config/registry/fixture images, unsupported routes, validator bypass, fallback bypass, free-form model text, score/rating, sensitive inference, chain-of-thought, debug/provider leakage, Qwen inference, model calls, or benchmark execution.
+
+Phase 21-G does not enable `local_model`, run real model smoke, run Qwen inference, run fixture inference, run serving benchmarks, execute vLLM/SGLang/Ollama, start iOS integration, add endpoints, accept real user-photo upload, add auth/billing/quota runtime, commit raw artifacts, or change production readiness.
+
 ## Phase 20-C Local VLM Operator Runbook + Smoke Gate
 
 Phase 20-C adds an operator runbook and a backend-only real-model smoke gate for future approved local/self-hosted VLM testing. The gate does not call a model and does not create an app-facing endpoint.

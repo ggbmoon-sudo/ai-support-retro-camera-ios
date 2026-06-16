@@ -147,6 +147,16 @@ Recommended Phase 20-F direction: **Option A - Expanded Fixture Set Planning + F
 - Healthz, raw logging controls, and fixture availability must be rechecked before any future real smoke.
 - The current gates judge sanitized outputs; they do not replace product privacy, abuse, cost, deletion, consent, or App Store review work.
 
+## Phase 21-G Local Model Route Approval Gate Note
+
+Phase 21-G adds a backend-internal local model route approval gate for future review only:
+
+```sh
+npm run qa:open-weight-vlm:local-model-route-approval
+```
+
+The gate documents prerequisites for a future `local_model` route request after the local sandbox work, but it does not enable the route, call Qwen, run fixture inference, run serving benchmarks, start iOS integration, add endpoints, accept user-photo upload, or change `productionReady:false`. It requires safe healthz, `publicExposure:no`, `rawLoggingDisabled:true`, ignored local config/registry/fixtures, explicit future user approval, scoped fixture tokens, structured candidate JSON, backend validator enforcement, fallback/safety enforcement, and no raw artifact logging.
+
 ## Phase 20-F Entry Criteria
 
 Phase 20-F may start only after:

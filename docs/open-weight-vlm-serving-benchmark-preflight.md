@@ -1,6 +1,6 @@
 # Open-Weight VLM Serving Benchmark Preflight
 
-Status: Phase 20-P preflight only
+Status: Phase 20-P preflight only, referenced by Phase 21-G local model route approval gate
 
 Production readiness: `productionReady:false`
 
@@ -252,3 +252,13 @@ npm run qa:open-weight-vlm:deployment-config-env-preflight
 ```
 
 It validates sanitized config policy buckets only and keeps future production config behind env/secrets/config injection. It blocks committed secrets, runtime local paths, unsafe provider URLs, raw logging, endpoint flags, direct iOS provider flags, Camera cloud AI entry, capture-context upload, model calls, Qwen inference, benchmarks, and `productionReady:true`. It does not run serving benchmarks, execute vLLM/SGLang/Ollama/LM Studio, start endpoint work, integrate iOS, upload real photos, or approve production rollout.
+
+## Phase 21-G Follow-up
+
+Phase 21-G adds a local model route approval gate:
+
+```sh
+npm run qa:open-weight-vlm:local-model-route-approval
+```
+
+It validates future `local_model` approval prerequisites only. It does not run this serving benchmark, enable `local_model`, call Qwen, run fixture inference, or switch to vLLM/SGLang/Ollama. Passing Phase 21-G still reports `modelCallsAllowed:false`, `qwenInferenceAllowed:false`, `networkCallsMade:false`, `benchmarkAllowed:false`, and `productionReady:false`.

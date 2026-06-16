@@ -1,5 +1,16 @@
 # Manual Smoke Tests
 
+## Phase 21-G
+
+Backend Gateway local model route approval gate:
+
+- [ ] From `backend/`, run `npm run qa:open-weight-vlm:local-model-route-approval`.
+- [ ] Confirm the gate reports `approvalEligible:true`, `localModelRouteEnabled:false`, `networkCallsMade:false`, `modelCallsAllowed:false`, `qwenInferenceAllowed:false`, `benchmarkAllowed:false`, `eligibleForAppIntegration:false`, and `productionReady:false`.
+- [ ] Confirm required approval buckets cover clean/upstream-synced repo state, Phase 21-G committed/pushed status, deployment config/env preflight, cross-platform boundary, provider routing, provider adapter no-model HTTP, safe healthz, `publicExposure:no`, `rawLoggingDisabled:true`, local/private endpoint scope, ignored local config/registry/fixtures, future explicit user approval, scoped fixture tokens, structured candidate JSON, backend validator, and fallback/safety gates.
+- [ ] Confirm blockers cover production readiness, public/cloud/tunnel exposure, raw logging, raw persistence, direct iOS provider/model calls, Camera cloud AI entry, backend/iOS payload drift, app-facing endpoint, production endpoint, user-photo upload, missing consent/retention/deletion policy, staged local sandbox artifacts, unsupported provider modes, validator bypass, fallback bypass, free-form model text, score/rating, sensitive inference, chain-of-thought, debug/provider leakage, model calls, Qwen inference, and benchmark execution.
+- [ ] Confirm no raw prompt, raw model output, raw image path, base64, request payload, local config contents, fixture registry contents, server logs, EXIF, provider response text, real provider URL, or secret value is printed.
+- [ ] Confirm no real model smoke, Qwen inference, fixture inference, serving benchmark, vLLM/SGLang/Ollama call, local model route enablement, iOS integration, app-facing endpoint, production endpoint, real user-photo upload, consent UI, auth/billing/quota runtime, capture-context upload, training/fine-tuning, or production rollout is introduced.
+
 ## Phase 21-F
 
 Backend deployment config/env preflight:
