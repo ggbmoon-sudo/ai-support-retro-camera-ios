@@ -193,3 +193,9 @@ The gate reports `totalTargetFixtures:12`, the required category list, category 
 ## Phase 20-M Prep Note
 
 Phase 20-M completes the local ignored fixture preparation step for the 12-category target and verifies no-model routing echo for 12 approved tokens. The result is readiness for a future approved smoke, not production readiness: no Qwen inference, real smoke, iOS integration, endpoints, raw artifact output, or production rollout is added.
+
+## Phase 20-O Serving Benchmark Decision
+
+Phase 20-O adds `docs/open-weight-vlm-serving-benchmark-decision-gate.md` to review the accepted 12-fixture result and decide whether serving benchmark preflight is justified.
+
+Decision: Phase 20-P may proceed as **serving-stack benchmark preflight only**. The current `gt_15s x10` latency distribution is significant enough to plan benchmark controls, but Phase 20-O does not approve actual benchmark execution, model-stack switching, iOS integration, endpoints, or production rollout.

@@ -427,3 +427,9 @@ Sanitized Phase 20-N result:
 - raw prompt/model response/image/image path/request payload persisted flags false
 
 This remains backend-only and does not approve iOS integration, app-facing endpoints, production endpoints, or production rollout.
+
+## Phase 20-O Serving Benchmark Decision
+
+Phase 20-O is review/decision only. It records the accepted 12-fixture result, interprets `gt_15s x10` as a significant sandbox latency note, and recommends Phase 20-P as serving-stack benchmark preflight only.
+
+Do not run real model smoke, vLLM/SGLang/Ollama benchmarks, model-stack switches, fixture expansion, iOS integration, app-facing endpoints, production endpoints, or production rollout from Phase 20-O.

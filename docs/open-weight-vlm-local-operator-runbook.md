@@ -562,3 +562,15 @@ Repeatability and failure/latency taxonomy gates passed with a latency note. Tre
 - Keep all local config, fixture registry, fixture images, reports, logs, prompts, model outputs, request payloads, credentials, and model weights ignored.
 - Require a future explicit prompt before any additional real local/private model calls.
 - Keep `productionReady:false`.
+
+## Phase 20-O Serving Benchmark Decision
+
+Phase 20-O reviews the accepted 12-fixture smoke and records the serving benchmark decision gate. The next recommended step is Phase 20-P serving-stack benchmark preflight only.
+
+Operator implications:
+
+- Do not run vLLM, SGLang, Ollama, or LM Studio benchmarks from Phase 20-O.
+- Do not switch model stacks from Phase 20-O.
+- Do not run more real smoke without a future explicit prompt.
+- Keep benchmark planning backend-only and sanitized aggregate-only.
+- Keep `productionReady:false`.

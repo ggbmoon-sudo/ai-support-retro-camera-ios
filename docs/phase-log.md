@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 20-N - Controlled 12-Fixture Local VLM Smoke
+Current phase: Phase 20-O - 12-Fixture Smoke Review + Serving Benchmark Decision Gate
 Status: Implemented
-Latest implementation: Prepared the ignored local 12-fixture set for no-model review, updated the no-model fixture routing echo target to 12 fixture tokens, and verified the expanded registry dry-run plus routing contract echo without Qwen inference. Ignored fixture images and local registry remain uncommitted. No real model smoke, iOS integration, app-facing endpoint, production endpoint, raw artifact output, training/fine-tuning, serving-stack benchmark, or production readiness change was added.
+Latest implementation: Reviewed the accepted Phase 20-N 12-fixture local/private smoke, added the serving benchmark decision gate, interpreted the `gt_15s x10` latency note, and recommended Phase 20-P serving-stack benchmark preflight only. No real model smoke, serving benchmark, iOS integration, app-facing endpoint, production endpoint, raw artifact output, training/fine-tuning, model-stack switch, or production readiness change was added.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -72,7 +72,7 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Phase 20-N may run a controlled 12-fixture local/private smoke only after explicit user approval and all gates pass again. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, public endpoint, serving-stack benchmark, model downloads, model cache changes, or user-photo training / fine-tuning until explicitly requested.
+Next phase: Phase 20-P may define serving-stack benchmark preflight only after explicit user approval. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, public endpoint, serving-stack benchmark execution, model downloads, model cache changes, or user-photo training / fine-tuning until explicitly requested.
 
 ---
 
@@ -174,6 +174,29 @@ Date: 2026-06-16
 ### Ready for Phase 20-O
 
 Yes, for future planning only. Phase 20-N does not approve iOS integration, app-facing endpoints, production endpoints, production rollout, serving-stack benchmarking, training/fine-tuning, or any change to `productionReady:false`.
+
+## Phase 20-O - 12-Fixture Smoke Review + Serving Benchmark Decision Gate
+
+Status: Implemented
+Date: 2026-06-16
+
+### Completed
+
+- Added `docs/open-weight-vlm-serving-benchmark-decision-gate.md`.
+- Reviewed the Phase 20-N aggregate: `fixtureCount:12`, `acceptedCount:12`, `rejectedCount:0`, `acceptanceRate:100%`, `validationCodeCounts:null x12`, `fallbackCategoryCounts:null x12`, no schema diagnostic buckets, `latencyBucketCounts:gt_15s x10, 5s_to_15s x2`, `networkCallsMade:true`, raw persistence flags false, and `productionReady:false`.
+- Documented what 12/12 accepted proves: local/private Windows Qwen2.5-VL FastAPI processing, validator acceptance, expanded routing, raw persistence false, gate interpretation, and viable Windows-primary workflow.
+- Documented what remains unproven: production readiness, iOS readiness, real user-photo upload, consent UI, app-facing/production endpoints, quota/billing/entitlement, retention/deletion policy, App Store privacy update, throughput/concurrency, serving-stack comparison, broader dataset quality, multilingual real-output review, fine-tuning, and on-device model readiness.
+- Interpreted `gt_15s x10` as a significant sandbox latency note that justifies serving benchmark preflight, not production approval.
+- Recommended Phase 20-P as serving-stack benchmark preflight only.
+
+### Verification
+
+- No real model smoke, Qwen inference, vLLM/SGLang/Ollama benchmark, fixture image change, ignored local registry change, iOS integration, app-facing endpoint, production endpoint, training/fine-tuning, model-stack switch, or production rollout was run or added.
+- `productionReady:false` remains required.
+
+### Ready for Phase 20-P
+
+Yes, for serving-stack benchmark preflight only. Phase 20-O does not approve actual serving benchmark execution, model-stack switching, iOS integration, app-facing endpoints, production endpoints, production rollout, training/fine-tuning, or any change to `productionReady:false`.
 
 ---
 

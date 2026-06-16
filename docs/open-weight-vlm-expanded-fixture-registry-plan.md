@@ -238,6 +238,12 @@ Sanitized aggregate: `fixtureCount:12`, `acceptedCount:12`, `rejectedCount:0`, `
 
 This confirms the 12-category fixture set can route, infer, and validate in the sandbox. It does not approve fixture expansion beyond the approved set, iOS integration, app-facing endpoints, production endpoints, or production rollout.
 
+## Phase 20-O Decision Gate
+
+Phase 20-O reviews the 12-fixture smoke result and adds `docs/open-weight-vlm-serving-benchmark-decision-gate.md`. The accepted 12-fixture aggregate proves the current approved fixture set can support local/private correctness smoke, while `gt_15s x10` justifies serving benchmark preflight planning.
+
+The recommended next step is Phase 20-P serving-stack benchmark preflight only. Do not run serving benchmarks, switch model stacks, add fixture images, modify ignored registries, start iOS integration, add endpoints, or change `productionReady:false` from Phase 20-O.
+
 ## Boundary Confirmation
 
 Phase 20-L is backend-only and Windows-primary. It prepares controlled 12-fixture planning, but does not run it. No fixture images, local registry, local config, raw paths, prompts, model outputs, request payloads, reports, logs, weights, or credentials are committed. iOS behavior is unchanged. `productionReady:false` remains required.

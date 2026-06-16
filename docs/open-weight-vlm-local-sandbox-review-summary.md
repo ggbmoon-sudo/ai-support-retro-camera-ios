@@ -273,6 +273,12 @@ Sanitized Phase 20-N aggregate:
 
 The sandbox remains backend-only and Windows-primary. This does not approve iOS integration, app-facing endpoints, production endpoints, or production rollout.
 
+## Phase 20-O Decision Note
+
+Phase 20-O reviews the accepted 12-fixture result and adds `docs/open-weight-vlm-serving-benchmark-decision-gate.md`. The decision gate records that `gt_15s x10` is a significant latency note and recommends Phase 20-P as serving-stack benchmark preflight only.
+
+Phase 20-O does not run real model smoke, run vLLM/SGLang/Ollama, switch model stacks, add fixture images, modify ignored local registry, start iOS integration, add endpoints, or change `productionReady:false`.
+
 ## Boundary Confirmation
 
 Phase 20-E-E is a review/summary/planning gate only. It does not run real model smoke, expand fixture count, benchmark vLLM/SGLang, start iOS integration, add app-facing or production endpoints, train/fine-tune, weaken validation, loosen fixture approval, commit local artifacts, or change production readiness.

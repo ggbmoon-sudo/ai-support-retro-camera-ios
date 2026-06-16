@@ -18,6 +18,15 @@ Controlled 12-fixture local/private smoke:
 - [ ] Confirm repeatability and failure/latency gates pass with a latency note only.
 - [ ] Confirm this remains backend-only and does not approve iOS integration, app-facing endpoints, production endpoints, or production rollout.
 
+## Phase 20-O
+
+12-fixture smoke review and serving benchmark decision gate:
+
+- [ ] Open `docs/open-weight-vlm-serving-benchmark-decision-gate.md`.
+- [ ] Confirm the Phase 20-N aggregate is recorded as sanitized review data only: `fixtureCount:12`, `acceptedCount:12`, `rejectedCount:0`, `acceptanceRate:100%`, no validation/fallback/schema diagnostic buckets, `latencyBucketCounts:gt_15s x10, 5s_to_15s x2`, raw persistence flags false, and `productionReady:false`.
+- [ ] Confirm the decision is Phase 20-P serving-stack benchmark preflight only, not benchmark execution.
+- [ ] Confirm no real model smoke, Qwen inference, vLLM/SGLang/Ollama benchmark, model-stack switch, fixture image change, ignored local registry change, iOS integration, app-facing endpoint, production endpoint, or production rollout is introduced.
+
 ## Phase 20-L
 
 12-fixture coverage expansion plan and no-model registry gate:

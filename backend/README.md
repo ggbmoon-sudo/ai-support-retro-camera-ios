@@ -807,6 +807,12 @@ Sanitized results:
 
 Phase 20-M does not add iOS integration, app-facing endpoints, production endpoints, benchmark serving stacks, or production rollout.
 
+## Phase 20-O Serving Benchmark Decision Gate
+
+Phase 20-O adds `../docs/open-weight-vlm-serving-benchmark-decision-gate.md` as a backend-only review/planning gate after the accepted 12-fixture Phase 20-N smoke.
+
+The decision gate records the sanitized Phase 20-N aggregate, interprets `gt_15s x10` as a significant sandbox latency note, and recommends Phase 20-P as serving-stack benchmark preflight only. Phase 20-O does not run Qwen inference, real smoke, vLLM/SGLang/Ollama benchmarks, model-stack switching, iOS integration, app-facing endpoints, production endpoints, training/fine-tuning, or production rollout. `productionReady:false` remains required.
+
 ## Phase 20-C Local VLM Operator Runbook + Smoke Gate
 
 Phase 20-C adds an operator runbook and a backend-only real-model smoke gate for future approved local/self-hosted VLM testing. The gate does not call a model and does not create an app-facing endpoint.

@@ -156,6 +156,8 @@ Phase 20-L is also backend-only from the iOS app perspective. It turns the expan
 
 Phase 20-M remains backend-only from the iOS app perspective. It prepares ignored local fixtures and no-model routing echo checks for backend sandbox review only; it does not add Qwen inference, real model smoke, app-facing endpoints, iOS provider/model keys, direct provider/model calls, Camera cloud AI entries, upload payload changes, capture-context upload, or production rollout.
 
+Phase 20-O remains review/planning-only from the iOS app perspective. It reviews the accepted 12-fixture backend local/private smoke and recommends serving benchmark preflight next, but it does not run real model smoke, run vLLM/SGLang/Ollama, add app-facing endpoints, add production endpoints, add iOS provider/model keys, add direct provider/model calls, add Camera cloud AI entries, change upload payloads, upload capture context, or enable production rollout.
+
 ## Phase 17D-A Local Camera Capture Context
 
 Phase 17D-A adds local-only summarized capture context for captured / imported photos:
