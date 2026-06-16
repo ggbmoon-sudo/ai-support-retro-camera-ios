@@ -593,7 +593,7 @@ Operator implications:
 - Do not run a serving benchmark from Phase 20-P.
 - Do not run Qwen inference or real model smoke from Phase 20-P.
 - Do not switch model stacks from Phase 20-P.
-- Treat Phase 21-B as backend internal gateway adapter stub plus external no-model contract echo alignment only unless a future prompt explicitly chooses another no-network planning phase.
+- Treat Phase 21-C as backend internal provider routing dry-run only unless a future prompt explicitly chooses another no-network planning phase.
 - Keep `productionReady:false`.
 
 ## Phase 21-A Gateway Contract Preflight
@@ -631,3 +631,21 @@ Operator implications:
 - Healthz and echo must report `publicExposure:no`, `rawLoggingDisabled:true`, `modelInferenceRun:false`, raw persistence flags false, and `productionReady:false`.
 - Do not run Qwen inference, real model smoke, serving benchmarks, vLLM/SGLang/Ollama, or fixture image inference from Phase 21-B.
 - Do not start iOS integration, app-facing endpoints, production endpoints, real user-photo upload, consent UI, capture-context upload, training/fine-tuning, or production rollout.
+
+## Phase 21-C Gateway Provider Routing Dry-run
+
+Phase 21-C adds:
+
+```sh
+npm run qa:open-weight-vlm:gateway-provider-routing
+```
+
+Operator implications:
+
+- The app repo remains the source of truth for gateway routing policy, validator, safety gates, docs, tests, and QA scripts.
+- The routing dry-run is no-network and no-model.
+- `local_stub` and `local_contract_echo` are the only allowed backend-internal modes.
+- `local_model_blocked`, `future_vllm_blocked`, `future_sglang_blocked`, `manual_ollama_lmstudio_blocked`, `production_blocked`, and unknown modes must block.
+- Do not run Qwen inference, real model smoke, serving benchmarks, vLLM/SGLang/Ollama, or fixture image inference from Phase 21-C.
+- Do not start iOS integration, app-facing endpoints, production endpoints, real user-photo upload, consent UI, capture-context upload, training/fine-tuning, or production rollout.
+- Keep `productionReady:false`.

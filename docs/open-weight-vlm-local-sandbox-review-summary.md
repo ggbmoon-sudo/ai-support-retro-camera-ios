@@ -299,6 +299,12 @@ The adapter stub accepts only sanitized fixture-token sandbox requests, returns 
 
 Phase 21-B does not run real model smoke, Qwen inference, serving benchmarks, vLLM/SGLang/Ollama, iOS integration, app-facing endpoints, production endpoints, real user-photo upload, consent UI, training/fine-tuning, or production rollout.
 
+## Phase 21-C Provider Routing Dry-run Note
+
+Phase 21-C adds a backend-internal provider routing dry-run gate. It keeps `local_stub` and `local_contract_echo` as the only allowed backend-internal routes and blocks `local_model_blocked`, `future_vllm_blocked`, `future_sglang_blocked`, `manual_ollama_lmstudio_blocked`, `production_blocked`, and unknown modes.
+
+The dry-run is sanitized, no-network, no-model, and `productionReady:false`. It does not add iOS integration, app-facing endpoints, production endpoints, real user-photo upload, serving benchmark execution, Qwen inference, vLLM/SGLang/Ollama execution, or production rollout.
+
 ## Boundary Confirmation
 
 Phase 20-E-E is a review/summary/planning gate only. It does not run real model smoke, expand fixture count, benchmark vLLM/SGLang, start iOS integration, add app-facing or production endpoints, train/fine-tune, weaken validation, loosen fixture approval, commit local artifacts, or change production readiness.

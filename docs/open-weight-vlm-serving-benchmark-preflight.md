@@ -228,3 +228,7 @@ Phase 20-P is preflight only. It does not run Qwen inference, run real smoke, ru
 Phase 21-A now adds `docs/backend-internal-vlm-gateway-contract-preflight.md` and `npm run qa:open-weight-vlm:gateway-contract-preflight`. The new gate validates the backend-internal gateway request/response contract only: sanitized bucket/fixture-token request metadata, structured candidate JSON response, existing validator/safety chain handoff, no app-facing endpoint, no production endpoint, no iOS integration, no real user-photo upload, and `productionReady:false`.
 
 Phase 21-A does not run Qwen inference, real model smoke, serving benchmarks, vLLM/SGLang/Ollama/LM Studio, model-stack switches, fixture changes, ignored registry changes, endpoint work, iOS integration, training/fine-tuning, or production rollout.
+
+## Phase 21-B / 21-C Follow-up
+
+Phase 21-B adds the backend-internal adapter stub and no-model external echo alignment. Phase 21-C adds the backend-internal provider routing dry-run gate. Both remain backend-only and fail-closed. Neither phase approves iOS integration, app-facing endpoints, production endpoints, real user-photo upload, serving benchmark execution, Qwen inference, or `productionReady:true`.

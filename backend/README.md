@@ -852,6 +852,18 @@ The external contract echo command may call only a local/private no-model endpoi
 
 Phase 21-B does not run real model smoke, Qwen inference, serving benchmarks, vLLM/SGLang/Ollama, iOS integration, app-facing endpoints, production endpoints, real user-photo uploads, consent UI, training/fine-tuning, or production rollout. `productionReady:false` remains required.
 
+## Phase 21-C Backend Internal VLM Gateway Provider Routing Dry-run
+
+Phase 21-C adds the provider routing policy dry-run:
+
+```sh
+npm run qa:open-weight-vlm:gateway-provider-routing
+```
+
+The dry-run reviews only backend-internal provider modes. `local_stub` and `local_contract_echo` are allowed. `local_model_blocked`, `future_vllm_blocked`, `future_sglang_blocked`, `manual_ollama_lmstudio_blocked`, `production_blocked`, and unknown modes are blocked. The command stays sanitized, no-network, no-model, and `productionReady:false`.
+
+Phase 21-C does not run Qwen inference, serving benchmarks, vLLM/SGLang/Ollama, iOS integration, app-facing endpoints, production endpoints, real user-photo upload, or production rollout.
+
 ## Phase 20-C Local VLM Operator Runbook + Smoke Gate
 
 Phase 20-C adds an operator runbook and a backend-only real-model smoke gate for future approved local/self-hosted VLM testing. The gate does not call a model and does not create an app-facing endpoint.

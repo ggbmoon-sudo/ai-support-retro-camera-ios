@@ -1,6 +1,6 @@
 # Backend Internal VLM Gateway Contract Preflight
 
-Status: Phase 21-A contract preflight plus Phase 21-B adapter stub alignment
+Status: Phase 21-A contract preflight plus Phase 21-B adapter stub alignment plus Phase 21-C routing plan
 
 Production readiness: `productionReady:false`
 
@@ -229,12 +229,13 @@ Production rollout remains blocked by:
 - no quota/abuse/cost controls for VLM use
 - no production approval
 
-## Future Phase 21-B / 21-C Candidates
+## Future Phase 21-B / 21-C / 21-D Candidates
 
 Recommended next options:
 
 - Phase 21-B: backend-internal gateway adapter skeleton, still no-network/no-model by default.
-- Phase 21-C: sandbox gateway dry-run using fixture tokens only, still no app-facing endpoint and no iOS integration.
+- Phase 21-C: backend-internal provider routing dry-run, fail-closed and sanitized.
+- Phase 21-D: any later gateway follow-up only if explicitly requested.
 
 Do not start iOS integration, endpoint rollout, real user-photo upload, or production cloud AI without a later explicit phase prompt.
 
@@ -260,6 +261,16 @@ npm run qa:open-weight-vlm:gateway-external-contract-echo
 ```
 
 The external echo command may use local/private HTTP only and must fail closed on public/cloud/tunnel exposure, raw logging, raw persistence, model inference, free-form response text, invalid candidate JSON, or `productionReady:true`.
+
+## Phase 21-C Provider Routing Dry-run
+
+Phase 21-C adds the provider routing policy module and dry-run CLI:
+
+```sh
+npm run qa:open-weight-vlm:gateway-provider-routing
+```
+
+The routing policy is backend-internal only and fail-closed. Allowed modes are `local_stub` and `local_contract_echo`. Blocked modes are `local_model_blocked`, `future_vllm_blocked`, `future_sglang_blocked`, `manual_ollama_lmstudio_blocked`, `production_blocked`, and unknown modes. The routing dry-run remains sanitized, no-network, no-model, and `productionReady:false`.
 
 ## ProductionReady Boundary
 

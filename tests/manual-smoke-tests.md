@@ -11,6 +11,17 @@ Backend internal VLM Gateway adapter stub and external no-model echo:
 - [ ] Confirm the external server is still a local/private sandbox only, not the app backend or a production backend.
 - [ ] Confirm no real model smoke, Qwen inference, serving benchmark, vLLM/SGLang/Ollama call, iOS integration, app-facing endpoint, production endpoint, real user-photo upload, consent UI, capture-context upload, training/fine-tuning, or production rollout is introduced.
 
+## Phase 21-C
+
+Backend internal VLM gateway provider routing dry-run:
+
+- [ ] From `backend/`, run `npm run qa:open-weight-vlm:gateway-provider-routing`.
+- [ ] Confirm the dry-run reports `networkCallsMade:false`, `modelCallsMade:false`, `qwenInferenceRun:false`, `benchmarkRun:false`, `eligibleForPhase21DPlanning:true`, `eligibleForAppIntegration:false`, and `productionReady:false`.
+- [ ] Confirm `local_stub` and `local_contract_echo` are the only allowed provider modes.
+- [ ] Confirm `local_model_blocked`, `future_vllm_blocked`, `future_sglang_blocked`, `manual_ollama_lmstudio_blocked`, `production_blocked`, and unknown modes are blocked.
+- [ ] Confirm the dry-run reports only sanitized routing decisions and does not print raw prompt, raw model output, raw image path, base64, request payload, local config contents, fixture registry contents, server logs, EXIF, or provider response text.
+- [ ] Confirm no real model smoke, Qwen inference, serving benchmark, vLLM/SGLang/Ollama call, iOS integration, app-facing endpoint, production endpoint, real user-photo upload, consent UI, capture-context upload, training/fine-tuning, or production rollout is introduced.
+
 ## Phase 21-A
 
 Backend internal VLM Gateway contract preflight:

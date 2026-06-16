@@ -57,6 +57,11 @@ import {
   runOpenWeightVlmGatewayAdapterStub
 } from "../src/qa/openWeightVlmGatewayAdapterStub.mjs";
 import {
+  assertOpenWeightVlmGatewayProviderRoutingReportRedacted,
+  evaluateOpenWeightVlmGatewayProviderRoute,
+  evaluateOpenWeightVlmGatewayProviderRoutingDryRun
+} from "../src/qa/openWeightVlmGatewayProviderRouting.mjs";
+import {
   assertOpenWeightVlmBenchmarkReportRedacted,
   buildOpenWeightVlmSchemaDiagnostic,
   evaluateOpenWeightVlmBenchmarkCase,
@@ -86,6 +91,8 @@ const GATEWAY_ADAPTER_STUB_SCRIPT_URL =
   new URL("../scripts/check-open-weight-vlm-gateway-adapter-stub.mjs", import.meta.url);
 const GATEWAY_EXTERNAL_CONTRACT_ECHO_SCRIPT_URL =
   new URL("../scripts/check-open-weight-vlm-gateway-external-contract-echo.mjs", import.meta.url);
+const GATEWAY_PROVIDER_ROUTING_SCRIPT_URL =
+  new URL("../scripts/check-open-weight-vlm-gateway-provider-routing.mjs", import.meta.url);
 
 test("open-weight VLM validator accepts valid synthetic benchmark fixtures", async () => {
   const cases = await benchmarkCases();
@@ -1903,6 +1910,138 @@ test("open-weight VLM external gateway contract echo CLI can use mocked safe res
   assert.equal(output.includes("rawPrompt"), false);
   assert.equal(output.includes("requestPayload"), false);
   assert.equal(output.includes("modelOutput"), false);
+  assert.equal(output.includes("C:\\"), false);
+  assert.equal(output.includes("data:image"), false);
+});
+
+test("open-weight VLM gateway provider routing allows local stub dry-run", () => {
+  const report = evaluateOpenWeightVlmGatewayProviderRoute({
+    requestedProviderMode: "local_stub",
+    productionReady: false
+  });
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.routeAllowed, true);
+  assert.equal(report.selectedRoute, "local_stub_adapter");
+  assert.equal(report.networkCallsAllowed, false);
+  assert.equal(report.modelCallsAllowed, false);
+  assert.equal(report.qwenInferenceAllowed, false);
+  assert.equal(assertOpenWeightVlmGatewayProviderRoutingReportRedacted(report).ok, true);
+});
+
+test("open-weight VLM gateway provider routing allows local contract echo policy only", () => {
+  const report = evaluateOpenWeightVlmGatewayProviderRoute({
+    requestedProviderMode: "local_contract_echo",
+    productionReady: false
+  });
+
+  assert.equal(report.routeAllowed, true);
+  assert.equal(report.selectedRoute, "local_private_no_model_contract_echo");
+  assert.equal(report.networkCallsAllowed, true);
+  assert.equal(report.modelCallsAllowed, false);
+  assert.equal(report.qwenInferenceAllowed, false);
+  assert.equal(report.benchmarkAllowed, false);
+});
+
+test("open-weight VLM gateway provider routing blocks non-approved provider modes", () => {
+  const blockedModes = [
+    "local_model_blocked",
+    "future_vllm_blocked",
+    "future_sglang_blocked",
+    "manual_ollama_lmstudio_blocked",
+    "production_blocked",
+    "unknown_provider"
+  ];
+
+  for (const mode of blockedModes) {
+    const report = evaluateOpenWeightVlmGatewayProviderRoute({
+      requestedProviderMode: mode,
+      productionReady: false
+    });
+
+    assert.equal(report.productionReady, false, mode);
+    assert.equal(report.routeAllowed, false, mode);
+    assert.equal(report.hardBlockers.length > 0, true, mode);
+  }
+});
+
+test("open-weight VLM gateway provider routing blocks production endpoint and execution flags", () => {
+  const report = evaluateOpenWeightVlmGatewayProviderRoute({
+    requestedProviderMode: "local_stub",
+    productionReady: true,
+    appFacingEndpoint: true,
+    productionEndpoint: true,
+    modelCallsAllowed: true,
+    qwenInferenceAllowed: true,
+    benchmarkAllowed: true
+  });
+
+  assert.equal(report.routeAllowed, false);
+  assert.equal(report.hardBlockers.includes("blocked_for_production_flag"), true);
+  assert.equal(report.hardBlockers.includes("blocked_for_app_facing_endpoint"), true);
+  assert.equal(report.hardBlockers.includes("blocked_for_production_endpoint"), true);
+  assert.equal(report.hardBlockers.includes("blocked_for_model_call"), true);
+  assert.equal(report.hardBlockers.includes("blocked_for_qwen_inference"), true);
+  assert.equal(report.hardBlockers.includes("blocked_for_benchmark_execution"), true);
+});
+
+test("open-weight VLM gateway provider routing blocks raw artifact policy violations", () => {
+  const report = evaluateOpenWeightVlmGatewayProviderRoute({
+    requestedProviderMode: "local_stub",
+    productionReady: false,
+    rawArtifactPolicy: {
+      rawPromptAllowed: true,
+      rawModelOutputAllowed: true,
+      rawImagePathAllowed: true,
+      rawImageBase64Allowed: true,
+      requestPayloadLoggingAllowed: true,
+      providerResponseLoggingAllowed: true
+    }
+  });
+
+  assert.equal(report.routeAllowed, false);
+  assert.equal(report.hardBlockers.includes("blocked_for_raw_artifact_policy"), true);
+});
+
+test("open-weight VLM gateway provider routing dry-run reviews allowed and blocked modes", () => {
+  const report = evaluateOpenWeightVlmGatewayProviderRoutingDryRun();
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.modelCallsMade, false);
+  assert.equal(report.qwenInferenceRun, false);
+  assert.equal(report.benchmarkRun, false);
+  assert.equal(report.eligibleForPhase21DPlanning, true);
+  assert.deepEqual(report.allowedProviderModes, ["local_stub", "local_contract_echo"]);
+  assert.equal(report.blockedProviderModes.includes("local_model_blocked"), true);
+  assert.equal(report.blockedProviderModes.includes("future_vllm_blocked"), true);
+  assert.equal(report.blockedProviderModes.includes("future_sglang_blocked"), true);
+  assert.equal(report.blockedProviderModes.includes("manual_ollama_lmstudio_blocked"), true);
+  assert.equal(report.blockedProviderModes.includes("production_blocked"), true);
+  assert.equal(report.blockedProviderModes.includes("unknown_provider"), true);
+  assert.equal(assertOpenWeightVlmGatewayProviderRoutingReportRedacted(report).ok, true);
+});
+
+test("open-weight VLM gateway provider routing CLI is sanitized and no-network", () => {
+  const output = execFileSync(process.execPath, [fileURLToPath(GATEWAY_PROVIDER_ROUTING_SCRIPT_URL)], {
+    cwd: new URL("..", import.meta.url),
+    encoding: "utf8"
+  });
+  const report = JSON.parse(output);
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.modelCallsMade, false);
+  assert.equal(report.qwenInferenceRun, false);
+  assert.equal(report.benchmarkRun, false);
+  assert.equal(report.allowedProviderModes.includes("local_stub"), true);
+  assert.equal(report.allowedProviderModes.includes("local_contract_echo"), true);
+  assert.equal(output.includes("fullPrompt"), false);
+  assert.equal(output.includes("rawPrompt"), false);
+  assert.equal(output.includes("requestPayload"), false);
+  assert.equal(output.includes("modelOutput"), false);
+  assert.equal(output.includes("Authorization"), false);
+  assert.equal(output.includes("Bearer "), false);
   assert.equal(output.includes("C:\\"), false);
   assert.equal(output.includes("data:image"), false);
 });
