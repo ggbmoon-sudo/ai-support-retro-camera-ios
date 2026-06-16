@@ -1,4 +1,5 @@
 export const OPEN_WEIGHT_VLM_LOCAL_SMOKE_REPEATABILITY_GATE_SCHEMA_VERSION = "open_weight_vlm_local_smoke_repeatability_gate.v1";
+const DEFAULT_REQUIRED_FIXTURE_COUNT = 3;
 
 export function summarizeOpenWeightVlmLocalSmokeRepeatability(results = []) {
   const normalizedResults = Array.isArray(results)
@@ -29,8 +30,11 @@ export function summarizeOpenWeightVlmLocalSmokeRepeatability(results = []) {
   };
 }
 
-export function evaluateOpenWeightVlmLocalSmokeRepeatabilityGate(summary = {}) {
+export function evaluateOpenWeightVlmLocalSmokeRepeatabilityGate(summary = {}, options = {}) {
   const reviewedAggregate = sanitizeAggregate(summary);
+  const requiredFixtureCount = Number.isInteger(options.requiredFixtureCount) && options.requiredFixtureCount > 0
+    ? options.requiredFixtureCount
+    : DEFAULT_REQUIRED_FIXTURE_COUNT;
   const hardBlockers = [];
   const warnings = [];
 
@@ -54,11 +58,11 @@ export function evaluateOpenWeightVlmLocalSmokeRepeatabilityGate(summary = {}) {
     ));
   }
 
-  if (reviewedAggregate.fixtureCount !== 3) {
+  if (reviewedAggregate.fixtureCount !== requiredFixtureCount) {
     hardBlockers.push(blocker(
       "fixture_count_unapproved",
       "blocked_for_unapproved_fixture",
-      "Phase 20-E-C repeatability review expects the approved 3-fixture expansion baseline."
+      "Repeatability review expects the explicitly approved fixture count for this phase."
     ));
   }
 

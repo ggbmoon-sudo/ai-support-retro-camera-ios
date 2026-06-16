@@ -877,6 +877,22 @@ Use this template:
 
 ---
 
+## 2026-06-16 Phase 20-G Blocked Expanded Smoke Update
+
+- Phase 20-G ran the explicitly approved Windows-primary local/private eight-fixture smoke exactly once per approved fixture token.
+- Sanitized aggregate: `fixtureCount:8`, `acceptedCount:0`, `rejectedCount:8`, `acceptanceRate:0%`.
+- Validation/schema buckets: `validationCodeCounts:null x8`, no schema error buckets, no schema field buckets.
+- Fallback buckets: `blocked_for_provider_integration x8`.
+- Latency buckets: `lt_1s x8`.
+- Network/model path: `networkCallsMade:true`; Windows healthz was safe before the run.
+- Safety flags: `productionReady:false`; raw prompt, raw model response, raw image, raw image path, and request payload persisted flags all false.
+- Repeatability gate blocked the aggregate with repeatability drift and provider-integration fallback buckets.
+- Failure/latency taxonomy blocked the aggregate with provider-integration, repeatability drift, and latency blocker categories.
+- No retries, extra fixtures, raw reports, local config, registry contents, image paths, prompts, model outputs, request payloads, credentials, or server logs were committed.
+- Phase 20-H is not ready. Next work should diagnose local/private Windows server fixture availability and expanded fixture request handling without treating the run as production readiness.
+
+---
+
 ## 11. How Future Codex Should Use This File
 
 - Start by reading this handoff file.

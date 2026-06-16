@@ -185,6 +185,27 @@ The new dry-run gate validates fixture metadata buckets, approval state, metadat
 
 After Phase 20-F, the next candidate phase is a controlled 6-8 fixture local smoke only if explicitly requested and only after ignored fixtures/registry are safely prepared, existing gates pass, Windows healthz is safe, and raw logging remains disabled.
 
+## Phase 20-G Blocked Expanded Smoke Note
+
+Phase 20-G attempted the explicitly approved controlled eight-fixture local/private smoke. The ignored expanded registry dry-run was eligible before the run, Windows healthz was safe, and the smoke used fixture IDs only with one call per fixture and no retries.
+
+Sanitized aggregate:
+
+- `fixtureCount:8`
+- `acceptedCount:0`
+- `rejectedCount:8`
+- `acceptanceRate:0%`
+- `validationCodeCounts:null x8`
+- `fallbackCategoryCounts:blocked_for_provider_integration x8`
+- `schemaErrorBucketCounts:none`
+- `schemaFieldBucketCounts:none`
+- `latencyBucketCounts:lt_1s x8`
+- `networkCallsMade:true`
+- `productionReady:false`
+- raw prompt/model response/image/image path/request payload persisted flags false
+
+This does not change the core sandbox boundary: the local VLM path remains backend-only, local/private, and not production-ready. Phase 20-H should diagnose expanded fixture availability and request handling in the local/private Windows server before another controlled expanded smoke is considered.
+
 ## Boundary Confirmation
 
 Phase 20-E-E is a review/summary/planning gate only. It does not run real model smoke, expand fixture count, benchmark vLLM/SGLang, start iOS integration, add app-facing or production endpoints, train/fine-tune, weaken validation, loosen fixture approval, commit local artifacts, or change production readiness.

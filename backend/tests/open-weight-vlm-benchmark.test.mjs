@@ -831,6 +831,32 @@ test("open-weight VLM local smoke repeatability gate passes B2 aggregate with la
   assert.equal(serialized.includes("fullPrompt"), false);
 });
 
+test("open-weight VLM local smoke repeatability gate accepts explicit expanded fixture count", () => {
+  const summary = summarizeOpenWeightVlmLocalSmokeRepeatability([
+    repeatabilityFixture("5s_to_15s"),
+    repeatabilityFixture("5s_to_15s"),
+    repeatabilityFixture("5s_to_15s"),
+    repeatabilityFixture("5s_to_15s"),
+    repeatabilityFixture("5s_to_15s"),
+    repeatabilityFixture("5s_to_15s"),
+    repeatabilityFixture("5s_to_15s"),
+    repeatabilityFixture("5s_to_15s")
+  ]);
+  const defaultGate = evaluateOpenWeightVlmLocalSmokeRepeatabilityGate(summary);
+  const expandedGate = evaluateOpenWeightVlmLocalSmokeRepeatabilityGate(summary, {
+    requiredFixtureCount: 8
+  });
+
+  assert.equal(summary.fixtureCount, 8);
+  assert.equal(defaultGate.eligibleForLocalRepeatabilityReview, false);
+  assert.equal(defaultGate.statusCategories.includes("blocked_for_unapproved_fixture"), true);
+  assert.equal(expandedGate.productionReady, false);
+  assert.equal(expandedGate.eligibleForLocalRepeatabilityReview, true);
+  assert.equal(expandedGate.hardBlockers.length, 0);
+  assert.equal(expandedGate.reviewedAggregate.acceptedCount, 8);
+  assert.equal(assertOpenWeightVlmLocalSmokeRepeatabilityGateReportRedacted(expandedGate).ok, true);
+});
+
 test("open-weight VLM local smoke repeatability gate blocks schema diagnostics", () => {
   const summary = summarizeOpenWeightVlmLocalSmokeRepeatability([
     ...b2RepeatabilityFixtureResults().slice(0, 2),
@@ -1084,6 +1110,27 @@ test("open-weight VLM local smoke failure taxonomy blocks unknown aggregate stat
 
   assert.equal(report.eligibleForLocalSmokeReview, false);
   assert.equal(report.statusCategories.includes("blocked_for_unknown_smoke_state"), true);
+});
+
+test("open-weight VLM local smoke failure taxonomy accepts explicit expanded fixture count", () => {
+  const report = evaluateOpenWeightVlmLocalSmokeFailureTaxonomy(failureTaxonomyAggregate({
+    fixtureCount: 8,
+    acceptedCount: 8,
+    rejectedCount: 0,
+    acceptanceRate: 100,
+    validationCodeCounts: { null: 8 },
+    fallbackCategoryCounts: { null: 8 },
+    latencyBucketCounts: { "5s_to_15s": 8 }
+  }), {
+    requiredFixtureCount: 8,
+    baselineAcceptedCount: 8
+  });
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.eligibleForLocalSmokeReview, true);
+  assert.equal(report.latencyCategory, "latency_ok");
+  assert.equal(report.statusCategories.includes("pass_clean_local_smoke"), true);
+  assert.equal(assertOpenWeightVlmLocalSmokeFailureTaxonomyReportRedacted(report).ok, true);
 });
 
 test("open-weight VLM local smoke failure taxonomy script prints sanitized sample", () => {

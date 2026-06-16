@@ -698,6 +698,27 @@ The command validates sanitized sample registry entries only. It does not read l
 
 The gate reviews fixture metadata buckets, approval booleans, metadata stripping, privacy review, face/sensitive/private identifier exclusions, category coverage, missing core categories, and blocked reason counts. Output keeps `networkCallsMade:false` and `productionReady:false`.
 
+## Phase 20-G Controlled Expanded Local Smoke Block
+
+Phase 20-G ran the explicitly approved Windows-primary local/private eight-fixture smoke once per approved fixture token. It did not retry or run extra fixtures.
+
+Sanitized aggregate:
+
+- `fixtureCount:8`
+- `acceptedCount:0`
+- `rejectedCount:8`
+- `acceptanceRate:0%`
+- `validationCodeCounts:null x8`
+- `fallbackCategoryCounts:blocked_for_provider_integration x8`
+- `schemaErrorBucketCounts:none`
+- `schemaFieldBucketCounts:none`
+- `latencyBucketCounts:lt_1s x8`
+- `networkCallsMade:true`
+- `productionReady:false`
+- raw persistence flags false
+
+The repeatability gate and failure/latency taxonomy blocked the aggregate. Treat this as a local server / provider-integration fixture-handling block, not as production readiness and not as a schema validator weakening reason. Phase 20-H is not ready until the Windows local/private server expanded fixture path is diagnosed with sanitized evidence only.
+
 ## Phase 20-C Local VLM Operator Runbook + Smoke Gate
 
 Phase 20-C adds an operator runbook and a backend-only real-model smoke gate for future approved local/self-hosted VLM testing. The gate does not call a model and does not create an app-facing endpoint.

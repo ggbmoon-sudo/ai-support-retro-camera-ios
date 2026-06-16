@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 20-F - Expanded Fixture Registry Schema and Dry-run Gate
-Status: Implemented; repo-side verification passed
-Latest implementation: Added `docs/open-weight-vlm-expanded-fixture-registry-plan.md`, `backend/src/qa/openWeightVlmExpandedFixtureRegistry.mjs`, `backend/scripts/check-open-weight-vlm-expanded-fixture-registry.mjs`, `npm run qa:open-weight-vlm:expanded-fixtures`, and backend tests. The Phase 20-F dry-run validates sanitized expanded fixture registry metadata, category coverage, approval/privacy/metadata-strip buckets, and exclusion rules without local config, fixture images, model calls, network calls, raw paths, prompts, model outputs, request payloads, or production readiness. Phase 20-F prepares a future controlled 6-8 fixture smoke only; it does not run real model smoke, benchmark vLLM/SGLang, start iOS integration, add endpoints, train/fine-tune, weaken gates, commit local artifacts, or change `productionReady:false`.
+Current phase: Phase 20-G - Controlled Expanded Local VLM Smoke
+Status: Blocked after approved eight-fixture run
+Latest implementation: Ran the approved Windows-primary controlled local/private smoke once per eight approved fixture tokens. All eight sanitized results returned `blocked_for_provider_integration` with `lt_1s` latency, `acceptedCount:0`, `rejectedCount:8`, no schema diagnostics, `networkCallsMade:true`, raw persistence flags false, and `productionReady:false`. The repeatability and failure/latency gates blocked the aggregate, so Phase 20-G is not complete and Phase 20-H is not ready. No retries or extra fixtures were run.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -72,7 +72,7 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Phase 20-G controlled 6-8 fixture local smoke is planning-ready only after Phase 20-F is reviewed, committed, and pushed, the expanded fixture dry-run gate passes, ignored local fixtures/registry are prepared safely, existing gates pass, Windows healthz is safe, and the user explicitly approves real local/private model calls. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, public endpoint, serving-stack benchmark, model downloads, model cache changes, or user-photo training / fine-tuning until explicitly requested.
+Next phase: Phase 20-G diagnosis should inspect the local/private Windows server fixture availability and expanded fixture request handling without retrying model calls to chase pass rate. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, public endpoint, serving-stack benchmark, model downloads, model cache changes, or user-photo training / fine-tuning until explicitly requested.
 
 ---
 
@@ -115,6 +115,52 @@ Date: 2026-06-16
 ### Ready for Phase 20-G
 
 Conditionally ready for planning a controlled 6-8 fixture local smoke after Phase 20-F is reviewed, committed, and pushed, and only if the ignored fixture registry/images are safely prepared, all existing gates pass, Windows healthz is safe, raw logging remains disabled, and the user explicitly approves real local/private model calls. Production rollout remains blocked.
+
+---
+
+## Phase 20-G - Controlled Expanded Local VLM Smoke
+
+Status: Blocked
+Date: 2026-06-16
+
+### Scope
+
+Phase 20-G attempted the approved Windows-primary local/private Qwen-backed expanded smoke with exactly eight approved fixture tokens. The run used fixture IDs only, one call per fixture, no retries, no extra fixtures, and sanitized reporting only.
+
+### Sanitized Result
+
+- `fixtureCount:8`
+- `acceptedCount:0`
+- `rejectedCount:8`
+- `acceptanceRate:0%`
+- `validationCodeCounts:null x8`
+- `fallbackCategoryCounts:blocked_for_provider_integration x8`
+- `schemaErrorBucketCounts:none`
+- `schemaFieldBucketCounts:none`
+- `latencyBucketCounts:lt_1s x8`
+- `networkCallsMade:true`
+- `productionReady:false`
+- raw persistence flags: false for prompt, model response, image, image path, and request payload
+
+Per-fixture categories were `bright_daylight_clean`, `low_light_grain`, `motion_blur_intentional`, `high_contrast_shadow`, `faded_color_retro`, `imported_limited_context`, `severe_blur_reject`, and `black_or_near_black_unreadable`. All returned the same provider-integration fallback bucket before schema validation; no schema diagnostics were produced.
+
+### Gate Results
+
+- Repeatability gate: blocked with `repeatability_baseline_not_met` and `provider_integration_fallback_detected`.
+- Failure/latency taxonomy: blocked with `provider_integration_fallback_detected`, `repeatability_drift_detected`, and `latency_timeout_or_pre_inference_block`.
+- Latency category: `latency_blocker`.
+
+### Safety Notes
+
+- Real smoke ran exactly eight calls and stopped; no retries were used.
+- No raw prompt, raw model output, image path, base64, request payload, local config contents, fixture registry contents, server logs, credentials, or raw reports are committed.
+- Ignored local config, fixture registry, and fixture images remain ignored.
+- The strict backend validator, local smoke gates, fixture approval checks, raw logging restrictions, and `productionReady:false` remain intact.
+- No iOS source, project, localization, backend payload, iOS upload payload, capture-context upload, app-facing endpoint, production endpoint, training/fine-tuning, or production rollout was added.
+
+### Ready for Phase 20-H
+
+No. Phase 20-G needs a sanitized provider-integration diagnosis of local/private Windows server fixture availability and expanded fixture request handling before any future expanded smoke attempt.
 
 ---
 

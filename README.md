@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 20-F expanded fixture registry schema and dry-run gate; backend-only, Windows-primary, no real model smoke, no fixture images committed, no iOS integration, and no production rollout
+- Phase 20-G controlled expanded local VLM smoke is blocked after the approved eight-fixture run; all eight sanitized results returned `blocked_for_provider_integration` with `lt_1s` latency, no schema diagnostics, raw persistence flags false, and `productionReady:false`
 
 Next phase:
 
-- Recommended next step is Phase 20-G controlled 6-8 fixture local smoke only after the dry-run gate, existing gates, ignored fixture registry, and safe Windows healthz pass under explicit approval
+- Recommended next step is a sanitized Phase 20-G diagnosis of local/private Windows server expanded fixture availability and request handling; do not retry model calls to chase pass rate
 - Do not start production cloud rollout without explicit approval
 - Production rollout remains blocked until a later explicit release phase
 
@@ -262,6 +262,8 @@ Phase 20-E-A records the first accepted Qwen-backed local VLM smoke from Phase 2
 Phase 20-E-E adds `docs/open-weight-vlm-local-sandbox-review-summary.md` as the consolidated backend-only local VLM sandbox review. It summarizes D2J through E-D, records what the Windows-primary sandbox proved, what remains unproven, the current gate inventory, safety/privacy boundaries, Phase 20-F entry criteria, and recommends Phase 20-F Option A: expanded fixture set planning plus fixture registry schema. It does not run real model smoke, expand fixture count, benchmark vLLM/SGLang, add iOS integration, change payloads, or approve production rollout.
 
 Phase 20-F adds `docs/open-weight-vlm-expanded-fixture-registry-plan.md`, a sanitized expanded fixture registry policy module, and `npm run qa:open-weight-vlm:expanded-fixtures`. The dry-run gate validates sample fixture metadata and category coverage without local config, fixture images, model calls, network calls, raw paths, prompts, model outputs, request payloads, or production readiness. It prepares a future controlled 6-8 fixture smoke only after explicit approval.
+
+Phase 20-G ran the explicitly approved controlled eight-fixture local/private smoke once per fixture token with no retries. The sanitized aggregate was `fixtureCount:8`, `acceptedCount:0`, `rejectedCount:8`, `fallbackCategoryCounts:blocked_for_provider_integration x8`, `latencyBucketCounts:lt_1s x8`, no schema diagnostic buckets, `networkCallsMade:true`, raw persistence flags false, and `productionReady:false`. The repeatability and failure/latency gates blocked the aggregate, so Phase 20-H is not ready until server-side expanded fixture handling is diagnosed.
 
 ## Phase 12A Filter Planning Status
 

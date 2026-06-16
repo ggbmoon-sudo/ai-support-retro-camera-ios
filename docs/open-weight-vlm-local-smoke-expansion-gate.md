@@ -334,3 +334,24 @@ The dry-run gate validates sanitized registry metadata only. It does not require
 The target categories are `bright_daylight_clean`, `low_light_grain`, `motion_blur_intentional`, `severe_blur_reject`, `high_contrast_shadow`, `faded_color_retro`, `warm_indoor_ambient`, `street_chrome_high_contrast`, `soft_focus_dreamy`, `overexposed_unreadable`, `imported_limited_context`, and `black_or_near_black_unreadable`.
 
 Phase 20-G controlled 6-8 fixture smoke is only conditionally ready after Phase 20-F is reviewed/committed/pushed, this dry-run gate passes, ignored local fixtures and registry are safely prepared, all existing gates pass, Windows healthz is safe, and the user explicitly approves real local/private model calls. Production rollout remains blocked.
+
+## Phase 20-G Blocked Eight-fixture Smoke
+
+Phase 20-G ran the approved controlled expanded local/private smoke once per eight approved fixture tokens. It stopped after the approved eight calls and did not retry.
+
+Sanitized aggregate:
+
+- `fixtureCount:8`
+- `acceptedCount:0`
+- `rejectedCount:8`
+- `acceptanceRate:0%`
+- `validationCodeCounts:null x8`
+- `fallbackCategoryCounts:blocked_for_provider_integration x8`
+- `schemaErrorBucketCounts:none`
+- `schemaFieldBucketCounts:none`
+- `latencyBucketCounts:lt_1s x8`
+- `networkCallsMade:true`
+- `productionReady:false`
+- raw persistence flags all false
+
+The repeatability gate and failure/latency taxonomy correctly blocked the aggregate. Treat this as a provider-integration / fixture-availability diagnostic result, not as a model-quality or schema-regression result. Phase 20-H is not ready until the local/private Windows server expanded fixture handling is diagnosed without raw artifact exposure.

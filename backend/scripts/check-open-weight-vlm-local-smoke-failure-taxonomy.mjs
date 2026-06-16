@@ -7,7 +7,9 @@ const aggregate = options.inputPath
   ? JSON.parse(await readFile(options.inputPath, "utf8"))
   : sampleAggregate(options.sample);
 const report = evaluateOpenWeightVlmLocalSmokeFailureTaxonomy(aggregate, {
-  realModelExpected: options.realModelExpected
+  realModelExpected: options.realModelExpected,
+  requiredFixtureCount: options.requiredFixtureCount,
+  baselineAcceptedCount: options.baselineAcceptedCount
 });
 
 console.log(JSON.stringify(report, null, 2));
@@ -22,7 +24,9 @@ function parseArgs(args) {
   const options = {
     inputPath: null,
     sample: "clean",
-    realModelExpected: true
+    realModelExpected: true,
+    requiredFixtureCount: null,
+    baselineAcceptedCount: null
   };
 
   for (let index = 0; index < args.length; index += 1) {
@@ -51,10 +55,38 @@ function parseArgs(args) {
     }
     if (arg === "--no-network-expected") {
       options.realModelExpected = false;
+      continue;
+    }
+    if (arg === "--required-fixture-count") {
+      options.requiredFixtureCount = parsePositiveInteger(args[index + 1]);
+      index += 1;
+      continue;
+    }
+    if (arg.startsWith("--required-fixture-count=")) {
+      options.requiredFixtureCount = parsePositiveInteger(arg.slice("--required-fixture-count=".length));
+      continue;
+    }
+    if (arg === "--baseline-accepted-count") {
+      options.baselineAcceptedCount = parseNonNegativeInteger(args[index + 1]);
+      index += 1;
+      continue;
+    }
+    if (arg.startsWith("--baseline-accepted-count=")) {
+      options.baselineAcceptedCount = parseNonNegativeInteger(arg.slice("--baseline-accepted-count=".length));
     }
   }
 
   return options;
+}
+
+function parsePositiveInteger(value) {
+  const parsed = Number.parseInt(value, 10);
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : null;
+}
+
+function parseNonNegativeInteger(value) {
+  const parsed = Number.parseInt(value, 10);
+  return Number.isInteger(parsed) && parsed >= 0 ? parsed : null;
 }
 
 function sampleAggregate(sample) {

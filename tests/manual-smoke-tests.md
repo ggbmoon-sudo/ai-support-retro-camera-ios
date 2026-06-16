@@ -1,5 +1,15 @@
 # Manual Smoke Tests
 
+## Phase 20-G
+
+Controlled expanded local VLM smoke blocked result:
+
+- [ ] Confirm the recorded Phase 20-G aggregate is sanitized only: `fixtureCount:8`, `acceptedCount:0`, `rejectedCount:8`, `fallbackCategoryCounts:blocked_for_provider_integration x8`, `latencyBucketCounts:lt_1s x8`, no schema diagnostic buckets, `networkCallsMade:true`, raw persistence flags false, and `productionReady:false`.
+- [ ] Confirm the run used exactly eight approved fixture tokens, one call per fixture, no retries, and no extra fixtures.
+- [ ] Confirm repeatability and failure/latency gates blocked the aggregate.
+- [ ] Confirm no raw prompt, raw model output, image path, base64, request payload, local config contents, fixture registry contents, server logs, credentials, raw reports, local config, local registry, fixture images, or model weights were committed.
+- [ ] Confirm no iOS source/project/localization files changed, no Camera cloud entry was added, no iOS provider/model key or direct call was added, no iOS upload payload changed, no capture-context upload was added, and no production remote rollout was enabled.
+
 ## Phase 20-F
 
 Expanded fixture registry dry-run and backend-only planning gate:

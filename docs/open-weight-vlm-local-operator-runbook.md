@@ -458,3 +458,19 @@ Before any future controlled 6-8 fixture smoke:
 - The user must explicitly approve real local/private model calls for that future phase.
 
 Passing the dry-run gate is not permission to run real smoke by itself.
+
+## Phase 20-G Blocked Run Note
+
+The approved Phase 20-G controlled expanded smoke ran exactly eight local/private fixture calls and stopped. All eight returned sanitized provider-integration fallbacks before schema validation:
+
+- `fixtureCount:8`
+- `acceptedCount:0`
+- `rejectedCount:8`
+- `fallbackCategoryCounts:blocked_for_provider_integration x8`
+- `latencyBucketCounts:lt_1s x8`
+- no schema diagnostic buckets
+- `networkCallsMade:true`
+- `productionReady:false`
+- raw persistence flags false
+
+For this pattern, do not retry fixtures to chase pass rate. Diagnose only sanitized local/private Windows server state, especially expanded fixture availability and request handling. Do not print raw prompts, raw model outputs, image paths, base64, request payloads, local config contents, fixture registry contents, credentials, or server logs.

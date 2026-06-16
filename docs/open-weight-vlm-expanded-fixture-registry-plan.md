@@ -156,6 +156,25 @@ A later Phase 20-G controlled 6-8 fixture smoke may be considered only after:
 
 Phase 20-G must still not imply iOS integration, app-facing endpoints, production endpoints, training/fine-tuning, serving-stack benchmarking, or production rollout unless a future explicit phase says so.
 
+## Phase 20-G Blocked Smoke Observation
+
+The Phase 20-G approved eight-fixture smoke was attempted after the ignored local registry dry-run passed. The controlled run used exactly eight fixture tokens, one call per fixture, no retries, and sanitized results only.
+
+Sanitized result:
+
+- `fixtureCount:8`
+- `approved registry entries:8`
+- `acceptedCount:0`
+- `rejectedCount:8`
+- `fallbackCategoryCounts:blocked_for_provider_integration x8`
+- `latencyBucketCounts:lt_1s x8`
+- no schema diagnostic buckets
+- `networkCallsMade:true`
+- `productionReady:false`
+- raw persistence flags false
+
+This indicates a provider-integration or local server fixture-handling block before schema validation, not a fixture registry schema block. Future work should diagnose expanded fixture availability and request handling in the local/private Windows server before any further expanded smoke attempt.
+
 ## Boundary Confirmation
 
 Phase 20-F is backend-only and Windows-primary. It prepares controlled expanded smoke, but does not run it. No fixture images, local registry, local config, raw paths, prompts, model outputs, request payloads, reports, logs, weights, or credentials are committed. iOS behavior is unchanged. `productionReady:false` remains required.
