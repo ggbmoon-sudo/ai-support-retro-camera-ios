@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 20-G - Controlled Expanded Local VLM Smoke
-Status: Blocked after approved eight-fixture run
-Latest implementation: Ran the approved Windows-primary controlled local/private smoke once per eight approved fixture tokens. All eight sanitized results returned `blocked_for_provider_integration` with `lt_1s` latency, `acceptedCount:0`, `rejectedCount:8`, no schema diagnostics, `networkCallsMade:true`, raw persistence flags false, and `productionReady:false`. The repeatability and failure/latency gates blocked the aggregate, so Phase 20-G is not complete and Phase 20-H is not ready. No retries or extra fixtures were run.
+Current phase: Phase 20-H - Expanded Fixture Provider-Integration Diagnosis
+Status: Diagnosis-only, implemented
+Latest implementation: Added a backend-only no-model diagnostic helper, CLI, and tests for the Phase 20-G expanded fixture provider-integration block. Sanitized server-shape inspection found the external Windows FastAPI workspace only advertises the original fixture token bucket while the backend expanded registry expects eight approved fixture tokens, so the working hypothesis is a pre-inference local server fixture availability / routing gap rather than a schema validator failure. No real model smoke, Qwen inference, fixture expansion, raw artifact output, iOS integration, or production readiness change was added.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -72,7 +72,33 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Phase 20-G diagnosis should inspect the local/private Windows server fixture availability and expanded fixture request handling without retrying model calls to chase pass rate. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, public endpoint, serving-stack benchmark, model downloads, model cache changes, or user-photo training / fine-tuning until explicitly requested.
+Next phase: Phase 20-I should add or run only a local/private no-model contract-echo fixture-routing check before any future expanded real smoke is considered. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, public endpoint, serving-stack benchmark, model downloads, model cache changes, or user-photo training / fine-tuning until explicitly requested.
+
+---
+
+## Phase 20-H - Expanded Fixture Provider-Integration Diagnosis
+
+Status: Implemented
+Date: 2026-06-16
+
+### Completed
+
+- Added `backend/src/qa/openWeightVlmExpandedFixtureProviderIntegrationDiagnostic.mjs`.
+- Added `backend/scripts/check-open-weight-vlm-expanded-fixture-provider-integration.mjs`.
+- Added `npm run qa:open-weight-vlm:expanded-fixture-provider-diagnostic`.
+- Added backend tests for provider-integration fast blocks, schema-diagnostic separation, fixture availability gaps, routing/config buckets, production flag blockers, raw persistence blockers, and sanitized CLI output.
+- Inspected the external Windows server implementation shape without printing raw paths or logs.
+
+### Sanitized Diagnosis
+
+- Phase 20-G remains recorded as eight approved fixture calls, eight `blocked_for_provider_integration` fallbacks, `lt_1s` latency, no schema diagnostic buckets, raw persistence flags false, and `productionReady:false`.
+- The diagnostic classifies the aggregate as `likely_pre_inference_block`, `likely_server_fixture_unavailable`, `likely_healthz_fixture_availability_gap`, `unlikely_schema_validator_issue`, `unsafe_to_retry_real_smoke`, `eligible_for_contract_echo_fixture_routing_check`, and `not_production_ready`.
+- Sanitized server-shape inspection found only the original fixture token bucket mentioned in the external server workspace; expanded fixture token buckets were not advertised there.
+- Working hypothesis: backend expanded registry and server fixture availability / routing are out of sync before model inference.
+
+### Ready for Phase 20-I
+
+Yes, for a no-model fixture-routing / contract-echo diagnostic only. Another real expanded model smoke remains blocked until fixture token routing and server availability pass without Qwen inference. Production rollout remains blocked.
 
 ---
 

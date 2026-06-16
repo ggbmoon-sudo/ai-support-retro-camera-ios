@@ -474,3 +474,15 @@ The approved Phase 20-G controlled expanded smoke ran exactly eight local/privat
 - raw persistence flags false
 
 For this pattern, do not retry fixtures to chase pass rate. Diagnose only sanitized local/private Windows server state, especially expanded fixture availability and request handling. Do not print raw prompts, raw model outputs, image paths, base64, request payloads, local config contents, fixture registry contents, credentials, or server logs.
+
+## Phase 20-H Provider Diagnostic
+
+Run the backend-only diagnostic:
+
+```sh
+npm run qa:open-weight-vlm:expanded-fixture-provider-diagnostic
+```
+
+This command is no-model by default and reviews sanitized aggregate buckets only. Optional registry or healthz inspection must stay sanitized and must not print raw paths, local config contents, fixture registry contents, prompts, model output, base64, request payloads, credentials, EXIF, or server logs.
+
+The Phase 20-H diagnosis points to a pre-inference fixture availability / routing mismatch between the backend expanded registry and the external Windows FastAPI server. A future real expanded smoke is blocked until a local/private no-model contract-echo fixture-routing check proves the approved fixture tokens route without Qwen inference.

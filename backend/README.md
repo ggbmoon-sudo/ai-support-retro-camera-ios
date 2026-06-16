@@ -719,6 +719,20 @@ Sanitized aggregate:
 
 The repeatability gate and failure/latency taxonomy blocked the aggregate. Treat this as a local server / provider-integration fixture-handling block, not as production readiness and not as a schema validator weakening reason. Phase 20-H is not ready until the Windows local/private server expanded fixture path is diagnosed with sanitized evidence only.
 
+## Phase 20-H Expanded Fixture Provider Diagnostic
+
+Run:
+
+```sh
+npm run qa:open-weight-vlm:expanded-fixture-provider-diagnostic
+```
+
+The diagnostic is no-model by default. It classifies sanitized Phase 20-G aggregate signals, optional sanitized fixture registry buckets, and optional sanitized healthz buckets without printing raw paths, local config contents, registry contents, prompts, model output, base64, request payloads, credentials, or server logs.
+
+Current sanitized categories include `likely_pre_inference_block`, `likely_server_fixture_unavailable`, `likely_healthz_fixture_availability_gap`, `unlikely_schema_validator_issue`, `unsafe_to_retry_real_smoke`, `eligible_for_contract_echo_fixture_routing_check`, and `not_production_ready`.
+
+The current working hypothesis is that the backend expanded fixture registry and the external Windows FastAPI server fixture availability / routing are out of sync before inference. Another expanded real model smoke remains blocked until a local/private no-model fixture-routing or contract-echo check passes.
+
 ## Phase 20-C Local VLM Operator Runbook + Smoke Gate
 
 Phase 20-C adds an operator runbook and a backend-only real-model smoke gate for future approved local/self-hosted VLM testing. The gate does not call a model and does not create an app-facing endpoint.

@@ -30,6 +30,11 @@ import {
   expandedFixtureRegistrySample
 } from "../src/qa/openWeightVlmExpandedFixtureRegistry.mjs";
 import {
+  assertOpenWeightVlmExpandedFixtureProviderIntegrationDiagnosticRedacted,
+  evaluateOpenWeightVlmExpandedFixtureProviderIntegrationDiagnostic,
+  phase20GBlockedProviderIntegrationSample
+} from "../src/qa/openWeightVlmExpandedFixtureProviderIntegrationDiagnostic.mjs";
+import {
   assertOpenWeightVlmBenchmarkReportRedacted,
   buildOpenWeightVlmSchemaDiagnostic,
   evaluateOpenWeightVlmBenchmarkCase,
@@ -47,6 +52,8 @@ const LOCAL_SMOKE_GATE_SCRIPT_URL = new URL("../scripts/check-open-weight-vlm-lo
 const LOCAL_REPEATABILITY_GATE_SCRIPT_URL = new URL("../scripts/check-open-weight-vlm-local-smoke-repeatability-gate.mjs", import.meta.url);
 const LOCAL_FAILURE_TAXONOMY_SCRIPT_URL = new URL("../scripts/check-open-weight-vlm-local-smoke-failure-taxonomy.mjs", import.meta.url);
 const EXPANDED_FIXTURE_REGISTRY_SCRIPT_URL = new URL("../scripts/check-open-weight-vlm-expanded-fixture-registry.mjs", import.meta.url);
+const EXPANDED_FIXTURE_PROVIDER_DIAGNOSTIC_SCRIPT_URL =
+  new URL("../scripts/check-open-weight-vlm-expanded-fixture-provider-integration.mjs", import.meta.url);
 
 test("open-weight VLM validator accepts valid synthetic benchmark fixtures", async () => {
   const cases = await benchmarkCases();
@@ -1244,7 +1251,98 @@ test("open-weight VLM expanded fixture registry dry-run CLI is sanitized and no-
   assert.equal(report.approvedCount, 12);
   assert.equal(output.includes("modelOutput"), false);
   assert.equal(output.includes("fullPrompt"), false);
-  assert.equal(output.includes("requestPayload"), false);
+  assert.equal(output.includes("\"requestPayload\":"), false);
+  assert.equal(output.includes("http://"), false);
+  assert.equal(output.includes(".jpg"), false);
+  assert.equal(output.includes("C:\\"), false);
+});
+
+test("open-weight VLM expanded fixture provider diagnostic classifies fast provider block", () => {
+  const report = evaluateOpenWeightVlmExpandedFixtureProviderIntegrationDiagnostic(
+    phase20GBlockedProviderIntegrationSample()
+  );
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.eligibleForRealSmokeRetry, false);
+  assert.equal(report.diagnosticCategories.includes("likely_pre_inference_block"), true);
+  assert.equal(report.diagnosticCategories.includes("likely_server_fixture_unavailable"), true);
+  assert.equal(report.diagnosticCategories.includes("unlikely_schema_validator_issue"), true);
+  assert.equal(report.diagnosticCategories.includes("unsafe_to_retry_real_smoke"), true);
+  assert.equal(report.diagnosticCategories.includes("eligible_for_contract_echo_fixture_routing_check"), true);
+  assert.equal(report.reviewedSignals.fallbackCategoryCounts.blocked_for_provider_integration, 8);
+  assert.equal(assertOpenWeightVlmExpandedFixtureProviderIntegrationDiagnosticRedacted(report).ok, true);
+});
+
+test("open-weight VLM expanded fixture provider diagnostic separates schema diagnostics", () => {
+  const report = evaluateOpenWeightVlmExpandedFixtureProviderIntegrationDiagnostic({
+    ...phase20GBlockedProviderIntegrationSample(),
+    validationCodeCounts: { unsupported_enum: 1 },
+    schemaErrorBucketCounts: { unsupported_enum: 1 },
+    schemaFieldBucketCounts: { visualObservationKey: 1 }
+  });
+
+  assert.equal(report.diagnosticCategories.includes("likely_server_response_contract_block"), true);
+  assert.equal(report.diagnosticCategories.includes("unlikely_schema_validator_issue"), false);
+});
+
+test("open-weight VLM expanded fixture provider diagnostic flags registry and healthz gaps", () => {
+  const serverUnavailable = evaluateOpenWeightVlmExpandedFixtureProviderIntegrationDiagnostic({
+    ...phase20GBlockedProviderIntegrationSample(),
+    backendFixtureRegistryEligible: true,
+    externalServerFixtureRegistryEligible: false,
+    serverFixtureAvailabilityBuckets: { missing: 8 }
+  });
+  const healthzGap = evaluateOpenWeightVlmExpandedFixtureProviderIntegrationDiagnostic({
+    ...phase20GBlockedProviderIntegrationSample(),
+    serverHealthBucket: "missing_fixture_availability"
+  });
+
+  assert.equal(serverUnavailable.diagnosticCategories.includes("likely_server_fixture_unavailable"), true);
+  assert.equal(healthzGap.diagnosticCategories.includes("likely_healthz_fixture_availability_gap"), true);
+});
+
+test("open-weight VLM expanded fixture provider diagnostic flags routing and config switch buckets", () => {
+  const routing = evaluateOpenWeightVlmExpandedFixtureProviderIntegrationDiagnostic({
+    ...phase20GBlockedProviderIntegrationSample(),
+    requestRoutingBucket: "fixture_token_mismatch"
+  });
+  const configSwitch = evaluateOpenWeightVlmExpandedFixtureProviderIntegrationDiagnostic({
+    ...phase20GBlockedProviderIntegrationSample(),
+    requestRoutingBucket: "config_fixture_not_updated"
+  });
+
+  assert.equal(routing.diagnosticCategories.includes("likely_backend_fixture_routing_mismatch"), true);
+  assert.equal(configSwitch.diagnosticCategories.includes("likely_config_fixture_switching_issue"), true);
+});
+
+test("open-weight VLM expanded fixture provider diagnostic blocks production flag and raw persistence", () => {
+  const production = evaluateOpenWeightVlmExpandedFixtureProviderIntegrationDiagnostic({
+    ...phase20GBlockedProviderIntegrationSample(),
+    productionReady: true
+  });
+  const rawPersistence = evaluateOpenWeightVlmExpandedFixtureProviderIntegrationDiagnostic({
+    ...phase20GBlockedProviderIntegrationSample(),
+    rawPromptPersisted: true
+  });
+
+  assert.equal(production.hardBlockers.some((item) => item.category === "blocked_for_production_flag"), true);
+  assert.equal(rawPersistence.hardBlockers.some((item) => item.category === "blocked_for_raw_persistence"), true);
+});
+
+test("open-weight VLM expanded fixture provider diagnostic CLI is sanitized and no-network", () => {
+  const output = execFileSync(process.execPath, [fileURLToPath(EXPANDED_FIXTURE_PROVIDER_DIAGNOSTIC_SCRIPT_URL)], {
+    cwd: new URL("..", import.meta.url),
+    encoding: "utf8"
+  });
+  const report = JSON.parse(output);
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.eligibleForRealSmokeRetry, false);
+  assert.equal(report.diagnosticCategories.includes("likely_pre_inference_block"), true);
+  assert.equal(report.diagnosticCategories.includes("unsafe_to_retry_real_smoke"), true);
+  assert.equal(output.includes("modelOutput"), false);
+  assert.equal(output.includes("fullPrompt"), false);
+  assert.equal(output.includes("\"requestPayload\":"), false);
   assert.equal(output.includes("http://"), false);
   assert.equal(output.includes(".jpg"), false);
   assert.equal(output.includes("C:\\"), false);

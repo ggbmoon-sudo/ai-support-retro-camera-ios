@@ -355,3 +355,13 @@ Sanitized aggregate:
 - raw persistence flags all false
 
 The repeatability gate and failure/latency taxonomy correctly blocked the aggregate. Treat this as a provider-integration / fixture-availability diagnostic result, not as a model-quality or schema-regression result. Phase 20-H is not ready until the local/private Windows server expanded fixture handling is diagnosed without raw artifact exposure.
+
+## Phase 20-H Provider Diagnostic
+
+Phase 20-H adds a no-network, no-model diagnostic gate for the Phase 20-G provider-integration block:
+
+```sh
+npm run qa:open-weight-vlm:expanded-fixture-provider-diagnostic
+```
+
+The diagnostic uses sanitized aggregate and availability buckets only. It reports the Phase 20-G pattern as a likely pre-inference local server fixture availability / routing mismatch and keeps another expanded real smoke blocked until a no-model contract-echo fixture-routing check passes. `productionReady:false` remains required.

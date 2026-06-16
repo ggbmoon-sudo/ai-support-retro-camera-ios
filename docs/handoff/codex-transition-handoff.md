@@ -889,7 +889,10 @@ Use this template:
 - Repeatability gate blocked the aggregate with repeatability drift and provider-integration fallback buckets.
 - Failure/latency taxonomy blocked the aggregate with provider-integration, repeatability drift, and latency blocker categories.
 - No retries, extra fixtures, raw reports, local config, registry contents, image paths, prompts, model outputs, request payloads, credentials, or server logs were committed.
-- Phase 20-H is not ready. Next work should diagnose local/private Windows server fixture availability and expanded fixture request handling without treating the run as production readiness.
+- Phase 20-H diagnosis now exists. It added a sanitized no-model backend helper, CLI, and tests for the expanded fixture provider-integration block.
+- Sanitized diagnosis categories include `likely_pre_inference_block`, `likely_server_fixture_unavailable`, `likely_healthz_fixture_availability_gap`, `unlikely_schema_validator_issue`, `unsafe_to_retry_real_smoke`, `eligible_for_contract_echo_fixture_routing_check`, and `not_production_ready`.
+- Sanitized external server inspection found only the original fixture token bucket advertised in the Windows FastAPI server implementation, while the backend expanded registry expected the approved eight-token set.
+- Next work should be a local/private no-model contract-echo fixture-routing check. Do not retry real model smoke until fixture routing / server availability passes without Qwen inference.
 
 ---
 

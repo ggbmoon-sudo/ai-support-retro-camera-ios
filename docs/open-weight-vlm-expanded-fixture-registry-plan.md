@@ -175,6 +175,14 @@ Sanitized result:
 
 This indicates a provider-integration or local server fixture-handling block before schema validation, not a fixture registry schema block. Future work should diagnose expanded fixture availability and request handling in the local/private Windows server before any further expanded smoke attempt.
 
+## Phase 20-H Provider Diagnostic Result
+
+Phase 20-H added a no-model backend diagnostic for the Phase 20-G provider-integration block. The diagnostic classifies the sanitized aggregate as a pre-inference block with likely server fixture unavailability / healthz availability gap, unlikely schema validator involvement, unsafe real-smoke retry status, and eligibility for a contract-echo fixture-routing check.
+
+Sanitized external server inspection found the server workspace only advertises the original fixture token bucket while the backend expanded registry expects the approved eight-token set. Treat the root cause as a backend registry to external server fixture availability / routing mismatch until a no-model contract-echo check proves otherwise.
+
+No real model smoke, fixture expansion, raw artifact output, iOS integration, app-facing endpoint, production endpoint, or production readiness change is approved by this diagnosis.
+
 ## Boundary Confirmation
 
 Phase 20-F is backend-only and Windows-primary. It prepares controlled expanded smoke, but does not run it. No fixture images, local registry, local config, raw paths, prompts, model outputs, request payloads, reports, logs, weights, or credentials are committed. iOS behavior is unchanged. `productionReady:false` remains required.

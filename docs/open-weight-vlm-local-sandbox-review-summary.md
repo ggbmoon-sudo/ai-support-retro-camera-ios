@@ -206,6 +206,14 @@ Sanitized aggregate:
 
 This does not change the core sandbox boundary: the local VLM path remains backend-only, local/private, and not production-ready. Phase 20-H should diagnose expanded fixture availability and request handling in the local/private Windows server before another controlled expanded smoke is considered.
 
+## Phase 20-H Provider Diagnostic Note
+
+Phase 20-H is diagnosis-only. It adds a sanitized backend helper, CLI, and tests for the Phase 20-G provider-integration block without running real model smoke or Qwen inference.
+
+The diagnostic points to a pre-inference mismatch between backend expanded fixture readiness and external Windows server fixture availability / routing. The server-shape inspection was sanitized and found only the original fixture token bucket advertised in the external server implementation. Another expanded real smoke remains blocked until no-model fixture routing or contract echo proves the approved tokens can route locally.
+
+This phase does not add iOS integration, app-facing endpoints, production endpoints, raw artifact persistence, serving-stack benchmarking, training/fine-tuning, or production rollout.
+
 ## Boundary Confirmation
 
 Phase 20-E-E is a review/summary/planning gate only. It does not run real model smoke, expand fixture count, benchmark vLLM/SGLang, start iOS integration, add app-facing or production endpoints, train/fine-tune, weaken validation, loosen fixture approval, commit local artifacts, or change production readiness.
