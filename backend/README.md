@@ -876,6 +876,25 @@ The check accepts only the Phase 21-C `local_contract_echo` route, verifies prov
 
 Phase 21-D does not run real model smoke, Qwen inference, fixture inference, serving benchmarks, vLLM/SGLang/Ollama, iOS integration, app-facing endpoints, production endpoints, real user-photo upload, consent UI, training/fine-tuning, or production rollout.
 
+## Phase 21-E Cross-platform Deployment Boundary
+
+Phase 21-E adds the cross-platform backend deployment boundary audit:
+
+```sh
+npm run qa:open-weight-vlm:cross-platform-boundary
+```
+
+The gate is no-network, no-model, and no-benchmark. It verifies that Windows local paths and local model URLs remain docs/operator/ignored-example/test-sandbox material only, not backend runtime, iOS runtime, committed production config, or app architecture. It also blocks Mac local paths in runtime, committed LAN/public/cloud/tunnel model URLs, provider/model secrets, direct iOS provider routes, Camera cloud AI entries, backend/iOS upload payload drift, capture-context upload, app-facing endpoint flags, production endpoint flags, raw artifact policy allowances, and `productionReady:true`.
+
+Deployment roles:
+
+- Windows local machine: backend/VLM development sandbox only.
+- MacBook/Xcode: iOS client development and future runtime verification only.
+- Main backend: future app-facing API owner and VLM mediator.
+- VLM provider server: behind-backend provider only, not the app contract source.
+
+Phase 21-E does not run real model smoke, Qwen inference, fixture inference, serving benchmarks, vLLM/SGLang/Ollama, iOS integration, app-facing endpoints, production endpoints, real user-photo upload, consent UI, training/fine-tuning, or production rollout.
+
 ## Phase 20-C Local VLM Operator Runbook + Smoke Gate
 
 Phase 20-C adds an operator runbook and a backend-only real-model smoke gate for future approved local/self-hosted VLM testing. The gate does not call a model and does not create an app-facing endpoint.

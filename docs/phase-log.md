@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 21-D - Backend Internal Gateway Provider Adapter No-model HTTP Check
+Current phase: Phase 21-E - Cross-platform Backend Deployment Boundary Audit + Gate
 Status: Implemented
-Latest implementation: Added the backend-internal VLM Gateway provider adapter no-model HTTP check. The adapter accepts only the `local_contract_echo` route, validates routing before HTTP, calls only local/private healthz plus `/local/vlm/gateway-contract-echo`, validates structured candidate JSON through the existing schema/safety chain, and reports sanitized aggregate status only. No real model smoke, Qwen inference, fixture inference, serving benchmark, vLLM/SGLang/Ollama execution, iOS integration, app-facing endpoint, production endpoint, real user-photo upload, raw artifact output, training/fine-tuning, model-stack switch, or production readiness change was added.
+Latest implementation: Added the cross-platform backend deployment boundary audit and gate. The audit keeps Windows local paths and local model URLs in docs/operator/ignored-example buckets only, blocks them in backend/iOS runtime buckets, defines Windows/MacBook/backend/provider roles, and enforces `productionReady:false`. No real model smoke, Qwen inference, fixture inference, serving benchmark, vLLM/SGLang/Ollama execution, iOS integration, app-facing endpoint, production endpoint, real user-photo upload, raw artifact output, training/fine-tuning, model-stack switch, or production readiness change was added.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -450,6 +450,64 @@ Phase 21-D adds a backend-internal provider adapter no-model HTTP check for the 
 ### Ready for Phase 21-E
 
 Yes, for another explicitly requested backend-internal no-model planning/check phase only. Phase 21-D does not approve iOS integration, app-facing endpoints, production endpoints, real user-photo upload, serving benchmark execution, Qwen inference, fixture inference, model-stack switching, training/fine-tuning, or any change to `productionReady:false`.
+
+---
+
+## Phase 21-E - Cross-platform Backend Deployment Boundary Audit + Gate
+
+Status: Implemented
+Date: 2026-06-16
+
+### Summary
+
+Phase 21-E adds a cross-platform and deployment boundary audit for the Windows-primary VLM sandbox, future MacBook/Xcode verification, future production backend, and future VLM provider server. It is a no-network/no-model planning gate that prevents local Windows paths, Mac local paths, LAN model URLs, provider secrets, direct iOS provider routes, Camera cloud entries, endpoint flags, raw artifact policy allowances, and `productionReady:true` from leaking into runtime or production-facing buckets.
+
+### Completed
+
+- Added `docs/cross-platform-backend-deployment-boundary.md`.
+- Added `backend/src/qa/openWeightVlmCrossPlatformDeploymentBoundary.mjs`.
+- Added `backend/scripts/check-open-weight-vlm-cross-platform-deployment-boundary.mjs`.
+- Added `npm run qa:open-weight-vlm:cross-platform-boundary`.
+- Defined deployment roles for Windows local machine, MacBook/Xcode, main backend, and VLM provider server.
+- Defined runtime vs docs-only path rules.
+- Extended backend tests for valid policy, docs-only Windows path allowance, runtime Windows/Mac path blocking, iOS LAN model URL blocking, committed public/cloud/tunnel URL blocking, provider secret blocking, iOS direct provider route blocking, Camera cloud entry blocking, endpoint flag blocking, payload/capture-context change blocking, production config boundary blocking, raw artifact policy blocking, production flag blocking, and sanitized CLI output.
+- Updated README, backend README, iOS README, handoff, gateway docs, VLM runbooks/sandbox docs, and manual smoke tests.
+
+### Changed Files
+
+- README.md
+- backend/README.md
+- backend/package.json
+- backend/scripts/check-open-weight-vlm-cross-platform-deployment-boundary.mjs
+- backend/src/qa/openWeightVlmCrossPlatformDeploymentBoundary.mjs
+- backend/tests/open-weight-vlm-benchmark.test.mjs
+- docs/backend-internal-vlm-gateway-contract-preflight.md
+- docs/backend-internal-vlm-gateway-provider-routing.md
+- docs/cross-platform-backend-deployment-boundary.md
+- docs/handoff/codex-transition-handoff.md
+- docs/open-weight-vlm-local-operator-runbook.md
+- docs/open-weight-vlm-local-sandbox-review-summary.md
+- docs/open-weight-vlm-local-smoke-expansion-gate.md
+- docs/open-weight-vlm-serving-benchmark-preflight.md
+- docs/phase-log.md
+- ios-app/README.md
+- tests/manual-smoke-tests.md
+
+### Tests / Manual Checks
+
+- Backend tests should include the new cross-platform deployment boundary cases.
+- Cross-platform boundary CLI should report `networkCallsMade:false`, `modelCallsMade:false`, `qwenInferenceRun:false`, `benchmarkRun:false`, `eligibleForDeploymentBoundaryReview:true`, `eligibleForAppIntegration:false`, and `productionReady:false`.
+- Manual checklist updated for Phase 21-E.
+
+### Known TODOs
+
+- Phase 21-F should remain backend-internal unless a future explicit prompt chooses otherwise.
+- Production deployment still needs env/secrets/config design, consent, payload validation, compression, metadata stripping, retention/deletion policy, App Store privacy disclosure, quota/abuse/rate controls, timeout/cancellation, observability redaction, serving benchmark execution, and explicit rollout approval.
+- iOS integration, app-facing endpoints, production endpoints, real user-photo upload, Qwen inference, fixture inference, serving benchmark execution, model-stack switching, training/fine-tuning, and production rollout remain blocked.
+
+### Ready for Phase 21-F
+
+Yes, for another explicitly requested backend-internal no-model planning/check phase only. A safe candidate is gateway fallback/failure taxonomy mapping for route, healthz, echo, validation, privacy, and deployment-boundary blockers. Phase 21-E does not approve iOS integration, app-facing endpoints, production endpoints, real user-photo upload, serving benchmark execution, Qwen inference, fixture inference, model-stack switching, training/fine-tuning, or any change to `productionReady:false`.
 
 ---
 

@@ -305,6 +305,14 @@ Phase 21-C adds a backend-internal provider routing dry-run gate. It keeps `loca
 
 The dry-run is sanitized, no-network, no-model, and `productionReady:false`. It does not add iOS integration, app-facing endpoints, production endpoints, real user-photo upload, serving benchmark execution, Qwen inference, vLLM/SGLang/Ollama execution, or production rollout.
 
+## Phase 21-D / 21-E Boundary Notes
+
+Phase 21-D adds the no-model provider adapter HTTP check for the `local_contract_echo` route only. It remains local/private, backend-internal, structured-candidate-only, and `productionReady:false`.
+
+Phase 21-E adds the cross-platform deployment boundary audit. Windows remains the backend/VLM development sandbox only; MacBook/Xcode remains iOS client development and future runtime verification only; future production must use backend-mediated provider calls with environment/secrets/config, not committed local paths, Windows workspace paths, Mac local paths, LAN model URLs, public/cloud/tunnel model URLs, or external sandbox assumptions.
+
+The audit does not run real model smoke, Qwen inference, fixture inference, serving benchmarks, vLLM/SGLang/Ollama, iOS integration, app-facing endpoints, production endpoints, real user-photo upload, or production rollout.
+
 ## Boundary Confirmation
 
 Phase 20-E-E is a review/summary/planning gate only. It does not run real model smoke, expand fixture count, benchmark vLLM/SGLang, start iOS integration, add app-facing or production endpoints, train/fine-tune, weaken validation, loosen fixture approval, commit local artifacts, or change production readiness.

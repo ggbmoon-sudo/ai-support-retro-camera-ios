@@ -649,3 +649,34 @@ Operator implications:
 - Do not run Qwen inference, real model smoke, serving benchmarks, vLLM/SGLang/Ollama, or fixture image inference from Phase 21-C.
 - Do not start iOS integration, app-facing endpoints, production endpoints, real user-photo upload, consent UI, capture-context upload, training/fine-tuning, or production rollout.
 - Keep `productionReady:false`.
+
+## Phase 21-D Provider Adapter No-model HTTP Check
+
+Phase 21-D adds:
+
+```sh
+npm run qa:open-weight-vlm:gateway-provider-adapter-no-model-http
+```
+
+Operator implications:
+
+- Only the `local_contract_echo` route is allowed.
+- The command may call only local/private healthz and `/local/vlm/gateway-contract-echo`.
+- The check must report no model call, no Qwen inference, no fixture inference, no raw persistence, no app-facing endpoint, no production endpoint, and `productionReady:false`.
+
+## Phase 21-E Cross-platform Deployment Boundary
+
+Phase 21-E adds:
+
+```sh
+npm run qa:open-weight-vlm:cross-platform-boundary
+```
+
+Operator implications:
+
+- Windows local paths and local model URLs are allowed only in docs, operator runbooks, manual smoke notes, ignored local config examples, and tests that assert sandbox-only behavior.
+- Backend runtime, iOS runtime, committed production config, and future production architecture must not depend on Windows paths, Mac local paths, LAN model URLs, public/cloud/tunnel model URLs, provider secrets, direct iOS model/provider calls, Camera cloud entries, or endpoint flags.
+- MacBook/Xcode must remain able to build and verify iOS without Windows local paths or local model server URLs.
+- Future production must use environment/secrets/config and backend-mediated provider adapters.
+- Do not run real model smoke, Qwen inference, fixture inference, serving benchmarks, vLLM/SGLang/Ollama, iOS integration, app-facing endpoints, production endpoints, real user-photo upload, or production rollout from this phase.
+- Keep `productionReady:false`.

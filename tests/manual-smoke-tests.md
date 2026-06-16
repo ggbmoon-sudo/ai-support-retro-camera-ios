@@ -1,5 +1,17 @@
 # Manual Smoke Tests
 
+## Phase 21-E
+
+Cross-platform backend deployment boundary audit:
+
+- [ ] From `backend/`, run `npm run qa:open-weight-vlm:cross-platform-boundary`.
+- [ ] Confirm the gate reports `networkCallsMade:false`, `modelCallsMade:false`, `qwenInferenceRun:false`, `benchmarkRun:false`, `eligibleForDeploymentBoundaryReview:true`, `eligibleForAppIntegration:false`, and `productionReady:false`.
+- [ ] Confirm Windows local paths and local model URLs are allowed only in docs/operator/manual-smoke/ignored-example/test-sandbox buckets.
+- [ ] Confirm backend runtime, iOS runtime, production config, and future production architecture do not require Windows paths, Mac local paths, LAN model URLs, public/cloud/tunnel model URLs, or provider/model secrets.
+- [ ] Confirm iOS still has no direct provider/model route, no Camera cloud AI entry, no iOS upload payload change, no capture-context upload, no app-facing endpoint, no production endpoint, and no production rollout.
+- [ ] Confirm future production must use backend-mediated provider calls with env/secrets/config, not committed local paths or LAN URLs.
+- [ ] Confirm no real model smoke, Qwen inference, fixture inference, serving benchmark, vLLM/SGLang/Ollama call, iOS integration, app-facing endpoint, production endpoint, real user-photo upload, consent UI, capture-context upload, training/fine-tuning, or production rollout is introduced.
+
 ## Phase 21-B
 
 Backend internal VLM Gateway adapter stub and external no-model echo:

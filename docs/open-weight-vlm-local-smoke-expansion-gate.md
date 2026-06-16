@@ -470,3 +470,15 @@ The adapter stub is backend-internal and fixture-token sandbox only. It maps a s
 Phase 21-B does not add iOS integration, app-facing endpoints, production endpoints, real user-photo uploads, consent UI, serving benchmark execution, model-stack switching, training/fine-tuning, or production rollout. `productionReady:false` remains required.
 
 Phase 21-C adds a backend-internal provider routing dry-run gate only. It keeps `local_stub` and `local_contract_echo` as the only allowed backend-internal routes and blocks `local_model_blocked`, `future_vllm_blocked`, `future_sglang_blocked`, `manual_ollama_lmstudio_blocked`, `production_blocked`, and unknown modes. The dry-run remains sanitized, no-network, no-model, and `productionReady:false`.
+
+## Phase 21-D / 21-E No-model And Deployment Boundary
+
+Phase 21-D adds a no-model HTTP check for the allowed `local_contract_echo` route only. It validates local/private healthz and `/local/vlm/gateway-contract-echo`, requires structured candidate JSON through the existing validator/safety chain, and keeps raw persistence flags false and `productionReady:false`.
+
+Phase 21-E adds the cross-platform deployment boundary gate:
+
+```sh
+npm run qa:open-weight-vlm:cross-platform-boundary
+```
+
+The gate is no-network/no-model. It confirms Windows local paths and local model URLs stay docs/operator/ignored-example/test-sandbox only; MacBook/Xcode does not depend on Windows paths or model server URLs; future production config uses env/secrets/config instead of committed local paths or LAN URLs; iOS never calls model/provider routes directly; and no Camera cloud entry, upload payload change, app-facing endpoint, production endpoint, raw artifact policy allowance, or `productionReady:true` is introduced.

@@ -1,6 +1,6 @@
 # Backend Internal VLM Gateway Provider Routing
 
-Status: Phase 21-C dry-run gate plus Phase 21-D no-model HTTP adapter check
+Status: Phase 21-C dry-run gate plus Phase 21-D no-model HTTP adapter check plus Phase 21-E deployment boundary audit
 
 Production readiness: `productionReady:false`
 
@@ -117,4 +117,14 @@ Phase 21-C does not:
 
 ## Phase 21-E Recommendation
 
-Phase 21-E should remain backend-internal and explicit. A safe candidate is a broader fallback / failure taxonomy review for gateway adapter HTTP checks that still runs no model calls and no serving benchmarks. Do not start iOS integration, endpoints, upload handling, model routing, or production rollout without a future explicit prompt.
+Phase 21-E is implemented as a backend-internal cross-platform deployment boundary audit:
+
+```sh
+npm run qa:open-weight-vlm:cross-platform-boundary
+```
+
+It confirms Windows local VLM paths and local model URLs are sandbox/docs/operator-only, MacBook/Xcode does not depend on Windows paths or model server URLs, future production config uses env/secrets/config instead of committed local paths or LAN IPs, iOS never calls provider/model routes directly, and the backend remains the mediator for all future VLM calls.
+
+## Phase 21-F Recommendation
+
+Phase 21-F should remain backend-internal and explicit. A safe candidate is a broader fallback / failure taxonomy review for gateway adapter and deployment-boundary blockers that still runs no model calls and no serving benchmarks. Do not start iOS integration, endpoints, upload handling, model routing, or production rollout without a future explicit prompt.

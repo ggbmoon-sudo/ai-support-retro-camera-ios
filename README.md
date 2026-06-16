@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 21-D adds the backend-internal VLM Gateway provider adapter no-model HTTP check. The app repo remains the source of truth for the contract, adapter stub, provider routing policy, provider adapter policy, validator/safety chain, QA scripts, docs, and tests. The external server remains a private/local sandbox and is used only for healthz / no-model echo compatibility.
+- Phase 21-E adds the cross-platform backend deployment boundary audit and gate. The app repo remains the source of truth for iOS app code, backend contracts, gateway policy, validators, QA scripts, docs, and tests. Windows remains a local/private backend/VLM sandbox only; MacBook/Xcode remains iOS client development and future runtime verification only; future production must use backend-mediated provider calls with env/secrets/config, not committed local paths or LAN URLs.
 
 Next phase:
 
-- Recommended next step is Phase 21-E only if explicitly requested after the no-model provider adapter HTTP check. Do not start iOS integration, app-facing endpoints, production endpoints, real user-photo upload, serving benchmark execution, Qwen inference, fixture inference, vLLM/SGLang/Ollama runs, or serving-stack switches unless a future prompt explicitly approves them.
+- Recommended next step is Phase 21-F only if explicitly requested after the cross-platform deployment boundary audit. Do not start iOS integration, app-facing endpoints, production endpoints, real user-photo upload, serving benchmark execution, Qwen inference, fixture inference, vLLM/SGLang/Ollama runs, or serving-stack switches unless a future prompt explicitly approves them.
 - Do not start production cloud rollout without explicit approval
 - Production rollout remains blocked until a later explicit release phase
 
@@ -291,6 +291,8 @@ Phase 21-B adds `backend/src/qa/openWeightVlmGatewayAdapterStub.mjs`, `npm run q
 Phase 21-C adds `backend/src/qa/openWeightVlmGatewayProviderRouting.mjs` and `npm run qa:open-weight-vlm:gateway-provider-routing`. The dry-run reviews only backend-internal provider modes. `local_stub` and `local_contract_echo` are allowed; `local_model_blocked`, `future_vllm_blocked`, `future_sglang_blocked`, `manual_ollama_lmstudio_blocked`, `production_blocked`, and unknown modes are blocked. The dry-run stays sanitized, no-network, no-model, and `productionReady:false`.
 
 Phase 21-D adds `backend/src/qa/openWeightVlmGatewayProviderAdapterNoModelHttp.mjs` and `npm run qa:open-weight-vlm:gateway-provider-adapter-no-model-http`. The check accepts only the `local_contract_echo` route, validates routing before HTTP, calls only local/private healthz plus `/local/vlm/gateway-contract-echo`, validates structured candidate JSON through the existing schema/safety chain, and reports sanitized aggregate status only. No real model smoke, Qwen inference, fixture inference, serving benchmark, vLLM/SGLang/Ollama execution, iOS integration, app-facing endpoint, production endpoint, real user-photo upload, raw artifacts, or production readiness change is added.
+
+Phase 21-E adds `docs/cross-platform-backend-deployment-boundary.md`, `backend/src/qa/openWeightVlmCrossPlatformDeploymentBoundary.mjs`, and `npm run qa:open-weight-vlm:cross-platform-boundary`. The gate is no-network/no-model and audits deployment roles plus runtime vs docs-only path rules. Windows paths and local model URLs are allowed only in docs/operator/ignored-example/test-sandbox buckets; backend/iOS runtime and production config must not hardcode Windows paths, Mac local paths, LAN model URLs, public/cloud/tunnel model URLs, provider secrets, direct iOS provider routes, Camera cloud entries, endpoint flags, raw artifact policy allowances, or `productionReady:true`.
 
 ## Phase 12A Filter Planning Status
 

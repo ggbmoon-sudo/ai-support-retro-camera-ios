@@ -232,3 +232,13 @@ Phase 21-A does not run Qwen inference, real model smoke, serving benchmarks, vL
 ## Phase 21-B / 21-C Follow-up
 
 Phase 21-B adds the backend-internal adapter stub and no-model external echo alignment. Phase 21-C adds the backend-internal provider routing dry-run gate. Both remain backend-only and fail-closed. Neither phase approves iOS integration, app-facing endpoints, production endpoints, real user-photo upload, serving benchmark execution, Qwen inference, or `productionReady:true`.
+
+## Phase 21-D / 21-E Follow-up
+
+Phase 21-D adds a no-model provider adapter HTTP check for the `local_contract_echo` route. Phase 21-E adds the cross-platform deployment boundary audit:
+
+```sh
+npm run qa:open-weight-vlm:cross-platform-boundary
+```
+
+Phase 21-E is no-network/no-model and verifies that Windows local sandbox paths, Mac local paths, LAN model URLs, public/cloud/tunnel model URLs, provider secrets, direct iOS provider routes, Camera cloud entries, app-facing endpoint flags, production endpoint flags, raw artifact policy allowances, and `productionReady:true` do not leak into runtime or production-facing buckets. It does not run real model smoke, Qwen inference, serving benchmarks, vLLM/SGLang/Ollama/LM Studio, model-stack switches, endpoint work, iOS integration, training/fine-tuning, or production rollout.

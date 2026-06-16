@@ -68,6 +68,11 @@ import {
   providerAdapterNoModelHttpUnsafeMockFetch
 } from "../src/qa/openWeightVlmGatewayProviderAdapterNoModelHttp.mjs";
 import {
+  assertOpenWeightVlmCrossPlatformDeploymentBoundaryReportRedacted,
+  crossPlatformDeploymentBoundarySamplePolicy,
+  evaluateOpenWeightVlmCrossPlatformDeploymentBoundary
+} from "../src/qa/openWeightVlmCrossPlatformDeploymentBoundary.mjs";
+import {
   assertOpenWeightVlmBenchmarkReportRedacted,
   buildOpenWeightVlmSchemaDiagnostic,
   evaluateOpenWeightVlmBenchmarkCase,
@@ -101,6 +106,8 @@ const GATEWAY_PROVIDER_ROUTING_SCRIPT_URL =
   new URL("../scripts/check-open-weight-vlm-gateway-provider-routing.mjs", import.meta.url);
 const GATEWAY_PROVIDER_ADAPTER_NO_MODEL_HTTP_SCRIPT_URL =
   new URL("../scripts/check-open-weight-vlm-gateway-provider-adapter-no-model-http.mjs", import.meta.url);
+const CROSS_PLATFORM_DEPLOYMENT_BOUNDARY_SCRIPT_URL =
+  new URL("../scripts/check-open-weight-vlm-cross-platform-deployment-boundary.mjs", import.meta.url);
 
 test("open-weight VLM validator accepts valid synthetic benchmark fixtures", async () => {
   const cases = await benchmarkCases();
@@ -2227,6 +2234,158 @@ test("open-weight VLM gateway provider adapter no-model HTTP CLI is sanitized", 
   assert.equal(output.includes("Authorization"), false);
   assert.equal(output.includes("Bearer "), false);
   assert.equal(output.includes("C:\\"), false);
+  assert.equal(output.includes("data:image"), false);
+});
+
+test("open-weight VLM cross-platform deployment boundary passes valid policy", () => {
+  const report = evaluateOpenWeightVlmCrossPlatformDeploymentBoundary(
+    crossPlatformDeploymentBoundarySamplePolicy()
+  );
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.modelCallsMade, false);
+  assert.equal(report.qwenInferenceRun, false);
+  assert.equal(report.benchmarkRun, false);
+  assert.equal(report.eligibleForDeploymentBoundaryReview, true);
+  assert.equal(report.eligibleForAppIntegration, false);
+  assert.equal(report.deploymentRoles.windowsLocalMachine, "local_backend_vlm_development_sandbox_only");
+  assert.equal(report.deploymentRoles.macBookXcode, "ios_client_development_and_future_runtime_validation_only");
+  assert.equal(assertOpenWeightVlmCrossPlatformDeploymentBoundaryReportRedacted(report).ok, true);
+});
+
+test("open-weight VLM cross-platform deployment boundary allows Windows paths in docs buckets", () => {
+  const report = evaluateOpenWeightVlmCrossPlatformDeploymentBoundary({
+    ...crossPlatformDeploymentBoundarySamplePolicy(),
+    pathReferences: [
+      { bucket: "docs", kind: "windows_local_path" },
+      { bucket: "manual_smoke", kind: "windows_local_path" },
+      { bucket: "operator_runbook", kind: "windows_local_path" },
+      { bucket: "ignored_local_config_example", kind: "windows_local_path" },
+      { bucket: "tests_sandbox_assertion", kind: "windows_local_path" }
+    ]
+  });
+
+  assert.equal(report.eligibleForDeploymentBoundaryReview, true);
+  assert.deepEqual(report.hardBlockers, []);
+});
+
+test("open-weight VLM cross-platform deployment boundary blocks runtime local paths", () => {
+  const windowsRuntime = evaluateOpenWeightVlmCrossPlatformDeploymentBoundary({
+    ...crossPlatformDeploymentBoundarySamplePolicy(),
+    pathReferences: [{ bucket: "backend_runtime", kind: "windows_local_path" }]
+  });
+  const macRuntime = evaluateOpenWeightVlmCrossPlatformDeploymentBoundary({
+    ...crossPlatformDeploymentBoundarySamplePolicy(),
+    pathReferences: [{ bucket: "backend_runtime", kind: "mac_local_path" }]
+  });
+
+  assert.equal(windowsRuntime.eligibleForDeploymentBoundaryReview, false);
+  assert.equal(windowsRuntime.hardBlockers.includes("blocked_for_windows_runtime_path"), true);
+  assert.equal(macRuntime.eligibleForDeploymentBoundaryReview, false);
+  assert.equal(macRuntime.hardBlockers.includes("blocked_for_mac_runtime_path"), true);
+});
+
+test("open-weight VLM cross-platform deployment boundary blocks committed model URLs", () => {
+  const iosLan = evaluateOpenWeightVlmCrossPlatformDeploymentBoundary({
+    ...crossPlatformDeploymentBoundarySamplePolicy(),
+    pathReferences: [{ bucket: "ios_runtime", kind: "lan_model_url" }]
+  });
+  const backendLan = evaluateOpenWeightVlmCrossPlatformDeploymentBoundary({
+    ...crossPlatformDeploymentBoundarySamplePolicy(),
+    pathReferences: [{ bucket: "backend_runtime", kind: "lan_model_url" }]
+  });
+  const publicUrl = evaluateOpenWeightVlmCrossPlatformDeploymentBoundary({
+    ...crossPlatformDeploymentBoundarySamplePolicy(),
+    pathReferences: [{ bucket: "production_config", kind: "cloud_tunnel_model_url" }]
+  });
+
+  assert.equal(iosLan.hardBlockers.includes("blocked_for_ios_lan_model_url"), true);
+  assert.equal(backendLan.hardBlockers.includes("blocked_for_committed_lan_model_url"), true);
+  assert.equal(publicUrl.hardBlockers.includes("blocked_for_public_or_cloud_model_url"), true);
+});
+
+test("open-weight VLM cross-platform deployment boundary blocks secrets and direct iOS provider flags", () => {
+  const report = evaluateOpenWeightVlmCrossPlatformDeploymentBoundary({
+    ...crossPlatformDeploymentBoundarySamplePolicy(),
+    pathReferences: [{ bucket: "ios_runtime", kind: "provider_secret" }],
+    runtimeFlags: {
+      iosDirectProviderRoute: true,
+      cameraCloudAiEntry: true,
+      appFacingEndpoint: true,
+      productionEndpoint: true
+    },
+    configPolicy: {
+      ...crossPlatformDeploymentBoundarySamplePolicy().configPolicy,
+      iosContainsProviderSecrets: true,
+      backendContainsProviderSecrets: true
+    }
+  });
+
+  assert.equal(report.eligibleForDeploymentBoundaryReview, false);
+  assert.equal(report.hardBlockers.includes("blocked_for_provider_secret"), true);
+  assert.equal(report.hardBlockers.includes("blocked_for_ios_direct_provider_route"), true);
+  assert.equal(report.hardBlockers.includes("blocked_for_camera_cloud_ai_entry"), true);
+  assert.equal(report.hardBlockers.includes("blocked_for_app_facing_endpoint"), true);
+  assert.equal(report.hardBlockers.includes("blocked_for_production_endpoint"), true);
+});
+
+test("open-weight VLM cross-platform deployment boundary blocks payload changes production config and raw artifacts", () => {
+  const report = evaluateOpenWeightVlmCrossPlatformDeploymentBoundary({
+    ...crossPlatformDeploymentBoundarySamplePolicy(),
+    productionReady: true,
+    runtimeFlags: {
+      backendIosUploadPayloadChanged: true,
+      captureContextUpload: true,
+      rawImageAllowed: true,
+      encodedImageAllowed: true,
+      rawPathAllowed: true,
+      promptBodyAllowed: true,
+      rawModelOutputAllowed: true,
+      providerResponseAllowed: true
+    },
+    configPolicy: {
+      productionUsesEnvSecretsConfig: false,
+      committedPublicModelUrl: true,
+      committedLanModelUrl: true,
+      windowsPathsRuntimeDependency: true,
+      macRequiresWindowsPath: true
+    }
+  });
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.eligibleForDeploymentBoundaryReview, false);
+  assert.equal(report.hardBlockers.includes("blocked_for_backend_ios_payload_change"), true);
+  assert.equal(report.hardBlockers.includes("blocked_for_capture_context_upload"), true);
+  assert.equal(report.hardBlockers.includes("blocked_for_raw_artifact_policy"), true);
+  assert.equal(report.hardBlockers.includes("blocked_for_production_config_boundary"), true);
+  assert.equal(report.hardBlockers.includes("blocked_for_production_flag"), true);
+  assert.equal(report.hardBlockers.includes("blocked_for_macbook_windows_path_dependency"), true);
+});
+
+test("open-weight VLM cross-platform deployment boundary CLI is sanitized and no-network", () => {
+  const output = execFileSync(process.execPath, [
+    fileURLToPath(CROSS_PLATFORM_DEPLOYMENT_BOUNDARY_SCRIPT_URL)
+  ], {
+    cwd: new URL("..", import.meta.url),
+    encoding: "utf8"
+  });
+  const report = JSON.parse(output);
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.modelCallsMade, false);
+  assert.equal(report.qwenInferenceRun, false);
+  assert.equal(report.benchmarkRun, false);
+  assert.equal(report.eligibleForDeploymentBoundaryReview, true);
+  assert.equal(output.includes("fullPrompt"), false);
+  assert.equal(output.includes("rawPrompt"), false);
+  assert.equal(output.includes("requestPayload"), false);
+  assert.equal(output.includes("modelOutput"), false);
+  assert.equal(output.includes("Authorization"), false);
+  assert.equal(output.includes("Bearer "), false);
+  assert.equal(output.includes("C:\\"), false);
+  assert.equal(output.includes("http://"), false);
   assert.equal(output.includes("data:image"), false);
 });
 

@@ -1,6 +1,6 @@
 # Backend Internal VLM Gateway Contract Preflight
 
-Status: Phase 21-A contract preflight plus Phase 21-B adapter stub alignment plus Phase 21-C routing plan plus Phase 21-D no-model provider adapter HTTP check
+Status: Phase 21-A contract preflight plus Phase 21-B adapter stub alignment plus Phase 21-C routing plan plus Phase 21-D no-model provider adapter HTTP check plus Phase 21-E deployment boundary audit
 
 Production readiness: `productionReady:false`
 
@@ -236,7 +236,8 @@ Recommended next options:
 - Phase 21-B: backend-internal gateway adapter skeleton, still no-network/no-model by default.
 - Phase 21-C: backend-internal provider routing dry-run, fail-closed and sanitized.
 - Phase 21-D: backend-internal no-model provider adapter HTTP check for the `local_contract_echo` route only.
-- Phase 21-E: any later gateway follow-up only if explicitly requested.
+- Phase 21-E: cross-platform deployment boundary audit and gate.
+- Phase 21-F: any later gateway follow-up only if explicitly requested.
 
 Do not start iOS integration, endpoint rollout, real user-photo upload, or production cloud AI without a later explicit phase prompt.
 
@@ -284,6 +285,25 @@ npm run qa:open-weight-vlm:gateway-provider-adapter-no-model-http
 The adapter accepts only the `local_contract_echo` route, validates the provider routing decision before HTTP, calls only local/private healthz plus `/local/vlm/gateway-contract-echo`, validates the returned structured candidate through the existing schema/safety chain, and emits sanitized aggregate status only.
 
 It does not run real model smoke, Qwen inference, fixture inference, serving benchmarks, vLLM/SGLang/Ollama execution, iOS integration, app-facing endpoints, production endpoints, real user-photo upload, consent UI, training/fine-tuning, or production rollout. `productionReady:false` remains required.
+
+## Phase 21-E Cross-platform Deployment Boundary Audit
+
+Phase 21-E adds:
+
+```sh
+npm run qa:open-weight-vlm:cross-platform-boundary
+```
+
+The audit keeps Windows local paths and local model URLs in docs/operator/ignored-example/test-sandbox buckets only. Backend runtime, iOS runtime, committed production config, and future production architecture must not depend on Windows paths, Mac local paths, committed LAN model URLs, public/cloud/tunnel model URLs, provider secrets, direct iOS provider routes, Camera cloud entries, raw artifact allowances, app-facing endpoint flags, production endpoint flags, or `productionReady:true`.
+
+Deployment roles remain explicit:
+
+- Windows local machine: backend/VLM development sandbox only.
+- MacBook/Xcode: iOS client development and future runtime verification only.
+- Main backend: future app-facing API owner and VLM mediator.
+- VLM provider server: behind-backend provider only, not the app contract source.
+
+Phase 21-E does not run real model smoke, Qwen inference, fixture inference, serving benchmarks, vLLM/SGLang/Ollama execution, iOS integration, app-facing endpoints, production endpoints, real user-photo upload, consent UI, training/fine-tuning, or production rollout. `productionReady:false` remains required.
 
 ## ProductionReady Boundary
 
