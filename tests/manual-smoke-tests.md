@@ -1,5 +1,17 @@
 # Manual Smoke Tests
 
+## Phase 20-K
+
+Expanded local VLM smoke result review and coverage gap plan:
+
+- [ ] Open `docs/open-weight-vlm-expanded-smoke-result-review.md`.
+- [ ] Confirm the Phase 20-J aggregate is recorded as sanitized evidence only: `fixtureCount:8`, `acceptedCount:8`, `rejectedCount:0`, `acceptanceRate:100%`, no validation/fallback/schema diagnostic buckets, `latencyBucketCounts:gt_15s x3, 5s_to_15s x5`, `networkCallsMade:true`, raw persistence flags false, and `productionReady:false`.
+- [ ] Confirm the review distinguishes what was proven from what remains unproven, including no production readiness, no iOS integration, no user-photo upload, no consent UI, no app-facing/production endpoint, no broad dataset, no concurrency/throughput, no serving-stack comparison, no multilingual real-output review, no fine-tuning, and no on-device model.
+- [ ] Confirm the coverage gaps include warm indoor, soft focus, street chrome / high contrast, overexposed unreadable, backlit, cluttered, tilted, night grain, washed-out flash, mixed light, low-detail, and abstract/minimal scenes.
+- [ ] Confirm the latency note says `gt_15s x3` is sandbox review data, not production approval.
+- [ ] Confirm recommended Phase 20-L is 12-fixture coverage expansion planning plus a no-model registry gate.
+- [ ] Confirm no real model smoke, Qwen inference, fixture image changes, real local registry expansion, serving-stack benchmark, iOS integration, app-facing endpoint, production endpoint, training/fine-tuning, raw artifact commit, or production readiness change is introduced.
+
 ## Phase 20-G
 
 Controlled expanded local VLM smoke blocked result:

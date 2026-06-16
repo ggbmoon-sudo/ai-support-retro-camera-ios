@@ -236,6 +236,12 @@ Sanitized result: `fixtureCount:8`, `acceptedCount:8`, `rejectedCount:0`, `accep
 
 This strengthens sandbox confidence for the current fixture set, but it still does not prove production readiness, iOS integration, real user-photo upload, consent UI, quota/abuse controls, retention/deletion implementation, serving-stack performance, larger dataset coverage, or App Store privacy readiness.
 
+## Phase 20-K Coverage Review Note
+
+Phase 20-K adds `docs/open-weight-vlm-expanded-smoke-result-review.md` to interpret the accepted eight-fixture result and identify dataset gaps. The review confirms the current result proves local/private routeability and validator acceptance for the approved set, but does not prove production readiness, iOS integration, broad dataset quality, hard-negative robustness, imported-photo behavior breadth, multilingual real-output quality, throughput, serving-stack performance, fine-tuning, or on-device readiness.
+
+The review records `gt_15s x3` and `5s_to_15s x5` as sandbox latency evidence only. The recommended next step is Phase 20-L: 12-fixture coverage expansion planning plus a no-model registry gate. Phase 20-K does not run real smoke, add fixture images, expand the real local registry, benchmark serving stacks, start iOS integration, add endpoints, or change `productionReady:false`.
+
 ## Boundary Confirmation
 
 Phase 20-E-E is a review/summary/planning gate only. It does not run real model smoke, expand fixture count, benchmark vLLM/SGLang, start iOS integration, add app-facing or production endpoints, train/fine-tune, weaken validation, loosen fixture approval, commit local artifacts, or change production readiness.

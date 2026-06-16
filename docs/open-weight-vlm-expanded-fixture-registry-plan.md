@@ -199,6 +199,19 @@ All eight fixtures were accepted. Sanitized aggregate: `fixtureCount:8`, `accept
 
 This confirms the expanded registry can support an eight-fixture sandbox smoke, but it does not approve more fixtures, iOS integration, serving-stack benchmarking, or production rollout.
 
+## Phase 20-K Coverage Review
+
+Phase 20-K reviews the accepted Phase 20-J result as sandbox evidence only. See `docs/open-weight-vlm-expanded-smoke-result-review.md`.
+
+Coverage review keeps these conclusions:
+
+- covered categories include `bright_daylight_clean`, `low_light_grain`, `motion_blur_intentional`, `high_contrast_shadow`, `faded_color_retro`, `imported_limited_context`, `severe_blur_reject`, and `black_or_near_black_unreadable`
+- missing or under-covered categories include `warm_indoor_ambient`, `soft_focus_dreamy`, `street_chrome_high_contrast`, `overexposed_unreadable`, `backlit_subject_or_scene`, `cluttered_frame`, `tilted_intentional_snapshot`, `night_grain_city`, `washed_out_flash`, `mixed_light_color_cast`, `low_detail_texture_scene`, and `abstract_or_minimal_scene`
+- `gt_15s x3` remains a sandbox latency note, not production approval
+- the next recommended step is Phase 20-L: 12-fixture coverage expansion planning plus a no-model registry gate
+
+Phase 20-K does not run real smoke, add fixture images, expand the real local registry, benchmark serving stacks, start iOS integration, add endpoints, or change `productionReady:false`.
+
 ## Boundary Confirmation
 
 Phase 20-F is backend-only and Windows-primary. It prepares controlled expanded smoke, but does not run it. No fixture images, local registry, local config, raw paths, prompts, model outputs, request payloads, reports, logs, weights, or credentials are committed. iOS behavior is unchanged. `productionReady:false` remains required.

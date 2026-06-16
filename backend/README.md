@@ -775,6 +775,16 @@ Sanitized aggregate:
 
 The repeatability gate and failure/latency taxonomy passed with a latency note. This is still sandbox evidence only and does not approve iOS integration, app-facing endpoints, production endpoints, larger fixture expansion, serving-stack benchmarking, or production rollout.
 
+## Phase 20-K Expanded Smoke Result Review
+
+Phase 20-K is review/planning only. It records the Phase 20-J accepted eight-fixture result, interprets `gt_15s x3` as a sandbox latency note, and documents dataset coverage gaps in:
+
+```text
+../docs/open-weight-vlm-expanded-smoke-result-review.md
+```
+
+The recommended next step is Phase 20-L: 12-fixture coverage expansion planning plus a no-model registry gate. Do not run more real model smoke, add fixture images, expand the real local registry, benchmark serving stacks, start iOS integration, add endpoints, or change `productionReady:false` without a future explicit phase.
+
 ## Phase 20-C Local VLM Operator Runbook + Smoke Gate
 
 Phase 20-C adds an operator runbook and a backend-only real-model smoke gate for future approved local/self-hosted VLM testing. The gate does not call a model and does not create an app-facing endpoint.

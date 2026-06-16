@@ -523,3 +523,16 @@ Phase 20-J ran that explicitly approved controlled retry:
 Sanitized aggregate: `fixtureCount:8`, `acceptedCount:8`, `rejectedCount:0`, `acceptanceRate:100%`, `validationCodeCounts:null x8`, `fallbackCategoryCounts:null x8`, no schema diagnostic buckets, `latencyBucketCounts:gt_15s x3, 5s_to_15s x5`, `networkCallsMade:true`, raw persistence flags false, and `productionReady:false`.
 
 Repeatability and failure/latency gates passed with a latency note. Treat this as backend-only sandbox evidence, not production readiness.
+
+## Phase 20-K Review And Coverage Gap Plan
+
+Phase 20-K adds `docs/open-weight-vlm-expanded-smoke-result-review.md`. It reviews the accepted eight-fixture result, records coverage gaps, and recommends Phase 20-L as a no-model 12-fixture coverage expansion plan plus registry gate.
+
+Operator implications:
+
+- Do not run more real local model smoke from Phase 20-K.
+- Do not add fixture images or expand the real ignored registry during Phase 20-K.
+- Treat `gt_15s x3` as a sandbox latency note, not production approval.
+- Keep all local config, fixture registry, fixture images, reports, logs, prompts, model outputs, request payloads, credentials, and model weights ignored.
+- Require a future explicit prompt before any additional real local/private model calls.
+- Keep `productionReady:false`.

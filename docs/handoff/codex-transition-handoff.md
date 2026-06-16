@@ -897,6 +897,8 @@ Use this template:
 - Phase 20-J then ran the explicitly approved controlled expanded local/private Qwen smoke retry: exactly eight calls, one per approved fixture token, no retries, and no extra fixtures.
 - Sanitized Phase 20-J aggregate: `fixtureCount:8`, `acceptedCount:8`, `rejectedCount:0`, `acceptanceRate:100%`, `validationCodeCounts:null x8`, `fallbackCategoryCounts:null x8`, no schema diagnostic buckets, `latencyBucketCounts:gt_15s x3, 5s_to_15s x5`, `networkCallsMade:true`, raw persistence flags false, and `productionReady:false`.
 - Repeatability and failure/latency gates passed with a latency note. Next work should be Phase 20-K review/planning only unless explicitly approved otherwise.
+- Phase 20-K now records that review in `docs/open-weight-vlm-expanded-smoke-result-review.md`: the eight-fixture result is sandbox evidence only, `gt_15s x3` is a latency note, and coverage gaps remain for warm indoor, soft focus, street chrome / high contrast, overexposed unreadable, backlit, cluttered, tilted, night grain, washed-out flash, mixed light, low-detail, and abstract/minimal scenes.
+- Recommended next work is Phase 20-L: 12-fixture coverage expansion planning plus a no-model registry gate. Do not run more real model smoke, add fixture images, expand the real local registry, benchmark serving stacks, start iOS integration, add endpoints, or change `productionReady:false` without explicit future approval.
 
 ---
 

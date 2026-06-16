@@ -389,3 +389,9 @@ Sanitized aggregate:
 - raw persistence flags false
 
 The aggregate passed repeatability and failure/latency review with a latency note. It remains backend-only sandbox evidence and does not approve iOS integration or production rollout.
+
+## Phase 20-K Result Review
+
+Phase 20-K is review/planning only. The accepted Phase 20-J aggregate is interpreted in `docs/open-weight-vlm-expanded-smoke-result-review.md` as useful sandbox evidence with remaining coverage gaps.
+
+The next recommended step is Phase 20-L: plan 12 total fixtures and add a no-model registry/routing gate before any future real smoke. Do not run more model calls, add fixture images, expand the real local registry, benchmark serving stacks, start iOS integration, add app-facing or production endpoints, or change `productionReady:false` without explicit future approval.

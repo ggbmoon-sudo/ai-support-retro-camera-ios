@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 20-J reran the explicitly approved controlled expanded local/private Qwen smoke after the routing fix. Exactly eight fixture calls ran, one per approved token, with no retries. All eight were accepted, raw persistence flags stayed false, and `productionReady:false` remains enforced.
+- Phase 20-K reviewed the accepted Phase 20-J eight-fixture local/private Qwen smoke as sandbox evidence only. It added `docs/open-weight-vlm-expanded-smoke-result-review.md`, recorded coverage gaps and latency interpretation, and kept `productionReady:false`.
 
 Next phase:
 
-- Recommended next step is Phase 20-K review/planning only unless a future prompt explicitly approves more model calls. Do not retry model calls to chase pass rate.
+- Recommended next step is Phase 20-L: 12-fixture coverage expansion planning plus a no-model registry gate. Do not run more model calls unless a future prompt explicitly approves them.
 - Do not start production cloud rollout without explicit approval
 - Production rollout remains blocked until a later explicit release phase
 
@@ -127,6 +127,7 @@ Current MVP demo / QA readiness docs:
 - `docs/open-weight-vlm-local-smoke-expansion-gate.md`
 - `docs/open-weight-vlm-local-sandbox-review-summary.md`
 - `docs/open-weight-vlm-expanded-fixture-registry-plan.md`
+- `docs/open-weight-vlm-expanded-smoke-result-review.md`
 - `docs/filter-research-popular-film-looks.md`
 - `docs/filter-preset-schema.md`
 - `docs/filter-roadmap.md`
@@ -270,6 +271,8 @@ Phase 20-H adds `npm run qa:open-weight-vlm:expanded-fixture-provider-diagnostic
 Phase 20-I adds `npm run qa:open-weight-vlm:fixture-routing-echo`, backed by a local/private no-model Windows FastAPI contract echo route. It verifies `smoke_001` through `smoke_008` route before any future real smoke retry and reports sanitized aggregate fields only. The Phase 20-I check passed with `totalFixtureTokens:8`, `routeableCount:8`, `unavailableCount:0`, `modelInferenceRun:false`, raw persistence flags false, `networkCallsMade:true`, and `productionReady:false`.
 
 Phase 20-J reruns the controlled expanded local/private Qwen smoke after the routing fix. The approved run made exactly eight fixture calls, one for each `smoke_001` through `smoke_008`, with no retries or extra fixtures. Sanitized aggregate: `fixtureCount:8`, `acceptedCount:8`, `rejectedCount:0`, `acceptanceRate:100%`, `latencyBucketCounts:gt_15s x3, 5s_to_15s x5`, no validation/fallback/schema diagnostic buckets, `networkCallsMade:true`, raw persistence flags false, and `productionReady:false`.
+
+Phase 20-K reviews that accepted expanded smoke result and documents dataset coverage gaps in `docs/open-weight-vlm-expanded-smoke-result-review.md`. It is planning-only: no real model smoke, fixture images, local registry expansion, iOS integration, app-facing endpoint, production endpoint, serving-stack benchmark, training/fine-tuning, or production readiness change is added. The recommended next step is a no-model 12-fixture coverage expansion plan and registry gate before any future approved real smoke.
 
 ## Phase 12A Filter Planning Status
 
