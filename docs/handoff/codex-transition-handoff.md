@@ -226,6 +226,29 @@ Latest Phase 20-E-D local VLM failure and latency taxonomy on 2026-06-16:
 - No validator, smoke gate, fixture approval, backend/iOS payload, iOS source, Camera cloud entry, app-facing endpoint, production endpoint, training/fine-tuning, or rollout boundary was changed.
 - Phase 20-E-E / 20-F is planning-ready only after E-D is reviewed, committed, and pushed; production rollout remains blocked.
 
+Latest Phase 20-E-E local VLM sandbox review summary on 2026-06-16:
+
+- Phase 20-E-E adds `docs/open-weight-vlm-local-sandbox-review-summary.md`.
+- The summary consolidates D2J through E-D, including accepted D2J smoke, E-A expansion gate, E-B1 Windows `fileURLToPath(...)` config/path fix, E-B2 accepted 3-fixture smoke, E-C repeatability gate/repeat run, and E-D failure/latency taxonomy.
+- Proven: backend can call the local/private Windows Qwen2.5-VL FastAPI server through the sandbox path; deterministic mapper can produce backend-validator-accepted candidate JSON; 3 approved ignored fixtures can pass once and in repeat smoke; failure/latency taxonomy exists; raw persistence flags remained false; Windows-primary backend workflow is viable.
+- Not proven: production readiness, iOS integration, real user-photo upload, consent UI, app-facing/production endpoints, quota/billing/entitlement, deletion/retention implementation, App Store privacy disclosure, large fixture coverage, model comparison, vLLM/SGLang benchmark, throughput/concurrency, multilingual real-image evaluation beyond existing copy gates, fine-tuning, or on-device model work.
+- Gate inventory now includes structured candidate validator, synthetic benchmark/gate, local config dry-run, default local smoke stub/no-network, local smoke gate, Windows path/config handling tests, repeatability gate, failure/latency taxonomy, copy/filter/CreativeIntent/card coverage, secret scan, iOS direct provider/model scan, Camera cloud entry scan, payload drift scan, and artifact scan.
+- Phase 20-F entry criteria: clean repo, upstream comparison `0 0`, E-E committed and pushed, ignored local artifacts still ignored, Windows server local/private only, raw logging disabled, safe healthz before any future smoke, all existing gates pass, and explicit 20-F scope chosen.
+- Recommended Phase 20-F option is Option A: expanded fixture set planning plus fixture registry schema.
+- No real model smoke, fixture expansion, vLLM/SGLang benchmark, iOS integration, endpoint work, training/fine-tuning, validator weakening, fixture approval loosening, local artifact commit, or production readiness change was added.
+
+Latest Phase 20-F expanded fixture registry dry-run gate on 2026-06-16:
+
+- Phase 20-F adds `docs/open-weight-vlm-expanded-fixture-registry-plan.md`.
+- New policy module: `backend/src/qa/openWeightVlmExpandedFixtureRegistry.mjs`.
+- New dry-run CLI: `backend/scripts/check-open-weight-vlm-expanded-fixture-registry.mjs`.
+- New command: `npm run qa:open-weight-vlm:expanded-fixtures`.
+- The dry-run validates sanitized sample fixture metadata only: fixture ID bucket, category, source type, approval, metadata stripping, privacy review, face/sensitive/private identifier exclusions, expected context/risk/creative/filter buckets, category coverage, missing core categories, and blocked reason counts.
+- Target categories are `bright_daylight_clean`, `low_light_grain`, `motion_blur_intentional`, `severe_blur_reject`, `high_contrast_shadow`, `faded_color_retro`, `warm_indoor_ambient`, `street_chrome_high_contrast`, `soft_focus_dreamy`, `overexposed_unreadable`, `imported_limited_context`, and `black_or_near_black_unreadable`.
+- The dry-run makes no model call, no network call, does not require local config or fixture images, and keeps `networkCallsMade:false` and `productionReady:false`.
+- Phase 20-G controlled 6-8 fixture smoke is only conditionally planning-ready after F is reviewed/committed/pushed, ignored fixtures/registry are safely prepared, existing gates pass, Windows healthz is safe, raw logging is disabled, and the user explicitly approves real local/private model calls.
+- No real smoke, fixture image commit, local config/registry commit, vLLM/SGLang benchmark, iOS integration, endpoint work, payload change, capture-context upload, training/fine-tuning, or production rollout was added.
+
 Confirmed locally:
 
 - Phase 16E - Static Pose Overlay MVP

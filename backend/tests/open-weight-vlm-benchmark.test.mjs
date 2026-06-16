@@ -25,6 +25,11 @@ import {
   evaluateOpenWeightVlmLocalSmokeFailureTaxonomy
 } from "../src/qa/openWeightVlmLocalSmokeFailureTaxonomy.mjs";
 import {
+  assertOpenWeightVlmExpandedFixtureRegistryReportRedacted,
+  evaluateOpenWeightVlmExpandedFixtureRegistry,
+  expandedFixtureRegistrySample
+} from "../src/qa/openWeightVlmExpandedFixtureRegistry.mjs";
+import {
   assertOpenWeightVlmBenchmarkReportRedacted,
   buildOpenWeightVlmSchemaDiagnostic,
   evaluateOpenWeightVlmBenchmarkCase,
@@ -41,6 +46,7 @@ const LOCAL_SANDBOX_SMOKE_SCRIPT_URL = new URL("../scripts/run-open-weight-vlm-l
 const LOCAL_SMOKE_GATE_SCRIPT_URL = new URL("../scripts/check-open-weight-vlm-local-smoke-gate.mjs", import.meta.url);
 const LOCAL_REPEATABILITY_GATE_SCRIPT_URL = new URL("../scripts/check-open-weight-vlm-local-smoke-repeatability-gate.mjs", import.meta.url);
 const LOCAL_FAILURE_TAXONOMY_SCRIPT_URL = new URL("../scripts/check-open-weight-vlm-local-smoke-failure-taxonomy.mjs", import.meta.url);
+const EXPANDED_FIXTURE_REGISTRY_SCRIPT_URL = new URL("../scripts/check-open-weight-vlm-expanded-fixture-registry.mjs", import.meta.url);
 
 test("open-weight VLM validator accepts valid synthetic benchmark fixtures", async () => {
   const cases = await benchmarkCases();
@@ -1095,6 +1101,93 @@ test("open-weight VLM local smoke failure taxonomy script prints sanitized sampl
   assert.equal(output.includes("fullPrompt"), false);
   assert.equal(output.includes("http://"), false);
   assert.equal(output.includes(".jpg"), false);
+});
+
+test("open-weight VLM expanded fixture registry passes dry-run review", () => {
+  const report = evaluateOpenWeightVlmExpandedFixtureRegistry(expandedFixtureRegistrySample());
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.totalFixtures, 12);
+  assert.equal(report.approvedCount, 12);
+  assert.equal(report.blockedCount, 0);
+  assert.deepEqual(report.missingRequiredCategories, []);
+  assert.deepEqual(report.blockedReasonCounts, {});
+  assert.equal(report.eligibleForControlledSmoke, true);
+  assert.equal(report.categoryCoverage.bright_daylight_clean, 1);
+  assert.equal(assertOpenWeightVlmExpandedFixtureRegistryReportRedacted(report).ok, true);
+});
+
+test("open-weight VLM expanded fixture registry blocks missing metadata strip", () => {
+  const registry = expandedFixtureRegistrySample();
+  registry[0] = { ...registry[0], metadataStripped: false };
+  const report = evaluateOpenWeightVlmExpandedFixtureRegistry(registry);
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.eligibleForControlledSmoke, false);
+  assert.equal(report.blockedReasonCounts.blocked_missing_metadata_strip, 1);
+});
+
+test("open-weight VLM expanded fixture registry blocks missing privacy review", () => {
+  const registry = expandedFixtureRegistrySample();
+  registry[0] = { ...registry[0], privacyReviewed: false };
+  const report = evaluateOpenWeightVlmExpandedFixtureRegistry(registry);
+
+  assert.equal(report.eligibleForControlledSmoke, false);
+  assert.equal(report.blockedReasonCounts.blocked_privacy_review_missing, 1);
+});
+
+test("open-weight VLM expanded fixture registry blocks face, sensitive content, and private identifiers", () => {
+  const registry = expandedFixtureRegistrySample();
+  registry[0] = { ...registry[0], containsFace: true };
+  registry[1] = { ...registry[1], containsSensitiveContent: true };
+  registry[2] = { ...registry[2], containsPrivateIdentifier: true };
+  const report = evaluateOpenWeightVlmExpandedFixtureRegistry(registry);
+
+  assert.equal(report.eligibleForControlledSmoke, false);
+  assert.equal(report.blockedReasonCounts.blocked_face_presence, 1);
+  assert.equal(report.blockedReasonCounts.blocked_sensitive_content, 1);
+  assert.equal(report.blockedReasonCounts.blocked_private_identifier, 1);
+});
+
+test("open-weight VLM expanded fixture registry blocks unknown categories", () => {
+  const registry = expandedFixtureRegistrySample();
+  registry[0] = { ...registry[0], category: "portrait_private_face" };
+  const report = evaluateOpenWeightVlmExpandedFixtureRegistry(registry);
+
+  assert.equal(report.eligibleForControlledSmoke, false);
+  assert.equal(report.blockedReasonCounts.blocked_unknown_category, 1);
+});
+
+test("open-weight VLM expanded fixture registry reports missing required category coverage", () => {
+  const registry = expandedFixtureRegistrySample()
+    .filter((entry) => entry.category !== "bright_daylight_clean");
+  const report = evaluateOpenWeightVlmExpandedFixtureRegistry(registry);
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.eligibleForControlledSmoke, false);
+  assert.equal(report.missingRequiredCategories.includes("bright_daylight_clean"), true);
+  assert.equal(report.categoryCoverage.bright_daylight_clean, 0);
+});
+
+test("open-weight VLM expanded fixture registry dry-run CLI is sanitized and no-network", () => {
+  const output = execFileSync(process.execPath, [fileURLToPath(EXPANDED_FIXTURE_REGISTRY_SCRIPT_URL), "--dry-run"], {
+    cwd: new URL("..", import.meta.url),
+    encoding: "utf8"
+  });
+  const report = JSON.parse(output);
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.eligibleForControlledSmoke, true);
+  assert.equal(report.totalFixtures, 12);
+  assert.equal(report.approvedCount, 12);
+  assert.equal(output.includes("modelOutput"), false);
+  assert.equal(output.includes("fullPrompt"), false);
+  assert.equal(output.includes("requestPayload"), false);
+  assert.equal(output.includes("http://"), false);
+  assert.equal(output.includes(".jpg"), false);
+  assert.equal(output.includes("C:\\"), false);
 });
 
 test("open-weight VLM local sandbox smoke rejects non FastAPI serving stacks without network", async () => {

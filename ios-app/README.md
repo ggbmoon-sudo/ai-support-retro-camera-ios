@@ -148,6 +148,10 @@ Phase 20-D2A is docs-only and keeps iOS behavior unchanged. It adds a local oper
 
 Phase 20-E-A is docs-only from the iOS app perspective. It records a backend-only accepted local/private LAN Qwen-backed VLM smoke and prepares a conservative future multi-fixture expansion gate. iOS behavior remains unchanged: no provider/model key, no direct model/provider call, no Camera cloud AI entry, no iOS upload payload change, no capture-context upload, and no production remote rollout.
 
+Phase 20-E-E is also docs-only from the iOS app perspective. It summarizes the backend-only Windows-primary local VLM sandbox, records Phase 20-F entry criteria, and recommends expanded fixture planning before any serving-stack benchmark or iOS integration. iOS behavior remains unchanged: no provider/model key, no direct model/provider call, no Camera cloud AI entry, no iOS upload payload change, no capture-context upload, and no production remote rollout.
+
+Phase 20-F remains backend-only from the iOS app perspective. It adds expanded fixture registry planning and a no-network backend dry-run gate only; no fixture images, real model smoke, app-facing endpoint, iOS provider/model key, direct model/provider call, Camera cloud AI entry, iOS upload payload change, capture-context upload, or production remote rollout is added.
+
 ## Phase 17D-A Local Camera Capture Context
 
 Phase 17D-A adds local-only summarized capture context for captured / imported photos:

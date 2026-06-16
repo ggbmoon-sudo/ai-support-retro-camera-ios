@@ -674,6 +674,30 @@ Pass/review categories include `pass_clean_local_smoke`, `pass_with_latency_note
 
 E-D does not run a larger fixture expansion, real Qwen smoke, iOS integration, app-facing endpoint, production endpoint, Camera cloud entry, payload change, training/fine-tuning, or production rollout. `productionReady:false` remains required.
 
+## Phase 20-E-E Local VLM Sandbox Review Summary
+
+Phase 20-E-E adds `../docs/open-weight-vlm-local-sandbox-review-summary.md` as the consolidated backend-only review of the local/self-hosted VLM sandbox.
+
+The summary records what D2J through E-D proved: the backend can call the local/private Windows Qwen2.5-VL FastAPI server through the sandbox path, the deterministic mapper can produce validator-accepted candidate JSON, three approved ignored fixtures can pass once and in repeat smoke, sanitized failure/latency taxonomy exists, raw persistence flags remained false, and the Windows-primary workflow is viable.
+
+It also records what remains unproven: production readiness, iOS integration, real user-photo upload, consent UI, app-facing/production endpoints, quota/billing/entitlement, deletion/retention implementation, App Store privacy disclosure update, large fixture coverage, model comparison, vLLM/SGLang benchmarking, throughput/concurrency testing, multilingual real-image evaluation beyond existing copy gates, fine-tuning, and on-device model work.
+
+Phase 20-F may start only after the repo is clean, upstream comparison is `0 0`, E-E is committed and pushed, ignored local artifacts remain ignored, Windows server remains local/private, raw logging stays disabled, all existing gates pass, and the Phase 20-F scope is chosen explicitly. Recommended Phase 20-F direction is Option A: expanded fixture set planning plus fixture registry schema.
+
+## Phase 20-F Expanded Fixture Registry Dry-run Gate
+
+Phase 20-F adds a backend-only fixture registry policy and dry-run gate for planning a future controlled 6-8 fixture local smoke.
+
+Run:
+
+```sh
+npm run qa:open-weight-vlm:expanded-fixtures
+```
+
+The command validates sanitized sample registry entries only. It does not read local config, require fixture images, call a model, make network calls, print raw paths, print prompts, print model output, print request payloads, or mark production ready.
+
+The gate reviews fixture metadata buckets, approval booleans, metadata stripping, privacy review, face/sensitive/private identifier exclusions, category coverage, missing core categories, and blocked reason counts. Output keeps `networkCallsMade:false` and `productionReady:false`.
+
 ## Phase 20-C Local VLM Operator Runbook + Smoke Gate
 
 Phase 20-C adds an operator runbook and a backend-only real-model smoke gate for future approved local/self-hosted VLM testing. The gate does not call a model and does not create an app-facing endpoint.

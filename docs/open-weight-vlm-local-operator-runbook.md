@@ -402,3 +402,59 @@ Latency categories:
 Accepted `gt_15s` latency is a sandbox review note. All accepted fixtures at `gt_15s` are latency regression review data. Timeout, unavailable, or pre-inference block buckets stop review. Safe rejections remain useful local smoke data, but they do not approve production readiness.
 
 Phase 20-E-D does not run a larger fixture expansion, run real Qwen smoke, read local config contents, inspect fixture registry contents, print raw prompts/model output/image paths/base64/request payloads, or approve iOS/product rollout.
+
+## Phase 20-E-E Sandbox Review Summary
+
+Phase 20-E-E adds the consolidated sandbox review at:
+
+```text
+docs/open-weight-vlm-local-sandbox-review-summary.md
+```
+
+Use that summary before starting Phase 20-F. It records:
+
+- completed D2J through E-D milestones
+- what the local/private Windows Qwen2.5-VL sandbox proved
+- what remains unproven
+- the full gate inventory
+- safety/privacy/product boundaries
+- Windows-primary workflow and MacBook/Xcode role
+- Phase 20-F entry criteria
+- recommended Phase 20-F direction
+
+Phase 20-F may start only after:
+
+- repo is clean
+- upstream comparison is `0 0`
+- E-E is reviewed, committed, and pushed
+- ignored local config, registry, fixtures, reports, logs, weights, and credentials remain ignored/untracked/unstaged
+- Windows server remains local/private only
+- raw logging remains disabled
+- healthz is safe if future smoke is planned
+- all existing gates pass
+- Phase 20-F scope is explicitly chosen
+
+Recommended Phase 20-F direction is expanded fixture set planning plus fixture registry schema. Do not run real model smoke, expand fixture count, benchmark vLLM/SGLang, or start iOS integration unless a future explicit phase asks for that scope.
+
+## Phase 20-F Expanded Fixture Registry Dry-run
+
+Phase 20-F adds a backend-only dry-run gate for future expanded fixture planning:
+
+```sh
+cd backend
+npm run qa:open-weight-vlm:expanded-fixtures
+```
+
+The command reviews sanitized sample registry metadata only. It does not read ignored local config, require fixture images, call a model, make network calls, print raw paths/prompts/model outputs/request payloads, or approve production readiness.
+
+Before any future controlled 6-8 fixture smoke:
+
+- Phase 20-F must be reviewed, committed, and pushed.
+- The expanded fixture dry-run gate must pass.
+- Ignored local fixture registry and fixture images must be prepared safely and remain untracked/unstaged.
+- Every fixture must be metadata-stripped, privacy-reviewed, approved for local smoke, face-free, non-sensitive, and free of private identifiers.
+- Existing backend tests, synthetic benchmark/gate, local config dry-run, default local smoke, local smoke gate, repeatability gate, failure taxonomy, and boundary scans must pass.
+- Windows healthz must be safe, local/private only, and raw logging disabled.
+- The user must explicitly approve real local/private model calls for that future phase.
+
+Passing the dry-run gate is not permission to run real smoke by itself.

@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 20-E-D - Local VLM Smoke Failure and Latency Taxonomy Review
+Current phase: Phase 20-F - Expanded Fixture Registry Schema and Dry-run Gate
 Status: Implemented; repo-side verification passed
-Latest implementation: Added a backend-only Phase 20-E-D local VLM smoke failure and latency taxonomy for sanitized aggregate review only. The taxonomy classifies clean local smoke, accepted latency notes, minor latency review notes, schema regressions, provider-integration failures, raw persistence, fixture readiness gaps, unapproved fixture counts, model/server unavailability, expected/unexpected network-call mismatches, repeatability drift, latency blockers, production flag violations, and unknown aggregate states. The new CLI runs a synthetic sanitized sample only by default and makes no model call. E-D did not run a larger fixture expansion or real Qwen smoke. It keeps `productionReady:false`, leaves validator/smoke gates/fixture approval strict, and adds no iOS integration, app-facing endpoint, production endpoint, payload change, Camera cloud entry, training/fine-tuning, or production rollout.
+Latest implementation: Added `docs/open-weight-vlm-expanded-fixture-registry-plan.md`, `backend/src/qa/openWeightVlmExpandedFixtureRegistry.mjs`, `backend/scripts/check-open-weight-vlm-expanded-fixture-registry.mjs`, `npm run qa:open-weight-vlm:expanded-fixtures`, and backend tests. The Phase 20-F dry-run validates sanitized expanded fixture registry metadata, category coverage, approval/privacy/metadata-strip buckets, and exclusion rules without local config, fixture images, model calls, network calls, raw paths, prompts, model outputs, request payloads, or production readiness. Phase 20-F prepares a future controlled 6-8 fixture smoke only; it does not run real model smoke, benchmark vLLM/SGLang, start iOS integration, add endpoints, train/fine-tune, weaken gates, commit local artifacts, or change `productionReady:false`.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -72,7 +72,97 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Phase 20-E-E / 20-F is planning-ready only after Phase 20-E-D is reviewed, committed, and pushed. It must remain backend-only/local-private unless explicitly scoped otherwise, keep fixture IDs and sanitized metrics only, keep `productionReady:false`, and add no iOS integration or production endpoint. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, public endpoint, model downloads, model cache changes, or user-photo training / fine-tuning until explicitly requested.
+Next phase: Phase 20-G controlled 6-8 fixture local smoke is planning-ready only after Phase 20-F is reviewed, committed, and pushed, the expanded fixture dry-run gate passes, ignored local fixtures/registry are prepared safely, existing gates pass, Windows healthz is safe, and the user explicitly approves real local/private model calls. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, public endpoint, serving-stack benchmark, model downloads, model cache changes, or user-photo training / fine-tuning until explicitly requested.
+
+---
+
+## Phase 20-F - Expanded Fixture Registry Schema and Dry-run Gate
+
+Status: Implemented
+Date: 2026-06-16
+
+### Completed
+
+- Added `docs/open-weight-vlm-expanded-fixture-registry-plan.md`.
+- Added `backend/src/qa/openWeightVlmExpandedFixtureRegistry.mjs`.
+- Added `backend/scripts/check-open-weight-vlm-expanded-fixture-registry.mjs`.
+- Added `npm run qa:open-weight-vlm:expanded-fixtures`.
+- Added backend tests for:
+  - valid expanded registry dry-run review
+  - missing metadata stripping
+  - missing privacy review
+  - face presence
+  - sensitive content
+  - private identifier
+  - unknown category
+  - missing required category coverage
+  - sanitized no-network CLI output
+- Defined 12 target fixture categories and an 8-category core coverage set for future controlled 6-8 fixture smoke planning.
+- Defined sanitized metadata fields, approval rules, privacy/safety exclusions, coverage matrix, dry-run output, and future controlled-smoke rules.
+
+### Safety Notes
+
+- Backend-only and Windows-primary.
+- No real model smoke.
+- No fixture images committed.
+- No local config or local registry committed.
+- No raw paths, prompts, model output, request payload, raw reports, logs, weights, or credentials committed.
+- No vLLM/SGLang benchmark.
+- No iOS integration, app-facing endpoint, production endpoint, Camera cloud AI entry, backend/iOS payload change, capture-context upload, training/fine-tuning, or production rollout.
+- Existing validator, smoke gates, repeatability gate, failure taxonomy, fixture approval checks, and raw logging restrictions remain intact.
+- `productionReady:false` and `networkCallsMade:false` are required for the dry-run gate.
+
+### Ready for Phase 20-G
+
+Conditionally ready for planning a controlled 6-8 fixture local smoke after Phase 20-F is reviewed, committed, and pushed, and only if the ignored fixture registry/images are safely prepared, all existing gates pass, Windows healthz is safe, raw logging remains disabled, and the user explicitly approves real local/private model calls. Production rollout remains blocked.
+
+---
+
+## Phase 20-E-E - Local VLM Sandbox Review Summary and Phase 20-F Entry Criteria
+
+Status: Implemented
+Date: 2026-06-16
+
+### Completed
+
+- Added `docs/open-weight-vlm-local-sandbox-review-summary.md`.
+- Summarized Phase 20-D2J, 20-E-A, 20-E-B1, 20-E-B2, 20-E-C, and 20-E-D.
+- Documented what the local/self-hosted VLM sandbox proved:
+  - backend can call local/private Windows Qwen2.5-VL FastAPI through the sandbox path
+  - deterministic mapper can produce candidate JSON accepted by the backend validator
+  - 3 approved ignored fixtures passed once and in a repeat smoke
+  - failure/latency taxonomy exists for safe interpretation
+  - raw persistence flags remained false
+  - Windows-primary backend workflow is viable
+- Documented what remains unproven:
+  - production readiness
+  - iOS integration
+  - real user-photo upload and consent UI
+  - app-facing/production endpoints
+  - quota/billing/entitlement
+  - deletion/retention policy implementation
+  - App Store privacy disclosure update
+  - large fixture set
+  - model comparison, vLLM/SGLang benchmark, throughput/concurrency tests
+  - multilingual real-image evaluation beyond existing copy gates
+  - fine-tuning and on-device model work
+- Documented gate inventory, safety/privacy boundaries, Windows-primary workflow, MacBook/Xcode role, known limitations, and Phase 20-F entry criteria.
+- Recommended Phase 20-F Option A: expanded fixture set planning plus fixture registry schema.
+
+### Safety Notes
+
+- Review/summary/planning gate only.
+- No real model smoke.
+- No fixture expansion.
+- No vLLM/SGLang benchmark.
+- No iOS source/project/localization changes.
+- No app-facing endpoint, production endpoint, Camera cloud AI entry, backend/iOS payload change, capture-context upload, training/fine-tuning, or production rollout.
+- No local config, fixture registry, fixture images, raw model outputs, raw reports, server logs, model weights, or credentials committed.
+- Validator, smoke gates, fixture approval checks, raw logging restrictions, and `productionReady:false` remain intact.
+
+### Ready for Phase 20-F
+
+Planning-ready only after Phase 20-E-E is reviewed, committed, and pushed. Recommended Phase 20-F scope is expanded fixture set planning plus fixture registry schema. Production rollout remains blocked.
 
 ---
 

@@ -303,4 +303,34 @@ Accepted `gt_15s` results are review notes. All accepted fixtures at `gt_15s` be
 
 ## Phase 20-E-E / 20-F Readiness
 
-Planning-ready only after Phase 20-E-D is reviewed, committed, and pushed. Any future phase remains backend-only/local-private unless explicitly scoped otherwise, and production rollout remains blocked.
+Phase 20-E-E is implemented in `docs/open-weight-vlm-local-sandbox-review-summary.md`.
+
+The E-E summary records:
+
+- what D2J through E-D proved
+- what remains unproven
+- the current gate inventory
+- safety/privacy/product boundaries
+- Windows-primary backend workflow
+- MacBook/Xcode verification role
+- Phase 20-F entry criteria
+- recommended Phase 20-F option
+
+Phase 20-F may start only after the repo is clean, upstream comparison is `0 0`, E-E is reviewed/committed/pushed, ignored local artifacts remain ignored, Windows server remains local/private, raw logging remains disabled, all existing gates pass, and the 20-F scope is explicitly chosen.
+
+Recommended Phase 20-F direction: expanded fixture set planning plus fixture registry schema. Any future phase remains backend-only/local-private unless explicitly scoped otherwise, and production rollout remains blocked.
+
+## Phase 20-F Expanded Fixture Registry Dry-run Gate
+
+Phase 20-F implements the recommended expanded fixture planning step with:
+
+- `docs/open-weight-vlm-expanded-fixture-registry-plan.md`
+- `backend/src/qa/openWeightVlmExpandedFixtureRegistry.mjs`
+- `backend/scripts/check-open-weight-vlm-expanded-fixture-registry.mjs`
+- `npm run qa:open-weight-vlm:expanded-fixtures`
+
+The dry-run gate validates sanitized registry metadata only. It does not require fixture images, read local config, call a model, make network calls, print raw paths/prompts/model outputs/request payloads, or mark production ready.
+
+The target categories are `bright_daylight_clean`, `low_light_grain`, `motion_blur_intentional`, `severe_blur_reject`, `high_contrast_shadow`, `faded_color_retro`, `warm_indoor_ambient`, `street_chrome_high_contrast`, `soft_focus_dreamy`, `overexposed_unreadable`, `imported_limited_context`, and `black_or_near_black_unreadable`.
+
+Phase 20-G controlled 6-8 fixture smoke is only conditionally ready after Phase 20-F is reviewed/committed/pushed, this dry-run gate passes, ignored local fixtures and registry are safely prepared, all existing gates pass, Windows healthz is safe, and the user explicitly approves real local/private model calls. Production rollout remains blocked.

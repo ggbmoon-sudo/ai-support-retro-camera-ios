@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 20-E-A accepted local VLM smoke record and expansion gate prep; docs-only, no iOS integration or production rollout
+- Phase 20-F expanded fixture registry schema and dry-run gate; backend-only, Windows-primary, no real model smoke, no fixture images committed, no iOS integration, and no production rollout
 
 Next phase:
 
-- Phase 20-E-B may plan a small backend-only private LAN fixture expansion only after explicit request; keep approved ignored fixtures, fixture IDs only, sanitized aggregate metrics, and `productionReady:false`
+- Recommended next step is Phase 20-G controlled 6-8 fixture local smoke only after the dry-run gate, existing gates, ignored fixture registry, and safe Windows healthz pass under explicit approval
 - Do not start production cloud rollout without explicit approval
 - Production rollout remains blocked until a later explicit release phase
 
@@ -125,6 +125,8 @@ Current MVP demo / QA readiness docs:
 - `docs/open-weight-vlm-transformers-fastapi-local-adapter.md`
 - `docs/open-weight-vlm-transformers-fastapi-smoke-server-setup.md`
 - `docs/open-weight-vlm-local-smoke-expansion-gate.md`
+- `docs/open-weight-vlm-local-sandbox-review-summary.md`
+- `docs/open-weight-vlm-expanded-fixture-registry-plan.md`
 - `docs/filter-research-popular-film-looks.md`
 - `docs/filter-preset-schema.md`
 - `docs/filter-roadmap.md`
@@ -256,6 +258,10 @@ Phase 20-D2E supports a Windows GPU private LAN Transformers FastAPI smoke serve
 Phase 20-D2G keeps the validator strict and adds sanitized schema mismatch diagnostics for local Transformers FastAPI smoke rejects. A D2F private LAN smoke reached the Windows Qwen2.5-VL server and made exactly one local model call, but the backend safely rejected the candidate as `invalid_schema`; raw model output stayed unprinted and unpersisted. D2G diagnostics report only bucketed categories and field names such as `missing_required_field`, `additional_property`, `wrong_type`, `unsupported_enum`, `allowedContext`, `visualObservationKey`, `creativeIntent`, `technicalRisk`, and `safety`. The Windows FastAPI mapper must return the exact repo schema: `visualObservationKey`, string `allowedContext`, object `creativeIntent`, object `technicalRisk`, object `safety`, required `retakeReasonKey`, and no unsupported fields such as `observationKey` or `safetyFlags`. This phase does not loosen validation, retry the model by default, add iOS integration, change payloads, add app-facing endpoints, train/fine-tune, or enable production rollout.
 
 Phase 20-E-A records the first accepted Qwen-backed local VLM smoke from Phase 20-D2J and adds `docs/open-weight-vlm-local-smoke-expansion-gate.md`. The D2J smoke used the Windows GPU Qwen2.5-VL Transformers/FastAPI private LAN server and the MacBook backend sandbox client; contract echo passed first, then one `smoke_001` Qwen-backed candidate passed backend schema/safety validation with `acceptedCount:1`, `rejectedCount:0`, `networkCallsMade:true`, `latencyBucket:gt_15s`, no hard blockers, no schema diagnostic, and all raw artifact persistence flags false. Phase 20-E-A prepares a conservative Phase 20-E-B gate for 3-5 approved ignored fixtures, fixture IDs only, one run per fixture, sanitized aggregate metrics only, no retry loops to chase pass rate, no iOS integration, and `productionReady:false`.
+
+Phase 20-E-E adds `docs/open-weight-vlm-local-sandbox-review-summary.md` as the consolidated backend-only local VLM sandbox review. It summarizes D2J through E-D, records what the Windows-primary sandbox proved, what remains unproven, the current gate inventory, safety/privacy boundaries, Phase 20-F entry criteria, and recommends Phase 20-F Option A: expanded fixture set planning plus fixture registry schema. It does not run real model smoke, expand fixture count, benchmark vLLM/SGLang, add iOS integration, change payloads, or approve production rollout.
+
+Phase 20-F adds `docs/open-weight-vlm-expanded-fixture-registry-plan.md`, a sanitized expanded fixture registry policy module, and `npm run qa:open-weight-vlm:expanded-fixtures`. The dry-run gate validates sample fixture metadata and category coverage without local config, fixture images, model calls, network calls, raw paths, prompts, model outputs, request payloads, or production readiness. It prepares a future controlled 6-8 fixture smoke only after explicit approval.
 
 ## Phase 12A Filter Planning Status
 

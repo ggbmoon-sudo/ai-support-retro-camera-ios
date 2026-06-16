@@ -17,6 +17,7 @@
     "qa:open-weight-vlm:local-smoke-gate": "node scripts/check-open-weight-vlm-local-smoke-gate.mjs --dry-run",
     "qa:open-weight-vlm:local-repeatability-gate": "node scripts/check-open-weight-vlm-local-smoke-repeatability-gate.mjs --baseline",
     "qa:open-weight-vlm:local-failure-taxonomy": "node scripts/check-open-weight-vlm-local-smoke-failure-taxonomy.mjs --sample=clean",
+    "qa:open-weight-vlm:expanded-fixtures": "node scripts/check-open-weight-vlm-expanded-fixture-registry.mjs --dry-run",
     "qa:open-weight-vlm:local": "node scripts/run-open-weight-vlm-local-sandbox-smoke.mjs --run-local-model"
   },
   "dependencies": {},

@@ -1,5 +1,29 @@
 # Manual Smoke Tests
 
+## Phase 20-F
+
+Expanded fixture registry dry-run and backend-only planning gate:
+
+- [ ] Open `docs/open-weight-vlm-expanded-fixture-registry-plan.md`.
+- [ ] Confirm the plan records the 8-12 target fixture categories, sanitized metadata schema, approval rules, privacy/safety exclusions, coverage matrix, dry-run gate, future controlled-smoke rules, and `productionReady:false`.
+- [ ] From `backend/`, run `npm run qa:open-weight-vlm:expanded-fixtures`.
+- [ ] Confirm the dry-run reports sanitized aggregate fields only: `totalFixtures`, `approvedCount`, `blockedCount`, `categoryCoverage`, `missingRequiredCategories`, `blockedReasonCounts`, `eligibleForControlledSmoke`, `productionReady:false`, and `networkCallsMade:false`.
+- [ ] Confirm no real model smoke ran, no fixture images were required or committed, no local config or local registry was committed, and no raw paths, prompts, model outputs, request payloads, reports, logs, weights, or credentials were printed or staged.
+- [ ] Confirm no iOS source/project/localization files changed, no Camera cloud entry was added, no iOS provider/model key or direct call was added, no iOS upload payload changed, no capture-context upload was added, and no production remote rollout was enabled.
+
+## Phase 20-E-E
+
+Local VLM sandbox review summary and Phase 20-F entry criteria:
+
+- [ ] Open `docs/open-weight-vlm-local-sandbox-review-summary.md`.
+- [ ] Confirm the summary covers D2J, E-A, E-B1, E-B2, E-C, and E-D.
+- [ ] Confirm proven items include backend-to-Windows local/private Qwen2.5-VL sandbox path, validator-accepted deterministic mapper output, 3 approved ignored fixtures passing once and in repeat smoke, failure/latency taxonomy, false raw persistence flags, and viable Windows-primary workflow.
+- [ ] Confirm not-proven items include production readiness, iOS integration, real user-photo upload, consent UI, app-facing/production endpoint, quota/billing/entitlement, deletion/retention implementation, App Store privacy disclosure, large fixture set, model comparison, vLLM/SGLang benchmark, throughput/concurrency, multilingual real-image evaluation beyond copy gates, fine-tuning, and on-device model work.
+- [ ] Confirm Phase 20-F entry criteria require clean repo, upstream `0 0`, E-E committed/pushed, ignored local artifacts still ignored, local/private Windows server, raw logging disabled, safe healthz before future smoke, all gates passing, and explicit 20-F scope.
+- [ ] Confirm recommended Phase 20-F option is expanded fixture set planning plus fixture registry schema.
+- [ ] Confirm no real model smoke, fixture expansion, vLLM/SGLang benchmark, iOS integration, endpoint work, training/fine-tuning, validator weakening, fixture approval loosening, local artifact commit, or production readiness change is introduced.
+- [ ] Confirm `productionReady=false`.
+
 ## Phase 20-E-A
 
 Accepted local VLM smoke record and expansion gate:
