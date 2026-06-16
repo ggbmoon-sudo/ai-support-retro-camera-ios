@@ -285,6 +285,12 @@ Phase 20-P adds `docs/open-weight-vlm-serving-benchmark-preflight.md` and `npm r
 
 The sandbox remains backend-only, Windows-primary, and local/private. Phase 20-P does not run a benchmark, Qwen inference, real smoke, vLLM/SGLang/Ollama/LM Studio, iOS integration, app-facing endpoints, production endpoints, training/fine-tuning, or production rollout. `productionReady:false` remains required.
 
+## Phase 21-A Gateway Contract Preflight Note
+
+Phase 21-A adds a backend-internal VLM Gateway contract preflight. The contract accepts sanitized backend-internal request metadata only and returns structured candidate JSON only. The existing open-weight VLM candidate validator and safety gates remain the source of truth before any future app-facing use.
+
+Phase 21-A does not add iOS integration, app-facing endpoints, production endpoints, real user-photo upload, raw image/base64/path/prompt/provider response handling, Qwen inference, serving benchmark execution, training/fine-tuning, or production rollout. `productionReady:false` remains required.
+
 ## Boundary Confirmation
 
 Phase 20-E-E is a review/summary/planning gate only. It does not run real model smoke, expand fixture count, benchmark vLLM/SGLang, start iOS integration, add app-facing or production endpoints, train/fine-tune, weaken validation, loosen fixture approval, commit local artifacts, or change production readiness.

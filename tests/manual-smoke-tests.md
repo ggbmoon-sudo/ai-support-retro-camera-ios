@@ -1,5 +1,17 @@
 # Manual Smoke Tests
 
+## Phase 21-A
+
+Backend internal VLM Gateway contract preflight:
+
+- [ ] From `backend/`, run `npm run qa:open-weight-vlm:gateway-contract-preflight`.
+- [ ] Confirm the preflight reports `networkCallsMade:false`, `modelCallsMade:false`, `qwenInferenceRun:false`, `eligibleForPhase21BPlanning:true`, `eligibleForAppIntegration:false`, and `productionReady:false`.
+- [ ] Open `docs/backend-internal-vlm-gateway-contract-preflight.md`.
+- [ ] Confirm the request contract is backend-internal only and uses sanitized buckets / optional fixture token only.
+- [ ] Confirm the response contract is structured candidate JSON only and must pass the existing open-weight VLM validator/safety gates before any app-facing use.
+- [ ] Confirm blocked fields include raw image/base64/path/prompt, GPS/raw EXIF, raw sensor values, provider secrets, direct iOS provider fields, free-form model text, score/rating, sensitive inference, chain-of-thought, debug/provider leakage, raw provider response, request payload, app-facing endpoint flags, and production endpoint flags.
+- [ ] Confirm no real model smoke, Qwen inference, serving benchmark, iOS integration, app-facing endpoint, production endpoint, real user-photo upload, consent UI, capture-context upload, training/fine-tuning, or production rollout is introduced.
+
 ## Phase 20-P
 
 Serving benchmark preflight and Phase 21 entry criteria:

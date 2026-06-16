@@ -823,6 +823,20 @@ npm run qa:open-weight-vlm:serving-benchmark-preflight
 
 The gate validates the future serving stack matrix, sanitized metric inventory, 12-fixture usage rules, artifact policy, stop conditions, and Phase 21 backend gateway entry criteria. It does not call Qwen, run real smoke, run vLLM/SGLang/Ollama/LM Studio, switch model stacks, require local config, read fixture images, modify ignored registries, add iOS integration, add endpoints, or change production readiness. Expected output includes `networkCallsMade:false`, `benchmarkRun:false`, `qwenInferenceRun:false`, `eligibleForPhase21EntryReview:true`, `eligibleForBenchmarkExecution:false`, and `productionReady:false`.
 
+## Phase 21-A Backend Internal VLM Gateway Contract Preflight
+
+Phase 21-A adds `../docs/backend-internal-vlm-gateway-contract-preflight.md` and a no-network/no-model gateway contract gate:
+
+```sh
+npm run qa:open-weight-vlm:gateway-contract-preflight
+```
+
+The gate validates backend-internal request and response contracts only. Requests allow sanitized buckets such as `requestIdBucket`, `sourceType`, optional `fixtureId`, `allowedContext`, `languageCode`, `advisorMode`, `outputContractVersion`, and `productionReady:false`. They reject raw image/base64/path/prompt, GPS/raw EXIF, raw sensor values, provider secrets, direct iOS provider fields, and app-facing/production endpoint flags.
+
+Responses must be structured candidate JSON that maps into `openWeightVlmPhotoAdvisorSchema.mjs` fields and passes the existing validator/safety chain before any future app-facing use. The gateway must not return score/rating, sensitive inference, chain-of-thought, debug/provider leakage, raw provider response, raw model output, raw prompt, request payload, or free-form model text.
+
+Phase 21-A does not call Qwen, run model smoke, run serving benchmarks, add iOS integration, add endpoints, accept real user-photo uploads, change backend/iOS payloads, upload capture context, or change production readiness. `productionReady:false` remains required.
+
 ## Phase 20-C Local VLM Operator Runbook + Smoke Gate
 
 Phase 20-C adds an operator runbook and a backend-only real-model smoke gate for future approved local/self-hosted VLM testing. The gate does not call a model and does not create an app-facing endpoint.

@@ -907,7 +907,8 @@ Use this template:
 - Repeatability and failure/latency gates passed with a latency note. Next work should be Phase 20-O planning only unless explicitly approved otherwise.
 - Phase 20-O now adds `docs/open-weight-vlm-serving-benchmark-decision-gate.md`. It reviews the accepted 12-fixture result, treats `gt_15s x10` as a significant sandbox latency note, and recommends Phase 20-P as serving-stack benchmark preflight only.
 - Phase 20-P now adds `docs/open-weight-vlm-serving-benchmark-preflight.md` and `npm run qa:open-weight-vlm:serving-benchmark-preflight`. The gate is no-network and validates the benchmark plan, serving stack matrix, sanitized metrics, fixture rules, artifact policy, stop conditions, and Phase 21 entry criteria only.
-- Recommended next work is Phase 21-A backend internal VLM gateway contract preflight, or Phase 20-Q no-network benchmark dry-run planning if explicitly requested.
+- Phase 21-A now adds `docs/backend-internal-vlm-gateway-contract-preflight.md` and `npm run qa:open-weight-vlm:gateway-contract-preflight`. The gate is no-network/no-model and validates the backend-internal gateway request/response contract only: sanitized bucket/fixture-token request metadata, structured candidate JSON response, existing validator/safety chain handoff, no iOS integration, no app-facing endpoint, no production endpoint, no real user-photo upload, and `productionReady:false`.
+- Recommended next work is Phase 21-B backend-internal gateway adapter skeleton or Phase 21-C fixture-token gateway dry-run only if explicitly requested.
 - Do not run vLLM/SGLang/Ollama benchmarks, switch model stacks, run more real smoke, add iOS integration, add endpoints, or change `productionReady:false` without explicit future approval.
 
 ---

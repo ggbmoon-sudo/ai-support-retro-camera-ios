@@ -222,3 +222,9 @@ Expected sanitized behavior:
 ## Boundary
 
 Phase 20-P is preflight only. It does not run Qwen inference, run real smoke, run vLLM/SGLang/Ollama/LM Studio, add fixture images, modify ignored registries, start iOS integration, add app-facing endpoints, add production endpoints, train, fine-tune, or change production readiness.
+
+## Phase 21-A Follow-up
+
+Phase 21-A now adds `docs/backend-internal-vlm-gateway-contract-preflight.md` and `npm run qa:open-weight-vlm:gateway-contract-preflight`. The new gate validates the backend-internal gateway request/response contract only: sanitized bucket/fixture-token request metadata, structured candidate JSON response, existing validator/safety chain handoff, no app-facing endpoint, no production endpoint, no iOS integration, no real user-photo upload, and `productionReady:false`.
+
+Phase 21-A does not run Qwen inference, real model smoke, serving benchmarks, vLLM/SGLang/Ollama/LM Studio, model-stack switches, fixture changes, ignored registry changes, endpoint work, iOS integration, training/fine-tuning, or production rollout.

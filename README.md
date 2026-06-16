@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 20-P defines serving benchmark preflight and Phase 21 entry criteria. It adds a no-network benchmark-plan gate only: no real model smoke, no Qwen inference, no vLLM/SGLang/Ollama execution, no iOS integration, and `productionReady:false`.
+- Phase 21-A defines the backend-internal VLM Gateway contract preflight. It adds a no-network/no-model contract gate only: sanitized backend-internal request metadata, structured candidate JSON response shape, existing validator/safety chain handoff, no iOS integration, no app-facing endpoint, no production endpoint, no real user-photo upload, and `productionReady:false`.
 
 Next phase:
 
-- Recommended next step is Phase 21-A: backend internal VLM gateway contract preflight, or Phase 20-Q serving benchmark dry-run planning if benchmark tooling needs another no-network gate. Do not run vLLM/SGLang/Ollama benchmarks or switch serving stacks unless a future prompt explicitly approves them.
+- Recommended next step is Phase 21-B backend-internal gateway adapter skeleton or Phase 21-C fixture-token gateway dry-run, only if explicitly requested. Do not start iOS integration, app-facing endpoints, production endpoints, real user-photo upload, serving benchmark execution, vLLM/SGLang/Ollama runs, or serving-stack switches unless a future prompt explicitly approves them.
 - Do not start production cloud rollout without explicit approval
 - Production rollout remains blocked until a later explicit release phase
 
@@ -283,6 +283,8 @@ Phase 20-M prepares the ignored local 12-fixture set for the next controlled rev
 Phase 20-O adds `docs/open-weight-vlm-serving-benchmark-decision-gate.md` as a review/planning gate after the accepted Phase 20-N 12-fixture local/private smoke. It records that `gt_15s x10` is a significant sandbox latency note and recommends Phase 20-P as serving-stack benchmark preflight only. Phase 20-O does not run real smoke, run vLLM/SGLang/Ollama, switch model stacks, add fixture images, add iOS integration, add endpoints, train/fine-tune, or change `productionReady:false`.
 
 Phase 20-P adds `docs/open-weight-vlm-serving-benchmark-preflight.md` and `npm run qa:open-weight-vlm:serving-benchmark-preflight`. The preflight gate validates a sanitized backend-only benchmark plan, serving stack matrix, metrics, fixture rules, artifact policy, stop conditions, and Phase 21 entry criteria with `networkCallsMade:false`, `benchmarkRun:false`, `qwenInferenceRun:false`, and `productionReady:false`. No real model smoke, Qwen inference, vLLM/SGLang/Ollama/LM Studio execution, fixture change, ignored registry change, iOS integration, endpoint, training/fine-tuning, or production rollout is added.
+
+Phase 21-A adds `docs/backend-internal-vlm-gateway-contract-preflight.md` and `npm run qa:open-weight-vlm:gateway-contract-preflight`. The gate validates the backend-internal VLM Gateway request/response contract only. Requests are bucketed metadata / fixture-token only, responses are structured candidate JSON only, and existing validator/safety gates remain the source of truth before any app-facing use. No iOS integration, app-facing endpoint, production endpoint, real user-photo upload, raw image/base64/path/prompt/provider response, model call, serving benchmark, or production readiness change is added.
 
 ## Phase 12A Filter Planning Status
 

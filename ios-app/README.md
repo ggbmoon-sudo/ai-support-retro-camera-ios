@@ -160,6 +160,8 @@ Phase 20-O remains review/planning-only from the iOS app perspective. It reviews
 
 Phase 20-P remains backend-only from the iOS app perspective. It defines serving benchmark preflight and Phase 21 backend gateway entry criteria only, with no Qwen inference, no serving benchmark execution, no iOS source/project/localization changes, no app-facing endpoint, no production endpoint, no provider/model key, no direct provider/model call, no upload payload change, no capture-context upload, and no production rollout.
 
+Phase 21-A remains backend-only from the iOS app perspective. It defines the backend-internal VLM Gateway request/response contract and no-network preflight gate only. iOS behavior is unchanged: no iOS source/project/localization changes, no Camera cloud entry, no iOS provider/model key, no direct provider/model call, no iOS upload payload change, no capture-context upload, no app-facing endpoint, no production endpoint, no consent UI, no real user-photo upload, and no production rollout.
+
 ## Phase 17D-A Local Camera Capture Context
 
 Phase 17D-A adds local-only summarized capture context for captured / imported photos:

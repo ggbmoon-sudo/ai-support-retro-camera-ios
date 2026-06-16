@@ -445,3 +445,13 @@ npm run qa:open-weight-vlm:serving-benchmark-preflight
 The gate validates future benchmark planning only and must report `networkCallsMade:false`, `benchmarkRun:false`, `qwenInferenceRun:false`, `eligibleForPhase21EntryReview:true`, `eligibleForBenchmarkExecution:false`, and `productionReady:false`.
 
 This gate does not replace the local smoke, repeatability, failure taxonomy, expanded registry, provider diagnostic, or routing echo gates. It does not run Qwen inference, real smoke, serving benchmarks, model-stack switches, iOS integration, endpoints, or production rollout.
+
+## Phase 21-A Backend Internal Gateway Contract Preflight
+
+Phase 21-A adds a no-network/no-model backend-internal gateway contract gate:
+
+```sh
+npm run qa:open-weight-vlm:gateway-contract-preflight
+```
+
+The gate validates only sanitized internal request metadata and structured candidate JSON response shape. Existing validator/safety gates remain authoritative. It does not accept real user photos, raw image/base64/path/prompt/provider responses, iOS direct provider fields, app-facing endpoints, production endpoints, model calls, serving benchmarks, or production readiness.

@@ -595,3 +595,21 @@ Operator implications:
 - Do not switch model stacks from Phase 20-P.
 - Treat Phase 21-A as backend internal VLM gateway contract preflight only unless a future prompt explicitly chooses another no-network planning phase.
 - Keep `productionReady:false`.
+
+## Phase 21-A Gateway Contract Preflight
+
+Phase 21-A adds:
+
+```sh
+npm run qa:open-weight-vlm:gateway-contract-preflight
+```
+
+This command is no-network and no-model. It validates backend-internal gateway request/response contracts only, rejects raw image/base64/path/prompt/provider-response artifacts, rejects direct iOS provider fields and endpoint flags, requires structured candidate JSON, and keeps the existing candidate validator/safety chain as the source of truth.
+
+Operator implications:
+
+- Do not run Qwen inference or real model smoke from Phase 21-A.
+- Do not start iOS integration from Phase 21-A.
+- Do not add app-facing or production endpoints from Phase 21-A.
+- Do not accept real user-photo upload from Phase 21-A.
+- Keep `productionReady:false`.
