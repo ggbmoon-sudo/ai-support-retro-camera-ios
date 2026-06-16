@@ -910,8 +910,9 @@ Use this template:
 - Phase 21-A now adds `docs/backend-internal-vlm-gateway-contract-preflight.md` and `npm run qa:open-weight-vlm:gateway-contract-preflight`. The gate is no-network/no-model and validates the backend-internal gateway request/response contract only: sanitized bucket/fixture-token request metadata, structured candidate JSON response, existing validator/safety chain handoff, no iOS integration, no app-facing endpoint, no production endpoint, no real user-photo upload, and `productionReady:false`.
 - Phase 21-B now adds the backend-internal gateway adapter stub and no-model external contract echo alignment. The app repo owns `backend/src/qa/openWeightVlmGatewayAdapterStub.mjs`, the adapter stub CLI, external echo CLI, tests, and docs; the external workspace only exposes `/local/vlm/gateway-contract-echo` for private no-model compatibility. No Qwen inference, serving benchmark, iOS integration, app-facing endpoint, production endpoint, real user-photo upload, or production rollout is approved.
 - Phase 21-C now adds the backend-internal provider routing dry-run gate. The app repo owns `backend/src/qa/openWeightVlmGatewayProviderRouting.mjs`, the routing CLI, tests, and docs; the routing policy is fail-closed and only allows `local_stub` and `local_contract_echo` for backend-internal planning.
-- Recommended next work is Phase 21-D only if explicitly requested after the routing dry-run gate.
-- Do not run vLLM/SGLang/Ollama benchmarks, switch model stacks, run more real smoke, add iOS integration, add endpoints, or change `productionReady:false` without explicit future approval.
+- Phase 21-D now adds the backend-internal provider adapter no-model HTTP check. The app repo owns `backend/src/qa/openWeightVlmGatewayProviderAdapterNoModelHttp.mjs`, the adapter HTTP CLI, tests, and docs; it only allows the `local_contract_echo` route and only calls local/private healthz plus `/local/vlm/gateway-contract-echo` for no-model compatibility.
+- Recommended next work is Phase 21-E only if explicitly requested after the no-model HTTP check.
+- Do not run vLLM/SGLang/Ollama benchmarks, switch model stacks, run more real smoke, add iOS integration, add endpoints, run Qwen inference, run fixture inference, or change `productionReady:false` without explicit future approval.
 
 ---
 

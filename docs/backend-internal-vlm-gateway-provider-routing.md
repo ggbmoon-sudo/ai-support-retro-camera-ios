@@ -1,6 +1,6 @@
 # Backend Internal VLM Gateway Provider Routing
 
-Status: Phase 21-C dry-run gate only
+Status: Phase 21-C dry-run gate plus Phase 21-D no-model HTTP adapter check
 
 Production readiness: `productionReady:false`
 
@@ -74,6 +74,30 @@ Expected current behavior:
 - `eligibleForAppIntegration:false`
 - `productionReady:false`
 
+## Phase 21-D No-model Provider Adapter HTTP Check
+
+Phase 21-D adds an adapter-level check for the allowed `local_contract_echo` route:
+
+```sh
+npm run qa:open-weight-vlm:gateway-provider-adapter-no-model-http
+```
+
+The adapter check verifies the Phase 21-C route decision before any HTTP call. It may call only local/private healthz and `/local/vlm/gateway-contract-echo`, and only for no-model contract echo compatibility.
+
+It fails closed if the route is not `local_contract_echo`, the endpoint is public/cloud/tunnel/non-local, healthz is unsafe, `publicExposure` is not `no`, raw logging is enabled, model/Qwen inference is reported, model calls are reported, raw persistence is reported, the echo response is leaky, the candidate is not structured JSON accepted by the existing validator, or `productionReady:true` appears.
+
+Expected current behavior:
+
+- `networkCallsMade:true` only for local/private no-model HTTP
+- `modelCallsMade:false`
+- `qwenInferenceRun:false`
+- `modelInferenceRun:false`
+- `benchmarkRun:false`
+- raw persistence flags false
+- `eligibleForProviderAdapterNoModelHttpReview:true`
+- `eligibleForAppIntegration:false`
+- `productionReady:false`
+
 ## Non-goals
 
 Phase 21-C does not:
@@ -91,6 +115,6 @@ Phase 21-C does not:
 - weaken validator or safety/fallback gates
 - commit local config, local registry, fixture images, raw reports, logs, model outputs, prompts, request payloads, model weights, or credentials
 
-## Phase 21-D Recommendation
+## Phase 21-E Recommendation
 
-Phase 21-D should remain backend-internal and explicit. A safe candidate is a broader gateway fallback / route-decision audit that still runs no model calls and no serving benchmarks. Do not start iOS integration, endpoints, upload handling, or production rollout without a future explicit prompt.
+Phase 21-E should remain backend-internal and explicit. A safe candidate is a broader fallback / failure taxonomy review for gateway adapter HTTP checks that still runs no model calls and no serving benchmarks. Do not start iOS integration, endpoints, upload handling, model routing, or production rollout without a future explicit prompt.

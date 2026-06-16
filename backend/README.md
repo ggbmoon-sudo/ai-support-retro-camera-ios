@@ -864,6 +864,18 @@ The dry-run reviews only backend-internal provider modes. `local_stub` and `loca
 
 Phase 21-C does not run Qwen inference, serving benchmarks, vLLM/SGLang/Ollama, iOS integration, app-facing endpoints, production endpoints, real user-photo upload, or production rollout.
 
+## Phase 21-D Gateway Provider Adapter No-model HTTP Check
+
+Phase 21-D adds a backend-internal provider adapter no-model HTTP check:
+
+```sh
+npm run qa:open-weight-vlm:gateway-provider-adapter-no-model-http
+```
+
+The check accepts only the Phase 21-C `local_contract_echo` route, verifies provider routing before any HTTP call, validates local/private healthz, calls only `/local/vlm/gateway-contract-echo`, validates the returned structured candidate through `src/qa/openWeightVlmPhotoAdvisorSchema.mjs`, and prints sanitized aggregate status only. Expected live-safe output has `networkCallsMade:true` only for local/private no-model HTTP, `modelCallsMade:false`, `qwenInferenceRun:false`, `modelInferenceRun:false`, raw persistence flags false, and `productionReady:false`.
+
+Phase 21-D does not run real model smoke, Qwen inference, fixture inference, serving benchmarks, vLLM/SGLang/Ollama, iOS integration, app-facing endpoints, production endpoints, real user-photo upload, consent UI, training/fine-tuning, or production rollout.
+
 ## Phase 20-C Local VLM Operator Runbook + Smoke Gate
 
 Phase 20-C adds an operator runbook and a backend-only real-model smoke gate for future approved local/self-hosted VLM testing. The gate does not call a model and does not create an app-facing endpoint.

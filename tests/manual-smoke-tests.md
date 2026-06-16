@@ -22,6 +22,18 @@ Backend internal VLM gateway provider routing dry-run:
 - [ ] Confirm the dry-run reports only sanitized routing decisions and does not print raw prompt, raw model output, raw image path, base64, request payload, local config contents, fixture registry contents, server logs, EXIF, or provider response text.
 - [ ] Confirm no real model smoke, Qwen inference, serving benchmark, vLLM/SGLang/Ollama call, iOS integration, app-facing endpoint, production endpoint, real user-photo upload, consent UI, capture-context upload, training/fine-tuning, or production rollout is introduced.
 
+## Phase 21-D
+
+Backend internal provider adapter no-model HTTP check:
+
+- [ ] From `backend/`, run `npm run qa:open-weight-vlm:gateway-provider-adapter-no-model-http`.
+- [ ] Confirm the check accepts only the `local_contract_echo` route.
+- [ ] If the external local server is running, confirm it checks healthz first and then `/local/vlm/gateway-contract-echo` only.
+- [ ] Confirm `publicExposure:no`, `rawLoggingDisabled:true`, `modelInferenceRun:false`, `modelCallsMade:false`, `qwenInferenceRun:false`, raw persistence flags false, and `productionReady:false`.
+- [ ] Confirm the returned candidate is structured JSON and passes the existing validator/safety chain.
+- [ ] Confirm no raw prompt, raw model output, raw image path, base64, request payload, local config contents, fixture registry contents, server logs, EXIF, or provider response text is printed.
+- [ ] Confirm no real model smoke, Qwen inference, fixture inference, serving benchmark, vLLM/SGLang/Ollama call, iOS integration, app-facing endpoint, production endpoint, real user-photo upload, consent UI, capture-context upload, training/fine-tuning, or production rollout is introduced.
+
 ## Phase 21-A
 
 Backend internal VLM Gateway contract preflight:

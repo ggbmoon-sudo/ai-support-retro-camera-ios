@@ -166,6 +166,8 @@ Phase 21-B also remains backend-only from the iOS app perspective. It adds a bac
 
 Phase 21-C also remains backend-only from the iOS app perspective. It adds a backend-internal gateway provider routing dry-run gate only. iOS behavior is unchanged: no iOS source/project/localization changes, no Camera cloud entry, no iOS provider/model key, no direct provider/model call, no iOS upload payload change, no capture-context upload, no app-facing endpoint, no production endpoint, no consent UI, no real user-photo upload, and no production rollout.
 
+Phase 21-D also remains backend-only from the iOS app perspective. It adds a backend-internal provider adapter no-model HTTP check for the local/private `local_contract_echo` route only. iOS behavior is unchanged: no iOS source/project/localization changes, no Camera cloud entry, no iOS provider/model key, no direct provider/model call, no iOS upload payload change, no capture-context upload, no app-facing endpoint, no production endpoint, no consent UI, no real user-photo upload, and no production rollout.
+
 ## Phase 17D-A Local Camera Capture Context
 
 Phase 17D-A adds local-only summarized capture context for captured / imported photos:

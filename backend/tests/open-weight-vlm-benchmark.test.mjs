@@ -62,6 +62,12 @@ import {
   evaluateOpenWeightVlmGatewayProviderRoutingDryRun
 } from "../src/qa/openWeightVlmGatewayProviderRouting.mjs";
 import {
+  assertOpenWeightVlmGatewayProviderAdapterNoModelHttpReportRedacted,
+  evaluateOpenWeightVlmGatewayProviderAdapterNoModelHttp,
+  providerAdapterNoModelHttpSafeMockFetch,
+  providerAdapterNoModelHttpUnsafeMockFetch
+} from "../src/qa/openWeightVlmGatewayProviderAdapterNoModelHttp.mjs";
+import {
   assertOpenWeightVlmBenchmarkReportRedacted,
   buildOpenWeightVlmSchemaDiagnostic,
   evaluateOpenWeightVlmBenchmarkCase,
@@ -93,6 +99,8 @@ const GATEWAY_EXTERNAL_CONTRACT_ECHO_SCRIPT_URL =
   new URL("../scripts/check-open-weight-vlm-gateway-external-contract-echo.mjs", import.meta.url);
 const GATEWAY_PROVIDER_ROUTING_SCRIPT_URL =
   new URL("../scripts/check-open-weight-vlm-gateway-provider-routing.mjs", import.meta.url);
+const GATEWAY_PROVIDER_ADAPTER_NO_MODEL_HTTP_SCRIPT_URL =
+  new URL("../scripts/check-open-weight-vlm-gateway-provider-adapter-no-model-http.mjs", import.meta.url);
 
 test("open-weight VLM validator accepts valid synthetic benchmark fixtures", async () => {
   const cases = await benchmarkCases();
@@ -2036,6 +2044,182 @@ test("open-weight VLM gateway provider routing CLI is sanitized and no-network",
   assert.equal(report.benchmarkRun, false);
   assert.equal(report.allowedProviderModes.includes("local_stub"), true);
   assert.equal(report.allowedProviderModes.includes("local_contract_echo"), true);
+  assert.equal(output.includes("fullPrompt"), false);
+  assert.equal(output.includes("rawPrompt"), false);
+  assert.equal(output.includes("requestPayload"), false);
+  assert.equal(output.includes("modelOutput"), false);
+  assert.equal(output.includes("Authorization"), false);
+  assert.equal(output.includes("Bearer "), false);
+  assert.equal(output.includes("C:\\"), false);
+  assert.equal(output.includes("data:image"), false);
+});
+
+test("open-weight VLM gateway provider adapter no-model HTTP passes safe mocked healthz and echo", async () => {
+  const report = await evaluateOpenWeightVlmGatewayProviderAdapterNoModelHttp({
+    fetchImpl: providerAdapterNoModelHttpSafeMockFetch
+  });
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.requestedProviderMode, "local_contract_echo");
+  assert.equal(report.selectedRoute, "local_private_no_model_contract_echo");
+  assert.equal(report.routeAllowed, true);
+  assert.equal(report.networkCallsMade, true);
+  assert.equal(report.modelCallsMade, false);
+  assert.equal(report.qwenInferenceRun, false);
+  assert.equal(report.modelInferenceRun, false);
+  assert.equal(report.healthz.publicExposure, "no");
+  assert.equal(report.healthz.rawLoggingDisabled, true);
+  assert.equal(report.echo.candidateStructured, true);
+  assert.equal(report.candidateSummary.candidateValidatorPassed, true);
+  assert.equal(report.eligibleForProviderAdapterNoModelHttpReview, true);
+  assert.equal(assertOpenWeightVlmGatewayProviderAdapterNoModelHttpReportRedacted(report).ok, true);
+});
+
+test("open-weight VLM gateway provider adapter no-model HTTP blocks unsafe healthz and echo", async () => {
+  const report = await evaluateOpenWeightVlmGatewayProviderAdapterNoModelHttp({
+    fetchImpl: providerAdapterNoModelHttpUnsafeMockFetch
+  });
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.eligibleForProviderAdapterNoModelHttpReview, false);
+  assert.equal(report.hardBlockers.includes("blocked_for_public_exposure"), true);
+  assert.equal(report.hardBlockers.includes("blocked_for_raw_logging_enabled"), true);
+  assert.equal(report.hardBlockers.includes("blocked_for_model_inference"), true);
+  assert.equal(report.hardBlockers.includes("blocked_for_qwen_inference"), true);
+  assert.equal(report.hardBlockers.includes("blocked_for_production_flag"), true);
+});
+
+test("open-weight VLM gateway provider adapter no-model HTTP blocks raw persistence and unsafe echo", async () => {
+  const report = await evaluateOpenWeightVlmGatewayProviderAdapterNoModelHttp({
+    fetchImpl: async (url) => {
+      if (String(url).endsWith("/healthz")) {
+        return jsonResponse({
+          ok: true,
+          publicExposure: "no",
+          rawLoggingDisabled: true,
+          gatewayContractEchoAvailable: true,
+          modelInferenceRun: false,
+          modelCallsMade: false,
+          qwenInferenceRun: false,
+          productionReady: false
+        });
+      }
+      return jsonResponse({
+        ok: true,
+        mode: "gateway_contract_echo",
+        candidate: gatewayAdapterStubSampleCandidate(),
+        publicExposure: "no",
+        rawLoggingDisabled: true,
+        modelInferenceRun: false,
+        modelCallsMade: false,
+        qwenInferenceRun: false,
+        productionReady: false,
+        rawPromptPersisted: true,
+        rawModelResponsePersisted: true,
+        rawImagePersisted: true,
+        rawImagePathPersisted: true,
+        requestPayloadPersisted: true
+      });
+    }
+  });
+
+  assert.equal(report.eligibleForProviderAdapterNoModelHttpReview, false);
+  assert.equal(report.hardBlockers.includes("blocked_for_raw_persistence"), true);
+});
+
+test("open-weight VLM gateway provider adapter no-model HTTP blocks public endpoint and unsupported route", async () => {
+  const publicEndpointReport = await evaluateOpenWeightVlmGatewayProviderAdapterNoModelHttp({
+    endpointUrl: "https://example.com/local/vlm/gateway-contract-echo",
+    fetchImpl: providerAdapterNoModelHttpSafeMockFetch
+  });
+  const routeReport = await evaluateOpenWeightVlmGatewayProviderAdapterNoModelHttp({
+    requestedProviderMode: "local_stub",
+    fetchImpl: providerAdapterNoModelHttpSafeMockFetch
+  });
+
+  assert.equal(publicEndpointReport.eligibleForProviderAdapterNoModelHttpReview, false);
+  assert.equal(publicEndpointReport.hardBlockers.includes("blocked_for_public_endpoint"), true);
+  assert.equal(publicEndpointReport.networkCallsMade, false);
+  assert.equal(routeReport.eligibleForProviderAdapterNoModelHttpReview, false);
+  assert.equal(routeReport.hardBlockers.includes("blocked_for_unsupported_provider_route"), true);
+  assert.equal(routeReport.networkCallsMade, false);
+});
+
+test("open-weight VLM gateway provider adapter no-model HTTP blocks invalid candidate and raw leakage", async () => {
+  const invalidCandidateReport = await evaluateOpenWeightVlmGatewayProviderAdapterNoModelHttp({
+    fetchImpl: async (url) => {
+      if (String(url).endsWith("/healthz")) {
+        return providerAdapterNoModelHttpSafeMockFetch(url);
+      }
+      return jsonResponse({
+        ok: true,
+        mode: "gateway_contract_echo",
+        candidate: {
+          schemaVersion: OPEN_WEIGHT_VLM_PHOTO_ADVISOR_SCHEMA_VERSION,
+          sourceType: "captured"
+        },
+        modelInferenceRun: false,
+        modelCallsMade: false,
+        qwenInferenceRun: false,
+        rawLoggingDisabled: true,
+        publicExposure: "no",
+        productionReady: false,
+        rawPromptPersisted: false,
+        rawModelResponsePersisted: false,
+        rawImagePersisted: false,
+        rawImagePathPersisted: false,
+        requestPayloadPersisted: false
+      });
+    }
+  });
+  const leakyReport = await evaluateOpenWeightVlmGatewayProviderAdapterNoModelHttp({
+    fetchImpl: async (url) => {
+      if (String(url).endsWith("/healthz")) {
+        return providerAdapterNoModelHttpSafeMockFetch(url);
+      }
+      return jsonResponse({
+        ok: true,
+        mode: "gateway_contract_echo",
+        candidate: gatewayAdapterStubSampleCandidate(),
+        freeFormModelText: "modelOutput",
+        modelInferenceRun: false,
+        modelCallsMade: false,
+        qwenInferenceRun: false,
+        rawLoggingDisabled: true,
+        publicExposure: "no",
+        productionReady: false,
+        rawPromptPersisted: false,
+        rawModelResponsePersisted: false,
+        rawImagePersisted: false,
+        rawImagePathPersisted: false,
+        requestPayloadPersisted: false
+      });
+    }
+  });
+
+  assert.equal(invalidCandidateReport.eligibleForProviderAdapterNoModelHttpReview, false);
+  assert.equal(invalidCandidateReport.hardBlockers.includes("blocked_for_candidate_validation"), true);
+  assert.equal(leakyReport.eligibleForProviderAdapterNoModelHttpReview, false);
+  assert.equal(leakyReport.hardBlockers.includes("blocked_for_unsanitized_echo_response"), true);
+  assert.equal(assertOpenWeightVlmGatewayProviderAdapterNoModelHttpReportRedacted(leakyReport).ok, true);
+});
+
+test("open-weight VLM gateway provider adapter no-model HTTP CLI is sanitized", () => {
+  const output = execFileSync(process.execPath, [
+    fileURLToPath(GATEWAY_PROVIDER_ADAPTER_NO_MODEL_HTTP_SCRIPT_URL),
+    "--mock-safe"
+  ], {
+    cwd: new URL("..", import.meta.url),
+    encoding: "utf8"
+  });
+  const report = JSON.parse(output);
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.networkCallsMade, true);
+  assert.equal(report.modelCallsMade, false);
+  assert.equal(report.qwenInferenceRun, false);
+  assert.equal(report.modelInferenceRun, false);
+  assert.equal(report.eligibleForProviderAdapterNoModelHttpReview, true);
   assert.equal(output.includes("fullPrompt"), false);
   assert.equal(output.includes("rawPrompt"), false);
   assert.equal(output.includes("requestPayload"), false);

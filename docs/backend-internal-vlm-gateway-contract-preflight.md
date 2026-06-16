@@ -1,6 +1,6 @@
 # Backend Internal VLM Gateway Contract Preflight
 
-Status: Phase 21-A contract preflight plus Phase 21-B adapter stub alignment plus Phase 21-C routing plan
+Status: Phase 21-A contract preflight plus Phase 21-B adapter stub alignment plus Phase 21-C routing plan plus Phase 21-D no-model provider adapter HTTP check
 
 Production readiness: `productionReady:false`
 
@@ -235,7 +235,8 @@ Recommended next options:
 
 - Phase 21-B: backend-internal gateway adapter skeleton, still no-network/no-model by default.
 - Phase 21-C: backend-internal provider routing dry-run, fail-closed and sanitized.
-- Phase 21-D: any later gateway follow-up only if explicitly requested.
+- Phase 21-D: backend-internal no-model provider adapter HTTP check for the `local_contract_echo` route only.
+- Phase 21-E: any later gateway follow-up only if explicitly requested.
 
 Do not start iOS integration, endpoint rollout, real user-photo upload, or production cloud AI without a later explicit phase prompt.
 
@@ -271,6 +272,18 @@ npm run qa:open-weight-vlm:gateway-provider-routing
 ```
 
 The routing policy is backend-internal only and fail-closed. Allowed modes are `local_stub` and `local_contract_echo`. Blocked modes are `local_model_blocked`, `future_vllm_blocked`, `future_sglang_blocked`, `manual_ollama_lmstudio_blocked`, `production_blocked`, and unknown modes. The routing dry-run remains sanitized, no-network, no-model, and `productionReady:false`.
+
+## Phase 21-D Provider Adapter No-model HTTP Check
+
+Phase 21-D adds the no-model HTTP adapter check:
+
+```sh
+npm run qa:open-weight-vlm:gateway-provider-adapter-no-model-http
+```
+
+The adapter accepts only the `local_contract_echo` route, validates the provider routing decision before HTTP, calls only local/private healthz plus `/local/vlm/gateway-contract-echo`, validates the returned structured candidate through the existing schema/safety chain, and emits sanitized aggregate status only.
+
+It does not run real model smoke, Qwen inference, fixture inference, serving benchmarks, vLLM/SGLang/Ollama execution, iOS integration, app-facing endpoints, production endpoints, real user-photo upload, consent UI, training/fine-tuning, or production rollout. `productionReady:false` remains required.
 
 ## ProductionReady Boundary
 

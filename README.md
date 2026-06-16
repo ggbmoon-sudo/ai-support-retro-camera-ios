@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 21-B adds the backend-internal VLM Gateway adapter stub and aligns the external local VLM server with a no-model gateway contract echo. Phase 21-C adds the backend-internal provider routing dry-run gate. The app repo remains the source of truth for the contract, adapter stub, provider routing policy, validator/safety chain, QA scripts, docs, and tests. The external server remains a private/local sandbox and is touched only for healthz / no-model echo compatibility.
+- Phase 21-D adds the backend-internal VLM Gateway provider adapter no-model HTTP check. The app repo remains the source of truth for the contract, adapter stub, provider routing policy, provider adapter policy, validator/safety chain, QA scripts, docs, and tests. The external server remains a private/local sandbox and is used only for healthz / no-model echo compatibility.
 
 Next phase:
 
-- Recommended next step is Phase 21-D only if explicitly requested after the provider routing dry-run gate. Do not start iOS integration, app-facing endpoints, production endpoints, real user-photo upload, serving benchmark execution, Qwen inference, vLLM/SGLang/Ollama runs, or serving-stack switches unless a future prompt explicitly approves them.
+- Recommended next step is Phase 21-E only if explicitly requested after the no-model provider adapter HTTP check. Do not start iOS integration, app-facing endpoints, production endpoints, real user-photo upload, serving benchmark execution, Qwen inference, fixture inference, vLLM/SGLang/Ollama runs, or serving-stack switches unless a future prompt explicitly approves them.
 - Do not start production cloud rollout without explicit approval
 - Production rollout remains blocked until a later explicit release phase
 
@@ -289,6 +289,8 @@ Phase 21-A adds `docs/backend-internal-vlm-gateway-contract-preflight.md` and `n
 Phase 21-B adds `backend/src/qa/openWeightVlmGatewayAdapterStub.mjs`, `npm run qa:open-weight-vlm:gateway-adapter-stub`, and `npm run qa:open-weight-vlm:gateway-external-contract-echo`. The adapter stub accepts only the Phase 21-A sanitized internal request contract in fixture-token sandbox mode, maps to structured candidate JSON, validates through the existing open-weight VLM schema/safety chain, and prints sanitized aggregate results only. The external Windows workspace may expose `/local/vlm/gateway-contract-echo` for no-model compatibility checks only; it must not load/call Qwen, run benchmarks, expose production endpoints, or return raw artifacts. `productionReady:false` remains required.
 
 Phase 21-C adds `backend/src/qa/openWeightVlmGatewayProviderRouting.mjs` and `npm run qa:open-weight-vlm:gateway-provider-routing`. The dry-run reviews only backend-internal provider modes. `local_stub` and `local_contract_echo` are allowed; `local_model_blocked`, `future_vllm_blocked`, `future_sglang_blocked`, `manual_ollama_lmstudio_blocked`, `production_blocked`, and unknown modes are blocked. The dry-run stays sanitized, no-network, no-model, and `productionReady:false`.
+
+Phase 21-D adds `backend/src/qa/openWeightVlmGatewayProviderAdapterNoModelHttp.mjs` and `npm run qa:open-weight-vlm:gateway-provider-adapter-no-model-http`. The check accepts only the `local_contract_echo` route, validates routing before HTTP, calls only local/private healthz plus `/local/vlm/gateway-contract-echo`, validates structured candidate JSON through the existing schema/safety chain, and reports sanitized aggregate status only. No real model smoke, Qwen inference, fixture inference, serving benchmark, vLLM/SGLang/Ollama execution, iOS integration, app-facing endpoint, production endpoint, real user-photo upload, raw artifacts, or production readiness change is added.
 
 ## Phase 12A Filter Planning Status
 

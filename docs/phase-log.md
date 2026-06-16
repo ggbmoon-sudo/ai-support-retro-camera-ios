@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 21-C - Backend Internal Gateway Provider Routing Plan + Dry-run Gate
+Current phase: Phase 21-D - Backend Internal Gateway Provider Adapter No-model HTTP Check
 Status: Implemented
-Latest implementation: Added the backend-internal VLM Gateway provider routing policy and no-network dry-run gate. The policy allows only `local_stub` and `local_contract_echo`, blocks local model, future vLLM, future SGLang, manual Ollama/LM Studio, production, and unknown modes, and keeps existing validator/safety/fallback gates as required. No real model smoke, Qwen inference, serving benchmark, vLLM/SGLang/Ollama execution, iOS integration, app-facing endpoint, production endpoint, real user-photo upload, raw artifact output, training/fine-tuning, model-stack switch, or production readiness change was added.
+Latest implementation: Added the backend-internal VLM Gateway provider adapter no-model HTTP check. The adapter accepts only the `local_contract_echo` route, validates routing before HTTP, calls only local/private healthz plus `/local/vlm/gateway-contract-echo`, validates structured candidate JSON through the existing schema/safety chain, and reports sanitized aggregate status only. No real model smoke, Qwen inference, fixture inference, serving benchmark, vLLM/SGLang/Ollama execution, iOS integration, app-facing endpoint, production endpoint, real user-photo upload, raw artifact output, training/fine-tuning, model-stack switch, or production readiness change was added.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -72,7 +72,7 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Phase 21-D may proceed only if explicitly requested. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production endpoint work, real user-photo upload, serving-stack benchmark execution, model downloads, model cache changes, or user-photo training / fine-tuning until explicitly requested.
+Next phase: Phase 21-E may proceed only if explicitly requested. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production endpoint work, real user-photo upload, serving-stack benchmark execution, model downloads, model cache changes, Qwen inference, fixture inference, or user-photo training / fine-tuning until explicitly requested.
 
 ---
 
@@ -394,6 +394,62 @@ Phase 21-C defines backend-internal gateway provider routing states and adds a n
 ### Ready for Phase 21-D
 
 Yes, for another explicitly requested backend-internal dry-run/planning phase only. Phase 21-C does not approve iOS integration, app-facing endpoints, production endpoints, real user-photo upload, serving benchmark execution, Qwen inference, model-stack switching, training/fine-tuning, or any change to `productionReady:false`.
+
+---
+
+## Phase 21-D - Backend Internal Gateway Provider Adapter No-model HTTP Check
+
+Status: Implemented
+Date: 2026-06-16
+
+### Summary
+
+Phase 21-D adds a backend-internal provider adapter no-model HTTP check for the allowed `local_contract_echo` route. It verifies provider routing before HTTP, checks local/private healthz, calls only `/local/vlm/gateway-contract-echo`, validates structured candidate JSON through the existing schema/safety chain, and reports sanitized aggregate status only.
+
+### Completed
+
+- Added `backend/src/qa/openWeightVlmGatewayProviderAdapterNoModelHttp.mjs`.
+- Added `backend/scripts/check-open-weight-vlm-gateway-provider-adapter-no-model-http.mjs`.
+- Added `npm run qa:open-weight-vlm:gateway-provider-adapter-no-model-http`.
+- Enforced `local_contract_echo` as the only allowed HTTP route.
+- Added fail-closed checks for unsafe healthz, public/cloud/tunnel/non-local endpoints, raw logging, model inference, model calls, Qwen inference, raw persistence, leaky echo responses, invalid structured candidates, app-facing/production endpoint flags, and `productionReady:true`.
+- Extended backend tests for safe/unsafe mocked healthz and echo responses, unsupported routes, public endpoints, raw persistence, invalid candidate JSON, sanitized output, and CLI behavior.
+- Updated README, backend README, iOS README, handoff, gateway contract/routing docs, VLM runbooks, sandbox summaries, and manual smoke tests.
+
+### Changed Files
+
+- README.md
+- backend/README.md
+- backend/package.json
+- backend/scripts/check-open-weight-vlm-gateway-provider-adapter-no-model-http.mjs
+- backend/src/qa/openWeightVlmGatewayProviderAdapterNoModelHttp.mjs
+- backend/tests/open-weight-vlm-benchmark.test.mjs
+- docs/backend-internal-vlm-gateway-contract-preflight.md
+- docs/backend-internal-vlm-gateway-provider-routing.md
+- docs/handoff/codex-transition-handoff.md
+- docs/open-weight-vlm-local-operator-runbook.md
+- docs/open-weight-vlm-local-sandbox-review-summary.md
+- docs/open-weight-vlm-local-smoke-expansion-gate.md
+- docs/phase-log.md
+- ios-app/README.md
+- tests/manual-smoke-tests.md
+
+### Tests / Manual Checks
+
+- Backend tests include the new no-model provider adapter HTTP cases.
+- Provider adapter no-model HTTP CLI should report `networkCallsMade:true` only for local/private no-model HTTP, `modelCallsMade:false`, `qwenInferenceRun:false`, `modelInferenceRun:false`, `benchmarkRun:false`, raw persistence flags false, `eligibleForProviderAdapterNoModelHttpReview:true`, `eligibleForAppIntegration:false`, and `productionReady:false`.
+- Manual checklist updated for Phase 21-D.
+
+### Known TODOs
+
+- Phase 21-E should remain backend-internal unless a future explicit prompt chooses otherwise.
+- Real local model routing remains blocked from the gateway provider policy.
+- vLLM, SGLang, Ollama, and LM Studio execution remain blocked.
+- Production endpoint, app-facing endpoint, real user-photo upload, consent UI, privacy disclosure, retention/deletion, quota/abuse controls, and production rollout remain blocked.
+
+### Ready for Phase 21-E
+
+Yes, for another explicitly requested backend-internal no-model planning/check phase only. Phase 21-D does not approve iOS integration, app-facing endpoints, production endpoints, real user-photo upload, serving benchmark execution, Qwen inference, fixture inference, model-stack switching, training/fine-tuning, or any change to `productionReady:false`.
 
 ---
 
