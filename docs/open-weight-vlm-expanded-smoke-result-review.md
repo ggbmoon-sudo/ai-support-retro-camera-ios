@@ -29,6 +29,27 @@ Recommended next phase: **Phase 20-L - 12-Fixture Coverage Expansion Plan + No-m
 
 The repeatability gate and failure/latency taxonomy passed with a latency note.
 
+## Phase 20-N Controlled 12-Fixture Smoke
+
+Phase 20-N ran the explicitly approved controlled local/private smoke after the 12-fixture prep and routing echo work. It made exactly 12 calls, one per approved ignored fixture token `smoke_004` through `smoke_015`, with no retries and no extra fixtures. All 12 were accepted by the backend validator with no validation, fallback, or schema diagnostic buckets.
+
+Sanitized Phase 20-N aggregate:
+
+- `fixtureCount:12`
+- `acceptedCount:12`
+- `rejectedCount:0`
+- `acceptanceRate:100%`
+- `validationCodeCounts:null x12`
+- `fallbackCategoryCounts:null x12`
+- `schemaErrorBucketCounts:none`
+- `schemaFieldBucketCounts:none`
+- `latencyBucketCounts:gt_15s x10, 5s_to_15s x2`
+- `networkCallsMade:true`
+- `productionReady:false`
+- raw prompt, model response, image, image path, and request payload persisted flags false
+
+This is still sandbox evidence, not production readiness. The latency note should be tracked as a performance note only.
+
 ## What The 8-Fixture Smoke Proves
 
 - The backend can call the local/private Windows Qwen2.5-VL FastAPI server through the sandbox path.

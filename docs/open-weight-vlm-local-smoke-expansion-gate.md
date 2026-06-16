@@ -407,3 +407,23 @@ The four planned additions beyond the Phase 20-J eight are `warm_indoor_ambient`
 Phase 20-M prepares the ignored local fixture set and verifies no-model routing for 12 approved tokens. The registry dry-run must pass with `approvedCount:12`, `blockedCount:0`, no missing required categories, `networkCallsMade:false`, and `productionReady:false`. The routing echo must pass with `routeableCount:12`, `modelInferenceRun:false`, raw persistence flags false, and `productionReady:false`.
 
 Do not treat this as approval for real smoke; Phase 20-N still requires explicit user approval and fresh gates.
+
+## Phase 20-N Controlled 12-Fixture Smoke
+
+Phase 20-N is the explicitly approved real local/private smoke. It must run exactly 12 calls, one per approved ignored fixture token `smoke_004` through `smoke_015`, with no retries, no extra fixtures, and `productionReady:false`.
+
+Sanitized Phase 20-N result:
+
+- `fixtureCount:12`
+- `acceptedCount:12`
+- `rejectedCount:0`
+- `acceptanceRate:100%`
+- `validationCodeCounts:null x12`
+- `fallbackCategoryCounts:null x12`
+- `schemaErrorBucketCounts:none`
+- `schemaFieldBucketCounts:none`
+- `latencyBucketCounts:gt_15s x10, 5s_to_15s x2`
+- `networkCallsMade:true`
+- raw prompt/model response/image/image path/request payload persisted flags false
+
+This remains backend-only and does not approve iOS integration, app-facing endpoints, production endpoints, or production rollout.

@@ -252,6 +252,27 @@ The dry-run reports `totalTargetFixtures:12`, `requiredCategories`, category cov
 
 Phase 20-M prepares the ignored local 12-fixture set and verifies 12-token no-model routing echo. The result remains backend-only sandbox readiness: ignored fixture images and registry stay uncommitted, no Qwen inference runs, raw artifacts are not printed, and `productionReady:false` remains required.
 
+## Phase 20-N Smoke Note
+
+Phase 20-N ran the explicitly approved controlled 12-fixture local/private Qwen smoke. The run made exactly 12 approved fixture calls, one per token, with no retries and no extra fixtures.
+
+Sanitized Phase 20-N aggregate:
+
+- `fixtureCount:12`
+- `acceptedCount:12`
+- `rejectedCount:0`
+- `acceptanceRate:100%`
+- `validationCodeCounts:null x12`
+- `fallbackCategoryCounts:null x12`
+- `schemaErrorBucketCounts:none`
+- `schemaFieldBucketCounts:none`
+- `latencyBucketCounts:gt_15s x10, 5s_to_15s x2`
+- `networkCallsMade:true`
+- `productionReady:false`
+- raw persistence flags false
+
+The sandbox remains backend-only and Windows-primary. This does not approve iOS integration, app-facing endpoints, production endpoints, or production rollout.
+
 ## Boundary Confirmation
 
 Phase 20-E-E is a review/summary/planning gate only. It does not run real model smoke, expand fixture count, benchmark vLLM/SGLang, start iOS integration, add app-facing or production endpoints, train/fine-tune, weaken validation, loosen fixture approval, commit local artifacts, or change production readiness.

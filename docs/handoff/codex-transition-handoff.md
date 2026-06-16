@@ -903,6 +903,8 @@ Use this template:
 - Next work should be Phase 20-M controlled 12-fixture prep only after explicit approval. Do not run real Qwen smoke, commit fixture images/local registries, benchmark serving stacks, start iOS integration, add endpoints, or change `productionReady:false` from the handoff state.
 - Phase 20-M now prepares the ignored 12-fixture local set and extends no-model routing echo to 12 tokens. Sanitized gates pass with `totalFixtures:12`, `approvedCount:12`, `blockedCount:0`, `missingRequiredCategories:[]`, `eligibleForControlledSmoke:true`, `totalFixtureTokens:12`, `routeableCount:12`, `unavailableCount:0`, `modelInferenceRun:false`, raw persistence flags false, and `productionReady:false`.
 - Next work should be Phase 20-N controlled 12-fixture local/private smoke only after explicit approval and fresh gate checks. Ignored fixture images/local registries must remain uncommitted.
+- Phase 20-N now records the explicitly approved controlled 12-fixture local/private smoke: exactly 12 calls, one per approved ignored fixture token `smoke_004` through `smoke_015`, with `fixtureCount:12`, `acceptedCount:12`, `rejectedCount:0`, `acceptanceRate:100%`, `validationCodeCounts:null x12`, `fallbackCategoryCounts:null x12`, no schema diagnostic buckets, `latencyBucketCounts:gt_15s x10, 5s_to_15s x2`, `networkCallsMade:true`, raw persistence flags false, and `productionReady:false`.
+- Repeatability and failure/latency gates passed with a latency note. Next work should be Phase 20-O planning only unless explicitly approved otherwise.
 
 ---
 

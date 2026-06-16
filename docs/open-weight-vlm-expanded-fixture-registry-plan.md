@@ -230,6 +230,14 @@ Phase 20-M prepares the ignored local 12-fixture set for no-model review. The ac
 
 The no-model fixture routing contract echo now checks 12 approved tokens and passes with `routeableCount:12`, `unavailableCount:0`, `modelInferenceRun:false`, raw persistence flags false, and `productionReady:false`. A future real smoke still requires explicit approval.
 
+## Phase 20-N Controlled Smoke Result
+
+Phase 20-N ran the explicitly approved local/private Qwen smoke for the 12 approved ignored fixture tokens. It made exactly 12 calls, one per token, with no retries and no extra fixtures.
+
+Sanitized aggregate: `fixtureCount:12`, `acceptedCount:12`, `rejectedCount:0`, `acceptanceRate:100%`, `validationCodeCounts:null x12`, `fallbackCategoryCounts:null x12`, no schema diagnostic buckets, `latencyBucketCounts:gt_15s x10, 5s_to_15s x2`, `networkCallsMade:true`, raw persistence flags false, and `productionReady:false`.
+
+This confirms the 12-category fixture set can route, infer, and validate in the sandbox. It does not approve fixture expansion beyond the approved set, iOS integration, app-facing endpoints, production endpoints, or production rollout.
+
 ## Boundary Confirmation
 
 Phase 20-L is backend-only and Windows-primary. It prepares controlled 12-fixture planning, but does not run it. No fixture images, local registry, local config, raw paths, prompts, model outputs, request payloads, reports, logs, weights, or credentials are committed. iOS behavior is unchanged. `productionReady:false` remains required.

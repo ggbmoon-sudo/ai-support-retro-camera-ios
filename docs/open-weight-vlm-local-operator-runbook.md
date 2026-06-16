@@ -544,7 +544,21 @@ The Phase 20-J eight categories remain covered, and the planned additions are `w
 Phase 20-M prepares the ignored local 12-fixture set and updates the no-model routing echo to 12 approved tokens. It uses only sanitized fixture IDs and registry metadata, and it keeps `productionReady:false`.
 
 The operator should treat the result as sandbox readiness only. Do not run Qwen inference, real model smoke, app-facing endpoints, iOS integration, or production rollout from this phase.
-- Treat `gt_15s x3` as a sandbox latency note, not production approval.
+
+## Phase 20-N Controlled 12-Fixture Smoke
+
+Phase 20-N ran the explicitly approved controlled local/private smoke:
+
+- exactly 12 Qwen-backed calls
+- one call per approved ignored fixture token `smoke_004` through `smoke_015`
+- no retries
+- no extra fixtures
+- sanitized metrics only
+
+Sanitized aggregate: `fixtureCount:12`, `acceptedCount:12`, `rejectedCount:0`, `acceptanceRate:100%`, `validationCodeCounts:null x12`, `fallbackCategoryCounts:null x12`, no schema diagnostic buckets, `latencyBucketCounts:gt_15s x10, 5s_to_15s x2`, `networkCallsMade:true`, raw persistence flags false, and `productionReady:false`.
+
+Repeatability and failure/latency taxonomy gates passed with a latency note. Treat this as sandbox evidence only, not iOS readiness or production approval.
+- Treat accepted `gt_15s` buckets as sandbox latency notes, not production approval.
 - Keep all local config, fixture registry, fixture images, reports, logs, prompts, model outputs, request payloads, credentials, and model weights ignored.
 - Require a future explicit prompt before any additional real local/private model calls.
 - Keep `productionReady:false`.

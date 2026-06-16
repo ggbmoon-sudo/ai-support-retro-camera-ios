@@ -9,6 +9,15 @@
 - [ ] Confirm fixture images and local registry remain ignored/uncommitted.
 - [ ] Confirm no real model smoke, Qwen inference, raw prompt/model output/image path/base64/request payload, app-facing endpoint, iOS integration, production endpoint, or production rollout is introduced.
 
+## Phase 20-N
+
+Controlled 12-fixture local/private smoke:
+
+- [ ] Confirm the smoke ran exactly once per approved ignored token `smoke_004` through `smoke_015`.
+- [ ] Confirm the sanitized aggregate is `fixtureCount:12`, `acceptedCount:12`, `rejectedCount:0`, `acceptanceRate:100%`, `validationCodeCounts:null x12`, `fallbackCategoryCounts:null x12`, no schema diagnostic buckets, `latencyBucketCounts:gt_15s x10, 5s_to_15s x2`, `networkCallsMade:true`, raw persistence flags false, and `productionReady:false`.
+- [ ] Confirm repeatability and failure/latency gates pass with a latency note only.
+- [ ] Confirm this remains backend-only and does not approve iOS integration, app-facing endpoints, production endpoints, or production rollout.
+
 ## Phase 20-L
 
 12-fixture coverage expansion plan and no-model registry gate:

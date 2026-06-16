@@ -8,7 +8,7 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 20-M - Prepare 12 Approved Ignored Fixtures + No-model Routing Echo
+Current phase: Phase 20-N - Controlled 12-Fixture Local VLM Smoke
 Status: Implemented
 Latest implementation: Prepared the ignored local 12-fixture set for no-model review, updated the no-model fixture routing echo target to 12 fixture tokens, and verified the expanded registry dry-run plus routing contract echo without Qwen inference. Ignored fixture images and local registry remain uncommitted. No real model smoke, iOS integration, app-facing endpoint, production endpoint, raw artifact output, training/fine-tuning, serving-stack benchmark, or production readiness change was added.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
@@ -149,6 +149,31 @@ Date: 2026-06-16
 ### Ready for Phase 20-N
 
 Yes, for a future explicitly approved controlled 12-fixture local/private smoke only. Phase 20-M does not approve iOS integration, app-facing endpoints, production endpoints, production rollout, serving-stack benchmarking, training/fine-tuning, or real model calls without explicit future approval.
+
+## Phase 20-N - Controlled 12-Fixture Local VLM Smoke
+
+Status: Implemented
+Date: 2026-06-16
+
+### Completed
+
+- Ran exactly 12 local/private Qwen-backed smoke calls, one per approved ignored fixture token: `smoke_004` through `smoke_015`.
+- Reused the approved ignored 12-fixture registry and the no-model routing echo baseline from Phase 20-M.
+- Kept the backend validator as source of truth and kept `productionReady:false`.
+
+### Sanitized Result
+
+- Per-fixture accepted: all 12 approved fixture tokens.
+- Aggregate: `fixtureCount:12`, `acceptedCount:12`, `rejectedCount:0`, `acceptanceRate:100%`.
+- Validation/fallback: `validationCodeCounts:null x12`, `fallbackCategoryCounts:null x12`, no schema error buckets, no schema field buckets.
+- Latency: `gt_15s x10`, `5s_to_15s x2`.
+- Safety: `networkCallsMade:true`, `productionReady:false`, raw prompt/model response/image/image path/request payload persisted flags false.
+- Repeatability gate: passed with `pass_with_latency_note`.
+- Failure/latency taxonomy: passed with `latency_note`.
+
+### Ready for Phase 20-O
+
+Yes, for future planning only. Phase 20-N does not approve iOS integration, app-facing endpoints, production endpoints, production rollout, serving-stack benchmarking, training/fine-tuning, or any change to `productionReady:false`.
 
 ---
 
