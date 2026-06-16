@@ -8,6 +8,7 @@ Controlled expanded local VLM smoke blocked result:
 - [ ] Confirm the run used exactly eight approved fixture tokens, one call per fixture, no retries, and no extra fixtures.
 - [ ] Confirm repeatability and failure/latency gates blocked the aggregate.
 - [ ] Confirm Phase 20-H provider diagnostic output is sanitized, no-model, and classifies the block as a likely pre-inference fixture availability / routing mismatch before any future real smoke is considered.
+- [ ] Confirm Phase 20-I fixture routing contract echo passes for `smoke_001` through `smoke_008` with `routeableCount:8`, `modelInferenceRun:false`, raw persistence flags false, and `productionReady:false`.
 - [ ] Confirm no raw prompt, raw model output, image path, base64, request payload, local config contents, fixture registry contents, server logs, credentials, raw reports, local config, local registry, fixture images, or model weights were committed.
 - [ ] Confirm no iOS source/project/localization files changed, no Camera cloud entry was added, no iOS provider/model key or direct call was added, no iOS upload payload changed, no capture-context upload was added, and no production remote rollout was enabled.
 

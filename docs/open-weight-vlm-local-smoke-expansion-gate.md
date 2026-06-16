@@ -365,3 +365,9 @@ npm run qa:open-weight-vlm:expanded-fixture-provider-diagnostic
 ```
 
 The diagnostic uses sanitized aggregate and availability buckets only. It reports the Phase 20-G pattern as a likely pre-inference local server fixture availability / routing mismatch and keeps another expanded real smoke blocked until a no-model contract-echo fixture-routing check passes. `productionReady:false` remains required.
+
+## Phase 20-I Routing Echo
+
+Phase 20-I added the no-model fixture routing contract echo route and backend CLI. It verified `smoke_001` through `smoke_008` route successfully with `modelInferenceRun:false`, raw persistence flags false, `networkCallsMade:true`, and `productionReady:false`.
+
+This satisfies the routing prerequisite for a future explicitly approved expanded real smoke retry, but it does not itself run Qwen or authorize production rollout.

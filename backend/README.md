@@ -733,6 +733,28 @@ Current sanitized categories include `likely_pre_inference_block`, `likely_serve
 
 The current working hypothesis is that the backend expanded fixture registry and the external Windows FastAPI server fixture availability / routing are out of sync before inference. Another expanded real model smoke remains blocked until a local/private no-model fixture-routing or contract-echo check passes.
 
+## Phase 20-I Fixture Routing Contract Echo
+
+Run:
+
+```sh
+npm run qa:open-weight-vlm:fixture-routing-echo
+```
+
+This calls only the local/private Windows FastAPI fixture routing contract echo route. It does not call Qwen, build a prompt, read model output, use the real smoke endpoint, print raw image paths, print local config or registry contents, print request payloads, or mark production ready.
+
+Sanitized Phase 20-I result:
+
+- `totalFixtureTokens:8`
+- `routeableCount:8`
+- `unavailableCount:0`
+- `modelInferenceRun:false`
+- raw persistence flags false
+- `networkCallsMade:true`
+- `productionReady:false`
+
+Phase 20-I makes a future explicitly approved controlled expanded smoke retry planning-ready only after all gates pass again. It does not approve iOS integration, app-facing endpoints, production endpoints, or production rollout.
+
 ## Phase 20-C Local VLM Operator Runbook + Smoke Gate
 
 Phase 20-C adds an operator runbook and a backend-only real-model smoke gate for future approved local/self-hosted VLM testing. The gate does not call a model and does not create an app-facing endpoint.

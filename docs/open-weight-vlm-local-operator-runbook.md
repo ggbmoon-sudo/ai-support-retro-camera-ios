@@ -486,3 +486,25 @@ npm run qa:open-weight-vlm:expanded-fixture-provider-diagnostic
 This command is no-model by default and reviews sanitized aggregate buckets only. Optional registry or healthz inspection must stay sanitized and must not print raw paths, local config contents, fixture registry contents, prompts, model output, base64, request payloads, credentials, EXIF, or server logs.
 
 The Phase 20-H diagnosis points to a pre-inference fixture availability / routing mismatch between the backend expanded registry and the external Windows FastAPI server. A future real expanded smoke is blocked until a local/private no-model contract-echo fixture-routing check proves the approved fixture tokens route without Qwen inference.
+
+## Phase 20-I Fixture Routing Contract Echo
+
+Run:
+
+```sh
+npm run qa:open-weight-vlm:fixture-routing-echo
+```
+
+The command calls only the local/private fixture routing contract echo endpoint. It verifies `smoke_001` through `smoke_008` route without Qwen inference, prompt creation, model output, raw image path printing, request payload printing, or production readiness.
+
+Sanitized passing aggregate:
+
+- `totalFixtureTokens:8`
+- `routeableCount:8`
+- `unavailableCount:0`
+- `modelInferenceRun:false`
+- raw persistence flags false
+- `networkCallsMade:true`
+- `productionReady:false`
+
+Only after this check and all existing gates pass may a future explicitly approved phase consider another controlled expanded real smoke.

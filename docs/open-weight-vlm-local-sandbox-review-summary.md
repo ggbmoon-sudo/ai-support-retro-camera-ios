@@ -214,6 +214,20 @@ The diagnostic points to a pre-inference mismatch between backend expanded fixtu
 
 This phase does not add iOS integration, app-facing endpoints, production endpoints, raw artifact persistence, serving-stack benchmarking, training/fine-tuning, or production rollout.
 
+## Phase 20-I Routing Echo Note
+
+Phase 20-I adds a no-model fixture routing contract echo and backend gate. The sanitized result verifies the approved eight fixture tokens route locally/private before any future real smoke retry:
+
+- `totalFixtureTokens:8`
+- `routeableCount:8`
+- `unavailableCount:0`
+- `modelInferenceRun:false`
+- raw persistence flags false
+- `networkCallsMade:true`
+- `productionReady:false`
+
+This proves routing only. It does not prove model quality, latency, schema behavior under Qwen output, iOS integration, app-facing endpoints, or production readiness.
+
 ## Boundary Confirmation
 
 Phase 20-E-E is a review/summary/planning gate only. It does not run real model smoke, expand fixture count, benchmark vLLM/SGLang, start iOS integration, add app-facing or production endpoints, train/fine-tune, weaken validation, loosen fixture approval, commit local artifacts, or change production readiness.

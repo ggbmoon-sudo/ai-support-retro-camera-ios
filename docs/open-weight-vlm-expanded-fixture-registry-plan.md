@@ -183,6 +183,14 @@ Sanitized external server inspection found the server workspace only advertises 
 
 No real model smoke, fixture expansion, raw artifact output, iOS integration, app-facing endpoint, production endpoint, or production readiness change is approved by this diagnosis.
 
+## Phase 20-I Routing Echo Result
+
+Phase 20-I added a local/private no-model fixture routing contract echo for the approved eight-token set. The Windows server route and backend CLI verify routing without Qwen inference, prompt creation, model output, raw image path output, request payload output, or production readiness.
+
+Sanitized aggregate passed: `totalFixtureTokens:8`, `routeableCount:8`, `unavailableCount:0`, `modelInferenceRun:false`, raw persistence flags false, `networkCallsMade:true`, and `productionReady:false`.
+
+This makes the expanded fixture registry routeability issue resolved for planning purposes only. A future real smoke still requires explicit approval and all existing gates to pass again.
+
 ## Boundary Confirmation
 
 Phase 20-F is backend-only and Windows-primary. It prepares controlled expanded smoke, but does not run it. No fixture images, local registry, local config, raw paths, prompts, model outputs, request payloads, reports, logs, weights, or credentials are committed. iOS behavior is unchanged. `productionReady:false` remains required.

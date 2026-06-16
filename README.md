@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 20-H adds a no-model expanded fixture provider-integration diagnostic for the blocked Phase 20-G eight-fixture run. The sanitized diagnosis points to a pre-inference Windows server fixture availability / routing gap, not a backend schema validator failure. `productionReady:false` remains enforced.
+- Phase 20-I adds a local/private no-model fixture routing contract echo for the approved eight expanded fixture tokens. The sanitized check passed with eight routeable tokens, zero unavailable tokens, no model inference, raw persistence flags false, and `productionReady:false`.
 
 Next phase:
 
-- Recommended next step is a no-model local/private contract-echo fixture-routing check before any future expanded real smoke. Do not retry model calls to chase pass rate.
+- Recommended next step is Phase 20-J only if explicitly approved: rerun all gates, then consider a controlled expanded real smoke retry. Do not retry model calls to chase pass rate.
 - Do not start production cloud rollout without explicit approval
 - Production rollout remains blocked until a later explicit release phase
 
@@ -266,6 +266,8 @@ Phase 20-F adds `docs/open-weight-vlm-expanded-fixture-registry-plan.md`, a sani
 Phase 20-G ran the explicitly approved controlled eight-fixture local/private smoke once per fixture token with no retries. The sanitized aggregate was `fixtureCount:8`, `acceptedCount:0`, `rejectedCount:8`, `fallbackCategoryCounts:blocked_for_provider_integration x8`, `latencyBucketCounts:lt_1s x8`, no schema diagnostic buckets, `networkCallsMade:true`, raw persistence flags false, and `productionReady:false`. The repeatability and failure/latency gates blocked the aggregate, so Phase 20-H is not ready until server-side expanded fixture handling is diagnosed.
 
 Phase 20-H adds `npm run qa:open-weight-vlm:expanded-fixture-provider-diagnostic`, a sanitized no-model diagnostic for the Phase 20-G provider-integration block. It does not call Qwen, read raw image paths, print local config or registry contents, start iOS integration, add endpoints, or change production readiness. The current root-cause hypothesis is an external Windows server fixture availability / routing mismatch for expanded fixture tokens, so another real smoke remains blocked until a no-model contract-echo routing check passes.
+
+Phase 20-I adds `npm run qa:open-weight-vlm:fixture-routing-echo`, backed by a local/private no-model Windows FastAPI contract echo route. It verifies `smoke_001` through `smoke_008` route before any future real smoke retry and reports sanitized aggregate fields only. The Phase 20-I check passed with `totalFixtureTokens:8`, `routeableCount:8`, `unavailableCount:0`, `modelInferenceRun:false`, raw persistence flags false, `networkCallsMade:true`, and `productionReady:false`.
 
 ## Phase 12A Filter Planning Status
 
