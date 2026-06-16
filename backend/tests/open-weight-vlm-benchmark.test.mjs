@@ -1118,6 +1118,19 @@ test("open-weight VLM expanded fixture registry passes dry-run review", () => {
   assert.equal(assertOpenWeightVlmExpandedFixtureRegistryReportRedacted(report).ok, true);
 });
 
+test("open-weight VLM expanded fixture registry accepts local registry object shape", () => {
+  const report = evaluateOpenWeightVlmExpandedFixtureRegistry({
+    schemaVersion: "open_weight_vlm_expanded_fixture_registry.local.v1",
+    fixtures: expandedFixtureRegistrySample()
+  });
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.totalFixtures, 12);
+  assert.equal(report.approvedCount, 12);
+  assert.equal(report.eligibleForControlledSmoke, true);
+});
+
 test("open-weight VLM expanded fixture registry blocks missing metadata strip", () => {
   const registry = expandedFixtureRegistrySample();
   registry[0] = { ...registry[0], metadataStripped: false };

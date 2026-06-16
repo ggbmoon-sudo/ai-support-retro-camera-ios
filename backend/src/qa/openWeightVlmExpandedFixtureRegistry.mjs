@@ -144,7 +144,9 @@ export function validateOpenWeightVlmExpandedFixtureEntry(entry = {}) {
 }
 
 export function evaluateOpenWeightVlmExpandedFixtureRegistry(entries = []) {
-  const normalizedEntries = Array.isArray(entries) ? entries : [];
+  const normalizedEntries = Array.isArray(entries)
+    ? entries
+    : (Array.isArray(entries?.fixtures) ? entries.fixtures : []);
   const entryReviews = normalizedEntries.map(validateOpenWeightVlmExpandedFixtureEntry);
   const categoryCoverage = Object.fromEntries(
     OPEN_WEIGHT_VLM_EXPANDED_FIXTURE_CATEGORIES.map((category) => [category, 0])
