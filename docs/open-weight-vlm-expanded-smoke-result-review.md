@@ -168,3 +168,7 @@ Do not recommend iOS integration, production endpoints, or serving-stack benchma
 Phase 20-L implements the recommended next step as a no-model 12-fixture registry gate. The planned target keeps the eight Phase 20-J/K categories and adds `warm_indoor_ambient`, `soft_focus_dreamy`, `street_chrome_high_contrast`, and `overexposed_unreadable`.
 
 The gate reports `totalTargetFixtures:12`, the required category list, category coverage, missing required categories, `networkCallsMade:false`, and `productionReady:false`. It prepares Phase 20-M controlled fixture preparation only; it does not run Qwen inference, add fixture images, expand the real local registry with committed files, start iOS integration, add endpoints, or approve production rollout.
+
+## Phase 20-M Prep Note
+
+Phase 20-M completes the local ignored fixture preparation step for the 12-category target and verifies no-model routing echo for 12 approved tokens. The result is readiness for a future approved smoke, not production readiness: no Qwen inference, real smoke, iOS integration, endpoints, raw artifact output, or production rollout is added.

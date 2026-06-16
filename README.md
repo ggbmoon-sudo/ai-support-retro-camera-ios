@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 20-L adds a no-model 12-fixture coverage registry gate. It updates the expanded fixture registry dry-run to require the planned 12 categories, reports 8-category gaps safely, and keeps `productionReady:false`.
+- Phase 20-M prepares the ignored local 12-fixture set and updates no-model routing echo support for 12 fixture tokens. It does not run Qwen inference or real model smoke, and keeps `productionReady:false`.
 
 Next phase:
 
-- Recommended next step is Phase 20-M: controlled 12-fixture preparation only after explicit approval. Do not run more model calls unless a future prompt explicitly approves them.
+- Recommended next step is Phase 20-N: controlled 12-fixture local/private smoke only after explicit approval. Do not run more model calls unless a future prompt explicitly approves them.
 - Do not start production cloud rollout without explicit approval
 - Production rollout remains blocked until a later explicit release phase
 
@@ -275,6 +275,8 @@ Phase 20-J reruns the controlled expanded local/private Qwen smoke after the rou
 Phase 20-K reviews that accepted expanded smoke result and documents dataset coverage gaps in `docs/open-weight-vlm-expanded-smoke-result-review.md`. It is planning-only: no real model smoke, fixture images, local registry expansion, iOS integration, app-facing endpoint, production endpoint, serving-stack benchmark, training/fine-tuning, or production readiness change is added. The recommended next step is a no-model 12-fixture coverage expansion plan and registry gate before any future approved real smoke.
 
 Phase 20-L implements that no-model 12-fixture coverage plan in the expanded fixture registry dry-run gate. The gate now reports `totalTargetFixtures:12`, the 12 required categories, missing planned categories, `networkCallsMade:false`, and `productionReady:false`; an 8-category registry reports the four planned gaps (`warm_indoor_ambient`, `soft_focus_dreamy`, `street_chrome_high_contrast`, and `overexposed_unreadable`). No real model smoke, fixture images, local registry commit, iOS integration, app-facing endpoint, production endpoint, or production rollout is added.
+
+Phase 20-M prepares the ignored local 12-fixture set for the next controlled review and extends the no-model fixture routing echo target to 12 tokens. Sanitized gates pass with `totalFixtures:12`, `approvedCount:12`, `blockedCount:0`, `missingRequiredCategories:[]`, `eligibleForControlledSmoke:true`, `totalFixtureTokens:12`, `routeableCount:12`, `unavailableCount:0`, `modelInferenceRun:false`, raw persistence flags false, and `productionReady:false`. The ignored local registry and fixture images remain uncommitted; no Qwen inference, real smoke, iOS integration, endpoint, serving-stack benchmark, or production rollout is added.
 
 ## Phase 12A Filter Planning Status
 

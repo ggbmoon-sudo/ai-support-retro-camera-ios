@@ -248,6 +248,10 @@ Phase 20-L implements that recommendation as a no-model registry gate. The expan
 
 The dry-run reports `totalTargetFixtures:12`, `requiredCategories`, category coverage, missing required categories, `networkCallsMade:false`, and `productionReady:false`. This prepares Phase 20-M controlled fixture preparation only. It does not run Qwen inference, add fixture images, commit local registries/config, start iOS integration, add endpoints, or approve production rollout.
 
+## Phase 20-M Prep Note
+
+Phase 20-M prepares the ignored local 12-fixture set and verifies 12-token no-model routing echo. The result remains backend-only sandbox readiness: ignored fixture images and registry stay uncommitted, no Qwen inference runs, raw artifacts are not printed, and `productionReady:false` remains required.
+
 ## Boundary Confirmation
 
 Phase 20-E-E is a review/summary/planning gate only. It does not run real model smoke, expand fixture count, benchmark vLLM/SGLang, start iOS integration, add app-facing or production endpoints, train/fine-tune, weaken validation, loosen fixture approval, commit local artifacts, or change production readiness.

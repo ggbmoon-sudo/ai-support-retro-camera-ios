@@ -401,3 +401,9 @@ The next recommended step is Phase 20-L: plan 12 total fixtures and add a no-mod
 Phase 20-L adds that no-model registry gate. The expanded fixture dry-run now targets exactly 12 planned categories and reports `totalTargetFixtures:12`, `requiredCategories`, category coverage, missing required categories, `networkCallsMade:false`, and `productionReady:false`.
 
 The four planned additions beyond the Phase 20-J eight are `warm_indoor_ambient`, `soft_focus_dreamy`, `street_chrome_high_contrast`, and `overexposed_unreadable`. An 8-category registry should fail eligibility with those missing categories, but without model calls or raw artifact output.
+
+## Phase 20-M 12-Fixture Prep Gate
+
+Phase 20-M prepares the ignored local fixture set and verifies no-model routing for 12 approved tokens. The registry dry-run must pass with `approvedCount:12`, `blockedCount:0`, no missing required categories, `networkCallsMade:false`, and `productionReady:false`. The routing echo must pass with `routeableCount:12`, `modelInferenceRun:false`, raw persistence flags false, and `productionReady:false`.
+
+Do not treat this as approval for real smoke; Phase 20-N still requires explicit user approval and fresh gates.

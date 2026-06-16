@@ -796,6 +796,17 @@ Phase 20-L keeps the work backend-only and Windows-primary. It updates the expan
 
 An 8-category registry is expected to be ineligible and report the four planned missing categories. Phase 20-L does not run Qwen inference, add fixture images, commit local registries/config, start iOS integration, add endpoints, benchmark serving stacks, or approve production rollout.
 
+## Phase 20-M Ignored Fixture Prep And 12-Token Routing Echo
+
+Phase 20-M prepares the ignored local 12-fixture set only and updates the no-model routing echo token target to 12 approved fixtures. The ignored registry and ignored fixture images remain uncommitted, and no Qwen inference runs.
+
+Sanitized results:
+
+- expanded fixture registry dry-run: `totalFixtures:12`, `approvedCount:12`, `blockedCount:0`, `missingRequiredCategories:[]`, `eligibleForControlledSmoke:true`, `networkCallsMade:false`, `productionReady:false`
+- fixture routing contract echo: `totalFixtureTokens:12`, `routeableCount:12`, `unavailableCount:0`, `modelInferenceRun:false`, raw persistence flags false, `networkCallsMade:true`, `productionReady:false`
+
+Phase 20-M does not add iOS integration, app-facing endpoints, production endpoints, benchmark serving stacks, or production rollout.
+
 ## Phase 20-C Local VLM Operator Runbook + Smoke Gate
 
 Phase 20-C adds an operator runbook and a backend-only real-model smoke gate for future approved local/self-hosted VLM testing. The gate does not call a model and does not create an app-facing endpoint.

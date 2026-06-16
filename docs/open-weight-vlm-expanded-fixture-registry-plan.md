@@ -224,6 +224,12 @@ Phase 20-L implements the 12-category target as a dry-run registry gate only. Th
 
 This phase does not run Qwen inference, add fixture images, commit local config or local registry files, print raw paths/prompts/model outputs/request payloads, benchmark serving stacks, start iOS integration, add endpoints, or change `productionReady:false`.
 
+## Phase 20-M Ignored Fixture Prep
+
+Phase 20-M prepares the ignored local 12-fixture set for no-model review. The actual local registry and fixture images remain ignored and uncommitted. The expanded fixture dry-run passes with 12 approved fixtures, zero blocked fixtures, no missing required categories, `networkCallsMade:false`, and `productionReady:false`.
+
+The no-model fixture routing contract echo now checks 12 approved tokens and passes with `routeableCount:12`, `unavailableCount:0`, `modelInferenceRun:false`, raw persistence flags false, and `productionReady:false`. A future real smoke still requires explicit approval.
+
 ## Boundary Confirmation
 
 Phase 20-L is backend-only and Windows-primary. It prepares controlled 12-fixture planning, but does not run it. No fixture images, local registry, local config, raw paths, prompts, model outputs, request payloads, reports, logs, weights, or credentials are committed. iOS behavior is unchanged. `productionReady:false` remains required.

@@ -2,14 +2,18 @@ export const OPEN_WEIGHT_VLM_FIXTURE_ROUTING_CONTRACT_ECHO_SCHEMA_VERSION =
   "open_weight_vlm_fixture_routing_contract_echo.v1";
 
 const APPROVED_FIXTURE_TOKENS = Object.freeze([
-  "smoke_001",
-  "smoke_002",
-  "smoke_003",
   "smoke_004",
   "smoke_005",
   "smoke_006",
   "smoke_007",
-  "smoke_008"
+  "smoke_008",
+  "smoke_009",
+  "smoke_010",
+  "smoke_011",
+  "smoke_012",
+  "smoke_013",
+  "smoke_014",
+  "smoke_015"
 ]);
 
 export async function evaluateOpenWeightVlmFixtureRoutingContractEcho(options = {}) {

@@ -1,5 +1,14 @@
 # Manual Smoke Tests
 
+## Phase 20-M
+
+12 approved ignored fixtures and no-model routing echo:
+
+- [ ] Confirm the ignored local fixture registry reports `totalFixtures:12`, `approvedCount:12`, `blockedCount:0`, `missingRequiredCategories:[]`, `eligibleForControlledSmoke:true`, `networkCallsMade:false`, and `productionReady:false`.
+- [ ] Confirm fixture routing contract echo reports `totalFixtureTokens:12`, `routeableCount:12`, `unavailableCount:0`, `modelInferenceRun:false`, raw persistence flags false, `publicExposure:no`, and `productionReady:false`.
+- [ ] Confirm fixture images and local registry remain ignored/uncommitted.
+- [ ] Confirm no real model smoke, Qwen inference, raw prompt/model output/image path/base64/request payload, app-facing endpoint, iOS integration, production endpoint, or production rollout is introduced.
+
 ## Phase 20-L
 
 12-fixture coverage expansion plan and no-model registry gate:

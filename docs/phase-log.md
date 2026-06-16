@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 20-L - 12-Fixture Coverage Expansion Plan + No-model Registry Gate
+Current phase: Phase 20-M - Prepare 12 Approved Ignored Fixtures + No-model Routing Echo
 Status: Implemented
-Latest implementation: Added the Phase 20-L no-model 12-fixture coverage gate, updated the expanded fixture registry helper and tests to require the 12 planned categories, and documented the planned coverage target without running real model smoke. No fixture images, real local registry expansion, iOS integration, app-facing endpoint, production endpoint, raw artifact output, training/fine-tuning, serving-stack benchmark, or production readiness change was added.
+Latest implementation: Prepared the ignored local 12-fixture set for no-model review, updated the no-model fixture routing echo target to 12 fixture tokens, and verified the expanded registry dry-run plus routing contract echo without Qwen inference. Ignored fixture images and local registry remain uncommitted. No real model smoke, iOS integration, app-facing endpoint, production endpoint, raw artifact output, training/fine-tuning, serving-stack benchmark, or production readiness change was added.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -72,7 +72,7 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Phase 20-L may plan 12-fixture coverage plus a no-model registry/routing gate only. It should not run real smoke unless a later prompt explicitly approves model calls. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, public endpoint, serving-stack benchmark, model downloads, model cache changes, or user-photo training / fine-tuning until explicitly requested.
+Next phase: Phase 20-N may run a controlled 12-fixture local/private smoke only after explicit user approval and all gates pass again. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, public endpoint, serving-stack benchmark, model downloads, model cache changes, or user-photo training / fine-tuning until explicitly requested.
 
 ---
 
@@ -120,6 +120,35 @@ Date: 2026-06-16
 ### Ready for Phase 20-M
 
 Yes, for future controlled 12-fixture prep only after explicit approval. Phase 20-L does not approve iOS integration, app-facing endpoints, production endpoints, production rollout, serving-stack benchmarking, training/fine-tuning, or real model calls without explicit future approval.
+
+## Phase 20-M - Prepare 12 Approved Ignored Fixtures + No-model Routing Echo
+
+Status: Implemented
+Date: 2026-06-16
+
+### Completed
+
+- Prepared four additional ignored local fixture tokens for the missing Phase 20-L categories: `warm_indoor_ambient`, `soft_focus_dreamy`, `street_chrome_high_contrast`, and `overexposed_unreadable`.
+- Kept the existing approved local fixture tokens intact and prepared the local ignored registry for 12 approved entries.
+- Updated the backend no-model fixture routing echo target from eight tokens to twelve tokens.
+- Updated the external Windows smoke server workspace token list for no-model routeability checks only.
+- Skipped unsafe or ambiguous source candidates with sanitized reasons only.
+
+### Sanitized No-model Results
+
+- Expanded fixture registry dry-run: `totalFixtures:12`, `approvedCount:12`, `blockedCount:0`, `missingRequiredCategories:[]`, `eligibleForControlledSmoke:true`, `networkCallsMade:false`, `productionReady:false`.
+- Fixture routing contract echo: `totalFixtureTokens:12`, `routeableCount:12`, `unavailableCount:0`, `modelInferenceRun:false`, raw persistence flags false, `networkCallsMade:true`, `productionReady:false`.
+
+### Verification
+
+- No real model smoke was run.
+- No Qwen inference was run.
+- Ignored fixture images and ignored local registry files remain uncommitted.
+- `productionReady:false` remains required.
+
+### Ready for Phase 20-N
+
+Yes, for a future explicitly approved controlled 12-fixture local/private smoke only. Phase 20-M does not approve iOS integration, app-facing endpoints, production endpoints, production rollout, serving-stack benchmarking, training/fine-tuning, or real model calls without explicit future approval.
 
 ---
 

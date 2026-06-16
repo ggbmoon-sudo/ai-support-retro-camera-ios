@@ -1401,12 +1401,12 @@ test("open-weight VLM expanded fixture provider diagnostic CLI is sanitized and 
   assert.equal(output.includes("C:\\"), false);
 });
 
-test("open-weight VLM fixture routing contract echo accepts eight routeable tokens", () => {
+test("open-weight VLM fixture routing contract echo accepts twelve routeable tokens", () => {
   const report = evaluateOpenWeightVlmFixtureRoutingContractEchoFromList(routeEchoRows());
 
   assert.equal(report.productionReady, false);
-  assert.equal(report.totalFixtureTokens, 8);
-  assert.equal(report.routeableCount, 8);
+  assert.equal(report.totalFixtureTokens, 12);
+  assert.equal(report.routeableCount, 12);
   assert.equal(report.unavailableCount, 0);
   assert.equal(report.modelInferenceRun, false);
   assert.equal(report.rawPersistenceFlags, false);
@@ -1416,31 +1416,31 @@ test("open-weight VLM fixture routing contract echo accepts eight routeable toke
 
 test("open-weight VLM fixture routing contract echo blocks missing token", () => {
   const rows = routeEchoRows();
-  rows[7] = { ...rows[7], routeable: false, available: false };
+  rows[11] = { ...rows[11], routeable: false, available: false };
   const report = evaluateOpenWeightVlmFixtureRoutingContractEchoFromList(rows);
 
   assert.equal(report.eligibleForRoutingReview, false);
-  assert.equal(report.routeableCount, 7);
+  assert.equal(report.routeableCount, 11);
   assert.equal(report.unavailableCount, 1);
   assert.equal(report.hardBlockers.some((item) => item.code === "fixture_token_unavailable"), true);
 });
 
 test("open-weight VLM fixture routing contract echo blocks inference raw persistence production and public exposure", () => {
   const model = evaluateOpenWeightVlmFixtureRoutingContractEchoFromList([
-    ...routeEchoRows().slice(0, 7),
-    { ...routeEchoRows()[7], modelInferenceRun: true }
+    ...routeEchoRows().slice(0, 11),
+    { ...routeEchoRows()[11], modelInferenceRun: true }
   ]);
   const raw = evaluateOpenWeightVlmFixtureRoutingContractEchoFromList([
-    ...routeEchoRows().slice(0, 7),
-    { ...routeEchoRows()[7], rawPromptPersisted: true }
+    ...routeEchoRows().slice(0, 11),
+    { ...routeEchoRows()[11], rawPromptPersisted: true }
   ]);
   const production = evaluateOpenWeightVlmFixtureRoutingContractEchoFromList([
-    ...routeEchoRows().slice(0, 7),
-    { ...routeEchoRows()[7], productionReady: true }
+    ...routeEchoRows().slice(0, 11),
+    { ...routeEchoRows()[11], productionReady: true }
   ]);
   const publicExposure = evaluateOpenWeightVlmFixtureRoutingContractEchoFromList([
-    ...routeEchoRows().slice(0, 7),
-    { ...routeEchoRows()[7], publicExposure: "public" }
+    ...routeEchoRows().slice(0, 11),
+    { ...routeEchoRows()[11], publicExposure: "public" }
   ]);
 
   assert.equal(model.hardBlockers.some((item) => item.code === "model_inference_detected"), true);
@@ -1467,7 +1467,7 @@ test("open-weight VLM fixture routing contract echo CLI output is sanitized", ()
 
     assert.equal(report.networkCallsMade, true);
     assert.equal(report.eligibleForRoutingReview, true);
-    assert.equal(fetchCalls.length, 8);
+    assert.equal(fetchCalls.length, 12);
     assert.equal(output.includes("modelOutput"), false);
     assert.equal(output.includes("fullPrompt"), false);
     assert.equal(output.includes("\"requestPayload\":"), false);
@@ -1740,8 +1740,8 @@ function failureTaxonomyAggregate(overrides = {}) {
 }
 
 function routeEchoRows() {
-  return Array.from({ length: 8 }, (_, index) => ({
-    fixtureIdBucket: `smoke_${String(index + 1).padStart(3, "0")}`,
+  return Array.from({ length: 12 }, (_, index) => ({
+    fixtureIdBucket: `smoke_${String(index + 4).padStart(3, "0")}`,
     routeable: true,
     available: true,
     approvedLocalFixture: true,

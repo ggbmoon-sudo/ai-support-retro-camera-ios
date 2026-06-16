@@ -538,6 +538,12 @@ Operator implications:
 Phase 20-L updates `npm run qa:open-weight-vlm:expanded-fixtures` so the dry-run target is 12 planned categories. It must report `totalTargetFixtures:12`, the required categories, missing required categories, `networkCallsMade:false`, and `productionReady:false`.
 
 The Phase 20-J eight categories remain covered, and the planned additions are `warm_indoor_ambient`, `soft_focus_dreamy`, `street_chrome_high_contrast`, and `overexposed_unreadable`. Do not run real model smoke, add fixture images, commit local registry/config, print raw paths, or start iOS/product integration from this phase.
+
+## Phase 20-M Ignored Fixture Prep And 12-Token Routing Echo
+
+Phase 20-M prepares the ignored local 12-fixture set and updates the no-model routing echo to 12 approved tokens. It uses only sanitized fixture IDs and registry metadata, and it keeps `productionReady:false`.
+
+The operator should treat the result as sandbox readiness only. Do not run Qwen inference, real model smoke, app-facing endpoints, iOS integration, or production rollout from this phase.
 - Treat `gt_15s x3` as a sandbox latency note, not production approval.
 - Keep all local config, fixture registry, fixture images, reports, logs, prompts, model outputs, request payloads, credentials, and model weights ignored.
 - Require a future explicit prompt before any additional real local/private model calls.
