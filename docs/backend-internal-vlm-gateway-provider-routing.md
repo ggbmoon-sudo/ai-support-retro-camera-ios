@@ -1,6 +1,6 @@
 # Backend Internal VLM Gateway Provider Routing
 
-Status: Phase 21-C dry-run gate plus Phase 21-D no-model HTTP adapter check plus Phase 21-E deployment boundary audit
+Status: Phase 21-C dry-run gate plus Phase 21-D no-model HTTP adapter check plus Phase 21-E deployment boundary audit plus Phase 21-F config/env preflight
 
 Production readiness: `productionReady:false`
 
@@ -125,6 +125,16 @@ npm run qa:open-weight-vlm:cross-platform-boundary
 
 It confirms Windows local VLM paths and local model URLs are sandbox/docs/operator-only, MacBook/Xcode does not depend on Windows paths or model server URLs, future production config uses env/secrets/config instead of committed local paths or LAN IPs, iOS never calls provider/model routes directly, and the backend remains the mediator for all future VLM calls.
 
-## Phase 21-F Recommendation
+## Phase 21-F Deployment Config / Env Preflight
 
-Phase 21-F should remain backend-internal and explicit. A safe candidate is a broader fallback / failure taxonomy review for gateway adapter and deployment-boundary blockers that still runs no model calls and no serving benchmarks. Do not start iOS integration, endpoints, upload handling, model routing, or production rollout without a future explicit prompt.
+Phase 21-F adds a backend deployment config/env preflight:
+
+```sh
+npm run qa:open-weight-vlm:deployment-config-env-preflight
+```
+
+The preflight validates future deployment policy buckets only. It does not alter provider routing, read real secrets, call local/private HTTP, call Qwen, run model inference, run benchmarks, add endpoints, or start iOS integration. Provider routing still requires backend mediation, structured candidate validation, safety fallback, sanitized output, and `productionReady:false`.
+
+## Phase 21-G Recommendation
+
+Phase 21-G should remain backend-internal and explicit. A safe candidate is a broader fallback / failure taxonomy review for gateway adapter, deployment-boundary, and config/env blockers that still runs no model calls and no serving benchmarks. Do not start iOS integration, endpoints, upload handling, model routing, auth/billing/quota runtime, or production rollout without a future explicit prompt.

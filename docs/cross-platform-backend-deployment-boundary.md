@@ -1,6 +1,6 @@
 # Cross-platform Backend Deployment Boundary
 
-Status: Phase 21-E cross-platform / deployment boundary audit
+Status: Phase 21-E cross-platform / deployment boundary audit plus Phase 21-F config/env preflight
 
 Production readiness: `productionReady:false`
 
@@ -115,6 +115,14 @@ Future production must use environment/secrets/config:
 - no direct iOS provider fields
 - no raw payload logging
 
+Phase 21-F adds a dedicated deployment config/env preflight:
+
+```sh
+npm run qa:open-weight-vlm:deployment-config-env-preflight
+```
+
+The preflight validates policy buckets only. It allows category names for app environment, gateway mode, provider mode, provider URL bucket, provider auth bucket, secret injection bucket, timeout bucket, max image bytes bucket, raw logging disabled, metadata stripping required, consent required, retention/deletion policy required, and `PHOTO_ADVISOR_PRODUCTION_READY=false`. It blocks committed secrets, provider/model key fields, runtime Windows/Mac paths, hardcoded LAN model URLs in iOS, committed production model URLs, public/cloud/tunnel local provider URLs, raw logging, endpoint flags, Camera cloud AI entry, capture-context upload, model calls, Qwen inference, benchmarks, and `productionReady:true`.
+
 ## Local Sandbox Rules
 
 The external workspace at `C:\Projects\vlm-smoke-server-work` remains a local/private sandbox only. It may support no-model compatibility checks and approved local smoke workflows only when a phase explicitly allows them. The main app repo remains the source of truth for contracts, validators, gates, docs, tests, and future app integration.
@@ -133,10 +141,10 @@ Production rollout remains blocked by:
 - no serving benchmark execution
 - no production approval
 
-## Phase 21-F Recommendation
+## Phase 21-G Recommendation
 
-Phase 21-F should remain backend-internal unless explicitly scoped otherwise. A safe next candidate is a gateway fallback/failure taxonomy dry-run that reviews how route, healthz, echo, validation, privacy, and deployment-boundary blockers map to structured backend fallback categories. Do not start iOS integration, endpoint work, real upload, serving benchmarks, Qwen inference, fixture inference, or production rollout.
+Phase 21-G should remain backend-internal unless explicitly scoped otherwise. A safe next candidate is a gateway fallback/failure taxonomy dry-run that reviews how contract, route, healthz, echo, validation, privacy, deployment-boundary, and config/env blockers map to structured backend fallback categories. Do not start iOS integration, endpoint work, real upload, auth/billing/quota runtime, serving benchmarks, Qwen inference, fixture inference, or production rollout.
 
 ## productionReady:false Boundary
 
-`productionReady:false` is mandatory. Passing the Phase 21-E audit means only that the current cross-platform and deployment boundary is reviewable. It is not app readiness, endpoint readiness, privacy readiness, latency readiness, provider readiness, or production approval.
+`productionReady:false` is mandatory. Passing the Phase 21-E audit or Phase 21-F config/env preflight means only that the current boundary policy is reviewable. It is not app readiness, endpoint readiness, privacy readiness, latency readiness, provider readiness, deployment readiness, or production approval.

@@ -1,6 +1,6 @@
 # Backend Internal VLM Gateway Contract Preflight
 
-Status: Phase 21-A contract preflight plus Phase 21-B adapter stub alignment plus Phase 21-C routing plan plus Phase 21-D no-model provider adapter HTTP check plus Phase 21-E deployment boundary audit
+Status: Phase 21-A contract preflight plus Phase 21-B adapter stub alignment plus Phase 21-C routing plan plus Phase 21-D no-model provider adapter HTTP check plus Phase 21-E deployment boundary audit plus Phase 21-F config/env preflight
 
 Production readiness: `productionReady:false`
 
@@ -237,7 +237,8 @@ Recommended next options:
 - Phase 21-C: backend-internal provider routing dry-run, fail-closed and sanitized.
 - Phase 21-D: backend-internal no-model provider adapter HTTP check for the `local_contract_echo` route only.
 - Phase 21-E: cross-platform deployment boundary audit and gate.
-- Phase 21-F: any later gateway follow-up only if explicitly requested.
+- Phase 21-F: backend deployment config/env preflight, no-network/no-model.
+- Phase 21-G: any later gateway follow-up only if explicitly requested.
 
 Do not start iOS integration, endpoint rollout, real user-photo upload, or production cloud AI without a later explicit phase prompt.
 
@@ -304,6 +305,18 @@ Deployment roles remain explicit:
 - VLM provider server: behind-backend provider only, not the app contract source.
 
 Phase 21-E does not run real model smoke, Qwen inference, fixture inference, serving benchmarks, vLLM/SGLang/Ollama execution, iOS integration, app-facing endpoints, production endpoints, real user-photo upload, consent UI, training/fine-tuning, or production rollout. `productionReady:false` remains required.
+
+## Phase 21-F Deployment Config / Env Preflight
+
+Phase 21-F adds:
+
+```sh
+npm run qa:open-weight-vlm:deployment-config-env-preflight
+```
+
+The preflight validates deployment policy/config buckets only. It defines future category names for environment, gateway mode, provider mode, provider URL, provider auth, secret injection, timeout, max image bytes, raw logging disabled, metadata stripping required, consent required, retention/deletion policy required, and `PHOTO_ADVISOR_PRODUCTION_READY=false`. It blocks committed secrets, provider/model key fields, runtime Windows/Mac paths, iOS LAN model URLs, committed production URLs, public/cloud/tunnel local provider URLs, raw logging, endpoint flags, Camera cloud AI entry, capture-context upload, model calls, Qwen inference, benchmarks, and `productionReady:true`.
+
+Phase 21-F does not run real model smoke, Qwen inference, fixture inference, serving benchmarks, vLLM/SGLang/Ollama execution, iOS integration, app-facing endpoints, production endpoints, real user-photo upload, consent UI, auth/billing/quota runtime, training/fine-tuning, or production rollout. `productionReady:false` remains required.
 
 ## ProductionReady Boundary
 

@@ -73,6 +73,12 @@ import {
   evaluateOpenWeightVlmCrossPlatformDeploymentBoundary
 } from "../src/qa/openWeightVlmCrossPlatformDeploymentBoundary.mjs";
 import {
+  assertOpenWeightVlmDeploymentConfigEnvPreflightReportRedacted,
+  deploymentConfigEnvLocalSandboxPolicy,
+  deploymentConfigEnvStagingBlockedPolicy,
+  evaluateOpenWeightVlmDeploymentConfigEnvPreflight
+} from "../src/qa/openWeightVlmDeploymentConfigEnvPreflight.mjs";
+import {
   assertOpenWeightVlmBenchmarkReportRedacted,
   buildOpenWeightVlmSchemaDiagnostic,
   evaluateOpenWeightVlmBenchmarkCase,
@@ -108,6 +114,8 @@ const GATEWAY_PROVIDER_ADAPTER_NO_MODEL_HTTP_SCRIPT_URL =
   new URL("../scripts/check-open-weight-vlm-gateway-provider-adapter-no-model-http.mjs", import.meta.url);
 const CROSS_PLATFORM_DEPLOYMENT_BOUNDARY_SCRIPT_URL =
   new URL("../scripts/check-open-weight-vlm-cross-platform-deployment-boundary.mjs", import.meta.url);
+const DEPLOYMENT_CONFIG_ENV_PREFLIGHT_SCRIPT_URL =
+  new URL("../scripts/check-open-weight-vlm-deployment-config-env-preflight.mjs", import.meta.url);
 
 test("open-weight VLM validator accepts valid synthetic benchmark fixtures", async () => {
   const cases = await benchmarkCases();
@@ -2378,6 +2386,189 @@ test("open-weight VLM cross-platform deployment boundary CLI is sanitized and no
   assert.equal(report.qwenInferenceRun, false);
   assert.equal(report.benchmarkRun, false);
   assert.equal(report.eligibleForDeploymentBoundaryReview, true);
+  assert.equal(output.includes("fullPrompt"), false);
+  assert.equal(output.includes("rawPrompt"), false);
+  assert.equal(output.includes("requestPayload"), false);
+  assert.equal(output.includes("modelOutput"), false);
+  assert.equal(output.includes("Authorization"), false);
+  assert.equal(output.includes("Bearer "), false);
+  assert.equal(output.includes("C:\\"), false);
+  assert.equal(output.includes("http://"), false);
+  assert.equal(output.includes("data:image"), false);
+});
+
+test("open-weight VLM deployment config env preflight passes valid local sandbox policy", () => {
+  const report = evaluateOpenWeightVlmDeploymentConfigEnvPreflight(
+    deploymentConfigEnvLocalSandboxPolicy()
+  );
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.modelCallsMade, false);
+  assert.equal(report.qwenInferenceRun, false);
+  assert.equal(report.benchmarkRun, false);
+  assert.equal(report.eligibleForDeploymentConfigEnvReview, true);
+  assert.equal(report.environmentBucket, "local");
+  assert.equal(report.gatewayModeBucket, "local_stub");
+  assert.equal(report.providerModeBucket, "local_stub");
+  assert.equal(report.rawLoggingDisabled, true);
+  assert.equal(report.metadataStrippingRequired, true);
+  assert.equal(report.consentRequired, true);
+  assert.equal(report.retentionPolicyRequired, true);
+  assert.equal(report.deletionPolicyRequired, true);
+  assert.equal(assertOpenWeightVlmDeploymentConfigEnvPreflightReportRedacted(report).ok, true);
+});
+
+test("open-weight VLM deployment config env preflight passes staging blocked policy", () => {
+  const report = evaluateOpenWeightVlmDeploymentConfigEnvPreflight(
+    deploymentConfigEnvStagingBlockedPolicy()
+  );
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.environmentBucket, "staging");
+  assert.equal(report.gatewayModeBucket, "staging_blocked");
+  assert.equal(report.providerModeBucket, "future_self_hosted_blocked");
+  assert.equal(report.providerUrlBucket, "staging_secret_injected");
+  assert.equal(report.secretInjectionModeBucket, "secret_manager_required");
+  assert.equal(report.eligibleForDeploymentConfigEnvReview, true);
+});
+
+test("open-weight VLM deployment config env preflight blocks productionReady true", () => {
+  const report = evaluateOpenWeightVlmDeploymentConfigEnvPreflight({
+    ...deploymentConfigEnvLocalSandboxPolicy(),
+    productionReady: true
+  });
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.eligibleForDeploymentConfigEnvReview, false);
+  assert.equal(report.blockers.includes("blocked_for_production_flag"), true);
+});
+
+test("open-weight VLM deployment config env preflight blocks committed secret values and iOS provider key fields", () => {
+  const report = evaluateOpenWeightVlmDeploymentConfigEnvPreflight({
+    ...deploymentConfigEnvLocalSandboxPolicy(),
+    committedSecretsPresent: true,
+    iosProviderKeyFieldPresent: true,
+    backendProviderKeyFieldPresent: true,
+    configValues: [
+      { fieldBucket: "provider_api_key", valueBucket: "secret_value" },
+      { fieldBucket: "deployment_token", valueBucket: "bearer_token_value" }
+    ]
+  });
+
+  assert.equal(report.eligibleForDeploymentConfigEnvReview, false);
+  assert.equal(report.blockers.includes("blocked_for_committed_secret"), true);
+  assert.equal(report.blockers.includes("blocked_for_ios_provider_key_field"), true);
+  assert.equal(report.blockers.includes("blocked_for_backend_provider_key_field"), true);
+  assert.equal(report.blockers.includes("blocked_for_secret_field"), true);
+  assert.equal(assertOpenWeightVlmDeploymentConfigEnvPreflightReportRedacted(report).ok, true);
+});
+
+test("open-weight VLM deployment config env preflight blocks runtime paths and unsafe provider URLs", () => {
+  const report = evaluateOpenWeightVlmDeploymentConfigEnvPreflight({
+    ...deploymentConfigEnvLocalSandboxPolicy(),
+    hardcodedWindowsRuntimePath: true,
+    hardcodedMacRuntimePath: true,
+    hardcodedLanUrlInIos: true,
+    committedProductionModelUrl: true,
+    publicCloudTunnelLocalProviderUrl: true,
+    configValues: [
+      { fieldBucket: "runtime_path", valueBucket: "windows_runtime_path" },
+      { fieldBucket: "runtime_path", valueBucket: "mac_runtime_path" },
+      { fieldBucket: "ios_model_url", valueBucket: "ios_lan_model_url" },
+      { fieldBucket: "local_provider_url", valueBucket: "public_cloud_tunnel_url" }
+    ]
+  });
+
+  assert.equal(report.eligibleForDeploymentConfigEnvReview, false);
+  assert.equal(report.blockers.includes("blocked_for_windows_runtime_path"), true);
+  assert.equal(report.blockers.includes("blocked_for_mac_runtime_path"), true);
+  assert.equal(report.blockers.includes("blocked_for_ios_lan_model_url"), true);
+  assert.equal(report.blockers.includes("blocked_for_committed_production_model_url"), true);
+  assert.equal(report.blockers.includes("blocked_for_public_cloud_tunnel_provider_url"), true);
+});
+
+test("open-weight VLM deployment config env preflight blocks logging and future upload policy gaps", () => {
+  const report = evaluateOpenWeightVlmDeploymentConfigEnvPreflight({
+    ...deploymentConfigEnvLocalSandboxPolicy(),
+    rawLoggingDisabled: false,
+    metadataStrippingRequired: false,
+    consentRequired: false,
+    retentionPolicyRequired: false,
+    deletionPolicyRequired: false,
+    realUploadEnabled: true
+  });
+
+  assert.equal(report.eligibleForDeploymentConfigEnvReview, false);
+  assert.equal(report.blockers.includes("blocked_for_raw_logging_enabled"), true);
+  assert.equal(report.blockers.includes("blocked_for_metadata_stripping_missing"), true);
+  assert.equal(report.blockers.includes("blocked_for_consent_policy_missing"), true);
+  assert.equal(report.blockers.includes("blocked_for_retention_policy_missing"), true);
+  assert.equal(report.blockers.includes("blocked_for_deletion_policy_missing"), true);
+  assert.equal(report.blockers.includes("blocked_for_real_upload_without_policy"), true);
+});
+
+test("open-weight VLM deployment config env preflight blocks endpoint camera capture-context and execution flags", () => {
+  const report = evaluateOpenWeightVlmDeploymentConfigEnvPreflight({
+    ...deploymentConfigEnvLocalSandboxPolicy(),
+    appFacingEndpointAllowed: true,
+    productionEndpointAllowed: true,
+    iOSDirectProviderAllowed: true,
+    cameraCloudAiEntryEnabled: true,
+    captureContextUploadEnabled: true,
+    modelCallsAllowed: true,
+    qwenInferenceAllowed: true,
+    benchmarkAllowed: true
+  });
+
+  assert.equal(report.eligibleForDeploymentConfigEnvReview, false);
+  assert.equal(report.blockers.includes("blocked_for_app_facing_endpoint"), true);
+  assert.equal(report.blockers.includes("blocked_for_production_endpoint"), true);
+  assert.equal(report.blockers.includes("blocked_for_ios_direct_provider"), true);
+  assert.equal(report.blockers.includes("blocked_for_camera_cloud_ai_entry"), true);
+  assert.equal(report.blockers.includes("blocked_for_capture_context_upload"), true);
+  assert.equal(report.blockers.includes("blocked_for_model_call"), true);
+  assert.equal(report.blockers.includes("blocked_for_qwen_inference"), true);
+  assert.equal(report.blockers.includes("blocked_for_benchmark_execution"), true);
+});
+
+test("open-weight VLM deployment config env preflight sanitized output blocks raw values", () => {
+  const report = evaluateOpenWeightVlmDeploymentConfigEnvPreflight({
+    ...deploymentConfigEnvLocalSandboxPolicy(),
+    configValues: [
+      { fieldBucket: "provider_url", valueBucket: "safe_bucket", value: "http://127.0.0.1:8025" }
+    ]
+  });
+
+  assert.equal(report.eligibleForDeploymentConfigEnvReview, false);
+  assert.equal(report.blockers.includes("blocked_for_committed_raw_config_value"), true);
+  assert.equal(report.blockers.includes("blocked_for_unsanitized_output"), false);
+  assert.equal(assertOpenWeightVlmDeploymentConfigEnvPreflightReportRedacted(report).ok, true);
+  const serialized = JSON.stringify(report);
+  assert.equal(serialized.includes("http://127.0.0.1:8025"), false);
+  assert.equal(serialized.includes("rawPrompt"), false);
+  assert.equal(serialized.includes("requestPayload"), false);
+  assert.equal(serialized.includes("modelOutput"), false);
+  assert.equal(serialized.includes("Authorization"), false);
+});
+
+test("open-weight VLM deployment config env preflight CLI is sanitized and no-network", () => {
+  const output = execFileSync(process.execPath, [
+    fileURLToPath(DEPLOYMENT_CONFIG_ENV_PREFLIGHT_SCRIPT_URL)
+  ], {
+    cwd: new URL("..", import.meta.url),
+    encoding: "utf8"
+  });
+  const report = JSON.parse(output);
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.modelCallsMade, false);
+  assert.equal(report.qwenInferenceRun, false);
+  assert.equal(report.benchmarkRun, false);
+  assert.equal(report.eligibleForDeploymentConfigEnvReview, true);
+  assert.equal(report.reviewedPolicyCount, 3);
+  assert.deepEqual(report.environmentBuckets, ["local", "staging", "production_blocked"]);
   assert.equal(output.includes("fullPrompt"), false);
   assert.equal(output.includes("rawPrompt"), false);
   assert.equal(output.includes("requestPayload"), false);

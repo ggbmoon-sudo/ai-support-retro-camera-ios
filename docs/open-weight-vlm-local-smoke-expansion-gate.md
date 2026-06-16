@@ -482,3 +482,13 @@ npm run qa:open-weight-vlm:cross-platform-boundary
 ```
 
 The gate is no-network/no-model. It confirms Windows local paths and local model URLs stay docs/operator/ignored-example/test-sandbox only; MacBook/Xcode does not depend on Windows paths or model server URLs; future production config uses env/secrets/config instead of committed local paths or LAN URLs; iOS never calls model/provider routes directly; and no Camera cloud entry, upload payload change, app-facing endpoint, production endpoint, raw artifact policy allowance, or `productionReady:true` is introduced.
+
+## Phase 21-F Config / Env Preflight
+
+Phase 21-F adds:
+
+```sh
+npm run qa:open-weight-vlm:deployment-config-env-preflight
+```
+
+The gate is no-network/no-model/no-benchmark. It validates only sanitized deployment policy buckets and blocks committed secrets, provider/model keys, runtime local paths, unsafe provider URLs, raw logging, endpoint flags, Camera cloud AI entry, capture-context upload, model calls, Qwen inference, benchmark execution, and `productionReady:true`. It does not approve real model smoke, fixture inference, iOS integration, app-facing endpoints, production endpoints, real user-photo upload, auth/billing/quota runtime, or production rollout.

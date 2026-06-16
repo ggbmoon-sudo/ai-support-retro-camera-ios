@@ -895,6 +895,20 @@ Deployment roles:
 
 Phase 21-E does not run real model smoke, Qwen inference, fixture inference, serving benchmarks, vLLM/SGLang/Ollama, iOS integration, app-facing endpoints, production endpoints, real user-photo upload, consent UI, training/fine-tuning, or production rollout.
 
+## Phase 21-F Deployment Config / Env Preflight
+
+Phase 21-F adds the backend deployment config/env preflight:
+
+```sh
+npm run qa:open-weight-vlm:deployment-config-env-preflight
+```
+
+The preflight validates policy/config objects only. It does not read real secrets, call a model, call Qwen, run a benchmark, or create runtime deployment behavior. Allowed output is sanitized bucket data for environment, gateway mode, provider mode, provider URL, provider auth mode, secret injection mode, timeout, max image bytes, raw logging disabled, metadata stripping required, consent required, retention/deletion policy required, endpoint flags, iOS direct provider flags, and `productionReady:false`.
+
+The gate blocks committed secrets, provider/model key fields, hardcoded Windows or Mac runtime paths, hardcoded LAN model URLs in iOS, committed production model URLs, public/cloud/tunnel local provider URLs, raw logging, missing future real-upload policy requirements, app-facing endpoint flags, production endpoint flags, Camera cloud AI entry, capture-context upload, model calls, Qwen inference, benchmark execution, and `productionReady:true`.
+
+Phase 21-F does not add production endpoints, app-facing endpoints, iOS integration, model calls, Qwen inference, serving benchmarks, real user-photo upload, auth/billing/quota runtime, committed secrets, raw artifacts, or production rollout.
+
 ## Phase 20-C Local VLM Operator Runbook + Smoke Gate
 
 Phase 20-C adds an operator runbook and a backend-only real-model smoke gate for future approved local/self-hosted VLM testing. The gate does not call a model and does not create an app-facing endpoint.

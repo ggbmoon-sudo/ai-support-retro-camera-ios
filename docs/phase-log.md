@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 21-E - Cross-platform Backend Deployment Boundary Audit + Gate
+Current phase: Phase 21-F - Backend Deployment Config / Env Preflight
 Status: Implemented
-Latest implementation: Added the cross-platform backend deployment boundary audit and gate. The audit keeps Windows local paths and local model URLs in docs/operator/ignored-example buckets only, blocks them in backend/iOS runtime buckets, defines Windows/MacBook/backend/provider roles, and enforces `productionReady:false`. No real model smoke, Qwen inference, fixture inference, serving benchmark, vLLM/SGLang/Ollama execution, iOS integration, app-facing endpoint, production endpoint, real user-photo upload, raw artifact output, training/fine-tuning, model-stack switch, or production readiness change was added.
+Latest implementation: Added the backend deployment config/env preflight. The preflight validates sanitized deployment policy buckets only, defines allowed env/config categories and forbidden committed config, blocks committed secrets, runtime local paths, unsafe provider URLs, raw logging, endpoint flags, Camera cloud AI entry, capture-context upload, model calls, Qwen inference, benchmarks, and enforces `productionReady:false`. No real model smoke, Qwen inference, fixture inference, serving benchmark, vLLM/SGLang/Ollama execution, iOS integration, app-facing endpoint, production endpoint, real user-photo upload, auth/billing/quota runtime, raw artifact output, training/fine-tuning, model-stack switch, or production readiness change was added.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -72,7 +72,7 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Phase 21-E may proceed only if explicitly requested. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production endpoint work, real user-photo upload, serving-stack benchmark execution, model downloads, model cache changes, Qwen inference, fixture inference, or user-photo training / fine-tuning until explicitly requested.
+Next phase: Phase 21-G may proceed only if explicitly requested. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production endpoint work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution, model downloads, model cache changes, Qwen inference, fixture inference, or user-photo training / fine-tuning until explicitly requested.
 
 ---
 
@@ -508,6 +508,37 @@ Phase 21-E adds a cross-platform and deployment boundary audit for the Windows-p
 ### Ready for Phase 21-F
 
 Yes, for another explicitly requested backend-internal no-model planning/check phase only. A safe candidate is gateway fallback/failure taxonomy mapping for route, healthz, echo, validation, privacy, and deployment-boundary blockers. Phase 21-E does not approve iOS integration, app-facing endpoints, production endpoints, real user-photo upload, serving benchmark execution, Qwen inference, fixture inference, model-stack switching, training/fine-tuning, or any change to `productionReady:false`.
+
+## Phase 21-F - Backend Deployment Config / Env Preflight
+
+Status: Implemented
+Date: 2026-06-17
+
+### Summary
+
+Phase 21-F defines backend deployment config/env boundaries and adds a no-network deployment config preflight gate. It prepares future production/server deployment rules without adding production runtime behavior.
+
+### Completed
+
+- Added `docs/backend-deployment-config-env-preflight.md`.
+- Added `backend/src/qa/openWeightVlmDeploymentConfigEnvPreflight.mjs`.
+- Added `backend/scripts/check-open-weight-vlm-deployment-config-env-preflight.mjs`.
+- Added `npm run qa:open-weight-vlm:deployment-config-env-preflight`.
+- Defined allowed policy categories for app environment, gateway mode, provider mode, provider URL bucket, provider auth mode, secret injection mode, timeout bucket, max image bytes bucket, raw logging disabled, metadata stripping required, consent required, retention policy required, deletion policy required, and `PHOTO_ADVISOR_PRODUCTION_READY=false`.
+- Defined forbidden committed config: provider/model secrets, iOS provider keys, runtime Windows/Mac paths, iOS LAN model URLs, committed production model URLs, public/cloud/tunnel local provider URLs, raw image/base64/path/prompt/model/request logging, endpoint flags, real upload without required policies, capture-context upload, Camera cloud AI entry, model calls, Qwen inference, benchmarks, and `productionReady:true`.
+- Extended backend tests for valid local/staging policies, production flag blocking, secret/key blocking, runtime path and unsafe URL blocking, raw logging and upload-policy gaps, endpoint/camera/capture-context flags, execution flags, and sanitized output.
+- Updated backend, iOS, operator, boundary, handoff, and manual smoke docs.
+
+### Verification
+
+- The new preflight CLI is no-network, no-model, no-Qwen, no-benchmark, and prints sanitized bucket summaries only.
+- No external server workspace files were modified.
+- No real model smoke, Qwen inference, fixture inference, serving benchmark, vLLM/SGLang/Ollama execution, iOS integration, app-facing endpoint, production endpoint, real user-photo upload, auth/billing/quota runtime, committed secrets, raw artifacts, training/fine-tuning, or production rollout was added.
+- `productionReady:false` remains required.
+
+### Ready for Phase 21-G
+
+Yes, for another explicitly requested backend-internal no-model planning/check phase only. A safe candidate is gateway fallback/failure taxonomy mapping for contract, route, healthz, echo, validation, privacy, deployment-boundary, and config/env blockers. Phase 21-F does not approve iOS integration, app-facing endpoints, production endpoints, real user-photo upload, auth/billing/quota runtime, serving benchmark execution, Qwen inference, fixture inference, model-stack switching, training/fine-tuning, or any change to `productionReady:false`.
 
 ---
 

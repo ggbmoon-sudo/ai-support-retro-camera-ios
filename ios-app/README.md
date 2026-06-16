@@ -170,6 +170,8 @@ Phase 21-D also remains backend-only from the iOS app perspective. It adds a bac
 
 Phase 21-E also remains backend-only from the iOS app perspective. It adds a cross-platform backend deployment boundary audit so Windows local VLM paths and local model server URLs stay sandbox/docs/operator-only and never become Xcode, iOS runtime, backend production runtime, or production config dependencies. Xcode runtime behavior should be unchanged: no iOS source/project/localization changes, no Camera cloud entry, no iOS provider/model key, no direct provider/model call, no iOS upload payload change, no capture-context upload, no app-facing endpoint, no production endpoint, no consent UI, no real user-photo upload, and no production rollout. MacBook/Xcode must not require Windows local paths or local model server URLs.
 
+Phase 21-F also remains backend-only from the iOS app perspective. It adds a deployment config/env preflight for future backend server policy buckets only. Xcode runtime behavior should be unchanged: no iOS source/project/localization changes, no Camera cloud entry, no iOS provider/model key, no direct Qwen/model/provider call, no iOS upload payload change, no capture-context upload, no app-facing endpoint, no production endpoint, no consent UI, no real user-photo upload, no auth/billing/quota runtime, and no production rollout. MacBook/Xcode must not depend on Windows local paths, LAN model URLs, local fixture paths, or local model server URLs.
+
 ## Phase 17D-A Local Camera Capture Context
 
 Phase 17D-A adds local-only summarized capture context for captured / imported photos:

@@ -313,6 +313,12 @@ Phase 21-E adds the cross-platform deployment boundary audit. Windows remains th
 
 The audit does not run real model smoke, Qwen inference, fixture inference, serving benchmarks, vLLM/SGLang/Ollama, iOS integration, app-facing endpoints, production endpoints, real user-photo upload, or production rollout.
 
+## Phase 21-F Config / Env Boundary Note
+
+Phase 21-F adds the backend deployment config/env preflight. Future production/server config must use env/secrets/config injection and committed source may contain only sanitized category names or placeholders. The preflight blocks committed secrets, provider/model key fields, runtime Windows/Mac paths, hardcoded LAN model URLs in iOS, committed production model URLs, public/cloud/tunnel local provider URLs, raw logging, app-facing endpoint flags, production endpoint flags, Camera cloud AI entry, capture-context upload, model calls, Qwen inference, benchmarks, and `productionReady:true`.
+
+Phase 21-F does not run real model smoke, Qwen inference, fixture inference, serving benchmarks, vLLM/SGLang/Ollama, iOS integration, app-facing endpoints, production endpoints, real user-photo upload, auth/billing/quota runtime, or production rollout.
+
 ## Boundary Confirmation
 
 Phase 20-E-E is a review/summary/planning gate only. It does not run real model smoke, expand fixture count, benchmark vLLM/SGLang, start iOS integration, add app-facing or production endpoints, train/fine-tune, weaken validation, loosen fixture approval, commit local artifacts, or change production readiness.

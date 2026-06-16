@@ -242,3 +242,13 @@ npm run qa:open-weight-vlm:cross-platform-boundary
 ```
 
 Phase 21-E is no-network/no-model and verifies that Windows local sandbox paths, Mac local paths, LAN model URLs, public/cloud/tunnel model URLs, provider secrets, direct iOS provider routes, Camera cloud entries, app-facing endpoint flags, production endpoint flags, raw artifact policy allowances, and `productionReady:true` do not leak into runtime or production-facing buckets. It does not run real model smoke, Qwen inference, serving benchmarks, vLLM/SGLang/Ollama/LM Studio, model-stack switches, endpoint work, iOS integration, training/fine-tuning, or production rollout.
+
+## Phase 21-F Follow-up
+
+Phase 21-F adds a deployment config/env preflight:
+
+```sh
+npm run qa:open-weight-vlm:deployment-config-env-preflight
+```
+
+It validates sanitized config policy buckets only and keeps future production config behind env/secrets/config injection. It blocks committed secrets, runtime local paths, unsafe provider URLs, raw logging, endpoint flags, direct iOS provider flags, Camera cloud AI entry, capture-context upload, model calls, Qwen inference, benchmarks, and `productionReady:true`. It does not run serving benchmarks, execute vLLM/SGLang/Ollama/LM Studio, start endpoint work, integrate iOS, upload real photos, or approve production rollout.

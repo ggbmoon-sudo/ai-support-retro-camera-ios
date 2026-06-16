@@ -680,3 +680,20 @@ Operator implications:
 - Future production must use environment/secrets/config and backend-mediated provider adapters.
 - Do not run real model smoke, Qwen inference, fixture inference, serving benchmarks, vLLM/SGLang/Ollama, iOS integration, app-facing endpoints, production endpoints, real user-photo upload, or production rollout from this phase.
 - Keep `productionReady:false`.
+
+## Phase 21-F Deployment Config / Env Preflight
+
+Phase 21-F adds:
+
+```sh
+npm run qa:open-weight-vlm:deployment-config-env-preflight
+```
+
+Operator implications:
+
+- The command validates policy/config buckets only and does not read real secrets.
+- Future production config must use deployment env, secret manager, or equivalent server-side injection.
+- Do not commit provider/model keys, real production URLs, real LAN URLs in runtime config, Windows/Mac runtime paths, model credentials, local registry contents, fixture images, raw reports, logs, prompts, request payloads, or model output.
+- iOS must not contain provider/model keys or direct provider/model route fields.
+- The gate must report no network calls, no model calls, no Qwen inference, no benchmark, no app-facing endpoint, no production endpoint, and `productionReady:false`.
+- Keep any local sandbox config ignored and sandbox-only.

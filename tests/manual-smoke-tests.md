@@ -1,5 +1,16 @@
 # Manual Smoke Tests
 
+## Phase 21-F
+
+Backend deployment config/env preflight:
+
+- [ ] From `backend/`, run `npm run qa:open-weight-vlm:deployment-config-env-preflight`.
+- [ ] Confirm the gate reports `networkCallsMade:false`, `modelCallsMade:false`, `qwenInferenceRun:false`, `benchmarkRun:false`, `eligibleForDeploymentConfigEnvReview:true`, `eligibleForAppIntegration:false`, and `productionReady:false`.
+- [ ] Confirm allowed policy categories are bucket-only: app environment, gateway mode, provider mode, provider URL, provider auth, secret injection, timeout, max image bytes, raw logging disabled, metadata stripping required, consent required, retention policy required, deletion policy required, and production readiness false.
+- [ ] Confirm forbidden config is blocked: committed secrets, iOS/backend provider keys, runtime Windows/Mac paths, hardcoded LAN model URLs in iOS, committed production URLs, public/cloud/tunnel local provider URLs, raw logging, app-facing endpoint flags, production endpoint flags, Camera cloud AI entry, capture-context upload, model calls, Qwen inference, benchmarks, and `productionReady:true`.
+- [ ] Confirm no raw prompt, raw model output, raw image path, base64, request payload, local config contents, fixture registry contents, server logs, EXIF, provider response text, real provider URL, or secret value is printed.
+- [ ] Confirm no real model smoke, Qwen inference, fixture inference, serving benchmark, vLLM/SGLang/Ollama call, iOS integration, app-facing endpoint, production endpoint, real user-photo upload, consent UI, auth/billing/quota runtime, capture-context upload, training/fine-tuning, or production rollout is introduced.
+
 ## Phase 21-E
 
 Cross-platform backend deployment boundary audit:

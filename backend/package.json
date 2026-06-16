@@ -27,6 +27,7 @@
     "qa:open-weight-vlm:gateway-provider-routing": "node scripts/check-open-weight-vlm-gateway-provider-routing.mjs",
     "qa:open-weight-vlm:gateway-provider-adapter-no-model-http": "node scripts/check-open-weight-vlm-gateway-provider-adapter-no-model-http.mjs",
     "qa:open-weight-vlm:cross-platform-boundary": "node scripts/check-open-weight-vlm-cross-platform-deployment-boundary.mjs",
+    "qa:open-weight-vlm:deployment-config-env-preflight": "node scripts/check-open-weight-vlm-deployment-config-env-preflight.mjs",
     "qa:open-weight-vlm:local": "node scripts/run-open-weight-vlm-local-sandbox-smoke.mjs --run-local-model"
   },
   "dependencies": {},
