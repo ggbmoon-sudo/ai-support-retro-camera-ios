@@ -395,3 +395,9 @@ The aggregate passed repeatability and failure/latency review with a latency not
 Phase 20-K is review/planning only. The accepted Phase 20-J aggregate is interpreted in `docs/open-weight-vlm-expanded-smoke-result-review.md` as useful sandbox evidence with remaining coverage gaps.
 
 The next recommended step is Phase 20-L: plan 12 total fixtures and add a no-model registry/routing gate before any future real smoke. Do not run more model calls, add fixture images, expand the real local registry, benchmark serving stacks, start iOS integration, add app-facing or production endpoints, or change `productionReady:false` without explicit future approval.
+
+## Phase 20-L 12-Fixture Registry Gate
+
+Phase 20-L adds that no-model registry gate. The expanded fixture dry-run now targets exactly 12 planned categories and reports `totalTargetFixtures:12`, `requiredCategories`, category coverage, missing required categories, `networkCallsMade:false`, and `productionReady:false`.
+
+The four planned additions beyond the Phase 20-J eight are `warm_indoor_ambient`, `soft_focus_dreamy`, `street_chrome_high_contrast`, and `overexposed_unreadable`. An 8-category registry should fail eligibility with those missing categories, but without model calls or raw artifact output.

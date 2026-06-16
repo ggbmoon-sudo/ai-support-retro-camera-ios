@@ -899,6 +899,8 @@ Use this template:
 - Repeatability and failure/latency gates passed with a latency note. Next work should be Phase 20-K review/planning only unless explicitly approved otherwise.
 - Phase 20-K now records that review in `docs/open-weight-vlm-expanded-smoke-result-review.md`: the eight-fixture result is sandbox evidence only, `gt_15s x3` is a latency note, and coverage gaps remain for warm indoor, soft focus, street chrome / high contrast, overexposed unreadable, backlit, cluttered, tilted, night grain, washed-out flash, mixed light, low-detail, and abstract/minimal scenes.
 - Recommended next work is Phase 20-L: 12-fixture coverage expansion planning plus a no-model registry gate. Do not run more real model smoke, add fixture images, expand the real local registry, benchmark serving stacks, start iOS integration, add endpoints, or change `productionReady:false` without explicit future approval.
+- Phase 20-L now implements that no-model gate: the expanded fixture registry dry-run targets exactly 12 categories, reports `totalTargetFixtures:12`, `requiredCategories`, missing required categories, `networkCallsMade:false`, and `productionReady:false`, and treats an 8-category registry as missing `warm_indoor_ambient`, `soft_focus_dreamy`, `street_chrome_high_contrast`, and `overexposed_unreadable`.
+- Next work should be Phase 20-M controlled 12-fixture prep only after explicit approval. Do not run real Qwen smoke, commit fixture images/local registries, benchmark serving stacks, start iOS integration, add endpoints, or change `productionReady:false` from the handoff state.
 
 ---
 

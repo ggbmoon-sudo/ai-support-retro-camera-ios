@@ -152,6 +152,8 @@ Phase 20-E-E is also docs-only from the iOS app perspective. It summarizes the b
 
 Phase 20-F remains backend-only from the iOS app perspective. It adds expanded fixture registry planning and a no-network backend dry-run gate only; no fixture images, real model smoke, app-facing endpoint, iOS provider/model key, direct model/provider call, Camera cloud AI entry, iOS upload payload change, capture-context upload, or production remote rollout is added.
 
+Phase 20-L is also backend-only from the iOS app perspective. It turns the expanded fixture registry dry-run into a no-model 12-category planning gate and does not add real model smoke, fixture images, app-facing endpoints, iOS provider/model keys, direct provider/model calls, Camera cloud AI entries, upload payload changes, capture-context upload, or production rollout.
+
 ## Phase 17D-A Local Camera Capture Context
 
 Phase 17D-A adds local-only summarized capture context for captured / imported photos:

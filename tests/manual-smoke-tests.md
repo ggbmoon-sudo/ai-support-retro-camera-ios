@@ -1,5 +1,14 @@
 # Manual Smoke Tests
 
+## Phase 20-L
+
+12-fixture coverage expansion plan and no-model registry gate:
+
+- [ ] From `backend/`, run `npm run qa:open-weight-vlm:expanded-fixtures`.
+- [ ] Confirm the dry-run is no-model/no-network and reports `totalTargetFixtures:12`, 12 `requiredCategories`, `approvedCount:12`, `blockedCount:0`, `missingRequiredCategories:[]`, `eligibleForControlledSmoke:true`, `networkCallsMade:false`, and `productionReady:false`.
+- [ ] Confirm an 8-category registry remains ineligible and reports the four planned missing categories: `warm_indoor_ambient`, `soft_focus_dreamy`, `street_chrome_high_contrast`, and `overexposed_unreadable`.
+- [ ] Confirm no real model smoke, Qwen inference, fixture image commit, local config/registry commit, raw prompt/model output/image path/base64/request payload output, iOS integration, app-facing endpoint, production endpoint, serving-stack benchmark, training/fine-tuning, or production readiness change is introduced.
+
 ## Phase 20-K
 
 Expanded local VLM smoke result review and coverage gap plan:

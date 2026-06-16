@@ -26,6 +26,21 @@ export const OPEN_WEIGHT_VLM_EXPANDED_FIXTURE_CORE_CATEGORIES = Object.freeze([
   "black_or_near_black_unreadable"
 ]);
 
+export const OPEN_WEIGHT_VLM_EXPANDED_FIXTURE_REQUIRED_CATEGORIES = Object.freeze([
+  "bright_daylight_clean",
+  "low_light_grain",
+  "motion_blur_intentional",
+  "high_contrast_shadow",
+  "faded_color_retro",
+  "imported_limited_context",
+  "severe_blur_reject",
+  "black_or_near_black_unreadable",
+  "warm_indoor_ambient",
+  "soft_focus_dreamy",
+  "street_chrome_high_contrast",
+  "overexposed_unreadable"
+]);
+
 const ALLOWED_SOURCE_TYPES = new Set(["captured", "imported", "synthetic_local_fixture"]);
 const ALLOWED_ALLOWED_CONTEXTS = new Set(["captureContextAvailable", "imageOnly", "unknown"]);
 const ALLOWED_RISK_BUCKETS = new Set(["none", "mild", "moderate", "severe_unusable"]);
@@ -158,7 +173,7 @@ export function evaluateOpenWeightVlmExpandedFixtureRegistry(entries = []) {
     }
   }
 
-  const missingRequiredCategories = OPEN_WEIGHT_VLM_EXPANDED_FIXTURE_CORE_CATEGORIES
+  const missingRequiredCategories = OPEN_WEIGHT_VLM_EXPANDED_FIXTURE_REQUIRED_CATEGORIES
     .filter((category) => categoryCoverage[category] === 0);
   const blockedReasonCounts = countReasons(entryReviews);
   const approvedCount = entryReviews.filter((review) => review.status === "approved_for_local_smoke").length;
@@ -167,13 +182,15 @@ export function evaluateOpenWeightVlmExpandedFixtureRegistry(entries = []) {
   const report = {
     schemaVersion: OPEN_WEIGHT_VLM_EXPANDED_FIXTURE_REGISTRY_SCHEMA_VERSION,
     runMode: "expanded_fixture_registry_dry_run",
+    totalTargetFixtures: OPEN_WEIGHT_VLM_EXPANDED_FIXTURE_REQUIRED_CATEGORIES.length,
+    requiredCategories: [...OPEN_WEIGHT_VLM_EXPANDED_FIXTURE_REQUIRED_CATEGORIES],
     totalFixtures: entryReviews.length,
     approvedCount,
     blockedCount,
     categoryCoverage,
     missingRequiredCategories,
     blockedReasonCounts,
-    eligibleForControlledSmoke: entryReviews.length >= OPEN_WEIGHT_VLM_EXPANDED_FIXTURE_CORE_CATEGORIES.length
+    eligibleForControlledSmoke: entryReviews.length === OPEN_WEIGHT_VLM_EXPANDED_FIXTURE_REQUIRED_CATEGORIES.length
       && blockedCount === 0
       && missingRequiredCategories.length === 0,
     productionReady: false,

@@ -27,7 +27,8 @@ import {
 import {
   assertOpenWeightVlmExpandedFixtureRegistryReportRedacted,
   evaluateOpenWeightVlmExpandedFixtureRegistry,
-  expandedFixtureRegistrySample
+  expandedFixtureRegistrySample,
+  OPEN_WEIGHT_VLM_EXPANDED_FIXTURE_REQUIRED_CATEGORIES
 } from "../src/qa/openWeightVlmExpandedFixtureRegistry.mjs";
 import {
   assertOpenWeightVlmExpandedFixtureProviderIntegrationDiagnosticRedacted,
@@ -1167,6 +1168,8 @@ test("open-weight VLM expanded fixture registry passes dry-run review", () => {
 
   assert.equal(report.productionReady, false);
   assert.equal(report.networkCallsMade, false);
+  assert.equal(report.totalTargetFixtures, 12);
+  assert.deepEqual(report.requiredCategories, OPEN_WEIGHT_VLM_EXPANDED_FIXTURE_REQUIRED_CATEGORIES);
   assert.equal(report.totalFixtures, 12);
   assert.equal(report.approvedCount, 12);
   assert.equal(report.blockedCount, 0);
@@ -1185,9 +1188,41 @@ test("open-weight VLM expanded fixture registry accepts local registry object sh
 
   assert.equal(report.productionReady, false);
   assert.equal(report.networkCallsMade, false);
+  assert.equal(report.totalTargetFixtures, 12);
+  assert.equal(report.requiredCategories.length, 12);
   assert.equal(report.totalFixtures, 12);
   assert.equal(report.approvedCount, 12);
   assert.equal(report.eligibleForControlledSmoke, true);
+});
+
+test("open-weight VLM expanded fixture registry reports 8-category registry missing planned categories", () => {
+  const currentEightCategories = new Set([
+    "bright_daylight_clean",
+    "low_light_grain",
+    "motion_blur_intentional",
+    "high_contrast_shadow",
+    "faded_color_retro",
+    "imported_limited_context",
+    "severe_blur_reject",
+    "black_or_near_black_unreadable"
+  ]);
+  const report = evaluateOpenWeightVlmExpandedFixtureRegistry(
+    expandedFixtureRegistrySample().filter((entry) => currentEightCategories.has(entry.category))
+  );
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.totalTargetFixtures, 12);
+  assert.equal(report.totalFixtures, 8);
+  assert.equal(report.approvedCount, 8);
+  assert.equal(report.blockedCount, 0);
+  assert.equal(report.eligibleForControlledSmoke, false);
+  assert.deepEqual(report.missingRequiredCategories, [
+    "warm_indoor_ambient",
+    "soft_focus_dreamy",
+    "street_chrome_high_contrast",
+    "overexposed_unreadable"
+  ]);
 });
 
 test("open-weight VLM expanded fixture registry blocks missing metadata strip", () => {
@@ -1231,6 +1266,17 @@ test("open-weight VLM expanded fixture registry blocks unknown categories", () =
   assert.equal(report.blockedReasonCounts.blocked_unknown_category, 1);
 });
 
+test("open-weight VLM expanded fixture registry blocks productionReady entry fields", () => {
+  const registry = expandedFixtureRegistrySample();
+  registry[0] = { ...registry[0], productionReady: true };
+  const report = evaluateOpenWeightVlmExpandedFixtureRegistry(registry);
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.eligibleForControlledSmoke, false);
+  assert.equal(report.blockedReasonCounts.blocked_invalid_schema, 1);
+});
+
 test("open-weight VLM expanded fixture registry reports missing required category coverage", () => {
   const registry = expandedFixtureRegistrySample()
     .filter((entry) => entry.category !== "bright_daylight_clean");
@@ -1252,6 +1298,8 @@ test("open-weight VLM expanded fixture registry dry-run CLI is sanitized and no-
   assert.equal(report.productionReady, false);
   assert.equal(report.networkCallsMade, false);
   assert.equal(report.eligibleForControlledSmoke, true);
+  assert.equal(report.totalTargetFixtures, 12);
+  assert.equal(report.requiredCategories.length, 12);
   assert.equal(report.totalFixtures, 12);
   assert.equal(report.approvedCount, 12);
   assert.equal(output.includes("modelOutput"), false);

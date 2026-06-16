@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 20-K - Expanded Smoke Result Review + Dataset Coverage Gap Plan
+Current phase: Phase 20-L - 12-Fixture Coverage Expansion Plan + No-model Registry Gate
 Status: Implemented
-Latest implementation: Reviewed the Phase 20-J accepted eight-fixture local/private Qwen smoke as sandbox evidence only, added `docs/open-weight-vlm-expanded-smoke-result-review.md`, documented proven / not-proven scope, latency note interpretation, dataset coverage gaps, and recommended Phase 20-L as a no-model 12-fixture coverage expansion plan plus registry gate. No real model smoke, fixture image change, registry expansion with real local files, iOS integration, app-facing endpoint, production endpoint, raw artifact output, training/fine-tuning, serving-stack benchmark, or production readiness change was added.
+Latest implementation: Added the Phase 20-L no-model 12-fixture coverage gate, updated the expanded fixture registry helper and tests to require the 12 planned categories, and documented the planned coverage target without running real model smoke. No fixture images, real local registry expansion, iOS integration, app-facing endpoint, production endpoint, raw artifact output, training/fine-tuning, serving-stack benchmark, or production readiness change was added.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -98,6 +98,28 @@ Date: 2026-06-16
 ### Ready for Phase 20-L
 
 Yes, for no-model coverage planning only. Phase 20-K does not approve iOS integration, app-facing endpoints, production endpoints, production rollout, serving-stack benchmarking, training/fine-tuning, or real model calls without explicit future approval.
+
+## Phase 20-L - 12-Fixture Coverage Expansion Plan + No-model Registry Gate
+
+Status: Implemented
+Date: 2026-06-16
+
+### Completed
+
+- Updated `backend/src/qa/openWeightVlmExpandedFixtureRegistry.mjs` to treat the 12 planned categories as the required dry-run target.
+- Added a no-model registry gate output contract with `totalTargetFixtures:12`, `requiredCategories`, `missingRequiredCategories`, `eligibleForControlledSmoke`, `productionReady:false`, and `networkCallsMade:false`.
+- Extended backend tests to cover the 12-category target, the 8-category gap report, and production-flag blocking behavior.
+- Kept the phase backend-only, Windows-primary, and no-model.
+
+### Verification
+
+- No real model smoke was run.
+- No fixture images or local registry files were committed.
+- Repo state remained clean before edits and the phase keeps `productionReady:false`.
+
+### Ready for Phase 20-M
+
+Yes, for future controlled 12-fixture prep only after explicit approval. Phase 20-L does not approve iOS integration, app-facing endpoints, production endpoints, production rollout, serving-stack benchmarking, training/fine-tuning, or real model calls without explicit future approval.
 
 ---
 

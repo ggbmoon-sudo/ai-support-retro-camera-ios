@@ -1,18 +1,18 @@
 # Open-weight VLM Expanded Fixture Registry Plan
 
-Status: Phase 20-F backend-only dry-run gate
+Status: Phase 20-L backend-only 12-fixture no-model dry-run gate
 Date: 2026-06-16
 Scope: Windows-primary local/private VLM fixture planning
 
 ## Purpose
 
-Phase 20-F prepares a safer expanded local VLM smoke set without running a real model. It defines target fixture categories, a sanitized registry metadata schema, approval rules, privacy/safety exclusions, dry-run validation, and future controlled smoke rules.
+Phase 20-F prepared a safer expanded local VLM smoke set without running a real model. Phase 20-L updates that plan into a no-model 12-fixture coverage target. It defines target fixture categories, a sanitized registry metadata schema, approval rules, privacy/safety exclusions, dry-run validation, and future controlled smoke rules.
 
 This phase does not commit fixture images, local fixture registries, local config, model outputs, raw reports, logs, model weights, credentials, raw paths, prompts, request payloads, or local server details. It keeps `productionReady:false`.
 
 ## Target Fixture Categories
 
-The expanded registry targets 8-12 approved local fixtures selected from these categories:
+The expanded registry now targets exactly 12 planned categories before a future controlled smoke can be considered:
 
 - `bright_daylight_clean`
 - `low_light_grain`
@@ -27,7 +27,9 @@ The expanded registry targets 8-12 approved local fixtures selected from these c
 - `imported_limited_context`
 - `black_or_near_black_unreadable`
 
-The core dry-run coverage set is eight categories: `bright_daylight_clean`, `low_light_grain`, `motion_blur_intentional`, `severe_blur_reject`, `high_contrast_shadow`, `faded_color_retro`, `imported_limited_context`, and `black_or_near_black_unreadable`.
+The Phase 20-J/K baseline covered eight categories: `bright_daylight_clean`, `low_light_grain`, `motion_blur_intentional`, `high_contrast_shadow`, `faded_color_retro`, `imported_limited_context`, `severe_blur_reject`, and `black_or_near_black_unreadable`.
+
+Phase 20-L adds four planned required categories for the next coverage target: `warm_indoor_ambient`, `soft_focus_dreamy`, `street_chrome_high_contrast`, and `overexposed_unreadable`.
 
 ## Fixture Metadata Schema
 
@@ -130,6 +132,8 @@ The dry-run gate:
 The output includes:
 
 - `totalFixtures`
+- `totalTargetFixtures`
+- `requiredCategories`
 - `approvedCount`
 - `blockedCount`
 - `categoryCoverage`
@@ -138,6 +142,8 @@ The output includes:
 - `eligibleForControlledSmoke`
 - `productionReady:false`
 - `networkCallsMade:false`
+
+For Phase 20-L, an 8-category registry is expected to remain ineligible and report these missing required categories: `warm_indoor_ambient`, `soft_focus_dreamy`, `street_chrome_high_contrast`, and `overexposed_unreadable`.
 
 ## Future Controlled Smoke Rules
 
@@ -212,6 +218,12 @@ Coverage review keeps these conclusions:
 
 Phase 20-K does not run real smoke, add fixture images, expand the real local registry, benchmark serving stacks, start iOS integration, add endpoints, or change `productionReady:false`.
 
+## Phase 20-L 12-Fixture No-model Gate
+
+Phase 20-L implements the 12-category target as a dry-run registry gate only. The built-in sanitized sample covers all 12 categories and is eligible for a future controlled-smoke review. A registry with only the Phase 20-J eight categories is intentionally ineligible and reports the four planned missing categories.
+
+This phase does not run Qwen inference, add fixture images, commit local config or local registry files, print raw paths/prompts/model outputs/request payloads, benchmark serving stacks, start iOS integration, add endpoints, or change `productionReady:false`.
+
 ## Boundary Confirmation
 
-Phase 20-F is backend-only and Windows-primary. It prepares controlled expanded smoke, but does not run it. No fixture images, local registry, local config, raw paths, prompts, model outputs, request payloads, reports, logs, weights, or credentials are committed. iOS behavior is unchanged. `productionReady:false` remains required.
+Phase 20-L is backend-only and Windows-primary. It prepares controlled 12-fixture planning, but does not run it. No fixture images, local registry, local config, raw paths, prompts, model outputs, request payloads, reports, logs, weights, or credentials are committed. iOS behavior is unchanged. `productionReady:false` remains required.

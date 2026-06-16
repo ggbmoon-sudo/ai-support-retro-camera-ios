@@ -785,6 +785,17 @@ Phase 20-K is review/planning only. It records the Phase 20-J accepted eight-fix
 
 The recommended next step is Phase 20-L: 12-fixture coverage expansion planning plus a no-model registry gate. Do not run more real model smoke, add fixture images, expand the real local registry, benchmark serving stacks, start iOS integration, add endpoints, or change `productionReady:false` without a future explicit phase.
 
+## Phase 20-L 12-Fixture No-model Registry Gate
+
+Phase 20-L keeps the work backend-only and Windows-primary. It updates the expanded fixture registry dry-run gate so the planned target is exactly 12 categories:
+
+- current eight: `bright_daylight_clean`, `low_light_grain`, `motion_blur_intentional`, `high_contrast_shadow`, `faded_color_retro`, `imported_limited_context`, `severe_blur_reject`, `black_or_near_black_unreadable`
+- planned additions: `warm_indoor_ambient`, `soft_focus_dreamy`, `street_chrome_high_contrast`, `overexposed_unreadable`
+
+`npm run qa:open-weight-vlm:expanded-fixtures` remains no-model and no-network. It reports `totalTargetFixtures:12`, `requiredCategories`, category coverage, missing required categories, blocked reason counts, `eligibleForControlledSmoke`, `networkCallsMade:false`, and `productionReady:false`.
+
+An 8-category registry is expected to be ineligible and report the four planned missing categories. Phase 20-L does not run Qwen inference, add fixture images, commit local registries/config, start iOS integration, add endpoints, benchmark serving stacks, or approve production rollout.
+
 ## Phase 20-C Local VLM Operator Runbook + Smoke Gate
 
 Phase 20-C adds an operator runbook and a backend-only real-model smoke gate for future approved local/self-hosted VLM testing. The gate does not call a model and does not create an app-facing endpoint.

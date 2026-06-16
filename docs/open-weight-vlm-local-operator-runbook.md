@@ -532,6 +532,12 @@ Operator implications:
 
 - Do not run more real local model smoke from Phase 20-K.
 - Do not add fixture images or expand the real ignored registry during Phase 20-K.
+
+## Phase 20-L 12-Fixture No-model Gate
+
+Phase 20-L updates `npm run qa:open-weight-vlm:expanded-fixtures` so the dry-run target is 12 planned categories. It must report `totalTargetFixtures:12`, the required categories, missing required categories, `networkCallsMade:false`, and `productionReady:false`.
+
+The Phase 20-J eight categories remain covered, and the planned additions are `warm_indoor_ambient`, `soft_focus_dreamy`, `street_chrome_high_contrast`, and `overexposed_unreadable`. Do not run real model smoke, add fixture images, commit local registry/config, print raw paths, or start iOS/product integration from this phase.
 - Treat `gt_15s x3` as a sandbox latency note, not production approval.
 - Keep all local config, fixture registry, fixture images, reports, logs, prompts, model outputs, request payloads, credentials, and model weights ignored.
 - Require a future explicit prompt before any additional real local/private model calls.

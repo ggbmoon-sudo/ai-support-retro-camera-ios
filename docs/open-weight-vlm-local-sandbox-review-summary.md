@@ -242,6 +242,12 @@ Phase 20-K adds `docs/open-weight-vlm-expanded-smoke-result-review.md` to interp
 
 The review records `gt_15s x3` and `5s_to_15s x5` as sandbox latency evidence only. The recommended next step is Phase 20-L: 12-fixture coverage expansion planning plus a no-model registry gate. Phase 20-K does not run real smoke, add fixture images, expand the real local registry, benchmark serving stacks, start iOS integration, add endpoints, or change `productionReady:false`.
 
+## Phase 20-L 12-Fixture Gate Note
+
+Phase 20-L implements that recommendation as a no-model registry gate. The expanded fixture registry target is now 12 categories: the Phase 20-J eight plus `warm_indoor_ambient`, `soft_focus_dreamy`, `street_chrome_high_contrast`, and `overexposed_unreadable`.
+
+The dry-run reports `totalTargetFixtures:12`, `requiredCategories`, category coverage, missing required categories, `networkCallsMade:false`, and `productionReady:false`. This prepares Phase 20-M controlled fixture preparation only. It does not run Qwen inference, add fixture images, commit local registries/config, start iOS integration, add endpoints, or approve production rollout.
+
 ## Boundary Confirmation
 
 Phase 20-E-E is a review/summary/planning gate only. It does not run real model smoke, expand fixture count, benchmark vLLM/SGLang, start iOS integration, add app-facing or production endpoints, train/fine-tune, weaken validation, loosen fixture approval, commit local artifacts, or change production readiness.
