@@ -291,6 +291,14 @@ Phase 21-A adds a backend-internal VLM Gateway contract preflight. The contract 
 
 Phase 21-A does not add iOS integration, app-facing endpoints, production endpoints, real user-photo upload, raw image/base64/path/prompt/provider response handling, Qwen inference, serving benchmark execution, training/fine-tuning, or production rollout. `productionReady:false` remains required.
 
+## Phase 21-B Gateway Adapter Stub Note
+
+Phase 21-B adds a backend-internal VLM Gateway adapter stub and optional external local server no-model contract echo alignment. The app repo remains the source of truth for the request contract, adapter stub, candidate validator, safety gates, docs, tests, and QA scripts.
+
+The adapter stub accepts only sanitized fixture-token sandbox requests, returns structured candidate JSON only, validates through the existing open-weight VLM schema/safety chain, and prints sanitized aggregate results only. The external server workspace may expose `/local/vlm/gateway-contract-echo` only as a private no-model compatibility echo with `modelInferenceRun:false`, `rawLoggingDisabled:true`, `publicExposure:no`, raw persistence flags false, and `productionReady:false`.
+
+Phase 21-B does not run real model smoke, Qwen inference, serving benchmarks, vLLM/SGLang/Ollama, iOS integration, app-facing endpoints, production endpoints, real user-photo upload, consent UI, training/fine-tuning, or production rollout.
+
 ## Boundary Confirmation
 
 Phase 20-E-E is a review/summary/planning gate only. It does not run real model smoke, expand fixture count, benchmark vLLM/SGLang, start iOS integration, add app-facing or production endpoints, train/fine-tune, weaken validation, loosen fixture approval, commit local artifacts, or change production readiness.

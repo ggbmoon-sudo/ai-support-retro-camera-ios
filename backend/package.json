@@ -22,6 +22,8 @@
     "qa:open-weight-vlm:fixture-routing-echo": "node scripts/check-open-weight-vlm-fixture-routing-contract-echo.mjs",
     "qa:open-weight-vlm:serving-benchmark-preflight": "node scripts/check-open-weight-vlm-serving-benchmark-preflight.mjs",
     "qa:open-weight-vlm:gateway-contract-preflight": "node scripts/check-open-weight-vlm-gateway-contract-preflight.mjs",
+    "qa:open-weight-vlm:gateway-adapter-stub": "node scripts/check-open-weight-vlm-gateway-adapter-stub.mjs",
+    "qa:open-weight-vlm:gateway-external-contract-echo": "node scripts/check-open-weight-vlm-gateway-external-contract-echo.mjs",
     "qa:open-weight-vlm:local": "node scripts/run-open-weight-vlm-local-sandbox-smoke.mjs --run-local-model"
   },
   "dependencies": {},

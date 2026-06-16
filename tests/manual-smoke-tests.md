@@ -1,5 +1,16 @@
 # Manual Smoke Tests
 
+## Phase 21-B
+
+Backend internal VLM Gateway adapter stub and external no-model echo:
+
+- [ ] From `backend/`, run `npm run qa:open-weight-vlm:gateway-adapter-stub`.
+- [ ] Confirm the adapter stub reports `networkCallsMade:false`, `modelCallsMade:false`, `qwenInferenceRun:false`, `acceptedCount:1`, `eligibleForPhase21CPlanning:true`, `eligibleForAppIntegration:false`, and `productionReady:false`.
+- [ ] If the external local server is running, run `npm run qa:open-weight-vlm:gateway-external-contract-echo`.
+- [ ] Confirm the external echo checks healthz and `/local/vlm/gateway-contract-echo` only, with `publicExposure:no`, `rawLoggingDisabled:true`, `modelInferenceRun:false`, raw persistence flags false, structured candidate JSON, and `productionReady:false`.
+- [ ] Confirm the external server is still a local/private sandbox only, not the app backend or a production backend.
+- [ ] Confirm no real model smoke, Qwen inference, serving benchmark, vLLM/SGLang/Ollama call, iOS integration, app-facing endpoint, production endpoint, real user-photo upload, consent UI, capture-context upload, training/fine-tuning, or production rollout is introduced.
+
 ## Phase 21-A
 
 Backend internal VLM Gateway contract preflight:

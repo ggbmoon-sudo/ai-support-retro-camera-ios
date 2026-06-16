@@ -455,3 +455,16 @@ npm run qa:open-weight-vlm:gateway-contract-preflight
 ```
 
 The gate validates only sanitized internal request metadata and structured candidate JSON response shape. Existing validator/safety gates remain authoritative. It does not accept real user photos, raw image/base64/path/prompt/provider responses, iOS direct provider fields, app-facing endpoints, production endpoints, model calls, serving benchmarks, or production readiness.
+
+## Phase 21-B Backend Internal Gateway Adapter Stub
+
+Phase 21-B adds:
+
+```sh
+npm run qa:open-weight-vlm:gateway-adapter-stub
+npm run qa:open-weight-vlm:gateway-external-contract-echo
+```
+
+The adapter stub is backend-internal and fixture-token sandbox only. It maps a sanitized internal request into structured candidate JSON, validates through the existing schema/safety chain, and returns sanitized aggregate pass/fail state only. The external echo command is local/private and no-model only; it validates healthz and `/local/vlm/gateway-contract-echo` compatibility without Qwen inference, fixture image inference, benchmarks, raw logs, raw paths, raw prompts, request payload printing, or production readiness.
+
+Phase 21-B does not add iOS integration, app-facing endpoints, production endpoints, real user-photo uploads, consent UI, serving benchmark execution, model-stack switching, training/fine-tuning, or production rollout. `productionReady:false` remains required.

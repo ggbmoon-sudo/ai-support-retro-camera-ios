@@ -593,7 +593,7 @@ Operator implications:
 - Do not run a serving benchmark from Phase 20-P.
 - Do not run Qwen inference or real model smoke from Phase 20-P.
 - Do not switch model stacks from Phase 20-P.
-- Treat Phase 21-A as backend internal VLM gateway contract preflight only unless a future prompt explicitly chooses another no-network planning phase.
+- Treat Phase 21-B as backend internal gateway adapter stub plus external no-model contract echo alignment only unless a future prompt explicitly chooses another no-network planning phase.
 - Keep `productionReady:false`.
 
 ## Phase 21-A Gateway Contract Preflight
@@ -613,3 +613,21 @@ Operator implications:
 - Do not add app-facing or production endpoints from Phase 21-A.
 - Do not accept real user-photo upload from Phase 21-A.
 - Keep `productionReady:false`.
+
+## Phase 21-B Gateway Adapter Stub And No-model Echo
+
+Phase 21-B adds:
+
+```sh
+npm run qa:open-weight-vlm:gateway-adapter-stub
+npm run qa:open-weight-vlm:gateway-external-contract-echo
+```
+
+Operator implications:
+
+- The app repo remains the source of truth for gateway contract, adapter stub, validator, safety gates, docs, tests, and future app integration.
+- The external Windows workspace remains a private local model-provider sandbox only.
+- `/local/vlm/gateway-contract-echo` is a no-model compatibility endpoint only.
+- Healthz and echo must report `publicExposure:no`, `rawLoggingDisabled:true`, `modelInferenceRun:false`, raw persistence flags false, and `productionReady:false`.
+- Do not run Qwen inference, real model smoke, serving benchmarks, vLLM/SGLang/Ollama, or fixture image inference from Phase 21-B.
+- Do not start iOS integration, app-facing endpoints, production endpoints, real user-photo upload, consent UI, capture-context upload, training/fine-tuning, or production rollout.

@@ -837,6 +837,21 @@ Responses must be structured candidate JSON that maps into `openWeightVlmPhotoAd
 
 Phase 21-A does not call Qwen, run model smoke, run serving benchmarks, add iOS integration, add endpoints, accept real user-photo uploads, change backend/iOS payloads, upload capture context, or change production readiness. `productionReady:false` remains required.
 
+## Phase 21-B Backend Internal VLM Gateway Adapter Stub
+
+Phase 21-B adds a backend-internal adapter stub and no-model external contract echo alignment:
+
+```sh
+npm run qa:open-weight-vlm:gateway-adapter-stub
+npm run qa:open-weight-vlm:gateway-external-contract-echo
+```
+
+The adapter stub accepts only the sanitized Phase 21-A internal request contract in fixture-token sandbox mode. It does not accept raw image bytes, base64, raw paths, GPS/raw EXIF, raw sensor values, raw prompts, provider secrets, direct iOS provider fields, app-facing endpoint flags, or `productionReady:true`. It returns structured candidate JSON only, validates through `src/qa/openWeightVlmPhotoAdvisorSchema.mjs`, and reports sanitized aggregate pass/fail state only.
+
+The external contract echo command may call only a local/private no-model endpoint such as `/local/vlm/gateway-contract-echo`. It fails closed if healthz or echo reports public exposure, raw logging enabled, model inference, raw persistence, unstructured/free-form output, unsafe candidate fields, or `productionReady:true`.
+
+Phase 21-B does not run real model smoke, Qwen inference, serving benchmarks, vLLM/SGLang/Ollama, iOS integration, app-facing endpoints, production endpoints, real user-photo uploads, consent UI, training/fine-tuning, or production rollout. `productionReady:false` remains required.
+
 ## Phase 20-C Local VLM Operator Runbook + Smoke Gate
 
 Phase 20-C adds an operator runbook and a backend-only real-model smoke gate for future approved local/self-hosted VLM testing. The gate does not call a model and does not create an app-facing endpoint.

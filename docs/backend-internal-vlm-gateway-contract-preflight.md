@@ -1,6 +1,6 @@
 # Backend Internal VLM Gateway Contract Preflight
 
-Status: Phase 21-A backend-internal contract preflight only
+Status: Phase 21-A contract preflight plus Phase 21-B adapter stub alignment
 
 Production readiness: `productionReady:false`
 
@@ -237,6 +237,29 @@ Recommended next options:
 - Phase 21-C: sandbox gateway dry-run using fixture tokens only, still no app-facing endpoint and no iOS integration.
 
 Do not start iOS integration, endpoint rollout, real user-photo upload, or production cloud AI without a later explicit phase prompt.
+
+## Phase 21-B Adapter Stub Alignment
+
+Phase 21-B implements the Phase 21-A contract as a backend-internal adapter stub:
+
+- request validation uses the Phase 21-A internal gateway request contract
+- adapter mode is fixture-token sandbox only
+- raw image/base64/path/GPS/raw EXIF/raw sensor/prompt/provider secret/direct iOS fields remain blocked
+- adapter output is structured candidate JSON only
+- candidate JSON passes through `backend/src/qa/openWeightVlmPhotoAdvisorSchema.mjs`
+- CLI output is sanitized aggregate only
+- default adapter stub behavior makes no network call and no model call
+
+Phase 21-B also allows the external local VLM server workspace to expose a no-model `/local/vlm/gateway-contract-echo` compatibility endpoint. That endpoint is not an app backend, not a production endpoint, not an iOS integration, and not a model inference path. It must report `modelInferenceRun:false`, `rawLoggingDisabled:true`, `publicExposure:no`, raw persistence flags false, and `productionReady:false`.
+
+Commands:
+
+```sh
+npm run qa:open-weight-vlm:gateway-adapter-stub
+npm run qa:open-weight-vlm:gateway-external-contract-echo
+```
+
+The external echo command may use local/private HTTP only and must fail closed on public/cloud/tunnel exposure, raw logging, raw persistence, model inference, free-form response text, invalid candidate JSON, or `productionReady:true`.
 
 ## ProductionReady Boundary
 

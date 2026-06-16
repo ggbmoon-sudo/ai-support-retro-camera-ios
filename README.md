@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 21-A defines the backend-internal VLM Gateway contract preflight. It adds a no-network/no-model contract gate only: sanitized backend-internal request metadata, structured candidate JSON response shape, existing validator/safety chain handoff, no iOS integration, no app-facing endpoint, no production endpoint, no real user-photo upload, and `productionReady:false`.
+- Phase 21-B adds the backend-internal VLM Gateway adapter stub and aligns the external local VLM server with a no-model gateway contract echo. The app repo remains the source of truth for the contract, adapter stub, validator/safety chain, QA scripts, docs, and tests. The external server remains a private/local sandbox and is touched only for healthz / no-model echo compatibility.
 
 Next phase:
 
-- Recommended next step is Phase 21-B backend-internal gateway adapter skeleton or Phase 21-C fixture-token gateway dry-run, only if explicitly requested. Do not start iOS integration, app-facing endpoints, production endpoints, real user-photo upload, serving benchmark execution, vLLM/SGLang/Ollama runs, or serving-stack switches unless a future prompt explicitly approves them.
+- Recommended next step is Phase 21-C fixture-token gateway dry-run or a Phase 21-B follow-up review only if explicitly requested. Do not start iOS integration, app-facing endpoints, production endpoints, real user-photo upload, serving benchmark execution, Qwen inference, vLLM/SGLang/Ollama runs, or serving-stack switches unless a future prompt explicitly approves them.
 - Do not start production cloud rollout without explicit approval
 - Production rollout remains blocked until a later explicit release phase
 
@@ -285,6 +285,8 @@ Phase 20-O adds `docs/open-weight-vlm-serving-benchmark-decision-gate.md` as a r
 Phase 20-P adds `docs/open-weight-vlm-serving-benchmark-preflight.md` and `npm run qa:open-weight-vlm:serving-benchmark-preflight`. The preflight gate validates a sanitized backend-only benchmark plan, serving stack matrix, metrics, fixture rules, artifact policy, stop conditions, and Phase 21 entry criteria with `networkCallsMade:false`, `benchmarkRun:false`, `qwenInferenceRun:false`, and `productionReady:false`. No real model smoke, Qwen inference, vLLM/SGLang/Ollama/LM Studio execution, fixture change, ignored registry change, iOS integration, endpoint, training/fine-tuning, or production rollout is added.
 
 Phase 21-A adds `docs/backend-internal-vlm-gateway-contract-preflight.md` and `npm run qa:open-weight-vlm:gateway-contract-preflight`. The gate validates the backend-internal VLM Gateway request/response contract only. Requests are bucketed metadata / fixture-token only, responses are structured candidate JSON only, and existing validator/safety gates remain the source of truth before any app-facing use. No iOS integration, app-facing endpoint, production endpoint, real user-photo upload, raw image/base64/path/prompt/provider response, model call, serving benchmark, or production readiness change is added.
+
+Phase 21-B adds `backend/src/qa/openWeightVlmGatewayAdapterStub.mjs`, `npm run qa:open-weight-vlm:gateway-adapter-stub`, and `npm run qa:open-weight-vlm:gateway-external-contract-echo`. The adapter stub accepts only the Phase 21-A sanitized internal request contract in fixture-token sandbox mode, maps to structured candidate JSON, validates through the existing open-weight VLM schema/safety chain, and prints sanitized aggregate results only. The external Windows workspace may expose `/local/vlm/gateway-contract-echo` for no-model compatibility checks only; it must not load/call Qwen, run benchmarks, expose production endpoints, or return raw artifacts. `productionReady:false` remains required.
 
 ## Phase 12A Filter Planning Status
 

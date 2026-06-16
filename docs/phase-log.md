@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 21-A - Backend Internal VLM Gateway Contract Preflight
+Current phase: Phase 21-B - Backend Internal VLM Gateway Adapter Stub + External Server No-model Contract Alignment
 Status: Implemented
-Latest implementation: Added the backend-internal VLM Gateway contract preflight doc, no-network/no-model gateway contract module and CLI, package script, and backend tests. The gateway request is sanitized bucket/fixture-token metadata only, the gateway response is structured candidate JSON only, and the existing open-weight VLM candidate validator/safety chain remains the source of truth before any future app-facing use. No real model smoke, Qwen inference, serving benchmark, vLLM/SGLang/Ollama execution, iOS integration, app-facing endpoint, production endpoint, real user-photo upload, raw artifact output, training/fine-tuning, model-stack switch, or production readiness change was added.
+Latest implementation: Added the backend-internal VLM Gateway adapter stub, no-network adapter CLI, optional local/private external no-model contract echo CLI, backend tests, docs, and external workspace `/local/vlm/gateway-contract-echo` alignment. The adapter accepts only sanitized fixture-token sandbox requests, returns structured candidate JSON only, validates through the existing open-weight VLM candidate validator/safety chain, and reports sanitized aggregate status. External server changes are no-model compatibility only. No real model smoke, Qwen inference, serving benchmark, vLLM/SGLang/Ollama execution, iOS integration, app-facing endpoint, production endpoint, real user-photo upload, raw artifact output, training/fine-tuning, model-stack switch, or production readiness change was added.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -72,7 +72,7 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Phase 21-B may start a backend-internal gateway adapter skeleton, or Phase 21-C may add a fixture-token gateway dry-run, only if explicitly requested. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production endpoint work, real user-photo upload, serving-stack benchmark execution, model downloads, model cache changes, or user-photo training / fine-tuning until explicitly requested.
+Next phase: Phase 21-C may add a fixture-token gateway dry-run, or Phase 21-B may receive a follow-up review, only if explicitly requested. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production endpoint work, real user-photo upload, serving-stack benchmark execution, model downloads, model cache changes, or user-photo training / fine-tuning until explicitly requested.
 
 ---
 
@@ -276,6 +276,66 @@ Phase 21-A defines the backend-internal VLM Gateway contract preflight for a fut
 ### Ready for Phase 21-B
 
 Yes, for a backend-internal adapter skeleton only if explicitly requested. Phase 21-A does not approve iOS integration, app-facing endpoints, production endpoints, real user-photo upload, serving benchmark execution, model-stack switching, training/fine-tuning, or any change to `productionReady:false`.
+
+---
+
+## Phase 21-B - Backend Internal VLM Gateway Adapter Stub + External Server No-model Contract Alignment
+
+Status: Implemented
+Date: 2026-06-16
+
+### Summary
+
+Phase 21-B adds a backend-internal gateway adapter stub in the app repo and aligns the external local VLM server workspace with a no-model gateway contract echo. The app repo remains the source of truth for contract, adapter, validator, safety gates, docs, tests, QA scripts, and future integration. The external server remains a local/private provider sandbox only.
+
+### Completed
+
+- Added `backend/src/qa/openWeightVlmGatewayAdapterStub.mjs`.
+- Added `backend/scripts/check-open-weight-vlm-gateway-adapter-stub.mjs`.
+- Added `backend/scripts/check-open-weight-vlm-gateway-external-contract-echo.mjs`.
+- Added `npm run qa:open-weight-vlm:gateway-adapter-stub`.
+- Added `npm run qa:open-weight-vlm:gateway-external-contract-echo`.
+- Extended backend tests for adapter stub validation, blocked raw/leaky fields, production flag blocking, sanitized CLI output, and mocked safe/unsafe external no-model echo responses.
+- Updated `C:\Projects\vlm-smoke-server-work\server.py` with a no-model `/local/vlm/gateway-contract-echo` endpoint and healthz compatibility fields.
+- Updated README, backend README, iOS README, handoff, gateway contract doc, VLM runbooks, sandbox summaries, and manual smoke tests.
+
+### Changed Files
+
+- README.md
+- backend/README.md
+- backend/package.json
+- backend/scripts/check-open-weight-vlm-gateway-adapter-stub.mjs
+- backend/scripts/check-open-weight-vlm-gateway-external-contract-echo.mjs
+- backend/src/qa/openWeightVlmGatewayAdapterStub.mjs
+- backend/tests/open-weight-vlm-benchmark.test.mjs
+- docs/backend-internal-vlm-gateway-contract-preflight.md
+- docs/handoff/codex-transition-handoff.md
+- docs/open-weight-vlm-local-operator-runbook.md
+- docs/open-weight-vlm-local-sandbox-review-summary.md
+- docs/open-weight-vlm-local-smoke-expansion-gate.md
+- docs/phase-log.md
+- ios-app/README.md
+- tests/manual-smoke-tests.md
+- External workspace: `C:\Projects\vlm-smoke-server-work\server.py`
+
+### Tests / Manual Checks
+
+- Backend tests should include the new adapter stub and mocked external no-model echo cases.
+- Adapter stub CLI should report `networkCallsMade:false`, `modelCallsMade:false`, `qwenInferenceRun:false`, `acceptedCount:1`, `eligibleForPhase21CPlanning:true`, `eligibleForAppIntegration:false`, and `productionReady:false`.
+- External echo CLI should validate only local/private healthz and `/local/vlm/gateway-contract-echo`, with no model inference and `productionReady:false`.
+- External `server.py` should pass Python compile check.
+- Manual checklist updated for Phase 21-B.
+
+### Known TODOs
+
+- Phase 21-C can define a fixture-token gateway dry-run only after explicit approval.
+- Any future external server call must remain no-model unless a later phase explicitly approves model inference.
+- Real user-photo upload remains blocked until consent, compression, metadata stripping, retention/deletion, privacy policy, App Store disclosure, quota/abuse controls, and endpoint boundaries are explicitly designed.
+- Production rollout remains blocked.
+
+### Ready for Phase 21-C
+
+Yes, for a backend-internal fixture-token gateway dry-run only if explicitly requested. Phase 21-B does not approve iOS integration, app-facing endpoints, production endpoints, real user-photo upload, serving benchmark execution, Qwen inference, model-stack switching, training/fine-tuning, or any change to `productionReady:false`.
 
 ---
 

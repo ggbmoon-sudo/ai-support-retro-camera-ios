@@ -50,6 +50,13 @@ import {
   gatewayContractPreflightSampleResponse
 } from "../src/qa/openWeightVlmGatewayContractPreflight.mjs";
 import {
+  assertOpenWeightVlmGatewayAdapterStubReportRedacted,
+  evaluateOpenWeightVlmGatewayExternalContractEcho,
+  gatewayAdapterStubSampleCandidate,
+  gatewayAdapterStubSampleRequest,
+  runOpenWeightVlmGatewayAdapterStub
+} from "../src/qa/openWeightVlmGatewayAdapterStub.mjs";
+import {
   assertOpenWeightVlmBenchmarkReportRedacted,
   buildOpenWeightVlmSchemaDiagnostic,
   evaluateOpenWeightVlmBenchmarkCase,
@@ -75,6 +82,10 @@ const SERVING_BENCHMARK_PREFLIGHT_SCRIPT_URL =
   new URL("../scripts/check-open-weight-vlm-serving-benchmark-preflight.mjs", import.meta.url);
 const GATEWAY_CONTRACT_PREFLIGHT_SCRIPT_URL =
   new URL("../scripts/check-open-weight-vlm-gateway-contract-preflight.mjs", import.meta.url);
+const GATEWAY_ADAPTER_STUB_SCRIPT_URL =
+  new URL("../scripts/check-open-weight-vlm-gateway-adapter-stub.mjs", import.meta.url);
+const GATEWAY_EXTERNAL_CONTRACT_ECHO_SCRIPT_URL =
+  new URL("../scripts/check-open-weight-vlm-gateway-external-contract-echo.mjs", import.meta.url);
 
 test("open-weight VLM validator accepts valid synthetic benchmark fixtures", async () => {
   const cases = await benchmarkCases();
@@ -1728,6 +1739,174 @@ test("open-weight VLM gateway contract preflight CLI is sanitized and no-network
   assert.equal(output.includes("data:image"), false);
 });
 
+test("open-weight VLM gateway adapter stub accepts valid fixture-token request", () => {
+  const report = runOpenWeightVlmGatewayAdapterStub({
+    request: gatewayAdapterStubSampleRequest(),
+    candidate: gatewayAdapterStubSampleCandidate()
+  });
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.modelCallsMade, false);
+  assert.equal(report.qwenInferenceRun, false);
+  assert.equal(report.acceptedCount, 1);
+  assert.equal(report.rejectedCount, 0);
+  assert.equal(report.eligibleForPhase21CPlanning, true);
+  assert.equal(report.adapterChain.includes("open_weight_vlm_candidate_validator"), true);
+  assert.equal(report.candidateSummary.candidateValidatorPassed, true);
+  assert.equal(assertOpenWeightVlmGatewayAdapterStubReportRedacted(report).ok, true);
+});
+
+test("open-weight VLM gateway adapter stub blocks raw request fields and provider secrets", () => {
+  const blockedRequests = [
+    { rawImage: "data:image/png;base64,AAAA" },
+    { imageBase64: "AAAA" },
+    { imagePath: "C:\\Users\\lamch\\Desktop\\real.jpg" },
+    { gps: "1,2", rawExif: "foo", rawSensorValues: [1, 2, 3] },
+    { rawPrompt: "full prompt" },
+    { providerApiKey: "secret", modelServerUrl: "http://127.0.0.1:8025" }
+  ];
+
+  for (const extra of blockedRequests) {
+    const report = runOpenWeightVlmGatewayAdapterStub({
+      request: {
+        ...gatewayAdapterStubSampleRequest(),
+        ...extra
+      }
+    });
+    const serialized = JSON.stringify(report);
+
+    assert.equal(report.eligibleForPhase21CPlanning, false);
+    assert.equal(report.hardBlockers.includes("blocked_for_raw_artifact_request")
+      || report.hardBlockers.includes("blocked_for_unsanitized_request"), true);
+    assert.equal(serialized.includes("AAAA"), false);
+    assert.equal(serialized.includes("C:\\Users\\lamch\\Desktop\\real.jpg"), false);
+    assert.equal(serialized.includes("full prompt"), false);
+    assert.equal(serialized.includes("http://127.0.0.1:8025"), false);
+  }
+});
+
+test("open-weight VLM gateway adapter stub blocks endpoint flags and productionReady true", () => {
+  const report = runOpenWeightVlmGatewayAdapterStub({
+    request: {
+      ...gatewayAdapterStubSampleRequest(),
+      appFacingEndpoint: true,
+      productionEndpoint: true,
+      productionReady: true
+    },
+    candidate: {
+      ...gatewayAdapterStubSampleCandidate(),
+      productionReady: true
+    }
+  });
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.eligibleForPhase21CPlanning, false);
+  assert.equal(report.hardBlockers.includes("blocked_for_public_endpoint"), true);
+  assert.equal(report.hardBlockers.includes("blocked_for_production_flag"), true);
+});
+
+test("open-weight VLM gateway adapter stub blocks free-form score sensitive chain-of-thought and debug leakage", () => {
+  const report = runOpenWeightVlmGatewayAdapterStub({
+    request: gatewayAdapterStubSampleRequest(),
+    candidate: {
+      ...gatewayAdapterStubSampleCandidate(),
+      text: "free form",
+      score: 9,
+      rating: 4.5,
+      chainOfThought: "hidden reasoning",
+      providerDebug: "debug",
+      safety: {
+        sensitiveInferenceDetected: true,
+        forbiddenInferenceTypes: ["face"],
+        scoreOrRatingDetected: true,
+        chainOfThoughtDetected: true,
+        debugLeakageDetected: true
+      }
+    }
+  });
+
+  assert.equal(report.eligibleForPhase21CPlanning, false);
+  assert.equal(report.hardBlockers.includes("blocked_for_free_form_or_leaky_response"), true);
+  assert.equal(report.hardBlockers.includes("blocked_for_candidate_safety")
+    || report.hardBlockers.includes("blocked_for_candidate_validation"), true);
+});
+
+test("open-weight VLM gateway adapter stub CLI is sanitized and no-network", () => {
+  const output = execFileSync(process.execPath, [fileURLToPath(GATEWAY_ADAPTER_STUB_SCRIPT_URL)], {
+    cwd: new URL("..", import.meta.url),
+    encoding: "utf8"
+  });
+  const report = JSON.parse(output);
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.modelCallsMade, false);
+  assert.equal(report.qwenInferenceRun, false);
+  assert.equal(report.acceptedCount, 1);
+  assert.equal(report.eligibleForPhase21CPlanning, true);
+  assert.equal(output.includes("fullPrompt"), false);
+  assert.equal(output.includes("rawPrompt"), false);
+  assert.equal(output.includes("requestPayload"), false);
+  assert.equal(output.includes("modelOutput"), false);
+  assert.equal(output.includes("Authorization"), false);
+  assert.equal(output.includes("Bearer "), false);
+  assert.equal(output.includes("C:\\"), false);
+  assert.equal(output.includes("data:image"), false);
+});
+
+test("open-weight VLM external gateway contract echo accepts mocked safe no-model response", async () => {
+  const report = await evaluateOpenWeightVlmGatewayExternalContractEcho({
+    fetchImpl: safeGatewayExternalEchoFetch
+  });
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.networkCallsMade, true);
+  assert.equal(report.modelCallsMade, false);
+  assert.equal(report.qwenInferenceRun, false);
+  assert.equal(report.eligibleForExternalContractEchoReview, true);
+  assert.equal(report.healthz.publicExposure, "no");
+  assert.equal(report.healthz.rawLoggingDisabled, true);
+  assert.equal(report.echo.modelInferenceRun, false);
+  assert.equal(report.candidateSummary.candidateValidatorPassed, true);
+});
+
+test("open-weight VLM external gateway contract echo blocks unsafe mocked response", async () => {
+  const report = await evaluateOpenWeightVlmGatewayExternalContractEcho({
+    fetchImpl: unsafeGatewayExternalEchoFetch
+  });
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.eligibleForExternalContractEchoReview, false);
+  assert.equal(report.hardBlockers.includes("blocked_for_public_exposure"), true);
+  assert.equal(report.hardBlockers.includes("blocked_for_raw_logging_enabled"), true);
+  assert.equal(report.hardBlockers.includes("blocked_for_model_inference"), true);
+  assert.equal(report.hardBlockers.includes("blocked_for_raw_persistence"), true);
+  assert.equal(report.hardBlockers.includes("blocked_for_free_form_or_leaky_response"), true);
+});
+
+test("open-weight VLM external gateway contract echo CLI can use mocked safe response", () => {
+  const output = execFileSync(process.execPath, [
+    fileURLToPath(GATEWAY_EXTERNAL_CONTRACT_ECHO_SCRIPT_URL),
+    "--mock-safe"
+  ], {
+    cwd: new URL("..", import.meta.url),
+    encoding: "utf8"
+  });
+  const report = JSON.parse(output);
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.networkCallsMade, true);
+  assert.equal(report.modelCallsMade, false);
+  assert.equal(report.qwenInferenceRun, false);
+  assert.equal(report.eligibleForExternalContractEchoReview, true);
+  assert.equal(output.includes("rawPrompt"), false);
+  assert.equal(output.includes("requestPayload"), false);
+  assert.equal(output.includes("modelOutput"), false);
+  assert.equal(output.includes("C:\\"), false);
+  assert.equal(output.includes("data:image"), false);
+});
+
 test("open-weight VLM local sandbox smoke rejects non FastAPI serving stacks without network", async () => {
   const configPath = await writeTempSandboxConfig({
     enabled: true,
@@ -2009,6 +2188,59 @@ function routeEchoRows() {
     rawImagePathPersisted: false,
     requestPayloadPersisted: false
   }));
+}
+
+async function safeGatewayExternalEchoFetch(url) {
+  if (String(url).endsWith("/healthz")) {
+    return jsonResponse({
+      ok: true,
+      publicExposure: "no",
+      rawLoggingDisabled: true,
+      gatewayContractEchoAvailable: true,
+      modelInferenceRun: false,
+      productionReady: false
+    });
+  }
+  return jsonResponse({
+    ok: true,
+    mode: "gateway_contract_echo",
+    candidate: gatewayAdapterStubSampleCandidate(),
+    modelInferenceRun: false,
+    rawLoggingDisabled: true,
+    publicExposure: "no",
+    productionReady: false,
+    rawPromptPersisted: false,
+    rawModelResponsePersisted: false,
+    rawImagePersisted: false,
+    rawImagePathPersisted: false,
+    requestPayloadPersisted: false
+  });
+}
+
+async function unsafeGatewayExternalEchoFetch(url) {
+  if (String(url).endsWith("/healthz")) {
+    return jsonResponse({
+      ok: true,
+      publicExposure: "public",
+      rawLoggingDisabled: false,
+      modelInferenceRun: true,
+      productionReady: true
+    });
+  }
+  return jsonResponse({
+    ok: true,
+    mode: "gateway_contract_echo",
+    text: "free form",
+    modelInferenceRun: true,
+    rawLoggingDisabled: false,
+    publicExposure: "public",
+    productionReady: true,
+    rawPromptPersisted: true,
+    rawModelResponsePersisted: true,
+    rawImagePersisted: true,
+    rawImagePathPersisted: true,
+    requestPayloadPersisted: true
+  });
 }
 
 function jsonResponse(value) {
