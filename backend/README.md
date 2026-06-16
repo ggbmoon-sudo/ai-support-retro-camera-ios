@@ -658,6 +658,22 @@ The gate reviews only fixture count, accepted/rejected counts, acceptance rate, 
 
 The Phase 20-E-B2 baseline passes as `pass_for_local_repeatability_review` with `pass_with_latency_note` because one accepted fixture was `gt_15s`. This is sandbox review only. It does not approve iOS integration, app-facing endpoints, production endpoints, Camera cloud AI, payload changes, training/fine-tuning, or production rollout. `productionReady:false` remains required.
 
+## Phase 20-E-D Local VLM Smoke Failure And Latency Taxonomy
+
+Phase 20-E-D adds a backend-only taxonomy gate for interpreting sanitized local VLM smoke outcomes without treating one pass or failure as production readiness.
+
+Run:
+
+```sh
+npm run qa:open-weight-vlm:local-failure-taxonomy
+```
+
+The command uses a synthetic sanitized sample by default and makes no model call. The taxonomy reviews only fixture counts, accepted/rejected counts, acceptance rate, validation/fallback/schema buckets, latency buckets, `networkCallsMade`, `productionReady`, raw persistence booleans, optional model/server availability buckets, and optional fixture readiness buckets.
+
+Pass/review categories include `pass_clean_local_smoke`, `pass_with_latency_note`, `pass_with_minor_review_note`, and `not_production_ready`. Block categories include schema regression, provider integration, raw persistence, fixture readiness, unapproved fixture count, model/server unavailable, network mismatch, repeatability drift, latency regression, production flag, and unknown smoke state. Latency categories are `latency_ok`, `latency_note`, `latency_regression`, and `latency_blocker`.
+
+E-D does not run a larger fixture expansion, real Qwen smoke, iOS integration, app-facing endpoint, production endpoint, Camera cloud entry, payload change, training/fine-tuning, or production rollout. `productionReady:false` remains required.
+
 ## Phase 20-C Local VLM Operator Runbook + Smoke Gate
 
 Phase 20-C adds an operator runbook and a backend-only real-model smoke gate for future approved local/self-hosted VLM testing. The gate does not call a model and does not create an app-facing endpoint.

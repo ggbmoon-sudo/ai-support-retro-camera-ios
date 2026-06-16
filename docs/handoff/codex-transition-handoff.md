@@ -212,6 +212,20 @@ Latest Phase 20-E-C local VLM repeatability gate on 2026-06-16:
 - No validator, smoke gate, fixture approval, backend/iOS payload, iOS source, Camera cloud entry, app-facing endpoint, production endpoint, training/fine-tuning, or rollout boundary was changed.
 - Phase 20-E-D is planning-ready only after E-C is reviewed, committed, and pushed; production rollout remains blocked.
 
+Latest Phase 20-E-D local VLM failure and latency taxonomy on 2026-06-16:
+
+- Phase 20-E-D adds a backend-only failure and latency taxonomy for sanitized local VLM smoke aggregates.
+- New helper: `backend/src/qa/openWeightVlmLocalSmokeFailureTaxonomy.mjs`.
+- New command: `npm run qa:open-weight-vlm:local-failure-taxonomy`.
+- The taxonomy reviews sanitized fixture count, accepted/rejected count, acceptance rate, validation/fallback/schema buckets, latency buckets, network-call boolean, `productionReady`, raw persistence flags, optional model/server availability buckets, and optional fixture readiness buckets only.
+- Categories include `pass_clean_local_smoke`, `pass_with_latency_note`, `pass_with_minor_review_note`, `blocked_for_schema_regression`, `blocked_for_provider_integration`, `blocked_for_raw_persistence`, `blocked_for_fixture_readiness`, `blocked_for_unapproved_fixture`, `blocked_for_model_server_unavailable`, `blocked_for_network_not_made_when_required`, `blocked_for_unexpected_network_call`, `blocked_for_repeatability_drift`, `blocked_for_latency_regression`, `blocked_for_production_flag`, `blocked_for_unknown_smoke_state`, and `not_production_ready`.
+- Latency categories are `latency_ok`, `latency_note`, `latency_regression`, and `latency_blocker`.
+- The default CLI path evaluates a synthetic sanitized sample only and makes no model call.
+- No larger fixture expansion or real Qwen smoke was run in E-D.
+- No raw prompt/model output/image/base64/path/request payload/full model URL/local config/fixture registry/fixture image/generated report/secrets were printed, persisted, or committed.
+- No validator, smoke gate, fixture approval, backend/iOS payload, iOS source, Camera cloud entry, app-facing endpoint, production endpoint, training/fine-tuning, or rollout boundary was changed.
+- Phase 20-E-E / 20-F is planning-ready only after E-D is reviewed, committed, and pushed; production rollout remains blocked.
+
 Confirmed locally:
 
 - Phase 16E - Static Pose Overlay MVP

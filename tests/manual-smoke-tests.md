@@ -37,6 +37,19 @@ Local VLM smoke repeatability gate:
 - [ ] Confirm no iOS integration, app-facing endpoint, production endpoint, backend provider request payload change, iOS upload payload change, capture-context upload, Camera cloud AI entry, training/fine-tuning, or production rollout is introduced.
 - [ ] Confirm `productionReady=false`.
 
+## Phase 20-E-D
+
+Local VLM smoke failure and latency taxonomy:
+
+- [ ] Run `cd backend && npm run qa:open-weight-vlm:local-failure-taxonomy`.
+- [ ] Confirm the default command uses a synthetic sanitized sample, makes no model call, and reports `pass_clean_local_smoke`, `latency_ok`, no hard blockers, and `productionReady:false`.
+- [ ] Confirm taxonomy tests cover clean pass, accepted latency note, schema regression, provider-integration fallback, raw persistence, model/server unavailable, fixture readiness, repeatability drift, latency regression/blocker, `productionReady:true`, unknown aggregate state, and sanitized CLI output.
+- [ ] Confirm accepted `gt_15s` latency is a review note, all accepted `gt_15s` is latency regression review data, and timeout/unavailable buckets block review.
+- [ ] Confirm the taxonomy does not require or print raw prompt, raw model output, raw image/base64/path, request payload, local config contents, fixture registry contents, fixture images, credentials, or Windows server logs.
+- [ ] Confirm no larger fixture expansion or real Qwen smoke is run for this phase.
+- [ ] Confirm no iOS integration, app-facing endpoint, production endpoint, backend provider request payload change, iOS upload payload change, capture-context upload, Camera cloud AI entry, training/fine-tuning, or production rollout is introduced.
+- [ ] Confirm `productionReady=false`.
+
 ## Phase 20-D2G
 
 Local VLM schema mismatch diagnostics:

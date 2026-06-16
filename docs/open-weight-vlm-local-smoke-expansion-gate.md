@@ -234,4 +234,73 @@ The B2 baseline passes repeatability review with a latency note because one acce
 
 ## Phase 20-E-D Readiness
 
-Phase 20-E-D is planning-ready only after the Phase 20-E-C gate/docs are reviewed and committed. It is not production rollout.
+Phase 20-E-D is implemented as a backend-only failure and latency taxonomy review. It is not production rollout.
+
+## Phase 20-E-D Failure And Latency Taxonomy
+
+The taxonomy evaluates sanitized local VLM smoke aggregates only. It does not require raw model output, raw prompt, raw image path, base64, request payload, local config contents, fixture registry contents, fixture images, or server logs.
+
+Run:
+
+```sh
+cd backend
+npm run qa:open-weight-vlm:local-failure-taxonomy
+```
+
+Equivalent direct command:
+
+```sh
+node scripts/check-open-weight-vlm-local-smoke-failure-taxonomy.mjs --sample=clean
+```
+
+Reviewed fields:
+
+- `fixtureCount`
+- `acceptedCount`
+- `rejectedCount`
+- `acceptanceRate`
+- `validationCodeCounts`
+- `fallbackCategoryCounts`
+- `schemaErrorBucketCounts`
+- `schemaFieldBucketCounts`
+- `latencyBucketCounts`
+- `networkCallsMade`
+- `productionReady`
+- raw persistence flags
+- optional model/server availability buckets
+- optional fixture readiness buckets
+
+Pass / review categories:
+
+- `pass_clean_local_smoke`
+- `pass_with_latency_note`
+- `pass_with_minor_review_note`
+- `not_production_ready`
+
+Block categories:
+
+- `blocked_for_schema_regression`
+- `blocked_for_provider_integration`
+- `blocked_for_raw_persistence`
+- `blocked_for_fixture_readiness`
+- `blocked_for_unapproved_fixture`
+- `blocked_for_model_server_unavailable`
+- `blocked_for_network_not_made_when_required`
+- `blocked_for_unexpected_network_call`
+- `blocked_for_repeatability_drift`
+- `blocked_for_latency_regression`
+- `blocked_for_production_flag`
+- `blocked_for_unknown_smoke_state`
+
+Latency categories:
+
+- `latency_ok`
+- `latency_note`
+- `latency_regression`
+- `latency_blocker`
+
+Accepted `gt_15s` results are review notes. All accepted fixtures at `gt_15s` become a latency regression review note, not production readiness. Timeout or unavailable buckets block review. Phase 20-E-D did not run a larger fixture expansion or real Qwen smoke.
+
+## Phase 20-E-E / 20-F Readiness
+
+Planning-ready only after Phase 20-E-D is reviewed, committed, and pushed. Any future phase remains backend-only/local-private unless explicitly scoped otherwise, and production rollout remains blocked.

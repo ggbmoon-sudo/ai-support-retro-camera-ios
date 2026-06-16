@@ -21,6 +21,10 @@ import {
   summarizeOpenWeightVlmLocalSmokeRepeatability
 } from "../src/qa/openWeightVlmLocalSmokeRepeatabilityGate.mjs";
 import {
+  assertOpenWeightVlmLocalSmokeFailureTaxonomyReportRedacted,
+  evaluateOpenWeightVlmLocalSmokeFailureTaxonomy
+} from "../src/qa/openWeightVlmLocalSmokeFailureTaxonomy.mjs";
+import {
   assertOpenWeightVlmBenchmarkReportRedacted,
   buildOpenWeightVlmSchemaDiagnostic,
   evaluateOpenWeightVlmBenchmarkCase,
@@ -36,6 +40,7 @@ const LOCAL_SANDBOX_CONFIG_SCRIPT_URL = new URL("../scripts/check-open-weight-vl
 const LOCAL_SANDBOX_SMOKE_SCRIPT_URL = new URL("../scripts/run-open-weight-vlm-local-sandbox-smoke.mjs", import.meta.url);
 const LOCAL_SMOKE_GATE_SCRIPT_URL = new URL("../scripts/check-open-weight-vlm-local-smoke-gate.mjs", import.meta.url);
 const LOCAL_REPEATABILITY_GATE_SCRIPT_URL = new URL("../scripts/check-open-weight-vlm-local-smoke-repeatability-gate.mjs", import.meta.url);
+const LOCAL_FAILURE_TAXONOMY_SCRIPT_URL = new URL("../scripts/check-open-weight-vlm-local-smoke-failure-taxonomy.mjs", import.meta.url);
 
 test("open-weight VLM validator accepts valid synthetic benchmark fixtures", async () => {
   const cases = await benchmarkCases();
@@ -926,6 +931,172 @@ test("open-weight VLM local smoke repeatability gate script prints sanitized bas
   assert.equal(output.includes(".jpg"), false);
 });
 
+test("open-weight VLM local smoke failure taxonomy classifies clean pass", () => {
+  const report = evaluateOpenWeightVlmLocalSmokeFailureTaxonomy(failureTaxonomyAggregate());
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.eligibleForLocalSmokeReview, true);
+  assert.equal(report.latencyCategory, "latency_ok");
+  assert.equal(report.statusCategories.includes("pass_clean_local_smoke"), true);
+  assert.equal(report.statusCategories.includes("not_production_ready"), true);
+  assert.deepEqual(report.hardBlockers, []);
+  assert.equal(assertOpenWeightVlmLocalSmokeFailureTaxonomyReportRedacted(report).ok, true);
+});
+
+test("open-weight VLM local smoke failure taxonomy allows accepted latency note", () => {
+  const report = evaluateOpenWeightVlmLocalSmokeFailureTaxonomy(failureTaxonomyAggregate({
+    latencyBucketCounts: { gt_15s: 1, "5s_to_15s": 2 }
+  }));
+
+  assert.equal(report.eligibleForLocalSmokeReview, true);
+  assert.equal(report.latencyCategory, "latency_note");
+  assert.equal(report.statusCategories.includes("pass_with_latency_note"), true);
+  assert.equal(report.warnings.some((item) => item.code === "latency_gt_15s_observed"), true);
+});
+
+test("open-weight VLM local smoke failure taxonomy blocks schema regression", () => {
+  const report = evaluateOpenWeightVlmLocalSmokeFailureTaxonomy(failureTaxonomyAggregate({
+    acceptedCount: 2,
+    rejectedCount: 1,
+    acceptanceRate: 67,
+    validationCodeCounts: { null: 2, unsupported_enum: 1 },
+    fallbackCategoryCounts: { null: 2, invalid_schema: 1 },
+    schemaErrorBucketCounts: { unsupported_enum: 1 },
+    schemaFieldBucketCounts: { visualObservationKey: 1 }
+  }));
+
+  assert.equal(report.eligibleForLocalSmokeReview, false);
+  assert.equal(report.statusCategories.includes("blocked_for_schema_regression"), true);
+  assert.equal(report.reviewedAggregate.schemaFieldBucketCounts.visualObservationKey, 1);
+});
+
+test("open-weight VLM local smoke failure taxonomy blocks provider integration fallback", () => {
+  const report = evaluateOpenWeightVlmLocalSmokeFailureTaxonomy(failureTaxonomyAggregate({
+    acceptedCount: 2,
+    rejectedCount: 1,
+    acceptanceRate: 67,
+    fallbackCategoryCounts: { null: 2, blocked_for_provider_integration: 1 },
+    latencyBucketCounts: { "5s_to_15s": 2, lt_1s: 1 }
+  }));
+
+  assert.equal(report.eligibleForLocalSmokeReview, false);
+  assert.equal(report.statusCategories.includes("blocked_for_provider_integration"), true);
+});
+
+test("open-weight VLM local smoke failure taxonomy blocks raw persistence", () => {
+  const promptReport = evaluateOpenWeightVlmLocalSmokeFailureTaxonomy(failureTaxonomyAggregate({
+    rawPromptPersisted: true
+  }));
+  const responseReport = evaluateOpenWeightVlmLocalSmokeFailureTaxonomy(failureTaxonomyAggregate({
+    rawModelResponsePersisted: true
+  }));
+
+  assert.equal(promptReport.statusCategories.includes("blocked_for_raw_persistence"), true);
+  assert.equal(responseReport.statusCategories.includes("blocked_for_raw_persistence"), true);
+});
+
+test("open-weight VLM local smoke failure taxonomy blocks unavailable model server", () => {
+  const report = evaluateOpenWeightVlmLocalSmokeFailureTaxonomy(failureTaxonomyAggregate({
+    acceptedCount: 0,
+    rejectedCount: 3,
+    acceptanceRate: 0,
+    fallbackCategoryCounts: { blocked_for_provider_integration: 3 },
+    latencyBucketCounts: { timeout: 3 },
+    modelServerAvailabilityBucketCounts: { unavailable: 1 },
+    networkCallsMade: false
+  }));
+
+  assert.equal(report.eligibleForLocalSmokeReview, false);
+  assert.equal(report.latencyCategory, "latency_blocker");
+  assert.equal(report.statusCategories.includes("blocked_for_model_server_unavailable"), true);
+  assert.equal(report.statusCategories.includes("blocked_for_network_not_made_when_required"), true);
+});
+
+test("open-weight VLM local smoke failure taxonomy blocks fixture readiness gaps", () => {
+  const report = evaluateOpenWeightVlmLocalSmokeFailureTaxonomy(failureTaxonomyAggregate({
+    fixtureCount: 2,
+    acceptedCount: 2,
+    rejectedCount: 0,
+    acceptanceRate: 100,
+    validationCodeCounts: { null: 2 },
+    fallbackCategoryCounts: { null: 2 },
+    latencyBucketCounts: { "5s_to_15s": 2 },
+    fixtureReadinessBucketCounts: { missing_approved_fixture: 1 }
+  }));
+
+  assert.equal(report.eligibleForLocalSmokeReview, false);
+  assert.equal(report.statusCategories.includes("blocked_for_fixture_readiness"), true);
+});
+
+test("open-weight VLM local smoke failure taxonomy blocks repeatability drift", () => {
+  const report = evaluateOpenWeightVlmLocalSmokeFailureTaxonomy(failureTaxonomyAggregate({
+    acceptedCount: 2,
+    rejectedCount: 1,
+    acceptanceRate: 67,
+    validationCodeCounts: { null: 3 },
+    fallbackCategoryCounts: { null: 3 }
+  }));
+
+  assert.equal(report.eligibleForLocalSmokeReview, false);
+  assert.equal(report.statusCategories.includes("blocked_for_repeatability_drift"), true);
+});
+
+test("open-weight VLM local smoke failure taxonomy classifies latency regression", () => {
+  const slowReport = evaluateOpenWeightVlmLocalSmokeFailureTaxonomy(failureTaxonomyAggregate({
+    latencyBucketCounts: { gt_15s: 3 }
+  }));
+  const timeoutReport = evaluateOpenWeightVlmLocalSmokeFailureTaxonomy(failureTaxonomyAggregate({
+    acceptedCount: 0,
+    rejectedCount: 3,
+    acceptanceRate: 0,
+    latencyBucketCounts: { timeout: 3 }
+  }));
+
+  assert.equal(slowReport.eligibleForLocalSmokeReview, true);
+  assert.equal(slowReport.latencyCategory, "latency_regression");
+  assert.equal(slowReport.statusCategories.includes("pass_with_minor_review_note"), true);
+  assert.equal(timeoutReport.eligibleForLocalSmokeReview, false);
+  assert.equal(timeoutReport.statusCategories.includes("blocked_for_latency_regression"), true);
+});
+
+test("open-weight VLM local smoke failure taxonomy blocks productionReady true", () => {
+  const report = evaluateOpenWeightVlmLocalSmokeFailureTaxonomy(failureTaxonomyAggregate({
+    productionReady: true
+  }));
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.eligibleForLocalSmokeReview, false);
+  assert.equal(report.statusCategories.includes("blocked_for_production_flag"), true);
+});
+
+test("open-weight VLM local smoke failure taxonomy blocks unknown aggregate state", () => {
+  const report = evaluateOpenWeightVlmLocalSmokeFailureTaxonomy(failureTaxonomyAggregate({
+    acceptedCount: 2,
+    rejectedCount: 0,
+    acceptanceRate: 100
+  }));
+
+  assert.equal(report.eligibleForLocalSmokeReview, false);
+  assert.equal(report.statusCategories.includes("blocked_for_unknown_smoke_state"), true);
+});
+
+test("open-weight VLM local smoke failure taxonomy script prints sanitized sample", () => {
+  const output = execFileSync(process.execPath, [fileURLToPath(LOCAL_FAILURE_TAXONOMY_SCRIPT_URL), "--sample=latency-note"], {
+    cwd: new URL("..", import.meta.url),
+    encoding: "utf8"
+  });
+  const report = JSON.parse(output);
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.eligibleForLocalSmokeReview, true);
+  assert.equal(report.latencyCategory, "latency_note");
+  assert.equal(report.statusCategories.includes("pass_with_latency_note"), true);
+  assert.equal(output.includes("modelOutput"), false);
+  assert.equal(output.includes("fullPrompt"), false);
+  assert.equal(output.includes("http://"), false);
+  assert.equal(output.includes(".jpg"), false);
+});
+
 test("open-weight VLM local sandbox smoke rejects non FastAPI serving stacks without network", async () => {
   const configPath = await writeTempSandboxConfig({
     enabled: true,
@@ -1163,6 +1334,29 @@ function repeatabilityFixture(latencyBucket) {
     rawImagePersisted: false,
     rawImagePathPersisted: false,
     requestPayloadPersisted: false
+  };
+}
+
+function failureTaxonomyAggregate(overrides = {}) {
+  return {
+    schemaVersion: "open_weight_vlm_local_smoke_failure_taxonomy.test.v1",
+    fixtureCount: 3,
+    acceptedCount: 3,
+    rejectedCount: 0,
+    acceptanceRate: 100,
+    validationCodeCounts: { null: 3 },
+    fallbackCategoryCounts: { null: 3 },
+    schemaErrorBucketCounts: {},
+    schemaFieldBucketCounts: {},
+    latencyBucketCounts: { "5s_to_15s": 3 },
+    networkCallsMade: true,
+    productionReady: false,
+    rawPromptPersisted: false,
+    rawModelResponsePersisted: false,
+    rawImagePersisted: false,
+    rawImagePathPersisted: false,
+    requestPayloadPersisted: false,
+    ...overrides
   };
 }
 

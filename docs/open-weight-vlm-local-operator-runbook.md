@@ -345,3 +345,60 @@ The B2 baseline passes with:
 The latency note is expected for the B2 baseline because one accepted fixture was `gt_15s`. Treat it as sandbox review information, not production readiness.
 
 The gate blocks schema regressions, provider-integration fallback buckets, raw persistence, unapproved fixture counts, and `productionReady:true`. It does not call a model, read local config contents, inspect fixture registry contents, print raw prompts/model output/image paths/base64/request payloads, or approve iOS/product rollout.
+
+## Phase 20-E-D Failure And Latency Taxonomy
+
+Phase 20-E-D adds a backend-only taxonomy for interpreting sanitized local VLM smoke failures and latency outcomes.
+
+Run:
+
+```sh
+cd backend
+npm run qa:open-weight-vlm:local-failure-taxonomy
+```
+
+Default behavior uses a synthetic sanitized sample and makes no model call. The taxonomy reviews only:
+
+- fixture counts
+- accepted/rejected counts
+- acceptance rate
+- validation, fallback, schema error, and schema field buckets
+- latency buckets
+- `networkCallsMade`
+- `productionReady`
+- raw persistence booleans
+- optional model/server availability buckets
+- optional fixture readiness buckets
+
+Pass and review categories:
+
+- `pass_clean_local_smoke`
+- `pass_with_latency_note`
+- `pass_with_minor_review_note`
+- `not_production_ready`
+
+Block categories:
+
+- `blocked_for_schema_regression`
+- `blocked_for_provider_integration`
+- `blocked_for_raw_persistence`
+- `blocked_for_fixture_readiness`
+- `blocked_for_unapproved_fixture`
+- `blocked_for_model_server_unavailable`
+- `blocked_for_network_not_made_when_required`
+- `blocked_for_unexpected_network_call`
+- `blocked_for_repeatability_drift`
+- `blocked_for_latency_regression`
+- `blocked_for_production_flag`
+- `blocked_for_unknown_smoke_state`
+
+Latency categories:
+
+- `latency_ok`
+- `latency_note`
+- `latency_regression`
+- `latency_blocker`
+
+Accepted `gt_15s` latency is a sandbox review note. All accepted fixtures at `gt_15s` are latency regression review data. Timeout, unavailable, or pre-inference block buckets stop review. Safe rejections remain useful local smoke data, but they do not approve production readiness.
+
+Phase 20-E-D does not run a larger fixture expansion, run real Qwen smoke, read local config contents, inspect fixture registry contents, print raw prompts/model output/image paths/base64/request payloads, or approve iOS/product rollout.
