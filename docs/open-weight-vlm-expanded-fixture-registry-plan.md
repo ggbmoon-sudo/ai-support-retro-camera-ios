@@ -244,6 +244,10 @@ Phase 20-O reviews the 12-fixture smoke result and adds `docs/open-weight-vlm-se
 
 The recommended next step is Phase 20-P serving-stack benchmark preflight only. Do not run serving benchmarks, switch model stacks, add fixture images, modify ignored registries, start iOS integration, add endpoints, or change `productionReady:false` from Phase 20-O.
 
+## Phase 20-P Preflight Boundary
+
+Phase 20-P adds `docs/open-weight-vlm-serving-benchmark-preflight.md` and a no-network benchmark-plan CLI. The expanded fixture registry remains unchanged as the 12-category controlled set; Phase 20-P does not add fixture images, modify ignored registries, run Qwen inference, run serving benchmarks, or change `productionReady:false`.
+
 ## Boundary Confirmation
 
 Phase 20-L is backend-only and Windows-primary. It prepares controlled 12-fixture planning, but does not run it. No fixture images, local registry, local config, raw paths, prompts, model outputs, request payloads, reports, logs, weights, or credentials are committed. iOS behavior is unchanged. `productionReady:false` remains required.

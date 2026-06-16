@@ -433,3 +433,15 @@ This remains backend-only and does not approve iOS integration, app-facing endpo
 Phase 20-O is review/decision only. It records the accepted 12-fixture result, interprets `gt_15s x10` as a significant sandbox latency note, and recommends Phase 20-P as serving-stack benchmark preflight only.
 
 Do not run real model smoke, vLLM/SGLang/Ollama benchmarks, model-stack switches, fixture expansion, iOS integration, app-facing endpoints, production endpoints, or production rollout from Phase 20-O.
+
+## Phase 20-P Serving Benchmark Preflight
+
+Phase 20-P adds a no-network serving benchmark preflight gate:
+
+```sh
+npm run qa:open-weight-vlm:serving-benchmark-preflight
+```
+
+The gate validates future benchmark planning only and must report `networkCallsMade:false`, `benchmarkRun:false`, `qwenInferenceRun:false`, `eligibleForPhase21EntryReview:true`, `eligibleForBenchmarkExecution:false`, and `productionReady:false`.
+
+This gate does not replace the local smoke, repeatability, failure taxonomy, expanded registry, provider diagnostic, or routing echo gates. It does not run Qwen inference, real smoke, serving benchmarks, model-stack switches, iOS integration, endpoints, or production rollout.

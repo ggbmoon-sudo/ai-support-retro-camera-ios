@@ -574,3 +574,24 @@ Operator implications:
 - Do not run more real smoke without a future explicit prompt.
 - Keep benchmark planning backend-only and sanitized aggregate-only.
 - Keep `productionReady:false`.
+
+## Phase 20-P Serving Benchmark Preflight
+
+Phase 20-P adds `npm run qa:open-weight-vlm:serving-benchmark-preflight` and `docs/open-weight-vlm-serving-benchmark-preflight.md`. The command validates a sanitized benchmark plan only.
+
+Expected preflight output:
+
+- `networkCallsMade:false`
+- `benchmarkRun:false`
+- `qwenInferenceRun:false`
+- `eligibleForPhase21EntryReview:true`
+- `eligibleForBenchmarkExecution:false`
+- `productionReady:false`
+
+Operator implications:
+
+- Do not run a serving benchmark from Phase 20-P.
+- Do not run Qwen inference or real model smoke from Phase 20-P.
+- Do not switch model stacks from Phase 20-P.
+- Treat Phase 21-A as backend internal VLM gateway contract preflight only unless a future prompt explicitly chooses another no-network planning phase.
+- Keep `productionReady:false`.

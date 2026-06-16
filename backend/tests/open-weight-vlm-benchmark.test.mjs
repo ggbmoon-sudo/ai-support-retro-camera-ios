@@ -39,6 +39,11 @@ import {
   evaluateOpenWeightVlmFixtureRoutingContractEchoFromList
 } from "../src/qa/openWeightVlmFixtureRoutingContractEcho.mjs";
 import {
+  assertOpenWeightVlmServingBenchmarkPreflightReportRedacted,
+  evaluateOpenWeightVlmServingBenchmarkPreflight,
+  servingBenchmarkPreflightSample
+} from "../src/qa/openWeightVlmServingBenchmarkPreflight.mjs";
+import {
   assertOpenWeightVlmBenchmarkReportRedacted,
   buildOpenWeightVlmSchemaDiagnostic,
   evaluateOpenWeightVlmBenchmarkCase,
@@ -60,6 +65,8 @@ const EXPANDED_FIXTURE_PROVIDER_DIAGNOSTIC_SCRIPT_URL =
   new URL("../scripts/check-open-weight-vlm-expanded-fixture-provider-integration.mjs", import.meta.url);
 const FIXTURE_ROUTING_CONTRACT_ECHO_SCRIPT_URL =
   new URL("../scripts/check-open-weight-vlm-fixture-routing-contract-echo.mjs", import.meta.url);
+const SERVING_BENCHMARK_PREFLIGHT_SCRIPT_URL =
+  new URL("../scripts/check-open-weight-vlm-serving-benchmark-preflight.mjs", import.meta.url);
 
 test("open-weight VLM validator accepts valid synthetic benchmark fixtures", async () => {
   const cases = await benchmarkCases();
@@ -1474,6 +1481,101 @@ test("open-weight VLM fixture routing contract echo CLI output is sanitized", ()
     assert.equal(output.includes(".jpg"), false);
     assert.equal(output.includes("C:\\"), false);
   });
+});
+
+test("open-weight VLM serving benchmark preflight passes valid no-network plan", () => {
+  const report = evaluateOpenWeightVlmServingBenchmarkPreflight(servingBenchmarkPreflightSample());
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.benchmarkRun, false);
+  assert.equal(report.qwenInferenceRun, false);
+  assert.equal(report.eligibleForPhase21EntryReview, true);
+  assert.equal(report.eligibleForBenchmarkExecution, false);
+  assert.equal(report.statusCategories.includes("pass_for_serving_benchmark_preflight"), true);
+  assert.equal(assertOpenWeightVlmServingBenchmarkPreflightReportRedacted(report).ok, true);
+});
+
+test("open-weight VLM serving benchmark preflight blocks missing serving stack", () => {
+  const plan = servingBenchmarkPreflightSample();
+  plan.servingStacks = plan.servingStacks.filter((stack) => stack.servingStack !== "vllm");
+  const report = evaluateOpenWeightVlmServingBenchmarkPreflight(plan);
+
+  assert.equal(report.eligibleForPhase21EntryReview, false);
+  assert.equal(report.hardBlockers.includes("blocked_for_missing_serving_stack"), true);
+  assert.equal(report.missingServingStacks.includes("vllm"), true);
+});
+
+test("open-weight VLM serving benchmark preflight blocks productionReady true", () => {
+  const plan = servingBenchmarkPreflightSample();
+  plan.productionReady = true;
+  const report = evaluateOpenWeightVlmServingBenchmarkPreflight(plan);
+
+  assert.equal(report.eligibleForPhase21EntryReview, false);
+  assert.equal(report.hardBlockers.includes("blocked_for_production_flag"), true);
+  assert.equal(report.productionReady, false);
+});
+
+test("open-weight VLM serving benchmark preflight blocks raw artifact policy", () => {
+  const plan = servingBenchmarkPreflightSample();
+  plan.artifactPolicy.rawPromptAllowed = true;
+  plan.artifactPolicy.rawModelOutputAllowed = true;
+  const report = evaluateOpenWeightVlmServingBenchmarkPreflight(plan);
+
+  assert.equal(report.eligibleForPhase21EntryReview, false);
+  assert.equal(report.hardBlockers.includes("blocked_for_raw_artifact_policy"), true);
+});
+
+test("open-weight VLM serving benchmark preflight blocks public endpoint and iOS scope", () => {
+  const publicPlan = servingBenchmarkPreflightSample();
+  publicPlan.publicEndpointAllowed = true;
+  const publicReport = evaluateOpenWeightVlmServingBenchmarkPreflight(publicPlan);
+  const iosPlan = servingBenchmarkPreflightSample();
+  iosPlan.iosIntegrationScope = true;
+  const iosReport = evaluateOpenWeightVlmServingBenchmarkPreflight(iosPlan);
+
+  assert.equal(publicReport.hardBlockers.includes("blocked_for_public_endpoint"), true);
+  assert.equal(iosReport.hardBlockers.includes("blocked_for_ios_integration_scope"), true);
+});
+
+test("open-weight VLM serving benchmark preflight blocks missing fixture set", () => {
+  const plan = servingBenchmarkPreflightSample();
+  plan.fixtureSetBucket = "unknown";
+  const report = evaluateOpenWeightVlmServingBenchmarkPreflight(plan);
+
+  assert.equal(report.eligibleForPhase21EntryReview, false);
+  assert.equal(report.hardBlockers.includes("blocked_for_missing_fixture_set"), true);
+});
+
+test("open-weight VLM serving benchmark preflight blocks missing stop condition", () => {
+  const plan = servingBenchmarkPreflightSample();
+  plan.stopConditions = plan.stopConditions.filter((condition) => condition !== "schema_regression");
+  const report = evaluateOpenWeightVlmServingBenchmarkPreflight(plan);
+
+  assert.equal(report.eligibleForPhase21EntryReview, false);
+  assert.equal(report.hardBlockers.includes("blocked_for_missing_stop_conditions"), true);
+  assert.equal(report.missingStopConditions.includes("schema_regression"), true);
+});
+
+test("open-weight VLM serving benchmark preflight CLI is sanitized and no-network", () => {
+  const output = execFileSync(process.execPath, [fileURLToPath(SERVING_BENCHMARK_PREFLIGHT_SCRIPT_URL)], {
+    cwd: new URL("..", import.meta.url),
+    encoding: "utf8"
+  });
+  const report = JSON.parse(output);
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.benchmarkRun, false);
+  assert.equal(report.qwenInferenceRun, false);
+  assert.equal(report.eligibleForPhase21EntryReview, true);
+  assert.equal(report.eligibleForBenchmarkExecution, false);
+  assert.equal(output.includes("modelOutput"), false);
+  assert.equal(output.includes("fullPrompt"), false);
+  assert.equal(output.includes("\"requestPayload\":"), false);
+  assert.equal(output.includes("http://"), false);
+  assert.equal(output.includes(".jpg"), false);
+  assert.equal(output.includes("C:\\"), false);
 });
 
 test("open-weight VLM local sandbox smoke rejects non FastAPI serving stacks without network", async () => {

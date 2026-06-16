@@ -199,3 +199,9 @@ Phase 20-M completes the local ignored fixture preparation step for the 12-categ
 Phase 20-O adds `docs/open-weight-vlm-serving-benchmark-decision-gate.md` to review the accepted 12-fixture result and decide whether serving benchmark preflight is justified.
 
 Decision: Phase 20-P may proceed as **serving-stack benchmark preflight only**. The current `gt_15s x10` latency distribution is significant enough to plan benchmark controls, but Phase 20-O does not approve actual benchmark execution, model-stack switching, iOS integration, endpoints, or production rollout.
+
+## Phase 20-P Preflight Follow-up
+
+Phase 20-P adds `docs/open-weight-vlm-serving-benchmark-preflight.md` and a no-network benchmark-plan gate. It preserves the Phase 20-N/O interpretation: the 12-fixture result proves sandbox correctness for the approved set, while `gt_15s x10` remains a benchmark concern and not a production claim.
+
+The next recommended phase is Phase 21-A backend internal VLM gateway contract preflight, unless a future prompt explicitly requests another no-network benchmark dry-run planning phase. Do not run serving benchmarks, Qwen inference, real smoke, model-stack switches, iOS integration, endpoints, or production rollout from Phase 20-P.

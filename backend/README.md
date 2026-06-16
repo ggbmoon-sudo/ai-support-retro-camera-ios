@@ -813,6 +813,16 @@ Phase 20-O adds `../docs/open-weight-vlm-serving-benchmark-decision-gate.md` as 
 
 The decision gate records the sanitized Phase 20-N aggregate, interprets `gt_15s x10` as a significant sandbox latency note, and recommends Phase 20-P as serving-stack benchmark preflight only. Phase 20-O does not run Qwen inference, real smoke, vLLM/SGLang/Ollama benchmarks, model-stack switching, iOS integration, app-facing endpoints, production endpoints, training/fine-tuning, or production rollout. `productionReady:false` remains required.
 
+## Phase 20-P Serving Benchmark Preflight
+
+Phase 20-P adds `../docs/open-weight-vlm-serving-benchmark-preflight.md` and a no-network benchmark-plan gate:
+
+```sh
+npm run qa:open-weight-vlm:serving-benchmark-preflight
+```
+
+The gate validates the future serving stack matrix, sanitized metric inventory, 12-fixture usage rules, artifact policy, stop conditions, and Phase 21 backend gateway entry criteria. It does not call Qwen, run real smoke, run vLLM/SGLang/Ollama/LM Studio, switch model stacks, require local config, read fixture images, modify ignored registries, add iOS integration, add endpoints, or change production readiness. Expected output includes `networkCallsMade:false`, `benchmarkRun:false`, `qwenInferenceRun:false`, `eligibleForPhase21EntryReview:true`, `eligibleForBenchmarkExecution:false`, and `productionReady:false`.
+
 ## Phase 20-C Local VLM Operator Runbook + Smoke Gate
 
 Phase 20-C adds an operator runbook and a backend-only real-model smoke gate for future approved local/self-hosted VLM testing. The gate does not call a model and does not create an app-facing endpoint.

@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 20-O - 12-Fixture Smoke Review + Serving Benchmark Decision Gate
+Current phase: Phase 20-P - Serving Benchmark Preflight + Phase 21 Entry Criteria
 Status: Implemented
-Latest implementation: Reviewed the accepted Phase 20-N 12-fixture local/private smoke, added the serving benchmark decision gate, interpreted the `gt_15s x10` latency note, and recommended Phase 20-P serving-stack benchmark preflight only. No real model smoke, serving benchmark, iOS integration, app-facing endpoint, production endpoint, raw artifact output, training/fine-tuning, model-stack switch, or production readiness change was added.
+Latest implementation: Added the serving benchmark preflight doc and no-network benchmark-plan gate, defined the serving stack matrix, sanitized metrics, fixture usage rules, artifact policy, stop conditions, and Phase 21 backend gateway entry criteria. No real model smoke, Qwen inference, serving benchmark, vLLM/SGLang/Ollama execution, iOS integration, app-facing endpoint, production endpoint, raw artifact output, training/fine-tuning, model-stack switch, or production readiness change was added.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -72,7 +72,7 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Phase 20-P may define serving-stack benchmark preflight only after explicit user approval. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, public endpoint, serving-stack benchmark execution, model downloads, model cache changes, or user-photo training / fine-tuning until explicitly requested.
+Next phase: Phase 21-A may start backend internal VLM gateway contract preflight, or Phase 20-Q may add another no-network serving benchmark dry-run plan if explicitly requested. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, public endpoint, serving-stack benchmark execution, model downloads, model cache changes, or user-photo training / fine-tuning until explicitly requested.
 
 ---
 
@@ -197,6 +197,32 @@ Date: 2026-06-16
 ### Ready for Phase 20-P
 
 Yes, for serving-stack benchmark preflight only. Phase 20-O does not approve actual serving benchmark execution, model-stack switching, iOS integration, app-facing endpoints, production endpoints, production rollout, training/fine-tuning, or any change to `productionReady:false`.
+
+## Phase 20-P - Serving Benchmark Preflight + Phase 21 Entry Criteria
+
+Status: Implemented
+Date: 2026-06-16
+
+### Completed
+
+- Added `docs/open-weight-vlm-serving-benchmark-preflight.md`.
+- Added `backend/src/qa/openWeightVlmServingBenchmarkPreflight.mjs`.
+- Added `backend/scripts/check-open-weight-vlm-serving-benchmark-preflight.mjs`.
+- Added `npm run qa:open-weight-vlm:serving-benchmark-preflight`.
+- Defined the future serving stack matrix: Transformers + FastAPI as correctness/reference baseline, vLLM as primary serving benchmark candidate, SGLang as structured-output/performance challenger, and Ollama / LM Studio as manual/local smoke only.
+- Defined sanitized future benchmark metrics: fixture counts, acceptance/rejection counts, validation/fallback/schema buckets, latency buckets, p50/p95 latency buckets, timeout/provider/model-server buckets, cold/warm/concurrency/throughput buckets, network calls, raw persistence flags, and `productionReady:false`.
+- Defined stop conditions for unsafe healthz, public exposure, raw logging, raw artifacts, fixture/routing/schema failures, raw persistence, production flag, app/iOS payload changes, and app-facing endpoint attempts.
+- Defined Phase 21 entry criteria and recommended Phase 21-A as backend internal VLM gateway contract preflight.
+
+### Verification
+
+- The preflight CLI is no-network, no-model, and benchmark-plan only.
+- No real model smoke, Qwen inference, vLLM/SGLang/Ollama/LM Studio execution, fixture image change, ignored local registry change, iOS integration, app-facing endpoint, production endpoint, training/fine-tuning, model-stack switch, or production rollout was run or added.
+- `productionReady:false` remains required.
+
+### Ready for Phase 21-A
+
+Yes, for backend internal VLM gateway contract preflight only, or Phase 20-Q no-network serving benchmark dry-run planning if explicitly requested. Phase 20-P does not approve real benchmark execution, model-stack switching, iOS integration, app-facing endpoints, production endpoints, production rollout, training/fine-tuning, or any change to `productionReady:false`.
 
 ---
 

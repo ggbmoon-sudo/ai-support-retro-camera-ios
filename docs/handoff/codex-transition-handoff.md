@@ -906,6 +906,8 @@ Use this template:
 - Phase 20-N now records the explicitly approved controlled 12-fixture local/private smoke: exactly 12 calls, one per approved ignored fixture token `smoke_004` through `smoke_015`, with `fixtureCount:12`, `acceptedCount:12`, `rejectedCount:0`, `acceptanceRate:100%`, `validationCodeCounts:null x12`, `fallbackCategoryCounts:null x12`, no schema diagnostic buckets, `latencyBucketCounts:gt_15s x10, 5s_to_15s x2`, `networkCallsMade:true`, raw persistence flags false, and `productionReady:false`.
 - Repeatability and failure/latency gates passed with a latency note. Next work should be Phase 20-O planning only unless explicitly approved otherwise.
 - Phase 20-O now adds `docs/open-weight-vlm-serving-benchmark-decision-gate.md`. It reviews the accepted 12-fixture result, treats `gt_15s x10` as a significant sandbox latency note, and recommends Phase 20-P as serving-stack benchmark preflight only.
+- Phase 20-P now adds `docs/open-weight-vlm-serving-benchmark-preflight.md` and `npm run qa:open-weight-vlm:serving-benchmark-preflight`. The gate is no-network and validates the benchmark plan, serving stack matrix, sanitized metrics, fixture rules, artifact policy, stop conditions, and Phase 21 entry criteria only.
+- Recommended next work is Phase 21-A backend internal VLM gateway contract preflight, or Phase 20-Q no-network benchmark dry-run planning if explicitly requested.
 - Do not run vLLM/SGLang/Ollama benchmarks, switch model stacks, run more real smoke, add iOS integration, add endpoints, or change `productionReady:false` without explicit future approval.
 
 ---

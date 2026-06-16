@@ -144,3 +144,9 @@ Candidate serving stacks for later phases:
 ## Production Boundary
 
 `productionReady:false` remains required. Phase 20-O is review/decision only and does not authorize production rollout, iOS integration, Camera cloud AI, capture-context upload, app-facing endpoints, production endpoints, serving-stack benchmark execution, training, fine-tuning, model-stack switching, or user-photo use.
+
+## Phase 20-P Follow-up
+
+Phase 20-P now adds `docs/open-weight-vlm-serving-benchmark-preflight.md` and `npm run qa:open-weight-vlm:serving-benchmark-preflight`. The preflight remains no-network and no-model: it validates the benchmark plan, serving stack matrix, sanitized metrics, fixture rules, artifact policy, stop conditions, and Phase 21 backend gateway entry criteria only.
+
+Phase 20-P does not run Qwen inference, real model smoke, vLLM/SGLang/Ollama/LM Studio, model-stack switching, iOS integration, app-facing endpoints, production endpoints, training/fine-tuning, or production rollout. `productionReady:false` remains mandatory.

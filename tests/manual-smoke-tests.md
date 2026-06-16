@@ -1,5 +1,15 @@
 # Manual Smoke Tests
 
+## Phase 20-P
+
+Serving benchmark preflight and Phase 21 entry criteria:
+
+- [ ] From `backend/`, run `npm run qa:open-weight-vlm:serving-benchmark-preflight`.
+- [ ] Confirm the preflight reports `networkCallsMade:false`, `benchmarkRun:false`, `qwenInferenceRun:false`, `eligibleForPhase21EntryReview:true`, `eligibleForBenchmarkExecution:false`, and `productionReady:false`.
+- [ ] Open `docs/open-weight-vlm-serving-benchmark-preflight.md`.
+- [ ] Confirm the serving stack matrix lists Transformers + FastAPI, vLLM, SGLang, and Ollama / LM Studio as future benchmark planning categories only.
+- [ ] Confirm no real model smoke, Qwen inference, vLLM/SGLang/Ollama/LM Studio execution, fixture image change, ignored local registry change, iOS integration, app-facing endpoint, production endpoint, or production rollout is introduced.
+
 ## Phase 20-M
 
 12 approved ignored fixtures and no-model routing echo:

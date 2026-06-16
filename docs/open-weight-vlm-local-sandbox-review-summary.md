@@ -279,6 +279,12 @@ Phase 20-O reviews the accepted 12-fixture result and adds `docs/open-weight-vlm
 
 Phase 20-O does not run real model smoke, run vLLM/SGLang/Ollama, switch model stacks, add fixture images, modify ignored local registry, start iOS integration, add endpoints, or change `productionReady:false`.
 
+## Phase 20-P Preflight Note
+
+Phase 20-P adds `docs/open-weight-vlm-serving-benchmark-preflight.md` and `npm run qa:open-weight-vlm:serving-benchmark-preflight`. The gate is no-network/no-model and validates only a sanitized benchmark plan, including stack matrix, metrics, fixture rules, artifact policy, stop conditions, and Phase 21 entry criteria.
+
+The sandbox remains backend-only, Windows-primary, and local/private. Phase 20-P does not run a benchmark, Qwen inference, real smoke, vLLM/SGLang/Ollama/LM Studio, iOS integration, app-facing endpoints, production endpoints, training/fine-tuning, or production rollout. `productionReady:false` remains required.
+
 ## Boundary Confirmation
 
 Phase 20-E-E is a review/summary/planning gate only. It does not run real model smoke, expand fixture count, benchmark vLLM/SGLang, start iOS integration, add app-facing or production endpoints, train/fine-tune, weaken validation, loosen fixture approval, commit local artifacts, or change production readiness.

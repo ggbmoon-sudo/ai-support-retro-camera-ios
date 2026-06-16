@@ -78,11 +78,11 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
-- Phase 20-O reviews the accepted 12-fixture local/private smoke and adds a serving benchmark decision gate. It is review/planning only: no real model smoke, no serving benchmark run, no iOS integration, and `productionReady:false`.
+- Phase 20-P defines serving benchmark preflight and Phase 21 entry criteria. It adds a no-network benchmark-plan gate only: no real model smoke, no Qwen inference, no vLLM/SGLang/Ollama execution, no iOS integration, and `productionReady:false`.
 
 Next phase:
 
-- Recommended next step is Phase 20-P: serving stack benchmark preflight only. Do not run vLLM/SGLang/Ollama benchmarks or switch serving stacks unless a future prompt explicitly approves them.
+- Recommended next step is Phase 21-A: backend internal VLM gateway contract preflight, or Phase 20-Q serving benchmark dry-run planning if benchmark tooling needs another no-network gate. Do not run vLLM/SGLang/Ollama benchmarks or switch serving stacks unless a future prompt explicitly approves them.
 - Do not start production cloud rollout without explicit approval
 - Production rollout remains blocked until a later explicit release phase
 
@@ -129,6 +129,7 @@ Current MVP demo / QA readiness docs:
 - `docs/open-weight-vlm-expanded-fixture-registry-plan.md`
 - `docs/open-weight-vlm-expanded-smoke-result-review.md`
 - `docs/open-weight-vlm-serving-benchmark-decision-gate.md`
+- `docs/open-weight-vlm-serving-benchmark-preflight.md`
 - `docs/filter-research-popular-film-looks.md`
 - `docs/filter-preset-schema.md`
 - `docs/filter-roadmap.md`
@@ -280,6 +281,8 @@ Phase 20-L implements that no-model 12-fixture coverage plan in the expanded fix
 Phase 20-M prepares the ignored local 12-fixture set for the next controlled review and extends the no-model fixture routing echo target to 12 tokens. Sanitized gates pass with `totalFixtures:12`, `approvedCount:12`, `blockedCount:0`, `missingRequiredCategories:[]`, `eligibleForControlledSmoke:true`, `totalFixtureTokens:12`, `routeableCount:12`, `unavailableCount:0`, `modelInferenceRun:false`, raw persistence flags false, and `productionReady:false`. The ignored local registry and fixture images remain uncommitted; no Qwen inference, real smoke, iOS integration, endpoint, serving-stack benchmark, or production rollout is added.
 
 Phase 20-O adds `docs/open-weight-vlm-serving-benchmark-decision-gate.md` as a review/planning gate after the accepted Phase 20-N 12-fixture local/private smoke. It records that `gt_15s x10` is a significant sandbox latency note and recommends Phase 20-P as serving-stack benchmark preflight only. Phase 20-O does not run real smoke, run vLLM/SGLang/Ollama, switch model stacks, add fixture images, add iOS integration, add endpoints, train/fine-tune, or change `productionReady:false`.
+
+Phase 20-P adds `docs/open-weight-vlm-serving-benchmark-preflight.md` and `npm run qa:open-weight-vlm:serving-benchmark-preflight`. The preflight gate validates a sanitized backend-only benchmark plan, serving stack matrix, metrics, fixture rules, artifact policy, stop conditions, and Phase 21 entry criteria with `networkCallsMade:false`, `benchmarkRun:false`, `qwenInferenceRun:false`, and `productionReady:false`. No real model smoke, Qwen inference, vLLM/SGLang/Ollama/LM Studio execution, fixture change, ignored registry change, iOS integration, endpoint, training/fine-tuning, or production rollout is added.
 
 ## Phase 12A Filter Planning Status
 
