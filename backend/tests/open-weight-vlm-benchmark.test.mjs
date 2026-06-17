@@ -117,6 +117,11 @@ import {
   localCvCameraAidsPlanReadyPolicy
 } from "../src/qa/openWeightVlmLocalCvCameraAidsPlanGate.mjs";
 import {
+  assertOpenWeightVlmQuantizationServingBenchmarkPlanGateReportRedacted,
+  evaluateOpenWeightVlmQuantizationServingBenchmarkPlanGate,
+  quantizationServingBenchmarkPlanReadyPolicy
+} from "../src/qa/openWeightVlmQuantizationServingBenchmarkPlanGate.mjs";
+import {
   assertOpenWeightVlmBenchmarkReportRedacted,
   buildOpenWeightVlmSchemaDiagnostic,
   evaluateOpenWeightVlmBenchmarkCase,
@@ -168,6 +173,8 @@ const STATEFUL_WSS_LIVE_ADVISOR_PROTOCOL_PREFLIGHT_SCRIPT_URL =
   new URL("../scripts/check-open-weight-vlm-stateful-wss-live-advisor-protocol-preflight.mjs", import.meta.url);
 const LOCAL_CV_CAMERA_AIDS_PLAN_GATE_SCRIPT_URL =
   new URL("../scripts/check-open-weight-vlm-local-cv-camera-aids-plan-gate.mjs", import.meta.url);
+const QUANTIZATION_SERVING_BENCHMARK_PLAN_GATE_SCRIPT_URL =
+  new URL("../scripts/check-open-weight-vlm-quantization-serving-benchmark-plan-gate.mjs", import.meta.url);
 
 test("open-weight VLM validator accepts valid synthetic benchmark fixtures", async () => {
   const cases = await benchmarkCases();
@@ -3996,6 +4003,154 @@ test("open-weight VLM local CV camera aids plan gate CLI is sanitized and no-net
   assert.equal(result.stdout.includes("rawPrompt"), false);
   assert.equal(result.stdout.includes("requestPayload"), false);
   assert.equal(result.stdout.includes("QWE_API_KEY"), false);
+});
+
+test("open-weight VLM quantization serving benchmark plan gate accepts valid blocked-runtime policy", () => {
+  const report = evaluateOpenWeightVlmQuantizationServingBenchmarkPlanGate(
+    quantizationServingBenchmarkPlanReadyPolicy()
+  );
+
+  assert.equal(report.quantizationServingBenchmarkPlanEligible, true);
+  assert.equal(report.benchmarkRuntimeEnabled, false);
+  assert.equal(report.servingStackSwitchEnabled, false);
+  assert.equal(report.modelDownloadEnabled, false);
+  assert.equal(report.modelCallsMade, false);
+  assert.equal(report.qwenInferenceRun, false);
+  assert.equal(report.fixtureInferenceRun, false);
+  assert.equal(report.servingBenchmarkRun, false);
+  assert.equal(report.preferredModelClass, "qwen3_5_35b_a3b_moe_preferred");
+  assert.equal(report.servingStackCandidate, "vllm_primary_benchmark_candidate");
+  assert.equal(report.quantizationCandidate, "awq_candidate");
+  assert.equal(report.visionCapableRequired, true);
+  assert.equal(report.nonThinkingModeRequired, true);
+  assert.equal(report.structuredOutputRequired, true);
+  assert.equal(report.approvedFixturePolicyRequired, true);
+  assert.equal(report.sanitizedMetricsRequired, true);
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.productionReady, false);
+});
+
+test("open-weight VLM quantization serving benchmark plan gate blocks runtime execution flags", () => {
+  const report = evaluateOpenWeightVlmQuantizationServingBenchmarkPlanGate({
+    ...quantizationServingBenchmarkPlanReadyPolicy(),
+    benchmarkRuntimeEnabled: true,
+    servingStackSwitchEnabled: true,
+    modelDownloadEnabled: true,
+    modelCallsMade: true,
+    qwenInferenceRun: true,
+    fixtureInferenceRun: true,
+    servingBenchmarkRun: true
+  });
+
+  assert.equal(report.quantizationServingBenchmarkPlanEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_benchmark_runtime_enabled"), true);
+  assert.equal(report.blockers.includes("blocked_for_serving_stack_switch_enabled"), true);
+  assert.equal(report.blockers.includes("blocked_for_model_download_enabled"), true);
+  assert.equal(report.blockers.includes("blocked_for_model_call_in_planning_phase"), true);
+  assert.equal(report.blockers.includes("blocked_for_qwen_inference_in_planning_phase"), true);
+  assert.equal(report.blockers.includes("blocked_for_fixture_inference_in_planning_phase"), true);
+  assert.equal(report.blockers.includes("blocked_for_serving_benchmark_execution"), true);
+});
+
+test("open-weight VLM quantization serving benchmark plan gate blocks missing benchmark requirements", () => {
+  const report = evaluateOpenWeightVlmQuantizationServingBenchmarkPlanGate({
+    ...quantizationServingBenchmarkPlanReadyPolicy(),
+    productionReady: true,
+    visionCapableRequired: false,
+    nonThinkingModeRequired: false,
+    structuredOutputRequired: false,
+    approvedFixturePolicyRequired: false,
+    sanitizedMetricsRequired: false
+  });
+
+  assert.equal(report.quantizationServingBenchmarkPlanEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_production_flag"), true);
+  assert.equal(report.blockers.includes("blocked_for_missing_vision_capable_requirement"), true);
+  assert.equal(report.blockers.includes("blocked_for_missing_non_thinking_mode_requirement"), true);
+  assert.equal(report.blockers.includes("blocked_for_missing_structured_output_requirement"), true);
+  assert.equal(report.blockers.includes("blocked_for_missing_approved_fixture_policy"), true);
+  assert.equal(report.blockers.includes("blocked_for_missing_sanitized_metrics_policy"), true);
+});
+
+test("open-weight VLM quantization serving benchmark plan gate blocks unsafe artifact and endpoint policy", () => {
+  const report = evaluateOpenWeightVlmQuantizationServingBenchmarkPlanGate({
+    ...quantizationServingBenchmarkPlanReadyPolicy(),
+    rawOutputPersistenceAllowed: true,
+    rawPromptPersistenceAllowed: true,
+    rawPayloadLoggingAllowed: true,
+    realUserPhotosAllowed: true,
+    productionEndpointEnabled: true,
+    iosRuntimeDependencyEnabled: true
+  });
+
+  assert.equal(report.quantizationServingBenchmarkPlanEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_raw_output_persistence"), true);
+  assert.equal(report.blockers.includes("blocked_for_raw_prompt_persistence"), true);
+  assert.equal(report.blockers.includes("blocked_for_raw_payload_logging"), true);
+  assert.equal(report.blockers.includes("blocked_for_real_user_photos"), true);
+  assert.equal(report.blockers.includes("blocked_for_production_endpoint_enabled"), true);
+  assert.equal(report.blockers.includes("blocked_for_ios_runtime_dependency"), true);
+});
+
+test("open-weight VLM quantization serving benchmark plan gate blocks invalid candidates", () => {
+  const report = evaluateOpenWeightVlmQuantizationServingBenchmarkPlanGate({
+    ...quantizationServingBenchmarkPlanReadyPolicy(),
+    preferredModelClass: "text_only_qwen_blocked",
+    servingStackCandidate: "unknown_stack",
+    quantizationCandidate: "unknown_quantization"
+  });
+
+  assert.equal(report.quantizationServingBenchmarkPlanEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_text_only_model_candidate"), true);
+  assert.equal(report.blockers.includes("blocked_for_unsupported_serving_stack"), true);
+  assert.equal(report.blockers.includes("blocked_for_unknown_quantization_candidate"), true);
+});
+
+test("open-weight VLM quantization serving benchmark plan gate sanitized output contains no raw artifacts", () => {
+  const report = evaluateOpenWeightVlmQuantizationServingBenchmarkPlanGate({
+    ...quantizationServingBenchmarkPlanReadyPolicy(),
+    probeValues: [
+      "C:\\raw\\benchmark.jpg",
+      "data:image/jpeg",
+      "requestPayload with raw bytes",
+      "raw prompt body",
+      "raw modelOutput text",
+      "QWE_API_KEY=secret"
+    ]
+  });
+  const serialized = JSON.stringify(report);
+  const redaction = assertOpenWeightVlmQuantizationServingBenchmarkPlanGateReportRedacted(report);
+
+  assert.equal(report.quantizationServingBenchmarkPlanEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_committed_raw_benchmark_plan_value"), true);
+  assert.equal(redaction.ok, true);
+  assert.equal(serialized.includes("C:\\raw\\benchmark.jpg"), false);
+  assert.equal(serialized.includes("data:image/jpeg"), false);
+  assert.equal(serialized.includes("requestPayload with raw bytes"), false);
+  assert.equal(serialized.includes("raw prompt body"), false);
+  assert.equal(serialized.includes("raw modelOutput text"), false);
+  assert.equal(serialized.includes("QWE_API_KEY=secret"), false);
+});
+
+test("open-weight VLM quantization serving benchmark plan gate CLI is sanitized and no-network", () => {
+  const result = spawnSync(process.execPath, [fileURLToPath(QUANTIZATION_SERVING_BENCHMARK_PLAN_GATE_SCRIPT_URL)], {
+    encoding: "utf8"
+  });
+  const report = JSON.parse(result.stdout);
+
+  assert.equal(result.status, 0);
+  assert.equal(report.quantizationServingBenchmarkPlanEligible, true);
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.modelCallsMade, false);
+  assert.equal(report.qwenInferenceRun, false);
+  assert.equal(report.fixtureInferenceRun, false);
+  assert.equal(report.servingBenchmarkRun, false);
+  assert.equal(report.productionReady, false);
+  assert.equal(result.stdout.includes("C:\\raw"), false);
+  assert.equal(result.stdout.includes("data:image"), false);
+  assert.equal(result.stdout.includes("requestPayload with raw bytes"), false);
+  assert.equal(result.stdout.includes("raw modelOutput text"), false);
+  assert.equal(result.stdout.includes("QWE_API_KEY=secret"), false);
 });
 
 async function benchmarkCases() {

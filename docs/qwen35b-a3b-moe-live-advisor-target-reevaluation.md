@@ -248,8 +248,8 @@ After Phase 21-H2:
 2. Phase 21-J: Auto-Trigger + 1 FPS Live Advisor Policy Gate. Completed as a docs/gate/source-audit phase that keeps Auto-Trigger runtime, Camera live cloud AI runtime entry, WSS runtime, upload runtime, iOS payload changes, endpoints, model calls, Qwen inference, serving benchmarks, and production rollout blocked.
 3. Phase 21-K: Stateful WSS Live Advisor Protocol Preflight. Completed as a docs/gate/schema-policy/source-audit phase that keeps WSS runtime, WebSocket server/client runtime, Auto-Trigger runtime, Camera live cloud AI runtime, upload runtime, iOS payload changes, endpoints, model calls, Qwen inference, serving benchmarks, and production rollout blocked.
 4. Phase 21-L: Local On-device CV Camera Aids Plan. Completed as a docs/gate/source-audit phase that keeps local CV runtime, grid/horizon/exposure/motion runtime, Camera live cloud AI runtime, Auto-Trigger runtime, WSS runtime, upload runtime, iOS payload changes, endpoints, model calls, Qwen inference, serving benchmarks, and production rollout blocked.
-5. Phase 21-M: Quantization + Serving Benchmark Plan.
-6. Phase 21-N or later: explicitly approved one-fixture backend `local_model` route smoke.
+5. Phase 21-M: Quantization + Serving Benchmark Plan. Completed as a docs/gate/source-audit phase that records Qwen 3.5 35B-A3B MoE-if-VLM-compatible, Qwen2.5-VL reference baseline, vLLM/SGLang/Transformers+FastAPI/Ollama serving roles, INT4/INT8/AWQ/GPTQ/equivalent quantization dimensions, approved-fixture policy, sanitized metrics, and safety/fallback regression requirements while keeping serving benchmark execution, model download, model switch, `local_model` enablement, vLLM/SGLang/Ollama calls, Qwen inference, fixture inference, endpoints, iOS runtime dependencies, and production rollout blocked.
+6. Phase 21-N or later: explicitly approved one-fixture backend `local_model` route smoke. This requires explicit user approval because it may run exactly one backend local/private model call.
 
 ## productionReady:false Boundary
 

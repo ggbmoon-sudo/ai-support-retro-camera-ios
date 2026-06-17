@@ -1300,6 +1300,20 @@ Allowed operational metadata, if needed in a future phase:
 - error code
 - provider kind
 
+## Phase 21-M Quantization + Serving Benchmark Plan
+
+Phase 21-M adds a planning-only gate for future quantization and serving benchmark decisions:
+
+```sh
+npm run qa:open-weight-vlm:quantization-serving-benchmark-plan
+```
+
+The gate validates sanitized benchmark-plan policy objects only. It keeps `benchmarkRuntimeEnabled:false`, `servingStackSwitchEnabled:false`, `modelDownloadEnabled:false`, `qwenInferenceRun:false`, `fixtureInferenceRun:false`, `servingBenchmarkRun:false`, `networkCallsMade:false`, and `productionReady:false`.
+
+The future plan records Qwen 3.5 35B-A3B MoE as preferred only after verified VLM compatibility, Qwen2.5-VL as the current correctness/reference baseline, vLLM as primary benchmark candidate, SGLang as structured-output/performance challenger, Transformers+FastAPI as reference/local-operator baseline, Ollama/LM Studio as manual-only, and INT4/INT8/AWQ/GPTQ/equivalent quantization as later benchmark dimensions.
+
+Phase 21-M does not run a serving benchmark, download model weights, switch serving stacks, enable `local_model`, call vLLM/SGLang/Ollama, run Qwen inference, run fixture inference, add an endpoint, add an iOS runtime dependency, or approve production rollout.
+
 ## Future TODO
 
 - Add authenticated backend boundary only after explicit approval.

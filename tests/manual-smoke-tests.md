@@ -3675,6 +3675,30 @@ Known TODOs:
 - [ ] Future local providers, cloud snapshot guidance, Gemini Live, and voice / ASR remain later phases.
 - [ ] Physical-device camera overlay readability and responsiveness should be checked on a real iPhone.
 
+## Phase 21-M Quantization + Serving Benchmark Plan
+
+Check:
+
+- [x] Added `docs/quantization-serving-benchmark-plan.md` for planning/gate/source-audit only.
+- [x] Added `npm run qa:open-weight-vlm:quantization-serving-benchmark-plan`.
+- [x] Confirm the new gate validates policy objects only and reports `networkCallsMade:false`, `modelCallsMade:false`, `qwenInferenceRun:false`, `fixtureInferenceRun:false`, `servingBenchmarkRun:false`, and `productionReady:false`.
+- [x] Confirm future model candidates are documented as Qwen 3.5 35B-A3B MoE-if-VLM-compatible, Qwen2.5-VL reference baseline, Qwen 3 VL MoE fallback candidate, Qwen 9B vision-capable fallback, and text-only Qwen blocked for image analysis.
+- [x] Confirm future serving candidates are documented as Transformers+FastAPI reference, vLLM primary benchmark candidate, SGLang structured-output/performance challenger, and Ollama/LM Studio manual-only.
+- [x] Confirm future quantization dimensions include fp16/bf16, INT8, INT4, AWQ, GPTQ, and equivalent supported formats.
+- [x] Confirm benchmark fixture policy blocks real user photos, raw photo reports, raw model output, raw prompts, image/base64/path logs, and unapproved large benchmark sets.
+- [x] Confirm benchmark metrics policy allows sanitized aggregate buckets only and keeps `rawOutputPersisted:false`, `rawOutputPrinted:false`, and `productionReady:false`.
+- [x] Confirm no serving benchmark runtime, model download, model switch, `local_model` enablement, vLLM/SGLang/Ollama call, Qwen inference, fixture inference, iOS runtime dependency, app-facing endpoint, production endpoint, raw artifact, secret, or production readiness change was added.
+
+Manual Xcode check:
+
+- [ ] Launch the app only if desired; runtime behavior should be unchanged.
+- [ ] Confirm no local CV runtime, Camera cloud AI runtime entry, Auto-Trigger runtime, WSS runtime, iOS WebSocket client runtime, iOS provider/model key/direct call, iOS upload payload change, capture-context upload, app-facing endpoint, production rollout, Windows local path dependency, or local model server URL dependency appears in Xcode.
+
+Known TODOs:
+
+- [ ] Phase 21-N requires explicit user approval because it may run exactly one backend local/private model call.
+- [ ] Serving benchmark execution, model downloads, vLLM/SGLang/Ollama runs, local model route enablement, and production rollout remain blocked until later explicit approval.
+
 ## Phase 14C
 
 Check:

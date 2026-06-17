@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 21-L - Local On-device CV Camera Aids Plan
+Current phase: Phase 21-M - Quantization + Serving Benchmark Plan
 Status: Implemented
-Latest implementation: Added `docs/local-on-device-cv-camera-aids-plan.md`, `backend/src/qa/openWeightVlmLocalCvCameraAidsPlanGate.mjs`, and `npm run qa:open-weight-vlm:local-cv-camera-aids-plan`. The gate validates future local on-device CV camera aids policy objects only and keeps `localCvRuntimeEnabled:false`, `gridAlignmentRuntimeEnabled:false`, `horizonLevelRuntimeEnabled:false`, `exposureWarningRuntimeEnabled:false`, `motionStabilityRuntimeEnabled:false`, `cameraCloudEntryEnabled:false`, `uploadRuntimeEnabled:false`, `networkCallsMade:false`, `modelCallsMade:false`, `qwenInferenceRun:false`, `benchmarkRun:false`, and `productionReady:false`. It audits existing Camera/local guidance source for grid overlay, local capture context/motion/level/exposure buckets, local/mock guidance building blocks, and mock/debug cloud scaffolds; defines grid alignment, horizon/level, exposure warning, motion/stability buckets, 60fps smoothness, Auto-Trigger relationship, cloud VLM boundary, and privacy/data-retention rules. No local CV runtime, grid/horizon/exposure/motion runtime, Camera live cloud AI runtime entry, Auto-Trigger runtime, WSS runtime, upload runtime, compression runtime change, iOS payload change, endpoint, model call, Qwen inference, fixture inference, serving benchmark, raw artifact, secret, external workspace change, or production readiness change was added.
+Latest implementation: Added `docs/quantization-serving-benchmark-plan.md`, `backend/src/qa/openWeightVlmQuantizationServingBenchmarkPlanGate.mjs`, and `npm run qa:open-weight-vlm:quantization-serving-benchmark-plan`. The gate validates future quantization and serving benchmark plan policy objects only and keeps `benchmarkRuntimeEnabled:false`, `servingStackSwitchEnabled:false`, `modelDownloadEnabled:false`, `modelCallsMade:false`, `qwenInferenceRun:false`, `fixtureInferenceRun:false`, `servingBenchmarkRun:false`, `networkCallsMade:false`, and `productionReady:false`. It audits current serving/quantization status; defines Qwen 3.5 35B-A3B MoE-if-VLM-compatible, Qwen2.5-VL reference, vLLM primary benchmark candidate, SGLang challenger, Transformers+FastAPI reference, Ollama/LM Studio manual-only, INT4/INT8/AWQ/GPTQ/equivalent quantization dimensions, approved-fixture policy, sanitized metrics, safety/fallback regression, latency/throughput, and cost/hardware planning boundaries. No serving benchmark runtime, model download, model switch, `local_model` enablement, vLLM/SGLang/Ollama call, Qwen inference, fixture inference, iOS runtime dependency, endpoint, raw artifact, secret, external workspace change, or production readiness change was added.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -72,7 +72,7 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-M: Quantization + Serving Benchmark Plan, planning/gate only. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production endpoint work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution, model downloads, model cache changes, Qwen inference, fixture inference, local model route execution, local CV runtime, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, or user-photo training / fine-tuning until explicitly requested.
+Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-N: Approved One-fixture Backend Local Model Route Smoke, which requires explicit user approval because it may run exactly one backend local/private model call. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production endpoint work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution, model downloads, model cache changes, Qwen inference, fixture inference, local model route execution, local CV runtime, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, or user-photo training / fine-tuning until explicitly requested.
 
 ---
 
@@ -623,6 +623,67 @@ Phase 21-G3 adds a docs-only phase roadmap sequencing and next-action reminder r
 ### Ready for Next Phase
 
 Yes, for Phase 21-H2 only if explicitly requested as docs/gate-only target re-evaluation work. Any model call, upload, WSS runtime, iOS runtime, endpoint, serving benchmark, or production behavior requires separate explicit approval.
+
+---
+
+## Phase 21-M - Quantization + Serving Benchmark Plan
+
+Date: 2026-06-18
+
+Status: Implemented
+
+Goal: Define and gate the future quantization and serving benchmark plan before running any benchmark, downloading models, switching serving stacks, enabling `local_model`, or making iOS/production claims.
+
+Summary:
+
+Phase 21-M defines the future model, serving stack, quantization, fixture, metrics, latency/throughput, safety/fallback, and hardware/cost planning policy for later benchmark work. It keeps Qwen 3.5 35B-A3B MoE as preferred only after verified VLM compatibility, keeps Qwen2.5-VL as the current correctness/reference baseline, and keeps all runtime benchmark/model work blocked.
+
+This is a planning/gate/source-audit phase. It does not run serving benchmarks, real model smoke, Qwen inference, fixture inference, vLLM/SGLang/Ollama calls, model downloads, serving stack switches, `local_model` enablement, external workspace changes, iOS runtime dependencies, endpoints, uploads, compression runtime, local CV runtime, Auto-Trigger runtime, WSS runtime, auth/billing/quota runtime, or production rollout.
+
+Completed work:
+
+- Added `docs/quantization-serving-benchmark-plan.md` with executive summary, current implementation audit, benchmark purpose, model/serving/quantization matrices, future metrics, fixture scope, structured output/schema policy, latency/throughput, safety/fallback regression, cost/hardware planning, stop conditions, remaining blockers, gate expectations, and `productionReady:false`.
+- Added `backend/src/qa/openWeightVlmQuantizationServingBenchmarkPlanGate.mjs` to validate benchmark-plan policy objects only.
+- Added `backend/scripts/check-open-weight-vlm-quantization-serving-benchmark-plan-gate.mjs` and `npm run qa:open-weight-vlm:quantization-serving-benchmark-plan`.
+- Extended backend tests for runtime blockers, serving-stack switch/model-download blockers, model/Qwen/fixture/benchmark execution blockers, missing vision/non-thinking/structured-output/fixture/metrics requirements, raw artifact policy blockers, real-user-photo blocker, endpoint/iOS dependency blockers, invalid model/serving/quantization candidates, redaction, and CLI output.
+- Audited current backend/server docs and scripts: no active vLLM/SGLang/Ollama production runtime, no quantized model deployment, no committed model weights/config URLs/secrets, no production serving endpoint, and no iOS runtime dependency on serving stack choice were found; Transformers+FastAPI remains local/operator-only sandbox evidence.
+- Updated roadmap sequencing current next phase to Phase 21-N: Approved One-fixture Backend Local Model Route Smoke, with explicit user approval required because it may run exactly one backend local/private model call.
+
+Changed files:
+
+- `README.md`
+- `backend/README.md`
+- `backend/package.json`
+- `backend/scripts/check-open-weight-vlm-quantization-serving-benchmark-plan-gate.mjs`
+- `backend/src/qa/openWeightVlmQuantizationServingBenchmarkPlanGate.mjs`
+- `backend/tests/open-weight-vlm-benchmark.test.mjs`
+- `docs/handoff/codex-transition-handoff.md`
+- `docs/missing-features-and-deferred-roadmap-register.md`
+- `docs/open-weight-vlm-serving-benchmark-preflight.md`
+- `docs/phase-log.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/quantization-serving-benchmark-plan.md`
+- `docs/qwen35b-a3b-moe-live-advisor-target-reevaluation.md`
+- `ios-app/README.md`
+- `tests/manual-smoke-tests.md`
+
+Checks:
+
+- `git diff --check` passed.
+- Backend tests passed with 247/247 tests.
+- Safe no-model backend QA passed for synthetic benchmark, benchmark gate, local config dry-run, default local sandbox smoke stub/no-network, local smoke gate, repeatability gate, failure taxonomy, expanded fixture registry dry-run, provider integration diagnostic, serving benchmark preflight, gateway contract preflight, gateway adapter stub, gateway external contract echo mock-safe, gateway provider routing, gateway provider adapter no-model HTTP mock-safe, cross-platform deployment boundary, deployment config/env preflight, local model route approval gate, local model route dry-run plan, Qwen MoE live-advisor target gate, image compression/upload policy gate, Auto-Trigger policy gate, Stateful WSS protocol preflight, local CV camera aids plan, and Quantization + Serving Benchmark Plan gate.
+- Fixture routing contract echo recorded fail-closed with no local echo endpoint: `networkCallsMade:false`, `modelInferenceRun:false`, `productionReady:false`, and no runtime depends on it.
+- Secret scan passed. iOS direct provider/model scan passed. Focused Camera runtime cloud entry scan passed. Backend/iOS payload unchanged scan passed. Artifact scan passed after removing ignored synthetic QA report output.
+- Photo Advisor synthetic QA, provider QA gate, provider QA review, copy regression, filter reason coverage, CreativeIntent language coverage, and Photo Advisor card language coverage passed.
+
+Known TODOs:
+
+- Phase 21-N requires explicit user approval because it may run exactly one backend local/private model call.
+- Serving benchmark execution, model downloads, vLLM/SGLang/Ollama runs, serving-stack switches, `local_model` enablement, iOS runtime dependencies, endpoints, and production rollout remain blocked until later explicit approval.
+
+### Ready for Phase 21-N
+
+Yes, only if explicitly requested and explicitly approved as an Approved One-fixture Backend Local Model Route Smoke. Phase 21-M does not approve benchmark execution, model downloads, model switches, local model route enablement, Qwen inference, fixture inference, vLLM/SGLang/Ollama calls, iOS runtime work, endpoints, upload runtime, WSS runtime, Auto-Trigger runtime, local CV runtime, or production behavior.
 
 ---
 

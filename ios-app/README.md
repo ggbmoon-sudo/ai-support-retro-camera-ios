@@ -2,6 +2,12 @@
 
 This folder contains the Swift + SwiftUI iOS app scaffold.
 
+## Phase 21-M Xcode Boundary
+
+Phase 21-M is a backend/docs-only Quantization + Serving Benchmark Plan. Xcode runtime behavior should be unchanged.
+
+No local CV runtime, Camera cloud AI runtime entry, Auto-Trigger runtime, WSS runtime, iOS provider/model key, direct provider/model call, iOS upload payload change, capture-context upload, app-facing endpoint, production rollout, Windows local path dependency, or local model server URL dependency is added.
+
 Planned stack:
 
 - Swift

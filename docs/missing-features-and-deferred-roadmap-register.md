@@ -191,6 +191,19 @@ Phase 21-L formalizes the local on-device CV camera aids direction as a docs/gat
 - The current source audit found an existing rule-of-thirds grid overlay, local capture context/motion/level/exposure buckets, local/mock guidance building blocks, and mock/debug cloud scaffolds, but no new local CV runtime, Auto-Trigger runtime, Camera live cloud AI runtime, WSS runtime, upload runtime, compression runtime change, model call, Qwen inference, benchmark, or production rollout is approved by Phase 21-L.
 - `productionReady:false` remains locked.
 
+## Phase 21-M Quantization + Serving Benchmark Plan Result
+
+Phase 21-M formalizes the quantization and serving benchmark direction as a docs/gate/source-audit plan:
+
+- Future benchmark candidates include `qwen3_5_35b_a3b_moe_preferred` only after verified vision/VLM compatibility, `qwen2_5_vl_reference` as the current correctness baseline, `qwen3_vl_moe_fallback_candidate`, `qwen_9b_vision_fast_fallback`, and `text_only_qwen_blocked`.
+- Future serving candidates are `transformers_fastapi_reference`, `vllm_primary_benchmark_candidate`, `sglang_structured_output_challenger`, and `ollama_lmstudio_manual_only`.
+- Future quantization dimensions include FP16/BF16 baseline, INT8, INT4, AWQ, GPTQ, and equivalent supported quantization formats.
+- Future benchmarks must use approved sanitized fixtures only, avoid real user photos, avoid raw prompt/model output/request payload/image/base64/path logs, and report sanitized aggregate metrics only.
+- Schema validity, accepted/rejected counts, fallback rate, invalid schema rate, safety/fallback regression, latency buckets, throughput/concurrency, memory pressure, visual reasoning, Photo Advisor voice quality, and filter recommendation consistency remain required future metrics.
+- The current source audit found no active vLLM/SGLang/Ollama production runtime, no quantized model deployment, no committed weights/config URLs/secrets, no production serving endpoint, and no iOS runtime dependency on serving stack choice; Transformers+FastAPI remains local/operator-only sandbox evidence.
+- Phase 21-M adds no serving benchmark runtime, model download, model switch, `local_model` enablement, vLLM/SGLang/Ollama call, Qwen inference, fixture inference, iOS runtime dependency, endpoint, or production rollout.
+- `productionReady:false` remains locked.
+
 ## Cross-reference Future Phases
 
 These are proposed planning labels only. Because the current repo already contains a committed Phase 21-H dry-run plan, future operators should reconcile numbering before implementation.

@@ -272,3 +272,9 @@ npm run qa:open-weight-vlm:local-model-route-dry-run-plan
 ```
 
 The dry-run plan keeps serving benchmark execution blocked. A future first `local_model` route test must be explicitly approved, backend-internal, local/private, one declared synthetic fixture token, one call only, no retries, structured candidate JSON only, validator/fallback protected, and `productionReady:false`. Phase 21-H itself does not run Qwen, model inference, fixture inference, a serving benchmark, vLLM/SGLang/Ollama, iOS integration, endpoints, or real upload.
+
+## Phase 21-M Follow-up
+
+Phase 21-M adds `docs/quantization-serving-benchmark-plan.md` and `npm run qa:open-weight-vlm:quantization-serving-benchmark-plan`. The new plan keeps this preflight no-runtime boundary intact while expanding the future benchmark matrix to Qwen 3.5 35B-A3B MoE-if-VLM-compatible, Qwen2.5-VL reference, vLLM primary benchmark candidate, SGLang structured-output/performance challenger, Transformers+FastAPI reference, Ollama/LM Studio manual-only, and fp16/bf16, INT8, INT4, AWQ, GPTQ, or equivalent quantization classes.
+
+Phase 21-M still does not run a serving benchmark, download weights, switch stacks, enable `local_model`, call vLLM/SGLang/Ollama, run Qwen inference, run fixture inference, add an endpoint, add an iOS runtime dependency, or approve production rollout. The next recommended Phase 21-N requires explicit user approval because it may run exactly one backend local/private model call.
