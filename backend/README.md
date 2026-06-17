@@ -1003,6 +1003,18 @@ The gate is no-network, no-model, no-Qwen, no-fixture-inference, and no-benchmar
 
 Phase 21-K does not implement WSS runtime, WebSocket server runtime, iOS WebSocket client runtime, Auto-Trigger runtime, Camera live cloud AI runtime, image upload, image compression runtime, iOS payload changes, app-facing endpoints, production endpoints, model calls, Qwen inference, serving benchmarks, auth/billing/quota runtime, or production rollout.
 
+## Phase 21-L Local On-device CV Camera Aids Plan
+
+Phase 21-L adds the future local on-device CV camera aids plan gate:
+
+```bash
+npm run qa:open-weight-vlm:local-cv-camera-aids-plan
+```
+
+The gate is no-network, no-model, no-Qwen, no-fixture-inference, and no-benchmark. It validates policy objects only: local CV runtime, grid alignment runtime, horizon/level runtime, exposure warning runtime, motion/stability runtime, Camera cloud entry, and upload runtime must remain disabled; local-only, no-backend-call, no-upload, no raw frame/sensor/GPS/EXIF persistence, 60fps smoothness target, Auto-Trigger relationship, cloud VLM boundary, no provider/model fields in iOS, and `productionReady:false` are required.
+
+Phase 21-L does not implement local CV runtime, grid alignment runtime, horizon/level runtime, exposure warning runtime, motion/stability runtime, Camera live cloud AI runtime, Auto-Trigger runtime, WSS runtime, image upload, image compression runtime, iOS payload changes, app-facing endpoints, production endpoints, model calls, Qwen inference, serving benchmarks, auth/billing/quota runtime, or production rollout.
+
 ## Phase 20-C Local VLM Operator Runbook + Smoke Gate
 
 Phase 20-C adds an operator runbook and a backend-only real-model smoke gate for future approved local/self-hosted VLM testing. The gate does not call a model and does not create an app-facing endpoint.

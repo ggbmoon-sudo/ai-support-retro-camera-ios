@@ -39,6 +39,16 @@ Stateful WSS Live Advisor protocol preflight:
 - [ ] Confirm the roadmap current next phase is Phase 21-L: Local On-device CV Camera Aids Plan.
 - [ ] Confirm no WSS runtime, WebSocket server/client runtime, Auto-Trigger runtime, Camera live cloud AI runtime entry, upload runtime, compression runtime change, iOS payload change, endpoint, model call, Qwen inference, fixture inference, serving benchmark, raw artifact, secret, or production rollout was added.
 
+## Phase 21-L
+
+Local On-device CV Camera Aids Plan gate:
+
+- [ ] From `backend/`, run `npm run qa:open-weight-vlm:local-cv-camera-aids-plan`.
+- [ ] Confirm the CLI output has `localCvPlanEligible:true`, `localCvRuntimeEnabled:false`, `gridAlignmentRuntimeEnabled:false`, `horizonLevelRuntimeEnabled:false`, `exposureWarningRuntimeEnabled:false`, `motionStabilityRuntimeEnabled:false`, `cameraCloudEntryEnabled:false`, `uploadRuntimeEnabled:false`, `networkCallsMade:false`, `modelCallsMade:false`, `qwenInferenceRun:false`, `benchmarkRun:false`, and `productionReady:false`.
+- [ ] Confirm `docs/local-on-device-cv-camera-aids-plan.md` records the current source audit, local CV purpose, grid alignment, horizon/level, exposure warning, motion/stability bucket, 60fps smoothness, Auto-Trigger relationship, cloud VLM boundary, privacy/data-retention, iOS/backend boundary, and stop-condition policies.
+- [ ] Confirm the roadmap current next phase is Phase 21-M: Quantization + Serving Benchmark Plan.
+- [ ] Confirm no local CV runtime, grid/horizon/exposure/motion runtime, Camera live cloud AI runtime entry, Auto-Trigger runtime, WSS runtime, upload runtime, compression runtime change, iOS payload change, endpoint, model call, Qwen inference, fixture inference, serving benchmark, raw artifact, secret, or production rollout was added.
+
 ## Phase 21-G2
 
 Missing feature + deferred roadmap register:

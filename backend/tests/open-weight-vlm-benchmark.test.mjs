@@ -112,6 +112,11 @@ import {
   statefulWssLiveAdvisorProtocolReadyPolicy
 } from "../src/qa/openWeightVlmStatefulWssLiveAdvisorProtocolPreflight.mjs";
 import {
+  assertOpenWeightVlmLocalCvCameraAidsPlanGateReportRedacted,
+  evaluateOpenWeightVlmLocalCvCameraAidsPlanGate,
+  localCvCameraAidsPlanReadyPolicy
+} from "../src/qa/openWeightVlmLocalCvCameraAidsPlanGate.mjs";
+import {
   assertOpenWeightVlmBenchmarkReportRedacted,
   buildOpenWeightVlmSchemaDiagnostic,
   evaluateOpenWeightVlmBenchmarkCase,
@@ -161,6 +166,8 @@ const AUTO_TRIGGER_LIVE_ADVISOR_POLICY_GATE_SCRIPT_URL =
   new URL("../scripts/check-open-weight-vlm-auto-trigger-live-advisor-policy-gate.mjs", import.meta.url);
 const STATEFUL_WSS_LIVE_ADVISOR_PROTOCOL_PREFLIGHT_SCRIPT_URL =
   new URL("../scripts/check-open-weight-vlm-stateful-wss-live-advisor-protocol-preflight.mjs", import.meta.url);
+const LOCAL_CV_CAMERA_AIDS_PLAN_GATE_SCRIPT_URL =
+  new URL("../scripts/check-open-weight-vlm-local-cv-camera-aids-plan-gate.mjs", import.meta.url);
 
 test("open-weight VLM validator accepts valid synthetic benchmark fixtures", async () => {
   const cases = await benchmarkCases();
@@ -3838,6 +3845,156 @@ test("open-weight VLM Stateful WSS Live Advisor protocol preflight CLI is saniti
   assert.equal(result.stdout.includes("data:image"), false);
   assert.equal(result.stdout.includes("\"rawPrompt\":"), false);
   assert.equal(result.stdout.includes("\"requestPayload\":"), false);
+  assert.equal(result.stdout.includes("QWE_API_KEY"), false);
+});
+
+test("open-weight VLM local CV camera aids plan gate accepts valid blocked-runtime policy", () => {
+  const report = evaluateOpenWeightVlmLocalCvCameraAidsPlanGate(
+    localCvCameraAidsPlanReadyPolicy()
+  );
+
+  assert.equal(report.localCvPlanEligible, true);
+  assert.equal(report.localCvRuntimeEnabled, false);
+  assert.equal(report.gridAlignmentRuntimeEnabled, false);
+  assert.equal(report.horizonLevelRuntimeEnabled, false);
+  assert.equal(report.exposureWarningRuntimeEnabled, false);
+  assert.equal(report.motionStabilityRuntimeEnabled, false);
+  assert.equal(report.cameraCloudEntryEnabled, false);
+  assert.equal(report.uploadRuntimeEnabled, false);
+  assert.equal(report.localOnlyRequired, true);
+  assert.equal(report.noBackendCallRequired, true);
+  assert.equal(report.noUploadRequired, true);
+  assert.equal(report.cameraSmoothnessTargetBucket, "target_60fps_smooth_preview");
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.modelCallsMade, false);
+  assert.equal(report.qwenInferenceRun, false);
+  assert.equal(report.benchmarkRun, false);
+  assert.equal(report.productionReady, false);
+});
+
+test("open-weight VLM local CV camera aids plan gate blocks runtime flags", () => {
+  const report = evaluateOpenWeightVlmLocalCvCameraAidsPlanGate({
+    ...localCvCameraAidsPlanReadyPolicy(),
+    localCvRuntimeEnabled: true,
+    gridAlignmentRuntimeEnabled: true,
+    horizonLevelRuntimeEnabled: true,
+    exposureWarningRuntimeEnabled: true,
+    motionStabilityRuntimeEnabled: true,
+    cameraCloudEntryEnabled: true,
+    uploadRuntimeEnabled: true
+  });
+
+  assert.equal(report.localCvPlanEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_local_cv_runtime_enabled"), true);
+  assert.equal(report.blockers.includes("blocked_for_grid_alignment_runtime_enabled"), true);
+  assert.equal(report.blockers.includes("blocked_for_horizon_level_runtime_enabled"), true);
+  assert.equal(report.blockers.includes("blocked_for_exposure_warning_runtime_enabled"), true);
+  assert.equal(report.blockers.includes("blocked_for_motion_stability_runtime_enabled"), true);
+  assert.equal(report.blockers.includes("blocked_for_camera_cloud_entry_enabled"), true);
+  assert.equal(report.blockers.includes("blocked_for_upload_runtime_enabled"), true);
+});
+
+test("open-weight VLM local CV camera aids plan gate blocks local-only and persistence gaps", () => {
+  const report = evaluateOpenWeightVlmLocalCvCameraAidsPlanGate({
+    ...localCvCameraAidsPlanReadyPolicy(),
+    localOnlyRequired: false,
+    noBackendCallRequired: false,
+    noUploadRequired: false,
+    noRawFramePersistenceRequired: false,
+    noRawSensorPersistenceRequired: false,
+    noGpsPersistenceRequired: false,
+    noRawExifPersistenceRequired: false
+  });
+
+  assert.equal(report.localCvPlanEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_missing_local_only_requirement"), true);
+  assert.equal(report.blockers.includes("blocked_for_backend_call_allowed"), true);
+  assert.equal(report.blockers.includes("blocked_for_upload_allowed"), true);
+  assert.equal(report.blockers.includes("blocked_for_raw_frame_persistence"), true);
+  assert.equal(report.blockers.includes("blocked_for_raw_sensor_persistence"), true);
+  assert.equal(report.blockers.includes("blocked_for_gps_persistence"), true);
+  assert.equal(report.blockers.includes("blocked_for_raw_exif_persistence"), true);
+});
+
+test("open-weight VLM local CV camera aids plan gate blocks missing relationship policies", () => {
+  const report = evaluateOpenWeightVlmLocalCvCameraAidsPlanGate({
+    ...localCvCameraAidsPlanReadyPolicy(),
+    cameraSmoothnessTargetBucket: "unknown",
+    autoTriggerRelationshipBucket: "unknown",
+    cloudVlmRelationshipBucket: "unknown",
+    providerFieldsAllowedInIos: true
+  });
+
+  assert.equal(report.localCvPlanEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_missing_camera_smoothness_target"), true);
+  assert.equal(report.blockers.includes("blocked_for_missing_auto_trigger_relationship"), true);
+  assert.equal(report.blockers.includes("blocked_for_missing_cloud_vlm_boundary"), true);
+  assert.equal(report.blockers.includes("blocked_for_provider_fields_in_ios"), true);
+});
+
+test("open-weight VLM local CV camera aids plan gate blocks execution flags", () => {
+  const report = evaluateOpenWeightVlmLocalCvCameraAidsPlanGate({
+    ...localCvCameraAidsPlanReadyPolicy(),
+    productionReady: true,
+    networkCallsMade: true,
+    modelCallsMade: true,
+    qwenInferenceRun: true,
+    benchmarkRun: true
+  });
+
+  assert.equal(report.localCvPlanEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_production_flag"), true);
+  assert.equal(report.blockers.includes("blocked_for_network_call_in_planning_phase"), true);
+  assert.equal(report.blockers.includes("blocked_for_model_call_in_planning_phase"), true);
+  assert.equal(report.blockers.includes("blocked_for_qwen_inference_in_planning_phase"), true);
+  assert.equal(report.blockers.includes("blocked_for_benchmark_execution"), true);
+});
+
+test("open-weight VLM local CV camera aids plan gate sanitized output contains no raw artifacts", () => {
+  const report = evaluateOpenWeightVlmLocalCvCameraAidsPlanGate({
+    ...localCvCameraAidsPlanReadyPolicy(),
+    probeValues: [
+      "CVPixelBuffer raw frame",
+      "C:\\raw\\frame.jpg",
+      "data:image/jpeg",
+      "requestPayload",
+      "rawPrompt",
+      "rawModelOutput",
+      "QWE_API_KEY"
+    ]
+  });
+  const serialized = JSON.stringify(report);
+  const redaction = assertOpenWeightVlmLocalCvCameraAidsPlanGateReportRedacted(report);
+
+  assert.equal(report.localCvPlanEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_committed_raw_cv_plan_value"), true);
+  assert.equal(redaction.ok, true);
+  assert.equal(serialized.includes("CVPixelBuffer raw frame"), false);
+  assert.equal(serialized.includes("C:\\raw\\frame.jpg"), false);
+  assert.equal(serialized.includes("data:image/jpeg"), false);
+  assert.equal(serialized.includes("requestPayload"), false);
+  assert.equal(serialized.includes("rawPrompt"), false);
+  assert.equal(serialized.includes("rawModelOutput"), false);
+  assert.equal(serialized.includes("QWE_API_KEY"), false);
+});
+
+test("open-weight VLM local CV camera aids plan gate CLI is sanitized and no-network", () => {
+  const result = spawnSync(process.execPath, [fileURLToPath(LOCAL_CV_CAMERA_AIDS_PLAN_GATE_SCRIPT_URL)], {
+    encoding: "utf8"
+  });
+  const report = JSON.parse(result.stdout);
+
+  assert.equal(result.status, 0);
+  assert.equal(report.localCvPlanEligible, true);
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.modelCallsMade, false);
+  assert.equal(report.qwenInferenceRun, false);
+  assert.equal(report.benchmarkRun, false);
+  assert.equal(report.productionReady, false);
+  assert.equal(result.stdout.includes("CVPixelBuffer"), false);
+  assert.equal(result.stdout.includes("data:image"), false);
+  assert.equal(result.stdout.includes("rawPrompt"), false);
+  assert.equal(result.stdout.includes("requestPayload"), false);
   assert.equal(result.stdout.includes("QWE_API_KEY"), false);
 });
 

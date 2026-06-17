@@ -34,6 +34,7 @@
     "qa:open-weight-vlm:image-compression-upload-policy": "node scripts/check-open-weight-vlm-image-compression-upload-policy-gate.mjs",
     "qa:open-weight-vlm:auto-trigger-live-advisor-policy": "node scripts/check-open-weight-vlm-auto-trigger-live-advisor-policy-gate.mjs",
     "qa:open-weight-vlm:stateful-wss-live-advisor-protocol": "node scripts/check-open-weight-vlm-stateful-wss-live-advisor-protocol-preflight.mjs",
+    "qa:open-weight-vlm:local-cv-camera-aids-plan": "node scripts/check-open-weight-vlm-local-cv-camera-aids-plan-gate.mjs",
     "qa:open-weight-vlm:local": "node scripts/run-open-weight-vlm-local-sandbox-smoke.mjs --run-local-model"
   },
   "dependencies": {},

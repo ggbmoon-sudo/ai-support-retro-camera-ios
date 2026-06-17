@@ -140,6 +140,8 @@ Phase 21-J remains the trigger boundary:
 
 WSS must not weaken or bypass the Auto-Trigger gate.
 
+Phase 21-L now formalizes the local on-device CV side of this relationship: future local CV may provide only bucketed, in-memory stability/framing aids for local UI responsiveness, and it does not approve raw sensor/frame persistence, upload, backend calls, model calls, or runtime local CV expansion.
+
 ## 1 FPS Relationship
 
 WSS must carry or enforce throttle state consistent with the max 1 FPS cloud-analysis policy.

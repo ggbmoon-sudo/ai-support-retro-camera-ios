@@ -179,6 +179,18 @@ Phase 21-K formalizes the Stateful WSS Live Advisor direction as a docs/gate/sch
 - The current source audit found no WSS/WebSocket runtime, no iOS WebSocket client, no backend WebSocket server, no live session state, and no raw video streaming path; existing Camera snapshot/mock files remain mock-only/pre-existing.
 - `productionReady:false` remains locked.
 
+## Phase 21-L Local On-device CV Camera Aids Plan Result
+
+Phase 21-L formalizes the local on-device CV camera aids direction as a docs/gate/source-audit plan:
+
+- Future local CV should handle fast on-device camera aids only: grid alignment hints, horizon/level guide, overexposed/underexposed warning, basic motion/stability buckets, and optional bucketed frame eligibility signal for a later approved Auto-Trigger phase.
+- Camera preview smoothness remains the priority, with a future 60fps UI responsiveness target and fail-soft optional aids.
+- Local CV must not upload anything, call backend, call model, persist raw frames, persist raw sensor streams, persist GPS, persist raw EXIF, or export raw capture context unless a later explicit phase approves a bucketed schema.
+- Future Auto-Trigger may consume only a local bucketed stability signal; stillness `<=1s` still means no frame capture, no upload, no backend call, and no model call.
+- Cloud VLM remains for higher-level composition, mood, retro intent, and optional action only after explicit consent and trigger/upload/WSS gates; it must not be used for 60fps preview analysis or receive raw video/sensor data.
+- The current source audit found an existing rule-of-thirds grid overlay, local capture context/motion/level/exposure buckets, local/mock guidance building blocks, and mock/debug cloud scaffolds, but no new local CV runtime, Auto-Trigger runtime, Camera live cloud AI runtime, WSS runtime, upload runtime, compression runtime change, model call, Qwen inference, benchmark, or production rollout is approved by Phase 21-L.
+- `productionReady:false` remains locked.
+
 ## Cross-reference Future Phases
 
 These are proposed planning labels only. Because the current repo already contains a committed Phase 21-H dry-run plan, future operators should reconcile numbering before implementation.

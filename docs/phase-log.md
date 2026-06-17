@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 21-K - Stateful WSS Live Advisor Protocol Preflight
+Current phase: Phase 21-L - Local On-device CV Camera Aids Plan
 Status: Implemented
-Latest implementation: Added `docs/stateful-wss-live-advisor-protocol-preflight.md`, `backend/src/qa/openWeightVlmStatefulWssLiveAdvisorProtocolPreflight.mjs`, and `npm run qa:open-weight-vlm:stateful-wss-live-advisor-protocol`. The gate validates future Stateful WSS Live Advisor protocol policy objects only and keeps `wssRuntimeEnabled:false`, `webSocketServerRuntimeEnabled:false`, `iosWebSocketClientRuntimeEnabled:false`, `liveAdvisorRuntimeEnabled:false`, `cameraCloudEntryEnabled:false`, `uploadRuntimeEnabled:false`, `networkCallsMade:false`, `modelCallsMade:false`, `qwenInferenceRun:false`, `benchmarkRun:false`, and `productionReady:false`. It audits current source for WSS/WebSocket/live-session behavior, defines backend-mediated session lifecycle, server busy/backoff, safe retry, max 1 FPS, Auto-Trigger and compression/upload dependencies, privacy/logging boundaries, no raw video streaming, no provider/model fields in iOS, no raw payload/prompt/model output, no chain-of-thought, and no debug leakage. No WSS runtime, WebSocket server runtime, iOS WebSocket client runtime, Auto-Trigger runtime, Camera live cloud AI runtime entry, upload runtime, compression runtime change, iOS payload change, endpoint, model call, Qwen inference, fixture inference, serving benchmark, raw artifact, secret, external workspace change, or production readiness change was added.
+Latest implementation: Added `docs/local-on-device-cv-camera-aids-plan.md`, `backend/src/qa/openWeightVlmLocalCvCameraAidsPlanGate.mjs`, and `npm run qa:open-weight-vlm:local-cv-camera-aids-plan`. The gate validates future local on-device CV camera aids policy objects only and keeps `localCvRuntimeEnabled:false`, `gridAlignmentRuntimeEnabled:false`, `horizonLevelRuntimeEnabled:false`, `exposureWarningRuntimeEnabled:false`, `motionStabilityRuntimeEnabled:false`, `cameraCloudEntryEnabled:false`, `uploadRuntimeEnabled:false`, `networkCallsMade:false`, `modelCallsMade:false`, `qwenInferenceRun:false`, `benchmarkRun:false`, and `productionReady:false`. It audits existing Camera/local guidance source for grid overlay, local capture context/motion/level/exposure buckets, local/mock guidance building blocks, and mock/debug cloud scaffolds; defines grid alignment, horizon/level, exposure warning, motion/stability buckets, 60fps smoothness, Auto-Trigger relationship, cloud VLM boundary, and privacy/data-retention rules. No local CV runtime, grid/horizon/exposure/motion runtime, Camera live cloud AI runtime entry, Auto-Trigger runtime, WSS runtime, upload runtime, compression runtime change, iOS payload change, endpoint, model call, Qwen inference, fixture inference, serving benchmark, raw artifact, secret, external workspace change, or production readiness change was added.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -72,7 +72,7 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-L: Local On-device CV Camera Aids Plan, planning/gate only. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production endpoint work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution, model downloads, model cache changes, Qwen inference, fixture inference, local model route execution, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, or user-photo training / fine-tuning until explicitly requested.
+Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-M: Quantization + Serving Benchmark Plan, planning/gate only. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production endpoint work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution, model downloads, model cache changes, Qwen inference, fixture inference, local model route execution, local CV runtime, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, or user-photo training / fine-tuning until explicitly requested.
 
 ---
 
@@ -623,6 +623,43 @@ Phase 21-G3 adds a docs-only phase roadmap sequencing and next-action reminder r
 ### Ready for Next Phase
 
 Yes, for Phase 21-H2 only if explicitly requested as docs/gate-only target re-evaluation work. Any model call, upload, WSS runtime, iOS runtime, endpoint, serving benchmark, or production behavior requires separate explicit approval.
+
+---
+
+## Phase 21-L - Local On-device CV Camera Aids Plan
+
+Date: 2026-06-18
+Status: Implemented
+
+### Goal
+
+Define and gate the future local on-device CV camera aids plan before implementing runtime camera aids.
+
+### Summary
+
+Phase 21-L defines the future local CV split for fast on-device camera aids: grid alignment hints, horizon/level guide, exposure warning, motion/stability buckets, optional bucketed future Auto-Trigger eligibility, and 60fps camera smoothness. It keeps cloud VLM reserved for higher-level composition, mood, retro intent, and optional action only after explicit consent and trigger/upload/WSS gates.
+
+This is a planning/gate/source-audit phase. It does not add local CV runtime, grid alignment runtime, horizon/level runtime, exposure warning runtime, motion/stability runtime, Auto-Trigger runtime, Camera live cloud AI runtime entry, WSS runtime, image upload, image compression runtime changes, iOS payload changes, endpoints, model calls, Qwen inference, fixture inference, serving benchmark execution, or production rollout.
+
+### Completed
+
+- Added `docs/local-on-device-cv-camera-aids-plan.md` with executive summary, current implementation audit, local CV purpose, grid alignment, horizon/level, exposure warning, motion/stability bucket, 60fps smoothness, Auto-Trigger relationship, cloud VLM boundary, privacy/data-retention, iOS/backend boundaries, future phases, stop conditions, gate expectations, and `productionReady:false`.
+- Added `backend/src/qa/openWeightVlmLocalCvCameraAidsPlanGate.mjs` to validate local CV camera aids plan policy objects only.
+- Added `backend/scripts/check-open-weight-vlm-local-cv-camera-aids-plan-gate.mjs` and `npm run qa:open-weight-vlm:local-cv-camera-aids-plan`.
+- Extended backend tests for local CV runtime blockers, grid/horizon/exposure/motion runtime blockers, Camera cloud/upload blockers, production/execution flags, local-only/no-backend/no-upload requirements, raw frame/sensor/GPS/EXIF persistence blockers, 60fps/Auto-Trigger/cloud VLM relationship blockers, provider fields in iOS, redaction, and CLI output.
+- Audited current source: a pre-existing visual grid overlay, local capture context/motion/level/exposure buckets, local/mock guidance building blocks, and mock/debug cloud scaffolds were found; no new local CV runtime, Auto-Trigger runtime, Camera live cloud AI runtime, WSS runtime, upload runtime, or model path is approved by this phase.
+- Updated roadmap sequencing current next phase to Phase 21-M: Quantization + Serving Benchmark Plan.
+
+### Safety Notes
+
+- The new local CV camera aids plan CLI is no-network, no-model, no-Qwen, no-fixture-inference, no-benchmark, and prints sanitized bucket summaries only.
+- Future local CV must remain local-only, optional, fail-soft, and must not upload anything, call backend, call model, persist raw frames, persist raw sensor streams, persist GPS, persist raw EXIF, or export raw capture context without a later explicit bucketed-schema approval.
+- No local CV runtime, grid/horizon/exposure/motion runtime, Camera live cloud AI runtime entry, Auto-Trigger runtime, WSS runtime, upload runtime, compression runtime change, iOS payload change, app-facing endpoint, production endpoint, model call, Qwen inference, fixture inference, serving benchmark, raw artifact, secret, external workspace change, or production readiness change was added.
+- `productionReady:false` remains locked.
+
+### Ready for Phase 21-M
+
+Yes, for an explicitly requested planning/gate-only Quantization + Serving Benchmark Plan. Phase 21-L does not approve local CV runtime, iOS runtime, serving benchmark execution, model calls, Qwen inference, vLLM/SGLang/Ollama calls, endpoints, upload runtime, WSS runtime, Auto-Trigger runtime, or production behavior.
 
 ---
 

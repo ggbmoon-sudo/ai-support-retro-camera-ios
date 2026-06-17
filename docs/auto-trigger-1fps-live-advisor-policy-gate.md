@@ -166,6 +166,8 @@ Cloud VLM should handle higher-level composition, mood, and retro intent only af
 
 Runtime local CV expansion remains for a later phase.
 
+Phase 21-L now formalizes this local CV relationship as a docs/gate/source-audit plan: local CV may handle grid alignment, horizon/level, exposure warnings, and motion/stability buckets locally with a 60fps smoothness target, but it must not upload, call backend, call model, persist raw frame/sensor/GPS/EXIF data, or approve runtime local CV.
+
 ## Backend Validation Requirements
 
 Future backend validation must reject:
