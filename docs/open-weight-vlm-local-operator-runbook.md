@@ -133,6 +133,20 @@ Current expected behavior:
 
 If a future prompt explicitly requests local model route enablement, rerun this approval gate first and stop on any blocker.
 
+## Phase 21-H Local Model Route Dry-run Plan
+
+Run:
+
+```sh
+npm run qa:open-weight-vlm:local-model-route-dry-run-plan
+```
+
+This command validates future dry-run plan objects only. It must report `networkCallsMade:false`, `modelCallsMade:false`, `qwenInferenceRun:false`, `benchmarkRun:false`, and `productionReady:false`.
+
+Operator rule for a future first route test: do not run it unless the future prompt explicitly approves one backend-internal, local/private `local_model` call for one declared synthetic local fixture token, with no retries, no iOS integration, no app-facing endpoint, no production endpoint, structured candidate JSON only, mandatory validator/fallback gates, raw persistence flags false, and sanitized output only.
+
+Phase 21-H does not call Qwen, run model inference, run fixture inference, run a serving benchmark, start vLLM/SGLang/Ollama, enable a route, add iOS integration, add endpoints, accept real user-photo upload, or change `productionReady:false`.
+
 ## Phase 20-D2J Accepted Smoke Note
 
 Phase 20-D2J produced the first accepted Qwen-backed private LAN local VLM smoke:

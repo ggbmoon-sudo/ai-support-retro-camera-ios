@@ -118,6 +118,18 @@ Phase 21-H should remain backend-internal and no-model unless explicitly scoped 
 
 Do not start iOS integration, app-facing endpoint work, production endpoint work, real user-photo upload, serving benchmark execution, Qwen inference, fixture inference, vLLM/SGLang/Ollama execution, auth/billing/quota runtime, local model route enablement, or production rollout without a future explicit prompt.
 
+## Phase 21-H Local Model Route Dry-run Plan
+
+Phase 21-H adds:
+
+```sh
+npm run qa:open-weight-vlm:local-model-route-dry-run-plan
+```
+
+The gate validates future `local_model` dry-run plan objects only. It keeps the first future test scoped to one declared synthetic local fixture token, one call only, no retries, local/private backend-internal only, structured candidate JSON only, mandatory validator/fallback gates, raw artifact policy locked, and `productionReady:false`.
+
+Phase 21-H does not enable `local_model`, call Qwen, run model inference, run fixture inference, run a serving benchmark, add iOS integration, add endpoints, accept real user-photo upload, or change config/env production readiness.
+
 ## productionReady:false Boundary
 
 Passing Phase 21-F means only that the deployment config/env policy shape is reviewable and sanitized. It is not production approval, deployment approval, endpoint readiness, iOS readiness, privacy readiness, provider readiness, latency readiness, or upload readiness.

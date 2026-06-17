@@ -146,3 +146,13 @@ npm run qa:open-weight-vlm:local-model-route-approval
 This gate does not alter Phase 21-C routing. The `local_model` path remains disabled by default and still requires a future explicit approval phase before any model call can run. Passing approval-gate output means only that prerequisites are documented and policy-clean for future review; it still reports `localModelRouteEnabled:false`, `modelCallsAllowed:false`, `qwenInferenceAllowed:false`, `networkCallsMade:false`, and `productionReady:false`.
 
 Phase 21-H should remain backend-internal and explicit. A safe candidate is fallback / failure taxonomy review for local model route approval blockers that still runs no model calls and no serving benchmarks. Do not start iOS integration, endpoints, upload handling, model routing enablement, auth/billing/quota runtime, or production rollout without a future explicit prompt.
+
+## Phase 21-H Local Model Route Dry-run Plan
+
+Phase 21-H adds the `local_model` dry-run plan gate:
+
+```sh
+npm run qa:open-weight-vlm:local-model-route-dry-run-plan
+```
+
+This does not change Phase 21-C routing. `local_model` remains disabled by default. The gate only checks that a future first route test would be backend-internal, local/private, one declared synthetic fixture token, one call only, no retries, structured candidate JSON only, validator/fallback protected, no iOS integration, no app-facing endpoint, no production endpoint, and `productionReady:false`.

@@ -32,13 +32,34 @@ export async function evaluateOpenWeightVlmFixtureRoutingContractEcho(options = 
   let networkCallsMade = false;
 
   for (const fixtureId of tokens) {
-    const response = await fetchImpl(endpointUrl, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ fixtureId })
-    });
-    networkCallsMade = true;
-    const parsed = await response.json();
+    let parsed = {};
+    try {
+      const response = await fetchImpl(endpointUrl, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ fixtureId })
+      });
+      networkCallsMade = true;
+      parsed = await response.json();
+    } catch {
+      return summarizeOpenWeightVlmFixtureRoutingContractEcho({
+        tokens,
+        perToken,
+        networkCallsMade,
+        routeableCount,
+        unavailableCount: tokens.length - routeableCount,
+        modelInferenceRun,
+        rawPersistenceFlags,
+        productionReady,
+        extraHardBlockers: [
+          blocker(
+            "external_server_unavailable",
+            "blocked_for_provider_integration",
+            "Fixture routing contract echo endpoint was unavailable or returned an unreadable response."
+          )
+        ]
+      });
+    }
     const row = sanitizeRouteEchoRow(parsed, fixtureId);
     perToken.push(row);
     if (row.routeable) {
@@ -79,9 +100,10 @@ export function summarizeOpenWeightVlmFixtureRoutingContractEcho({
     || item.rawImagePersisted === true
     || item.rawImagePathPersisted === true
     || item.requestPayloadPersisted === true),
-  productionReady = perToken.some((item) => item.productionReady === true)
+  productionReady = perToken.some((item) => item.productionReady === true),
+  extraHardBlockers = []
 } = {}) {
-  const hardBlockers = [];
+  const hardBlockers = [...extraHardBlockers];
   if (routeableCount !== tokens.length) {
     hardBlockers.push(blocker(
       "fixture_token_unavailable",

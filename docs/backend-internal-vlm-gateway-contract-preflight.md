@@ -318,6 +318,17 @@ The preflight validates deployment policy/config buckets only. It defines future
 
 Phase 21-F does not run real model smoke, Qwen inference, fixture inference, serving benchmarks, vLLM/SGLang/Ollama execution, iOS integration, app-facing endpoints, production endpoints, real user-photo upload, consent UI, auth/billing/quota runtime, training/fine-tuning, or production rollout. `productionReady:false` remains required.
 
+## Phase 21-G / 21-H Local Model Route Planning
+
+Phase 21-G adds the local model route approval gate. Phase 21-H adds the dry-run plan gate:
+
+```sh
+npm run qa:open-weight-vlm:local-model-route-approval
+npm run qa:open-weight-vlm:local-model-route-dry-run-plan
+```
+
+Both gates are backend-internal planning only. Phase 21-H requires a future first `local_model` test to remain one declared synthetic local fixture, one call only, no retries, structured candidate JSON only, and protected by the existing gateway contract, validator, and fallback/safety chain. It does not run Qwen, model inference, fixture inference, serving benchmarks, iOS integration, app-facing endpoints, production endpoints, real upload, or production rollout.
+
 ## ProductionReady Boundary
 
 `productionReady:false` is mandatory for Phase 21-A and every generated report. Passing this preflight only means the backend-internal gateway contract is reviewable for future planning. It is not product readiness, iOS readiness, endpoint readiness, privacy readiness, latency readiness, or production approval.

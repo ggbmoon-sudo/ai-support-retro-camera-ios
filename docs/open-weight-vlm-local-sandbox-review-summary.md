@@ -157,6 +157,16 @@ npm run qa:open-weight-vlm:local-model-route-approval
 
 The gate documents prerequisites for a future `local_model` route request after the local sandbox work, but it does not enable the route, call Qwen, run fixture inference, run serving benchmarks, start iOS integration, add endpoints, accept user-photo upload, or change `productionReady:false`. It requires safe healthz, `publicExposure:no`, `rawLoggingDisabled:true`, ignored local config/registry/fixtures, explicit future user approval, scoped fixture tokens, structured candidate JSON, backend validator enforcement, fallback/safety enforcement, and no raw artifact logging.
 
+## Phase 21-H Local Model Route Dry-run Plan Note
+
+Phase 21-H adds the controlled dry-run plan:
+
+```sh
+npm run qa:open-weight-vlm:local-model-route-dry-run-plan
+```
+
+The plan defines the first future `local_model` route test as backend-internal, local/private, one declared synthetic fixture token, one call only, no retries, structured candidate JSON only, validator/fallback protected, raw persistence flags false, and `productionReady:false`. Phase 21-H itself does not call Qwen, run model inference, run fixture inference, run a serving benchmark, add iOS integration, add endpoints, accept real upload, or enable the route.
+
 ## Phase 20-F Entry Criteria
 
 Phase 20-F may start only after:

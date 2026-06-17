@@ -925,6 +925,20 @@ It fails closed for production readiness, public/cloud/tunnel exposure, raw logg
 
 Phase 21-G does not enable `local_model`, run real model smoke, run Qwen inference, run fixture inference, run serving benchmarks, execute vLLM/SGLang/Ollama, start iOS integration, add endpoints, accept real user-photo upload, add auth/billing/quota runtime, commit raw artifacts, or change production readiness.
 
+## Phase 21-H Local Model Route Dry-run Plan
+
+Phase 21-H adds the controlled dry-run plan for a future backend `local_model` route:
+
+```sh
+npm run qa:open-weight-vlm:local-model-route-dry-run-plan
+```
+
+The gate validates sample future plan objects only. It is no-network, no-model, no-Qwen, no-fixture-inference, and no-benchmark. A passing plan still keeps `networkCallsMade:false`, `modelCallsMade:false`, `qwenInferenceRun:false`, `benchmarkRun:false`, and `productionReady:false`.
+
+The first future route test, if explicitly approved later, must be backend-internal, local/private, one declared synthetic local fixture token, one call only, no retries, no real user photo, no iOS integration, no app-facing endpoint, no production endpoint, structured candidate JSON only, mandatory backend validator and fallback/safety chain, raw persistence flags false, and `productionReady:false`.
+
+Phase 21-H does not enable `local_model`, run Qwen, run model inference, run fixture inference, run a serving benchmark, call vLLM/SGLang/Ollama, add iOS integration, add endpoints, accept real user-photo upload, add consent UI, add auth/billing/quota runtime, commit local config/registry/fixtures/reports/logs/model outputs/prompts/request payloads/weights/credentials, or change production readiness.
+
 ## Phase 20-C Local VLM Operator Runbook + Smoke Gate
 
 Phase 20-C adds an operator runbook and a backend-only real-model smoke gate for future approved local/self-hosted VLM testing. The gate does not call a model and does not create an app-facing endpoint.

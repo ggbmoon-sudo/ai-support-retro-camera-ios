@@ -262,3 +262,13 @@ npm run qa:open-weight-vlm:local-model-route-approval
 ```
 
 It validates future `local_model` approval prerequisites only. It does not run this serving benchmark, enable `local_model`, call Qwen, run fixture inference, or switch to vLLM/SGLang/Ollama. Passing Phase 21-G still reports `modelCallsAllowed:false`, `qwenInferenceAllowed:false`, `networkCallsMade:false`, `benchmarkAllowed:false`, and `productionReady:false`.
+
+## Phase 21-H Follow-up
+
+Phase 21-H adds the controlled dry-run plan gate:
+
+```sh
+npm run qa:open-weight-vlm:local-model-route-dry-run-plan
+```
+
+The dry-run plan keeps serving benchmark execution blocked. A future first `local_model` route test must be explicitly approved, backend-internal, local/private, one declared synthetic fixture token, one call only, no retries, structured candidate JSON only, validator/fallback protected, and `productionReady:false`. Phase 21-H itself does not run Qwen, model inference, fixture inference, a serving benchmark, vLLM/SGLang/Ollama, iOS integration, endpoints, or real upload.

@@ -1,5 +1,16 @@
 # Manual Smoke Tests
 
+## Phase 21-H
+
+Controlled backend local model route dry-run plan:
+
+- [ ] From `backend/`, run `npm run qa:open-weight-vlm:local-model-route-dry-run-plan`.
+- [ ] Confirm the gate reports `dryRunPlanEligible:true`, `networkCallsMade:false`, `modelCallsMade:false`, `qwenInferenceRun:false`, `benchmarkRun:false`, and `productionReady:false`.
+- [ ] Confirm the future first route shape is one declared `synthetic_local_fixture` token, fixture count `1`, one call only, no retries, local/private backend-internal only, and structured candidate JSON only.
+- [ ] Confirm blocker coverage includes multi-fixture plans, retry enabled, missing fixture token scope, real user-photo scope, unsafe healthz, public/cloud/ngrok endpoint, raw logging, raw persistence, staged local config/registry/fixture policy, validator bypass, fallback/safety bypass, iOS integration, app-facing endpoint, production endpoint, `modelCallsMade:true`, `qwenInferenceRun:true`, `benchmarkRun:true`, and `productionReady:true`.
+- [ ] Confirm no raw prompt, raw model output, raw image path, base64, request payload, local config contents, fixture registry contents, server logs, EXIF, raw provider response, URL, credential, token, or secret is printed.
+- [ ] Confirm no `local_model` route is enabled, no Qwen inference runs, no model inference runs, no fixture inference runs, no serving benchmark runs, no iOS integration is added, no app-facing endpoint is added, no production endpoint is added, no real user-photo upload is accepted, and no production rollout is enabled.
+
 ## Phase 21-G
 
 Backend Gateway local model route approval gate:

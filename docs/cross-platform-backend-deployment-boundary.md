@@ -155,6 +155,18 @@ The gate is no-network, no-model, no-Qwen, and no-benchmark. It fails closed on 
 
 Phase 21-H should remain backend-internal unless explicitly scoped otherwise. A safe next candidate is a gateway fallback/failure taxonomy dry-run for local model route approval blockers. Do not start iOS integration, endpoint work, real upload, auth/billing/quota runtime, serving benchmarks, Qwen inference, fixture inference, local model route enablement, or production rollout.
 
+## Phase 21-H Local Model Route Dry-run Plan
+
+Phase 21-H implements the backend-internal dry-run plan gate:
+
+```sh
+npm run qa:open-weight-vlm:local-model-route-dry-run-plan
+```
+
+The plan keeps Windows local model work local/private and backend-only. It defines a future first `local_model` route test as one declared synthetic fixture token, one call only, no retries, structured candidate JSON only, no iOS dependency, no app-facing endpoint, no production endpoint, no Qwen/model call in this planning phase, and `productionReady:false`.
+
+MacBook/Xcode remains independent of Windows local paths, LAN URLs, fixture paths, and local model server URLs.
+
 ## productionReady:false Boundary
 
 `productionReady:false` is mandatory. Passing the Phase 21-E audit or Phase 21-F config/env preflight means only that the current boundary policy is reviewable. It is not app readiness, endpoint readiness, privacy readiness, latency readiness, provider readiness, deployment readiness, or production approval.

@@ -36,6 +36,7 @@ import {
   phase20GBlockedProviderIntegrationSample
 } from "../src/qa/openWeightVlmExpandedFixtureProviderIntegrationDiagnostic.mjs";
 import {
+  evaluateOpenWeightVlmFixtureRoutingContractEcho,
   evaluateOpenWeightVlmFixtureRoutingContractEchoFromList
 } from "../src/qa/openWeightVlmFixtureRoutingContractEcho.mjs";
 import {
@@ -84,6 +85,11 @@ import {
   localModelRouteApprovalReadyPolicy
 } from "../src/qa/openWeightVlmLocalModelRouteApprovalGate.mjs";
 import {
+  assertOpenWeightVlmLocalModelRouteDryRunPlanReportRedacted,
+  evaluateOpenWeightVlmLocalModelRouteDryRunPlan,
+  localModelRouteDryRunPlanReadyPolicy
+} from "../src/qa/openWeightVlmLocalModelRouteDryRunPlan.mjs";
+import {
   assertOpenWeightVlmBenchmarkReportRedacted,
   buildOpenWeightVlmSchemaDiagnostic,
   evaluateOpenWeightVlmBenchmarkCase,
@@ -123,6 +129,8 @@ const DEPLOYMENT_CONFIG_ENV_PREFLIGHT_SCRIPT_URL =
   new URL("../scripts/check-open-weight-vlm-deployment-config-env-preflight.mjs", import.meta.url);
 const LOCAL_MODEL_ROUTE_APPROVAL_GATE_SCRIPT_URL =
   new URL("../scripts/check-open-weight-vlm-local-model-route-approval-gate.mjs", import.meta.url);
+const LOCAL_MODEL_ROUTE_DRY_RUN_PLAN_SCRIPT_URL =
+  new URL("../scripts/check-open-weight-vlm-local-model-route-dry-run-plan.mjs", import.meta.url);
 
 test("open-weight VLM validator accepts valid synthetic benchmark fixtures", async () => {
   const cases = await benchmarkCases();
@@ -1539,6 +1547,27 @@ test("open-weight VLM fixture routing contract echo CLI output is sanitized", ()
   });
 });
 
+test("open-weight VLM fixture routing contract echo fails closed when endpoint is unavailable", async () => {
+  const report = await evaluateOpenWeightVlmFixtureRoutingContractEcho({
+    fetchImpl: async () => {
+      throw new Error("connect failed");
+    }
+  });
+  const output = JSON.stringify(report);
+
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.eligibleForRoutingReview, false);
+  assert.equal(report.routeableCount, 0);
+  assert.equal(report.unavailableCount, 12);
+  assert.equal(
+    report.hardBlockers.some((item) => item.code === "external_server_unavailable"),
+    true
+  );
+  assert.equal(output.includes("127.0.0.1"), false);
+  assert.equal(output.includes("http://"), false);
+  assert.equal(output.includes("connect failed"), false);
+});
+
 test("open-weight VLM serving benchmark preflight passes valid no-network plan", () => {
   const report = evaluateOpenWeightVlmServingBenchmarkPreflight(servingBenchmarkPreflightSample());
 
@@ -2769,6 +2798,173 @@ test("open-weight VLM local model route approval gate CLI is sanitized and no-ne
   assert.equal(report.reviewedPolicyCount, 2);
   assert.equal(report.approvalReadyPolicyCount, 1);
   assert.equal(report.expectedBlockedPolicyCount, 1);
+  assert.equal(output.includes("fullPrompt"), false);
+  assert.equal(output.includes("rawPrompt"), false);
+  assert.equal(output.includes("requestPayload"), false);
+  assert.equal(output.includes("modelOutput"), false);
+  assert.equal(output.includes("Authorization"), false);
+  assert.equal(output.includes("Bearer "), false);
+  assert.equal(output.includes("C:\\"), false);
+  assert.equal(output.includes("http://"), false);
+  assert.equal(output.includes("data:image"), false);
+});
+
+test("open-weight VLM local model route dry-run plan passes one-call future plan without model calls", () => {
+  const report = evaluateOpenWeightVlmLocalModelRouteDryRunPlan(
+    localModelRouteDryRunPlanReadyPolicy()
+  );
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.modelCallsMade, false);
+  assert.equal(report.qwenInferenceRun, false);
+  assert.equal(report.benchmarkRun, false);
+  assert.equal(report.dryRunPlanEligible, true);
+  assert.equal(report.fixtureScopeBucket, "one_declared_synthetic_local_fixture_token");
+  assert.equal(report.callLimitBucket, "one_call_only");
+  assert.equal(report.retryPolicyBucket, "no_retries");
+  assert.deepEqual(report.blockers, []);
+});
+
+test("open-weight VLM local model route dry-run plan blocks fixture and retry scope violations", () => {
+  const report = evaluateOpenWeightVlmLocalModelRouteDryRunPlan({
+    ...localModelRouteDryRunPlanReadyPolicy(),
+    fixtureCount: 2,
+    fixtureTokenScopeDeclared: false,
+    retriesAllowed: true,
+    retryCount: 1
+  });
+
+  assert.equal(report.dryRunPlanEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_multi_fixture_plan"), true);
+  assert.equal(report.blockers.includes("blocked_for_missing_fixture_token_scope"), true);
+  assert.equal(report.blockers.includes("blocked_for_retry_enabled"), true);
+});
+
+test("open-weight VLM local model route dry-run plan blocks real user photo and iOS endpoint flags", () => {
+  const report = evaluateOpenWeightVlmLocalModelRouteDryRunPlan({
+    ...localModelRouteDryRunPlanReadyPolicy(),
+    sourceType: "real_user_photo",
+    realUserPhotoScope: true,
+    iOSIntegrationEnabled: true,
+    appFacingEndpointEnabled: true,
+    productionEndpointEnabled: true,
+    productionReady: true
+  });
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.dryRunPlanEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_real_user_photo_scope"), true);
+  assert.equal(report.blockers.includes("blocked_for_ios_integration"), true);
+  assert.equal(report.blockers.includes("blocked_for_app_facing_endpoint"), true);
+  assert.equal(report.blockers.includes("blocked_for_production_endpoint"), true);
+  assert.equal(report.blockers.includes("blocked_for_production_flag"), true);
+});
+
+test("open-weight VLM local model route dry-run plan blocks unsafe healthz public endpoints and raw artifacts", () => {
+  const report = evaluateOpenWeightVlmLocalModelRouteDryRunPlan({
+    ...localModelRouteDryRunPlanReadyPolicy(),
+    healthzSafeRequired: false,
+    publicExposure: "public",
+    rawLoggingDisabledRequired: false,
+    endpointScope: "ngrok_tunnel",
+    rawArtifactPolicyLocked: false,
+    rawLoggingAllowed: true,
+    rawPersistenceAllowed: true
+  });
+
+  assert.equal(report.dryRunPlanEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_unsafe_healthz_requirement"), true);
+  assert.equal(report.blockers.includes("blocked_for_public_exposure"), true);
+  assert.equal(report.blockers.includes("blocked_for_raw_logging_enabled"), true);
+  assert.equal(report.blockers.includes("blocked_for_public_cloud_tunnel_endpoint"), true);
+  assert.equal(report.blockers.includes("blocked_for_unlocked_raw_artifact_policy"), true);
+  assert.equal(report.blockers.includes("blocked_for_raw_artifact_policy"), true);
+});
+
+test("open-weight VLM local model route dry-run plan blocks validator fallback and staged artifact policies", () => {
+  const report = evaluateOpenWeightVlmLocalModelRouteDryRunPlan({
+    ...localModelRouteDryRunPlanReadyPolicy(),
+    structuredCandidateJsonOnly: false,
+    backendValidatorRequired: false,
+    validatorBypassAllowed: true,
+    fallbackSafetyRequired: false,
+    fallbackSafetyBypassAllowed: true,
+    stagedLocalConfigAllowed: true,
+    stagedFixtureRegistryAllowed: true,
+    stagedFixtureImagesAllowed: true
+  });
+
+  assert.equal(report.dryRunPlanEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_free_form_model_text"), true);
+  assert.equal(report.blockers.includes("blocked_for_validator_bypass"), true);
+  assert.equal(report.blockers.includes("blocked_for_fallback_safety_bypass"), true);
+  assert.equal(report.blockers.includes("blocked_for_staged_local_config_policy"), true);
+  assert.equal(report.blockers.includes("blocked_for_staged_fixture_registry_policy"), true);
+  assert.equal(report.blockers.includes("blocked_for_staged_fixture_images_policy"), true);
+});
+
+test("open-weight VLM local model route dry-run plan blocks model qwen and benchmark execution in planning phase", () => {
+  const report = evaluateOpenWeightVlmLocalModelRouteDryRunPlan({
+    ...localModelRouteDryRunPlanReadyPolicy(),
+    modelCallsMade: true,
+    qwenInferenceRun: true,
+    benchmarkRun: true
+  });
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.modelCallsMade, false);
+  assert.equal(report.qwenInferenceRun, false);
+  assert.equal(report.benchmarkRun, false);
+  assert.equal(report.dryRunPlanEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_model_call_in_planning_phase"), true);
+  assert.equal(report.blockers.includes("blocked_for_qwen_inference_in_planning_phase"), true);
+  assert.equal(report.blockers.includes("blocked_for_benchmark_execution"), true);
+});
+
+test("open-weight VLM local model route dry-run plan sanitized output contains no raw artifacts", () => {
+  const report = evaluateOpenWeightVlmLocalModelRouteDryRunPlan({
+    ...localModelRouteDryRunPlanReadyPolicy(),
+    probeValues: [
+      "C:\\private\\fixture.jpg",
+      "http://127.0.0.1:8025/local/vlm",
+      "Authorization: Bearer secret",
+      "rawPrompt requestPayload modelOutput data:image/png;base64"
+    ]
+  });
+  const serialized = JSON.stringify(report);
+
+  assert.equal(report.dryRunPlanEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_committed_raw_plan_value"), true);
+  assert.equal(assertOpenWeightVlmLocalModelRouteDryRunPlanReportRedacted(report).ok, true);
+  assert.equal(serialized.includes("C:\\"), false);
+  assert.equal(serialized.includes("http://127.0.0.1:8025"), false);
+  assert.equal(serialized.includes("rawPrompt"), false);
+  assert.equal(serialized.includes("requestPayload"), false);
+  assert.equal(serialized.includes("modelOutput"), false);
+  assert.equal(serialized.includes("Authorization"), false);
+  assert.equal(serialized.includes("Bearer "), false);
+});
+
+test("open-weight VLM local model route dry-run plan CLI is sanitized and no-network", () => {
+  const output = execFileSync(process.execPath, [
+    fileURLToPath(LOCAL_MODEL_ROUTE_DRY_RUN_PLAN_SCRIPT_URL)
+  ], {
+    cwd: new URL("..", import.meta.url),
+    encoding: "utf8"
+  });
+  const report = JSON.parse(output);
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.modelCallsMade, false);
+  assert.equal(report.qwenInferenceRun, false);
+  assert.equal(report.benchmarkRun, false);
+  assert.equal(report.dryRunPlanEligible, true);
+  assert.equal(report.reviewedPlanCount, 2);
+  assert.equal(report.eligiblePlanCount, 1);
+  assert.equal(report.expectedBlockedPlanCount, 1);
   assert.equal(output.includes("fullPrompt"), false);
   assert.equal(output.includes("rawPrompt"), false);
   assert.equal(output.includes("requestPayload"), false);

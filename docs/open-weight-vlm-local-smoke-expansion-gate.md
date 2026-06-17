@@ -148,6 +148,16 @@ npm run qa:open-weight-vlm:local-model-route-approval
 
 This gate does not approve another local smoke, does not enable `local_model`, does not call Qwen, does not run fixture inference, does not run serving benchmarks, and does not add iOS integration or endpoints. It keeps all Phase 20 local smoke stop conditions in force and also blocks production readiness, app-facing endpoints, production endpoints, user-photo upload, missing consent/retention/deletion policy, validator bypass, fallback bypass, free-form model text, score/rating, sensitive inference, chain-of-thought, debug/provider leakage, model calls, and Qwen inference.
 
+## Phase 21-H Local Model Route Dry-run Plan
+
+Phase 21-H adds:
+
+```sh
+npm run qa:open-weight-vlm:local-model-route-dry-run-plan
+```
+
+The gate does not approve another local smoke. It only records that a future first route test must be one declared synthetic local fixture token, one call only, no retries, backend-internal, local/private, structured candidate JSON only, validator/fallback protected, raw artifact policy locked, and `productionReady:false`.
+
 ## Phase 20-E-B Readiness
 
 Completed for the first approved 3-fixture set. Phase 20-E-B was a small local/private LAN benchmark expansion, not a product integration.

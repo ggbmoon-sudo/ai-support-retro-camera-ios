@@ -205,3 +205,15 @@ Phase 21-G does not grant that approval.
 Passing Phase 21-G means only that a future `local_model` route approval request can be reviewed against documented prerequisites. It is not route enablement, model approval, iOS approval, endpoint approval, upload approval, benchmark approval, or production approval.
 
 `productionReady:false` remains locked.
+
+## Phase 21-H Dry-run Plan Follow-up
+
+Phase 21-H adds `docs/backend-gateway-local-model-route-dry-run-plan.md` and:
+
+```sh
+npm run qa:open-weight-vlm:local-model-route-dry-run-plan
+```
+
+The new gate validates future dry-run plan objects only. It does not enable `local_model`, call Qwen, run model inference, run fixture inference, run a serving benchmark, add iOS integration, add app-facing endpoints, add production endpoints, accept real user-photo upload, or change `productionReady:false`.
+
+A future explicitly approved first route test must be backend-internal, local/private, one declared synthetic local fixture token, one call only, no retries, structured candidate JSON only, mandatory backend validator and fallback/safety gates, raw persistence flags false, and `productionReady:false`.
