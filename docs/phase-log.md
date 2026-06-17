@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 21-G2 - Missing Feature + Deferred Roadmap Register
+Current phase: Phase 21-G3 - Phase Roadmap Sequencing + Next Action Reminder Register
 Status: Implemented
-Latest implementation: Added `docs/missing-features-and-deferred-roadmap-register.md`, a docs-only memory/backlog register for planned, missing, deferred, blocked, partially built, and not-yet-integrated app/backend/VLM features. The register reviewed the repo Markdown inventory of 103 files and current implementation structure, then captured Live Advisor/camera-view AI gaps, local on-device CV camera-aid gaps, image compression/upload payload policy gaps, backend production API gaps, VLM model/serving directions, Photo Advisor UX/product gaps, iOS integration gaps, Store/account/release gaps, and advanced future-feature backlog. It records newly discussed Qwen 3.5 35B-A3B MoE-if-VLM-compatible, non-thinking/instruct mode, vLLM/SGLang serving direction, Auto-Trigger stillness greater than 1 second, no capture/upload at stable time less than or equal to 1 second, max 1 FPS cloud analysis, stateful WSS, frontend compression, INT4/INT8 quantization, local on-device CV split, and consent/no-silent-upload boundary. No runtime implementation, iOS integration, Camera cloud AI runtime entry, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, endpoint, model call, Qwen inference, serving benchmark, raw artifact, secret, external workspace change, or production readiness change was added.
+Latest implementation: Added `docs/phase-roadmap-sequencing-and-next-action-register.md`, a docs-only "what next?" phase sequencing and next-action reminder register. The register reviewed the repo Markdown inventory of 104 files and required Phase 20/21 docs, then defines how Codex should recommend the next phase after commit/push completion, including repo/upstream checks, a current next recommended phase, phase-numbering reconciliation, a phase sequence table, big phase grouping, feature-to-phase mapping, and a "when a phase completes, remind next" checklist. Current next recommended phase is Phase 21-H2: Qwen 3.5 35B-A3B MoE + Live Advisor Target Re-evaluation Gate, docs/gate only. No runtime implementation, iOS integration, Camera cloud AI runtime entry, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, endpoint, model call, Qwen inference, fixture inference, serving benchmark, raw artifact, secret, external workspace change, or production readiness change was added.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -72,7 +72,7 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Use the Phase 21-G2 register before choosing the next implementation phase. The register contains conceptual labels for future Qwen MoE / Live Advisor / compression / WSS / local CV / quantization planning, but current repo numbering already includes Phase 21-H. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production endpoint work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution, model downloads, model cache changes, Qwen inference, fixture inference, local model route execution, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, or user-photo training / fine-tuning until explicitly requested.
+Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-H2: Qwen 3.5 35B-A3B MoE + Live Advisor Target Re-evaluation Gate, docs/gate only. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production endpoint work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution, model downloads, model cache changes, Qwen inference, fixture inference, local model route execution, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, or user-photo training / fine-tuning until explicitly requested.
 
 ---
 
@@ -592,6 +592,37 @@ Phase 21-G2 adds a docs-only missing feature and deferred roadmap register so fu
 ### Ready for Next Phase
 
 Yes, for another explicitly requested planning/preflight phase only. Future operators should reconcile phase numbering because this G2 prompt proposed a new Phase 21-H label while the current repo already contains a committed Phase 21-H dry-run plan.
+
+---
+
+## Phase 21-G3 - Phase Roadmap Sequencing + Next Action Reminder Register
+
+Status: Implemented
+Date: 2026-06-17
+
+### Summary
+
+Phase 21-G3 adds a docs-only phase roadmap sequencing and next-action reminder register so future Codex/ChatGPT sessions know what phase to recommend after a completed commit/push.
+
+### Completed
+
+- Added `docs/phase-roadmap-sequencing-and-next-action-register.md`.
+- Reviewed the required docs and repo Markdown inventory returned by the PowerShell listing command: 104 Markdown/Markdown-like files, excluding `node_modules`, `.git`, and local VLM sample paths.
+- Added usage rules for future Codex sessions: verify commit/push status, check upstream `0 0`, read the sequencing register, report the current next recommended phase, and provide the next prompt directly if the user asks.
+- Added phase-numbering reconciliation rules because the repo already contains a committed Phase 21-H local model route dry-run plan.
+- Added the recommended sequence from Phase 21-H2 through Phase 23+, covering model/live-advisor target reset, upload/compression policy, Auto-Trigger policy, WSS protocol preflight, local CV camera aids, quantization/serving benchmark planning, approved one-fixture local model route smoke, approved serving benchmark execution, debug-only iOS backend integration, debug compressed upload, debug Auto-Trigger Live Advisor, and beta/production readiness gates.
+- Added big phase grouping and feature-to-phase mapping.
+- Set the current next recommended phase to Phase 21-H2: Qwen 3.5 35B-A3B MoE + Live Advisor Target Re-evaluation Gate, docs/gate only.
+- Updated README, backend README, iOS README, handoff, and this phase log with minimal references.
+
+### Verification
+
+- Docs-only implementation; no runtime source, backend route, package script, backend test, iOS source/project/localization, endpoint, model call, Qwen inference, fixture inference, serving benchmark, Auto-Trigger runtime, WSS runtime, upload/compression runtime, auth/billing/quota runtime, external workspace change, secret, raw artifact, or production readiness change was added.
+- `productionReady:false` remains locked.
+
+### Ready for Next Phase
+
+Yes, for Phase 21-H2 only if explicitly requested as docs/gate-only target re-evaluation work. Any model call, upload, WSS runtime, iOS runtime, endpoint, serving benchmark, or production behavior requires separate explicit approval.
 
 ---
 

@@ -1,0 +1,144 @@
+# Phase Roadmap Sequencing and Next Action Register
+
+Status: Phase 21-G3 docs-only roadmap sequencing register  
+Date: 2026-06-17  
+Production readiness: `productionReady:false`
+
+## Executive Summary
+
+This document reorganizes missing/deferred features into a recommended phase sequence and acts as the "what next?" source of truth after each completed phase.
+
+It is not implementation approval. Future Codex sessions should read this file after every completed phase, especially when the user says "commit/push 完" or asks what to do next.
+
+If a user asks for the next prompt, Codex should consult this register, identify the current next recommended phase, and provide the next phase prompt directly. If the next phase involves model calls, upload, iOS runtime, endpoint work, WSS, serving benchmarks, or production behavior, Codex must remind the user that explicit approval is required.
+
+`productionReady:false` remains locked. Cloud upload, Live Advisor, iOS integration, WSS runtime, model calls, serving benchmarks, app-facing endpoints, and production endpoints still need explicit future approval.
+
+## Current Next Recommended Phase
+
+**Phase 21-H2: Qwen 3.5 35B-A3B MoE + Live Advisor Target Re-evaluation Gate**
+
+Reason: the project just captured a major new model/live-advisor direction in `docs/missing-features-and-deferred-roadmap-register.md`. Before implementing upload, WSS, Auto-Trigger runtime, iOS integration, or any `local_model` model call, the model/serving/live-advisor target should be formally re-evaluated and gate-tested as docs/gate work only.
+
+This recommended next phase should run no model call, no Qwen inference, no fixture inference, no serving benchmark, no iOS runtime change, no endpoint change, and no production readiness change.
+
+## How Codex Should Use This File
+
+After any phase is reported complete:
+
+1. Verify whether the phase was committed and pushed.
+2. Verify upstream sync is `0 0`.
+3. Read this roadmap sequencing file.
+4. Check `Current Next Recommended Phase`.
+5. Tell the user the next phase name and purpose.
+6. If the user asks for a prompt, provide the next phase prompt directly.
+7. If the next phase is model-call, upload, iOS-runtime, endpoint, WSS, benchmark, or production-related, remind the user that it requires explicit approval.
+
+Command reminder:
+
+```powershell
+git status
+git log --oneline "@{u}..HEAD"
+git rev-list --left-right --count "@{u}...HEAD"
+```
+
+## Current State Snapshot
+
+Use cautious wording and re-check source docs before implementation:
+
+- Phase 20 local VLM sandbox work appears to provide local/private Qwen2.5-VL evidence, including accepted one-fixture and 12-fixture smoke history. This remains sandbox evidence only, not production readiness.
+- Phase 21 backend gateway work appears to provide contract, adapter, routing, no-model HTTP, cross-platform deployment, deployment config/env, approval, and dry-run plan gates.
+- Phase 21-G local model route approval gate appears to keep `local_model` disabled and blocks model calls, Qwen inference, endpoints, iOS integration, raw artifacts, and `productionReady:true`.
+- Phase 21-G2 missing/deferred register now records unfinished feature areas and new Qwen MoE / Auto-Trigger / WSS / compression / quantization / local CV directions.
+- `productionReady:false` remains the cross-phase default.
+
+Source references for future operators include `docs/phase-log.md`, `docs/handoff/codex-transition-handoff.md`, `docs/missing-features-and-deferred-roadmap-register.md`, and the Phase 20/21 backend gateway docs.
+
+## Phase Numbering Reconciliation
+
+The previous register notes that the repo may already contain a committed Phase 21-H local model route dry-run plan.
+
+Rules:
+
+- Do not blindly reuse old Phase 21-H labels.
+- If Phase 21-H already exists in repo history, use suffix labels such as `Phase 21-H2` or advance to `Phase 21-I`.
+- Before starting any new phase, check `docs/phase-log.md` and `git log`.
+- The phase sequence below is a recommended logical order, not guaranteed existing numbering.
+
+## Recommended Next Phase Sequence
+
+| Phase label | Title | Purpose | Runtime change | Model call | iOS change | Endpoint change | Requires explicit approval | Depends on | Exit criteria |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Phase 21-H2 or next available label | Qwen 3.5 35B-A3B MoE + Live Advisor Target Re-evaluation Gate | Make Qwen 3.5 35B-A3B MoE the preferred target only if vision-capable/VLM-compatible is verified; record non-thinking mode, vLLM/SGLang, quantization, and Live Advisor directions | no | no | no | no | yes | Phase 21-G2 register | Docs/gate records model capability checks, blocked text-only models, target stack direction, and no-runtime boundaries |
+| Phase 21-I | Image Compression + Upload Payload Policy Gate | Define compressed preview frame, metadata stripping, consent, retention/deletion, no original full-res upload by default, and no capture-context upload unless approved | no | no | no | no | yes | Phase 21-H2 target reset | Policy/gate defines safe upload payload shape and stop conditions |
+| Phase 21-J | Auto-Trigger + 1 FPS Live Advisor Policy Gate | Define stillness >1s trigger, <=1s no capture/no upload, max 1 FPS, throttle, fail-closed behavior, off state | no | no | no | no | yes | Phase 21-I upload policy | Policy/gate covers trigger, rate, no-silent-upload, and failure states |
+| Phase 21-K | Stateful WSS Live Advisor Protocol Preflight | Define session state, backoff, server busy, structured advice, no video stream, backend-mediated only | no | no | no | no | yes | Phase 21-J trigger policy | Protocol/schema preflight exists with no WSS runtime |
+| Phase 21-L | Local On-device CV Camera Aids Plan | Plan grid alignment, horizon/level, exposure warning, motion/stability buckets, 60fps smoothness target | no | no | no runtime | no | yes | Phase 21-J trigger policy | Local-only camera-aid plan and performance/safety gates documented |
+| Phase 21-M | Quantization + Serving Benchmark Plan | Add INT4/INT8/AWQ/GPTQ/equivalent benchmark dimensions; vLLM primary, SGLang challenger, Transformers+FastAPI reference | no | no | no | no | yes | Phase 21-H2 target reset | Benchmark plan/gate exists; no benchmark execution |
+| Phase 21-N or later | Approved One-fixture Backend Local Model Route Smoke | First controlled backend `local_model` route call through gateway chain | yes | yes, one only | no | no app/prod endpoint | explicit approval required | Approval gate, dry-run plan, policy gates | One declared fixture, one call only, no retries, sanitized result, validator/fallback enforced |
+| Phase 21-O or later | Approved Serving Benchmark Execution | Compare serving stacks/quantization/latency on sanitized fixtures | yes | yes | no | no app/prod endpoint | explicit approval required | Phase 21-M plan and user approval | Sanitized benchmark metrics only; no raw artifacts; production remains false |
+| Phase 22-A | Debug-only iOS Backend Integration Preflight | Plan debug-only backend result flow with no production endpoint | no runtime by default | no | no runtime by default | no production endpoint | yes | Backend policy gates | Preflight documents debug-only path and no iOS provider/model keys |
+| Phase 22-B or later | Debug-only Compressed Upload Prototype | Implement app-side compressed preview frame after policy gate | yes | no by default | yes | debug-only backend path | explicit approval required | Phase 21-I and 22-A | Debug-only compressed preview upload works with consent and no raw full-res default |
+| Phase 22-C or later | Debug-only Auto-Trigger Live Advisor Prototype | Opt-in live cloud AI prototype, not production | yes | yes if approved | yes | debug-only backend path | explicit approval required | Phase 21-J, 21-K, 22-B | Stillness gate, <=1s no upload, max 1 FPS, WSS/session/backoff, off state verified |
+| Phase 23+ | Beta / production readiness gates | Auth, quota, billing, privacy, deletion, monitoring, App Store disclosure, TestFlight | yes | maybe | yes | production only when approved | explicit approval required | Phase 22 validation | Production readiness checklist passes and `productionReady` change is explicitly approved |
+
+## Big Phase Grouping
+
+| Big phase | Scope | Representative phases |
+| --- | --- | --- |
+| Big Phase A | Backend/VLM policy and target reset | 21-H2 |
+| Big Phase B | Upload/compression/live transport policy | 21-I, 21-J, 21-K |
+| Big Phase C | Local CV and iOS camera aids planning | 21-L |
+| Big Phase D | Controlled backend model execution | 21-N or later |
+| Big Phase E | Serving benchmark and deployment decision | 21-M, 21-O or later |
+| Big Phase F | Debug-only iOS backend integration | 22-A, 22-B, 22-C |
+| Big Phase G | Beta/production hardening | 23+ |
+| Big Phase H | Advanced features | later image editing, voice, fine-tuning, export, language productization |
+
+## Feature-to-phase Mapping
+
+| Feature | Proposed phase | Notes |
+| --- | --- | --- |
+| Qwen 3.5 35B-A3B MoE target | 21-H2 | Only if vision-capable/VLM-compatible |
+| Non-thinking mode | 21-H2 | Direct-output low-latency structured mode |
+| vLLM/SGLang target | 21-H2 / 21-M | Direction in H2, benchmark dimensions in M |
+| INT4/INT8 quantization | 21-M | AWQ/GPTQ/equivalent benchmark dimension |
+| Image compression | 21-I | Policy first, runtime later |
+| Metadata stripping | 21-I | Required before upload |
+| Consent/upload policy | 21-I / 22-A | No silent upload |
+| Auto-Trigger >1s | 21-J | Stillness policy gate |
+| <=1s no capture/no upload | 21-J | Must be explicit fail-closed rule |
+| 1 FPS cloud analysis maximum | 21-J | Do not treat viewfinder as 30fps video |
+| Stateful WSS | 21-K | Protocol preflight only before runtime |
+| Local CV grid/horizon/exposure | 21-L | Local-only camera aids |
+| Debug iOS backend integration | 22-A | Preflight first |
+| Production endpoint | 23+ | Requires production readiness approval |
+| StoreKit/quota/paywall | 23+ | Requires account/billing plan |
+| Retention/deletion | 23+ | Required before real uploads |
+| App Store privacy | 23+ | Required before beta/production rollout |
+| Paid AI editing | later | Separate product/safety scope |
+| Live voice | later | Separate from Photo Advisor |
+| Fine-tuning | later | Only after evaluation proves need and consent/training governance exists |
+
+## When a Phase Completes, Remind Next Checklist
+
+When Codex sees a completed phase report:
+
+- [ ] Was it committed?
+- [ ] Was it pushed?
+- [ ] Is upstream `0 0`?
+- [ ] Did it modify runtime or docs only?
+- [ ] Did it violate any hard boundary?
+- [ ] What phase is listed as next in this document?
+- [ ] Does the next phase require explicit approval?
+- [ ] Provide the next phase prompt if the user asks.
+
+## Boundary Reminders
+
+Do not run real model smoke, Qwen inference, fixture inference, serving benchmarks, vLLM/SGLang/Ollama, WSS runtime, Auto-Trigger runtime, upload/compression runtime, iOS integration, endpoints, auth/billing/quota runtime, training/fine-tuning, or production rollout unless a future prompt explicitly approves that scope.
+
+Do not modify the external local VLM server workspace from this sequencing phase.
+
+Do not commit local config, local registry, fixture images, raw reports, logs, model outputs, prompts, request payloads, model weights, or credentials.
+
+Keep `productionReady:false`.

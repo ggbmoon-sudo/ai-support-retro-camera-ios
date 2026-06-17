@@ -951,6 +951,10 @@ The register records planned, missing, deferred, blocked, partially built, and n
 
 Phase 21-G2 is documentation only. It does not enable routes, call Qwen, run model or fixture inference, run serving benchmarks, add iOS integration, add app-facing or production endpoints, implement Auto-Trigger/WSS/image compression/upload runtime, add auth/billing/quota runtime, or change `productionReady:false`.
 
+## Phase 21-G3 Phase Roadmap Sequencing Register
+
+Phase 21-G3 adds `../docs/phase-roadmap-sequencing-and-next-action-register.md` as the docs-only "what next?" source of truth after a phase is committed and pushed. It recommends Phase 21-H2 as the next planning/gate phase for Qwen 3.5 35B-A3B MoE + Live Advisor target re-evaluation, while keeping model calls, upload, WSS, iOS runtime, endpoints, serving benchmarks, and production readiness blocked until explicitly approved.
+
 ## Phase 20-C Local VLM Operator Runbook + Smoke Gate
 
 Phase 20-C adds an operator runbook and a backend-only real-model smoke gate for future approved local/self-hosted VLM testing. The gate does not call a model and does not create an app-facing endpoint.
