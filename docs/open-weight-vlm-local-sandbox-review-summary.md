@@ -348,3 +348,9 @@ Phase 20-E-E is a review/summary/planning gate only. It does not run real model 
 Phase 21-N was explicitly approved for exactly one backend local/private model route smoke, but the required preflight blocked execution before any healthz/model call because `smoke_001` was not present and approved in the ignored local fixture registry.
 
 Ignored local config, ignored local fixture registry, and ignored local sample folder were present, ignored, untracked, and unstaged. No fixture was substituted. No model call, retry, serving benchmark, Qwen inference, vLLM/SGLang/Ollama call, model download, model switch, endpoint, iOS integration, raw artifact, secret, or production rollout occurred. `productionReady:false` remains locked.
+
+## Phase 21-N-R0 Fixture Preparation Note
+
+Phase 21-N-R0 found that the ignored local `smoke_001.*` fixture file is missing. The ignored local registry was not edited, and `smoke_001` remains not present/approved. The next step is operator-provided local-only fixture preparation, not a model call.
+
+No model call, Qwen inference, fixture inference, serving benchmark, vLLM/SGLang/Ollama call, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.

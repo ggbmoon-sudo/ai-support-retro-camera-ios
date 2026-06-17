@@ -162,3 +162,9 @@ Do not substitute another fixture token without explicit user approval.
 Phase 21-N-R0: One-fixture Local Model Smoke Preflight Block Resolution
 
 Recommended scope: resolve the missing approved `smoke_001` local fixture prerequisite without committing local config, fixture registry contents, fixture images, raw reports, prompts, model outputs, request payloads, model weights, logs, or credentials.
+
+## Phase 21-N-R0 Follow-up
+
+Phase 21-N-R0 inspected the ignored local prerequisites and found that the `smoke_001.*` fixture file is missing. Because the fixture file is missing, the ignored local registry was not modified and `smoke_001` remains not present/approved.
+
+The next recommended phase is Phase 21-N-R0B: Operator-provided smoke_001 Fixture Preparation. No model call, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, secret, or production rollout occurred in R0.

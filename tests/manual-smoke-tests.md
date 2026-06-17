@@ -64,6 +64,20 @@ Approved one-fixture backend local model route smoke:
 - [x] Confirm roadmap current next phase is Phase 21-N-R0: One-fixture Local Model Smoke Preflight Block Resolution.
 - [x] Confirm no serving benchmark, model switch, production `local_model` enablement, vLLM/SGLang/Ollama call, iOS integration, endpoint, Auto-Trigger runtime, WSS runtime, upload runtime, raw artifact, secret, or production rollout was added.
 
+## Phase 21-N-R0
+
+smoke_001 preflight block resolution:
+
+- [x] Confirm ignored local config, fixture registry, and sample folder are present, ignored, untracked, and unstaged.
+- [x] Confirm `smoke_001.*` local fixture file is missing.
+- [x] Confirm only extension bucket `missing` is reported; no image is opened, OCRed, uploaded, or sent to a model.
+- [x] Confirm ignored local registry remains unmodified because the fixture file is missing.
+- [x] Confirm `smoke_001` registry entry is absent and approved false.
+- [x] Confirm model call executed `no`, call count `0`, retry count `0`, Qwen inference `false`, fixture inference `false`, serving benchmark `false`, and `productionReady:false`.
+- [x] Confirm `docs/phase-21-n-r0-smoke001-preflight-block-resolution.md` records sanitized facts only.
+- [x] Confirm roadmap current next phase is Phase 21-N-R0B: Operator-provided smoke_001 Fixture Preparation.
+- [x] Confirm no model call, Qwen inference, fixture inference, serving benchmark, iOS integration, endpoint, Auto-Trigger runtime, WSS runtime, upload runtime, raw artifact, secret, or production rollout was added.
+
 ## Phase 21-G2
 
 Missing feature + deferred roadmap register:

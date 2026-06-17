@@ -745,3 +745,14 @@ Operator implications:
 - Do not substitute another fixture token without explicit user approval.
 - Do not run a model call, retry, serving benchmark, vLLM/SGLang/Ollama call, model download, serving-stack switch, endpoint work, iOS integration, or production rollout during preflight block resolution.
 - Keep `productionReady:false`.
+
+## Phase 21-N-R0 smoke_001 Fixture Preparation Status
+
+Phase 21-N-R0 inspected the ignored prerequisites and found that `smoke_001.*` is missing from the ignored local sample folder. Because the local fixture file is missing, the ignored fixture registry was not edited.
+
+Operator implications:
+
+- Place an approved local-only `smoke_001` fixture in the ignored sample folder before any future registry approval or retry.
+- Keep fixture files ignored, untracked, and unstaged.
+- Do not print or commit local config contents, registry contents, image paths, prompts, request payloads, model outputs, server logs, model weights, or credentials.
+- A future model-call retry still requires separate explicit approval.

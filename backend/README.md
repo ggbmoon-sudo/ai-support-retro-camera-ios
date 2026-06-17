@@ -1322,6 +1322,8 @@ The blocked result is recorded in `../docs/phase-21-n-one-fixture-local-model-sm
 
 Next backend work should resolve the ignored local `smoke_001` fixture prerequisite only, unless a later prompt explicitly approves another one-call smoke attempt.
 
+Phase 21-N-R0 inspected that prerequisite and found the ignored local `smoke_001.*` fixture file missing. The ignored fixture registry was not edited, no model call ran, and the next backend step is operator-provided local-only `smoke_001` fixture preparation.
+
 ## Future TODO
 
 - Add authenticated backend boundary only after explicit approval.

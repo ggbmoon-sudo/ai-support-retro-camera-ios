@@ -216,6 +216,18 @@ Phase 21-N was explicitly approved for exactly one backend local/private model r
 - Recommended next phase is Phase 21-N-R0: One-fixture Local Model Smoke Preflight Block Resolution.
 - `productionReady:false` remains locked.
 
+## Phase 21-N-R0 smoke_001 Preflight Block Resolution Result
+
+Phase 21-N-R0 inspected the ignored local prerequisites and kept the model-call boundary closed:
+
+- Ignored local config, fixture registry, and sample folder were present, ignored, untracked, and unstaged.
+- `smoke_001.*` fixture file was missing from the ignored local sample folder.
+- The ignored local registry still does not have an approved `smoke_001` entry.
+- No ignored local file was changed because the fixture file prerequisite is missing.
+- No model call, Qwen inference, fixture inference, serving benchmark, vLLM/SGLang/Ollama call, model download, serving-stack switch, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
+- Recommended next phase is Phase 21-N-R0B: Operator-provided smoke_001 Fixture Preparation.
+- `productionReady:false` remains locked.
+
 ## Cross-reference Future Phases
 
 These are proposed planning labels only. Because the current repo already contains a committed Phase 21-H dry-run plan, future operators should reconcile numbering before implementation.
