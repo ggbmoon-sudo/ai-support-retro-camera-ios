@@ -16,11 +16,11 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**Phase 21-I: Image Compression + Upload Payload Policy Gate**
+**Phase 21-J: Auto-Trigger + 1 FPS Live Advisor Policy Gate**
 
-Reason: Phase 21-H2 formalized the future model/serving/live-advisor target direction as docs/gate work. Before any upload, WSS, Auto-Trigger runtime, iOS integration, or `local_model` model call, the compressed preview payload, metadata stripping, consent, retention/deletion, and no-capture-context-upload boundaries should be defined as a docs/gate policy.
+Reason: Phase 21-I formalized the future compressed preview upload payload, metadata stripping, consent, retention/deletion, no-original-full-resolution default, no-capture-context-upload boundary, backend mediation, and upload-runtime stop conditions. Before any Live Advisor runtime, WSS, iOS integration, or `local_model` model call, the stillness trigger, `<=1s` no-capture/no-upload rule, 1 FPS cloud-analysis cadence, throttle, fail-closed behavior, and off state should be defined as a docs/gate policy.
 
-This recommended next phase should run no model call, no Qwen inference, no fixture inference, no serving benchmark, no iOS runtime change, no endpoint change, no upload runtime, no compression runtime, and no production readiness change.
+This recommended next phase should run no model call, no Qwen inference, no fixture inference, no serving benchmark, no iOS runtime change, no endpoint change, no upload runtime, no compression runtime, no Auto-Trigger runtime, no WSS runtime, and no production readiness change.
 
 ## How Codex Should Use This File
 
@@ -50,6 +50,7 @@ Use cautious wording and re-check source docs before implementation:
 - Phase 21 backend gateway work appears to provide contract, adapter, routing, no-model HTTP, cross-platform deployment, deployment config/env, approval, and dry-run plan gates.
 - Phase 21-G local model route approval gate appears to keep `local_model` disabled and blocks model calls, Qwen inference, endpoints, iOS integration, raw artifacts, and `productionReady:true`.
 - Phase 21-G2 missing/deferred register now records unfinished feature areas and new Qwen MoE / Auto-Trigger / WSS / compression / quantization / local CV directions.
+- Phase 21-I image compression/upload payload policy gate now records the future compressed preview payload boundary and keeps runtime upload blocked.
 - `productionReady:false` remains the cross-phase default.
 
 Source references for future operators include `docs/phase-log.md`, `docs/handoff/codex-transition-handoff.md`, `docs/missing-features-and-deferred-roadmap-register.md`, and the Phase 20/21 backend gateway docs.

@@ -967,6 +967,18 @@ The gate is no-network, no-model, no-Qwen, no-fixture-inference, and no-benchmar
 
 Phase 21-H2 does not enable `local_model`, switch models, run Qwen, run model inference, run fixture inference, run serving benchmarks, call vLLM/SGLang/Ollama, add iOS integration, add endpoints, implement Auto-Trigger/WSS/image compression/upload runtime, add auth/billing/quota runtime, or change `productionReady:false`.
 
+## Phase 21-I Image Compression + Upload Payload Policy Gate
+
+Phase 21-I adds the future image compression/upload payload policy gate:
+
+```bash
+npm run qa:open-weight-vlm:image-compression-upload-policy
+```
+
+The gate is no-network, no-model, no-Qwen, no-fixture-inference, and no-benchmark. It validates policy objects only: upload runtime and compression runtime must remain disabled in this planning phase; future upload policy requires a compressed preview target, metadata stripping, consent, retention/deletion dependency, backend mediation, Auto-Trigger linkage, 1 FPS cloud-analysis policy, no original full-resolution default, no base64 unless explicitly approved later, no raw path/GPS/EXIF/sensor/capture-context payload, no provider fields in iOS, and `productionReady:false`.
+
+Phase 21-I does not implement image upload, image compression runtime, iOS payload changes, Camera live cloud AI runtime, Auto-Trigger runtime, WSS runtime, app-facing endpoints, production endpoints, model calls, Qwen inference, serving benchmarks, auth/billing/quota runtime, or production rollout.
+
 ## Phase 20-C Local VLM Operator Runbook + Smoke Gate
 
 Phase 20-C adds an operator runbook and a backend-only real-model smoke gate for future approved local/self-hosted VLM testing. The gate does not call a model and does not create an app-facing endpoint.

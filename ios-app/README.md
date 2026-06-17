@@ -182,6 +182,8 @@ Phase 21-G3 is docs-only from the iOS app perspective. It adds a phase roadmap s
 
 Phase 21-H2 remains backend/docs/gate-only from the iOS app perspective. It adds Qwen MoE + Live Advisor target re-evaluation docs and a backend no-network policy gate only. Xcode runtime behavior should be unchanged: no iOS source/project/localization changes, no Camera cloud AI runtime entry, no Auto-Trigger runtime, no WSS runtime, no image upload/compression runtime, no iOS provider/model key, no direct provider/model call, no iOS upload payload change, no capture-context upload, no app-facing endpoint, no production endpoint, and no production rollout. MacBook/Xcode must not depend on Windows local paths or local model server URLs.
 
+Phase 21-I remains backend/docs/gate-only from the iOS app perspective. It documents the future compressed-preview upload payload policy and audits the existing DEBUG post-capture compression/upload scaffold without modifying it. Xcode runtime behavior should be unchanged: no iOS source/project/localization changes, no new Camera live cloud AI runtime entry, no Auto-Trigger runtime, no WSS runtime, no image upload runtime, no image compression runtime change, no iOS provider/model key, no direct provider/model call, no iOS upload payload change, no capture-context upload, no app-facing endpoint, no production endpoint, and no production rollout. MacBook/Xcode must not depend on Windows local paths or local model server URLs.
+
 ## Phase 17D-A Local Camera Capture Context
 
 Phase 17D-A adds local-only summarized capture context for captured / imported photos:

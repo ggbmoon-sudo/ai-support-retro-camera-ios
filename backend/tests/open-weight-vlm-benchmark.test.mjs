@@ -97,6 +97,11 @@ import {
   qwenMoELiveAdvisorReferencePolicy
 } from "../src/qa/openWeightVlmQwenMoELiveAdvisorTargetGate.mjs";
 import {
+  assertOpenWeightVlmImageCompressionUploadPolicyGateReportRedacted,
+  evaluateOpenWeightVlmImageCompressionUploadPolicyGate,
+  imageCompressionUploadPolicyReadyPolicy
+} from "../src/qa/openWeightVlmImageCompressionUploadPolicyGate.mjs";
+import {
   assertOpenWeightVlmBenchmarkReportRedacted,
   buildOpenWeightVlmSchemaDiagnostic,
   evaluateOpenWeightVlmBenchmarkCase,
@@ -140,6 +145,8 @@ const LOCAL_MODEL_ROUTE_DRY_RUN_PLAN_SCRIPT_URL =
   new URL("../scripts/check-open-weight-vlm-local-model-route-dry-run-plan.mjs", import.meta.url);
 const QWEN_MOE_LIVE_ADVISOR_TARGET_GATE_SCRIPT_URL =
   new URL("../scripts/check-open-weight-vlm-qwen-moe-live-advisor-target-gate.mjs", import.meta.url);
+const IMAGE_COMPRESSION_UPLOAD_POLICY_GATE_SCRIPT_URL =
+  new URL("../scripts/check-open-weight-vlm-image-compression-upload-policy-gate.mjs", import.meta.url);
 
 test("open-weight VLM validator accepts valid synthetic benchmark fixtures", async () => {
   const cases = await benchmarkCases();
@@ -3342,6 +3349,156 @@ test("open-weight VLM local sandbox smoke includes sanitized schema diagnostics"
   assert.equal(serialized.includes("hold_steady_if_cleaner"), false);
   assert.equal(serialized.includes("http://127.0.0.1:8000"), false);
   assert.equal(serialized.includes("fixture_one"), false);
+});
+
+test("open-weight VLM image compression upload policy gate accepts valid blocked-runtime policy", () => {
+  const report = evaluateOpenWeightVlmImageCompressionUploadPolicyGate(
+    imageCompressionUploadPolicyReadyPolicy()
+  );
+
+  assert.equal(report.uploadPolicyEligible, true);
+  assert.equal(report.uploadRuntimeEnabled, false);
+  assert.equal(report.compressionRuntimeEnabled, false);
+  assert.equal(report.targetLongEdgeBucket, "around_1024_px_planning_target");
+  assert.equal(report.targetPayloadSizeBucket, "150kb_to_200kb_planning_target");
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.modelCallsMade, false);
+  assert.equal(report.qwenInferenceRun, false);
+  assert.equal(report.benchmarkRun, false);
+  assert.equal(report.productionReady, false);
+});
+
+test("open-weight VLM image compression upload policy gate blocks runtime enablement", () => {
+  const report = evaluateOpenWeightVlmImageCompressionUploadPolicyGate({
+    ...imageCompressionUploadPolicyReadyPolicy(),
+    uploadRuntimeEnabled: true,
+    compressionRuntimeEnabled: true
+  });
+
+  assert.equal(report.uploadPolicyEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_upload_runtime_enabled"), true);
+  assert.equal(report.blockers.includes("blocked_for_compression_runtime_enabled"), true);
+});
+
+test("open-weight VLM image compression upload policy gate blocks production and execution flags", () => {
+  const report = evaluateOpenWeightVlmImageCompressionUploadPolicyGate({
+    ...imageCompressionUploadPolicyReadyPolicy(),
+    productionReady: true,
+    networkCallsMade: true,
+    modelCallsMade: true,
+    qwenInferenceRun: true,
+    benchmarkRun: true
+  });
+
+  assert.equal(report.uploadPolicyEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_production_flag"), true);
+  assert.equal(report.blockers.includes("blocked_for_network_call_in_planning_phase"), true);
+  assert.equal(report.blockers.includes("blocked_for_model_call_in_planning_phase"), true);
+  assert.equal(report.blockers.includes("blocked_for_qwen_inference_in_planning_phase"), true);
+  assert.equal(report.blockers.includes("blocked_for_benchmark_execution"), true);
+});
+
+test("open-weight VLM image compression upload policy gate blocks unsafe payload fields", () => {
+  const report = evaluateOpenWeightVlmImageCompressionUploadPolicyGate({
+    ...imageCompressionUploadPolicyReadyPolicy(),
+    allowsOriginalFullResolution: true,
+    allowsBase64: true,
+    allowsRawPath: true,
+    allowsGps: true,
+    allowsRawExif: true,
+    allowsRawSensor: true,
+    allowsCaptureContextUpload: true,
+    allowsProviderFieldsInIos: true
+  });
+
+  assert.equal(report.uploadPolicyEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_original_full_resolution_upload"), true);
+  assert.equal(report.blockers.includes("blocked_for_base64_payload"), true);
+  assert.equal(report.blockers.includes("blocked_for_raw_path_payload"), true);
+  assert.equal(report.blockers.includes("blocked_for_gps_payload"), true);
+  assert.equal(report.blockers.includes("blocked_for_raw_exif_payload"), true);
+  assert.equal(report.blockers.includes("blocked_for_raw_sensor_payload"), true);
+  assert.equal(report.blockers.includes("blocked_for_capture_context_upload"), true);
+  assert.equal(report.blockers.includes("blocked_for_provider_fields_in_ios"), true);
+});
+
+test("open-weight VLM image compression upload policy gate blocks missing policy dependencies", () => {
+  const report = evaluateOpenWeightVlmImageCompressionUploadPolicyGate({
+    ...imageCompressionUploadPolicyReadyPolicy(),
+    metadataStrippingRequired: false,
+    consentRequired: false,
+    retentionPolicyRequired: false,
+    deletionPolicyRequired: false,
+    autoTriggerPolicyLinked: false,
+    oneFpsPolicyRequired: false
+  });
+
+  assert.equal(report.uploadPolicyEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_missing_metadata_stripping"), true);
+  assert.equal(report.blockers.includes("blocked_for_missing_consent_requirement"), true);
+  assert.equal(report.blockers.includes("blocked_for_missing_retention_policy"), true);
+  assert.equal(report.blockers.includes("blocked_for_missing_deletion_policy"), true);
+  assert.equal(report.blockers.includes("blocked_for_missing_auto_trigger_policy"), true);
+  assert.equal(report.blockers.includes("blocked_for_missing_one_fps_policy"), true);
+});
+
+test("open-weight VLM image compression upload policy gate blocks endpoint boundary drift", () => {
+  const report = evaluateOpenWeightVlmImageCompressionUploadPolicyGate({
+    ...imageCompressionUploadPolicyReadyPolicy(),
+    backendMediatedOnly: false,
+    appFacingEndpointEnabled: true,
+    productionEndpointEnabled: true
+  });
+
+  assert.equal(report.uploadPolicyEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_missing_backend_mediation"), true);
+  assert.equal(report.blockers.includes("blocked_for_app_facing_endpoint"), true);
+  assert.equal(report.blockers.includes("blocked_for_production_endpoint"), true);
+});
+
+test("open-weight VLM image compression upload policy gate sanitized output contains no raw artifacts", () => {
+  const report = evaluateOpenWeightVlmImageCompressionUploadPolicyGate({
+    ...imageCompressionUploadPolicyReadyPolicy(),
+    probeValues: [
+      "C:\\raw\\photo.jpg",
+      "data:image/jpeg",
+      "requestPayload",
+      "rawPrompt",
+      "rawModelOutput",
+      "QWE_API_KEY"
+    ]
+  });
+  const serialized = JSON.stringify(report);
+  const redaction = assertOpenWeightVlmImageCompressionUploadPolicyGateReportRedacted(report);
+
+  assert.equal(report.uploadPolicyEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_committed_raw_policy_value"), true);
+  assert.equal(redaction.ok, true);
+  assert.equal(serialized.includes("C:\\raw\\photo.jpg"), false);
+  assert.equal(serialized.includes("data:image/jpeg"), false);
+  assert.equal(serialized.includes("requestPayload"), false);
+  assert.equal(serialized.includes("rawPrompt"), false);
+  assert.equal(serialized.includes("rawModelOutput"), false);
+  assert.equal(serialized.includes("QWE_API_KEY"), false);
+});
+
+test("open-weight VLM image compression upload policy gate CLI is sanitized and no-network", () => {
+  const result = spawnSync(process.execPath, [fileURLToPath(IMAGE_COMPRESSION_UPLOAD_POLICY_GATE_SCRIPT_URL)], {
+    encoding: "utf8"
+  });
+  const report = JSON.parse(result.stdout);
+
+  assert.equal(result.status, 0);
+  assert.equal(report.uploadPolicyEligible, true);
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.modelCallsMade, false);
+  assert.equal(report.qwenInferenceRun, false);
+  assert.equal(report.benchmarkRun, false);
+  assert.equal(report.productionReady, false);
+  assert.equal(result.stdout.includes("data:image"), false);
+  assert.equal(result.stdout.includes("rawPrompt"), false);
+  assert.equal(result.stdout.includes("requestPayload"), false);
+  assert.equal(result.stdout.includes("QWE_API_KEY"), false);
 });
 
 async function benchmarkCases() {

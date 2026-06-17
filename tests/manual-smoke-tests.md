@@ -11,6 +11,15 @@ Qwen MoE + Live Advisor target re-evaluation gate:
 - [ ] Confirm blockers cover missing non-thinking/direct-output mode, missing structured output, missing quantization plan, missing benchmark requirement, Auto-Trigger runtime, WSS runtime, iOS upload runtime, direct iOS model route, production readiness, model calls, Qwen inference, benchmark execution, free-form model text, score/rating, sensitive inference, chain-of-thought, and debug/provider leakage.
 - [ ] Confirm no model switch, `local_model` route enablement, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, iOS integration, endpoint, Qwen inference, fixture inference, serving benchmark, raw artifact, secret, or production readiness change is introduced.
 
+## Phase 21-I
+
+Image compression + upload payload policy gate:
+
+- [ ] From `backend/`, run `npm run qa:open-weight-vlm:image-compression-upload-policy`.
+- [ ] Confirm the CLI output has `uploadPolicyEligible:true`, `uploadRuntimeEnabled:false`, `compressionRuntimeEnabled:false`, `networkCallsMade:false`, `modelCallsMade:false`, `qwenInferenceRun:false`, `benchmarkRun:false`, and `productionReady:false`.
+- [ ] Confirm `docs/image-compression-upload-payload-policy-gate.md` records the current source audit, future compressed-preview target, metadata stripping, consent, retention/deletion, capture-context, Auto-Trigger, 1 FPS, backend validation, iOS boundary, and stop-condition policies.
+- [ ] Confirm no upload runtime, compression runtime change, iOS payload change, Camera live cloud AI runtime entry, Auto-Trigger runtime, WSS runtime, app-facing endpoint, production endpoint, model call, Qwen inference, fixture inference, serving benchmark, raw artifact, secret, or production rollout was added.
+
 ## Phase 21-G2
 
 Missing feature + deferred roadmap register:

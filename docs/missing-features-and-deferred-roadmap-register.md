@@ -144,6 +144,17 @@ Phase 21-H2 formalizes the above direction as a docs/gate-only policy:
 - Auto-Trigger, WSS, image compression/upload, and local CV remain policy/planning boundaries only; no runtime is approved by Phase 21-H2.
 - Recommended next phase becomes Phase 21-I: Image Compression + Upload Payload Policy Gate.
 
+## Phase 21-I Upload Payload Policy Result
+
+Phase 21-I formalizes the image compression/upload payload direction as a docs/gate/source-audit policy:
+
+- Future cloud upload must use a compressed preview frame policy before runtime approval.
+- Planning target remains around `1024px` long edge and roughly `150KB-200KB` JPEG preview frame, with exact values to be tested later.
+- Metadata stripping, visible consent, retention/deletion dependency, backend mediation, Auto-Trigger linkage, and 1 FPS cloud-analysis policy are required.
+- Original full-resolution upload is blocked by default; base64, raw path, GPS, raw EXIF, raw sensor, raw capture context, provider fields, model URL, API key, and raw prompt are blocked unless a later explicit phase approves a safe exception.
+- The current source audit found an existing DEBUG post-capture compression/upload scaffold, but no new upload runtime, compression runtime, iOS payload change, Live Advisor runtime, endpoint, model call, Qwen inference, benchmark, or production rollout is approved by Phase 21-I.
+- `productionReady:false` remains locked.
+
 ## Cross-reference Future Phases
 
 These are proposed planning labels only. Because the current repo already contains a committed Phase 21-H dry-run plan, future operators should reconcile numbering before implementation.
