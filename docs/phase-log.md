@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 21-G3 - Phase Roadmap Sequencing + Next Action Reminder Register
+Current phase: Phase 21-H2 - Qwen 3.5 35B-A3B MoE + Live Advisor Target Re-evaluation Gate
 Status: Implemented
-Latest implementation: Added `docs/phase-roadmap-sequencing-and-next-action-register.md`, a docs-only "what next?" phase sequencing and next-action reminder register. The register reviewed the repo Markdown inventory of 104 files and required Phase 20/21 docs, then defines how Codex should recommend the next phase after commit/push completion, including repo/upstream checks, a current next recommended phase, phase-numbering reconciliation, a phase sequence table, big phase grouping, feature-to-phase mapping, and a "when a phase completes, remind next" checklist. Current next recommended phase is Phase 21-H2: Qwen 3.5 35B-A3B MoE + Live Advisor Target Re-evaluation Gate, docs/gate only. No runtime implementation, iOS integration, Camera cloud AI runtime entry, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, endpoint, model call, Qwen inference, fixture inference, serving benchmark, raw artifact, secret, external workspace change, or production readiness change was added.
+Latest implementation: Added `docs/qwen35b-a3b-moe-live-advisor-target-reevaluation.md`, `backend/src/qa/openWeightVlmQwenMoELiveAdvisorTargetGate.mjs`, and `npm run qa:open-weight-vlm:qwen-moe-live-advisor-target`. The gate validates policy objects only and keeps `networkCallsMade:false`, `modelCallsMade:false`, `qwenInferenceRun:false`, `benchmarkRun:false`, and `productionReady:false`. It keeps Qwen 3.5 35B-A3B MoE preferred only when vision-capable / VLM-compatible and multimodal serving verification are true, blocks text-only Qwen for image analysis, keeps Qwen2.5-VL as the current reference baseline, and requires non-thinking/direct-output, structured output or deterministic structured mapping, quantization planning, benchmark requirement, Auto-Trigger policy, compression policy, WSS policy, local CV policy, consent, retention, and deletion boundaries. No model switch, local model route enablement, runtime implementation, iOS integration, Camera cloud AI runtime entry, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, endpoint, model call, Qwen inference, fixture inference, serving benchmark, raw artifact, secret, external workspace change, or production readiness change was added.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -72,7 +72,7 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-H2: Qwen 3.5 35B-A3B MoE + Live Advisor Target Re-evaluation Gate, docs/gate only. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production endpoint work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution, model downloads, model cache changes, Qwen inference, fixture inference, local model route execution, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, or user-photo training / fine-tuning until explicitly requested.
+Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-I: Image Compression + Upload Payload Policy Gate, docs/gate only. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production endpoint work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution, model downloads, model cache changes, Qwen inference, fixture inference, local model route execution, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, or user-photo training / fine-tuning until explicitly requested.
 
 ---
 
@@ -623,6 +623,41 @@ Phase 21-G3 adds a docs-only phase roadmap sequencing and next-action reminder r
 ### Ready for Next Phase
 
 Yes, for Phase 21-H2 only if explicitly requested as docs/gate-only target re-evaluation work. Any model call, upload, WSS runtime, iOS runtime, endpoint, serving benchmark, or production behavior requires separate explicit approval.
+
+---
+
+## Phase 21-H2 - Qwen 3.5 35B-A3B MoE + Live Advisor Target Re-evaluation Gate
+
+Status: Implemented
+Date: 2026-06-17
+
+### Summary
+
+Phase 21-H2 re-evaluates the future model, serving stack, Live Advisor, Auto-Trigger, WSS, compression, local CV, quantization, and prompt/output direction before any runtime implementation.
+
+### Completed
+
+- Added `docs/qwen35b-a3b-moe-live-advisor-target-reevaluation.md`.
+- Added `backend/src/qa/openWeightVlmQwenMoELiveAdvisorTargetGate.mjs`.
+- Added `backend/scripts/check-open-weight-vlm-qwen-moe-live-advisor-target-gate.mjs`.
+- Added `npm run qa:open-weight-vlm:qwen-moe-live-advisor-target`.
+- Defined model policy: Qwen 3.5 35B-A3B MoE is preferred only when vision-capable / VLM-compatible and multimodal serving path verification are true; Qwen3-VL MoE remains a fallback candidate; Qwen2.5-VL remains current reference baseline; smaller Qwen 9B-class vision-capable model is latency/cost fallback only; text-only Qwen is blocked for image analysis.
+- Defined serving policy: Transformers + FastAPI remains correctness/reference baseline, vLLM is the primary future serving benchmark candidate, SGLang is the structured-output/performance challenger, and Ollama/LM Studio remain manual/local only.
+- Defined Auto-Trigger policy: stillness must be greater than 1 second, stability less than or equal to 1 second means no capture/no upload, max cloud-analysis cadence is 1 FPS, opt-in/consent/off/throttle/fail-closed behavior are required, and runtime remains blocked.
+- Defined WSS, compression/upload, local on-device CV, quantization, prompt/token, consent, retention, deletion, and production boundary policies.
+- Extended backend tests for preferred/fallback/reference model classes, unverified vision blocking, text-only model blocking, non-thinking/structured output/quantization/benchmark blockers, runtime upload/WSS/iOS route blockers, execution flag blockers, unsafe language/leakage blockers, sanitized output, and CLI output.
+- Updated roadmap sequencing current next phase to Phase 21-I: Image Compression + Upload Payload Policy Gate.
+- Updated README, backend README, iOS README, missing/deferred register, handoff, manual smoke, and phase log docs.
+
+### Verification
+
+- The new target gate CLI is no-network, no-model, no-Qwen, no-fixture-inference, no-benchmark, and prints sanitized bucket summaries only.
+- No model switch, local model route enablement, runtime implementation, iOS integration, Camera cloud AI runtime entry, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, endpoint, model call, Qwen inference, fixture inference, serving benchmark, raw artifact, secret, external workspace change, or production readiness change was added.
+- `productionReady:false` remains locked.
+
+### Ready for Phase 21-I
+
+Yes, for an explicitly requested docs/gate-only Image Compression + Upload Payload Policy Gate. Phase 21-H2 does not approve upload runtime, iOS runtime, endpoints, model calls, WSS runtime, serving benchmarks, or production behavior.
 
 ---
 

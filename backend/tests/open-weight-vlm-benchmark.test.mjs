@@ -90,6 +90,13 @@ import {
   localModelRouteDryRunPlanReadyPolicy
 } from "../src/qa/openWeightVlmLocalModelRouteDryRunPlan.mjs";
 import {
+  assertOpenWeightVlmQwenMoELiveAdvisorTargetGateReportRedacted,
+  evaluateOpenWeightVlmQwenMoELiveAdvisorTargetGate,
+  qwenMoELiveAdvisorFastFallbackPolicy,
+  qwenMoELiveAdvisorPreferredPolicy,
+  qwenMoELiveAdvisorReferencePolicy
+} from "../src/qa/openWeightVlmQwenMoELiveAdvisorTargetGate.mjs";
+import {
   assertOpenWeightVlmBenchmarkReportRedacted,
   buildOpenWeightVlmSchemaDiagnostic,
   evaluateOpenWeightVlmBenchmarkCase,
@@ -131,6 +138,8 @@ const LOCAL_MODEL_ROUTE_APPROVAL_GATE_SCRIPT_URL =
   new URL("../scripts/check-open-weight-vlm-local-model-route-approval-gate.mjs", import.meta.url);
 const LOCAL_MODEL_ROUTE_DRY_RUN_PLAN_SCRIPT_URL =
   new URL("../scripts/check-open-weight-vlm-local-model-route-dry-run-plan.mjs", import.meta.url);
+const QWEN_MOE_LIVE_ADVISOR_TARGET_GATE_SCRIPT_URL =
+  new URL("../scripts/check-open-weight-vlm-qwen-moe-live-advisor-target-gate.mjs", import.meta.url);
 
 test("open-weight VLM validator accepts valid synthetic benchmark fixtures", async () => {
   const cases = await benchmarkCases();
@@ -2965,6 +2974,196 @@ test("open-weight VLM local model route dry-run plan CLI is sanitized and no-net
   assert.equal(report.reviewedPlanCount, 2);
   assert.equal(report.eligiblePlanCount, 1);
   assert.equal(report.expectedBlockedPlanCount, 1);
+  assert.equal(output.includes("fullPrompt"), false);
+  assert.equal(output.includes("rawPrompt"), false);
+  assert.equal(output.includes("requestPayload"), false);
+  assert.equal(output.includes("modelOutput"), false);
+  assert.equal(output.includes("Authorization"), false);
+  assert.equal(output.includes("Bearer "), false);
+  assert.equal(output.includes("C:\\"), false);
+  assert.equal(output.includes("http://"), false);
+  assert.equal(output.includes("data:image"), false);
+});
+
+test("open-weight VLM Qwen MoE live advisor target gate accepts verified preferred target only as disabled future policy", () => {
+  const report = evaluateOpenWeightVlmQwenMoELiveAdvisorTargetGate(
+    qwenMoELiveAdvisorPreferredPolicy()
+  );
+
+  assert.equal(report.targetGateEligible, true);
+  assert.equal(report.preferredModelClass, "qwen3_5_35b_a3b_moe_preferred");
+  assert.equal(report.visionCapableVerified, true);
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.modelCallsMade, false);
+  assert.equal(report.qwenInferenceRun, false);
+  assert.equal(report.benchmarkRun, false);
+  assert.equal(report.productionReady, false);
+  assert.deepEqual(report.blockers, []);
+});
+
+test("open-weight VLM Qwen MoE live advisor target gate blocks unverified preferred vision capability", () => {
+  const report = evaluateOpenWeightVlmQwenMoELiveAdvisorTargetGate({
+    ...qwenMoELiveAdvisorPreferredPolicy(),
+    visionCapableVerified: false,
+    multimodalServingPathVerified: false
+  });
+
+  assert.equal(report.targetGateEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_unverified_vision_capability"), true);
+});
+
+test("open-weight VLM Qwen MoE live advisor target gate blocks text-only Qwen", () => {
+  const report = evaluateOpenWeightVlmQwenMoELiveAdvisorTargetGate({
+    ...qwenMoELiveAdvisorPreferredPolicy(),
+    preferredModelClass: "text_only_qwen_blocked",
+    visionCapableVerified: false,
+    multimodalServingPathVerified: false
+  });
+
+  assert.equal(report.targetGateEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_text_only_model"), true);
+  assert.equal(report.blockers.includes("blocked_for_unverified_vision_capability"), true);
+});
+
+test("open-weight VLM Qwen MoE live advisor target gate accepts Qwen2.5-VL as current reference baseline", () => {
+  const report = evaluateOpenWeightVlmQwenMoELiveAdvisorTargetGate(
+    qwenMoELiveAdvisorReferencePolicy()
+  );
+
+  assert.equal(report.targetGateEligible, true);
+  assert.equal(report.preferredModelClass, "qwen2_5_vl_reference");
+  assert.equal(report.servingStackCandidate, "transformers_fastapi_reference");
+  assert.equal(report.liveAdvisorMode, "post_capture_only_current");
+});
+
+test("open-weight VLM Qwen MoE live advisor target gate accepts smaller vision fallback only outside production route", () => {
+  const fallback = evaluateOpenWeightVlmQwenMoELiveAdvisorTargetGate(
+    qwenMoELiveAdvisorFastFallbackPolicy()
+  );
+  const production = evaluateOpenWeightVlmQwenMoELiveAdvisorTargetGate({
+    ...qwenMoELiveAdvisorFastFallbackPolicy(),
+    productionRouteEnabled: true
+  });
+
+  assert.equal(fallback.targetGateEligible, true);
+  assert.equal(fallback.preferredModelClass, "qwen_9b_vision_fast_fallback");
+  assert.equal(production.targetGateEligible, false);
+  assert.equal(production.blockers.includes("blocked_for_fast_fallback_as_production_route"), true);
+});
+
+test("open-weight VLM Qwen MoE live advisor target gate blocks missing output serving requirements", () => {
+  const report = evaluateOpenWeightVlmQwenMoELiveAdvisorTargetGate({
+    ...qwenMoELiveAdvisorPreferredPolicy(),
+    nonThinkingModeSupported: false,
+    structuredOutputSupported: false,
+    deterministicStructuredMappingSupported: false,
+    quantizationPlanDeclared: false,
+    benchmarkPlanDeclared: false
+  });
+
+  assert.equal(report.targetGateEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_missing_non_thinking_direct_output_mode"), true);
+  assert.equal(report.blockers.includes("blocked_for_missing_structured_output"), true);
+  assert.equal(report.blockers.includes("blocked_for_missing_quantization_plan"), true);
+  assert.equal(report.blockers.includes("blocked_for_missing_benchmark_requirement"), true);
+});
+
+test("open-weight VLM Qwen MoE live advisor target gate blocks runtime upload WSS and iOS routes", () => {
+  const report = evaluateOpenWeightVlmQwenMoELiveAdvisorTargetGate({
+    ...qwenMoELiveAdvisorPreferredPolicy(),
+    autoTriggerRuntimeEnabled: true,
+    wssRuntimeEnabled: true,
+    iosUploadRuntimeEnabled: true,
+    directIOSModelRoute: true,
+    localModelRouteEnabled: true
+  });
+
+  assert.equal(report.targetGateEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_auto_trigger_runtime_enabled"), true);
+  assert.equal(report.blockers.includes("blocked_for_wss_runtime_enabled"), true);
+  assert.equal(report.blockers.includes("blocked_for_ios_upload_runtime_enabled"), true);
+  assert.equal(report.blockers.includes("blocked_for_direct_ios_model_route"), true);
+  assert.equal(report.blockers.includes("blocked_for_local_model_route_enabled"), true);
+});
+
+test("open-weight VLM Qwen MoE live advisor target gate blocks execution flags in planning phase", () => {
+  const report = evaluateOpenWeightVlmQwenMoELiveAdvisorTargetGate({
+    ...qwenMoELiveAdvisorPreferredPolicy(),
+    productionReady: true,
+    modelCallsMade: true,
+    qwenInferenceRun: true,
+    benchmarkRun: true
+  });
+
+  assert.equal(report.productionReady, false);
+  assert.equal(report.modelCallsMade, false);
+  assert.equal(report.qwenInferenceRun, false);
+  assert.equal(report.benchmarkRun, false);
+  assert.equal(report.targetGateEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_production_flag"), true);
+  assert.equal(report.blockers.includes("blocked_for_model_call_in_planning_phase"), true);
+  assert.equal(report.blockers.includes("blocked_for_qwen_inference_in_planning_phase"), true);
+  assert.equal(report.blockers.includes("blocked_for_benchmark_execution"), true);
+});
+
+test("open-weight VLM Qwen MoE live advisor target gate blocks unsafe language and leakage flags", () => {
+  const report = evaluateOpenWeightVlmQwenMoELiveAdvisorTargetGate({
+    ...qwenMoELiveAdvisorPreferredPolicy(),
+    freeFormModelTextAllowed: true,
+    scoreRatingAllowed: true,
+    sensitiveInferenceAllowed: true,
+    chainOfThoughtAllowed: true,
+    debugProviderLeakageAllowed: true
+  });
+
+  assert.equal(report.targetGateEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_free_form_model_text"), true);
+  assert.equal(report.blockers.includes("blocked_for_score_rating"), true);
+  assert.equal(report.blockers.includes("blocked_for_sensitive_inference"), true);
+  assert.equal(report.blockers.includes("blocked_for_chain_of_thought"), true);
+  assert.equal(report.blockers.includes("blocked_for_debug_provider_leakage"), true);
+});
+
+test("open-weight VLM Qwen MoE live advisor target gate sanitized output contains no raw artifacts", () => {
+  const report = evaluateOpenWeightVlmQwenMoELiveAdvisorTargetGate({
+    ...qwenMoELiveAdvisorPreferredPolicy(),
+    probeValues: [
+      "C:\\private\\fixture.jpg",
+      "Authorization: Bearer secret",
+      "rawPrompt requestPayload modelOutput data:image/png;base64"
+    ]
+  });
+  const serialized = JSON.stringify(report);
+
+  assert.equal(report.targetGateEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_committed_raw_policy_value"), true);
+  assert.equal(assertOpenWeightVlmQwenMoELiveAdvisorTargetGateReportRedacted(report).ok, true);
+  assert.equal(serialized.includes("C:\\"), false);
+  assert.equal(serialized.includes("rawPrompt"), false);
+  assert.equal(serialized.includes("requestPayload"), false);
+  assert.equal(serialized.includes("modelOutput"), false);
+  assert.equal(serialized.includes("Authorization"), false);
+  assert.equal(serialized.includes("Bearer "), false);
+  assert.equal(serialized.includes("data:image"), false);
+});
+
+test("open-weight VLM Qwen MoE live advisor target gate CLI is sanitized and no-network", () => {
+  const output = execFileSync(process.execPath, [
+    fileURLToPath(QWEN_MOE_LIVE_ADVISOR_TARGET_GATE_SCRIPT_URL)
+  ], {
+    cwd: new URL("..", import.meta.url),
+    encoding: "utf8"
+  });
+  const report = JSON.parse(output);
+
+  assert.equal(report.targetGateEligible, true);
+  assert.equal(report.productionReady, false);
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.modelCallsMade, false);
+  assert.equal(report.qwenInferenceRun, false);
+  assert.equal(report.benchmarkRun, false);
+  assert.equal(report.reviewedPolicyCount, 3);
+  assert.equal(report.expectedBlockedPolicyCount, 1);
   assert.equal(output.includes("fullPrompt"), false);
   assert.equal(output.includes("rawPrompt"), false);
   assert.equal(output.includes("requestPayload"), false);

@@ -1,5 +1,16 @@
 # Manual Smoke Tests
 
+## Phase 21-H2
+
+Qwen MoE + Live Advisor target re-evaluation gate:
+
+- [ ] From `backend/`, run `npm run qa:open-weight-vlm:qwen-moe-live-advisor-target`.
+- [ ] Confirm the gate reports `targetGateEligible:true`, `networkCallsMade:false`, `modelCallsMade:false`, `qwenInferenceRun:false`, `benchmarkRun:false`, and `productionReady:false`.
+- [ ] Confirm Qwen 3.5 35B-A3B MoE is only a preferred future target when vision-capable / VLM-compatible verification is true.
+- [ ] Confirm text-only Qwen blocks for image analysis, and Qwen2.5-VL remains a reference baseline.
+- [ ] Confirm blockers cover missing non-thinking/direct-output mode, missing structured output, missing quantization plan, missing benchmark requirement, Auto-Trigger runtime, WSS runtime, iOS upload runtime, direct iOS model route, production readiness, model calls, Qwen inference, benchmark execution, free-form model text, score/rating, sensitive inference, chain-of-thought, and debug/provider leakage.
+- [ ] Confirm no model switch, `local_model` route enablement, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, iOS integration, endpoint, Qwen inference, fixture inference, serving benchmark, raw artifact, secret, or production readiness change is introduced.
+
 ## Phase 21-G2
 
 Missing feature + deferred roadmap register:

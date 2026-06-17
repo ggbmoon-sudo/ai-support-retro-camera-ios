@@ -16,11 +16,11 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**Phase 21-H2: Qwen 3.5 35B-A3B MoE + Live Advisor Target Re-evaluation Gate**
+**Phase 21-I: Image Compression + Upload Payload Policy Gate**
 
-Reason: the project just captured a major new model/live-advisor direction in `docs/missing-features-and-deferred-roadmap-register.md`. Before implementing upload, WSS, Auto-Trigger runtime, iOS integration, or any `local_model` model call, the model/serving/live-advisor target should be formally re-evaluated and gate-tested as docs/gate work only.
+Reason: Phase 21-H2 formalized the future model/serving/live-advisor target direction as docs/gate work. Before any upload, WSS, Auto-Trigger runtime, iOS integration, or `local_model` model call, the compressed preview payload, metadata stripping, consent, retention/deletion, and no-capture-context-upload boundaries should be defined as a docs/gate policy.
 
-This recommended next phase should run no model call, no Qwen inference, no fixture inference, no serving benchmark, no iOS runtime change, no endpoint change, and no production readiness change.
+This recommended next phase should run no model call, no Qwen inference, no fixture inference, no serving benchmark, no iOS runtime change, no endpoint change, no upload runtime, no compression runtime, and no production readiness change.
 
 ## How Codex Should Use This File
 

@@ -133,6 +133,17 @@ The following direction is now recorded for future planning only:
 - Cloud VLM should handle higher-level composition, mood, and retro intent only after explicit consent and trigger gates.
 - Consent/no-silent-upload remains a hard boundary.
 
+## Phase 21-H2 Target Re-evaluation Result
+
+Phase 21-H2 formalizes the above direction as a docs/gate-only policy:
+
+- Qwen 3.5 35B-A3B MoE remains preferred only if vision-capable / VLM-compatible and multimodal serving is verified.
+- Text-only Qwen remains blocked for image analysis.
+- Qwen2.5-VL remains the current correctness/reference baseline.
+- Non-thinking / instruct direct-output, structured output or deterministic structured mapping, quantization planning, and benchmark requirement are required before production claims.
+- Auto-Trigger, WSS, image compression/upload, and local CV remain policy/planning boundaries only; no runtime is approved by Phase 21-H2.
+- Recommended next phase becomes Phase 21-I: Image Compression + Upload Payload Policy Gate.
+
 ## Cross-reference Future Phases
 
 These are proposed planning labels only. Because the current repo already contains a committed Phase 21-H dry-run plan, future operators should reconcile numbering before implementation.

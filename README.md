@@ -80,11 +80,12 @@ Current phase:
 
 - Phase 21-G2 adds `docs/missing-features-and-deferred-roadmap-register.md`, a docs-only memory/backlog register for missing, deferred, blocked, partially built, and not-yet-integrated app/backend/VLM features. It records newly discussed Qwen MoE, Live Advisor trigger/WSS, compression, quantization, and local CV directions without approving runtime implementation.
 - Phase 21-G3 adds `docs/phase-roadmap-sequencing-and-next-action-register.md`, a docs-only "what next?" sequencing register for future phase recommendations after commit/push completion.
+- Phase 21-H2 adds `docs/qwen35b-a3b-moe-live-advisor-target-reevaluation.md` and a no-network backend target gate for Qwen MoE / Live Advisor direction. It keeps Qwen 3.5 35B-A3B MoE preferred only if vision-capable/VLM-compatible is verified, records vLLM/SGLang/quantization/Auto-Trigger/WSS/compression/local-CV policy boundaries, and runs no model calls, no Qwen inference, no benchmark, no iOS integration, no endpoint, and no production readiness change.
 - Phase 21-H adds the controlled backend `local_model` route dry-run plan. It is a no-network/no-model/no-Qwen/no-benchmark plan gate for a future explicitly approved one-fixture, one-call, no-retry backend-internal local/private route test. It does not enable `local_model`, run fixture inference, add iOS integration, add app-facing or production endpoints, accept user-photo uploads, or change `productionReady:false`.
 
 Next phase:
 
-- Recommended next step is Phase 21-I only if explicitly requested after the dry-run plan is committed and pushed. A safe candidate is still backend-internal/no-model review of future one-call route prerequisites. Do not start iOS integration, app-facing endpoints, production endpoints, real user-photo upload, auth/billing/quota runtime, serving benchmark execution, Qwen inference, fixture inference, vLLM/SGLang/Ollama runs, local model route enablement, or serving-stack switches unless a future prompt explicitly approves them.
+- Recommended next step is Phase 21-I only if explicitly requested after Phase 21-H2 is committed and pushed: Image Compression + Upload Payload Policy Gate. Do not start iOS integration, app-facing endpoints, production endpoints, real user-photo upload, auth/billing/quota runtime, upload/compression runtime, serving benchmark execution, Qwen inference, fixture inference, vLLM/SGLang/Ollama runs, local model route enablement, or serving-stack switches unless a future prompt explicitly approves them.
 - Do not start production cloud rollout without explicit approval
 - Production rollout remains blocked until a later explicit release phase
 

@@ -955,6 +955,18 @@ Phase 21-G2 is documentation only. It does not enable routes, call Qwen, run mod
 
 Phase 21-G3 adds `../docs/phase-roadmap-sequencing-and-next-action-register.md` as the docs-only "what next?" source of truth after a phase is committed and pushed. It recommends Phase 21-H2 as the next planning/gate phase for Qwen 3.5 35B-A3B MoE + Live Advisor target re-evaluation, while keeping model calls, upload, WSS, iOS runtime, endpoints, serving benchmarks, and production readiness blocked until explicitly approved.
 
+## Phase 21-H2 Qwen MoE + Live Advisor Target Gate
+
+Phase 21-H2 adds the model/serving/live-advisor target re-evaluation policy:
+
+```sh
+npm run qa:open-weight-vlm:qwen-moe-live-advisor-target
+```
+
+The gate is no-network, no-model, no-Qwen, no-fixture-inference, and no-benchmark. It validates policy objects only: Qwen 3.5 35B-A3B MoE is preferred only if vision-capable/VLM-compatible is verified; Qwen2.5-VL remains the current reference baseline; text-only Qwen is blocked for image analysis; non-thinking/direct-output, structured output, quantization planning, benchmark requirement, Auto-Trigger policy, compression policy, WSS policy, local CV policy, consent, retention, and deletion boundaries are required.
+
+Phase 21-H2 does not enable `local_model`, switch models, run Qwen, run model inference, run fixture inference, run serving benchmarks, call vLLM/SGLang/Ollama, add iOS integration, add endpoints, implement Auto-Trigger/WSS/image compression/upload runtime, add auth/billing/quota runtime, or change `productionReady:false`.
+
 ## Phase 20-C Local VLM Operator Runbook + Smoke Gate
 
 Phase 20-C adds an operator runbook and a backend-only real-model smoke gate for future approved local/self-hosted VLM testing. The gate does not call a model and does not create an app-facing endpoint.
