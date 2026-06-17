@@ -939,6 +939,18 @@ The first future route test, if explicitly approved later, must be backend-inter
 
 Phase 21-H does not enable `local_model`, run Qwen, run model inference, run fixture inference, run a serving benchmark, call vLLM/SGLang/Ollama, add iOS integration, add endpoints, accept real user-photo upload, add consent UI, add auth/billing/quota runtime, commit local config/registry/fixtures/reports/logs/model outputs/prompts/request payloads/weights/credentials, or change production readiness.
 
+## Phase 21-G2 Missing Feature + Deferred Roadmap Register
+
+Phase 21-G2 adds a docs-only missing/deferred roadmap register:
+
+```text
+docs/missing-features-and-deferred-roadmap-register.md
+```
+
+The register records planned, missing, deferred, blocked, partially built, and not-yet-integrated app/backend/VLM features so future sessions do not rely on chat memory. It includes Live Advisor trigger/WSS/compression/local-CV policy directions, VLM model/serving candidates such as Qwen 3.5 35B-A3B MoE only if vision-capable, vLLM/SGLang serving direction, INT4/INT8 quantization planning, backend production API gaps, iOS integration gaps, Store/account/release gaps, and advanced future features.
+
+Phase 21-G2 is documentation only. It does not enable routes, call Qwen, run model or fixture inference, run serving benchmarks, add iOS integration, add app-facing or production endpoints, implement Auto-Trigger/WSS/image compression/upload runtime, add auth/billing/quota runtime, or change `productionReady:false`.
+
 ## Phase 20-C Local VLM Operator Runbook + Smoke Gate
 
 Phase 20-C adds an operator runbook and a backend-only real-model smoke gate for future approved local/self-hosted VLM testing. The gate does not call a model and does not create an app-facing endpoint.

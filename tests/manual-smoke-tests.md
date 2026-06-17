@@ -1,5 +1,14 @@
 # Manual Smoke Tests
 
+## Phase 21-G2
+
+Missing feature + deferred roadmap register:
+
+- [ ] Confirm `docs/missing-features-and-deferred-roadmap-register.md` exists.
+- [ ] Confirm it records Live Advisor, local CV, compression/upload payload, backend production API, VLM model/serving, Photo Advisor UX, iOS integration, Store/account/release, and advanced future-feature gaps.
+- [ ] Confirm it includes the newly discussed Qwen 3.5 35B-A3B MoE, non-thinking mode, vLLM/SGLang, Auto-Trigger stillness >1s, no capture/upload at <=1s, max 1 FPS cloud analysis, stateful WSS, frontend compression, INT4/INT8 quantization, local on-device CV split, and consent/no-silent-upload boundary.
+- [ ] Confirm this phase adds no runtime implementation, no iOS integration, no Camera cloud AI runtime entry, no Auto-Trigger runtime, no WSS runtime, no upload/compression runtime, no endpoint, no model call, no Qwen inference, no benchmark, and no production readiness change.
+
 ## Phase 21-H
 
 Controlled backend local model route dry-run plan:

@@ -176,6 +176,8 @@ Phase 21-G also remains backend-only from the iOS app perspective. It adds a loc
 
 Phase 21-H remains backend-only from the iOS app perspective. It adds a controlled `local_model` route dry-run plan and no-network/no-model plan gate only. Xcode runtime behavior should be unchanged: no iOS source/project/localization changes, no Camera cloud entry, no iOS provider/model key, no direct Qwen/model/provider call, no iOS upload payload change, no capture-context upload, no app-facing endpoint, no production endpoint, no consent UI, no real user-photo upload, no auth/billing/quota runtime, no Qwen inference, no fixture inference, no serving benchmark, and no production rollout. MacBook/Xcode must not depend on Windows local paths, LAN model URLs, local fixture paths, or local model server URLs.
 
+Phase 21-G2 is docs-only from the iOS app perspective. It adds `docs/missing-features-and-deferred-roadmap-register.md` to record missing/deferred roadmap items such as Auto-Trigger Live Advisor policy, WSS preflight, image compression policy, local on-device CV aids, iOS/backend integration gaps, and release/account gaps. Xcode runtime behavior should be unchanged: no iOS source/project/localization changes, no Camera cloud AI runtime entry, no Auto-Trigger runtime, no WSS runtime, no iOS provider/model key, no direct provider/model call, no iOS upload payload change, no capture-context upload, no app-facing endpoint, no production endpoint, and no production rollout. MacBook/Xcode must not depend on Windows local paths or local model server URLs.
+
 ## Phase 17D-A Local Camera Capture Context
 
 Phase 17D-A adds local-only summarized capture context for captured / imported photos:

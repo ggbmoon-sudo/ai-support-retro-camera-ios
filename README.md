@@ -78,6 +78,7 @@ Development happens one phase at a time. Do not start the next phase unless it i
 
 Current phase:
 
+- Phase 21-G2 adds `docs/missing-features-and-deferred-roadmap-register.md`, a docs-only memory/backlog register for missing, deferred, blocked, partially built, and not-yet-integrated app/backend/VLM features. It records newly discussed Qwen MoE, Live Advisor trigger/WSS, compression, quantization, and local CV directions without approving runtime implementation.
 - Phase 21-H adds the controlled backend `local_model` route dry-run plan. It is a no-network/no-model/no-Qwen/no-benchmark plan gate for a future explicitly approved one-fixture, one-call, no-retry backend-internal local/private route test. It does not enable `local_model`, run fixture inference, add iOS integration, add app-facing or production endpoints, accept user-photo uploads, or change `productionReady:false`.
 
 Next phase:
