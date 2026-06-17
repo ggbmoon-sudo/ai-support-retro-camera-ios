@@ -756,3 +756,13 @@ Operator implications:
 - Keep fixture files ignored, untracked, and unstaged.
 - Do not print or commit local config contents, registry contents, image paths, prompts, request payloads, model outputs, server logs, model weights, or credentials.
 - A future model-call retry still requires separate explicit approval.
+
+## Phase 21-N-R0B Fixture Preparation Recheck
+
+Phase 21-N-R0B rechecked for the operator-provided `smoke_001` fixture and it is still missing. The ignored local registry was not edited.
+
+Operator implications:
+
+- Supply exactly one approved local-only `smoke_001` fixture image in the ignored sample folder.
+- Keep the fixture image ignored, untracked, and unstaged.
+- Do not run a model call, Qwen inference, fixture inference, serving benchmark, vLLM/SGLang/Ollama call, endpoint work, iOS integration, or production rollout during fixture supply.

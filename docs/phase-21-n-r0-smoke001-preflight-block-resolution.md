@@ -127,6 +127,12 @@ Scope: the operator should place an approved local-only `smoke_001` fixture file
 
 A future model-call retry still requires separate explicit approval after the prerequisite is fixed.
 
+## Phase 21-N-R0B Follow-up
+
+Phase 21-N-R0B rechecked operator fixture preparation and `smoke_001.*` is still missing from the ignored local sample folder. The ignored local registry was not edited and `smoke_001` remains not present/approved.
+
+The next recommended phase is Phase 21-N-R0C: Operator supplies approved smoke_001 local fixture. No model call, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, secret, or production rollout occurred in R0B.
+
 ## productionReady:false
 
 `productionReady:false` remains locked.

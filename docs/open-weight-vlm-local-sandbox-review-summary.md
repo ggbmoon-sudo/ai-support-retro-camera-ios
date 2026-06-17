@@ -354,3 +354,9 @@ Ignored local config, ignored local fixture registry, and ignored local sample f
 Phase 21-N-R0 found that the ignored local `smoke_001.*` fixture file is missing. The ignored local registry was not edited, and `smoke_001` remains not present/approved. The next step is operator-provided local-only fixture preparation, not a model call.
 
 No model call, Qwen inference, fixture inference, serving benchmark, vLLM/SGLang/Ollama call, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
+
+## Phase 21-N-R0B Fixture Preparation Recheck
+
+Phase 21-N-R0B rechecked the ignored local sample folder and `smoke_001.*` is still missing. The ignored local registry remains unedited and `smoke_001` remains not present/approved.
+
+No model call, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.

@@ -1324,6 +1324,8 @@ Next backend work should resolve the ignored local `smoke_001` fixture prerequis
 
 Phase 21-N-R0 inspected that prerequisite and found the ignored local `smoke_001.*` fixture file missing. The ignored fixture registry was not edited, no model call ran, and the next backend step is operator-provided local-only `smoke_001` fixture preparation.
 
+Phase 21-N-R0B rechecked the operator-provided fixture prerequisite and `smoke_001.*` is still missing. The ignored fixture registry remains unedited, no model call ran, and the next backend step remains local-only fixture supply.
+
 ## Future TODO
 
 - Add authenticated backend boundary only after explicit approval.

@@ -16,11 +16,11 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**Phase 21-N-R0B: Operator-provided smoke_001 Fixture Preparation**
+**Phase 21-N-R0C: Operator supplies approved smoke_001 local fixture**
 
-Reason: Phase 21-N-R0 inspected the ignored local prerequisites and found that the `smoke_001.*` sample file is missing. Because the fixture file is missing, the ignored local registry was not modified and `smoke_001` remains not present/approved. The next logical step is operator-provided local-only fixture preparation without committing local config, fixture registry contents, fixture images, raw reports, prompts, model outputs, request payloads, logs, model weights, or credentials.
+Reason: Phase 21-N-R0B checked for operator-provided `smoke_001` fixture preparation, but `smoke_001.*` is still missing from the ignored local sample folder. Because the fixture file is missing, the ignored local registry was not modified and `smoke_001` remains not present/approved. The next logical step is for the operator to supply exactly one approved local-only `smoke_001` fixture image without committing fixture images, local config, fixture registry contents, raw reports, prompts, model outputs, request payloads, logs, model weights, or credentials.
 
-This recommended next phase should remain local fixture preparation only unless the user explicitly approves another scope. Do not run a model call, Qwen inference, fixture inference, serving benchmark, vLLM/SGLang/Ollama call, iOS integration, endpoint work, upload runtime, or production readiness change during fixture preparation.
+This recommended next phase should remain local fixture supply only unless the user explicitly approves another scope. Do not run a model call, Qwen inference, fixture inference, serving benchmark, vLLM/SGLang/Ollama call, iOS integration, endpoint work, upload runtime, or production readiness change during fixture supply.
 
 ## How Codex Should Use This File
 
@@ -57,6 +57,7 @@ Use cautious wording and re-check source docs before implementation:
 - Phase 21-M Quantization + Serving Benchmark Plan now records future model, serving stack, quantization, fixture, metrics, safety/fallback, latency/throughput, and cost/hardware planning policies while keeping benchmark runtime, model download, serving-stack switch, `local_model`, Qwen inference, fixture inference, vLLM/SGLang/Ollama calls, iOS runtime dependencies, endpoints, and production rollout blocked.
 - Phase 21-N one-fixture backend local/private model smoke was approved but preflight-blocked before any model call because `smoke_001` was not present/approved in the ignored local fixture registry. No model call, retry, serving benchmark, endpoint, iOS integration, raw artifact, or production rollout occurred.
 - Phase 21-N-R0 inspected ignored local prerequisites and found `smoke_001.*` fixture file missing, so the ignored registry was not edited and the prerequisite remains blocked. No model call, Qwen inference, fixture inference, serving benchmark, local registry commit, endpoint, iOS integration, raw artifact, or production rollout occurred.
+- Phase 21-N-R0B rechecked operator fixture preparation and `smoke_001.*` is still missing. No ignored registry edit, model call, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, or production rollout occurred.
 - `productionReady:false` remains the cross-phase default.
 
 Source references for future operators include `docs/phase-log.md`, `docs/handoff/codex-transition-handoff.md`, `docs/missing-features-and-deferred-roadmap-register.md`, and the Phase 20/21 backend gateway docs.
@@ -84,6 +85,7 @@ Rules:
 | Phase 21-M | Quantization + Serving Benchmark Plan | Add INT4/INT8/AWQ/GPTQ/equivalent benchmark dimensions; vLLM primary, SGLang challenger, Transformers+FastAPI reference | no | no | no | no | yes | Phase 21-H2 target reset | Benchmark plan/gate exists; no benchmark execution |
 | Phase 21-N-R0 | One-fixture Local Model Smoke Preflight Block Resolution | Prepare ignored local `smoke_001` fixture prerequisite after blocked Phase 21-N preflight | no | no | no | no | explicit approval required for any later model call | Phase 21-N blocked report | `smoke_001` present/approved locally, ignored, unstaged, and safe for a later explicitly approved one-call smoke |
 | Phase 21-N-R0B | Operator-provided smoke_001 Fixture Preparation | Place approved local-only `smoke_001` fixture in ignored sample folder | no | no | no | no | explicit approval required for any later model call | Phase 21-N-R0 report | `smoke_001.*` exists locally, ignored/untracked/unstaged; no raw artifacts committed |
+| Phase 21-N-R0C | Operator supplies approved smoke_001 local fixture | Operator supplies exactly one approved local-only `smoke_001` fixture image | no | no | no | no | explicit approval required for any later model call | Phase 21-N-R0B report | `smoke_001.*` exists locally, ignored/untracked/unstaged; registry can be safely prepared later |
 | Phase 21-N or later | Approved One-fixture Backend Local Model Route Smoke | First controlled backend `local_model` route call through gateway chain | yes | yes, one only | no | no app/prod endpoint | explicit approval required | Approval gate, dry-run plan, policy gates | One declared fixture, one call only, no retries, sanitized result, validator/fallback enforced |
 | Phase 21-O or later | Approved Serving Benchmark Execution | Compare serving stacks/quantization/latency on sanitized fixtures | yes | yes | no | no app/prod endpoint | explicit approval required | Phase 21-M plan and user approval | Sanitized benchmark metrics only; no raw artifacts; production remains false |
 | Phase 22-A | Debug-only iOS Backend Integration Preflight | Plan debug-only backend result flow with no production endpoint | no runtime by default | no | no runtime by default | no production endpoint | yes | Backend policy gates | Preflight documents debug-only path and no iOS provider/model keys |
