@@ -979,6 +979,18 @@ The gate is no-network, no-model, no-Qwen, no-fixture-inference, and no-benchmar
 
 Phase 21-I does not implement image upload, image compression runtime, iOS payload changes, Camera live cloud AI runtime, Auto-Trigger runtime, WSS runtime, app-facing endpoints, production endpoints, model calls, Qwen inference, serving benchmarks, auth/billing/quota runtime, or production rollout.
 
+## Phase 21-J Auto-Trigger + 1 FPS Live Advisor Policy Gate
+
+Phase 21-J adds the future Auto-Trigger + 1 FPS Live Advisor policy gate:
+
+```bash
+npm run qa:open-weight-vlm:auto-trigger-live-advisor-policy
+```
+
+The gate is no-network, no-model, no-Qwen, no-fixture-inference, and no-benchmark. It validates policy objects only: Auto-Trigger, Live Advisor runtime, Camera cloud entry, WSS, and upload runtime must remain disabled; stillness must be greater than 1 second; `<=1s` must mean no capture, no upload, no backend call, and no model call; cloud analysis is capped at max 1 FPS; consent/no-silent-upload, disabled/off state, Phase 21-I compression/upload policy, metadata stripping, backend mediation, local-CV-only fast aids, no raw video streaming, safe retry policy, and backoff/server busy policy are required.
+
+Phase 21-J does not implement Auto-Trigger runtime, Camera live cloud AI runtime, WSS runtime, image upload, image compression runtime, iOS payload changes, app-facing endpoints, production endpoints, model calls, Qwen inference, serving benchmarks, auth/billing/quota runtime, or production rollout.
+
 ## Phase 20-C Local VLM Operator Runbook + Smoke Gate
 
 Phase 20-C adds an operator runbook and a backend-only real-model smoke gate for future approved local/self-hosted VLM testing. The gate does not call a model and does not create an app-facing endpoint.

@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 21-I - Image Compression + Upload Payload Policy Gate
+Current phase: Phase 21-J - Auto-Trigger + 1 FPS Live Advisor Policy Gate
 Status: Implemented
-Latest implementation: Added `docs/image-compression-upload-payload-policy-gate.md`, `backend/src/qa/openWeightVlmImageCompressionUploadPolicyGate.mjs`, and `npm run qa:open-weight-vlm:image-compression-upload-policy`. The gate validates future upload/compression policy objects only and keeps `uploadRuntimeEnabled:false`, `compressionRuntimeEnabled:false`, `networkCallsMade:false`, `modelCallsMade:false`, `qwenInferenceRun:false`, `benchmarkRun:false`, and `productionReady:false`. It audits the existing DEBUG post-capture compression/upload scaffold, requires future compressed preview targets, metadata stripping, consent, retention/deletion, backend mediation, Auto-Trigger linkage, and 1 FPS policy, and blocks original full-resolution defaults, base64 unless later approved, raw path, GPS, raw EXIF, raw sensor, capture-context upload, and provider fields in iOS. No upload runtime, compression runtime change, iOS payload change, cloud AI runtime, Auto-Trigger runtime, WSS runtime, endpoint, model call, Qwen inference, fixture inference, serving benchmark, raw artifact, secret, external workspace change, or production readiness change was added.
+Latest implementation: Added `docs/auto-trigger-1fps-live-advisor-policy-gate.md`, `backend/src/qa/openWeightVlmAutoTriggerLiveAdvisorPolicyGate.mjs`, and `npm run qa:open-weight-vlm:auto-trigger-live-advisor-policy`. The gate validates future Auto-Trigger/Live Advisor policy objects only and keeps `autoTriggerRuntimeEnabled:false`, `liveAdvisorRuntimeEnabled:false`, `cameraCloudEntryEnabled:false`, `wssRuntimeEnabled:false`, `uploadRuntimeEnabled:false`, `networkCallsMade:false`, `modelCallsMade:false`, `qwenInferenceRun:false`, `benchmarkRun:false`, and `productionReady:false`. It audits existing local CoreMotion/capture-context and mock-only Camera snapshot scaffolds, requires stillness greater than 1 second, `<=1s` no capture/no upload/no backend/no model behavior, max 1 FPS cloud analysis, consent/no-silent-upload, disabled/off state, Phase 21-I compression/upload policy, backend mediation, local-CV-only fast aids, no raw video streaming, safe retry policy, and backoff/server busy policy. No Auto-Trigger runtime, Camera live cloud AI runtime entry, WSS runtime, upload runtime, compression runtime change, iOS payload change, endpoint, model call, Qwen inference, fixture inference, serving benchmark, raw artifact, secret, external workspace change, or production readiness change was added.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -72,7 +72,7 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-J: Auto-Trigger + 1 FPS Live Advisor Policy Gate, docs/gate only. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production endpoint work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution, model downloads, model cache changes, Qwen inference, fixture inference, local model route execution, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, or user-photo training / fine-tuning until explicitly requested.
+Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-K: Stateful WSS Live Advisor Protocol Preflight, docs/gate/schema-only. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production endpoint work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution, model downloads, model cache changes, Qwen inference, fixture inference, local model route execution, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, or user-photo training / fine-tuning until explicitly requested.
 
 ---
 
@@ -623,6 +623,42 @@ Phase 21-G3 adds a docs-only phase roadmap sequencing and next-action reminder r
 ### Ready for Next Phase
 
 Yes, for Phase 21-H2 only if explicitly requested as docs/gate-only target re-evaluation work. Any model call, upload, WSS runtime, iOS runtime, endpoint, serving benchmark, or production behavior requires separate explicit approval.
+
+---
+
+## Phase 21-J - Auto-Trigger + 1 FPS Live Advisor Policy Gate
+
+Status: Implemented
+Date: 2026-06-17
+
+### Summary
+
+Phase 21-J defines and gates the future Auto-Trigger + 1 FPS Live Advisor policy before any Auto-Trigger runtime, Camera live cloud AI runtime entry, WSS runtime, upload runtime, endpoint, model call, or production behavior.
+
+### Completed
+
+- Added `docs/auto-trigger-1fps-live-advisor-policy-gate.md`.
+- Added `backend/src/qa/openWeightVlmAutoTriggerLiveAdvisorPolicyGate.mjs`.
+- Added `backend/scripts/check-open-weight-vlm-auto-trigger-live-advisor-policy-gate.mjs`.
+- Added `npm run qa:open-weight-vlm:auto-trigger-live-advisor-policy`.
+- Audited current iOS/backend source: local CoreMotion/capture-context motion and level buckets exist; existing Camera snapshot guidance is mock-only/pre-existing; no Auto-Trigger runtime, live cloud Camera entry, WSS runtime, stillness `>1s` upload trigger, 1 FPS cloud-analysis loop, or iOS live frame upload runtime was added.
+- Defined future Auto-Trigger policy: explicit Live Advisor opt-in/consent, local device/viewfinder stability, stable for greater than 1 second, fail-closed on uncertain state, and disabled/off state blocks capture/upload/cloud calls.
+- Defined `<=1s` rule: no frame capture, no upload, no backend call, no model call, and no retry that creates extra uploads.
+- Defined 1 FPS policy: cloud VLM analysis is capped at max 1 FPS, must not treat the preview as 30fps video, must not stream raw camera video, and must follow Phase 21-I compressed preview payload policy for every eligible frame.
+- Defined WSS relationship, throttle/backoff, server busy, local on-device CV split, backend validation, iOS boundary, and stop-condition policies.
+- Extended backend tests for runtime blockers, stillness/FPS gaps, consent/off-state/compression/backend mediation gaps, raw video/WSS/retry/backoff/iOS boundary drift, execution flag blockers, redaction, and CLI output.
+- Updated roadmap sequencing current next phase to Phase 21-K: Stateful WSS Live Advisor Protocol Preflight.
+- Updated README, backend README, iOS README, Qwen MoE target doc, image compression/upload policy doc, missing/deferred register, handoff, manual smoke, and phase log docs.
+
+### Verification
+
+- The new Auto-Trigger Live Advisor policy gate CLI is no-network, no-model, no-Qwen, no-fixture-inference, no-benchmark, and prints sanitized bucket summaries only.
+- No Auto-Trigger runtime, Camera live cloud AI runtime entry, WSS runtime, upload runtime, compression runtime change, iOS payload change, app-facing endpoint, production endpoint, model call, Qwen inference, fixture inference, serving benchmark, raw artifact, secret, external workspace change, or production readiness change was added.
+- `productionReady:false` remains locked.
+
+### Ready for Phase 21-K
+
+Yes, for an explicitly requested docs/gate/schema-only Stateful WSS Live Advisor Protocol Preflight. Phase 21-J does not approve WSS runtime, Auto-Trigger runtime, upload runtime, iOS runtime, endpoints, model calls, serving benchmarks, or production behavior.
 
 ---
 

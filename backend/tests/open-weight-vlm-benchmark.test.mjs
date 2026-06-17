@@ -102,6 +102,11 @@ import {
   imageCompressionUploadPolicyReadyPolicy
 } from "../src/qa/openWeightVlmImageCompressionUploadPolicyGate.mjs";
 import {
+  assertOpenWeightVlmAutoTriggerLiveAdvisorPolicyGateReportRedacted,
+  autoTriggerLiveAdvisorPolicyReadyPolicy,
+  evaluateOpenWeightVlmAutoTriggerLiveAdvisorPolicyGate
+} from "../src/qa/openWeightVlmAutoTriggerLiveAdvisorPolicyGate.mjs";
+import {
   assertOpenWeightVlmBenchmarkReportRedacted,
   buildOpenWeightVlmSchemaDiagnostic,
   evaluateOpenWeightVlmBenchmarkCase,
@@ -147,6 +152,8 @@ const QWEN_MOE_LIVE_ADVISOR_TARGET_GATE_SCRIPT_URL =
   new URL("../scripts/check-open-weight-vlm-qwen-moe-live-advisor-target-gate.mjs", import.meta.url);
 const IMAGE_COMPRESSION_UPLOAD_POLICY_GATE_SCRIPT_URL =
   new URL("../scripts/check-open-weight-vlm-image-compression-upload-policy-gate.mjs", import.meta.url);
+const AUTO_TRIGGER_LIVE_ADVISOR_POLICY_GATE_SCRIPT_URL =
+  new URL("../scripts/check-open-weight-vlm-auto-trigger-live-advisor-policy-gate.mjs", import.meta.url);
 
 test("open-weight VLM validator accepts valid synthetic benchmark fixtures", async () => {
   const cases = await benchmarkCases();
@@ -3490,6 +3497,164 @@ test("open-weight VLM image compression upload policy gate CLI is sanitized and 
 
   assert.equal(result.status, 0);
   assert.equal(report.uploadPolicyEligible, true);
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.modelCallsMade, false);
+  assert.equal(report.qwenInferenceRun, false);
+  assert.equal(report.benchmarkRun, false);
+  assert.equal(report.productionReady, false);
+  assert.equal(result.stdout.includes("data:image"), false);
+  assert.equal(result.stdout.includes("rawPrompt"), false);
+  assert.equal(result.stdout.includes("requestPayload"), false);
+  assert.equal(result.stdout.includes("QWE_API_KEY"), false);
+});
+
+test("open-weight VLM Auto-Trigger Live Advisor policy gate accepts valid blocked-runtime policy", () => {
+  const report = evaluateOpenWeightVlmAutoTriggerLiveAdvisorPolicyGate(
+    autoTriggerLiveAdvisorPolicyReadyPolicy()
+  );
+
+  assert.equal(report.autoTriggerPolicyEligible, true);
+  assert.equal(report.autoTriggerRuntimeEnabled, false);
+  assert.equal(report.liveAdvisorRuntimeEnabled, false);
+  assert.equal(report.cameraCloudEntryEnabled, false);
+  assert.equal(report.wssRuntimeEnabled, false);
+  assert.equal(report.uploadRuntimeEnabled, false);
+  assert.equal(report.stillnessThresholdBucket, "gt_1s");
+  assert.equal(report.maxCloudAnalysisFpsBucket, "max_1fps");
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.modelCallsMade, false);
+  assert.equal(report.qwenInferenceRun, false);
+  assert.equal(report.benchmarkRun, false);
+  assert.equal(report.productionReady, false);
+});
+
+test("open-weight VLM Auto-Trigger Live Advisor policy gate blocks runtime flags", () => {
+  const report = evaluateOpenWeightVlmAutoTriggerLiveAdvisorPolicyGate({
+    ...autoTriggerLiveAdvisorPolicyReadyPolicy(),
+    autoTriggerRuntimeEnabled: true,
+    liveAdvisorRuntimeEnabled: true,
+    cameraCloudEntryEnabled: true,
+    wssRuntimeEnabled: true,
+    uploadRuntimeEnabled: true
+  });
+
+  assert.equal(report.autoTriggerPolicyEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_auto_trigger_runtime_enabled"), true);
+  assert.equal(report.blockers.includes("blocked_for_live_advisor_runtime_enabled"), true);
+  assert.equal(report.blockers.includes("blocked_for_camera_cloud_entry_enabled"), true);
+  assert.equal(report.blockers.includes("blocked_for_wss_runtime_enabled"), true);
+  assert.equal(report.blockers.includes("blocked_for_upload_runtime_enabled"), true);
+});
+
+test("open-weight VLM Auto-Trigger Live Advisor policy gate blocks stillness and FPS policy gaps", () => {
+  const report = evaluateOpenWeightVlmAutoTriggerLiveAdvisorPolicyGate({
+    ...autoTriggerLiveAdvisorPolicyReadyPolicy(),
+    stillnessThresholdBucket: "lte_1s",
+    noCaptureWhenUnderOrEqualThreshold: false,
+    noUploadWhenUnderOrEqualThreshold: false,
+    noBackendCallWhenUnderOrEqualThreshold: false,
+    noModelCallWhenUnderOrEqualThreshold: false,
+    maxCloudAnalysisFpsBucket: "over_1fps",
+    maxCloudAnalysisFps: 2
+  });
+
+  assert.equal(report.autoTriggerPolicyEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_missing_gt_1s_stillness_threshold"), true);
+  assert.equal(report.blockers.includes("blocked_for_missing_lte_1s_no_capture_no_upload_rule"), true);
+  assert.equal(report.blockers.includes("blocked_for_cloud_analysis_over_1fps"), true);
+});
+
+test("open-weight VLM Auto-Trigger Live Advisor policy gate blocks consent state and payload policy gaps", () => {
+  const report = evaluateOpenWeightVlmAutoTriggerLiveAdvisorPolicyGate({
+    ...autoTriggerLiveAdvisorPolicyReadyPolicy(),
+    consentRequired: false,
+    silentUploadBlocked: false,
+    disabledStateBlocksCapture: false,
+    compressionPolicyRequired: false,
+    metadataStrippingRequired: false,
+    backendMediatedRequired: false
+  });
+
+  assert.equal(report.autoTriggerPolicyEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_missing_consent_requirement"), true);
+  assert.equal(report.blockers.includes("blocked_for_silent_upload_allowed"), true);
+  assert.equal(report.blockers.includes("blocked_for_disabled_state_not_blocking_capture"), true);
+  assert.equal(report.blockers.includes("blocked_for_missing_compression_policy"), true);
+  assert.equal(report.blockers.includes("blocked_for_missing_metadata_stripping"), true);
+  assert.equal(report.blockers.includes("blocked_for_missing_backend_mediation"), true);
+});
+
+test("open-weight VLM Auto-Trigger Live Advisor policy gate blocks WSS streaming retry and iOS boundary drift", () => {
+  const report = evaluateOpenWeightVlmAutoTriggerLiveAdvisorPolicyGate({
+    ...autoTriggerLiveAdvisorPolicyReadyPolicy(),
+    localCvOnlyForFastAids: false,
+    rawVideoStreamingAllowed: true,
+    retryPolicyBucket: "retry_extra_uploads",
+    backoffPolicyRequired: false,
+    serverBusyBackoffRequired: false,
+    allowsProviderFieldsInIos: true
+  });
+
+  assert.equal(report.autoTriggerPolicyEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_missing_local_cv_boundary"), true);
+  assert.equal(report.blockers.includes("blocked_for_raw_video_streaming"), true);
+  assert.equal(report.blockers.includes("blocked_for_unsafe_retry_policy"), true);
+  assert.equal(report.blockers.includes("blocked_for_missing_backoff_policy"), true);
+  assert.equal(report.blockers.includes("blocked_for_provider_fields_in_ios"), true);
+});
+
+test("open-weight VLM Auto-Trigger Live Advisor policy gate blocks execution flags", () => {
+  const report = evaluateOpenWeightVlmAutoTriggerLiveAdvisorPolicyGate({
+    ...autoTriggerLiveAdvisorPolicyReadyPolicy(),
+    productionReady: true,
+    networkCallsMade: true,
+    modelCallsMade: true,
+    qwenInferenceRun: true,
+    benchmarkRun: true
+  });
+
+  assert.equal(report.autoTriggerPolicyEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_production_flag"), true);
+  assert.equal(report.blockers.includes("blocked_for_network_call_in_planning_phase"), true);
+  assert.equal(report.blockers.includes("blocked_for_model_call_in_planning_phase"), true);
+  assert.equal(report.blockers.includes("blocked_for_qwen_inference_in_planning_phase"), true);
+  assert.equal(report.blockers.includes("blocked_for_benchmark_execution"), true);
+});
+
+test("open-weight VLM Auto-Trigger Live Advisor policy gate sanitized output contains no raw artifacts", () => {
+  const report = evaluateOpenWeightVlmAutoTriggerLiveAdvisorPolicyGate({
+    ...autoTriggerLiveAdvisorPolicyReadyPolicy(),
+    probeValues: [
+      "C:\\raw\\frame.jpg",
+      "data:image/jpeg",
+      "requestPayload",
+      "rawPrompt",
+      "rawModelOutput",
+      "QWE_API_KEY"
+    ]
+  });
+  const serialized = JSON.stringify(report);
+  const redaction = assertOpenWeightVlmAutoTriggerLiveAdvisorPolicyGateReportRedacted(report);
+
+  assert.equal(report.autoTriggerPolicyEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_committed_raw_policy_value"), true);
+  assert.equal(redaction.ok, true);
+  assert.equal(serialized.includes("C:\\raw\\frame.jpg"), false);
+  assert.equal(serialized.includes("data:image/jpeg"), false);
+  assert.equal(serialized.includes("requestPayload"), false);
+  assert.equal(serialized.includes("rawPrompt"), false);
+  assert.equal(serialized.includes("rawModelOutput"), false);
+  assert.equal(serialized.includes("QWE_API_KEY"), false);
+});
+
+test("open-weight VLM Auto-Trigger Live Advisor policy gate CLI is sanitized and no-network", () => {
+  const result = spawnSync(process.execPath, [fileURLToPath(AUTO_TRIGGER_LIVE_ADVISOR_POLICY_GATE_SCRIPT_URL)], {
+    encoding: "utf8"
+  });
+  const report = JSON.parse(result.stdout);
+
+  assert.equal(result.status, 0);
+  assert.equal(report.autoTriggerPolicyEligible, true);
   assert.equal(report.networkCallsMade, false);
   assert.equal(report.modelCallsMade, false);
   assert.equal(report.qwenInferenceRun, false);

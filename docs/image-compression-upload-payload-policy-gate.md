@@ -148,6 +148,8 @@ Future Auto-Trigger is upload-eligible only when all policy gates pass:
 
 Phase 21-I does not implement Auto-Trigger runtime.
 
+Phase 21-J now formalizes this relationship as a docs/gate/source-audit policy: stillness must be greater than 1 second; stable time less than or equal to 1 second means no capture, no upload, no backend call, and no model call; cloud analysis is capped at max 1 FPS; and runtime remains blocked.
+
 ## 1 FPS Relationship
 
 Cloud AI must not treat the viewfinder as 30fps video.

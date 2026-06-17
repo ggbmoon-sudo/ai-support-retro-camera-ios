@@ -155,6 +155,19 @@ Phase 21-I formalizes the image compression/upload payload direction as a docs/g
 - The current source audit found an existing DEBUG post-capture compression/upload scaffold, but no new upload runtime, compression runtime, iOS payload change, Live Advisor runtime, endpoint, model call, Qwen inference, benchmark, or production rollout is approved by Phase 21-I.
 - `productionReady:false` remains locked.
 
+## Phase 21-J Auto-Trigger Policy Result
+
+Phase 21-J formalizes the Auto-Trigger + 1 FPS Live Advisor direction as a docs/gate/source-audit policy:
+
+- Future Auto-Trigger requires explicit Live Advisor opt-in/consent and local device/viewfinder stability.
+- Stable time must be greater than 1 second before a future compressed preview can become eligible.
+- Stable time less than or equal to 1 second means no frame capture, no upload, no backend call, and no model call.
+- Cloud analysis remains capped at max 1 FPS and must not treat the viewfinder as 30fps video.
+- Future uploads must follow the Phase 21-I compressed preview payload policy.
+- Local iOS CV may handle fast aids locally, while cloud VLM remains gated for higher-level composition/mood/retro intent.
+- The current source audit found local CoreMotion/capture-context and mock-only Camera snapshot scaffolds, but no Auto-Trigger runtime, live cloud Camera entry, WSS runtime, frame upload loop, model call, Qwen inference, benchmark, or production rollout is approved by Phase 21-J.
+- `productionReady:false` remains locked.
+
 ## Cross-reference Future Phases
 
 These are proposed planning labels only. Because the current repo already contains a committed Phase 21-H dry-run plan, future operators should reconcile numbering before implementation.

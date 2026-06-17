@@ -20,6 +20,15 @@ Image compression + upload payload policy gate:
 - [ ] Confirm `docs/image-compression-upload-payload-policy-gate.md` records the current source audit, future compressed-preview target, metadata stripping, consent, retention/deletion, capture-context, Auto-Trigger, 1 FPS, backend validation, iOS boundary, and stop-condition policies.
 - [ ] Confirm no upload runtime, compression runtime change, iOS payload change, Camera live cloud AI runtime entry, Auto-Trigger runtime, WSS runtime, app-facing endpoint, production endpoint, model call, Qwen inference, fixture inference, serving benchmark, raw artifact, secret, or production rollout was added.
 
+## Phase 21-J
+
+Auto-Trigger + 1 FPS Live Advisor policy gate:
+
+- [ ] From `backend/`, run `npm run qa:open-weight-vlm:auto-trigger-live-advisor-policy`.
+- [ ] Confirm the CLI output has `autoTriggerPolicyEligible:true`, `autoTriggerRuntimeEnabled:false`, `liveAdvisorRuntimeEnabled:false`, `cameraCloudEntryEnabled:false`, `wssRuntimeEnabled:false`, `uploadRuntimeEnabled:false`, `networkCallsMade:false`, `modelCallsMade:false`, `qwenInferenceRun:false`, `benchmarkRun:false`, and `productionReady:false`.
+- [ ] Confirm `docs/auto-trigger-1fps-live-advisor-policy-gate.md` records the current source audit, stillness `>1s` threshold, `<=1s` no-capture/no-upload/no-backend/no-model rule, max 1 FPS cloud-analysis policy, compression/upload relationship, WSS relationship, local CV relationship, backend validation, iOS boundary, and stop-condition policies.
+- [ ] Confirm no Auto-Trigger runtime, Camera live cloud AI runtime entry, WSS runtime, upload runtime, compression runtime change, iOS payload change, endpoint, model call, Qwen inference, fixture inference, serving benchmark, raw artifact, secret, or production rollout was added.
+
 ## Phase 21-G2
 
 Missing feature + deferred roadmap register:

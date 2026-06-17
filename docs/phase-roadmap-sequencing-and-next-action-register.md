@@ -16,9 +16,9 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**Phase 21-J: Auto-Trigger + 1 FPS Live Advisor Policy Gate**
+**Phase 21-K: Stateful WSS Live Advisor Protocol Preflight**
 
-Reason: Phase 21-I formalized the future compressed preview upload payload, metadata stripping, consent, retention/deletion, no-original-full-resolution default, no-capture-context-upload boundary, backend mediation, and upload-runtime stop conditions. Before any Live Advisor runtime, WSS, iOS integration, or `local_model` model call, the stillness trigger, `<=1s` no-capture/no-upload rule, 1 FPS cloud-analysis cadence, throttle, fail-closed behavior, and off state should be defined as a docs/gate policy.
+Reason: Phase 21-J formalized the future Auto-Trigger stillness threshold, `<=1s` no-capture/no-upload/no-backend/no-model rule, max 1 FPS cloud-analysis cadence, consent/no-silent-upload boundary, disabled/off state, compression/upload dependency, local CV split, and throttle/backoff policy. Before any Live Advisor runtime or iOS integration, the stateful WSS session protocol should be defined as a docs/gate/schema preflight.
 
 This recommended next phase should run no model call, no Qwen inference, no fixture inference, no serving benchmark, no iOS runtime change, no endpoint change, no upload runtime, no compression runtime, no Auto-Trigger runtime, no WSS runtime, and no production readiness change.
 
@@ -51,6 +51,7 @@ Use cautious wording and re-check source docs before implementation:
 - Phase 21-G local model route approval gate appears to keep `local_model` disabled and blocks model calls, Qwen inference, endpoints, iOS integration, raw artifacts, and `productionReady:true`.
 - Phase 21-G2 missing/deferred register now records unfinished feature areas and new Qwen MoE / Auto-Trigger / WSS / compression / quantization / local CV directions.
 - Phase 21-I image compression/upload payload policy gate now records the future compressed preview payload boundary and keeps runtime upload blocked.
+- Phase 21-J Auto-Trigger + 1 FPS Live Advisor policy gate now records the future stillness, no-upload, sparse cadence, consent/off-state, compression dependency, and backoff boundaries while keeping runtime blocked.
 - `productionReady:false` remains the cross-phase default.
 
 Source references for future operators include `docs/phase-log.md`, `docs/handoff/codex-transition-handoff.md`, `docs/missing-features-and-deferred-roadmap-register.md`, and the Phase 20/21 backend gateway docs.
