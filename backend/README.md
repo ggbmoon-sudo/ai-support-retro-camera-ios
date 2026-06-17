@@ -1314,6 +1314,14 @@ The future plan records Qwen 3.5 35B-A3B MoE as preferred only after verified VL
 
 Phase 21-M does not run a serving benchmark, download model weights, switch serving stacks, enable `local_model`, call vLLM/SGLang/Ollama, run Qwen inference, run fixture inference, add an endpoint, add an iOS runtime dependency, or approve production rollout.
 
+## Phase 21-N One-fixture Local Model Smoke Attempt
+
+Phase 21-N was explicitly approved for exactly one backend local/private model call, but preflight stopped before execution because required fixture token `smoke_001` was not present and approved in the ignored local fixture registry.
+
+The blocked result is recorded in `../docs/phase-21-n-one-fixture-local-model-smoke-report.md`. No model call, retry, serving benchmark, serving-stack switch, production `local_model` enablement, vLLM/SGLang/Ollama call, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
+
+Next backend work should resolve the ignored local `smoke_001` fixture prerequisite only, unless a later prompt explicitly approves another one-call smoke attempt.
+
 ## Future TODO
 
 - Add authenticated backend boundary only after explicit approval.

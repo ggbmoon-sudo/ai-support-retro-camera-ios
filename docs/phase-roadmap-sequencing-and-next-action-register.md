@@ -16,11 +16,11 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**Phase 21-N: Approved One-fixture Backend Local Model Route Smoke**
+**Phase 21-N-R0: One-fixture Local Model Smoke Preflight Block Resolution**
 
-Reason: Phase 21-M formalized the quantization and serving benchmark plan, including model candidates, vLLM/SGLang/Transformers+FastAPI/Ollama serving roles, INT4/INT8/AWQ/GPTQ/equivalent quantization dimensions, fixture policy, sanitized metrics, and no-runtime benchmark boundaries. The next logical phase is the first approved backend-internal `local_model` route smoke, but it requires explicit user approval because it may run exactly one local/private model call.
+Reason: Phase 21-N was explicitly approved for one backend local/private model call, but preflight stopped before execution because the required preferred fixture token `smoke_001` was not present and approved in the ignored local fixture registry. The next logical phase is to resolve that local-only preflight prerequisite without committing local config, fixture registry contents, fixture images, raw reports, prompts, model outputs, request payloads, logs, model weights, or credentials.
 
-This recommended next phase must be explicitly approved before it starts. It should be backend-internal, local/private, exactly one declared fixture token, exactly one model call, no retries, no iOS integration, no app-facing endpoint, no production endpoint, no user-photo upload, no serving benchmark, no vLLM/SGLang/Ollama call, and no production readiness change.
+This recommended next phase should remain local prerequisite resolution only unless the user explicitly approves another one-call smoke attempt. Do not substitute another fixture token for `smoke_001` without explicit user approval. Do not run a model call, serving benchmark, vLLM/SGLang/Ollama call, iOS integration, endpoint work, upload runtime, or production readiness change during prerequisite resolution.
 
 ## How Codex Should Use This File
 
@@ -55,6 +55,7 @@ Use cautious wording and re-check source docs before implementation:
 - Phase 21-K Stateful WSS Live Advisor protocol preflight now records future session lifecycle, backend mediation, server busy/backoff, retry, no-raw-video, Auto-Trigger/1 FPS/compression dependency, privacy/logging, and iOS/backend boundaries while keeping WSS runtime blocked.
 - Phase 21-L Local On-device CV Camera Aids Plan now records future grid alignment, horizon/level, exposure warning, motion/stability bucket, 60fps smoothness, local-only privacy/data-retention, Auto-Trigger relationship, and cloud VLM boundary policies while keeping local CV runtime blocked.
 - Phase 21-M Quantization + Serving Benchmark Plan now records future model, serving stack, quantization, fixture, metrics, safety/fallback, latency/throughput, and cost/hardware planning policies while keeping benchmark runtime, model download, serving-stack switch, `local_model`, Qwen inference, fixture inference, vLLM/SGLang/Ollama calls, iOS runtime dependencies, endpoints, and production rollout blocked.
+- Phase 21-N one-fixture backend local/private model smoke was approved but preflight-blocked before any model call because `smoke_001` was not present/approved in the ignored local fixture registry. No model call, retry, serving benchmark, endpoint, iOS integration, raw artifact, or production rollout occurred.
 - `productionReady:false` remains the cross-phase default.
 
 Source references for future operators include `docs/phase-log.md`, `docs/handoff/codex-transition-handoff.md`, `docs/missing-features-and-deferred-roadmap-register.md`, and the Phase 20/21 backend gateway docs.
@@ -80,6 +81,7 @@ Rules:
 | Phase 21-K | Stateful WSS Live Advisor Protocol Preflight | Define session state, backoff, server busy, structured advice, no video stream, backend-mediated only | no | no | no | no | yes | Phase 21-J trigger policy | Protocol/schema preflight exists with no WSS runtime |
 | Phase 21-L | Local On-device CV Camera Aids Plan | Plan grid alignment, horizon/level, exposure warning, motion/stability buckets, 60fps smoothness target | no | no | no runtime | no | yes | Phase 21-J trigger policy | Local-only camera-aid plan and performance/safety gates documented |
 | Phase 21-M | Quantization + Serving Benchmark Plan | Add INT4/INT8/AWQ/GPTQ/equivalent benchmark dimensions; vLLM primary, SGLang challenger, Transformers+FastAPI reference | no | no | no | no | yes | Phase 21-H2 target reset | Benchmark plan/gate exists; no benchmark execution |
+| Phase 21-N-R0 | One-fixture Local Model Smoke Preflight Block Resolution | Prepare ignored local `smoke_001` fixture prerequisite after blocked Phase 21-N preflight | no | no | no | no | explicit approval required for any later model call | Phase 21-N blocked report | `smoke_001` present/approved locally, ignored, unstaged, and safe for a later explicitly approved one-call smoke |
 | Phase 21-N or later | Approved One-fixture Backend Local Model Route Smoke | First controlled backend `local_model` route call through gateway chain | yes | yes, one only | no | no app/prod endpoint | explicit approval required | Approval gate, dry-run plan, policy gates | One declared fixture, one call only, no retries, sanitized result, validator/fallback enforced |
 | Phase 21-O or later | Approved Serving Benchmark Execution | Compare serving stacks/quantization/latency on sanitized fixtures | yes | yes | no | no app/prod endpoint | explicit approval required | Phase 21-M plan and user approval | Sanitized benchmark metrics only; no raw artifacts; production remains false |
 | Phase 22-A | Debug-only iOS Backend Integration Preflight | Plan debug-only backend result flow with no production endpoint | no runtime by default | no | no runtime by default | no production endpoint | yes | Backend policy gates | Preflight documents debug-only path and no iOS provider/model keys |

@@ -733,3 +733,15 @@ Operator implications:
 - iOS must not contain provider/model keys or direct provider/model route fields.
 - The gate must report no network calls, no model calls, no Qwen inference, no benchmark, no app-facing endpoint, no production endpoint, and `productionReady:false`.
 - Keep any local sandbox config ignored and sandbox-only.
+
+## Phase 21-N One-fixture Smoke Preflight Block
+
+Phase 21-N was explicitly approved for one backend local/private model call, but execution stopped before healthz/model-call because required fixture token `smoke_001` was not present and approved in the ignored local fixture registry.
+
+Operator implications:
+
+- Prepare or approve `smoke_001` only in ignored local fixture registry and ignored local sample files.
+- Do not commit local config, fixture registry contents, fixture images, raw reports, prompts, request payloads, logs, model outputs, model weights, or credentials.
+- Do not substitute another fixture token without explicit user approval.
+- Do not run a model call, retry, serving benchmark, vLLM/SGLang/Ollama call, model download, serving-stack switch, endpoint work, iOS integration, or production rollout during preflight block resolution.
+- Keep `productionReady:false`.

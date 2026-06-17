@@ -49,6 +49,21 @@ Local On-device CV Camera Aids Plan gate:
 - [ ] Confirm the roadmap current next phase is Phase 21-M: Quantization + Serving Benchmark Plan.
 - [ ] Confirm no local CV runtime, grid/horizon/exposure/motion runtime, Camera live cloud AI runtime entry, Auto-Trigger runtime, WSS runtime, upload runtime, compression runtime change, iOS payload change, endpoint, model call, Qwen inference, fixture inference, serving benchmark, raw artifact, secret, or production rollout was added.
 
+## Phase 21-N
+
+Approved one-fixture backend local model route smoke:
+
+- [x] Confirm user explicitly approved one backend local/private model smoke.
+- [x] Confirm repo was clean and upstream sync was `0 0` before preflight.
+- [x] Confirm ignored local config, ignored local fixture registry, and ignored local sample folder were present, ignored, untracked, and unstaged.
+- [x] Confirm required preferred fixture token `smoke_001` was not present/approved in the ignored local registry.
+- [x] Confirm the phase stopped before healthz/model-call execution.
+- [x] Confirm no substitute fixture token was used.
+- [x] Confirm model call count `0`, retry count `0`, network calls made `false`, model calls made `false`, Qwen inference run `false`, serving benchmark run `false`, and `productionReady:false`.
+- [x] Confirm `docs/phase-21-n-one-fixture-local-model-smoke-report.md` records sanitized preflight-block result only.
+- [x] Confirm roadmap current next phase is Phase 21-N-R0: One-fixture Local Model Smoke Preflight Block Resolution.
+- [x] Confirm no serving benchmark, model switch, production `local_model` enablement, vLLM/SGLang/Ollama call, iOS integration, endpoint, Auto-Trigger runtime, WSS runtime, upload runtime, raw artifact, secret, or production rollout was added.
+
 ## Phase 21-G2
 
 Missing feature + deferred roadmap register:
@@ -3696,7 +3711,7 @@ Manual Xcode check:
 
 Known TODOs:
 
-- [ ] Phase 21-N requires explicit user approval because it may run exactly one backend local/private model call.
+- [ ] Phase 21-N-R0 resolves the missing ignored `smoke_001` fixture prerequisite only; any later one-call smoke attempt still requires explicit user approval.
 - [ ] Serving benchmark execution, model downloads, vLLM/SGLang/Ollama runs, local model route enablement, and production rollout remain blocked until later explicit approval.
 
 ## Phase 14C

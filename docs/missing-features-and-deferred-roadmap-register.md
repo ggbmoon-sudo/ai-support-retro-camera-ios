@@ -204,6 +204,18 @@ Phase 21-M formalizes the quantization and serving benchmark direction as a docs
 - Phase 21-M adds no serving benchmark runtime, model download, model switch, `local_model` enablement, vLLM/SGLang/Ollama call, Qwen inference, fixture inference, iOS runtime dependency, endpoint, or production rollout.
 - `productionReady:false` remains locked.
 
+## Phase 21-N One-fixture Local Model Smoke Preflight Result
+
+Phase 21-N was explicitly approved for exactly one backend local/private model route smoke, but the required preflight blocked execution:
+
+- Ignored local config, ignored local fixture registry, and ignored local sample folder were present, ignored, untracked, and unstaged.
+- Required preferred fixture token `smoke_001` was not present/approved in the ignored local fixture registry.
+- No substitute fixture token was used.
+- No healthz call, model call, retry, Qwen inference, serving benchmark, vLLM/SGLang/Ollama call, model download, model switch, iOS integration, endpoint, upload runtime, raw artifact, secret, or production rollout occurred.
+- The sanitized blocked report is `docs/phase-21-n-one-fixture-local-model-smoke-report.md`.
+- Recommended next phase is Phase 21-N-R0: One-fixture Local Model Smoke Preflight Block Resolution.
+- `productionReady:false` remains locked.
+
 ## Cross-reference Future Phases
 
 These are proposed planning labels only. Because the current repo already contains a committed Phase 21-H dry-run plan, future operators should reconcile numbering before implementation.

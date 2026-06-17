@@ -261,3 +261,9 @@ The Phase 21-M gate validates benchmark plan policy objects only and must report
 `productionReady:false` remains locked.
 
 Passing Phase 21-M means only that future quantization and serving benchmark policy is documented and gate-tested. It is not benchmark execution approval, not model download approval, not model switch approval, not `local_model` route approval, not vLLM/SGLang/Ollama approval, not Qwen inference approval, not fixture inference approval, not iOS approval, not endpoint approval, and not production rollout.
+
+## Phase 21-N Follow-up
+
+Phase 21-N was explicitly approved for exactly one backend local/private model route smoke, but preflight blocked execution before any model call because required preferred fixture token `smoke_001` was not present and approved in the ignored local fixture registry.
+
+This does not change the Phase 21-M benchmark plan. Serving benchmark execution, model downloads, model switching, production `local_model` enablement, vLLM/SGLang/Ollama calls, fixture benchmark inference, iOS dependencies, endpoints, and production rollout remain blocked. The next recommended step is Phase 21-N-R0: resolve the ignored local `smoke_001` fixture prerequisite without committing local config, fixture registry contents, fixture images, raw reports, prompts, model outputs, request payloads, logs, model weights, or credentials.

@@ -342,3 +342,9 @@ Phase 21-F does not run real model smoke, Qwen inference, fixture inference, ser
 ## Boundary Confirmation
 
 Phase 20-E-E is a review/summary/planning gate only. It does not run real model smoke, expand fixture count, benchmark vLLM/SGLang, start iOS integration, add app-facing or production endpoints, train/fine-tune, weaken validation, loosen fixture approval, commit local artifacts, or change production readiness.
+
+## Phase 21-N Preflight Block Note
+
+Phase 21-N was explicitly approved for exactly one backend local/private model route smoke, but the required preflight blocked execution before any healthz/model call because `smoke_001` was not present and approved in the ignored local fixture registry.
+
+Ignored local config, ignored local fixture registry, and ignored local sample folder were present, ignored, untracked, and unstaged. No fixture was substituted. No model call, retry, serving benchmark, Qwen inference, vLLM/SGLang/Ollama call, model download, model switch, endpoint, iOS integration, raw artifact, secret, or production rollout occurred. `productionReady:false` remains locked.
