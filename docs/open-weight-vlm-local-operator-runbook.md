@@ -761,6 +761,12 @@ Operator implications:
 
 Phase 21-N-R0B rechecked for the operator-provided `smoke_001` fixture and it is still missing. The ignored local registry was not edited.
 
+## Phase 21-N-R0C Operator Fixture Supply Recheck
+
+Phase 21-N-R0C rechecked whether the operator supplied exactly one approved local-only `smoke_001` fixture. The fixture is still missing, so the ignored local registry was not edited and no model call was run.
+
+Operator action remains: place exactly one approved local-only `smoke_001.jpg`, `smoke_001.jpeg`, or `smoke_001.png` in the ignored local sample folder only. Do not commit fixture images, local config, fixture registry contents, raw reports, prompts, request payloads, logs, model outputs, model weights, or credentials.
+
 Operator implications:
 
 - Supply exactly one approved local-only `smoke_001` fixture image in the ignored sample folder.

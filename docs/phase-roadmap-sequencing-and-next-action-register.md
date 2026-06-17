@@ -18,7 +18,7 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 **Phase 21-N-R0C: Operator supplies approved smoke_001 local fixture**
 
-Reason: Phase 21-N-R0B checked for operator-provided `smoke_001` fixture preparation, but `smoke_001.*` is still missing from the ignored local sample folder. Because the fixture file is missing, the ignored local registry was not modified and `smoke_001` remains not present/approved. The next logical step is for the operator to supply exactly one approved local-only `smoke_001` fixture image without committing fixture images, local config, fixture registry contents, raw reports, prompts, model outputs, request payloads, logs, model weights, or credentials.
+Reason: Phase 21-N-R0C checked for operator-supplied `smoke_001` fixture material, but `smoke_001.*` is still missing from the ignored local sample folder. Because the fixture file is missing, the ignored local registry was not modified and `smoke_001` remains not present/approved. The next logical step is still for the operator to supply exactly one approved local-only `smoke_001` fixture image without committing fixture images, local config, fixture registry contents, raw reports, prompts, model outputs, request payloads, logs, model weights, or credentials.
 
 This recommended next phase should remain local fixture supply only unless the user explicitly approves another scope. Do not run a model call, Qwen inference, fixture inference, serving benchmark, vLLM/SGLang/Ollama call, iOS integration, endpoint work, upload runtime, or production readiness change during fixture supply.
 
@@ -58,6 +58,7 @@ Use cautious wording and re-check source docs before implementation:
 - Phase 21-N one-fixture backend local/private model smoke was approved but preflight-blocked before any model call because `smoke_001` was not present/approved in the ignored local fixture registry. No model call, retry, serving benchmark, endpoint, iOS integration, raw artifact, or production rollout occurred.
 - Phase 21-N-R0 inspected ignored local prerequisites and found `smoke_001.*` fixture file missing, so the ignored registry was not edited and the prerequisite remains blocked. No model call, Qwen inference, fixture inference, serving benchmark, local registry commit, endpoint, iOS integration, raw artifact, or production rollout occurred.
 - Phase 21-N-R0B rechecked operator fixture preparation and `smoke_001.*` is still missing. No ignored registry edit, model call, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, or production rollout occurred.
+- Phase 21-N-R0C rechecked operator supply of exactly one approved local-only `smoke_001` fixture and `smoke_001.*` is still missing. No ignored registry edit, model call, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, or production rollout occurred.
 - `productionReady:false` remains the cross-phase default.
 
 Source references for future operators include `docs/phase-log.md`, `docs/handoff/codex-transition-handoff.md`, `docs/missing-features-and-deferred-roadmap-register.md`, and the Phase 20/21 backend gateway docs.
