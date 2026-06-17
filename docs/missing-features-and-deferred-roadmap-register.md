@@ -242,11 +242,11 @@ Phase 21-N-R0B rechecked operator-provided fixture preparation and kept the mode
 
 Phase 21-N-R0C rechecked operator supply of exactly one approved local-only `smoke_001` fixture and kept the model-call boundary closed:
 
-- `smoke_001.*` is still missing from the ignored local sample folder.
-- The ignored local fixture registry was not edited.
-- `smoke_001` remains not present/approved.
+- `smoke_001.*` is now present in the ignored local sample folder.
+- The ignored local fixture registry was updated locally only.
+- `smoke_001` is now present/approved in the ignored local registry.
 - No model call, Qwen inference, fixture inference, serving benchmark, iOS integration, endpoint, raw artifact, secret, or production rollout occurred.
-- Recommended next phase remains Phase 21-N-R0C: Operator supplies approved smoke_001 local fixture.
+- Recommended next phase is Phase 21-N-R1: Approved One-fixture Local Model Smoke Retry, requiring separate explicit user approval.
 - `productionReady:false` remains locked.
 
 ## Cross-reference Future Phases

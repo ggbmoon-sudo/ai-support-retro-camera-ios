@@ -361,6 +361,6 @@ Phase 21-N-R0B rechecked the ignored local sample folder and `smoke_001.*` is st
 
 ## Phase 21-N-R0C Operator Fixture Supply Recheck
 
-Phase 21-N-R0C rechecked operator supply of exactly one approved local-only `smoke_001` fixture. The ignored local sample folder still has no `smoke_001.*` fixture, so the ignored local registry remains unedited and `smoke_001` remains not present/approved.
+Phase 21-N-R0C was rerun after operator supply. The ignored local sample folder now has `smoke_001.*` present, and the ignored local registry now has an approved `smoke_001` entry. No model call, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
 
 No model call, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.

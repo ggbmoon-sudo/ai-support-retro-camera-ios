@@ -1326,7 +1326,7 @@ Phase 21-N-R0 inspected that prerequisite and found the ignored local `smoke_001
 
 Phase 21-N-R0B rechecked the operator-provided fixture prerequisite and `smoke_001.*` is still missing. The ignored fixture registry remains unedited, no model call ran, and the next backend step remains local-only fixture supply.
 
-Phase 21-N-R0C rechecked operator supply of exactly one approved local-only `smoke_001` fixture. The fixture is still missing, the ignored fixture registry remains unedited, no model call ran, and the next backend step remains local-only fixture supply.
+Phase 21-N-R0C rechecked operator supply of exactly one approved local-only `smoke_001` fixture. The fixture is now present locally and ignored, the ignored fixture registry now has an approved `smoke_001` entry, no model call ran, and the next backend step is an explicitly approved one-fixture local model smoke retry.
 
 ## Future TODO
 

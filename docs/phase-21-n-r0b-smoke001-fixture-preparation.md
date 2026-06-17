@@ -113,9 +113,9 @@ Any future one-call model smoke retry still requires separate explicit approval.
 
 ## Phase 21-N-R0C Follow-up
 
-Phase 21-N-R0C rechecked operator supply of exactly one approved local-only `smoke_001` fixture. The fixture is still missing, so the ignored local registry was not edited and `smoke_001` remains not present/approved.
+Phase 21-N-R0C was rerun after operator supply. The fixture is now present locally and ignored, so the ignored local registry was updated locally only and `smoke_001` is now present/approved.
 
-The next recommended phase remains Phase 21-N-R0C: Operator supplies approved smoke_001 local fixture. No model call, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, secret, or production rollout occurred in R0C.
+The next recommended phase is Phase 21-N-R1: Approved One-fixture Local Model Smoke Retry. It requires separate explicit user approval because it may run exactly one backend local/private model call. No model call, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, secret, or production rollout occurred in R0C.
 
 ## productionReady:false
 

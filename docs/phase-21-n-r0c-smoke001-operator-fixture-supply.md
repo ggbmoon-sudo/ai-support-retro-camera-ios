@@ -1,13 +1,16 @@
 # Phase 21-N-R0C smoke_001 Operator Fixture Supply
 
-Status: fixture still missing  
+Status: prerequisite satisfied locally
+
 Production readiness: `productionReady:false`
 
 ## Executive Summary
 
-Phase 21-N-R0C checked whether the operator supplied exactly one approved local-only `smoke_001` fixture image for future sandbox use. No model call was run.
+Phase 21-N-R0C rechecked whether the operator supplied exactly one approved local-only `smoke_001` fixture image for future sandbox use. No model call was run.
 
-The ignored local sample folder exists and remains ignored/untracked/unstaged, but no approved `smoke_001.*` fixture file is present. Because the fixture file is still missing, the ignored local fixture registry was not edited and `smoke_001` remains not present/approved.
+The ignored local sample folder exists and remains ignored/untracked/unstaged. One `smoke_001.*` fixture file is now present with extension bucket `jpg`, remains ignored/untracked/unstaged, and was not opened, OCR'd, uploaded, or inspected for content/EXIF.
+
+Because the fixture file is present, the ignored local fixture registry was updated locally only to add/approve `smoke_001`. The ignored registry remains ignored/untracked/unstaged and was not committed.
 
 ## Phase 21-N / R0 / R0B Blocker Chain
 
@@ -17,19 +20,13 @@ Phase 21-N-R0 confirmed `smoke_001.*` was missing from the ignored local sample 
 
 Phase 21-N-R0B rechecked the operator fixture preparation step and still found no `smoke_001.*` fixture file.
 
-Phase 21-N-R0C repeats the operator supply check without opening the image, printing image details, OCR, EXIF inspection, upload, model calls, Qwen inference, fixture inference, or serving benchmark.
+Phase 21-N-R0C repeated the operator supply check without opening the image, printing image details, OCR, EXIF inspection, upload, model calls, Qwen inference, fixture inference, or serving benchmark.
 
 ## Operator Supply Status
 
-No approved local-only `smoke_001` fixture file was detected.
+One approved local-only `smoke_001` fixture file was detected.
 
-The operator still needs to place one approved local-only fixture at one of:
-
-- `backend/tests/vlm-local-samples/smoke_001.jpg`
-- `backend/tests/vlm-local-samples/smoke_001.jpeg`
-- `backend/tests/vlm-local-samples/smoke_001.png`
-
-Do not commit the fixture image.
+The fixture remains local-only in the ignored sample folder and must not be committed.
 
 ## smoke_001 Fixture Presence
 
@@ -39,9 +36,10 @@ Do not commit the fixture image.
 | sample folder ignored | true |
 | sample folder tracked | false |
 | sample folder staged | false |
-| `smoke_001.*` file present | false |
-| extension bucket | missing |
-| `smoke_001` ignored | false |
+| `smoke_001.*` file present | true |
+| extension bucket | jpg |
+| `smoke_001` ignored | true |
+| `smoke_001` tracked | false |
 | `smoke_001` staged | false |
 | raw image printed | false |
 | raw image path printed | false |
@@ -53,14 +51,15 @@ Do not commit the fixture image.
 | Field | Result |
 | --- | --- |
 | registry present | true |
-| `smoke_001` entry present | false |
-| `smoke_001` approved | false |
-| fixture mode bucket | unknown |
-| fixture count bucket | twelve_or_less |
+| `smoke_001` entry present | true |
+| `smoke_001` approved | true |
+| fixture mode bucket | approved_local_only |
+| fixture count bucket | more_than_twelve |
 | registry ignored | true |
+| registry tracked | false |
 | registry staged | false |
 
-The ignored local registry was not touched because the fixture file is missing.
+The ignored local registry was touched locally only to add/approve `smoke_001`.
 
 ## Ignored / Untracked / Unstaged Confirmation
 
@@ -81,13 +80,13 @@ Serving benchmark run: false
 
 ## Retry Prerequisite Status
 
-Retry prerequisite now satisfied: no
+Retry prerequisite now satisfied: yes
 
-The prerequisite remains blocked until the operator supplies an approved local-only `smoke_001` fixture file and the ignored local registry can then be updated/verified as approved for `smoke_001`.
+The local-only fixture and ignored registry prerequisite is ready for a future one-fixture backend local/private model smoke retry, but that retry still requires separate explicit model-call approval.
 
 ## What Remains Blocked
 
-Still blocked:
+Still blocked until separate explicit approval:
 
 - future one-fixture model retry.
 - Qwen inference.
@@ -109,11 +108,9 @@ Still blocked:
 
 ## Next Recommended Phase
 
-Phase 21-N-R0C: Operator supplies approved smoke_001 local fixture
+Phase 21-N-R1: Approved One-fixture Local Model Smoke Retry
 
-Scope remains operator supply only: place exactly one approved local-only `smoke_001` fixture image in the ignored sample folder. Do not commit fixture images, local config, local registry contents, raw reports, prompts, request payloads, logs, model outputs, model weights, or credentials.
-
-Any future one-call model smoke retry still requires separate explicit approval.
+Important: Phase 21-N-R1 requires separate explicit user approval because it may run exactly one backend local/private model call.
 
 ## productionReady:false
 
