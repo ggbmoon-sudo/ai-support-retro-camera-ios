@@ -150,6 +150,8 @@ Phase 21-I does not implement Auto-Trigger runtime.
 
 Phase 21-J now formalizes this relationship as a docs/gate/source-audit policy: stillness must be greater than 1 second; stable time less than or equal to 1 second means no capture, no upload, no backend call, and no model call; cloud analysis is capped at max 1 FPS; and runtime remains blocked.
 
+Phase 21-K now formalizes the WSS relationship as a docs/gate/schema-policy preflight: WSS may carry backend-mediated session/throttle/backoff/advice buckets only, must not carry raw video, 30fps frames, raw image/base64/path/GPS/EXIF/sensor/prompt/model output/provider fields, and does not approve upload runtime.
+
 ## 1 FPS Relationship
 
 Cloud AI must not treat the viewfinder as 30fps video.

@@ -16,11 +16,11 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**Phase 21-K: Stateful WSS Live Advisor Protocol Preflight**
+**Phase 21-L: Local On-device CV Camera Aids Plan**
 
-Reason: Phase 21-J formalized the future Auto-Trigger stillness threshold, `<=1s` no-capture/no-upload/no-backend/no-model rule, max 1 FPS cloud-analysis cadence, consent/no-silent-upload boundary, disabled/off state, compression/upload dependency, local CV split, and throttle/backoff policy. Before any Live Advisor runtime or iOS integration, the stateful WSS session protocol should be defined as a docs/gate/schema preflight.
+Reason: Phase 21-K formalized the future Stateful WSS Live Advisor session protocol, backend-mediated boundary, session lifecycle, server busy/backoff state, retry limits, no-raw-video rule, Auto-Trigger/1 FPS/compression dependencies, and privacy/logging boundaries. Before any Live Advisor runtime or iOS integration, the local on-device CV camera aids plan should define what stays local at camera/UI rate.
 
-This recommended next phase should run no model call, no Qwen inference, no fixture inference, no serving benchmark, no iOS runtime change, no endpoint change, no upload runtime, no compression runtime, no Auto-Trigger runtime, no WSS runtime, and no production readiness change.
+This recommended next phase should run no model call, no Qwen inference, no fixture inference, no serving benchmark, no cloud upload, no endpoint change, no upload runtime, no compression runtime, no Auto-Trigger runtime, no WSS runtime, and no production readiness change.
 
 ## How Codex Should Use This File
 
@@ -52,6 +52,7 @@ Use cautious wording and re-check source docs before implementation:
 - Phase 21-G2 missing/deferred register now records unfinished feature areas and new Qwen MoE / Auto-Trigger / WSS / compression / quantization / local CV directions.
 - Phase 21-I image compression/upload payload policy gate now records the future compressed preview payload boundary and keeps runtime upload blocked.
 - Phase 21-J Auto-Trigger + 1 FPS Live Advisor policy gate now records the future stillness, no-upload, sparse cadence, consent/off-state, compression dependency, and backoff boundaries while keeping runtime blocked.
+- Phase 21-K Stateful WSS Live Advisor protocol preflight now records future session lifecycle, backend mediation, server busy/backoff, retry, no-raw-video, Auto-Trigger/1 FPS/compression dependency, privacy/logging, and iOS/backend boundaries while keeping WSS runtime blocked.
 - `productionReady:false` remains the cross-phase default.
 
 Source references for future operators include `docs/phase-log.md`, `docs/handoff/codex-transition-handoff.md`, `docs/missing-features-and-deferred-roadmap-register.md`, and the Phase 20/21 backend gateway docs.

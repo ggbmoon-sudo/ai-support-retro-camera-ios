@@ -107,6 +107,11 @@ import {
   evaluateOpenWeightVlmAutoTriggerLiveAdvisorPolicyGate
 } from "../src/qa/openWeightVlmAutoTriggerLiveAdvisorPolicyGate.mjs";
 import {
+  assertOpenWeightVlmStatefulWssLiveAdvisorProtocolPreflightReportRedacted,
+  evaluateOpenWeightVlmStatefulWssLiveAdvisorProtocolPreflight,
+  statefulWssLiveAdvisorProtocolReadyPolicy
+} from "../src/qa/openWeightVlmStatefulWssLiveAdvisorProtocolPreflight.mjs";
+import {
   assertOpenWeightVlmBenchmarkReportRedacted,
   buildOpenWeightVlmSchemaDiagnostic,
   evaluateOpenWeightVlmBenchmarkCase,
@@ -154,6 +159,8 @@ const IMAGE_COMPRESSION_UPLOAD_POLICY_GATE_SCRIPT_URL =
   new URL("../scripts/check-open-weight-vlm-image-compression-upload-policy-gate.mjs", import.meta.url);
 const AUTO_TRIGGER_LIVE_ADVISOR_POLICY_GATE_SCRIPT_URL =
   new URL("../scripts/check-open-weight-vlm-auto-trigger-live-advisor-policy-gate.mjs", import.meta.url);
+const STATEFUL_WSS_LIVE_ADVISOR_PROTOCOL_PREFLIGHT_SCRIPT_URL =
+  new URL("../scripts/check-open-weight-vlm-stateful-wss-live-advisor-protocol-preflight.mjs", import.meta.url);
 
 test("open-weight VLM validator accepts valid synthetic benchmark fixtures", async () => {
   const cases = await benchmarkCases();
@@ -3663,6 +3670,174 @@ test("open-weight VLM Auto-Trigger Live Advisor policy gate CLI is sanitized and
   assert.equal(result.stdout.includes("data:image"), false);
   assert.equal(result.stdout.includes("rawPrompt"), false);
   assert.equal(result.stdout.includes("requestPayload"), false);
+  assert.equal(result.stdout.includes("QWE_API_KEY"), false);
+});
+
+test("open-weight VLM Stateful WSS Live Advisor protocol preflight accepts valid blocked-runtime policy", () => {
+  const report = evaluateOpenWeightVlmStatefulWssLiveAdvisorProtocolPreflight(
+    statefulWssLiveAdvisorProtocolReadyPolicy()
+  );
+
+  assert.equal(report.protocolPreflightEligible, true);
+  assert.equal(report.wssRuntimeEnabled, false);
+  assert.equal(report.webSocketServerRuntimeEnabled, false);
+  assert.equal(report.iosWebSocketClientRuntimeEnabled, false);
+  assert.equal(report.liveAdvisorRuntimeEnabled, false);
+  assert.equal(report.cameraCloudEntryEnabled, false);
+  assert.equal(report.uploadRuntimeEnabled, false);
+  assert.equal(report.backendMediatedRequired, true);
+  assert.equal(report.rawVideoStreamingAllowed, false);
+  assert.equal(report.maxCloudAnalysisFpsBucket, "max_1fps");
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.modelCallsMade, false);
+  assert.equal(report.qwenInferenceRun, false);
+  assert.equal(report.benchmarkRun, false);
+  assert.equal(report.productionReady, false);
+});
+
+test("open-weight VLM Stateful WSS Live Advisor protocol preflight blocks runtime flags", () => {
+  const report = evaluateOpenWeightVlmStatefulWssLiveAdvisorProtocolPreflight({
+    ...statefulWssLiveAdvisorProtocolReadyPolicy(),
+    wssRuntimeEnabled: true,
+    webSocketServerRuntimeEnabled: true,
+    iosWebSocketClientRuntimeEnabled: true,
+    liveAdvisorRuntimeEnabled: true,
+    cameraCloudEntryEnabled: true,
+    uploadRuntimeEnabled: true
+  });
+
+  assert.equal(report.protocolPreflightEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_wss_runtime_enabled"), true);
+  assert.equal(report.blockers.includes("blocked_for_websocket_server_runtime_enabled"), true);
+  assert.equal(report.blockers.includes("blocked_for_ios_websocket_client_runtime_enabled"), true);
+  assert.equal(report.blockers.includes("blocked_for_live_advisor_runtime_enabled"), true);
+  assert.equal(report.blockers.includes("blocked_for_camera_cloud_entry_enabled"), true);
+  assert.equal(report.blockers.includes("blocked_for_upload_runtime_enabled"), true);
+});
+
+test("open-weight VLM Stateful WSS Live Advisor protocol preflight blocks protocol dependencies", () => {
+  const report = evaluateOpenWeightVlmStatefulWssLiveAdvisorProtocolPreflight({
+    ...statefulWssLiveAdvisorProtocolReadyPolicy(),
+    backendMediatedRequired: false,
+    rawVideoStreamingAllowed: true,
+    maxCloudAnalysisFpsBucket: "over_1fps",
+    maxCloudAnalysisFps: 30,
+    autoTriggerPolicyRequired: false,
+    compressionPolicyRequired: false
+  });
+
+  assert.equal(report.protocolPreflightEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_missing_backend_mediation"), true);
+  assert.equal(report.blockers.includes("blocked_for_raw_video_streaming"), true);
+  assert.equal(report.blockers.includes("blocked_for_cloud_analysis_over_1fps"), true);
+  assert.equal(report.blockers.includes("blocked_for_missing_auto_trigger_policy"), true);
+  assert.equal(report.blockers.includes("blocked_for_missing_compression_policy"), true);
+});
+
+test("open-weight VLM Stateful WSS Live Advisor protocol preflight blocks consent state and backoff gaps", () => {
+  const report = evaluateOpenWeightVlmStatefulWssLiveAdvisorProtocolPreflight({
+    ...statefulWssLiveAdvisorProtocolReadyPolicy(),
+    consentRequired: false,
+    silentUploadBlocked: false,
+    disabledStateBlocksSession: false,
+    disabledStateBlocksCapture: false,
+    disabledStateBlocksUpload: false,
+    backoffPolicyRequired: false,
+    serverBusyBackoffRequired: false,
+    retryPolicyBucket: "retry_extra_uploads"
+  });
+
+  assert.equal(report.protocolPreflightEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_missing_consent_requirement"), true);
+  assert.equal(report.blockers.includes("blocked_for_silent_upload_allowed"), true);
+  assert.equal(report.blockers.includes("blocked_for_disabled_state_not_blocking_session_capture_upload"), true);
+  assert.equal(report.blockers.includes("blocked_for_missing_backoff_policy"), true);
+  assert.equal(report.blockers.includes("blocked_for_unsafe_retry_policy"), true);
+});
+
+test("open-weight VLM Stateful WSS Live Advisor protocol preflight blocks payload and leakage fields", () => {
+  const report = evaluateOpenWeightVlmStatefulWssLiveAdvisorProtocolPreflight({
+    ...statefulWssLiveAdvisorProtocolReadyPolicy(),
+    providerFieldsAllowedInIos: true,
+    rawPayloadAllowed: true,
+    rawPromptAllowed: true,
+    rawModelOutputAllowed: true,
+    chainOfThoughtAllowed: true,
+    debugLeakageAllowed: true
+  });
+
+  assert.equal(report.protocolPreflightEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_provider_fields_in_ios"), true);
+  assert.equal(report.blockers.includes("blocked_for_raw_payload_allowed"), true);
+  assert.equal(report.blockers.includes("blocked_for_raw_prompt_allowed"), true);
+  assert.equal(report.blockers.includes("blocked_for_raw_model_output_allowed"), true);
+  assert.equal(report.blockers.includes("blocked_for_chain_of_thought"), true);
+  assert.equal(report.blockers.includes("blocked_for_debug_provider_leakage"), true);
+});
+
+test("open-weight VLM Stateful WSS Live Advisor protocol preflight blocks execution flags", () => {
+  const report = evaluateOpenWeightVlmStatefulWssLiveAdvisorProtocolPreflight({
+    ...statefulWssLiveAdvisorProtocolReadyPolicy(),
+    productionReady: true,
+    networkCallsMade: true,
+    modelCallsMade: true,
+    qwenInferenceRun: true,
+    benchmarkRun: true
+  });
+
+  assert.equal(report.protocolPreflightEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_production_flag"), true);
+  assert.equal(report.blockers.includes("blocked_for_network_call_in_planning_phase"), true);
+  assert.equal(report.blockers.includes("blocked_for_model_call_in_planning_phase"), true);
+  assert.equal(report.blockers.includes("blocked_for_qwen_inference_in_planning_phase"), true);
+  assert.equal(report.blockers.includes("blocked_for_benchmark_execution"), true);
+});
+
+test("open-weight VLM Stateful WSS Live Advisor protocol preflight sanitized output contains no raw artifacts", () => {
+  const report = evaluateOpenWeightVlmStatefulWssLiveAdvisorProtocolPreflight({
+    ...statefulWssLiveAdvisorProtocolReadyPolicy(),
+    probeValues: [
+      "wss://example.invalid/live",
+      "C:\\raw\\frame.jpg",
+      "data:image/jpeg",
+      "requestPayload",
+      "rawPrompt",
+      "rawModelOutput",
+      "QWE_API_KEY"
+    ]
+  });
+  const serialized = JSON.stringify(report);
+  const redaction = assertOpenWeightVlmStatefulWssLiveAdvisorProtocolPreflightReportRedacted(report);
+
+  assert.equal(report.protocolPreflightEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_committed_raw_protocol_value"), true);
+  assert.equal(redaction.ok, true);
+  assert.equal(serialized.includes("wss://example.invalid/live"), false);
+  assert.equal(serialized.includes("C:\\raw\\frame.jpg"), false);
+  assert.equal(serialized.includes("data:image/jpeg"), false);
+  assert.equal(serialized.includes("\"requestPayload\":"), false);
+  assert.equal(serialized.includes("\"rawPrompt\":"), false);
+  assert.equal(serialized.includes("\"rawModelOutput\":"), false);
+  assert.equal(serialized.includes("QWE_API_KEY"), false);
+});
+
+test("open-weight VLM Stateful WSS Live Advisor protocol preflight CLI is sanitized and no-network", () => {
+  const result = spawnSync(process.execPath, [fileURLToPath(STATEFUL_WSS_LIVE_ADVISOR_PROTOCOL_PREFLIGHT_SCRIPT_URL)], {
+    encoding: "utf8"
+  });
+  const report = JSON.parse(result.stdout);
+
+  assert.equal(result.status, 0);
+  assert.equal(report.protocolPreflightEligible, true);
+  assert.equal(report.networkCallsMade, false);
+  assert.equal(report.modelCallsMade, false);
+  assert.equal(report.qwenInferenceRun, false);
+  assert.equal(report.benchmarkRun, false);
+  assert.equal(report.productionReady, false);
+  assert.equal(result.stdout.includes("wss://"), false);
+  assert.equal(result.stdout.includes("data:image"), false);
+  assert.equal(result.stdout.includes("\"rawPrompt\":"), false);
+  assert.equal(result.stdout.includes("\"requestPayload\":"), false);
   assert.equal(result.stdout.includes("QWE_API_KEY"), false);
 });
 

@@ -168,6 +168,17 @@ Phase 21-J formalizes the Auto-Trigger + 1 FPS Live Advisor direction as a docs/
 - The current source audit found local CoreMotion/capture-context and mock-only Camera snapshot scaffolds, but no Auto-Trigger runtime, live cloud Camera entry, WSS runtime, frame upload loop, model call, Qwen inference, benchmark, or production rollout is approved by Phase 21-J.
 - `productionReady:false` remains locked.
 
+## Phase 21-K Stateful WSS Protocol Result
+
+Phase 21-K formalizes the Stateful WSS Live Advisor direction as a docs/gate/schema-policy/source-audit preflight:
+
+- Future WSS is backend-mediated only and may carry session, consent, enabled/off, capability, stillness eligibility, throttle, server busy/backoff, structured advice, fallback/error, and `productionReady:false` buckets.
+- WSS must not carry raw camera video, 30fps frames, raw original image, base64 image unless later approved, raw path, GPS, raw EXIF, raw sensor stream, raw prompt, raw model output, provider/model URL, API key, provider/model selection from iOS, raw backend payload, debug/provider leakage, or chain-of-thought.
+- Session lifecycle is closed/off by default; consent must be known; backend sends policy/session limits; client sends bucketed state only until upload is separately approved; disabled/off state closes the session and blocks capture/upload/cloud calls.
+- Server busy/backoff and retry rules must not create extra uploads, bypass max 1 FPS, retry when stillness is `<=1s`, retry after disable/off, or silently loop.
+- The current source audit found no WSS/WebSocket runtime, no iOS WebSocket client, no backend WebSocket server, no live session state, and no raw video streaming path; existing Camera snapshot/mock files remain mock-only/pre-existing.
+- `productionReady:false` remains locked.
+
 ## Cross-reference Future Phases
 
 These are proposed planning labels only. Because the current repo already contains a committed Phase 21-H dry-run plan, future operators should reconcile numbering before implementation.

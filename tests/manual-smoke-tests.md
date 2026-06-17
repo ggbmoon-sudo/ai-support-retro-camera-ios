@@ -29,6 +29,16 @@ Auto-Trigger + 1 FPS Live Advisor policy gate:
 - [ ] Confirm `docs/auto-trigger-1fps-live-advisor-policy-gate.md` records the current source audit, stillness `>1s` threshold, `<=1s` no-capture/no-upload/no-backend/no-model rule, max 1 FPS cloud-analysis policy, compression/upload relationship, WSS relationship, local CV relationship, backend validation, iOS boundary, and stop-condition policies.
 - [ ] Confirm no Auto-Trigger runtime, Camera live cloud AI runtime entry, WSS runtime, upload runtime, compression runtime change, iOS payload change, endpoint, model call, Qwen inference, fixture inference, serving benchmark, raw artifact, secret, or production rollout was added.
 
+## Phase 21-K
+
+Stateful WSS Live Advisor protocol preflight:
+
+- [ ] From `backend/`, run `npm run qa:open-weight-vlm:stateful-wss-live-advisor-protocol`.
+- [ ] Confirm the CLI output has `protocolPreflightEligible:true`, `wssRuntimeEnabled:false`, `webSocketServerRuntimeEnabled:false`, `iosWebSocketClientRuntimeEnabled:false`, `liveAdvisorRuntimeEnabled:false`, `cameraCloudEntryEnabled:false`, `uploadRuntimeEnabled:false`, `networkCallsMade:false`, `modelCallsMade:false`, `qwenInferenceRun:false`, `benchmarkRun:false`, and `productionReady:false`.
+- [ ] Confirm `docs/stateful-wss-live-advisor-protocol-preflight.md` records the current source audit, future WSS purpose, session lifecycle, client/backend message policy, server busy/backoff, throttle/rate-limit, Auto-Trigger, 1 FPS, compression/upload, consent/no-silent-upload, privacy/logging, iOS/backend boundary, and stop-condition policies.
+- [ ] Confirm the roadmap current next phase is Phase 21-L: Local On-device CV Camera Aids Plan.
+- [ ] Confirm no WSS runtime, WebSocket server/client runtime, Auto-Trigger runtime, Camera live cloud AI runtime entry, upload runtime, compression runtime change, iOS payload change, endpoint, model call, Qwen inference, fixture inference, serving benchmark, raw artifact, secret, or production rollout was added.
+
 ## Phase 21-G2
 
 Missing feature + deferred roadmap register:

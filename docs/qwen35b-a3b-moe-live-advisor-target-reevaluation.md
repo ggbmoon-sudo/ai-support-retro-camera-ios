@@ -246,7 +246,7 @@ After Phase 21-H2:
 
 1. Phase 21-I: Image Compression + Upload Payload Policy Gate. Completed as a docs/gate/source-audit phase that keeps upload runtime, compression runtime changes, iOS payload changes, endpoints, model calls, Qwen inference, serving benchmarks, and production rollout blocked.
 2. Phase 21-J: Auto-Trigger + 1 FPS Live Advisor Policy Gate. Completed as a docs/gate/source-audit phase that keeps Auto-Trigger runtime, Camera live cloud AI runtime entry, WSS runtime, upload runtime, iOS payload changes, endpoints, model calls, Qwen inference, serving benchmarks, and production rollout blocked.
-3. Phase 21-K: Stateful WSS Live Advisor Protocol Preflight.
+3. Phase 21-K: Stateful WSS Live Advisor Protocol Preflight. Completed as a docs/gate/schema-policy/source-audit phase that keeps WSS runtime, WebSocket server/client runtime, Auto-Trigger runtime, Camera live cloud AI runtime, upload runtime, iOS payload changes, endpoints, model calls, Qwen inference, serving benchmarks, and production rollout blocked.
 4. Phase 21-L: Local On-device CV Camera Aids Plan.
 5. Phase 21-M: Quantization + Serving Benchmark Plan.
 6. Phase 21-N or later: explicitly approved one-fixture backend `local_model` route smoke.

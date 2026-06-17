@@ -110,6 +110,8 @@ WSS must not:
 
 WSS runtime remains blocked in Phase 21-J.
 
+Phase 21-K now formalizes this future relationship as a docs/gate/schema-policy preflight: WSS may coordinate backend-mediated session state, throttle/backoff, server busy state, and short structured advice only. It must not stream raw video, carry 30fps frames, bypass backend mediation, bypass the `>1s` stillness rule, bypass max 1 FPS, or approve runtime WSS.
+
 ## Consent / No-silent-upload Policy
 
 No silent upload is allowed.

@@ -186,6 +186,8 @@ Phase 21-I remains backend/docs/gate-only from the iOS app perspective. It docum
 
 Phase 21-J remains backend/docs/gate-only from the iOS app perspective. It documents the future Auto-Trigger + 1 FPS Live Advisor policy and audits existing local CoreMotion/capture-context and mock Camera snapshot scaffolds without modifying them. Xcode runtime behavior should be unchanged: no iOS source/project/localization changes, no new Camera live cloud AI runtime entry, no Auto-Trigger runtime, no WSS runtime, no image upload runtime, no image compression runtime change, no iOS provider/model key, no direct provider/model call, no iOS upload payload change, no capture-context upload, no app-facing endpoint, no production endpoint, and no production rollout. MacBook/Xcode must not depend on Windows local paths or local model server URLs.
 
+Phase 21-K remains backend/docs/gate-only from the iOS app perspective. It documents the future Stateful WSS Live Advisor protocol and audits current source for WebSocket/live-session behavior without modifying iOS. Xcode runtime behavior should be unchanged: no iOS source/project/localization changes, no new Camera live cloud AI runtime entry, no Auto-Trigger runtime, no WSS runtime, no iOS WebSocket client runtime, no image upload runtime, no image compression runtime change, no iOS provider/model key, no direct provider/model call, no iOS upload payload change, no capture-context upload, no app-facing endpoint, no production endpoint, and no production rollout. MacBook/Xcode must not depend on Windows local paths or local model server URLs.
+
 ## Phase 17D-A Local Camera Capture Context
 
 Phase 17D-A adds local-only summarized capture context for captured / imported photos:
