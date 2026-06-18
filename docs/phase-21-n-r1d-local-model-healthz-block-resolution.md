@@ -1,6 +1,6 @@
 # Phase 21-N-R1D Local Model Healthz Block Resolution
 
-Status: healthz prerequisite still blocked
+Status: healthz prerequisite resolved after recheck
 
 Date: 2026-06-19
 
@@ -10,7 +10,7 @@ Production readiness: `productionReady:false`
 
 Phase 21-N-R1D diagnosed the Phase 21-N-R1C healthz blocker without running a model call. The ignored local config, fixture registry, and `smoke_001` fixture prerequisites remain ready, ignored, untracked, and unstaged.
 
-The healthz-only diagnostic checked the local/private healthz endpoint once and returned the sanitized bucket `connection_refused`. Because healthz is still unavailable, the future one-fixture smoke retry prerequisite is not resolved.
+The initial healthz-only diagnostic checked the local/private healthz endpoint once and returned the sanitized bucket `connection_refused`. After the operator restarted the local/private server, the healthz-only preflight was re-run and returned `safe`. The future one-fixture smoke retry prerequisite is now resolved, but any retry still requires separate explicit model-call approval.
 
 ## Phase 21-N-R1C Healthz Blocker Summary
 
@@ -57,13 +57,15 @@ R1C result:
 
 ## Healthz Diagnostic
 
-Healthz checked: yes, once.
+Healthz checked: yes.
 
-Healthz result bucket: `connection_refused`
+Initial healthz result bucket: `connection_refused`
 
-Healthz prerequisite resolved: no.
+Recheck healthz result bucket: `safe`
 
-Sanitized interpretation: the configured local/private loopback healthz endpoint did not accept the connection during this phase. No server URL, raw healthz response, server logs, local config contents, registry contents, image path, request payload, secret, prompt, or model output is included in this report.
+Healthz prerequisite resolved: yes.
+
+Sanitized interpretation: after local/private server startup, the configured loopback healthz endpoint reported safe buckets: ok true, modelLoaded true, Qwen/VLM-compatible model family, rawLoggingDisabled true, publicExposure no, and `productionReady:false`. No server URL, raw healthz response, server logs, local config contents, registry contents, image path, request payload, secret, prompt, or model output is included in this report.
 
 ## Model Call Boundary
 
@@ -79,9 +81,9 @@ Sanitized interpretation: the configured local/private loopback healthz endpoint
 
 ## Future Retry Eligibility
 
-Future retry prerequisite satisfied: no.
+Future retry prerequisite satisfied: yes.
 
-Reason: healthz remains blocked with `connection_refused`.
+Reason: healthz recheck returned `safe`.
 
 Before any future one-fixture retry, the operator must restore safe local/private healthz buckets:
 
@@ -113,9 +115,9 @@ Any future retry that may run one backend local/private model call still require
 
 ## Next Recommended Phase
 
-Phase 21-N-R1D: One-fixture Local Model Smoke Retry Healthz Block Resolution
+Phase 21-N-R1E: Approved One-fixture Local Model Smoke Retry After Healthz Fix
 
-Scope: continue resolving the local/private healthz availability blocker without running a model call. If a later healthz resolution phase makes healthz safe, the next model-call phase should be Phase 21-N-R1E and must require separate explicit approval.
+Scope: exactly one backend local/private model smoke retry may be considered only after separate explicit user approval. Do not start R1E automatically.
 
 ## Raw Artifact Policy Confirmation
 

@@ -16,11 +16,11 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**Phase 21-N-R1D: One-fixture Local Model Smoke Retry Healthz Block Resolution**
+**Phase 21-N-R1E: Approved One-fixture Local Model Smoke Retry After Healthz Fix**
 
-Reason: Phase 21-N-R1D diagnosed the R1C healthz blocker with one healthz-only, no-model check and healthz remains blocked with sanitized bucket `connection_refused`. No model call, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
+Reason: Phase 21-N-R1D rechecked healthz after the operator restarted the local/private server, and the healthz-only preflight returned sanitized bucket `safe`. No model call, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
 
-This recommended next phase is prerequisite resolution only. Do not run a model call, Qwen inference, fixture inference, serving benchmark, vLLM/SGLang/Ollama call, iOS integration, endpoint work, upload runtime, or production readiness change while resolving the healthz blocker.
+This recommended next phase requires separate explicit model-call approval because it may run exactly one backend local/private model call. Do not run a model call, Qwen inference, fixture inference, serving benchmark, vLLM/SGLang/Ollama call, iOS integration, endpoint work, upload runtime, or production readiness change unless R1E is explicitly approved.
 
 ## How Codex Should Use This File
 
@@ -62,7 +62,7 @@ Use cautious wording and re-check source docs before implementation:
 - Phase 21-N-R1 was explicitly approved for one backend local/private model smoke retry, but preflight blocked before healthz/model execution because the ignored local config fixture token was not `smoke_001`. No model call, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, or production rollout occurred.
 - Phase 21-N-R1B resolved the ignored local config fixture-token mismatch locally so the configured fixture token is now `smoke_001`. No model call, healthz check, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, or production rollout occurred.
 - Phase 21-N-R1C was explicitly approved for one backend local/private model smoke retry after config fix. The guarded command ran once and blocked at healthz before any model call. No retry, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, or production rollout occurred.
-- Phase 21-N-R1D diagnosed the healthz block with a healthz-only no-model preflight. The ignored local config, fixture registry, and `smoke_001` fixture remain ready and ignored, but healthz remains blocked with `connection_refused`. No model call, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, or production rollout occurred.
+- Phase 21-N-R1D diagnosed the healthz block with a healthz-only no-model preflight, then rechecked after operator server startup. The ignored local config, fixture registry, and `smoke_001` fixture remain ready and ignored, and healthz is now `safe`. No model call, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, or production rollout occurred.
 - `productionReady:false` remains the cross-phase default.
 
 Source references for future operators include `docs/phase-log.md`, `docs/handoff/codex-transition-handoff.md`, `docs/missing-features-and-deferred-roadmap-register.md`, and the Phase 20/21 backend gateway docs.
