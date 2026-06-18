@@ -96,11 +96,12 @@ Current phase:
 - Phase 21-N-R1D diagnoses the healthz blocker with no-model healthz-only checks. After operator local/private server startup, healthz is now sanitized bucket `safe`; the ignored local config, fixture registry, and `smoke_001` fixture remain ready. No model call, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, secret, or production rollout occurs.
 - Phase 21-N-R1E runs the explicitly approved one-fixture backend local/private model smoke retry after the healthz fix. The guarded command ran once with `smoke_001`, zero retries, and was accepted with sanitized aggregate output only. No serving benchmark, model switch, production `local_model`, endpoint, iOS integration, raw artifact, secret, or production rollout occurs.
 - Phase 21-O adds a no-model serving benchmark execution preflight/scope gate. It defines no-model contract checks, one-fixture smoke, controlled 12-fixture benchmark, serving stack comparison, quantization benchmark, and Live Advisor 1 FPS simulation boundaries while running no benchmark, model call, Qwen inference, fixture inference, vLLM/SGLang/Ollama call, serving switch, endpoint, iOS integration, raw artifact, secret, or production rollout.
+- Phase 21-P adds a no-model serving benchmark plan approval matrix. It records approval requirements for no-model contract preflight, one-fixture smoke, controlled 12-fixture benchmark, serving stack comparison, quantization benchmark, and Live Advisor 1 FPS simulation while running no benchmark, model call, Qwen inference, fixture inference, vLLM/SGLang/Ollama call, serving switch, endpoint, iOS integration, raw artifact, secret, or production rollout.
 - Phase 21-H adds the controlled backend `local_model` route dry-run plan. It is a no-network/no-model/no-Qwen/no-benchmark plan gate for a future explicitly approved one-fixture, one-call, no-retry backend-internal local/private route test. It does not enable `local_model`, run fixture inference, add iOS integration, add app-facing or production endpoints, accept user-photo uploads, or change `productionReady:false`.
 
 Next phase:
 
-- Recommended next step is Phase 21-P: Serving Benchmark Plan Approval Matrix. Phase 21-P should remain no-model/docs/gate unless separately approved.
+- Recommended next step is Phase 21-Q: vLLM No-model Serving Contract Preflight. Phase 21-Q must remain no-model unless separately approved.
 - Do not start production cloud rollout without explicit approval
 - Production rollout remains blocked until a later explicit release phase
 

@@ -1340,6 +1340,8 @@ Phase 21-N-R1E runs the explicitly approved one-fixture local/private model smok
 
 Phase 21-O adds `backend/src/qa/openWeightVlmServingBenchmarkExecutionScopeGate.mjs` and `npm run qa:open-weight-vlm:serving-benchmark-scope-gate`. The gate is no-model/no-network by default, passes only no-model contract scope, and blocks serving benchmark/model execution, fixture expansion, retries, raw artifacts, endpoints, iOS integration, Camera cloud entry, Auto-Trigger/WSS/upload runtime, public endpoint classes, Ollama/LM Studio production use, quantization production use, and Live Advisor over-1-FPS simulation. It adds no benchmark runtime, model call, Qwen inference, fixture inference, serving stack switch, endpoint, iOS integration, or production rollout.
 
+Phase 21-P adds `backend/src/qa/openWeightVlmServingBenchmarkApprovalMatrix.mjs` and `npm run qa:open-weight-vlm:serving-benchmark-approval-matrix`. The matrix is no-model/no-network and defines approval classes for no-model contract preflight, one-fixture smoke, controlled 12-fixture benchmark, serving stack comparison, quantization benchmark, and Live Advisor 1 FPS simulation. It blocks model calls, benchmark execution, retries, fixture expansion beyond scope, raw artifacts, production readiness, iOS integration, endpoints, Camera cloud entry, Auto-Trigger/WSS/upload runtime, public endpoint classes, Ollama/LM Studio production use, quantization production claims, and unknown stacks/kinds unless a future explicitly approved scope exists.
+
 ## Future TODO
 
 - Add authenticated backend boundary only after explicit approval.

@@ -14,6 +14,8 @@ This file is a memory-safe project register, not an implementation approval. Ite
 
 Phase 21-O update: serving benchmark execution now has a no-model preflight/scope gate. It defines no-model contract checks, one-fixture smoke, controlled 12-fixture benchmark, serving stack comparison, quantization benchmark, and Live Advisor 1 FPS simulation boundaries while keeping benchmark execution, model calls, fixture expansion, serving stack switches, endpoints, iOS integration, and production rollout blocked by default.
 
+Phase 21-P update: serving benchmark planning now has an explicit approval matrix. It maps no-model contract preflight, one-fixture smoke, controlled 12-fixture benchmark, serving stack comparison, quantization benchmark, and Live Advisor 1 FPS simulation to required approval classes while keeping model calls, Qwen inference, fixture inference, serving benchmark execution, serving switches, endpoints, iOS integration, raw artifacts, secrets, and production rollout blocked by default.
+
 Docs audit note: Phase 21-G2 reviewed the Markdown inventory returned by the repo-level Markdown listing command, excluding `node_modules`, `.git`, and local VLM sample paths. The inventory contained 103 Markdown/Markdown-like files. Current implementation was also checked by source-tree and backend script/file-name inspection only; no runtime feature was changed.
 
 Naming note: the Phase 21-G2 prompt assumed Phase 21-H had not started. The current repository already contains a committed Phase 21-H local model route dry-run plan. Future phase labels below preserve the requested roadmap shape, but the next operator should reconcile numbering before starting new implementation.

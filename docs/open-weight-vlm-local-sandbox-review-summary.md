@@ -399,4 +399,8 @@ Phase 21-O adds a serving benchmark execution preflight/scope gate after the acc
 
 No model call, Qwen inference, fixture inference, serving benchmark, serving stack switch, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
 
-No model call, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
+## Phase 21-P Serving Benchmark Approval Matrix
+
+Phase 21-P adds an explicit no-model approval matrix for future serving benchmark plans. It maps one-fixture smoke, controlled 12-fixture benchmark, serving-stack comparison, quantization benchmark, and Live Advisor 1 FPS simulation to separate approval classes and keeps all execution blocked by default.
+
+No model call, Qwen inference, fixture inference, serving benchmark, serving switch, vLLM/SGLang/Ollama call, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.

@@ -183,6 +183,16 @@ Serving benchmark execution preflight / scope gate:
 - [x] Confirm no model call, Qwen inference, fixture inference, serving benchmark, serving switch, vLLM/SGLang/Ollama call, iOS integration, endpoint, Auto-Trigger runtime, WSS runtime, upload runtime, raw artifact, secret, or production rollout was added.
 - [x] Confirm roadmap current next phase is Phase 21-P: Serving Benchmark Plan Approval Matrix.
 
+## Phase 21-P
+
+Serving benchmark approval matrix:
+
+- [x] Confirm `docs/serving-benchmark-plan-approval-matrix.md` defines approval requirements for no-model contract preflight, one-fixture smoke, controlled 12-fixture benchmark, serving stack comparison, quantization benchmark, and Live Advisor 1 FPS simulation.
+- [x] Confirm `npm run qa:open-weight-vlm:serving-benchmark-approval-matrix` reports `approvalMatrixEligible:true`, `defaultNoModelContractPassed:true`, `networkCallsMade:false`, `modelCallsMade:false`, `qwenInferenceRun:false`, `fixtureInferenceRun:false`, `servingBenchmarkRun:false`, and `productionReady:false`.
+- [x] Confirm blocked scenarios include one-fixture without approval, one-fixture fixture expansion, retry without approval, 12-fixture/vLLM/SGLang/quantization/live simulation without approval, Live Advisor over 1 FPS, raw output logging, `productionReady:true`, iOS integration, endpoints, public endpoint class, and Ollama/LM Studio production use.
+- [x] Confirm no model call, Qwen inference, fixture inference, serving benchmark, serving switch, vLLM/SGLang/Ollama call, iOS integration, endpoint, Auto-Trigger runtime, WSS runtime, upload runtime, raw artifact, secret, or production rollout was added.
+- [x] Confirm roadmap current next phase is Phase 21-Q: vLLM No-model Serving Contract Preflight.
+
 ## Phase 21-G2
 
 Missing feature + deferred roadmap register:

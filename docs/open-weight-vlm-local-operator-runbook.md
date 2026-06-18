@@ -809,6 +809,12 @@ Phase 21-O adds a no-model serving benchmark execution preflight/scope gate. It 
 
 Future benchmark work must start small and gated: one fixture only before controlled 12-fixture plans, one serving stack at a time, sanitized aggregate reports only, no raw artifacts, no endpoints, no iOS integration, no production rollout, and `productionReady:false`.
 
+## Phase 21-P Serving Benchmark Approval Matrix
+
+Phase 21-P adds a no-model approval matrix for future serving benchmark plans. It records that no-model contract preflight needs no model-call approval, while one-fixture smoke, controlled 12-fixture benchmark, serving-stack comparison, quantization benchmark, and Live Advisor 1 FPS simulation each require separate explicit scoped approval before any execution.
+
+No model call, Qwen inference, fixture inference, serving benchmark, serving switch, vLLM/SGLang/Ollama call, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
+
 Operator implications:
 
 - Supply exactly one approved local-only `smoke_001` fixture image in the ignored sample folder.
