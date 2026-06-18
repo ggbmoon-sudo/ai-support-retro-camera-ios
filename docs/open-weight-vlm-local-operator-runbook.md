@@ -789,6 +789,12 @@ No model call, retry, Qwen inference, fixture inference, serving benchmark, endp
 
 Next action: resolve the healthz blocker in Phase 21-N-R1D. Do not run a model call during healthz block resolution, and do not commit local config, fixture registry, fixture image, raw reports, prompts, request payloads, logs, model outputs, model weights, or credentials.
 
+## Phase 21-N-R1D Healthz Diagnosis
+
+Phase 21-N-R1D adds a no-model healthz-only preflight and records the healthz result as sanitized bucket `connection_refused`. The ignored local config, registry, and `smoke_001` fixture remain ready and unstaged, but the future one-fixture retry remains blocked until healthz is safe.
+
+No model call, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
+
 Operator implications:
 
 - Supply exactly one approved local-only `smoke_001` fixture image in the ignored sample folder.

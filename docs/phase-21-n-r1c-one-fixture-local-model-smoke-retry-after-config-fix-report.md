@@ -179,6 +179,8 @@ Phase 21-N-R1D: One-fixture Local Model Smoke Retry Healthz Block Resolution
 
 Scope: resolve the local/private healthz blocker before any future one-fixture retry. Do not run a model call during R1D. Any later retry still requires separate explicit approval.
 
+Follow-up: Phase 21-N-R1D added a no-model healthz-only diagnostic and healthz remains blocked with sanitized bucket `connection_refused`. No model call, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
+
 ## productionReady:false
 
 `productionReady:false` remains locked.

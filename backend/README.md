@@ -1334,6 +1334,8 @@ Phase 21-N-R1B resolves that ignored local config fixture-token mismatch locally
 
 Phase 21-N-R1C attempted that explicitly approved retry after config fix. The guarded command ran once, checked healthz once, and blocked before any model call because healthz was unsafe or unavailable in sanitized buckets. No retry, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, secret, or production rollout occurred. The next step is healthz block resolution only.
 
+Phase 21-N-R1D adds a healthz-only no-model preflight helper and records that the healthz blocker remains unresolved with sanitized bucket `connection_refused`. The ignored local config still targets `smoke_001`, and the ignored registry/fixture prerequisites remain ready and unstaged. No model call, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, secret, or production rollout occurred. A future retry still requires safe healthz plus separate explicit approval.
+
 ## Future TODO
 
 - Add authenticated backend boundary only after explicit approval.

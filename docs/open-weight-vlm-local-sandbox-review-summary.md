@@ -379,4 +379,10 @@ Phase 21-N-R1C was explicitly approved for exactly one backend local/private mod
 
 No retry, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, secret, or production rollout occurred. The next step is healthz block resolution only.
 
+## Phase 21-N-R1D Healthz Diagnosis
+
+Phase 21-N-R1D diagnosed the healthz block with a no-model healthz-only preflight. The local fixture prerequisites remain ready and ignored, but healthz remains blocked with sanitized bucket `connection_refused`, so a future retry is not yet eligible.
+
+No model call, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
+
 No model call, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.

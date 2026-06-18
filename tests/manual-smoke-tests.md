@@ -149,6 +149,17 @@ Approved one-fixture local model smoke retry after config fix:
 - [x] Confirm roadmap current next phase is Phase 21-N-R1D: One-fixture Local Model Smoke Retry Healthz Block Resolution.
 - [x] Confirm no model call, serving benchmark, model switch, production `local_model`, vLLM/SGLang/Ollama call, iOS integration, endpoint, Auto-Trigger runtime, WSS runtime, upload runtime, raw artifact, secret, or production rollout was added.
 
+## Phase 21-N-R1D
+
+Healthz block resolution:
+
+- [x] Confirm ignored local config, fixture registry, and `smoke_001` fixture remain present, ignored, untracked, and unstaged.
+- [x] Confirm healthz-only preflight ran once and reported sanitized bucket `connection_refused`.
+- [x] Confirm healthz prerequisite resolved `false`.
+- [x] Confirm model call executed `no`, call count `0`, retry count `0`, Qwen inference `false`, fixture inference `false`, serving benchmark `false`, and `productionReady:false`.
+- [x] Confirm roadmap current next phase remains Phase 21-N-R1D: One-fixture Local Model Smoke Retry Healthz Block Resolution.
+- [x] Confirm no model call, serving benchmark, model switch, production `local_model`, vLLM/SGLang/Ollama call, iOS integration, endpoint, Auto-Trigger runtime, WSS runtime, upload runtime, raw artifact, secret, or production rollout was added.
+
 ## Phase 21-G2
 
 Missing feature + deferred roadmap register:
