@@ -1336,6 +1336,8 @@ Phase 21-N-R1C attempted that explicitly approved retry after config fix. The gu
 
 Phase 21-N-R1D adds a healthz-only no-model preflight helper and records that the healthz blocker was resolved after operator local/private server startup. The recheck returned sanitized bucket `safe`; the ignored local config still targets `smoke_001`, and the ignored registry/fixture prerequisites remain ready and unstaged. No model call, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, secret, or production rollout occurred. Phase 21-N-R1E still requires separate explicit approval before any one-fixture model call.
 
+Phase 21-N-R1E runs the explicitly approved one-fixture local/private model smoke retry after healthz fix. The guarded retry command ran once with `--approved-one-call`, `--fixture smoke_001`, and `--no-retry`; it passed preflight, made one local/private model call, and was accepted by backend validation with `acceptedCount:1`, `rejectedCount:0`, `validationCode:null`, `fallbackCategory:null`, and latency bucket `gt_15s`. No raw output was printed or persisted. No serving benchmark, model switch, production `local_model`, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
+
 ## Future TODO
 
 - Add authenticated backend boundary only after explicit approval.

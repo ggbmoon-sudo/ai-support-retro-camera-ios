@@ -119,6 +119,8 @@ Phase 21-N-R1E: Approved One-fixture Local Model Smoke Retry After Healthz Fix
 
 Scope: exactly one backend local/private model smoke retry may be considered only after separate explicit user approval. Do not start R1E automatically.
 
+Follow-up: Phase 21-N-R1E was explicitly approved and ran exactly one guarded backend local/private model smoke retry with `smoke_001`, zero retries, and sanitized aggregate output only. The result was accepted. No serving benchmark, model switch, production `local_model`, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
+
 ## Raw Artifact Policy Confirmation
 
 - rawHealthzPersisted: false

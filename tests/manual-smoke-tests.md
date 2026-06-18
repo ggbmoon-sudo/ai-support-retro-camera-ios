@@ -160,6 +160,19 @@ Healthz block resolution:
 - [x] Confirm roadmap current next phase remains Phase 21-N-R1D: One-fixture Local Model Smoke Retry Healthz Block Resolution.
 - [x] Confirm no model call, serving benchmark, model switch, production `local_model`, vLLM/SGLang/Ollama call, iOS integration, endpoint, Auto-Trigger runtime, WSS runtime, upload runtime, raw artifact, secret, or production rollout was added.
 
+## Phase 21-N-R1E
+
+Approved one-fixture local model smoke retry after healthz fix:
+
+- [x] Confirm user explicitly approved one backend local/private model smoke retry after healthz fix.
+- [x] Confirm ignored local config, fixture registry, and `smoke_001` fixture remained present, ignored, untracked, and unstaged.
+- [x] Confirm healthz preflight was safe before model call.
+- [x] Confirm guarded command ran exactly once with `--approved-one-call`, `--fixture smoke_001`, and `--no-retry`.
+- [x] Confirm model call executed `yes`, call count `1`, retry count `0`, fixture count `1`, accepted count `1`, rejected count `0`, and `productionReady:false`.
+- [x] Confirm no raw prompt, raw model output, raw image path/content, request payload, local config contents, fixture registry contents, server logs, or secrets were printed or persisted.
+- [x] Confirm roadmap current next phase is Phase 21-O: Approved Serving Benchmark Execution Preflight / Scope Gate.
+- [x] Confirm no serving benchmark, model switch, production `local_model`, vLLM/SGLang/Ollama call, iOS integration, endpoint, Auto-Trigger runtime, WSS runtime, upload runtime, raw artifact, secret, or production rollout was added.
+
 ## Phase 21-G2
 
 Missing feature + deferred roadmap register:

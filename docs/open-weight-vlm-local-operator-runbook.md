@@ -795,6 +795,14 @@ Phase 21-N-R1D adds a no-model healthz-only preflight and records the healthz re
 
 No model call, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
 
+Follow-up: the operator restarted the local/private server and the R1D healthz-only recheck returned `safe`.
+
+## Phase 21-N-R1E Accepted One-fixture Retry
+
+Phase 21-N-R1E was explicitly approved for one backend local/private model smoke retry after healthz fix. The guarded command ran exactly once with `smoke_001` and zero retries. The backend validator accepted the result with sanitized aggregate only: `acceptedCount:1`, `rejectedCount:0`, `validationCode:null`, `fallbackCategory:null`, and latency bucket `gt_15s`.
+
+No serving benchmark, model switch, production `local_model`, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
+
 Operator implications:
 
 - Supply exactly one approved local-only `smoke_001` fixture image in the ignored sample folder.
