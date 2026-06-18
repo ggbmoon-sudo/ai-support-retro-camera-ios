@@ -821,6 +821,12 @@ Phase 21-Q adds a no-model vLLM serving contract preflight. It records future ba
 
 No vLLM runtime was started, no vLLM endpoint was called, no model call, Qwen inference, fixture inference, serving benchmark, serving switch, SGLang/Ollama call, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
 
+## Phase 21-R SGLang No-model Contract Preflight
+
+Phase 21-R adds a no-model SGLang serving contract preflight. It records future backend-mediated SGLang request/response boundaries, structured candidate JSON requirements, validator/fallback/safety gates, no raw logging/persistence, and no iOS direct provider/model path.
+
+No SGLang runtime was started, no SGLang endpoint was called, no model call, Qwen inference, fixture inference, serving benchmark, serving switch, vLLM/Ollama call, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
+
 Operator implications:
 
 - Supply exactly one approved local-only `smoke_001` fixture image in the ignored sample folder.

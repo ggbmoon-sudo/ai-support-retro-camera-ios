@@ -18,6 +18,8 @@ Phase 21-P update: serving benchmark planning now has an explicit approval matri
 
 Phase 21-Q update: vLLM now has a no-model serving contract preflight. It defines backend-mediated structured JSON request/response boundaries for a future vLLM candidate while keeping vLLM runtime, endpoint calls, model calls, Qwen inference, fixture inference, serving benchmarks, serving switches, endpoints, iOS integration, raw artifacts, secrets, and production rollout blocked by default.
 
+Phase 21-R update: SGLang now has a no-model serving contract preflight. It defines backend-mediated structured JSON request/response boundaries for a future SGLang challenger while keeping SGLang runtime, endpoint calls, model calls, Qwen inference, fixture inference, serving benchmarks, serving switches, endpoints, iOS integration, raw artifacts, secrets, and production rollout blocked by default.
+
 Docs audit note: Phase 21-G2 reviewed the Markdown inventory returned by the repo-level Markdown listing command, excluding `node_modules`, `.git`, and local VLM sample paths. The inventory contained 103 Markdown/Markdown-like files. Current implementation was also checked by source-tree and backend script/file-name inspection only; no runtime feature was changed.
 
 Naming note: the Phase 21-G2 prompt assumed Phase 21-H had not started. The current repository already contains a committed Phase 21-H local model route dry-run plan. Future phase labels below preserve the requested roadmap shape, but the next operator should reconcile numbering before starting new implementation.

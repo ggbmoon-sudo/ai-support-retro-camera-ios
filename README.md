@@ -98,11 +98,12 @@ Current phase:
 - Phase 21-O adds a no-model serving benchmark execution preflight/scope gate. It defines no-model contract checks, one-fixture smoke, controlled 12-fixture benchmark, serving stack comparison, quantization benchmark, and Live Advisor 1 FPS simulation boundaries while running no benchmark, model call, Qwen inference, fixture inference, vLLM/SGLang/Ollama call, serving switch, endpoint, iOS integration, raw artifact, secret, or production rollout.
 - Phase 21-P adds a no-model serving benchmark plan approval matrix. It records approval requirements for no-model contract preflight, one-fixture smoke, controlled 12-fixture benchmark, serving stack comparison, quantization benchmark, and Live Advisor 1 FPS simulation while running no benchmark, model call, Qwen inference, fixture inference, vLLM/SGLang/Ollama call, serving switch, endpoint, iOS integration, raw artifact, secret, or production rollout.
 - Phase 21-Q adds a no-model vLLM serving contract preflight. It defines future vLLM request/response boundaries, backend-mediated structured JSON expectations, validator/fallback/safety requirements, and raw-artifact/iOS/endpoint blocks while running no vLLM runtime, vLLM endpoint call, model call, Qwen inference, fixture inference, serving benchmark, serving switch, endpoint, iOS integration, raw artifact, secret, or production rollout.
+- Phase 21-R adds a no-model SGLang serving contract preflight. It defines future SGLang request/response boundaries, backend-mediated structured JSON expectations, validator/fallback/safety requirements, and raw-artifact/iOS/endpoint blocks while running no SGLang runtime, SGLang endpoint call, model call, Qwen inference, fixture inference, serving benchmark, serving switch, endpoint, iOS integration, raw artifact, secret, or production rollout.
 - Phase 21-H adds the controlled backend `local_model` route dry-run plan. It is a no-network/no-model/no-Qwen/no-benchmark plan gate for a future explicitly approved one-fixture, one-call, no-retry backend-internal local/private route test. It does not enable `local_model`, run fixture inference, add iOS integration, add app-facing or production endpoints, accept user-photo uploads, or change `productionReady:false`.
 
 Next phase:
 
-- Recommended next step is Phase 21-R: SGLang No-model Serving Contract Preflight. Phase 21-R must remain no-model unless separately approved.
+- Recommended next step is Phase 21-S: Serving Stack No-model Comparison Matrix. Phase 21-S must remain no-model unless separately approved.
 - Do not start production cloud rollout without explicit approval
 - Production rollout remains blocked until a later explicit release phase
 

@@ -1344,6 +1344,8 @@ Phase 21-P adds `backend/src/qa/openWeightVlmServingBenchmarkApprovalMatrix.mjs`
 
 Phase 21-Q adds `backend/src/qa/openWeightVlmVllmServingContractPreflight.mjs` and `npm run qa:open-weight-vlm:vllm-contract-preflight`. The preflight is no-model/no-network and defines future vLLM contract boundaries only. It blocks vLLM server start, vLLM endpoint call, model calls, benchmarks, model downloads, serving-stack switches, public endpoint classes, raw logging/persistence, missing structured JSON/validator/fallback/safety controls, iOS direct calls/keys, app/prod endpoints, Camera cloud entry, text-only image-analysis models, score/rating, sensitive inference, chain-of-thought, and `productionReady:true`.
 
+Phase 21-R adds `backend/src/qa/openWeightVlmSglangServingContractPreflight.mjs` and `npm run qa:open-weight-vlm:sglang-contract-preflight`. The preflight is no-model/no-network and defines future SGLang contract boundaries only. It blocks SGLang server start, SGLang endpoint call, model calls, benchmarks, model downloads, serving-stack switches, public endpoint classes, raw logging/persistence, missing structured JSON/validator/fallback/safety controls, iOS direct calls/keys, app/prod endpoints, Camera cloud entry, text-only image-analysis models, score/rating, sensitive inference, chain-of-thought, and `productionReady:true`.
+
 ## Future TODO
 
 - Add authenticated backend boundary only after explicit approval.
@@ -1360,5 +1362,5 @@ Phase 21-Q adds `backend/src/qa/openWeightVlmVllmServingContractPreflight.mjs` a
 - Phase 18-A4 is an iOS app-side Photo Advisor result card language model polish. Backend request payloads remain unchanged; capture context, result-card display priority, creative-intent classifications, and filter reason metadata are not uploaded, and provider prompts / endpoints are not changed in this phase.
 - Phase 18-A5 is an iOS app-side multilingual Photo Advisor copy QA / regression kit. Backend request payloads remain unchanged; copy QA scenarios, result-card expectations, and language review notes are not uploaded, and provider prompts / endpoints are not changed in this phase.
 - Phase 18-B0 is a backend/provider language contract and schema alignment audit. Backend request payloads remain unchanged; iOS upload payloads remain unchanged; capture context is still not uploaded; provider output is aligned to the A1-A5 app language system before any production rollout.
-- Do not add Gemini Live, WebSocket, Camera cloud AI, Filter Generator real backend, or ?孵?撣?image editing in this backend phase.
+- Do not add Gemini Live, WebSocket, Camera cloud AI, Filter Generator real backend, or ?摮???image editing in this backend phase.
 - Do not commit secrets, `.env`, provider keys, Firebase config, or production storage config.
