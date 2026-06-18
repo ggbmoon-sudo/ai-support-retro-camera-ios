@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 21-T - One-fixture Serving Benchmark Approval Request Draft
+Current phase: Phase 21-U - Approved Transformers+FastAPI One-fixture Serving Benchmark
 Status: Implemented
-Latest implementation: Added the Phase 21-T one-fixture serving benchmark approval request draft. The draft and dry-run gate prepare copyable approval language for a possible Phase 21-U Transformers+FastAPI reference benchmark with `smoke_001`, one fixture, one call, zero retries, healthz required, local/private endpoint only, sanitized report only, and `productionReady:false`. No serving runtime, endpoint call, model call, Qwen inference, fixture inference, serving benchmark, serving switch, vLLM/SGLang/Ollama call, iOS integration, endpoint, raw artifact, secret, external workspace change, or production rollout occurred. Roadmap next is Phase 21-U: Approved Transformers+FastAPI One-fixture Serving Benchmark, requiring separate explicit model-call approval.
+Latest implementation: Ran the explicitly approved Phase 21-U Transformers+FastAPI reference one-fixture serving benchmark with `smoke_001`, exactly one local/private backend model call, and zero retries. The sanitized result was accepted with `acceptedCount:1`, `rejectedCount:0`, `validationCode:null`, `fallbackCategory:null`, and latency bucket `gt_15s`. No 12-fixture benchmark, concurrency benchmark, quantization benchmark, Live Advisor simulation, vLLM/SGLang/Ollama call, serving switch, iOS integration, endpoint, raw artifact, secret, external workspace change, or production rollout occurred. Roadmap next is Phase 21-V: Controlled Multi-fixture Serving Benchmark Approval Request Draft.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -72,7 +72,7 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-U: Approved Transformers+FastAPI One-fixture Serving Benchmark. Phase 21-U requires separate explicit user approval because it may run exactly one backend local/private model call. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production endpoint work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution beyond the explicitly approved one-call Phase 21-U scope, model downloads, model cache changes, Qwen inference beyond an explicitly approved one-call local/private benchmark, fixture inference beyond `smoke_001`, local CV runtime, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, or user-photo training / fine-tuning until explicitly requested.
+Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-V: Controlled Multi-fixture Serving Benchmark Approval Request Draft. Phase 21-V should remain no-model/docs/gate unless separately explicitly approved. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production endpoint work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution beyond an explicitly approved future scope, model downloads, model cache changes, Qwen inference beyond an explicitly approved local/private benchmark, fixture inference beyond explicit approval, local CV runtime, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, or user-photo training / fine-tuning until explicitly requested.
 
 ---
 
@@ -623,6 +623,83 @@ Phase 21-G3 adds a docs-only phase roadmap sequencing and next-action reminder r
 ### Ready for Next Phase
 
 Yes, for Phase 21-H2 only if explicitly requested as docs/gate-only target re-evaluation work. Any model call, upload, WSS runtime, iOS runtime, endpoint, serving benchmark, or production behavior requires separate explicit approval.
+
+---
+
+## Phase 21-U - Approved Transformers+FastAPI One-fixture Serving Benchmark
+
+Status: Implemented
+Date: 2026-06-19
+
+### Summary
+
+Ran the explicitly approved Transformers+FastAPI reference one-fixture serving benchmark after the Phase 21-T approval request draft and Phase 21-N-R1E accepted smoke. The benchmark used only `smoke_001`, exactly one backend local/private model call, and zero retries.
+
+### Completed Work
+
+- Added `backend/scripts/run-open-weight-vlm-transformers-fastapi-one-fixture-serving-benchmark.mjs`.
+- Added npm script `qa:open-weight-vlm:transformers-fastapi-one-fixture-serving-benchmark`.
+- Added `backend/tests/transformers-fastapi-one-fixture-serving-benchmark.test.mjs`.
+- Reconfirmed ignored local config, fixture registry, and `smoke_001` fixture were present, ignored, untracked, and unstaged.
+- Reconfirmed healthz once before the benchmark call; result bucket was `safe`.
+- Ran exactly one approved benchmark command with `--approved-one-call`, `--serving-stack transformers_fastapi_reference`, `--fixture smoke_001`, `--call-count 1`, and `--no-retry`.
+- Recorded sanitized benchmark result: accepted, `acceptedCount:1`, `rejectedCount:0`, `validationCode:null`, `fallbackCategory:null`, and latency bucket `gt_15s`.
+- Added `docs/phase-21-u-transformers-fastapi-one-fixture-serving-benchmark-report.md`.
+- Updated roadmap sequencing current next phase to Phase 21-V: Controlled Multi-fixture Serving Benchmark Approval Request Draft.
+
+### Changed Files
+
+- `README.md`
+- `backend/README.md`
+- `backend/package.json`
+- `backend/scripts/run-open-weight-vlm-transformers-fastapi-one-fixture-serving-benchmark.mjs`
+- `backend/tests/transformers-fastapi-one-fixture-serving-benchmark.test.mjs`
+- `docs/handoff/codex-transition-handoff.md`
+- `docs/missing-features-and-deferred-roadmap-register.md`
+- `docs/open-weight-vlm-local-operator-runbook.md`
+- `docs/open-weight-vlm-local-sandbox-review-summary.md`
+- `docs/phase-21-u-transformers-fastapi-one-fixture-serving-benchmark-report.md`
+- `docs/phase-log.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `ios-app/README.md`
+- `tests/manual-smoke-tests.md`
+
+### Verification
+
+- Repo was clean and upstream sync was `0 0` before work.
+- Healthz preflight passed with sanitized result bucket `safe`.
+- Full backend test suite passed.
+- Required no-model gates passed before the one benchmark call.
+- One benchmark call executed once and was not retried.
+- Final verification is recorded in task closeout.
+
+### Boundaries
+
+- No second model call.
+- No retry.
+- No second fixture.
+- No 12-fixture benchmark.
+- No controlled multi-fixture benchmark.
+- No concurrency benchmark.
+- No quantization benchmark.
+- No Live Advisor 1 FPS simulation.
+- No vLLM/SGLang/Ollama call.
+- No serving stack switch.
+- No model download.
+- No production `local_model` route enablement.
+- No app-facing or production endpoint.
+- No iOS integration.
+- No Camera cloud AI runtime entry.
+- No Auto-Trigger runtime.
+- No WSS runtime.
+- No local CV runtime.
+- No upload or image compression runtime.
+- No raw artifact, local config, fixture registry, fixture image, prompt, request payload, model output, server log, model weight, or credential committed.
+- `productionReady:false` remains locked.
+
+### Ready for Next Phase
+
+Yes, for Phase 21-V as a controlled multi-fixture serving benchmark approval request draft only. Any future multi-fixture benchmark, serving-stack comparison, quantization benchmark, Live Advisor simulation, endpoint, iOS integration, or production rollout requires separate explicit approval.
 
 ---
 

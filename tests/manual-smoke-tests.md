@@ -233,6 +233,20 @@ One-fixture serving benchmark approval request draft:
 - [x] Confirm no serving runtime, endpoint call, model call, Qwen inference, fixture inference, serving benchmark, serving switch, vLLM/SGLang/Ollama call, iOS integration, endpoint, Auto-Trigger runtime, WSS runtime, upload runtime, raw artifact, secret, or production rollout was added.
 - [x] Confirm roadmap current next phase is Phase 21-U: Approved Transformers+FastAPI One-fixture Serving Benchmark, requiring separate explicit model-call approval.
 
+## Phase 21-U
+
+Approved Transformers+FastAPI one-fixture serving benchmark:
+
+- [x] Confirm user explicitly approved one Transformers+FastAPI reference one-fixture serving benchmark with `smoke_001`, call count 1, and retry count 0.
+- [x] Confirm healthz preflight was safe before the benchmark call.
+- [x] Confirm the guarded benchmark wrapper ran exactly once with `--approved-one-call`, `--serving-stack transformers_fastapi_reference`, `--fixture smoke_001`, `--call-count 1`, and `--no-retry`.
+- [x] Confirm model call executed `yes`, benchmark executed `yes`, fixture count `1`, call count `1`, retry count `0`, accepted count `1`, rejected count `0`, and `productionReady:false`.
+- [x] Confirm sanitized validation/fallback summary has `validationCode:null` and `fallbackCategory:null`.
+- [x] Confirm latency bucket is `gt_15s`.
+- [x] Confirm no raw prompt, raw model output, raw image path/content, request payload, local config contents, fixture registry contents, server logs, or secrets were printed or persisted.
+- [x] Confirm no 12-fixture benchmark, concurrency benchmark, quantization benchmark, Live Advisor simulation, vLLM/SGLang/Ollama call, serving switch, endpoint, iOS integration, Auto-Trigger runtime, WSS runtime, upload runtime, raw artifact, secret, or production rollout was added.
+- [x] Confirm roadmap current next phase is Phase 21-V: Controlled Multi-fixture Serving Benchmark Approval Request Draft.
+
 ## Phase 21-G2
 
 Missing feature + deferred roadmap register:

@@ -16,11 +16,11 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**Phase 21-U: Approved Transformers+FastAPI One-fixture Serving Benchmark**
+**Phase 21-V: Controlled Multi-fixture Serving Benchmark Approval Request Draft**
 
-Reason: Phase 21-T added a draft-only approval request and no-model guard for the next possible one-fixture serving benchmark. The proposed future scope is Transformers+FastAPI reference only, fixture `smoke_001`, one fixture, one call, zero retries, healthz required, local/private endpoint only, sanitized report only, and `productionReady:false`.
+Reason: Phase 21-U ran the explicitly approved Transformers+FastAPI reference one-fixture serving benchmark with fixture `smoke_001`, exactly one call, and zero retries. The sanitized result was accepted with `acceptedCount:1`, `rejectedCount:0`, `validationCode:null`, `fallbackCategory:null`, and latency bucket `gt_15s`.
 
-Phase 21-U requires separate explicit user approval because it may run exactly one backend local/private model call. Do not jump directly to SGLang inference, vLLM inference, Ollama inference, expanded fixture inference, 12-fixture benchmarks, quantization benchmarks, concurrency benchmarks, model downloads, serving-stack switches, endpoints, iOS integration, or production rollout.
+Phase 21-V should be approval-request/draft scope only unless separately approved. Do not jump directly to SGLang inference, vLLM inference, Ollama inference, expanded fixture inference, 12-fixture benchmarks, quantization benchmarks, concurrency benchmarks, model downloads, serving-stack switches, endpoints, iOS integration, or production rollout.
 
 ## How Codex Should Use This File
 
@@ -71,6 +71,7 @@ Use cautious wording and re-check source docs before implementation:
 - Phase 21-S added the serving stack no-model comparison matrix and dry-run CLI. It compares Transformers+FastAPI, vLLM, SGLang, and Ollama/LM Studio roles while blocking serving runtime, endpoint calls, model calls, Qwen inference, fixture inference, serving benchmarks, model downloads, serving switches, raw artifacts, endpoints, iOS integration, and production readiness.
 - Phase 21-T added the one-fixture serving benchmark approval request draft and dry-run CLI. It drafts copyable approval language for a possible Phase 21-U Transformers+FastAPI reference benchmark with `smoke_001`, one call, zero retries, healthz required, sanitized report only, and `productionReady:false`, while blocking current serving runtime, endpoint calls, model calls, Qwen inference, fixture inference, serving benchmarks, serving switches, raw artifacts, endpoints, iOS integration, and production readiness.
 - Phase 21-T-R1A corrects the visible git history marker only: the Phase 21-T artifacts existed, but one pushed commit was mislabeled as Phase 21-S. No model call, benchmark, healthz check, runtime change, ignored local artifact change, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
+- Phase 21-U ran the explicitly approved Transformers+FastAPI reference one-fixture serving benchmark with `smoke_001`, one call, and zero retries. The sanitized benchmark was accepted with latency bucket `gt_15s`; no 12-fixture, concurrency, quantization, Live Advisor, vLLM/SGLang/Ollama, serving-switch, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
 - `productionReady:false` remains the cross-phase default.
 
 Source references for future operators include `docs/phase-log.md`, `docs/handoff/codex-transition-handoff.md`, `docs/missing-features-and-deferred-roadmap-register.md`, and the Phase 20/21 backend gateway docs.
@@ -111,6 +112,7 @@ Rules:
 | Phase 21-S | Serving Stack No-model Comparison Matrix | Compare Transformers+FastAPI, vLLM, SGLang, and manual-only Ollama/LM Studio roles without executing any stack | no | no | no | no | explicit approval required for any future execution | Phase 21-R SGLang contract preflight | No-model comparison matrix only |
 | Phase 21-T | One-fixture Serving Benchmark Approval Request Draft | Draft approval language and scope for a possible one-fixture serving benchmark without executing it | no | no by default | no | no | explicit model-call approval required for any execution | Phase 21-S comparison matrix | Approval request draft only unless separately approved |
 | Phase 21-U | Approved Transformers+FastAPI One-fixture Serving Benchmark | Run at most one explicitly approved reference serving benchmark using `smoke_001` | yes | yes, one only | no | no app/prod endpoint | explicit model-call approval required | Phase 21-T approval request draft | One fixture, one call, zero retries, healthz safe, sanitized report only |
+| Phase 21-V | Controlled Multi-fixture Serving Benchmark Approval Request Draft | Draft approval language and scope for a possible controlled multi-fixture benchmark | no | no by default | no | no | explicit model-call/benchmark approval required for any execution | Phase 21-U accepted one-fixture benchmark | Approval request draft only; no direct 12-fixture execution |
 | Phase 21-N or later | Approved One-fixture Backend Local Model Route Smoke | First controlled backend `local_model` route call through gateway chain | yes | yes, one only | no | no app/prod endpoint | explicit approval required | Approval gate, dry-run plan, policy gates | One declared fixture, one call only, no retries, sanitized result, validator/fallback enforced |
 | Phase 21-O or later | Approved Serving Benchmark Execution | Compare serving stacks/quantization/latency on sanitized fixtures | yes | yes | no | no app/prod endpoint | explicit approval required | Phase 21-M plan and user approval | Sanitized benchmark metrics only; no raw artifacts; production remains false |
 | Phase 22-A | Debug-only iOS Backend Integration Preflight | Plan debug-only backend result flow with no production endpoint | no runtime by default | no | no runtime by default | no production endpoint | yes | Backend policy gates | Preflight documents debug-only path and no iOS provider/model keys |

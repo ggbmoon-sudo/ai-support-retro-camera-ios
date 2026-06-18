@@ -839,6 +839,12 @@ Phase 21-T adds a draft-only approval request for a possible Phase 21-U Transfor
 
 The only proposed future execution scope is `smoke_001`, fixture count 1, call count 1, retry count 0, healthz required, local/private endpoint only, sanitized report only. Phase 21-U still requires separate explicit approval before any model call.
 
+## Phase 21-U Transformers+FastAPI One-fixture Serving Benchmark
+
+Phase 21-U used the existing local/private Transformers+FastAPI reference server and the guarded backend wrapper to run exactly one approved benchmark call with fixture `smoke_001`, call count 1, and retry count 0. The sanitized result was accepted with latency bucket `gt_15s`.
+
+Do not rerun the Phase 21-U command as an automatic retry. Do not expand to 12 fixtures, run concurrency, switch serving stacks, run vLLM/SGLang/Ollama, quantize, start Live Advisor simulation, add endpoints, add iOS integration, or change `productionReady:false` without a later explicit phase approval.
+
 Operator implications:
 
 - Supply exactly one approved local-only `smoke_001` fixture image in the ignored sample folder.
