@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 21-N-R0C - Operator supplies approved smoke_001 local fixture
+Current phase: Phase 21-N-R1 - Approved One-fixture Local Model Smoke Retry
 Status: Implemented
-Latest implementation: Updated `docs/phase-21-n-r0c-smoke001-operator-fixture-supply.md` after rechecking operator supply of exactly one approved local-only `smoke_001` fixture. The ignored sample folder exists and remains ignored, untracked, and unstaged; `smoke_001.*` is now present with extension bucket `jpg`, ignored, untracked, and unstaged. The ignored local registry was updated locally only, and `smoke_001` is now present/approved. No model call, Qwen inference, fixture inference, serving benchmark, model switch, production `local_model` enablement, vLLM/SGLang/Ollama call, iOS integration, endpoint, upload runtime, raw artifact, secret, external workspace change, or production readiness change occurred. Roadmap next is Phase 21-N-R1: Approved One-fixture Local Model Smoke Retry, requiring separate explicit user approval.
+Latest implementation: Added a guarded Phase 21-N-R1 one-fixture smoke retry CLI and sanitized blocked report. The user explicitly approved one backend local/private model smoke retry, but preflight blocked before healthz/model execution because the ignored local config fixture token was not `smoke_001`. No model call, Qwen inference, fixture inference, serving benchmark, model switch, production `local_model` enablement, vLLM/SGLang/Ollama call, iOS integration, endpoint, upload runtime, raw artifact, secret, external workspace change, or production readiness change occurred. Roadmap next is Phase 21-N-R1B: One-fixture Local Model Smoke Retry Block Resolution.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -72,7 +72,7 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-N-R1: Approved One-fixture Local Model Smoke Retry. It requires separate explicit user approval because it may run exactly one backend local/private model call. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production endpoint work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution, model downloads, model cache changes, Qwen inference, fixture inference, local model route execution, local CV runtime, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, or user-photo training / fine-tuning until explicitly requested.
+Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-N-R1B: One-fixture Local Model Smoke Retry Block Resolution. It does not approve a model call. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production endpoint work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution, model downloads, model cache changes, Qwen inference, fixture inference, local model route execution, local CV runtime, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, or user-photo training / fine-tuning until explicitly requested.
 
 ---
 
@@ -623,6 +623,72 @@ Phase 21-G3 adds a docs-only phase roadmap sequencing and next-action reminder r
 ### Ready for Next Phase
 
 Yes, for Phase 21-H2 only if explicitly requested as docs/gate-only target re-evaluation work. Any model call, upload, WSS runtime, iOS runtime, endpoint, serving benchmark, or production behavior requires separate explicit approval.
+
+---
+
+## Phase 21-N-R1 - Approved One-fixture Local Model Smoke Retry
+
+Date: 2026-06-18
+
+Status: Preflight blocked before model call
+
+Goal: Retry the previously blocked Phase 21-N one-fixture backend local/private model route smoke using exactly one approved ignored fixture token, `smoke_001`, only if all preflight gates pass.
+
+Summary:
+
+The user explicitly approved: "批准跑 Phase 21-N-R1 一次 backend local/private model smoke retry". Phase 21-N-R1 stopped before healthz/model execution because the ignored local config fixture token was not `smoke_001`. No substitute fixture token was used.
+
+This phase added a guarded retry CLI and npm script that require `--approved-one-call`, `--fixture smoke_001`, and `--no-retry`. The guarded CLI was not used to make a model call because preflight blocked first.
+
+This phase did not run a model call, Qwen inference, fixture inference, serving benchmark, vLLM/SGLang/Ollama call, model download, serving-stack switch, production `local_model` route, iOS integration, Camera live cloud AI runtime entry, Auto-Trigger runtime, WSS runtime, local CV runtime, image upload runtime, image compression runtime, iOS upload payload change, app-facing endpoint, production endpoint, production user-photo upload, auth/billing/quota runtime, training/fine-tuning, validator weakening, safety/fallback weakening, or production rollout.
+
+Completed work:
+
+- Added `backend/scripts/run-open-weight-vlm-approved-one-fixture-local-model-smoke-retry.mjs`.
+- Added `qa:open-weight-vlm:approved-one-fixture-local-model-smoke-retry`.
+- Added static guard coverage for the retry CLI.
+- Ran no-model preflight gates before any healthz/model execution.
+- Confirmed ignored local config, ignored local fixture registry, and ignored `smoke_001` fixture are present, ignored, untracked, and unstaged.
+- Confirmed R1 preflight blocker: ignored local config fixture token is not `smoke_001`.
+- Did not run healthz or model call after the blocker was found.
+- Added `docs/phase-21-n-r1-one-fixture-local-model-smoke-retry-report.md`.
+- Updated roadmap sequencing current next phase to Phase 21-N-R1B: One-fixture Local Model Smoke Retry Block Resolution.
+
+Changed files:
+
+- `README.md`
+- `backend/README.md`
+- `backend/package.json`
+- `backend/scripts/run-open-weight-vlm-approved-one-fixture-local-model-smoke-retry.mjs`
+- `backend/tests/approved-one-fixture-local-model-smoke-retry-script.test.mjs`
+- `docs/handoff/codex-transition-handoff.md`
+- `docs/missing-features-and-deferred-roadmap-register.md`
+- `docs/open-weight-vlm-local-operator-runbook.md`
+- `docs/open-weight-vlm-local-sandbox-review-summary.md`
+- `docs/phase-21-n-r1-one-fixture-local-model-smoke-retry-report.md`
+- `docs/phase-log.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `ios-app/README.md`
+- `tests/manual-smoke-tests.md`
+
+Checks:
+
+- `git diff --check` passed before the R1 blocker report updates.
+- Backend tests passed: `npm test` in `backend` reported 248/248 tests passing.
+- No-model gates passed before the blocker: synthetic benchmark, benchmark gate, local config dry-run, default local sandbox smoke stub/no-network, local smoke gate, repeatability gate, failure taxonomy CLI, expanded fixture registry dry-run CLI, provider integration diagnostic CLI, serving benchmark preflight, gateway contract preflight, gateway adapter stub, gateway external contract echo mock-safe, gateway provider routing, gateway provider adapter no-model HTTP mock-safe, cross-platform deployment boundary, deployment config/env preflight, local model route approval, Qwen MoE live-advisor target, image compression/upload policy, Auto-Trigger policy, Stateful WSS protocol preflight, local CV camera aids plan, and quantization serving benchmark plan.
+- Fixture routing contract echo recorded fail-closed because no local echo endpoint was available; this phase does not depend on that no-model echo path.
+- Secret scan, Photo Advisor copy regression, filter reason coverage, CreativeIntent language coverage, Photo Advisor card language coverage, iOS direct provider/model scan, Camera cloud entry scan, backend/iOS payload unchanged scan, and artifact scan passed.
+- Ignored local prerequisites remain ignored, untracked, and unstaged: local config, local fixture registry, and `smoke_001` fixture.
+
+Known TODOs:
+
+- Resolve the ignored local config fixture-token mismatch so the future retry can use exactly `smoke_001`.
+- Do not commit fixture images, local config, fixture registry contents, raw reports, prompts, request payloads, logs, model outputs, model weights, or credentials.
+- Any later one-call smoke retry still requires separate explicit approval.
+
+### Ready for Phase 21-N-R1B
+
+Yes, for block resolution only. Phase 21-N-R1B does not approve a model call, Qwen inference, fixture inference, serving benchmark, vLLM/SGLang/Ollama call, model download, serving stack switch, endpoint work, iOS runtime work, upload runtime, WSS runtime, Auto-Trigger runtime, local CV runtime, or production behavior.
 
 ---
 

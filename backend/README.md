@@ -1328,6 +1328,8 @@ Phase 21-N-R0B rechecked the operator-provided fixture prerequisite and `smoke_0
 
 Phase 21-N-R0C rechecked operator supply of exactly one approved local-only `smoke_001` fixture. The fixture is now present locally and ignored, the ignored fixture registry now has an approved `smoke_001` entry, no model call ran, and the next backend step is an explicitly approved one-fixture local model smoke retry.
 
+Phase 21-N-R1 attempted the explicitly approved one-fixture local/private model smoke retry but stopped before healthz/model execution because the ignored local config fixture token was not `smoke_001`. The phase adds a guarded retry CLI and sanitized blocked report only; no model call, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
+
 ## Future TODO
 
 - Add authenticated backend boundary only after explicit approval.

@@ -16,11 +16,11 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**Phase 21-N-R1: Approved One-fixture Local Model Smoke Retry**
+**Phase 21-N-R1B: One-fixture Local Model Smoke Retry Block Resolution**
 
-Reason: Phase 21-N-R0C checked for operator-supplied `smoke_001` fixture material. The fixture is now present locally, ignored/untracked/unstaged, and the ignored local registry now has an approved `smoke_001` entry. The next logical step is a separately approved one-fixture backend local/private model smoke retry.
+Reason: Phase 21-N-R1 was explicitly approved for exactly one backend local/private model smoke retry with `smoke_001`, but preflight blocked before healthz/model execution because the ignored local config fixture token was not `smoke_001`. No model call, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
 
-This recommended next phase requires separate explicit user approval because it may run exactly one backend local/private model call. Do not run a model call, Qwen inference, fixture inference, serving benchmark, vLLM/SGLang/Ollama call, iOS integration, endpoint work, upload runtime, or production readiness change unless that future prompt explicitly approves the one-call retry scope.
+This recommended next phase is prerequisite resolution only. Do not run a model call, Qwen inference, fixture inference, serving benchmark, vLLM/SGLang/Ollama call, iOS integration, endpoint work, upload runtime, or production readiness change while resolving the config fixture-token mismatch.
 
 ## How Codex Should Use This File
 
@@ -59,6 +59,7 @@ Use cautious wording and re-check source docs before implementation:
 - Phase 21-N-R0 inspected ignored local prerequisites and found `smoke_001.*` fixture file missing, so the ignored registry was not edited and the prerequisite remains blocked. No model call, Qwen inference, fixture inference, serving benchmark, local registry commit, endpoint, iOS integration, raw artifact, or production rollout occurred.
 - Phase 21-N-R0B rechecked operator fixture preparation and `smoke_001.*` is still missing. No ignored registry edit, model call, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, or production rollout occurred.
 - Phase 21-N-R0C rechecked operator supply of exactly one approved local-only `smoke_001` fixture. The fixture is now present locally and ignored, and the ignored local registry now has an approved `smoke_001` entry. No model call, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, or production rollout occurred.
+- Phase 21-N-R1 was explicitly approved for one backend local/private model smoke retry, but preflight blocked before healthz/model execution because the ignored local config fixture token was not `smoke_001`. No model call, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, or production rollout occurred.
 - `productionReady:false` remains the cross-phase default.
 
 Source references for future operators include `docs/phase-log.md`, `docs/handoff/codex-transition-handoff.md`, `docs/missing-features-and-deferred-roadmap-register.md`, and the Phase 20/21 backend gateway docs.
@@ -88,6 +89,7 @@ Rules:
 | Phase 21-N-R0B | Operator-provided smoke_001 Fixture Preparation | Place approved local-only `smoke_001` fixture in ignored sample folder | no | no | no | no | explicit approval required for any later model call | Phase 21-N-R0 report | `smoke_001.*` exists locally, ignored/untracked/unstaged; no raw artifacts committed |
 | Phase 21-N-R0C | Operator supplies approved smoke_001 local fixture | Operator supplies exactly one approved local-only `smoke_001` fixture image | no | no | no | no | explicit approval required for any later model call | Phase 21-N-R0B report | `smoke_001.*` exists locally, ignored/untracked/unstaged; registry prepared locally only |
 | Phase 21-N-R1 | Approved One-fixture Local Model Smoke Retry | Retry the backend local/private one-fixture route smoke with `smoke_001` only | yes | yes, one only | no | no app/prod endpoint | explicit approval required | Phase 21-N-R0C report | One declared fixture, one call only, no retries, sanitized result, validator/fallback enforced |
+| Phase 21-N-R1B | One-fixture Local Model Smoke Retry Block Resolution | Resolve ignored local config fixture token mismatch before any retry | no | no | no | no | explicit approval required for any later model call | Phase 21-N-R1 blocked report | Ignored local config points to `smoke_001`; no model call run |
 | Phase 21-N or later | Approved One-fixture Backend Local Model Route Smoke | First controlled backend `local_model` route call through gateway chain | yes | yes, one only | no | no app/prod endpoint | explicit approval required | Approval gate, dry-run plan, policy gates | One declared fixture, one call only, no retries, sanitized result, validator/fallback enforced |
 | Phase 21-O or later | Approved Serving Benchmark Execution | Compare serving stacks/quantization/latency on sanitized fixtures | yes | yes | no | no app/prod endpoint | explicit approval required | Phase 21-M plan and user approval | Sanitized benchmark metrics only; no raw artifacts; production remains false |
 | Phase 22-A | Debug-only iOS Backend Integration Preflight | Plan debug-only backend result flow with no production endpoint | no runtime by default | no | no runtime by default | no production endpoint | yes | Backend policy gates | Preflight documents debug-only path and no iOS provider/model keys |

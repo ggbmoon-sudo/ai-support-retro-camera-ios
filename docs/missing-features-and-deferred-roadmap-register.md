@@ -247,6 +247,17 @@ Phase 21-N-R0C rechecked operator supply of exactly one approved local-only `smo
 - `smoke_001` is now present/approved in the ignored local registry.
 - No model call, Qwen inference, fixture inference, serving benchmark, iOS integration, endpoint, raw artifact, secret, or production rollout occurred.
 - Recommended next phase is Phase 21-N-R1: Approved One-fixture Local Model Smoke Retry, requiring separate explicit user approval.
+
+## Phase 21-N-R1 One-fixture Smoke Retry Result
+
+Phase 21-N-R1 was explicitly approved for exactly one backend local/private model smoke retry, but kept the model-call boundary closed:
+
+- Preflight blocked before healthz/model execution because the ignored local config fixture token was not `smoke_001`.
+- Model call executed: no.
+- Call count: 0.
+- Retry count: 0.
+- No Qwen inference, fixture inference, serving benchmark, iOS integration, endpoint, raw artifact, secret, or production rollout occurred.
+- Recommended next phase is Phase 21-N-R1B: One-fixture Local Model Smoke Retry Block Resolution.
 - `productionReady:false` remains locked.
 
 ## Cross-reference Future Phases

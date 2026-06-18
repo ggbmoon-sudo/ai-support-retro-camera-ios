@@ -767,6 +767,12 @@ Phase 21-N-R0C was rerun after operator supply. The `smoke_001` fixture is now p
 
 Next action: request Phase 21-N-R1 only with separate explicit approval if one backend local/private model smoke retry is intended.
 
+## Phase 21-N-R1 Retry Block
+
+Phase 21-N-R1 was explicitly approved for one backend local/private model smoke retry, but preflight blocked before healthz/model execution because the ignored local config fixture token was not `smoke_001`.
+
+Next action: resolve the ignored local config fixture-token mismatch in Phase 21-N-R1B. Do not run a model call during block resolution, and do not commit local config, fixture registry, fixture image, raw reports, prompts, request payloads, logs, model outputs, model weights, or credentials.
+
 Operator implications:
 
 - Supply exactly one approved local-only `smoke_001` fixture image in the ignored sample folder.

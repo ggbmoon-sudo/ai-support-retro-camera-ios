@@ -363,4 +363,8 @@ Phase 21-N-R0B rechecked the ignored local sample folder and `smoke_001.*` is st
 
 Phase 21-N-R0C was rerun after operator supply. The ignored local sample folder now has `smoke_001.*` present, and the ignored local registry now has an approved `smoke_001` entry. No model call, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
 
+## Phase 21-N-R1 Retry Block
+
+Phase 21-N-R1 was explicitly approved for exactly one backend local/private model smoke retry. It stopped before healthz/model execution because the ignored local config fixture token was not `smoke_001`. No model call, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
+
 No model call, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.

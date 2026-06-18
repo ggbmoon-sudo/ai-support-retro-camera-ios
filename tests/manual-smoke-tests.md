@@ -106,6 +106,18 @@ Operator-supplied smoke_001 fixture check:
 - [x] Confirm roadmap current next phase is Phase 21-N-R1: Approved One-fixture Local Model Smoke Retry, requiring separate explicit model-call approval.
 - [x] Confirm no model call, Qwen inference, fixture inference, serving benchmark, iOS integration, endpoint, Auto-Trigger runtime, WSS runtime, upload runtime, raw artifact, secret, or production rollout was added.
 
+## Phase 21-N-R1
+
+Approved one-fixture local model smoke retry:
+
+- [x] Confirm user explicitly approved one backend local/private model smoke retry.
+- [x] Confirm guarded retry CLI requires `--approved-one-call`, `--fixture smoke_001`, and `--no-retry`.
+- [x] Confirm preflight blocked before healthz/model execution because ignored local config fixture token was not `smoke_001`.
+- [x] Confirm model call executed `no`, call count `0`, retry count `0`, Qwen inference `false`, fixture inference `false`, serving benchmark `false`, and `productionReady:false`.
+- [x] Confirm `docs/phase-21-n-r1-one-fixture-local-model-smoke-retry-report.md` records sanitized blocked facts only.
+- [x] Confirm roadmap current next phase is Phase 21-N-R1B: One-fixture Local Model Smoke Retry Block Resolution.
+- [x] Confirm no model call, serving benchmark, model switch, production `local_model`, vLLM/SGLang/Ollama call, iOS integration, endpoint, Auto-Trigger runtime, WSS runtime, upload runtime, raw artifact, secret, or production rollout was added.
+
 ## Phase 21-G2
 
 Missing feature + deferred roadmap register:
