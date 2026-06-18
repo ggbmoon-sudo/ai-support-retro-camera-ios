@@ -92,11 +92,12 @@ Current phase:
 - Phase 21-N-R0C rechecks operator supply of exactly one approved local-only `smoke_001` fixture. The fixture file is now present locally and ignored, the ignored registry now has an approved `smoke_001` entry, and no model call, Qwen inference, fixture inference, benchmark, endpoint, iOS integration, raw artifact, secret, or production rollout occurs.
 - Phase 21-N-R1 attempted the approved one-fixture local model smoke retry but stopped before healthz/model execution because the ignored local config fixture token was not `smoke_001`. It adds a guarded retry CLI and sanitized blocked report only; no model call, Qwen inference, fixture inference, benchmark, endpoint, iOS integration, raw artifact, secret, or production rollout occurs.
 - Phase 21-N-R1B resolves the ignored local config fixture-token mismatch locally so the configured fixture token is now `smoke_001`. The ignored local config, fixture registry, and fixture image remain ignored/untracked/unstaged. No model call, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, secret, or production rollout occurs.
+- Phase 21-N-R1C attempted the approved one-fixture local model smoke retry after config fix. The guarded command ran once and blocked at healthz before any model call. No retry, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, secret, or production rollout occurs.
 - Phase 21-H adds the controlled backend `local_model` route dry-run plan. It is a no-network/no-model/no-Qwen/no-benchmark plan gate for a future explicitly approved one-fixture, one-call, no-retry backend-internal local/private route test. It does not enable `local_model`, run fixture inference, add iOS integration, add app-facing or production endpoints, accept user-photo uploads, or change `productionReady:false`.
 
 Next phase:
 
-- Recommended next step is Phase 21-N-R1C: Approved One-fixture Local Model Smoke Retry After Config Fix. This requires separate explicit user approval because it may run exactly one backend local/private model call.
+- Recommended next step is Phase 21-N-R1D: One-fixture Local Model Smoke Retry Healthz Block Resolution. Resolve the local/private healthz blocker without running a model call. Any future one-call retry still requires separate explicit approval.
 - Do not start production cloud rollout without explicit approval
 - Production rollout remains blocked until a later explicit release phase
 

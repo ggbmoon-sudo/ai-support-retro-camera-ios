@@ -373,4 +373,10 @@ Phase 21-N-R1B resolved the ignored local config fixture-token mismatch locally 
 
 No model call, healthz check, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, secret, or production rollout occurred. A future Phase 21-N-R1C retry still requires separate explicit model-call approval.
 
+## Phase 21-N-R1C Healthz Block
+
+Phase 21-N-R1C was explicitly approved for exactly one backend local/private model smoke retry after config fix. The guarded command ran once and blocked at healthz before any model call because healthz was unsafe or unavailable in sanitized buckets.
+
+No retry, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, secret, or production rollout occurred. The next step is healthz block resolution only.
+
 No model call, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.

@@ -2,9 +2,9 @@
 
 This folder contains the Swift + SwiftUI iOS app scaffold.
 
-## Phase 21-M / 21-N / 21-N-R0 / 21-N-R0B / 21-N-R0C / 21-N-R1B Xcode Boundary
+## Phase 21-M / 21-N / 21-N-R0 / 21-N-R0B / 21-N-R0C / 21-N-R1B / 21-N-R1C Xcode Boundary
 
-Phase 21-M is a backend/docs-only Quantization + Serving Benchmark Plan. Phase 21-N records a backend local/private one-fixture smoke attempt that was preflight-blocked before any model call. Phase 21-N-R0C records that the ignored local `smoke_001.*` fixture file is now present locally and approved in the ignored registry. Phase 21-N-R1 stopped before healthz/model execution because the ignored local config fixture token was not `smoke_001`. Phase 21-N-R1B resolves that ignored local config token mismatch locally only, without a model call. Xcode runtime behavior should be unchanged.
+Phase 21-M is a backend/docs-only Quantization + Serving Benchmark Plan. Phase 21-N records a backend local/private one-fixture smoke attempt that was preflight-blocked before any model call. Phase 21-N-R0C records that the ignored local `smoke_001.*` fixture file is now present locally and approved in the ignored registry. Phase 21-N-R1 stopped before healthz/model execution because the ignored local config fixture token was not `smoke_001`. Phase 21-N-R1B resolves that ignored local config token mismatch locally only, without a model call. Phase 21-N-R1C attempted the approved retry after config fix but blocked at healthz before any model call. Xcode runtime behavior should be unchanged.
 
 No local CV runtime, Camera cloud AI runtime entry, Auto-Trigger runtime, WSS runtime, iOS provider/model key, direct provider/model call, iOS upload payload change, capture-context upload, app-facing endpoint, production rollout, Windows local path dependency, or local model server URL dependency is added.
 

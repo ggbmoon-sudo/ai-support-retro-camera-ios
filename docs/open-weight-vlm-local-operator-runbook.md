@@ -781,6 +781,14 @@ No model call, healthz check, Qwen inference, fixture inference, serving benchma
 
 Next action: request Phase 21-N-R1C only with separate explicit approval if one backend local/private model smoke retry is intended.
 
+## Phase 21-N-R1C Healthz Block
+
+Phase 21-N-R1C was explicitly approved for one backend local/private model smoke retry after the config fix. The guarded command ran exactly once and blocked at healthz before any model call because healthz was unsafe or unavailable in sanitized buckets.
+
+No model call, retry, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
+
+Next action: resolve the healthz blocker in Phase 21-N-R1D. Do not run a model call during healthz block resolution, and do not commit local config, fixture registry, fixture image, raw reports, prompts, request payloads, logs, model outputs, model weights, or credentials.
+
 Operator implications:
 
 - Supply exactly one approved local-only `smoke_001` fixture image in the ignored sample folder.

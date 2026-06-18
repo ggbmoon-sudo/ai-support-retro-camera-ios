@@ -138,6 +138,8 @@ Phase 21-N-R1C: Approved One-fixture Local Model Smoke Retry After Config Fix
 
 Important: Phase 21-N-R1C requires separate explicit user approval because it may run exactly one backend local/private model call.
 
+Follow-up: Phase 21-N-R1C was explicitly approved and the guarded command ran once, but healthz blocked before any model call. The next recommended phase is Phase 21-N-R1D: One-fixture Local Model Smoke Retry Healthz Block Resolution.
+
 ## productionReady:false
 
 `productionReady:false` remains locked.
