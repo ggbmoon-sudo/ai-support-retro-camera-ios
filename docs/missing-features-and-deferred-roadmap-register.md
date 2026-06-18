@@ -16,6 +16,8 @@ Phase 21-O update: serving benchmark execution now has a no-model preflight/scop
 
 Phase 21-P update: serving benchmark planning now has an explicit approval matrix. It maps no-model contract preflight, one-fixture smoke, controlled 12-fixture benchmark, serving stack comparison, quantization benchmark, and Live Advisor 1 FPS simulation to required approval classes while keeping model calls, Qwen inference, fixture inference, serving benchmark execution, serving switches, endpoints, iOS integration, raw artifacts, secrets, and production rollout blocked by default.
 
+Phase 21-Q update: vLLM now has a no-model serving contract preflight. It defines backend-mediated structured JSON request/response boundaries for a future vLLM candidate while keeping vLLM runtime, endpoint calls, model calls, Qwen inference, fixture inference, serving benchmarks, serving switches, endpoints, iOS integration, raw artifacts, secrets, and production rollout blocked by default.
+
 Docs audit note: Phase 21-G2 reviewed the Markdown inventory returned by the repo-level Markdown listing command, excluding `node_modules`, `.git`, and local VLM sample paths. The inventory contained 103 Markdown/Markdown-like files. Current implementation was also checked by source-tree and backend script/file-name inspection only; no runtime feature was changed.
 
 Naming note: the Phase 21-G2 prompt assumed Phase 21-H had not started. The current repository already contains a committed Phase 21-H local model route dry-run plan. Future phase labels below preserve the requested roadmap shape, but the next operator should reconcile numbering before starting new implementation.
@@ -109,10 +111,10 @@ The following foundation appears present or planned through committed docs/sourc
 | Store / account / release | Beta rollout checklist | planned | Safer TestFlight | QA matrix and incident controls | Phase 23+ | Production remains blocked |
 | Store / account / release | TestFlight QA | planned | Release validation | Build/signing and QA plan | Phase 23+ | Avoid real cloud rollout until approved |
 | Store / account / release | Legal/privacy review | planned | Compliance | Privacy policy and data retention | Phase 23+ | Required before real uploads |
-| Advanced/future features | Paid AI image editing / 改圖師 | deferred | Possible premium feature | Product policy, provider safety, consent, cost | Later | Not MVP; no real image editing backend approved |
+| Advanced/future features | Paid AI image editing / ?孵?撣?| deferred | Possible premium feature | Product policy, provider safety, consent, cost | Later | Not MVP; no real image editing backend approved |
 | Advanced/future features | High-quality export/transfer | deferred | Power-user feature | Export/storage/transfer design | Later | Avoid leaking metadata; user-controlled only |
 | Advanced/future features | LiDAR/Core ML/on-device hybrid path | later | Advanced local guidance | Device support and model plan | Later | Local-first; no raw sensor persistence |
-| Advanced/future features | Hong Kong / 麻煩友 language-mode productization | partial | Brand voice option | Product copy QA and settings policy | Later | Avoid explicit/profanity regression |
+| Advanced/future features | Hong Kong / 暻餌??language-mode productization | partial | Brand voice option | Product copy QA and settings policy | Later | Avoid explicit/profanity regression |
 | Advanced/future features | Advanced retro effects | deferred | Creative expansion | Filter roadmap and performance tests | Later | Local filters preferred |
 | Advanced/future features | Live voice or conversational guidance | deferred | Separate guidance product path | Voice privacy, WSS/session, UX scope | Later | Separate from Photo Advisor; no live cloud by default |
 | Advanced/future features | Fine-tuning/LoRA/QLoRA | blocked | Possible quality improvement | Evaluation proves need, consent/training policy | Later | Only after opt-in/training governance exists |

@@ -4,7 +4,7 @@ This folder contains the Swift + SwiftUI iOS app scaffold.
 
 ## Phase 21-M / 21-N / 21-N-R0 / 21-N-R0B / 21-N-R0C / 21-N-R1B / 21-N-R1C / 21-N-R1D Xcode Boundary
 
-Phase 21-M is a backend/docs-only Quantization + Serving Benchmark Plan. Phase 21-N records a backend local/private one-fixture smoke attempt that was preflight-blocked before any model call. Phase 21-N-R0C records that the ignored local `smoke_001.*` fixture file is now present locally and approved in the ignored registry. Phase 21-N-R1 stopped before healthz/model execution because the ignored local config fixture token was not `smoke_001`. Phase 21-N-R1B resolves that ignored local config token mismatch locally only, without a model call. Phase 21-N-R1C attempted the approved retry after config fix but blocked at healthz before any model call. Phase 21-N-R1D resolved healthz to a safe bucket. Phase 21-N-R1E ran one backend local/private model smoke retry with `smoke_001` only and no iOS runtime change. Phase 21-O adds a backend/docs-only serving benchmark execution scope gate and runs no benchmark/model call. Phase 21-P adds a backend/docs-only serving benchmark approval matrix and runs no benchmark/model call. Xcode runtime behavior should be unchanged.
+Phase 21-M is a backend/docs-only Quantization + Serving Benchmark Plan. Phase 21-N records a backend local/private one-fixture smoke attempt that was preflight-blocked before any model call. Phase 21-N-R0C records that the ignored local `smoke_001.*` fixture file is now present locally and approved in the ignored registry. Phase 21-N-R1 stopped before healthz/model execution because the ignored local config fixture token was not `smoke_001`. Phase 21-N-R1B resolves that ignored local config token mismatch locally only, without a model call. Phase 21-N-R1C attempted the approved retry after config fix but blocked at healthz before any model call. Phase 21-N-R1D resolved healthz to a safe bucket. Phase 21-N-R1E ran one backend local/private model smoke retry with `smoke_001` only and no iOS runtime change. Phase 21-O adds a backend/docs-only serving benchmark execution scope gate and runs no benchmark/model call. Phase 21-P adds a backend/docs-only serving benchmark approval matrix and runs no benchmark/model call. Phase 21-Q adds a backend/docs-only vLLM no-model serving contract preflight and runs no vLLM runtime, endpoint call, benchmark, or model call. Xcode runtime behavior should be unchanged.
 
 No local CV runtime, Camera cloud AI runtime entry, Auto-Trigger runtime, WSS runtime, iOS provider/model key, direct provider/model call, iOS upload payload change, capture-context upload, app-facing endpoint, production rollout, Windows local path dependency, or local model server URL dependency is added.
 
@@ -140,7 +140,7 @@ Phase 18-C1 polishes the iOS local/mock Photo Advisor result card only. The card
 
 Phase 18-C2 keeps iOS behavior local/mock while tightening captured / imported / fallback Advisor flow QA. Captured photos may use safe local capture/image context, imported photos keep limited-context language without claiming capture-time motion / tilt / exposure / stability, fallback/provider-unavailable copy is calm and short, and missing/unknown filters avoid unusable actions. iOS still has no provider key, no direct QweAPI/provider call, no provider SDK, no Camera cloud AI entry, no capture-context upload, no iOS upload payload change, and no production rollout.
 
-Phase 18-C3 polishes the local/mock Photo Advisor multilingual beta copy only. The visible Advisor card no longer labels the experience as a mock/demo, imported-photo copy uses natural capture-detail wording, provider-unavailable fallback copy is calmer, and Cantonese-style / 麻煩友 Advisor strings keep personality without heavy slang or harsh judgment. iOS still has no provider key, no direct QweAPI/provider call, no provider SDK, no Camera cloud AI entry, no capture-context upload, no iOS upload payload change, and no production rollout.
+Phase 18-C3 polishes the local/mock Photo Advisor multilingual beta copy only. The visible Advisor card no longer labels the experience as a mock/demo, imported-photo copy uses natural capture-detail wording, provider-unavailable fallback copy is calmer, and Cantonese-style / 暻餌??Advisor strings keep personality without heavy slang or harsh judgment. iOS still has no provider key, no direct QweAPI/provider call, no provider SDK, no Camera cloud AI entry, no capture-context upload, no iOS upload payload change, and no production rollout.
 
 Phase 19-A is documentation-only and keeps iOS behavior unchanged. It adds an architecture ADR for a future self-hosted / open-weight VLM backend research path, but does not add model server integration, iOS provider keys, direct model/provider calls, Camera cloud AI entry points, capture-context upload, iOS upload payload changes, or production rollout. Any future VLM work must remain backend-mediated, consented post-capture only, validated against the Photo Advisor contract, and rendered through the existing app language pack / result card.
 
@@ -203,7 +203,7 @@ Phase 17D-A adds local-only summarized capture context for captured / imported p
 - captured photos can carry bucketed local context for orientation, lens, selected filter, local exposure signals, composition helper flags, and creative intent guard signals
 - imported photos default to unavailable / unknown capture context
 - mock/local Photo Advisor can use the context to avoid overcorrecting intentional retro blur, low light, tilt, grain, soft focus, strong contrast, or unusual framing
-- local advice uses optional wording such as “if you want...” / “如果你想...” rather than defaulting to retake / fix-it advice
+- local advice uses optional wording such as ?f you want...??/ ??????..??rather than defaulting to retake / fix-it advice
 
 This phase does not collect GPS/location, dump raw EXIF, persist continuous sensor streams, upload capture context to the backend, change backend provider payloads, add provider SDKs or keys to iOS, add direct provider calls from iOS, add Camera cloud AI, or enable production rollout.
 
@@ -266,7 +266,7 @@ This phase does not add a provider SDK or key to iOS, direct provider calls, Cam
 Phase 18-A2 adds a structured local filter reason library for the mock/local Photo Advisor:
 
 - Every current filter catalog preset, including `original`, research presets, and legacy starter filters, has a filter language family mapping.
-- Filter reasons now resolve from filter family + safe local photo signal + retro aesthetic result, rather than generic “try this filter” wording.
+- Filter reasons now resolve from filter family + safe local photo signal + retro aesthetic result, rather than generic ?ry this filter??wording.
 - Families include warm film, faded pastel, cinematic contrast, night grain, soft dream, street chrome, amber glow, cool fade, and classic film.
 - Recommendation copy stays intent-aware: low light, blur, grain, tilt, high contrast, faded color, and soft focus are treated as possible style, not automatic mistakes.
 - A lightweight validation script checks catalog/profile coverage and localized reason keys.
@@ -646,17 +646,17 @@ User Xcode / Simulator verification accepted Phase 16K-L on 2026-06-12. The phas
 
 ## Phase 16T / HK3 Mock Language Mode UI
 
-Phase 16T / HK3 adds a Settings-only mock Language / Tone preview based on the Hong Kong / 麻煩友 research and HK2 copy system style guide.
+Phase 16T / HK3 adds a Settings-only mock Language / Tone preview based on the Hong Kong / 暻餌??research and HK2 copy system style guide.
 
-Phase 16T-R1 simplifies the mock UI to language-only buttons. Phase 16T-R2 hides mock preview, praise loop, and explicit phrase cards from the production Settings UI. Cantonese keeps a short safety notice while 麻煩友 / explicit direction remains future-only.
+Phase 16T-R1 simplifies the mock UI to language-only buttons. Phase 16T-R2 hides mock preview, praise loop, and explicit phrase cards from the production Settings UI. Cantonese keeps a short safety notice while 暻餌??/ explicit direction remains future-only.
 
 This phase does not add runtime language switching, app-wide language switching, Settings persistence, copy resolver integration, localization runtime changes, Camera guidance copy changes, Photo Advisor copy changes, Filter Lab copy changes, explicit profanity enablement, backend, network, AI, StoreKit, provider SDKs, moderation, or runtime profanity filtering.
 
 ## Phase 16U / HK4 Deterministic Camera Coach Copy Resolver
 
-Phase 16U / HK4 adds a local-only deterministic copy resolver scaffold for Local Camera Coach / 本機導拍 copy.
+Phase 16U / HK4 adds a local-only deterministic copy resolver scaffold for Local Camera Coach / ?祆?撠? copy.
 
-The runtime integration is intentionally narrow: selected local guidance categories now resolve through neutral default copy keys, while HK conversational and non-explicit 麻煩友 keys are scaffolded for future explicit phases. Settings Language / Tone remains mock-only and non-persistent.
+The runtime integration is intentionally narrow: selected local guidance categories now resolve through neutral default copy keys, while HK conversational and non-explicit 暻餌??keys are scaffolded for future explicit phases. Settings Language / Tone remains mock-only and non-persistent.
 
 This phase does not add app-wide language switching, Settings persistence, explicit profanity runtime, LLM-generated copy, AI-generated live camera copy, Photo Advisor copy changes, Filter Lab copy changes, image editing copy changes, backend, network, AI, StoreKit, provider SDKs, moderation, or runtime profanity filtering.
 
@@ -664,7 +664,7 @@ This phase does not add app-wide language switching, Settings persistence, expli
 
 Phase 16V connects the deterministic resolver to Local Camera Coach runtime and persists only the Camera Coach language / tone preference.
 
-Settings saves `cameraCoach.languageMode` and `cameraCoach.toneMode`. English, Traditional Chinese, and Simplified Chinese use neutral copy; Cantonese supports Hong Kong conversational and non-explicit 麻煩友 copy. Explicit profanity remains disabled and unavailable in runtime.
+Settings saves `cameraCoach.languageMode` and `cameraCoach.toneMode`. English, Traditional Chinese, and Simplified Chinese use neutral copy; Cantonese supports Hong Kong conversational and non-explicit 暻餌??copy. Explicit profanity remains disabled and unavailable in runtime.
 
 This phase does not add app-wide language switching, Photo Advisor copy changes, Filter Lab copy changes, image editing copy changes, backend, network, AI, StoreKit, provider SDKs, upload, export, save-to-Photos, or raw image / frame persistence.
 
@@ -672,13 +672,13 @@ This phase does not add app-wide language switching, Photo Advisor copy changes,
 
 Phase 16W extends the persisted language / tone preference to the mock/local Post-capture Photo Advisor.
 
-Photo Advisor copy now supports English, Traditional Chinese, Simplified Chinese, Cantonese conversational, and non-explicit 麻煩友 phrasing. The result card structure, filter recommendation apply behavior, no-upload boundary, and mock/local service boundary stay unchanged.
+Photo Advisor copy now supports English, Traditional Chinese, Simplified Chinese, Cantonese conversational, and non-explicit 暻餌??phrasing. The result card structure, filter recommendation apply behavior, no-upload boundary, and mock/local service boundary stay unchanged.
 
 This phase does not add real AI, backend, network, provider SDKs, upload, Photo Advisor output persistence, app-wide language switching, Filter Lab copy changes, image editing copy changes, explicit profanity runtime, StoreKit, export, save-to-Photos, or raw image / frame persistence.
 
 ## Phase 16W-R2 Camera Local-only AI Surface
 
-Phase 16W-R2 keeps Camera focused on capture and Local Camera Coach / 本機導拍 only.
+Phase 16W-R2 keeps Camera focused on capture and Local Camera Coach / ?祆?撠? only.
 
 Camera no longer exposes AI Snapshot / cloud-style quick advice entry points. Local Guidance remains visible and follows the persisted language / tone preference. Inspiration / imported / selected Photo Advisor remains available and language-aware for mock/local advisor flow and future cloud AI planning.
 
@@ -688,7 +688,7 @@ This phase does not add real AI, backend, network, provider SDKs, upload, new pe
 
 Phase 16X organizes Inspiration as the mock/local AI Hub and creative hub.
 
-Inspiration now groups import photo analysis, Photo Advisor orientation, Filter Lab, a disabled future Photo Edit / 改圖師 placeholder, and a future cloud AI consent / no-background-upload notice. Camera remains local-only and does not regain AI Snapshot / cloud-style quick advice.
+Inspiration now groups import photo analysis, Photo Advisor orientation, Filter Lab, a disabled future Photo Edit / ?孵?撣?placeholder, and a future cloud AI consent / no-background-upload notice. Camera remains local-only and does not regain AI Snapshot / cloud-style quick advice.
 
 This phase does not add real AI, backend, network, provider SDKs, upload, new persistence beyond language / tone preference, app-wide language switching, explicit profanity runtime, StoreKit, export, save-to-Photos, image editing generation, or raw image / frame persistence.
 

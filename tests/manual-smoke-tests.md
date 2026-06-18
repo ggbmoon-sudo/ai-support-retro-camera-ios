@@ -193,6 +193,16 @@ Serving benchmark approval matrix:
 - [x] Confirm no model call, Qwen inference, fixture inference, serving benchmark, serving switch, vLLM/SGLang/Ollama call, iOS integration, endpoint, Auto-Trigger runtime, WSS runtime, upload runtime, raw artifact, secret, or production rollout was added.
 - [x] Confirm roadmap current next phase is Phase 21-Q: vLLM No-model Serving Contract Preflight.
 
+## Phase 21-Q
+
+vLLM no-model serving contract preflight:
+
+- [x] Confirm `docs/vllm-no-model-serving-contract-preflight.md` defines future vLLM backend-mediated request/response boundaries, structured JSON output, validator/fallback/safety requirements, raw artifact blocks, iOS boundary blocks, and `productionReady:false`.
+- [x] Confirm `npm run qa:open-weight-vlm:vllm-contract-preflight` reports `vllmContractPreflightEligible:true`, `safeNoModelContractPassed:true`, `vllmRuntimeStarted:false`, `vllmEndpointCalled:false`, `networkCallsMade:false`, `modelCallsMade:false`, `qwenInferenceRun:false`, `fixtureInferenceRun:false`, `servingBenchmarkRun:false`, and `productionReady:false`.
+- [x] Confirm blocked scenarios include model call, benchmark, vLLM server start, vLLM endpoint call, model download, serving switch, `productionReady:true`, public/ngrok endpoint, raw prompt/output/image/base64/path/request payload logging, EXIF/GPS/sensor logging, missing validator/fallback/safety, free-form output, iOS direct call/key, app/prod endpoint, Camera cloud entry, text-only model, score/rating, sensitive inference, and chain-of-thought.
+- [x] Confirm no vLLM runtime, vLLM endpoint call, model call, Qwen inference, fixture inference, serving benchmark, serving switch, SGLang/Ollama call, iOS integration, endpoint, Auto-Trigger runtime, WSS runtime, upload runtime, raw artifact, secret, or production rollout was added.
+- [x] Confirm roadmap current next phase is Phase 21-R: SGLang No-model Serving Contract Preflight.
+
 ## Phase 21-G2
 
 Missing feature + deferred roadmap register:

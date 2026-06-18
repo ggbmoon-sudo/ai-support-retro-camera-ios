@@ -8,7 +8,7 @@ Production readiness: `productionReady:false`
 
 This document reorganizes missing/deferred features into a recommended phase sequence and acts as the "what next?" source of truth after each completed phase.
 
-It is not implementation approval. Future Codex sessions should read this file after every completed phase, especially when the user says "commit/push å®? or asks what to do next.
+It is not implementation approval. Future Codex sessions should read this file after every completed phase, especially when the user says "commit/push æ‘°? or asks what to do next.
 
 If a user asks for the next prompt, Codex should consult this register, identify the current next recommended phase, and provide the next phase prompt directly. If the next phase involves model calls, upload, iOS runtime, endpoint work, WSS, serving benchmarks, or production behavior, Codex must remind the user that explicit approval is required.
 
@@ -16,11 +16,11 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**Phase 21-Q: vLLM No-model Serving Contract Preflight**
+**Phase 21-R: SGLang No-model Serving Contract Preflight**
 
-Reason: Phase 21-P added the serving benchmark plan approval matrix. It maps no-model contract preflight, one-fixture smoke, controlled 12-fixture benchmark, serving stack comparison, quantization benchmark, and Live Advisor 1 FPS simulation to explicit approval classes. It ran no model call, Qwen inference, fixture inference, serving benchmark, vLLM/SGLang/Ollama call, serving stack switch, endpoint, iOS integration, raw artifact, secret, or production rollout.
+Reason: Phase 21-Q added the vLLM no-model serving contract preflight. It treats vLLM as a future benchmark candidate only and defines backend-mediated structured JSON request/response boundaries before any runtime, endpoint call, model call, benchmark, model download, serving switch, iOS integration, or production endpoint exists.
 
-Phase 21-Q must remain no-model unless separately approved. Do not jump directly to vLLM inference, SGLang inference, Ollama inference, model calls, fixture inference, serving benchmarks, model downloads, serving-stack switches, endpoints, iOS integration, or production rollout.
+Phase 21-R must remain no-model unless separately approved. Do not jump directly to SGLang inference, vLLM inference, Ollama inference, model calls, fixture inference, serving benchmarks, model downloads, serving-stack switches, endpoints, iOS integration, or production rollout.
 
 ## How Codex Should Use This File
 
@@ -66,6 +66,7 @@ Use cautious wording and re-check source docs before implementation:
 - Phase 21-N-R1E was explicitly approved for one backend local/private model smoke retry after healthz fix. The guarded command ran once with `smoke_001`, zero retries, and was accepted by backend validation with sanitized aggregate only. No serving benchmark, model switch, production `local_model`, endpoint, iOS integration, raw artifact, or production rollout occurred.
 - Phase 21-O added the serving benchmark execution preflight/scope gate and dry-run CLI. It allows only no-model contract scope by default and blocks model/benchmark execution, fixture expansion, retries, raw artifacts, endpoints, iOS integration, unsafe serving stacks, quantization production use, and Live Advisor over-1-FPS simulation unless future explicit approval and scope gates exist.
 - Phase 21-P added the serving benchmark plan approval matrix and dry-run CLI. It allows no-model contract preflight without model-call approval, maps one-fixture smoke, controlled 12-fixture benchmark, serving stack comparison, quantization benchmark, and Live Advisor 1 FPS simulation to explicit approval classes, and keeps execution blocked by default.
+- Phase 21-Q added the vLLM no-model serving contract preflight and dry-run CLI. It blocks vLLM runtime start, vLLM endpoint calls, model calls, Qwen inference, fixture inference, serving benchmarks, model downloads, serving switches, raw logging/persistence, endpoints, iOS integration, text-only image-analysis models, unsafe output modes, and production readiness.
 - `productionReady:false` remains the cross-phase default.
 
 Source references for future operators include `docs/phase-log.md`, `docs/handoff/codex-transition-handoff.md`, `docs/missing-features-and-deferred-roadmap-register.md`, and the Phase 20/21 backend gateway docs.
@@ -102,6 +103,7 @@ Rules:
 | Phase 21-O | Approved Serving Benchmark Execution Preflight / Scope Gate | Define execution approval/scope gate before any serving benchmark | no | no | no | no | explicit approval required for any future execution | Phase 21-N-R1E accepted one-fixture report | Scope gate blocks execution by default and records allowed benchmark categories |
 | Phase 21-P | Serving Benchmark Plan Approval Matrix | Map future benchmark plans to explicit approval requirements | no | no | no | no | explicit approval required for any future execution | Phase 21-O scope gate | Approval matrix exists without running benchmark/model calls |
 | Phase 21-Q | vLLM No-model Serving Contract Preflight | Define vLLM contract expectations without loading/running vLLM | no | no | no | no | explicit approval required for any future execution | Phase 21-P approval matrix | No-model vLLM contract gate only |
+| Phase 21-R | SGLang No-model Serving Contract Preflight | Define SGLang contract expectations without loading/running SGLang | no | no | no | no | explicit approval required for any future execution | Phase 21-Q vLLM contract preflight | No-model SGLang contract gate only |
 | Phase 21-N or later | Approved One-fixture Backend Local Model Route Smoke | First controlled backend `local_model` route call through gateway chain | yes | yes, one only | no | no app/prod endpoint | explicit approval required | Approval gate, dry-run plan, policy gates | One declared fixture, one call only, no retries, sanitized result, validator/fallback enforced |
 | Phase 21-O or later | Approved Serving Benchmark Execution | Compare serving stacks/quantization/latency on sanitized fixtures | yes | yes | no | no app/prod endpoint | explicit approval required | Phase 21-M plan and user approval | Sanitized benchmark metrics only; no raw artifacts; production remains false |
 | Phase 22-A | Debug-only iOS Backend Integration Preflight | Plan debug-only backend result flow with no production endpoint | no runtime by default | no | no runtime by default | no production endpoint | yes | Backend policy gates | Preflight documents debug-only path and no iOS provider/model keys |

@@ -46,30 +46,30 @@ The MVP is intentionally focused. It is not a full AI photo editing studio. The 
 
 ```text
 .
-├── README.md
-├── AGENTS.md
-├── .gitignore
-├── .env.example
-├── .firebaserc.example
-├── docs/
-│   ├── 00-common-background-v2.md
-│   ├── 01-product-mvp-scope.md
-│   ├── 02-technical-architecture.md
-│   ├── 03-camera-filter-image-pipeline.md
-│   ├── 04-ai-photo-advisor.md
-│   ├── 05-firebase-storage-firestore-functions.md
-│   ├── 06-ui-ux-design-system.md
-│   ├── 07-subscription-quota-storekit.md
-│   ├── 08-privacy-security-app-store-risk.md
-│   ├── 09-codex-phase-plan.md
-│   ├── phase-log.md
-│   ├── decisions.md
-│   └── prompts/
-├── ios-app/
-├── functions/
-├── firebase/
-├── scripts/
-└── tests/
+??? README.md
+??? AGENTS.md
+??? .gitignore
+??? .env.example
+??? .firebaserc.example
+??? docs/
+??  ??? 00-common-background-v2.md
+??  ??? 01-product-mvp-scope.md
+??  ??? 02-technical-architecture.md
+??  ??? 03-camera-filter-image-pipeline.md
+??  ??? 04-ai-photo-advisor.md
+??  ??? 05-firebase-storage-firestore-functions.md
+??  ??? 06-ui-ux-design-system.md
+??  ??? 07-subscription-quota-storekit.md
+??  ??? 08-privacy-security-app-store-risk.md
+??  ??? 09-codex-phase-plan.md
+??  ??? phase-log.md
+??  ??? decisions.md
+??  ??? prompts/
+??? ios-app/
+??? functions/
+??? firebase/
+??? scripts/
+??? tests/
 ```
 
 ## Phase-Based Development Workflow
@@ -97,11 +97,12 @@ Current phase:
 - Phase 21-N-R1E runs the explicitly approved one-fixture backend local/private model smoke retry after the healthz fix. The guarded command ran once with `smoke_001`, zero retries, and was accepted with sanitized aggregate output only. No serving benchmark, model switch, production `local_model`, endpoint, iOS integration, raw artifact, secret, or production rollout occurs.
 - Phase 21-O adds a no-model serving benchmark execution preflight/scope gate. It defines no-model contract checks, one-fixture smoke, controlled 12-fixture benchmark, serving stack comparison, quantization benchmark, and Live Advisor 1 FPS simulation boundaries while running no benchmark, model call, Qwen inference, fixture inference, vLLM/SGLang/Ollama call, serving switch, endpoint, iOS integration, raw artifact, secret, or production rollout.
 - Phase 21-P adds a no-model serving benchmark plan approval matrix. It records approval requirements for no-model contract preflight, one-fixture smoke, controlled 12-fixture benchmark, serving stack comparison, quantization benchmark, and Live Advisor 1 FPS simulation while running no benchmark, model call, Qwen inference, fixture inference, vLLM/SGLang/Ollama call, serving switch, endpoint, iOS integration, raw artifact, secret, or production rollout.
+- Phase 21-Q adds a no-model vLLM serving contract preflight. It defines future vLLM request/response boundaries, backend-mediated structured JSON expectations, validator/fallback/safety requirements, and raw-artifact/iOS/endpoint blocks while running no vLLM runtime, vLLM endpoint call, model call, Qwen inference, fixture inference, serving benchmark, serving switch, endpoint, iOS integration, raw artifact, secret, or production rollout.
 - Phase 21-H adds the controlled backend `local_model` route dry-run plan. It is a no-network/no-model/no-Qwen/no-benchmark plan gate for a future explicitly approved one-fixture, one-call, no-retry backend-internal local/private route test. It does not enable `local_model`, run fixture inference, add iOS integration, add app-facing or production endpoints, accept user-photo uploads, or change `productionReady:false`.
 
 Next phase:
 
-- Recommended next step is Phase 21-Q: vLLM No-model Serving Contract Preflight. Phase 21-Q must remain no-model unless separately approved.
+- Recommended next step is Phase 21-R: SGLang No-model Serving Contract Preflight. Phase 21-R must remain no-model unless separately approved.
 - Do not start production cloud rollout without explicit approval
 - Production rollout remains blocked until a later explicit release phase
 
@@ -607,29 +608,29 @@ User Xcode / Simulator verification accepted Phase 16K-L on 2026-06-12. The acce
 
 Phase 16K-L does not add real AI, backend code, URLSession/URLRequest, WebSocket, upload, persistence, export, save-to-Photos, StoreKit, cloud save, local download, provider SDKs, secrets, score UI, beauty / attractiveness wording, or sensitive inference.
 
-Phase 16N adds a planning-only future AI / premium feature policy at `docs/product/future-ai-premium-feature-policy.md`. Use it before scoping paid, cloud, export, AI image editing, encrypted transfer, LiDAR, local model, or Hong Kong / 麻煩友 language-mode work. Phase 16N does not change Swift app behavior.
+Phase 16N adds a planning-only future AI / premium feature policy at `docs/product/future-ai-premium-feature-policy.md`. Use it before scoping paid, cloud, export, AI image editing, encrypted transfer, LiDAR, local model, or Hong Kong / 暻餌??language-mode work. Phase 16N does not change Swift app behavior.
 
 Phase 16O saves the ChatGPT-provided Local On-device Camera Coach + LiDAR research at `docs/research/local-on-device-camera-coach-lidar-research.md`. It recommends local-first / on-device-first pre-capture guidance, keeps continuous live cloud AI guidance out of scope, and treats LiDAR / Core ML as later research-backed phases. Phase 16O does not change Swift app behavior.
 
 Phase 16P saves the ChatGPT-provided Encrypted App-to-App High Quality / Lossless Photo Transfer research at `docs/research/encrypted-app-to-app-photo-transfer-research.md`. It recommends defining local high-quality export before any encrypted transfer backend and keeps real export, StoreKit, backend, cloud storage, signed URLs, CryptoKit prototype, Universal Links, upload, and persistence out of scope. Phase 16P does not change Swift app behavior.
 
-Phase 16Q saves the ChatGPT-provided Paid AI Image Editing / 改圖師 research at `docs/research/paid-ai-image-editing-research.md`. It recommends mock image editing UX before any real provider integration and keeps real provider calls, backend, StoreKit, prompt guard implementation, upload, persistence, export, quota, entitlement, moderation, and provider adapters out of scope. Phase 16Q does not change Swift app behavior.
+Phase 16Q saves the ChatGPT-provided Paid AI Image Editing / ?孵?撣?research at `docs/research/paid-ai-image-editing-research.md`. It recommends mock image editing UX before any real provider integration and keeps real provider calls, backend, StoreKit, prompt guard implementation, upload, persistence, export, quota, entitlement, moderation, and provider adapters out of scope. Phase 16Q does not change Swift app behavior.
 
-Phase 16R saves the ChatGPT-provided Hong Kong / 麻煩友 Language Mode UX + Safety research at `docs/research/hong-kong-troublemaker-language-mode-research.md`. It recommends HK2 copy system / style guide documentation before any runtime language mode and keeps explicit profanity mode, Settings UI, copy resolver, localization runtime, persistence, LLM-generated copy, backend, network, and AI-generated live camera copy out of scope. Phase 16R does not change Swift app behavior.
+Phase 16R saves the ChatGPT-provided Hong Kong / 暻餌??Language Mode UX + Safety research at `docs/research/hong-kong-troublemaker-language-mode-research.md`. It recommends HK2 copy system / style guide documentation before any runtime language mode and keeps explicit profanity mode, Settings UI, copy resolver, localization runtime, persistence, LLM-generated copy, backend, network, and AI-generated live camera copy out of scope. Phase 16R does not change Swift app behavior.
 
-Phase 16S saves the ChatGPT-provided HK2 Hong Kong / 麻煩友 Copy System + Safety Style Guide at `docs/product/hk-troublemaker-copy-system-style-guide.md`. It is a product / copy style guide, not runtime implementation, and keeps runtime language mode, Settings UI, explicit profanity mode, copy resolver, localization runtime, persistence, LLM-generated copy, backend, network, and AI-generated live camera copy out of scope. Phase 16S does not change Swift app behavior.
+Phase 16S saves the ChatGPT-provided HK2 Hong Kong / 暻餌??Copy System + Safety Style Guide at `docs/product/hk-troublemaker-copy-system-style-guide.md`. It is a product / copy style guide, not runtime implementation, and keeps runtime language mode, Settings UI, explicit profanity mode, copy resolver, localization runtime, persistence, LLM-generated copy, backend, network, and AI-generated live camera copy out of scope. Phase 16S does not change Swift app behavior.
 
-Phase 16T / HK3 adds a Settings-only mock Language / Tone entry based on Phase 16R and HK2. Phase 16T-R1 simplifies it to language-only buttons for English / 繁體中文 / 简体中文 / 廣東話, and Phase 16T-R2 hides mock preview / praise loop / explicit phrase cards from the production Settings UI. Cantonese keeps a short safety notice. It does not change Camera guidance, Photo Advisor, Filter Lab, editing runtime copy, app-wide language switching, persistence, backend, network, AI, StoreKit, or provider integration.
+Phase 16T / HK3 adds a Settings-only mock Language / Tone entry based on Phase 16R and HK2. Phase 16T-R1 simplifies it to language-only buttons for English / 蝜?銝剜? / 蝞雿葉??/ 撱?閰? and Phase 16T-R2 hides mock preview / praise loop / explicit phrase cards from the production Settings UI. Cantonese keeps a short safety notice. It does not change Camera guidance, Photo Advisor, Filter Lab, editing runtime copy, app-wide language switching, persistence, backend, network, AI, StoreKit, or provider integration.
 
-Phase 16U / HK4 adds a local-only deterministic copy resolver scaffold for Local Camera Coach / 本機導拍 copy. Runtime integration is limited to selected camera guidance categories and uses neutral default tone only; HK conversational and non-explicit 麻煩友 keys are scaffolded but not connected to Settings or persistence. Explicit profanity runtime, app-wide language switching, backend, network, AI, and provider integration remain out of scope.
+Phase 16U / HK4 adds a local-only deterministic copy resolver scaffold for Local Camera Coach / ?祆?撠? copy. Runtime integration is limited to selected camera guidance categories and uses neutral default tone only; HK conversational and non-explicit 暻餌??keys are scaffolded but not connected to Settings or persistence. Explicit profanity runtime, app-wide language switching, backend, network, AI, and provider integration remain out of scope.
 
-Phase 16V promotes that resolver into a limited runtime path for Local Camera Coach only. Settings now persists language / tone preferences using `cameraCoach.languageMode` and `cameraCoach.toneMode`; Camera Coach can show English, Traditional Chinese, Simplified Chinese, Cantonese conversational, or non-explicit 麻煩友 deterministic copy. This does not add app-wide language switching, Photo Advisor / Filter Lab / 改圖師 copy changes, explicit profanity runtime, backend, network, real AI, StoreKit, upload, export, or raw image / frame persistence.
+Phase 16V promotes that resolver into a limited runtime path for Local Camera Coach only. Settings now persists language / tone preferences using `cameraCoach.languageMode` and `cameraCoach.toneMode`; Camera Coach can show English, Traditional Chinese, Simplified Chinese, Cantonese conversational, or non-explicit 暻餌??deterministic copy. This does not add app-wide language switching, Photo Advisor / Filter Lab / ?孵?撣?copy changes, explicit profanity runtime, backend, network, real AI, StoreKit, upload, export, or raw image / frame persistence.
 
-Phase 16W extends the same persisted language / tone preference to the mock/local Post-capture Photo Advisor. Advisor copy can now display English, Traditional Chinese, Simplified Chinese, Cantonese conversational, or non-explicit 麻煩友 phrasing. This keeps the existing advisor UI structure and does not add real AI, backend, network, upload, advisor output persistence, app-wide language switching, Filter Lab / 改圖師 copy changes, or explicit profanity runtime.
+Phase 16W extends the same persisted language / tone preference to the mock/local Post-capture Photo Advisor. Advisor copy can now display English, Traditional Chinese, Simplified Chinese, Cantonese conversational, or non-explicit 暻餌??phrasing. This keeps the existing advisor UI structure and does not add real AI, backend, network, upload, advisor output persistence, app-wide language switching, Filter Lab / ?孵?撣?copy changes, or explicit profanity runtime.
 
-Phase 16W-R2 makes the Camera tab a local-only AI guidance surface. Camera keeps Local Camera Coach / 本機導拍 with persisted language / tone copy, while Camera AI Snapshot / cloud-style quick advice is hidden from Camera UI. Inspiration / imported / selected Photo Advisor remains the place for mock/local advisor and future cloud AI entry planning. This does not add real AI, backend, network, upload, new persistence, StoreKit, export, or explicit profanity runtime.
+Phase 16W-R2 makes the Camera tab a local-only AI guidance surface. Camera keeps Local Camera Coach / ?祆?撠? with persisted language / tone copy, while Camera AI Snapshot / cloud-style quick advice is hidden from Camera UI. Inspiration / imported / selected Photo Advisor remains the place for mock/local advisor and future cloud AI entry planning. This does not add real AI, backend, network, upload, new persistence, StoreKit, export, or explicit profanity runtime.
 
-Phase 16X organizes Inspiration as the mock/local AI Hub and creative hub. It groups import photo analysis, Photo Advisor orientation, Filter Lab, a disabled future Photo Edit / 改圖師 placeholder, and a future cloud AI consent/no-background-upload notice. Camera remains local-only, and current AI features remain mock/local with no real AI, backend, network, upload, provider SDK, StoreKit, export, or new persistence.
+Phase 16X organizes Inspiration as the mock/local AI Hub and creative hub. It groups import photo analysis, Photo Advisor orientation, Filter Lab, a disabled future Photo Edit / ?孵?撣?placeholder, and a future cloud AI consent/no-background-upload notice. Camera remains local-only, and current AI features remain mock/local with no real AI, backend, network, upload, provider SDK, StoreKit, export, or new persistence.
 
 ## Phase 16A Camera One-Screen UX Consolidation Status
 

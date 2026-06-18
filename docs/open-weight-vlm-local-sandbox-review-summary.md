@@ -404,3 +404,9 @@ No model call, Qwen inference, fixture inference, serving benchmark, serving sta
 Phase 21-P adds an explicit no-model approval matrix for future serving benchmark plans. It maps one-fixture smoke, controlled 12-fixture benchmark, serving-stack comparison, quantization benchmark, and Live Advisor 1 FPS simulation to separate approval classes and keeps all execution blocked by default.
 
 No model call, Qwen inference, fixture inference, serving benchmark, serving switch, vLLM/SGLang/Ollama call, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
+
+## Phase 21-Q vLLM No-model Contract Preflight
+
+Phase 21-Q adds a vLLM no-model serving contract preflight after the approval matrix. The gate treats vLLM as a future benchmark candidate only and blocks server start, endpoint calls, model calls, benchmarks, model downloads, serving switches, raw artifacts, endpoints, iOS integration, and production readiness.
+
+No vLLM runtime, vLLM endpoint call, model call, Qwen inference, fixture inference, serving benchmark, serving switch, SGLang/Ollama call, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.

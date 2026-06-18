@@ -259,14 +259,14 @@ Confirmed locally:
 - Phase 16N - Future AI / Premium Feature Policy Backfill
 - Phase 16O - Save Local On-device Camera Coach + LiDAR Research
 - Phase 16P - Save Encrypted App-to-App Photo Transfer Research
-- Phase 16Q - Save Paid AI Image Editing / 改圖師 Research
-- Phase 16R - Save Hong Kong / 麻煩友 Language Mode Research
-- Phase 16S - Save HK2 Hong Kong / 麻煩友 Copy System + Safety Style Guide
+- Phase 16Q - Save Paid AI Image Editing / ?孵?撣?Research
+- Phase 16R - Save Hong Kong / 暻餌??Language Mode Research
+- Phase 16S - Save HK2 Hong Kong / 暻餌??Copy System + Safety Style Guide
 - Phase 16T / HK3 - Mock Language Mode UI
 
 Phase 16G status:
 
-- Inspiration / 靈感 tab has a Filter Lab / 生成我的濾鏡 entry.
+- Inspiration / ?? tab has a Filter Lab / ????瞈暸 entry.
 - The mock flow can choose a reference image or use a mock fallback.
 - Mock analyzing state is present.
 - Generated filter result card is present.
@@ -313,9 +313,9 @@ Important completed route so far:
 - Phase 16N - Future AI / Premium Feature Policy Backfill.
 - Phase 16O - Local On-device Camera Coach + LiDAR Scene Understanding research save.
 - Phase 16P - Encrypted App-to-App High Quality / Lossless Photo Transfer research save.
-- Phase 16Q - Paid AI Image Editing / 改圖師 research save.
-- Phase 16R - Hong Kong / 麻煩友 Language Mode UX + Safety research save.
-- Phase 16S - HK2 Hong Kong / 麻煩友 Copy System + Safety Style Guide save.
+- Phase 16Q - Paid AI Image Editing / ?孵?撣?research save.
+- Phase 16R - Hong Kong / 暻餌??Language Mode UX + Safety research save.
+- Phase 16S - HK2 Hong Kong / 暻餌??Copy System + Safety Style Guide save.
 - Phase 16T / HK3 - Settings-only mock Language / Tone UI.
 - Phase 16T-R1 / HK3 - simplified Settings mock UI to language-only buttons.
 - Phase 16T-R2 / HK3 - hid production-visible mock preview cards from Settings.
@@ -426,8 +426,8 @@ This update records work completed by the new Codex / Codex API session after th
 #### Phase 16I-R2
 
 - Cleaned duplicate inline selected-photo AI / filter sections now covered by the floating bar.
-- Fixed `返回相機` to switch to the outer Camera tab instead of nesting `CameraView` inside Inspiration.
-- Fixed `清除` to clear selected photo and return to Inspiration state.
+- Fixed `餈??豢?` to switch to the outer Camera tab instead of nesting `CameraView` inside Inspiration.
+- Fixed `皜` to clear selected photo and return to Inspiration state.
 - Hardened Filter Lab layout for square, portrait, landscape, wide, tall, and placeholder images.
 - Removed or hid the free / unknown-user default large mock cloud save / mock save card from selected-photo result.
 - Documented cloud save, paid-user cloud save, and free local lossless download as future dedicated entitlement / export phase work.
@@ -482,7 +482,7 @@ This update records work completed by the new Codex / Codex API session after th
 - No StoreKit / export yet.
 - No real backend endpoint yet.
 - No Gemini Live yet.
-- Phase 16N added `docs/product/future-ai-premium-feature-policy.md` as the source of truth for future AI, local intelligence, premium features, cloud save, high-quality transfer, AI image editing, Filter Lab free / paid rules, advanced retro effects, Hong Kong / 麻煩友 language mode, AI wording, feature matrix, and research backlog.
+- Phase 16N added `docs/product/future-ai-premium-feature-policy.md` as the source of truth for future AI, local intelligence, premium features, cloud save, high-quality transfer, AI image editing, Filter Lab free / paid rules, advanced retro effects, Hong Kong / 暻餌??language mode, AI wording, feature matrix, and research backlog.
 - Before implementing any paid, cloud, export, transfer, AI-edit, local-model, LiDAR, or profanity-language feature, read the Phase 16N policy doc and create a dedicated research / implementation phase.
 - Phase 16O added `docs/research/local-on-device-camera-coach-lidar-research.md`.
 - Local On-device Camera Coach + LiDAR research is now saved in the repo.
@@ -499,7 +499,7 @@ This update records work completed by the new Codex / Codex API session after th
 - StoreKit, entitlement, backend, storage, abuse controls, and privacy policy are required before real paid transfer.
 - Encrypted transfer, cloud storage, CryptoKit prototype, Universal Links, signed URLs, QR code, and receiver flow remain future dedicated phases.
 - Phase 16Q added `docs/research/paid-ai-image-editing-research.md`.
-- Paid AI Image Editing / 改圖師 research is now saved in the repo.
+- Paid AI Image Editing / ?孵?撣?research is now saved in the repo.
 - Future implementation must use this research before any image editing, provider adapter, backend, StoreKit, entitlement, upload, prompt guard, quota, moderation, or provider integration work.
 - Do not jump directly to real provider integration.
 - The next safe step, if explicitly requested, may be mock image editing UX only.
@@ -507,7 +507,7 @@ This update records work completed by the new Codex / Codex API session after th
 - StoreKit, entitlement, backend, privacy policy, retention policy, safety policy, quota, and cost guard are required before real paid image editing.
 - OpenAI / Gemini / Stability provider integration remains a future dedicated phase.
 - Phase 16R added `docs/research/hong-kong-troublemaker-language-mode-research.md`.
-- Hong Kong / 麻煩友 Language Mode UX + Safety research is now saved in the repo.
+- Hong Kong / 暻餌??Language Mode UX + Safety research is now saved in the repo.
 - Future implementation must use this research before any language mode, copy resolver, profanity, localization runtime, Settings UI, copy system, or QA policy work.
 - Do not jump directly to explicit profanity mode.
 - Do not use LLM-generated live camera copy.
@@ -527,7 +527,7 @@ This update records work completed by the new Codex / Codex API session after th
 - Phase 16T-R2 hides the mock preview cards from the production Settings UI.
 - Language / Tone remains a Settings-only mock selection with English, Traditional Chinese, Simplified Chinese, and Cantonese buttons.
 - Preview examples are removed from production UI.
-- Cantonese keeps a short safety notice; 麻煩友 / explicit direction remains safety-reviewed future work.
+- Cantonese keeps a short safety notice; 暻餌??/ explicit direction remains safety-reviewed future work.
 - Future runtime integration is still not implemented.
 - App-wide language switching is not implemented.
 - Runtime copy resolver is not implemented.
@@ -548,16 +548,16 @@ This update records work completed by the new Codex / Codex API session after th
 - Phase 16V added persisted Language / Tone preference and connected it to Local Camera Coach runtime only.
 - Persistence is limited to `cameraCoach.languageMode` and `cameraCoach.toneMode`.
 - English, Traditional Chinese, and Simplified Chinese use neutral deterministic camera coach copy.
-- Cantonese can use Hong Kong conversational or non-explicit 麻煩友 camera coach copy.
+- Cantonese can use Hong Kong conversational or non-explicit 暻餌??camera coach copy.
 - Explicit profanity remains disabled / unsupported in runtime and unavailable from Settings.
 - App-wide language switching remains not implemented.
-- Photo Advisor, Filter Lab, 改圖師 / image editing, AI Snapshot, History, and Inspiration runtime copy remain unchanged.
+- Photo Advisor, Filter Lab, ?孵?撣?/ image editing, AI Snapshot, History, and Inspiration runtime copy remain unchanged.
 - Future expansion of the resolver to Photo Advisor or other surfaces requires separate explicit approval.
 - Phase 16W connected the persisted Language / Tone setting to mock/local Post-capture Photo Advisor copy.
 - Runtime scope now includes Local Camera Coach and Photo Advisor only.
-- Photo Advisor supports English, Traditional Chinese, Simplified Chinese, Cantonese HK conversational, and Cantonese non-explicit 麻煩友 copy.
+- Photo Advisor supports English, Traditional Chinese, Simplified Chinese, Cantonese HK conversational, and Cantonese non-explicit 暻餌??copy.
 - Explicit profanity remains future-only and is not output by Photo Advisor.
-- Filter Lab, 改圖師 / image editing, AI Snapshot, Cloud AI, History persistence, and backend remain unchanged.
+- Filter Lab, ?孵?撣?/ image editing, AI Snapshot, Cloud AI, History persistence, and backend remain unchanged.
 - Future phases may expand labels / localization polish or Filter Lab copy only if explicitly requested.
 - Phase 16W-R2 makes Camera a local-only AI guidance surface.
 - Camera AI Snapshot / cloud-style quick advice entry is hidden / removed from Camera UI.
@@ -567,7 +567,7 @@ This update records work completed by the new Codex / Codex API session after th
 - Phase 16X organizes Inspiration as the future AI Hub / creative hub.
 - Inspiration now groups import photo analysis, Photo Advisor orientation, Filter Lab mock, future Photo Edit placeholder, and future cloud AI consent/no-background-upload notice.
 - Filter Lab remains mock/local.
-- Photo Edit / 改圖師 remains disabled future placeholder only.
+- Photo Edit / ?孵?撣?remains disabled future placeholder only.
 - Phase 17A started as a provider-disabled boundary skeleton.
 - iOS now has CloudAIService protocol / models / validator / mock service / disabled remote skeleton / consent view / image compression scaffold.
 - A `backend/` boundary exists with `GET /health` and `POST /v1/ai/photo-advisor`.
@@ -814,7 +814,7 @@ Important docs already added or expected in this roadmap:
 - Phase 18-C0 adds the post-capture Advisor beta hardening plan in `docs/photo-advisor-beta-hardening-plan.md`. It defines captured/imported Advisor flow checks, fallback/provider-unavailable UX, local/mock consistency, result-card readability, filter reason quality, CreativeIntentGuard behavior, crop/straighten/retake restraint, multilingual QA, real-device manual QA, regression scripts, beta acceptance criteria, and an internal QA scenario matrix. This is planning-only; app behavior, backend provider payloads, iOS upload payloads, capture-context upload, cloud functionality, Camera cloud entry, provider credential handling, real-provider QA, and production rollout are unchanged.
 - Phase 18-C1 polishes the local/mock post-capture Advisor result card. The UI-facing card remains mood-first, shows one visual reason, one primary filter recommendation with a short reason, and at most two optional advice rows. Crop/straighten advice stays ahead of optional retake, keep-style copy can appear as a gentle non-retake secondary note, and missing filter recommendations show a calm unavailable note instead of an unusable apply action. Backend provider payloads and iOS upload payloads are unchanged, capture context is not uploaded, iOS has no provider key / direct provider call, Camera remains local-only, and production rollout remains blocked.
 - Phase 18-C2 hardens the local/mock captured / imported / fallback Advisor QA path. Captured photos may use safe local capture/image context; imported photos keep limited-context copy and must not claim capture-time motion, tilt, exposure, device stability, focus, lens, or camera conditions; fallback results are explicitly marked as fallback; fallback/error copy is calm and avoids mock/internal-result wording; and fallback filters choose from the allowed local catalog when possible. Backend provider payloads and iOS upload payloads are unchanged, capture context is not uploaded, iOS has no provider key / direct provider call, Camera remains local-only, and production rollout remains blocked.
-- Phase 18-C3 polishes multilingual local/mock Advisor copy for beta QA. English, Traditional Chinese, Simplified Chinese, Cantonese-style, and non-explicit 麻煩友 strings were reviewed for short mood-first phrasing, natural imported-photo limited-context wording, calmer fallback/provider-unavailable copy, less visible mock/demo language, and Cantonese-style wording that keeps personality without heavy slang or harsh judgment. Backend provider payloads and iOS upload payloads are unchanged, capture context is not uploaded, iOS has no provider key / direct provider call, Camera remains local-only, and production rollout remains blocked.
+- Phase 18-C3 polishes multilingual local/mock Advisor copy for beta QA. English, Traditional Chinese, Simplified Chinese, Cantonese-style, and non-explicit 暻餌??strings were reviewed for short mood-first phrasing, natural imported-photo limited-context wording, calmer fallback/provider-unavailable copy, less visible mock/demo language, and Cantonese-style wording that keeps personality without heavy slang or harsh judgment. Backend provider payloads and iOS upload payloads are unchanged, capture context is not uploaded, iOS has no provider key / direct provider call, Camera remains local-only, and production rollout remains blocked.
 - Phase 18-C4 closes the Post-capture Advisor beta hardening track with a readiness audit. Phase 18-C0 through C3 now provide a local/mock Advisor beta QA baseline: mood-first result card, captured/imported/fallback flow rules, multilingual copy baseline, filter reason language, CreativeIntentGuard behavior, and retake restraint are aligned for future architecture planning. This is documentation-only; app/backend runtime behavior, backend provider payloads, iOS upload payloads, capture-context upload, Camera cloud entry, provider credential handling, and production rollout remain unchanged.
 - Phase 19-A adds `docs/open-weight-vlm-backend-architecture-adr.md`, a documentation-only architecture ADR for a future self-hosted / open-weight VLM Photo Advisor backend. It compares Qwen2.5-VL-7B, Qwen2-VL-7B, MiniCPM-V, and watchlist candidates; compares Ollama, vLLM, SGLang, and Transformers / FastAPI serving paths; defines a future explicit-consent post-capture backend architecture with metadata stripping, structured PhotoAdvisor JSON, backend validation, and safe fallback; documents non-goals; and recommends prompt/schema tuning first, evaluation dataset next, and LoRA/QLoRA later only with curated, consented, non-sensitive data. This does not add model server code, real-provider QA, cloud functionality, app/backend runtime changes, backend provider payload changes, iOS upload payload changes, capture-context upload, Camera cloud entry, iOS provider keys/direct model calls, user-photo training, or production rollout.
 - Phase 19-B adds `docs/open-weight-vlm-structured-advisor-benchmark-plan.md`, a documentation-only plan for evaluating future open-weight VLMs as structured Photo Advisor backends. It narrows the first benchmark candidates to Qwen2.5-VL-7B-Instruct, Qwen3-VL-8B-Instruct, MiniCPM-V 4.5, and optional InternVL3-8B; compares Transformers/FastAPI, Ollama/LM Studio, vLLM, and SGLang serving roles; defines synthetic/internal benchmark categories; specifies enum/key-based candidate JSON with no final UI prose; assigns backend validator/fallback responsibilities; and records metrics/gates for JSON validity, schema compliance, safety, filter family fit, creative intent preservation, retake restraint, imported-context overclaims, latency, VRAM/model-loading notes, and artifact hygiene. This does not add model server code, real-provider/VLM QA, training/fine-tuning, cloud functionality, app/backend runtime changes, backend provider payload changes, iOS upload payload changes, capture-context upload, Camera cloud entry, iOS provider/model keys/direct calls, user-photo training, or production rollout.
@@ -826,9 +826,9 @@ Important docs already added or expected in this roadmap:
 - Phase 20-B adds a backend-only local VLM sandbox client smoke path. It introduces `backend/src/qa/openWeightVlmLocalSandboxClient.mjs`, `backend/scripts/run-open-weight-vlm-local-sandbox-smoke.mjs`, backend tests, and `npm run qa:open-weight-vlm:local-smoke`. The default smoke path validates one stubbed candidate through the existing open-weight VLM schema and benchmark gate, prints sanitized aggregate output only, and keeps `networkCallsMade:false`. The explicit future local-model command remains opt-in and fail-closed unless ignored local config, approved local fixtures, synthetic gate success, and a later explicit phase approve real local/self-hosted model calls. This does not add app-facing endpoints, model server implementation, active model server URL runtime config, provider/model credentials, real VLM/provider QA, image upload, cloud functionality, app integration, backend provider payload changes, iOS upload payload changes, capture-context upload, Camera cloud entry, iOS provider/model keys/direct calls, model downloads, training/fine-tuning, user-photo training, or production rollout.
 - Phase 20-C adds the local VLM operator runbook and real-model smoke gate. It introduces `docs/open-weight-vlm-local-operator-runbook.md`, `backend/src/qa/openWeightVlmLocalSmokeGate.mjs`, `backend/scripts/check-open-weight-vlm-local-smoke-gate.mjs`, backend tests, and `npm run qa:open-weight-vlm:local-smoke-gate`. The gate checks ignored local config, `enabled:true`, `allowNetworkCalls:true`, local/private URL buckets, approved-local fixture mode, synthetic benchmark gate success, default no-network local smoke success, redaction flags, and `productionReady:false` before any future Phase 20-D real-model smoke run. It does not call a model and does not add app-facing endpoints, model server implementation, active model server URL runtime config, provider/model credentials, real VLM/provider QA, image upload, cloud functionality, app integration, backend provider payload changes, iOS upload payload changes, capture-context upload, Camera cloud entry, iOS provider/model keys/direct calls, model downloads, training/fine-tuning, user-photo training, or production rollout.
 - Future production rollout may start only after explicit approval, real image provider success, secret management hardening, provider policy review, timeout / cancellation, moderation, validation, and cost guard work.
-- No Gemini Live / streaming, AI Filter Generator real backend, 改圖師 provider integration, or Camera cloud AI entry is approved by Phase 17A.
+- No Gemini Live / streaming, AI Filter Generator real backend, ?孵?撣?provider integration, or Camera cloud AI entry is approved by Phase 17A.
 - App-wide language switching remains not implemented.
-- Filter Lab / 改圖師 copy integration remains future-only.
+- Filter Lab / ?孵?撣?copy integration remains future-only.
 - Explicit profanity remains future review-only and not runtime-enabled.
 - Next planned work after Phase 20-C should be Phase 20-D only if explicitly requested: first approved local real-model smoke run, backend-only, ignored-config-only, approved-local-fixture-only, sanitized-output-only, and no production rollout.
 - Any future real-model run must still require ignored local config, approved ignored local fixtures, explicit operator opt-in, synthetic benchmark/gate pass first, sanitized aggregate metrics only, and no production readiness claim.
@@ -916,7 +916,7 @@ Use this template:
 - Phase 21-G now adds the backend Gateway local model route approval gate. The app repo owns `docs/backend-gateway-local-model-route-approval-gate.md`, `backend/src/qa/openWeightVlmLocalModelRouteApprovalGate.mjs`, the approval CLI, tests, and docs. The gate validates future `local_model` approval prerequisites only and keeps `localModelRouteEnabled:false`, `modelCallsAllowed:false`, `qwenInferenceAllowed:false`, `networkCallsMade:false`, and `productionReady:false`.
 - Phase 21-H now adds the controlled backend `local_model` route dry-run plan. The app repo owns `docs/backend-gateway-local-model-route-dry-run-plan.md`, `backend/src/qa/openWeightVlmLocalModelRouteDryRunPlan.mjs`, the dry-run plan CLI, tests, and docs. The gate validates future plan objects only: one declared synthetic local fixture token, one call only, no retries, backend-internal/local-private only, structured candidate JSON only, mandatory validator/fallback chain, raw artifact policy locked, `networkCallsMade:false`, `modelCallsMade:false`, `qwenInferenceRun:false`, `benchmarkRun:false`, and `productionReady:false`.
 - Phase 21-G2 now adds `docs/missing-features-and-deferred-roadmap-register.md` as a docs-only memory/backlog register. It records missing/deferred Live Advisor, local CV, compression/upload payload, backend production API, VLM model/serving, Photo Advisor UX, iOS integration, Store/account/release, and advanced future-feature work, including newly discussed Qwen 3.5 35B-A3B MoE-if-VLM-compatible, non-thinking mode, vLLM/SGLang, Auto-Trigger stillness >1s, max 1 FPS cloud analysis, stateful WSS, frontend compression, INT4/INT8 quantization, and consent/no-silent-upload boundaries. It does not approve runtime implementation.
-- Phase 21-G3 now adds `docs/phase-roadmap-sequencing-and-next-action-register.md` as the next-action roadmap source. Future Codex/ChatGPT sessions should read it before proposing next phases. If the user says "commit/push 完", use this roadmap to provide the next phase prompt directly; current next recommendation is Phase 21-H2 for Qwen 3.5 35B-A3B MoE + Live Advisor target re-evaluation gate, docs/gate only.
+- Phase 21-G3 now adds `docs/phase-roadmap-sequencing-and-next-action-register.md` as the next-action roadmap source. Future Codex/ChatGPT sessions should read it before proposing next phases. If the user says "commit/push 摰?, use this roadmap to provide the next phase prompt directly; current next recommendation is Phase 21-H2 for Qwen 3.5 35B-A3B MoE + Live Advisor target re-evaluation gate, docs/gate only.
 - Phase 21-H2 now adds `docs/qwen35b-a3b-moe-live-advisor-target-reevaluation.md`, `backend/src/qa/openWeightVlmQwenMoELiveAdvisorTargetGate.mjs`, and `npm run qa:open-weight-vlm:qwen-moe-live-advisor-target`. It keeps Qwen 3.5 35B-A3B MoE preferred only if vision-capable/VLM-compatible is verified, blocks text-only Qwen for image analysis, keeps Qwen2.5-VL as the current reference baseline, and records non-thinking/direct-output, vLLM/SGLang, quantization, Auto-Trigger, WSS, compression/upload, local CV, prompt/token, consent, retention, and deletion boundaries. It runs no model calls, Qwen inference, fixture inference, serving benchmark, iOS integration, endpoint, upload runtime, WSS runtime, Auto-Trigger runtime, or production rollout.
 - Phase 21-I now adds `docs/image-compression-upload-payload-policy-gate.md`, `backend/src/qa/openWeightVlmImageCompressionUploadPolicyGate.mjs`, and `npm run qa:open-weight-vlm:image-compression-upload-policy`. It audits the existing DEBUG post-capture compression/upload scaffold, defines the future compressed preview payload policy, requires metadata stripping, consent, retention/deletion, backend mediation, Auto-Trigger linkage, 1 FPS policy, no original full-resolution default, no base64 unless explicitly approved later, no raw path/GPS/EXIF/sensor/capture-context payload, and keeps `productionReady:false`. It runs no upload runtime, compression runtime, iOS payload change, cloud AI runtime, endpoint, model call, Qwen inference, fixture inference, serving benchmark, or production rollout. Current next recommendation is Phase 21-J: Auto-Trigger + 1 FPS Live Advisor Policy Gate.
 - Phase 21-J now adds `docs/auto-trigger-1fps-live-advisor-policy-gate.md`, `backend/src/qa/openWeightVlmAutoTriggerLiveAdvisorPolicyGate.mjs`, and `npm run qa:open-weight-vlm:auto-trigger-live-advisor-policy`. It audits existing local CoreMotion/capture-context and mock Camera snapshot scaffolds, defines the future stillness greater than 1 second trigger, `<=1s` no-capture/no-upload/no-backend/no-model rule, max 1 FPS cloud-analysis cap, consent/no-silent-upload, disabled/off state, Phase 21-I compression/upload dependency, future WSS boundary, local-CV-only fast aids, retry/backoff policy, and keeps `productionReady:false`. It runs no Auto-Trigger runtime, Camera live cloud AI runtime entry, WSS runtime, upload runtime, compression runtime change, iOS payload change, endpoint, model call, Qwen inference, fixture inference, serving benchmark, or production rollout. Current next recommendation is Phase 21-K: Stateful WSS Live Advisor Protocol Preflight.
@@ -938,7 +938,8 @@ Use this template:
 - Phase 21-N-R1E was explicitly approved for one backend local/private model smoke retry after healthz fix. The guarded command ran once with `smoke_001`, zero retries, and sanitized aggregate output only. The backend validator accepted the result with `acceptedCount:1`, `rejectedCount:0`, `validationCode:null`, `fallbackCategory:null`, and latency bucket `gt_15s`. No serving benchmark, model switch, production `local_model`, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
 - Phase 21-O adds the serving benchmark execution preflight/scope gate, no-model dry-run CLI, tests, and docs. It passes only no-model contract scope by default and blocks real benchmark/model execution, fixture expansion, retries, raw artifacts, endpoints, iOS integration, unsafe serving stacks, quantization production use, and Live Advisor over-1-FPS simulation unless a future explicitly approved scope exists.
 - Phase 21-P adds the serving benchmark plan approval matrix, no-model dry-run CLI, tests, and docs. It maps no-model contract preflight, one-fixture smoke, controlled 12-fixture benchmark, serving stack comparison, quantization benchmark, and Live Advisor 1 FPS simulation to explicit approval classes while keeping model calls, Qwen inference, fixture inference, serving benchmarks, serving switches, endpoints, iOS integration, raw artifacts, secrets, and production rollout blocked.
-- Recommended next work is Phase 21-Q: vLLM No-model Serving Contract Preflight. It must remain no-model unless separately approved.
+- Phase 21-Q adds the vLLM no-model serving contract preflight, dry-run CLI, tests, and docs. It treats vLLM as a future benchmark candidate only and blocks vLLM runtime start, vLLM endpoint calls, model calls, Qwen inference, fixture inference, serving benchmarks, model downloads, serving switches, raw logging/persistence, endpoints, iOS integration, unsafe output modes, text-only image-analysis models, score/rating, sensitive inference, chain-of-thought, secrets, and production rollout.
+- Recommended next work is Phase 21-R: SGLang No-model Serving Contract Preflight. It must remain no-model unless separately approved.
 - Do not enable `local_model`, run vLLM/SGLang/Ollama benchmarks, switch model stacks, run more real smoke, substitute another fixture token, add iOS integration, add endpoints, add auth/billing/quota runtime, run Qwen inference, run fixture inference, download model weights, run serving benchmarks, or change `productionReady:false` without explicit future approval.
 
 ---
