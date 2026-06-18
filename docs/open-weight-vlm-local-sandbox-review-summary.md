@@ -416,3 +416,9 @@ No vLLM runtime, vLLM endpoint call, model call, Qwen inference, fixture inferen
 Phase 21-R adds a SGLang no-model serving contract preflight after the vLLM contract preflight. The gate treats SGLang as a future structured-output/performance challenger only and blocks server start, endpoint calls, model calls, benchmarks, model downloads, serving switches, raw artifacts, endpoints, iOS integration, and production readiness.
 
 No SGLang runtime, SGLang endpoint call, model call, Qwen inference, fixture inference, serving benchmark, serving switch, vLLM/Ollama call, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
+
+## Phase 21-S Serving Stack No-model Comparison Matrix
+
+Phase 21-S adds a serving stack no-model comparison matrix after the vLLM and SGLang contract preflights. It records Transformers+FastAPI as correctness/reference baseline, vLLM as primary future benchmark candidate, SGLang as structured-output/performance challenger, and Ollama/LM Studio as manual-only.
+
+No serving runtime, endpoint call, model call, Qwen inference, fixture inference, serving benchmark, serving switch, vLLM/SGLang/Ollama call, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.

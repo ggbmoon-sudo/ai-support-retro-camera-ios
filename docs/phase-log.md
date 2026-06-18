@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 21-R - SGLang No-model Serving Contract Preflight
+Current phase: Phase 21-S - Serving Stack No-model Comparison Matrix
 Status: Implemented
-Latest implementation: Added the Phase 21-R SGLang no-model serving contract preflight. The preflight treats SGLang as a future structured-output/performance challenger only and blocks SGLang runtime start, SGLang endpoint calls, model calls, Qwen inference, fixture inference, serving benchmarks, model downloads, serving switches, public endpoints, raw logging/persistence, missing structured JSON/validator/fallback/safety controls, iOS direct calls/keys, app/prod endpoints, Camera cloud entry, text-only image-analysis models, score/rating, sensitive inference, chain-of-thought, and production readiness. No SGLang runtime, SGLang endpoint call, model call, Qwen inference, fixture inference, serving benchmark, serving switch, vLLM/Ollama call, iOS integration, endpoint, raw artifact, secret, external workspace change, or production rollout occurred. Roadmap next is Phase 21-S: Serving Stack No-model Comparison Matrix.
+Latest implementation: Added the Phase 21-S serving stack no-model comparison matrix. The matrix compares Transformers+FastAPI as correctness/reference baseline, vLLM as primary future benchmark candidate, SGLang as structured-output/performance challenger, and Ollama/LM Studio as manual-only while blocking serving runtime, endpoint calls, model calls, Qwen inference, fixture inference, serving benchmarks, model downloads, serving switches, raw logging/persistence, missing structured JSON/validator/fallback/safety controls, iOS integration, app/prod endpoints, Camera cloud entry, unknown stacks, Ollama/LM Studio production use, and production readiness. No serving runtime, endpoint call, model call, Qwen inference, fixture inference, serving benchmark, serving switch, vLLM/SGLang/Ollama call, iOS integration, endpoint, raw artifact, secret, external workspace change, or production rollout occurred. Roadmap next is Phase 21-T: One-fixture Serving Benchmark Approval Request Draft.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -72,7 +72,7 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-S: Serving Stack No-model Comparison Matrix. Phase 21-S must remain no-model unless separately approved. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production endpoint work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution, model downloads, model cache changes, Qwen inference, fixture inference, local model route execution, local CV runtime, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, or user-photo training / fine-tuning until explicitly requested.
+Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-T: One-fixture Serving Benchmark Approval Request Draft. Phase 21-T should be approval-request/draft only unless the user explicitly approves a model call. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production endpoint work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution, model downloads, model cache changes, Qwen inference, fixture inference, local model route execution, local CV runtime, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, or user-photo training / fine-tuning until explicitly requested.
 
 ---
 
@@ -623,6 +623,77 @@ Phase 21-G3 adds a docs-only phase roadmap sequencing and next-action reminder r
 ### Ready for Next Phase
 
 Yes, for Phase 21-H2 only if explicitly requested as docs/gate-only target re-evaluation work. Any model call, upload, WSS runtime, iOS runtime, endpoint, serving benchmark, or production behavior requires separate explicit approval.
+
+---
+
+## Phase 21-S - Serving Stack No-model Comparison Matrix
+
+Status: Implemented
+Date: 2026-06-19
+
+### Summary
+
+Added a no-model serving stack comparison matrix after the Phase 21-R SGLang contract preflight. The matrix compares Transformers+FastAPI, vLLM, SGLang, and Ollama/LM Studio for future Retro Photo Advisor serving decisions without running any serving runtime or execution path.
+
+### Completed Work
+
+- Added `docs/serving-stack-no-model-comparison-matrix.md`.
+- Added `backend/src/qa/openWeightVlmServingStackComparisonMatrix.mjs`.
+- Added `backend/scripts/check-open-weight-vlm-serving-stack-comparison-matrix.mjs`.
+- Added npm script `qa:open-weight-vlm:serving-stack-comparison-matrix`.
+- Added `backend/tests/serving-stack-comparison-matrix.test.mjs`.
+- Recorded required conclusions: Transformers+FastAPI remains correctness/reference baseline, vLLM remains primary future benchmark candidate, SGLang remains structured-output/performance challenger, Ollama/LM Studio remains manual-only and not production route, R1E is not production readiness, and `gt_15s` remains an iOS/live readiness blocker.
+- Added dry-run blockers for serving runtime/execution requests, endpoint calls, model calls, benchmarks, model downloads, serving-stack switches, production routes, raw logging/persistence, missing structured JSON/validator/fallback/safety, iOS integration, app/prod endpoints, Camera cloud entry, unknown stacks, Ollama/LM Studio production use, and `productionReady:true`.
+- Updated roadmap sequencing current next phase to Phase 21-T: One-fixture Serving Benchmark Approval Request Draft.
+
+### Changed Files
+
+- `README.md`
+- `backend/README.md`
+- `backend/package.json`
+- `backend/scripts/check-open-weight-vlm-serving-stack-comparison-matrix.mjs`
+- `backend/src/qa/openWeightVlmServingStackComparisonMatrix.mjs`
+- `backend/tests/serving-stack-comparison-matrix.test.mjs`
+- `docs/handoff/codex-transition-handoff.md`
+- `docs/missing-features-and-deferred-roadmap-register.md`
+- `docs/open-weight-vlm-local-operator-runbook.md`
+- `docs/open-weight-vlm-local-sandbox-review-summary.md`
+- `docs/phase-log.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/serving-stack-no-model-comparison-matrix.md`
+- `ios-app/README.md`
+- `tests/manual-smoke-tests.md`
+
+### Verification
+
+- Targeted serving stack comparison matrix tests passed.
+- Serving stack comparison matrix CLI passed with `comparisonMatrixEligible:true`, `safeNoModelComparisonPassed:true`, `reviewedScenarioCount:17`, `expectedBlockedScenarioCount:13`, `servingRuntimeStarted:false`, `endpointCalled:false`, `modelCallsMade:false`, `qwenInferenceRun:false`, `fixtureInferenceRun:false`, `servingBenchmarkRun:false`, `servingStackSwitched:false`, and `productionReady:false`.
+- Full final verification is recorded in task closeout.
+
+### Boundaries
+
+- No serving runtime started.
+- No endpoint called.
+- No model call.
+- No Qwen inference.
+- No fixture inference.
+- No serving benchmark.
+- No serving stack switch.
+- No vLLM/SGLang/Ollama call.
+- No model download.
+- No production `local_model`, vLLM, or SGLang route enablement.
+- No app-facing or production endpoint.
+- No iOS integration.
+- No upload runtime.
+- No Auto-Trigger runtime.
+- No WSS runtime.
+- No local CV runtime.
+- No raw artifact, local config, fixture registry, fixture image, prompt, request payload, model output, server log, model weight, or credential committed.
+- `productionReady:false` remains locked.
+
+### Ready for Next Phase
+
+Yes, for Phase 21-T approval-request/draft work only. Phase 21-T must not run model calls, endpoint calls, serving runtime, Qwen inference, fixture inference, serving benchmarks, model downloads, serving-stack switches, iOS integration, or production rollout unless separately approved.
 
 ---
 

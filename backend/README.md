@@ -1346,6 +1346,8 @@ Phase 21-Q adds `backend/src/qa/openWeightVlmVllmServingContractPreflight.mjs` a
 
 Phase 21-R adds `backend/src/qa/openWeightVlmSglangServingContractPreflight.mjs` and `npm run qa:open-weight-vlm:sglang-contract-preflight`. The preflight is no-model/no-network and defines future SGLang contract boundaries only. It blocks SGLang server start, SGLang endpoint call, model calls, benchmarks, model downloads, serving-stack switches, public endpoint classes, raw logging/persistence, missing structured JSON/validator/fallback/safety controls, iOS direct calls/keys, app/prod endpoints, Camera cloud entry, text-only image-analysis models, score/rating, sensitive inference, chain-of-thought, and `productionReady:true`.
 
+Phase 21-S adds `backend/src/qa/openWeightVlmServingStackComparisonMatrix.mjs` and `npm run qa:open-weight-vlm:serving-stack-comparison-matrix`. The matrix is no-model/no-network and compares Transformers+FastAPI as correctness/reference baseline, vLLM as primary future benchmark candidate, SGLang as structured-output/performance challenger, and Ollama/LM Studio as manual-only. It blocks serving runtime, endpoint calls, model calls, benchmarks, model downloads, serving-stack switches, production routes, raw logging/persistence, missing structured JSON/validator/fallback/safety controls, iOS integration, app/prod endpoints, Camera cloud entry, unknown stacks, Ollama/LM Studio production use, and `productionReady:true`.
+
 ## Future TODO
 
 - Add authenticated backend boundary only after explicit approval.

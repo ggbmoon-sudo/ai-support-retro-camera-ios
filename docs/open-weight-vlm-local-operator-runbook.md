@@ -827,6 +827,12 @@ Phase 21-R adds a no-model SGLang serving contract preflight. It records future 
 
 No SGLang runtime was started, no SGLang endpoint was called, no model call, Qwen inference, fixture inference, serving benchmark, serving switch, vLLM/Ollama call, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
 
+## Phase 21-S Serving Stack No-model Comparison Matrix
+
+Phase 21-S adds a no-model serving stack comparison matrix. It records Transformers+FastAPI as correctness/reference baseline, vLLM as primary future benchmark candidate, SGLang as structured-output/performance challenger, and Ollama/LM Studio as manual-only and not production.
+
+No serving runtime was started, no endpoint was called, no model call, Qwen inference, fixture inference, serving benchmark, serving switch, vLLM/SGLang/Ollama call, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
+
 Operator implications:
 
 - Supply exactly one approved local-only `smoke_001` fixture image in the ignored sample folder.

@@ -213,6 +213,16 @@ SGLang no-model serving contract preflight:
 - [x] Confirm no SGLang runtime, SGLang endpoint call, model call, Qwen inference, fixture inference, serving benchmark, serving switch, vLLM/Ollama call, iOS integration, endpoint, Auto-Trigger runtime, WSS runtime, upload runtime, raw artifact, secret, or production rollout was added.
 - [x] Confirm roadmap current next phase is Phase 21-S: Serving Stack No-model Comparison Matrix.
 
+## Phase 21-S
+
+Serving stack no-model comparison matrix:
+
+- [x] Confirm `docs/serving-stack-no-model-comparison-matrix.md` compares Transformers+FastAPI reference, vLLM candidate, SGLang challenger, and Ollama/LM Studio manual-only roles with `productionReady:false`.
+- [x] Confirm `npm run qa:open-weight-vlm:serving-stack-comparison-matrix` reports `comparisonMatrixEligible:true`, `safeNoModelComparisonPassed:true`, `servingRuntimeStarted:false`, `endpointCalled:false`, `networkCallsMade:false`, `modelCallsMade:false`, `qwenInferenceRun:false`, `fixtureInferenceRun:false`, `servingBenchmarkRun:false`, `servingStackSwitched:false`, and `productionReady:false`.
+- [x] Confirm blocked scenarios include model call, endpoint call, benchmark, serving switch, model download, production route, `productionReady:true`, raw prompt/output/image/base64/path/request payload logging, EXIF/GPS/sensor logging, missing structured JSON/validator/fallback/safety, iOS integration, app/prod endpoint, Camera cloud runtime, unknown stack, and Ollama/LM Studio production use.
+- [x] Confirm no serving runtime, endpoint call, model call, Qwen inference, fixture inference, serving benchmark, serving switch, vLLM/SGLang/Ollama call, iOS integration, endpoint, Auto-Trigger runtime, WSS runtime, upload runtime, raw artifact, secret, or production rollout was added.
+- [x] Confirm roadmap current next phase is Phase 21-T: One-fixture Serving Benchmark Approval Request Draft.
+
 ## Phase 21-G2
 
 Missing feature + deferred roadmap register:
