@@ -118,6 +118,21 @@ Approved one-fixture local model smoke retry:
 - [x] Confirm roadmap current next phase is Phase 21-N-R1B: One-fixture Local Model Smoke Retry Block Resolution.
 - [x] Confirm no model call, serving benchmark, model switch, production `local_model`, vLLM/SGLang/Ollama call, iOS integration, endpoint, Auto-Trigger runtime, WSS runtime, upload runtime, raw artifact, secret, or production rollout was added.
 
+## Phase 21-N-R1B
+
+Local config fixture-token block resolution:
+
+- [x] Confirm ignored local config is present, ignored, untracked, and unstaged.
+- [x] Confirm ignored local config fixture-token bucket was not `smoke_001` before the local-only fix.
+- [x] Confirm `smoke_001` fixture file is present with extension bucket `jpg`, ignored, untracked, and unstaged.
+- [x] Confirm ignored local registry has `smoke_001` entry present and approved.
+- [x] Confirm ignored local config was touched locally only and now has fixture token `smoke_001`.
+- [x] Confirm ignored local config, registry, and fixture remain unstaged/untracked/ignored.
+- [x] Confirm model call executed `no`, healthz run `no`, call count `0`, retry count `0`, Qwen inference `false`, fixture inference `false`, serving benchmark `false`, and `productionReady:false`.
+- [x] Confirm `docs/phase-21-n-r1b-local-config-fixture-token-resolution.md` records sanitized facts only.
+- [x] Confirm roadmap current next phase is Phase 21-N-R1C: Approved One-fixture Local Model Smoke Retry After Config Fix, requiring separate explicit model-call approval.
+- [x] Confirm no serving benchmark, model switch, production `local_model`, vLLM/SGLang/Ollama call, iOS integration, endpoint, Auto-Trigger runtime, WSS runtime, upload runtime, raw artifact, secret, or production rollout was added.
+
 ## Phase 21-G2
 
 Missing feature + deferred roadmap register:

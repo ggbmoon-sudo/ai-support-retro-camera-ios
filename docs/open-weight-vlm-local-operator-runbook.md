@@ -773,6 +773,14 @@ Phase 21-N-R1 was explicitly approved for one backend local/private model smoke 
 
 Next action: resolve the ignored local config fixture-token mismatch in Phase 21-N-R1B. Do not run a model call during block resolution, and do not commit local config, fixture registry, fixture image, raw reports, prompts, request payloads, logs, model outputs, model weights, or credentials.
 
+## Phase 21-N-R1B Config-token Resolution
+
+Phase 21-N-R1B resolves the ignored local config fixture-token mismatch locally only. The ignored local config now points to `smoke_001`, while the ignored local config, fixture registry, and fixture image remain ignored, untracked, and unstaged.
+
+No model call, healthz check, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
+
+Next action: request Phase 21-N-R1C only with separate explicit approval if one backend local/private model smoke retry is intended.
+
 Operator implications:
 
 - Supply exactly one approved local-only `smoke_001` fixture image in the ignored sample folder.

@@ -150,6 +150,8 @@ Phase 21-N-R1B: One-fixture Local Model Smoke Retry Block Resolution
 
 Scope: resolve the ignored local config fixture-token mismatch so the future retry can use exactly `smoke_001`. Any later one-call model retry still requires separate explicit approval.
 
+Follow-up: Phase 21-N-R1B resolved this ignored local config fixture-token mismatch locally without running a model call. The next recommended phase after R1B is Phase 21-N-R1C, which requires separate explicit approval because it may run exactly one backend local/private model call.
+
 ## productionReady:false
 
 `productionReady:false` remains locked.
