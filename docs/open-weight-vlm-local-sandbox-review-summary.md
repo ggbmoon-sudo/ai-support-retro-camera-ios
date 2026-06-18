@@ -393,4 +393,10 @@ Phase 21-N-R1E was explicitly approved for exactly one backend local/private mod
 
 No serving benchmark, model switch, production `local_model`, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
 
+## Phase 21-O Serving Benchmark Scope Gate
+
+Phase 21-O adds a serving benchmark execution preflight/scope gate after the accepted one-fixture result. The gate records why R1E is not production readiness, especially the single-fixture scope and `gt_15s` latency bucket, and blocks benchmark/model execution by default.
+
+No model call, Qwen inference, fixture inference, serving benchmark, serving stack switch, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
+
 No model call, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.

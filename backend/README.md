@@ -1338,6 +1338,8 @@ Phase 21-N-R1D adds a healthz-only no-model preflight helper and records that th
 
 Phase 21-N-R1E runs the explicitly approved one-fixture local/private model smoke retry after healthz fix. The guarded retry command ran once with `--approved-one-call`, `--fixture smoke_001`, and `--no-retry`; it passed preflight, made one local/private model call, and was accepted by backend validation with `acceptedCount:1`, `rejectedCount:0`, `validationCode:null`, `fallbackCategory:null`, and latency bucket `gt_15s`. No raw output was printed or persisted. No serving benchmark, model switch, production `local_model`, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
 
+Phase 21-O adds `backend/src/qa/openWeightVlmServingBenchmarkExecutionScopeGate.mjs` and `npm run qa:open-weight-vlm:serving-benchmark-scope-gate`. The gate is no-model/no-network by default, passes only no-model contract scope, and blocks serving benchmark/model execution, fixture expansion, retries, raw artifacts, endpoints, iOS integration, Camera cloud entry, Auto-Trigger/WSS/upload runtime, public endpoint classes, Ollama/LM Studio production use, quantization production use, and Live Advisor over-1-FPS simulation. It adds no benchmark runtime, model call, Qwen inference, fixture inference, serving stack switch, endpoint, iOS integration, or production rollout.
+
 ## Future TODO
 
 - Add authenticated backend boundary only after explicit approval.

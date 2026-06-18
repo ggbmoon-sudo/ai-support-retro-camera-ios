@@ -16,11 +16,11 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**Phase 21-O: Approved Serving Benchmark Execution Preflight / Scope Gate**
+**Phase 21-P: Serving Benchmark Plan Approval Matrix**
 
-Reason: Phase 21-N-R1E was explicitly approved for exactly one backend local/private model smoke retry after the healthz fix. The guarded command ran once with `smoke_001`, zero retries, and sanitized aggregate output only. It was accepted with `acceptedCount:1`, `rejectedCount:0`, `validationCode:null`, `fallbackCategory:null`, and latency bucket `gt_15s`. No serving benchmark, model switch, production `local_model` enablement, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
+Reason: Phase 21-O added the serving benchmark execution preflight/scope gate. It defines no-model contract, one-fixture smoke, controlled 12-fixture benchmark, serving stack comparison, quantization benchmark, and Live Advisor 1 FPS simulation boundaries. It ran no model call, Qwen inference, fixture inference, serving benchmark, vLLM/SGLang/Ollama call, serving stack switch, endpoint, iOS integration, raw artifact, secret, or production rollout.
 
-This recommended next phase is a serving benchmark execution preflight / scope gate. It does not automatically approve a serving benchmark, model download, serving stack switch, endpoint, iOS integration, production behavior, or additional model calls.
+This recommended next phase should still be no-model/docs/gate unless separately approved. Do not jump directly to a 12-fixture benchmark.
 
 ## How Codex Should Use This File
 
@@ -64,6 +64,7 @@ Use cautious wording and re-check source docs before implementation:
 - Phase 21-N-R1C was explicitly approved for one backend local/private model smoke retry after config fix. The guarded command ran once and blocked at healthz before any model call. No retry, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, or production rollout occurred.
 - Phase 21-N-R1D diagnosed the healthz block with a healthz-only no-model preflight, then rechecked after operator server startup. The ignored local config, fixture registry, and `smoke_001` fixture remain ready and ignored, and healthz is now `safe`. No model call, Qwen inference, fixture inference, serving benchmark, endpoint, iOS integration, raw artifact, or production rollout occurred.
 - Phase 21-N-R1E was explicitly approved for one backend local/private model smoke retry after healthz fix. The guarded command ran once with `smoke_001`, zero retries, and was accepted by backend validation with sanitized aggregate only. No serving benchmark, model switch, production `local_model`, endpoint, iOS integration, raw artifact, or production rollout occurred.
+- Phase 21-O added the serving benchmark execution preflight/scope gate and dry-run CLI. It allows only no-model contract scope by default and blocks model/benchmark execution, fixture expansion, retries, raw artifacts, endpoints, iOS integration, unsafe serving stacks, quantization production use, and Live Advisor over-1-FPS simulation unless future explicit approval and scope gates exist.
 - `productionReady:false` remains the cross-phase default.
 
 Source references for future operators include `docs/phase-log.md`, `docs/handoff/codex-transition-handoff.md`, `docs/missing-features-and-deferred-roadmap-register.md`, and the Phase 20/21 backend gateway docs.
@@ -97,6 +98,8 @@ Rules:
 | Phase 21-N-R1C | Approved One-fixture Local Model Smoke Retry After Config Fix | Retry the backend local/private one-fixture smoke after config token fix | yes | yes, one only | no | no app/prod endpoint | explicit approval required | Phase 21-N-R1B report | One declared fixture, one call only, no retries, sanitized result, validator/fallback enforced |
 | Phase 21-N-R1D | One-fixture Local Model Smoke Retry Healthz Block Resolution | Resolve unsafe/unavailable local/private healthz before any retry | no | no | no | no | explicit approval required for any later model call | Phase 21-N-R1C healthz-blocked report | Healthz safe buckets restored; no model call run |
 | Phase 21-N-R1E | Approved One-fixture Local Model Smoke Retry After Healthz Fix | Retry only after healthz safe buckets are restored | yes | yes, one only | no | no app/prod endpoint | explicit approval required | Phase 21-N-R1D safe healthz report | One declared fixture, one call only, no retries, sanitized result, validator/fallback enforced |
+| Phase 21-O | Approved Serving Benchmark Execution Preflight / Scope Gate | Define execution approval/scope gate before any serving benchmark | no | no | no | no | explicit approval required for any future execution | Phase 21-N-R1E accepted one-fixture report | Scope gate blocks execution by default and records allowed benchmark categories |
+| Phase 21-P | Serving Benchmark Plan Approval Matrix | Map future benchmark plans to explicit approval requirements | no | no | no | no | explicit approval required for any future execution | Phase 21-O scope gate | Approval matrix exists without running benchmark/model calls |
 | Phase 21-N or later | Approved One-fixture Backend Local Model Route Smoke | First controlled backend `local_model` route call through gateway chain | yes | yes, one only | no | no app/prod endpoint | explicit approval required | Approval gate, dry-run plan, policy gates | One declared fixture, one call only, no retries, sanitized result, validator/fallback enforced |
 | Phase 21-O or later | Approved Serving Benchmark Execution | Compare serving stacks/quantization/latency on sanitized fixtures | yes | yes | no | no app/prod endpoint | explicit approval required | Phase 21-M plan and user approval | Sanitized benchmark metrics only; no raw artifacts; production remains false |
 | Phase 22-A | Debug-only iOS Backend Integration Preflight | Plan debug-only backend result flow with no production endpoint | no runtime by default | no | no runtime by default | no production endpoint | yes | Backend policy gates | Preflight documents debug-only path and no iOS provider/model keys |

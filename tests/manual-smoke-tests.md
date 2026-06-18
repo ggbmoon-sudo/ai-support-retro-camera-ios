@@ -173,6 +173,16 @@ Approved one-fixture local model smoke retry after healthz fix:
 - [x] Confirm roadmap current next phase is Phase 21-O: Approved Serving Benchmark Execution Preflight / Scope Gate.
 - [x] Confirm no serving benchmark, model switch, production `local_model`, vLLM/SGLang/Ollama call, iOS integration, endpoint, Auto-Trigger runtime, WSS runtime, upload runtime, raw artifact, secret, or production rollout was added.
 
+## Phase 21-O
+
+Serving benchmark execution preflight / scope gate:
+
+- [x] Confirm `docs/serving-benchmark-execution-preflight-scope-gate.md` defines no-model contract, one-fixture smoke, controlled 12-fixture benchmark, serving stack comparison, quantization benchmark, and Live Advisor 1 FPS simulation boundaries.
+- [x] Confirm `npm run qa:open-weight-vlm:serving-benchmark-scope-gate` reports `scopeGateEligible:true`, `defaultNoModelContractPassed:true`, `networkCallsMade:false`, `modelCallsMade:false`, `qwenInferenceRun:false`, `fixtureInferenceRun:false`, `servingBenchmarkRun:false`, and `productionReady:false`.
+- [x] Confirm blocked scenarios include one-fixture without approval, 12-fixture without approval, vLLM/SGLang/quantization/live simulation without approval, Live Advisor over 1 FPS, raw output logging, `productionReady:true`, iOS integration, endpoints, public endpoint class, and Ollama/LM Studio production use.
+- [x] Confirm no model call, Qwen inference, fixture inference, serving benchmark, serving switch, vLLM/SGLang/Ollama call, iOS integration, endpoint, Auto-Trigger runtime, WSS runtime, upload runtime, raw artifact, secret, or production rollout was added.
+- [x] Confirm roadmap current next phase is Phase 21-P: Serving Benchmark Plan Approval Matrix.
+
 ## Phase 21-G2
 
 Missing feature + deferred roadmap register:

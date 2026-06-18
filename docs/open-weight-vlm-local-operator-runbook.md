@@ -803,6 +803,12 @@ Phase 21-N-R1E was explicitly approved for one backend local/private model smoke
 
 No serving benchmark, model switch, production `local_model`, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
 
+## Phase 21-O Serving Benchmark Scope Gate
+
+Phase 21-O adds a no-model serving benchmark execution preflight/scope gate. It allows only no-model contract plans by default and blocks real benchmark/model execution without future explicit approval and narrow scope.
+
+Future benchmark work must start small and gated: one fixture only before controlled 12-fixture plans, one serving stack at a time, sanitized aggregate reports only, no raw artifacts, no endpoints, no iOS integration, no production rollout, and `productionReady:false`.
+
 Operator implications:
 
 - Supply exactly one approved local-only `smoke_001` fixture image in the ignored sample folder.
