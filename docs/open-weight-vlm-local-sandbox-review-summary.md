@@ -422,3 +422,9 @@ No SGLang runtime, SGLang endpoint call, model call, Qwen inference, fixture inf
 Phase 21-S adds a serving stack no-model comparison matrix after the vLLM and SGLang contract preflights. It records Transformers+FastAPI as correctness/reference baseline, vLLM as primary future benchmark candidate, SGLang as structured-output/performance challenger, and Ollama/LM Studio as manual-only.
 
 No serving runtime, endpoint call, model call, Qwen inference, fixture inference, serving benchmark, serving switch, vLLM/SGLang/Ollama call, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
+
+## Phase 21-T One-fixture Benchmark Approval Draft
+
+Phase 21-T adds a no-model approval request draft after the serving stack comparison matrix. It keeps Transformers+FastAPI as the first reference path for a possible one-fixture benchmark and records that vLLM/SGLang remain no-model contract candidates until separately approved.
+
+No serving runtime, endpoint call, model call, Qwen inference, fixture inference, serving benchmark, serving switch, vLLM/SGLang/Ollama call, endpoint, iOS integration, raw artifact, secret, or production rollout occurred. The next possible execution phase is Phase 21-U and requires separate explicit approval.

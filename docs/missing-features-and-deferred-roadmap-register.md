@@ -22,6 +22,8 @@ Phase 21-R update: SGLang now has a no-model serving contract preflight. It defi
 
 Phase 21-S update: serving stack comparison now has a no-model matrix. It compares Transformers+FastAPI reference, vLLM candidate, SGLang challenger, and Ollama/LM Studio manual-only roles while keeping serving runtime, endpoint calls, model calls, Qwen inference, fixture inference, serving benchmarks, serving switches, endpoints, iOS integration, raw artifacts, secrets, and production rollout blocked by default.
 
+Phase 21-T update: one-fixture serving benchmark approval now has a draft-only approval request and no-model gate. It prepares copyable approval language for a possible Phase 21-U Transformers+FastAPI reference benchmark with `smoke_001`, one call, zero retries, healthz required, sanitized report only, and `productionReady:false`, while keeping all execution blocked until separate explicit user approval.
+
 Docs audit note: Phase 21-G2 reviewed the Markdown inventory returned by the repo-level Markdown listing command, excluding `node_modules`, `.git`, and local VLM sample paths. The inventory contained 103 Markdown/Markdown-like files. Current implementation was also checked by source-tree and backend script/file-name inspection only; no runtime feature was changed.
 
 Naming note: the Phase 21-G2 prompt assumed Phase 21-H had not started. The current repository already contains a committed Phase 21-H local model route dry-run plan. Future phase labels below preserve the requested roadmap shape, but the next operator should reconcile numbering before starting new implementation.

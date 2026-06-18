@@ -223,6 +223,16 @@ Serving stack no-model comparison matrix:
 - [x] Confirm no serving runtime, endpoint call, model call, Qwen inference, fixture inference, serving benchmark, serving switch, vLLM/SGLang/Ollama call, iOS integration, endpoint, Auto-Trigger runtime, WSS runtime, upload runtime, raw artifact, secret, or production rollout was added.
 - [x] Confirm roadmap current next phase is Phase 21-T: One-fixture Serving Benchmark Approval Request Draft.
 
+## Phase 21-T
+
+One-fixture serving benchmark approval request draft:
+
+- [x] Confirm `docs/one-fixture-serving-benchmark-approval-request-draft.md` is a user-facing approval request draft, not an execution plan.
+- [x] Confirm `npm run qa:open-weight-vlm:one-fixture-serving-benchmark-approval-request` reports `approvalRequestGateEligible:true`, `safeDraftOnlyRequestPassed:true`, `servingRuntimeStarted:false`, `endpointCalled:false`, `networkCallsMade:false`, `modelCallsMade:false`, `qwenInferenceRun:false`, `fixtureInferenceRun:false`, `servingBenchmarkRun:false`, `servingStackSwitched:false`, and `productionReady:false`.
+- [x] Confirm blocked scenarios include current model call, current benchmark execution, fixture/call/retry expansion, non-`smoke_001` fixture, non-Transformers+FastAPI stack, missing explicit approval requirement, raw output/logging, `productionReady:true`, iOS integration, endpoints, Camera cloud runtime, Auto-Trigger/WSS/upload runtime, and serving stack switch.
+- [x] Confirm no serving runtime, endpoint call, model call, Qwen inference, fixture inference, serving benchmark, serving switch, vLLM/SGLang/Ollama call, iOS integration, endpoint, Auto-Trigger runtime, WSS runtime, upload runtime, raw artifact, secret, or production rollout was added.
+- [x] Confirm roadmap current next phase is Phase 21-U: Approved Transformers+FastAPI One-fixture Serving Benchmark, requiring separate explicit model-call approval.
+
 ## Phase 21-G2
 
 Missing feature + deferred roadmap register:

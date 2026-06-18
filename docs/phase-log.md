@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 21-S - Serving Stack No-model Comparison Matrix
+Current phase: Phase 21-T - One-fixture Serving Benchmark Approval Request Draft
 Status: Implemented
-Latest implementation: Added the Phase 21-S serving stack no-model comparison matrix. The matrix compares Transformers+FastAPI as correctness/reference baseline, vLLM as primary future benchmark candidate, SGLang as structured-output/performance challenger, and Ollama/LM Studio as manual-only while blocking serving runtime, endpoint calls, model calls, Qwen inference, fixture inference, serving benchmarks, model downloads, serving switches, raw logging/persistence, missing structured JSON/validator/fallback/safety controls, iOS integration, app/prod endpoints, Camera cloud entry, unknown stacks, Ollama/LM Studio production use, and production readiness. No serving runtime, endpoint call, model call, Qwen inference, fixture inference, serving benchmark, serving switch, vLLM/SGLang/Ollama call, iOS integration, endpoint, raw artifact, secret, external workspace change, or production rollout occurred. Roadmap next is Phase 21-T: One-fixture Serving Benchmark Approval Request Draft.
+Latest implementation: Added the Phase 21-T one-fixture serving benchmark approval request draft. The draft and dry-run gate prepare copyable approval language for a possible Phase 21-U Transformers+FastAPI reference benchmark with `smoke_001`, one fixture, one call, zero retries, healthz required, local/private endpoint only, sanitized report only, and `productionReady:false`. No serving runtime, endpoint call, model call, Qwen inference, fixture inference, serving benchmark, serving switch, vLLM/SGLang/Ollama call, iOS integration, endpoint, raw artifact, secret, external workspace change, or production rollout occurred. Roadmap next is Phase 21-U: Approved Transformers+FastAPI One-fixture Serving Benchmark, requiring separate explicit model-call approval.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -623,6 +623,77 @@ Phase 21-G3 adds a docs-only phase roadmap sequencing and next-action reminder r
 ### Ready for Next Phase
 
 Yes, for Phase 21-H2 only if explicitly requested as docs/gate-only target re-evaluation work. Any model call, upload, WSS runtime, iOS runtime, endpoint, serving benchmark, or production behavior requires separate explicit approval.
+
+---
+
+## Phase 21-T - One-fixture Serving Benchmark Approval Request Draft
+
+Status: Implemented
+Date: 2026-06-19
+
+### Summary
+
+Added a draft-only approval request for the next possible one-fixture serving benchmark after the Phase 21-S serving stack comparison matrix. Phase 21-T does not execute the benchmark; it defines the exact future approval wording and backend no-model guard.
+
+### Completed Work
+
+- Added `docs/one-fixture-serving-benchmark-approval-request-draft.md`.
+- Added `backend/src/qa/openWeightVlmOneFixtureServingBenchmarkApprovalRequest.mjs`.
+- Added `backend/scripts/check-open-weight-vlm-one-fixture-serving-benchmark-approval-request.mjs`.
+- Added npm script `qa:open-weight-vlm:one-fixture-serving-benchmark-approval-request`.
+- Added `backend/tests/one-fixture-serving-benchmark-approval-request.test.mjs`.
+- Drafted the future approval phrase for Phase 21-U: one Transformers+FastAPI reference serving benchmark, fixture `smoke_001`, call count 1, retry count 0.
+- Added the safer alternative phrase for `Phase 21-U-preflight only`.
+- Updated roadmap sequencing current next phase to Phase 21-U: Approved Transformers+FastAPI One-fixture Serving Benchmark.
+
+### Changed Files
+
+- `README.md`
+- `backend/README.md`
+- `backend/package.json`
+- `backend/scripts/check-open-weight-vlm-one-fixture-serving-benchmark-approval-request.mjs`
+- `backend/src/qa/openWeightVlmOneFixtureServingBenchmarkApprovalRequest.mjs`
+- `backend/tests/one-fixture-serving-benchmark-approval-request.test.mjs`
+- `docs/handoff/codex-transition-handoff.md`
+- `docs/missing-features-and-deferred-roadmap-register.md`
+- `docs/one-fixture-serving-benchmark-approval-request-draft.md`
+- `docs/open-weight-vlm-local-operator-runbook.md`
+- `docs/open-weight-vlm-local-sandbox-review-summary.md`
+- `docs/phase-log.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `ios-app/README.md`
+- `tests/manual-smoke-tests.md`
+
+### Verification
+
+- Targeted one-fixture approval request tests passed.
+- One-fixture approval request CLI passed with `approvalRequestGateEligible:true`, `safeDraftOnlyRequestPassed:true`, `reviewedScenarioCount:17`, `expectedBlockedScenarioCount:16`, `servingRuntimeStarted:false`, `endpointCalled:false`, `modelCallsMade:false`, `qwenInferenceRun:false`, `fixtureInferenceRun:false`, `servingBenchmarkRun:false`, `servingStackSwitched:false`, and `productionReady:false`.
+- Full final verification is recorded in task closeout.
+
+### Boundaries
+
+- No serving runtime started.
+- No endpoint called.
+- No model call.
+- No Qwen inference.
+- No fixture inference.
+- No serving benchmark.
+- No serving stack switch.
+- No vLLM/SGLang/Ollama call.
+- No model download.
+- No production `local_model`, vLLM, or SGLang route enablement.
+- No app-facing or production endpoint.
+- No iOS integration.
+- No upload runtime.
+- No Auto-Trigger runtime.
+- No WSS runtime.
+- No local CV runtime.
+- No raw artifact, local config, fixture registry, fixture image, prompt, request payload, model output, server log, model weight, or credential committed.
+- `productionReady:false` remains locked.
+
+### Ready for Next Phase
+
+Yes, for Phase 21-U only after separate explicit user approval because Phase 21-U may run exactly one backend local/private model call. Without that approval, use the safer `Phase 21-U-preflight only` path.
 
 ---
 

@@ -833,6 +833,12 @@ Phase 21-S adds a no-model serving stack comparison matrix. It records Transform
 
 No serving runtime was started, no endpoint was called, no model call, Qwen inference, fixture inference, serving benchmark, serving switch, vLLM/SGLang/Ollama call, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
 
+## Phase 21-T One-fixture Benchmark Approval Draft
+
+Phase 21-T adds a draft-only approval request for a possible Phase 21-U Transformers+FastAPI reference one-fixture serving benchmark. It does not start a serving runtime, call an endpoint, run a model call, run Qwen inference, run fixture inference, execute a benchmark, switch serving stacks, call vLLM/SGLang/Ollama, add iOS integration, add endpoints, persist raw artifacts, or change `productionReady:false`.
+
+The only proposed future execution scope is `smoke_001`, fixture count 1, call count 1, retry count 0, healthz required, local/private endpoint only, sanitized report only. Phase 21-U still requires separate explicit approval before any model call.
+
 Operator implications:
 
 - Supply exactly one approved local-only `smoke_001` fixture image in the ignored sample folder.

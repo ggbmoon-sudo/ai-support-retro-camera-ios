@@ -1348,6 +1348,8 @@ Phase 21-R adds `backend/src/qa/openWeightVlmSglangServingContractPreflight.mjs`
 
 Phase 21-S adds `backend/src/qa/openWeightVlmServingStackComparisonMatrix.mjs` and `npm run qa:open-weight-vlm:serving-stack-comparison-matrix`. The matrix is no-model/no-network and compares Transformers+FastAPI as correctness/reference baseline, vLLM as primary future benchmark candidate, SGLang as structured-output/performance challenger, and Ollama/LM Studio as manual-only. It blocks serving runtime, endpoint calls, model calls, benchmarks, model downloads, serving-stack switches, production routes, raw logging/persistence, missing structured JSON/validator/fallback/safety controls, iOS integration, app/prod endpoints, Camera cloud entry, unknown stacks, Ollama/LM Studio production use, and `productionReady:true`.
 
+Phase 21-T adds `backend/src/qa/openWeightVlmOneFixtureServingBenchmarkApprovalRequest.mjs` and `npm run qa:open-weight-vlm:one-fixture-serving-benchmark-approval-request`. The gate is no-model/no-network and validates only a copyable approval-request draft for a possible Phase 21-U one-fixture Transformers+FastAPI reference benchmark. It requires draft-only mode, fixture `smoke_001`, fixture count 1, call count 1, retry count 0, healthz required, local/private endpoint class, separate explicit approval, sanitized output policy, and `productionReady:false`. It blocks current model calls, benchmark execution, serving runtime, endpoint calls, serving-stack switch, raw logging/persistence, iOS integration, app/prod endpoints, Camera cloud entry, Auto-Trigger/WSS/upload runtime, and production readiness.
+
 ## Future TODO
 
 - Add authenticated backend boundary only after explicit approval.
