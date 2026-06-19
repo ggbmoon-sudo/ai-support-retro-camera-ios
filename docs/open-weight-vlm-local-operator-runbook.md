@@ -845,6 +845,12 @@ Phase 21-U used the existing local/private Transformers+FastAPI reference server
 
 Do not rerun the Phase 21-U command as an automatic retry. Do not expand to 12 fixtures, run concurrency, switch serving stacks, run vLLM/SGLang/Ollama, quantize, start Live Advisor simulation, add endpoints, add iOS integration, or change `productionReady:false` without a later explicit phase approval.
 
+## Phase 21-V Controlled Multi-fixture Benchmark Approval Draft
+
+Phase 21-V adds only a controlled multi-fixture serving benchmark approval request draft and no-model dry-run gate. It does not start a server, call a serving endpoint, run Qwen inference, run fixture inference, run a serving benchmark, or touch ignored local config/registry/fixture files.
+
+Future Phase 21-W execution must explicitly approve either a controlled 3-fixture pilot or a controlled 12-fixture Transformers+FastAPI reference benchmark. Codex must not infer fixture tokens from memory; the future approval must explicitly name fixture tokens or approve the current approved controlled set, and Codex must report only sanitized fixture-token buckets/counts.
+
 Operator implications:
 
 - Supply exactly one approved local-only `smoke_001` fixture image in the ignored sample folder.

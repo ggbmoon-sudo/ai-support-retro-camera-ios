@@ -247,6 +247,16 @@ Approved Transformers+FastAPI one-fixture serving benchmark:
 - [x] Confirm no 12-fixture benchmark, concurrency benchmark, quantization benchmark, Live Advisor simulation, vLLM/SGLang/Ollama call, serving switch, endpoint, iOS integration, Auto-Trigger runtime, WSS runtime, upload runtime, raw artifact, secret, or production rollout was added.
 - [x] Confirm roadmap current next phase is Phase 21-V: Controlled Multi-fixture Serving Benchmark Approval Request Draft.
 
+## Phase 21-V
+
+Controlled multi-fixture serving benchmark approval request draft:
+
+- [x] Confirm `docs/controlled-multifixture-serving-benchmark-approval-request-draft.md` is a user-facing approval request draft, not an execution plan.
+- [x] Confirm `npm run qa:open-weight-vlm:controlled-multifixture-serving-benchmark-approval-request` reports `approvalRequestGateEligible:true`, `safeDraftOnlyRequestPassed:true`, `servingRuntimeStarted:false`, `endpointCalled:false`, `networkCallsMade:false`, `modelCallsMade:false`, `qwenInferenceRun:false`, `fixtureInferenceRun:false`, `servingBenchmarkRun:false`, `servingStackSwitched:false`, and `productionReady:false`.
+- [x] Confirm blocked scenarios include current model call, current benchmark execution, fixture count `<=1`, fixture/call count mismatch, fixture-token count mismatch, retry count above zero, non-Transformers+FastAPI stack, missing explicit approval, missing explicit fixture-token requirement, missing approved registry requirement, raw output/logging, `productionReady:true`, iOS integration, endpoints, Camera cloud runtime, Auto-Trigger/WSS/upload runtime, and serving stack switch.
+- [x] Confirm no serving runtime, endpoint call, model call, Qwen inference, fixture inference, serving benchmark, serving switch, vLLM/SGLang/Ollama call, iOS integration, endpoint, Auto-Trigger runtime, WSS runtime, upload runtime, raw artifact, secret, or production rollout was added.
+- [x] Confirm roadmap current next phase is Phase 21-W: Approved Controlled Multi-fixture Transformers+FastAPI Serving Benchmark, requiring separate explicit multi-call benchmark approval.
+
 ## Phase 21-G2
 
 Missing feature + deferred roadmap register:

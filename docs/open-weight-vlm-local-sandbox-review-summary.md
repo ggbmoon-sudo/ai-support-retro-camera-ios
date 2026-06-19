@@ -434,3 +434,9 @@ No serving runtime, endpoint call, model call, Qwen inference, fixture inference
 Phase 21-U ran the explicitly approved Transformers+FastAPI reference one-fixture serving benchmark with `smoke_001`, one call, and zero retries. The sanitized result was accepted by the backend validator with no validation or fallback bucket and latency bucket `gt_15s`.
 
 This remains local/private benchmark evidence only. It does not approve 12-fixture benchmarks, concurrency benchmarks, quantization benchmarks, Live Advisor simulation, vLLM/SGLang/Ollama execution, serving-stack switch, endpoint work, iOS integration, raw artifacts, secrets, or production rollout.
+
+## Phase 21-V Controlled Multi-fixture Benchmark Approval Draft
+
+Phase 21-V adds a user-facing approval request draft and no-model backend gate for a possible future controlled multi-fixture Transformers+FastAPI serving benchmark. It documents a safer 3-fixture pilot phrase and a larger controlled 12-fixture phrase while keeping execution blocked in this phase.
+
+No serving runtime, endpoint call, model call, Qwen inference, fixture inference, serving benchmark, serving switch, vLLM/SGLang/Ollama call, endpoint, iOS integration, raw artifact, secret, or production rollout occurred. The next possible execution phase is Phase 21-W and requires separate explicit approval.
