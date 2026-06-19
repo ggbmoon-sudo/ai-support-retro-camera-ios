@@ -410,6 +410,20 @@ Local model unavailable after runtime readiness diagnostics:
 - [x] Confirm benchmark wrapper preserves explicit HTTP error buckets instead of mapping every HTTP non-OK response to `local_model_unavailable`.
 - [x] Confirm next safe action is Phase 21-W-GOAL-R2-R2A route contract dry-run follow-up; any further model or benchmark call requires separate explicit approval.
 
+## Phase 21-W-GOAL-R2-R2A
+
+Route contract dry-run follow-up:
+
+- [x] Confirm external static route-contract dry-run checker still passes.
+- [x] Confirm external fixture-token contract checker still passes.
+- [x] Confirm backend live dry-run still blocked with `route_not_found` before reload.
+- [x] Confirm route-not-found cause bucket is `stale_server_process`.
+- [x] Confirm local/private listener restart was attempted through the approved helper only.
+- [x] Confirm post-reload backend healthz blocked with `connection_refused`.
+- [x] Confirm backend live route dry-run was not rerun after healthz failed.
+- [x] Confirm no controlled 12-fixture benchmark, one-fixture benchmark, model call, real inference endpoint call, fixture inference, Qwen inference, Qwen3-VL-30B-A3B use, vLLM/SGLang/Ollama, serving switch, iOS runtime change, raw artifact, secret, or production rollout occurred.
+- [x] Confirm next safe action is Phase 21-W-GOAL-R2-R2A-R2 healthz recheck / runtime restart follow-up; any further model or benchmark call requires separate explicit approval.
+
 ## Phase 21-G2
 
 Missing feature + deferred roadmap register:
