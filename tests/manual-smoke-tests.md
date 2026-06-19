@@ -311,6 +311,16 @@ Controlled multi-fixture rejection diagnostics:
 - [x] Confirm next safe action is Phase 21-W-R2C: External Server Fixture-token Contract Fix.
 - [x] Confirm no serving switch, Qwen3-VL-30B-A3B switch/download/load/benchmark/call, vLLM/SGLang/Ollama, iOS integration, endpoint, Auto-Trigger runtime, WSS runtime, upload runtime, raw artifact, secret, or production rollout was added.
 
+## Phase 21-W-R2C
+
+External server fixture-token contract fix:
+
+- [x] Confirm external server no-model fixture-token contract accepts `smoke_001` and `smoke_004` through `smoke_015`.
+- [x] Confirm missing/unsupported token buckets are sanitized.
+- [x] Confirm contract check reports `modelLoaded:false`, `inferenceEndpointCalled:false`, and `benchmarkRun:false`.
+- [x] Confirm no model call, benchmark, fixture inference, inference endpoint call, serving switch, iOS runtime change, endpoint addition, raw artifact, secret, or production rollout occurred.
+- [x] Confirm next safe action is Phase 21-W-R2C2: Backend No-model Contract Echo Validation Against External Server.
+
 ## Phase 21-G2
 
 Missing feature + deferred roadmap register:

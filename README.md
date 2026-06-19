@@ -108,11 +108,12 @@ Current phase:
 - Phase 21-W-R1 resolves the controlled wrapper endpoint bucket mismatch by normalizing local config buckets such as `local_loopback_ip` and `private_lan_ipv4` before policy checks. It runs no model call, benchmark, fixture inference, inference endpoint call, serving switch, iOS integration, raw artifact, or production rollout. It also clarifies `Qwen3-VL-30B-A3B` as a future target candidate only, not used in this phase.
 - Phase 21-W-R1B retries the approved controlled 12-fixture Transformers+FastAPI benchmark exactly once after the endpoint bucket fix. It uses `smoke_004` through `smoke_015`, call count `12`, retry count `0`, and sanitized aggregate output only. The result is mixed/rejected with accepted count `0`, rejected count `12`, validation bucket `local_model_unavailable`, fallback bucket `blocked_for_provider_integration`, latency bucket `lt_1s x12`, no raw artifacts, no iOS/runtime/endpoint change, and `productionReady:false`.
 - Phase 21-W-R2 diagnoses the W-R1B rejection path with no model call, benchmark, healthz, inference endpoint call, or external server change. It identifies the likely failure layer as `external_route_error_mapping_or_fixture_token_contract` and keeps `productionReady:false`.
+- Phase 21-W-R2C fixes the external Windows FastAPI server no-model fixture-token contract and route-error mapping for approved tokens `smoke_001` and `smoke_004` through `smoke_015`. It adds a no-model external contract check and docs only in the main repo; no model call, benchmark, inference endpoint call, serving switch, iOS integration, endpoint addition, raw artifact, secret, or production rollout occurred.
 - Phase 21-H adds the controlled backend `local_model` route dry-run plan. It is a no-network/no-model/no-Qwen/no-benchmark plan gate for a future explicitly approved one-fixture, one-call, no-retry backend-internal local/private route test. It does not enable `local_model`, run fixture inference, add iOS integration, add app-facing or production endpoints, accept user-photo uploads, or change `productionReady:false`.
 
 Next phase:
 
-- Recommended next step is Phase 21-W-R2C: External Server Fixture-token Contract Fix. Any model calls or benchmark retry require separate explicit approval.
+- Recommended next step is Phase 21-W-R2C2: Backend No-model Contract Echo Validation Against External Server. It may call only a no-model contract echo endpoint; any model calls or benchmark retry require separate explicit approval.
 - Do not start production cloud rollout without explicit approval
 - Production rollout remains blocked until a later explicit release phase
 

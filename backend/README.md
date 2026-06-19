@@ -1364,6 +1364,8 @@ Phase 21-W-R1B retries the approved controlled 12-fixture Transformers+FastAPI b
 
 Phase 21-W-R2 adds `src/qa/openWeightVlmControlledMultifixtureRejectionDiagnostics.mjs` and `npm run qa:open-weight-vlm:controlled-multifixture-rejection-diagnostics`. The diagnostics are no-network/no-model and compare the accepted Phase 21-U path with the W-R1B all-rejected controlled path using sanitized summaries only. The likely failure layer is `external_route_error_mapping_or_fixture_token_contract`, and the recommended next work is Phase 21-W-R2C: External Server Fixture-token Contract Fix.
 
+Phase 21-W-R2C updates the external Windows FastAPI server workspace only for no-model fixture-token contract and route-error mapping. The external server now recognizes approved contract tokens `smoke_001` and `smoke_004` through `smoke_015`, accepts `fixtureId`, `fixtureToken`, or `fixture` keys on no-model contract paths, returns schema-shaped deterministic candidates for approved tokens, and fails closed with sanitized buckets for missing/unsupported tokens or route errors. No inference endpoint call, model call, benchmark, fixture inference, serving-stack switch, iOS runtime change, endpoint addition, raw artifact, secret, or production rollout occurred. Main repo docs point next to Phase 21-W-R2C2 for backend no-model contract echo validation against the external server.
+
 ## Future TODO
 
 - Add authenticated backend boundary only after explicit approval.
