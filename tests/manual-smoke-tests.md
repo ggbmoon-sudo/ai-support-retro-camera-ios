@@ -4212,6 +4212,30 @@ Known TODOs:
 - [ ] Physical-device layout should be checked for camera-shell proportions, control spacing, and one-handed reach.
 - [ ] Future real camera capability detection can be considered only in a later explicit phase.
 - [ ] Phase 15 remains blocked until Phase 14B is reviewed, committed, pushed, and read-only confirmed.
+## Phase 21-Y RunPod A100 Qwen3-VL Runtime and Batch Queue Plan
+
+Check:
+
+- [x] Confirmed Phase 21-Y is docs/planning only.
+- [x] Selected RunPod on-demand A100 80GB as the first target benchmark environment.
+- [x] Selected `Qwen3-VL-30B-A3B` as the target model candidate for the next benchmark path.
+- [x] Retained the current Qwen2.5 / existing Qwen VLM Transformers+FastAPI path as a correctness baseline only.
+- [x] Planned post-capture batch/queue Photo Advisor serving instead of live camera real-time analysis.
+- [x] Recorded daily 2-3 hour GPU windows and rough `$80-$170/month` cost assumption, with pricing verification required before purchase.
+- [x] Defined future 12-fixture benchmark shape for `smoke_004` through `smoke_015`, call count `12`, retry `0`, sanitized aggregate only.
+- [x] Confirmed no model call, benchmark, real inference endpoint call, RunPod provisioning, Qwen3-VL-30B-A3B install/download/load/call, vLLM/SGLang/Ollama install/run, iOS runtime change, raw artifact, secret, or production rollout.
+- [x] Kept `productionReady:false`.
+
+Manual Xcode check:
+
+- [ ] Launch only if desired; Xcode runtime behavior should be unchanged.
+- [ ] Confirm no Camera cloud AI entry, iOS provider/model key/direct call, upload payload change, capture-context upload, app-facing endpoint, production rollout, RunPod raw URL dependency, Windows raw local model path dependency, or provider credential dependency appears in Xcode.
+
+Known TODOs:
+
+- [ ] Phase 21-Z should prepare RunPod A100 Qwen3-VL deployment/security/no-model gates without provisioning resources or running model calls.
+- [ ] Phase 21-Z2 requires separate explicit approval before any Qwen3-VL-30B-A3B 12-fixture benchmark on RunPod A100.
+
 ## Phase 21-X Controlled Benchmark Review and Latency Decision Gate
 
 Check:
@@ -4221,7 +4245,7 @@ Check:
 - [x] Confirmed Transformers+FastAPI reference path is a backend correctness baseline.
 - [x] Confirmed latency `5s_to_15s x11` and `gt_15s x1` is not suitable for live camera or production real-time advisor UX.
 - [x] Recorded `decisionBucket:correctness_baseline_pass_latency_not_product_ready`.
-- [x] Recommended Phase 21-Y serving performance planning.
+- [x] Recommended Phase 21-Y target runtime planning.
 - [x] Confirmed no model call, benchmark, real inference endpoint call, fixture inference, Qwen3-VL-30B-A3B install/load/call, vLLM/SGLang/Ollama call, iOS runtime change, raw artifact, secret, or production rollout.
 - [x] Kept `productionReady:false`.
 
@@ -4232,7 +4256,7 @@ Manual Xcode check:
 
 Known TODOs:
 
-- [ ] Phase 21-Y should plan serving performance before any further model call, benchmark, serving-stack switch, quantization, Live Advisor simulation, iOS integration, endpoint, or production rollout.
+- [ ] Phase 21-Y should plan the target RunPod A100 Qwen3-VL runtime and batch/queue path before any further model call, benchmark, serving-stack switch, quantization, Live Advisor simulation, iOS integration, endpoint, or production rollout.
 
 ## Phase 21-W-FINAL-R2 Controlled 12-fixture Benchmark Final Result
 
