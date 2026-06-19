@@ -4509,3 +4509,16 @@ Known TODOs:
 - [x] Confirmed no raw provider response, raw model text, raw prompt, raw request payload, raw image/base64/path, API key, credential, or raw report was printed, persisted, staged, or committed.
 - [x] Confirmed no iOS runtime change, upload payload change, Camera cloud AI entry, app-facing endpoint, production endpoint, live cloud AI runtime, or production rollout was added.
 - [ ] In Xcode, confirm runtime behavior remains unchanged: no SiliconFlow endpoint/API key in iOS, no direct provider call, no upload payload change, no Camera cloud AI entry, and no app-facing endpoint.
+
+
+## Phase 21-Z2G-SF SiliconFlow Network/Parameter Latency Probe
+
+- [x] Confirmed repo was clean and upstream-synced before starting.
+- [x] Ran approved backend-only SiliconFlow probes with `smoke_004`, retry `0`, and sanitized output only.
+- [x] Confirmed successful escalated provider calls `5`; sandboxed network attempts returned `provider_network_error` and produced no provider response.
+- [x] Confirmed sequential same-process `fetch` compact `max_tokens:192` remained accepted but seconds-level: `8637ms` and `8529ms`.
+- [x] Confirmed `stream:true` TTFT was `3979ms`, but full validated JSON was `9898ms`.
+- [x] Confirmed ultra-short `max_tokens:80` and `50` failed schema with `provider_json_parse_failed`.
+- [x] Confirmed no raw provider response, raw model text, raw prompt, raw request payload, raw image/base64/path, API key, credential, or raw report was printed, persisted, staged, or committed.
+- [x] Confirmed no iOS runtime change, upload payload change, Camera cloud AI entry, app-facing endpoint, production endpoint, live cloud AI runtime, or production rollout was added.
+- [ ] In Xcode, confirm runtime behavior remains unchanged: no SiliconFlow endpoint/API key in iOS, no direct provider call, no upload payload change, no Camera cloud AI entry, and no app-facing endpoint.

@@ -34,6 +34,8 @@ Phase 21-Z2E-SF-AUTO completes the explicitly approved bounded SiliconFlow promp
 
 Phase 21-Z2F-SF-LATENCY runs approved single-image SiliconFlow latency probes with `smoke_004` only. The backend no-runtime contract now defaults to the compact SiliconFlow prompt profile and `maxOutputTokens:192` because `128` caused invalid output and `enable_thinking:false` was rejected for the VLM request shape. Best accepted probe was `5466ms`; post-patch validation was `10473ms`, so latency remains provider/serverless-bound and not product-ready. No provider runtime execution, iOS runtime change, upload payload change, app-facing endpoint, production endpoint, raw artifact, secret, or production rollout was added.
 
+Phase 21-Z2G-SF runs approved backend-only SiliconFlow network/parameter latency probes with `smoke_004` only. Sequential same-process `fetch` with compact `max_tokens:192` remained seconds-level (`8637ms`, `8529ms`), `stream:true` gave TTFT `3979ms` but full validated JSON `9898ms`, and ultra-short `max_tokens:80` / `50` failed schema. The backend contract remains compact prompt + `maxOutputTokens:192`; no provider runtime execution, iOS runtime change, upload payload change, app-facing endpoint, production endpoint, raw artifact, secret, or production rollout was added.
+
 ## Run
 
 ```sh

@@ -1068,3 +1068,14 @@ Latest Phase 21-Z2F-SF-LATENCY handoff refresh check on 2026-06-20:
 - `enable_thinking:false` was invalid for this VLM request shape; JSON mode remains disabled.
 - No raw provider response, raw model text, raw prompt, raw request payload, raw image/base64/path, API key, provider credential, raw report, iOS runtime change, upload payload change, live cloud AI runtime, app-facing endpoint, production endpoint, or production rollout occurred.
 - Next recommended phase is `Phase 21-Z2G-SF: SiliconFlow Latency Architecture Decision Gate`.
+
+
+Latest Phase 21-Z2G-SF handoff refresh check on 2026-06-20:
+
+- Phase 21-Z2G-SF ran operator-approved backend-only network/parameter latency probes with `smoke_004` only.
+- Successful escalated provider calls: `5`, retry `0`, no alternative model calls, no fixture expansion, and no real user photos.
+- Sequential same-process `fetch` compact `max_tokens:192` remained accepted but seconds-level: `8637ms` and `8529ms`.
+- `stream:true` gave TTFT `3979ms` but full validated JSON `9898ms`; streaming is not enabled by default because backend validation still requires full output.
+- Ultra-short `max_tokens:80` and `50` failed schema with `provider_json_parse_failed` / `free_form_text_detected`; backend contract remains compact prompt + `maxOutputTokens:192`.
+- No raw provider response, raw model text, raw prompt, raw request payload, raw image/base64/path, API key, provider credential, raw report, iOS runtime change, upload payload change, live cloud AI runtime, app-facing endpoint, production endpoint, or production rollout occurred.
+- Next recommended phase is `Phase 21-Z2H-SF: SiliconFlow Latency Architecture Decision Gate`.
