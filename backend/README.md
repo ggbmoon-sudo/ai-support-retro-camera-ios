@@ -1354,6 +1354,8 @@ Phase 21-U adds `backend/scripts/run-open-weight-vlm-transformers-fastapi-one-fi
 
 Phase 21-V adds `backend/src/qa/openWeightVlmControlledMultifixtureServingBenchmarkApprovalRequest.mjs` and `npm run qa:open-weight-vlm:controlled-multifixture-serving-benchmark-approval-request`. The gate is no-model/no-network and validates only a user-facing approval request draft for a possible Phase 21-W controlled multi-fixture Transformers+FastAPI reference benchmark. It requires draft-only mode, explicit approved fixture tokens, exact fixture count, matching call count, zero retries, healthz required, local/private endpoint class, approved ignored local registry requirement, sanitized output policy, and `productionReady:false`. It blocks current model calls, benchmark execution, serving runtime, endpoint calls, serving-stack switch, raw logging/persistence, iOS integration, app/prod endpoints, Camera cloud entry, Auto-Trigger/WSS/upload runtime, and production readiness.
 
+Phase 21-W0 adds `docs/phase-21-w0-approved-fixture-token-inventory.md`. It safely inventories the ignored local fixture registry with sanitized token/count output only and records 13 approved ready fixture tokens, not exactly 12. It does not run healthz, call endpoints, run model inference, run fixture inference, run a benchmark, modify ignored local config/registry/fixtures, or change `productionReady:false`.
+
 ## Future TODO
 
 - Add authenticated backend boundary only after explicit approval.

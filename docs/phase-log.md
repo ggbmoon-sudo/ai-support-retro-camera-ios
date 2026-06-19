@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 21-V - Controlled Multi-fixture Serving Benchmark Approval Request Draft
+Current phase: Phase 21-W0 - Approved Fixture Token Inventory for Controlled Benchmark
 Status: Implemented
-Latest implementation: Added the Phase 21-V controlled multi-fixture serving benchmark approval request draft, no-model backend gate, CLI, tests, and docs. It drafts possible Phase 21-W approval phrases for a controlled 3-fixture pilot or controlled 12-fixture Transformers+FastAPI reference benchmark with explicit approved fixture tokens/current approved controlled set, one call per fixture, zero retries, healthz required, local/private endpoint only, sanitized aggregate report only, and `productionReady:false`. No serving runtime, endpoint call, model call, Qwen inference, fixture inference, benchmark, serving switch, vLLM/SGLang/Ollama call, iOS integration, raw artifact, secret, external workspace change, or production rollout occurred. Roadmap next is Phase 21-W: Approved Controlled Multi-fixture Transformers+FastAPI Serving Benchmark, requiring separate explicit approval.
+Latest implementation: Added the Phase 21-W0 approved fixture token inventory report after safely reading the ignored fixture registry with sanitized output only. The registry has 13 approved ready fixture tokens, not exactly 12, so no Phase 21-W approval phrase was generated. No healthz check, serving runtime, endpoint call, model call, Qwen inference, fixture inference, benchmark, serving switch, vLLM/SGLang/Ollama call, iOS integration, local config/registry/fixture modification, raw artifact, secret, external workspace change, or production rollout occurred. Roadmap next remains Phase 21-W0: Approved Fixture Token Inventory / Registry Prep.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -72,7 +72,7 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-W: Approved Controlled Multi-fixture Transformers+FastAPI Serving Benchmark. Phase 21-W requires separate explicit approval because it may run multiple backend local/private model calls. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production endpoint work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution beyond an explicitly approved future scope, model downloads, model cache changes, Qwen inference beyond an explicitly approved local/private benchmark, fixture inference beyond explicit approval, local CV runtime, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, or user-photo training / fine-tuning until explicitly requested.
+Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase remains Phase 21-W0: Approved Fixture Token Inventory / Registry Prep. The user must choose exactly 12 tokens from the 13 approved ready tokens or explicitly request a controlled 13-fixture scope before any Phase 21-W benchmark approval. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production endpoint work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution beyond an explicitly approved future scope, model downloads, model cache changes, Qwen inference beyond an explicitly approved local/private benchmark, fixture inference beyond explicit approval, local CV runtime, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, or user-photo training / fine-tuning until explicitly requested.
 
 ---
 
@@ -623,6 +623,78 @@ Phase 21-G3 adds a docs-only phase roadmap sequencing and next-action reminder r
 ### Ready for Next Phase
 
 Yes, for Phase 21-H2 only if explicitly requested as docs/gate-only target re-evaluation work. Any model call, upload, WSS runtime, iOS runtime, endpoint, serving benchmark, or production behavior requires separate explicit approval.
+
+---
+
+## Phase 21-W0 - Approved Fixture Token Inventory for Controlled Benchmark
+
+Status: Implemented
+Date: 2026-06-19
+
+### Summary
+
+Safely inspected the ignored local fixture registry and local fixture file readiness with sanitized token/count output only. The inventory found 13 approved ready fixture tokens, not exactly 12, so Phase 21-W is not ready from the placeholder approval text.
+
+### Completed Work
+
+- Added `docs/phase-21-w0-approved-fixture-token-inventory.md`.
+- Reported approved fixture tokens only because they are safe opaque IDs.
+- Confirmed approved fixture count `13`, ready fixture count `13`, missing fixture files `0`, unapproved fixture count `0`, duplicate token count `0`, and unexpected token shape count `0`.
+- Confirmed every approved fixture file has extension bucket `jpg`, is present, ignored, unstaged, and untracked.
+- Confirmed exactly-12 readiness is false and no copyable Phase 21-W approval phrase was generated.
+- Updated roadmap sequencing current next phase to Phase 21-W0: Approved Fixture Token Inventory / Registry Prep.
+
+### Approved Tokens
+
+- `smoke_001`
+- `smoke_004`
+- `smoke_005`
+- `smoke_006`
+- `smoke_007`
+- `smoke_008`
+- `smoke_009`
+- `smoke_010`
+- `smoke_011`
+- `smoke_012`
+- `smoke_013`
+- `smoke_014`
+- `smoke_015`
+
+### Changed Files
+
+- `README.md`
+- `backend/README.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `docs/phase-21-w0-approved-fixture-token-inventory.md`
+- `docs/phase-log.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `ios-app/README.md`
+- `tests/manual-smoke-tests.md`
+
+### Verification
+
+- Repo was clean and upstream sync was `0 0` before work.
+- Registry was inspected without printing raw registry JSON, raw file paths, config contents, model server URL, secrets, image metadata, EXIF/GPS/sensor data, prompts, payloads, or model outputs.
+- No model call, endpoint call, healthz check, fixture inference, serving benchmark, or Qwen inference was run.
+- Final verification is recorded in task closeout.
+
+### Boundaries
+
+- No model call.
+- No benchmark.
+- No fixture inference.
+- No endpoint call.
+- No healthz check.
+- No vLLM/SGLang/Ollama call.
+- No local config, fixture registry, or fixture image modification.
+- No image open/OCR/EXIF/GPS/sensor inspection.
+- No iOS integration.
+- No raw artifact, local config, fixture registry JSON, fixture image path, prompt, request payload, model output, server log, model weight, or credential committed.
+- `productionReady:false` remains locked.
+
+### Ready for Next Phase
+
+No, not for a 12-fixture Phase 21-W benchmark yet. The user must choose exactly 12 tokens from the 13 approved ready tokens, or explicitly request a controlled 13-fixture scope.
 
 ---
 

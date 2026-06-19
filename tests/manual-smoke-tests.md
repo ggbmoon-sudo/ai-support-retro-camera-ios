@@ -257,6 +257,16 @@ Controlled multi-fixture serving benchmark approval request draft:
 - [x] Confirm no serving runtime, endpoint call, model call, Qwen inference, fixture inference, serving benchmark, serving switch, vLLM/SGLang/Ollama call, iOS integration, endpoint, Auto-Trigger runtime, WSS runtime, upload runtime, raw artifact, secret, or production rollout was added.
 - [x] Confirm roadmap current next phase is Phase 21-W: Approved Controlled Multi-fixture Transformers+FastAPI Serving Benchmark, requiring separate explicit multi-call benchmark approval.
 
+## Phase 21-W0
+
+Approved fixture token inventory:
+
+- [x] Confirm ignored local fixture registry was inspected with sanitized token/count output only.
+- [x] Confirm approved fixture count is `13`, ready fixture count is `13`, missing fixture files count is `0`, duplicate token count is `0`, and unexpected token shape count is `0`.
+- [x] Confirm exactly 12 ready is `false`, so no Phase 21-W approval phrase was generated.
+- [x] Confirm model call executed `no`, benchmark executed `no`, endpoint called `no`, healthz checked `no`, call count `0`, retry count `0`, and `productionReady:false`.
+- [x] Confirm ignored local config, fixture registry, and fixture files remain ignored, untracked, and unstaged.
+
 ## Phase 21-G2
 
 Missing feature + deferred roadmap register:
