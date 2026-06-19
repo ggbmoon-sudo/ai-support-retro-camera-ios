@@ -105,6 +105,16 @@ Latest Phase 21-Z2A-SF handoff refresh check on 2026-06-20:
 - Next recommended phase is `Phase 21-Z2B-SF: SiliconFlow No-runtime Backend Adapter Contract Gate`.
 - Any provider API call, key creation, account creation, image upload, model call, benchmark, provider runtime, iOS integration, upload payload change, RunPod provisioning, Qwen3 install/download/load/call, or production rollout requires separate explicit approval.
 
+Latest Phase 21-Z2B-SF handoff refresh check on 2026-06-20:
+
+- Branch: `feat/phase-02-auth`.
+- Phase 21-Z2A-SF was committed and upstream-synced before Phase 21-Z2B-SF began.
+- Phase 21-Z2B-SF adds backend-only SiliconFlow no-runtime provider contracts, config validation, JavaScript / Node.js request-shape construction, OpenAI-compatible response parsing, schema/fallback tests, sanitized error buckets, and fail-closed readiness checks.
+- Operator-provided SiliconFlow base URL and `/chat/completions` endpoint facts are recorded for future approved runtime work only.
+- No SiliconFlow API call, API key creation, provider account creation, provider SDK/runtime execution, image upload, model call, benchmark, inference endpoint call, RunPod provisioning, local Qwen3 install/download/load/call, iOS runtime change, upload payload change, raw artifact, provider credential, secret, or production rollout occurred.
+- Next recommended phase is `Phase 21-Z2C-SF Approval Request Draft for SiliconFlow 12-fixture API Benchmark`.
+- Any provider API call, key creation, account creation, image upload, model call, benchmark, provider runtime, iOS integration, upload payload change, RunPod provisioning, Qwen3 install/download/load/call, or production rollout requires separate explicit approval.
+
 Latest Phase 20-D preflight check on 2026-06-14:
 
 - Branch: `feat/phase-02-auth`.

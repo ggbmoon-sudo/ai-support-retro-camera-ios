@@ -4282,6 +4282,28 @@ Known TODOs:
 - [ ] Phase 21-Z2B-SF should add backend-only no-runtime SiliconFlow adapter contracts and tests without API calls, API keys, provider account creation, image upload, benchmark, iOS integration, or production endpoint.
 - [ ] Phase 21-Z2C-SF requires separate explicit approval before any live SiliconFlow 12-fixture benchmark using active credentials and external network access.
 
+## Phase 21-Z2B-SF SiliconFlow No-runtime Backend Adapter Contract Gate
+
+Check:
+
+- [x] Added backend-only no-runtime SiliconFlow provider contract modules.
+- [x] Added fail-closed config validation and sanitized JavaScript / Node.js request-shape builder.
+- [x] Added OpenAI-compatible response text extraction and parser/validator tests using synthetic strings only.
+- [x] Added sanitized provider error buckets.
+- [x] Added fail-closed readiness CLI.
+- [x] Confirmed no SiliconFlow API call, no API key creation/commit, no provider account, no provider SDK/runtime execution, no image upload, no model call, no benchmark, no real inference endpoint, no RunPod provisioning, no local Qwen3 install/download/load/call, no iOS runtime change, no upload payload change, no live cloud AI runtime, no raw artifact, no credential, no secret, and no production rollout.
+- [x] Kept `productionReady:false`.
+
+Manual Xcode check:
+
+- [ ] Launch only if desired; Xcode runtime behavior should be unchanged.
+- [ ] Confirm no Camera cloud AI entry, iOS provider/model key/direct call, SiliconFlow endpoint/API key in iOS, upload payload change, capture-context upload, app-facing endpoint, production rollout, provider raw output in app UI/history, RunPod raw URL, or Windows raw local model path dependency appears in Xcode.
+
+Known TODOs:
+
+- [ ] Phase 21-Z2C-SF should draft the explicit approval request for a future SiliconFlow 12-fixture API benchmark.
+- [ ] Any live SiliconFlow API call, API key setup, image upload, model call, benchmark, provider runtime, or iOS integration still requires separate explicit approval.
+
 ## Phase 21-Y-R1 Asia-first RunPod Region Selection Gate
 
 Check:

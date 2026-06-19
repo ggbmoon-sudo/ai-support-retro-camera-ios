@@ -20,6 +20,8 @@ Phase 21-Z-R1 adds a backend/docs-only API-first serverless VLM alternative eval
 
 Phase 21-Z2A-SF consolidates the provided SiliconFlow Qwen3-VL research drafts into a backend/docs-only model-selection gate. SiliconFlow is the primary API-first provider direction, `Qwen/Qwen3-VL-30B-A3B-Instruct` is the primary model direction, and RunPod A100 80GB remains fallback/comparison. The recommended next backend phase is `Phase 21-Z2B-SF: SiliconFlow No-runtime Backend Adapter Contract Gate`, limited to provider enum/config shapes, request-builder shape without execution, synthetic parser tests, sanitized error buckets, schema/fallback tests, absent-key readiness checks, and raw-logging/iOS-leakage scans. Phase 21-Z2A-SF adds no provider SDK/runtime, provider API call, API key, provider account, image upload, model call, benchmark, inference endpoint call, iOS runtime change, upload payload change, raw artifact, credential, secret, or production rollout.
 
+Phase 21-Z2B-SF adds the SiliconFlow backend-only no-runtime contract. The backend implementation path is JavaScript / Node.js; the operator-provided SiliconFlow OpenAI-compatible base URL and `/chat/completions` path are recorded for future approved runtime work only. New scripts `npm run qa:siliconflow:contract` and `npm run qa:siliconflow:readiness` run synthetic tests and fail-closed readiness checks without network calls. No SiliconFlow API call, API key, provider account, provider SDK/runtime execution, image upload, model call, benchmark, iOS runtime change, upload payload change, raw artifact, credential, secret, or production rollout was added.
+
 ## Run
 
 ```sh
