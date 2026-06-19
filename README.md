@@ -114,11 +114,12 @@ Current phase:
 - Phase 21-W-R3 was explicitly approved to retry the controlled 12-fixture Transformers+FastAPI benchmark after contract echo validation passed, but healthz preflight blocked with `model_not_loaded` before any benchmark/model calls. Call count stayed `0`, retry count stayed `0`, no inference endpoint was called, no Qwen3-VL-30B-A3B switch/download/load/benchmark/call occurred, and `productionReady:false` remains locked.
 - Phase 21-W-R3-R1 diagnoses the `model_not_loaded` healthz block. External no-model contract checking still passes, healthz remains blocked, dependency classes are present, no model/inference/benchmark call occurred, and the next safe action is operator model-enabled startup for the existing reference server.
 - Phase 21-W-GOAL was an approved autonomous attempt to reach the controlled 12-fixture benchmark final result. Codex confirmed no-model contract health and attempted one existing helper model-enabled startup, but healthz stayed `model_not_loaded`; no benchmark command ran, model call count stayed `0`, retry count stayed `0`, and `productionReady:false` remains locked.
+- Phase 21-W-GOAL-R2 runs the explicitly approved controlled 12-fixture Transformers+FastAPI benchmark after fresh model runtime readiness. Healthz was `safe` with `modelLoaded:true`; the guarded benchmark ran exactly once with `smoke_004` through `smoke_015`, call count `12`, retry count `0`, and sanitized aggregate output only. All 12 calls rejected with `local_model_unavailable` / `blocked_for_provider_integration` and `lt_1s` latency; no extra calls, retry, Qwen3-VL-30B-A3B use, serving switch, iOS runtime change, raw artifact, secret, or production rollout occurred.
 - Phase 21-H adds the controlled backend `local_model` route dry-run plan. It is a no-network/no-model/no-Qwen/no-benchmark plan gate for a future explicitly approved one-fixture, one-call, no-retry backend-internal local/private route test. It does not enable `local_model`, run fixture inference, add iOS integration, add app-facing or production endpoints, accept user-photo uploads, or change `productionReady:false`.
 
 Next phase:
 
-- Recommended next step is Phase 21-W-GOAL-R1: Operator Model Runtime Preparation. Any later benchmark retry requires separate explicit user approval before model or benchmark calls.
+- Recommended next step is Phase 21-W-GOAL-R2-R2: Local Model Unavailable After Model Runtime Readiness. Any further model or benchmark calls require separate explicit user approval.
 - Do not start production cloud rollout without explicit approval
 - Production rollout remains blocked until a later explicit release phase
 

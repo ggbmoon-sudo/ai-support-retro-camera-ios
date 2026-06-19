@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 21-W-GOAL - Controlled 12-fixture Benchmark Final Result Attempt
-Status: Final blocker reached before benchmark/model calls
-Latest implementation: Phase 21-W-GOAL was approved to autonomously resolve model readiness and run exactly one controlled 12-fixture Transformers+FastAPI benchmark only if all gates passed. Codex confirmed no-model contract health, attempted one model-enabled local/private startup through the existing external helper, and rechecked healthz through the backend gate. Healthz stayed `model_not_loaded`, likely blocker `missing_local_model_runtime`, so no benchmark command ran. Model call count `0`, retry count `0`, accepted count `0`, rejected count `0`, no Qwen3-VL-30B-A3B install/download/load/call, no serving switch, no iOS runtime change, no endpoint addition, no raw artifact, no secret, and no production rollout occurred. Roadmap next is Phase 21-W-GOAL-R1: Operator Model Runtime Preparation.
+Current phase: Phase 21-W-GOAL-R2 - Controlled 12-fixture Benchmark After Runtime Readiness
+Status: Final benchmark result reached with all calls rejected
+Latest implementation: Phase 21-W-GOAL-R2 was explicitly approved to retry the controlled 12-fixture Transformers+FastAPI benchmark after live model runtime readiness. External no-model contract checking and backend no-model contract echo validation passed, ignored local config/registry/fixtures stayed ignored and unstaged, and fresh healthz was `safe` with `modelLoaded:true`. The guarded benchmark ran exactly once with `smoke_004` through `smoke_015`, call count `12`, retry count `0`, and sanitized aggregate output only. Accepted count `0`, rejected count `12`, validation bucket `local_model_unavailable`, fallback bucket `blocked_for_provider_integration`, latency bucket `lt_1s x12`; no rerun, extra call, Qwen3-VL-30B-A3B install/download/load/call, serving switch, iOS runtime change, endpoint addition, raw artifact, secret, or production rollout occurred. Roadmap next is Phase 21-W-GOAL-R2-R2: Local Model Unavailable After Model Runtime Readiness.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -73,9 +73,67 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-W-GOAL-R1: Operator Model Runtime Preparation. Any later benchmark retry requires separate explicit approval before model or benchmark calls. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution beyond an explicitly approved future scope, model downloads, model cache changes, Qwen inference beyond an explicitly approved local/private benchmark, fixture inference beyond explicit approval, local CV runtime, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, or user-photo training / fine-tuning until explicitly requested.
+Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-W-GOAL-R2-R2: Local Model Unavailable After Model Runtime Readiness. Any further benchmark/model calls require separate explicit approval before execution. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution beyond an explicitly approved future scope, model downloads, model cache changes, Qwen inference beyond an explicitly approved local/private benchmark, fixture inference beyond explicit approval, local CV runtime, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, or user-photo training / fine-tuning until explicitly requested.
 
 ---
+
+## Phase 21-W-GOAL-R2 - Controlled 12-fixture Benchmark After Runtime Readiness
+
+Status: completed
+Date: 2026-06-19
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase 21-W-GOAL-R2 was an approved controlled benchmark retry after live model runtime readiness. Fresh healthz passed with `modelLoaded:true`, no-model contract checks passed, and the benchmark ran exactly once with the approved 12 fixtures and zero retries. The final result is all 12 rejected with `local_model_unavailable`.
+
+### Completed Work
+
+- Verified external no-model fixture-token contract check still passed with approved token count `13`, unsupported bucket `unsupported_fixture_token`, missing bucket `missing_fixture_token`, and `productionReady:false`.
+- Verified backend no-model contract echo validation still passed with no model call, no benchmark, and no inference endpoint call.
+- Verified ignored local config, fixture registry, and `smoke_004` through `smoke_015` fixture files stayed present, ignored, untracked, and unstaged.
+- Verified the exact approved fixture set and registry approval for all 12 benchmark tokens.
+- Ran fresh local model healthz preflight; result was `safe`, `modelLoaded:true`, `modelFamilyBucket:qwen_vlm_compatible`, raw logging disabled, public exposure `no`, and `productionReady:false`.
+- Ran repo safety gates and scans before the benchmark.
+- Ran the guarded controlled 12-fixture benchmark exactly once with call count `12` and retry count `0`.
+- Added sanitized Phase 21-W-GOAL-R2 report and updated roadmap/handoff/manual docs.
+
+### Changed Files
+
+- `README.md`
+- `backend/README.md`
+- `ios-app/README.md`
+- `docs/phase-21-w-goal-r2-controlled-12-fixture-benchmark-after-runtime-readiness-report.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `tests/manual-smoke-tests.md`
+
+### Tests and Checks
+
+- External `check_fixture_token_contract.py`: passed.
+- `npm run qa:open-weight-vlm:backend-contract-echo-validation`: passed.
+- Local ignored config/registry/fixture readiness scan: passed.
+- `git diff --check`: passed before benchmark.
+- Backend tests: passed, `330/330`.
+- Controlled multifixture rejection diagnostics: passed.
+- Controlled multifixture serving benchmark approval request: passed.
+- Serving benchmark approval matrix: passed.
+- Serving benchmark scope gate: passed.
+- Local config dry-run: passed.
+- Local smoke gate: passed.
+- Local model route approval gate: passed.
+- Fresh healthz preflight: passed with `modelLoaded:true`.
+- Controlled 12-fixture benchmark: executed once; sanitized output showed call count `12`, retry count `0`, accepted count `0`, rejected count `12`, validation bucket `local_model_unavailable`, fallback bucket `blocked_for_provider_integration`, latency bucket `lt_1s x12`.
+
+### Known TODOs
+
+- Diagnose why the benchmark route still returns `local_model_unavailable` for all approved controlled fixtures despite safe loaded healthz.
+- Do not rerun the controlled benchmark or any fixture calls without separate explicit user approval.
+
+### Ready for Next Phase
+
+Ready for Phase 21-W-GOAL-R2-R2: Local Model Unavailable After Model Runtime Readiness. Any further model or benchmark call requires separate explicit approval.
 
 ## Phase 21-W-GOAL - Controlled 12-fixture Benchmark Final Result Attempt
 

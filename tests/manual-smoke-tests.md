@@ -378,6 +378,22 @@ Autonomous controlled 12-fixture benchmark final result attempt:
 - [x] Confirm no extra calls, benchmark retry, fixture substitution, inference endpoint call, Qwen3-VL-30B-A3B install/load/call, vLLM/SGLang/Ollama, serving switch, iOS runtime change, endpoint addition, raw artifact, secret, or production rollout occurred.
 - [x] Confirm next safe action is Phase 21-W-GOAL-R1 operator model runtime preparation.
 
+## Phase 21-W-GOAL-R2
+
+Approved controlled 12-fixture benchmark retry after model runtime readiness:
+
+- [x] Confirm user explicitly approved one controlled 12-fixture Transformers+FastAPI benchmark retry after model runtime readiness.
+- [x] Confirm external no-model fixture-token contract check still passes.
+- [x] Confirm backend no-model contract echo validation still passes.
+- [x] Confirm ignored local config, ignored fixture registry, and `smoke_004` through `smoke_015` fixture files are present, ignored, untracked, and unstaged.
+- [x] Confirm exact fixture set is `smoke_004` through `smoke_015`, with no `smoke_001` in the controlled benchmark.
+- [x] Confirm fresh healthz before benchmark is `safe` with `modelLoaded:true`, `modelFamilyBucket:qwen_vlm_compatible`, raw logging disabled, public exposure `no`, and `productionReady:false`.
+- [x] Confirm guarded benchmark ran exactly once with call count `12` and retry count `0`.
+- [x] Confirm accepted count `0`, rejected count `12`, validation bucket `local_model_unavailable`, fallback bucket `blocked_for_provider_integration`, and latency bucket `lt_1s x12`.
+- [x] Confirm raw output, raw prompt, raw payload, raw image content, raw image paths, raw server URL, config contents, registry contents, server logs, and secrets were not printed or persisted.
+- [x] Confirm no retry, no extra fixture, no Qwen3-VL-30B-A3B install/download/load/call, no vLLM/SGLang/Ollama, no serving switch, no iOS runtime change, no endpoint addition, no Auto-Trigger runtime, no WSS runtime, no upload runtime, no local CV runtime, and no production rollout occurred.
+- [x] Confirm next safe action is Phase 21-W-GOAL-R2-R2 local model unavailable after model runtime readiness; any further model or benchmark call requires separate explicit approval.
+
 ## Phase 21-G2
 
 Missing feature + deferred roadmap register:
