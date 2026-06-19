@@ -4212,6 +4212,28 @@ Known TODOs:
 - [ ] Physical-device layout should be checked for camera-shell proportions, control spacing, and one-handed reach.
 - [ ] Future real camera capability detection can be considered only in a later explicit phase.
 - [ ] Phase 15 remains blocked until Phase 14B is reviewed, committed, pushed, and read-only confirmed.
+## Phase 21-X Controlled Benchmark Review and Latency Decision Gate
+
+Check:
+
+- [x] Reviewed Phase 21-W-FINAL-R2 accepted aggregate: `acceptedCount:12`, `rejectedCount:0`, `blockedCount:0`.
+- [x] Confirmed Phase 21-W controlled benchmark goal is reached.
+- [x] Confirmed Transformers+FastAPI reference path is a backend correctness baseline.
+- [x] Confirmed latency `5s_to_15s x11` and `gt_15s x1` is not suitable for live camera or production real-time advisor UX.
+- [x] Recorded `decisionBucket:correctness_baseline_pass_latency_not_product_ready`.
+- [x] Recommended Phase 21-Y serving performance planning.
+- [x] Confirmed no model call, benchmark, real inference endpoint call, fixture inference, Qwen3-VL-30B-A3B install/load/call, vLLM/SGLang/Ollama call, iOS runtime change, raw artifact, secret, or production rollout.
+- [x] Kept `productionReady:false`.
+
+Manual Xcode check:
+
+- [ ] Launch only if desired; Xcode runtime behavior should be unchanged.
+- [ ] Confirm no Camera cloud AI entry, iOS provider/model key/direct call, upload payload change, capture-context upload, app-facing endpoint, production rollout, Windows raw local model path dependency, or raw local model URL dependency appears in Xcode.
+
+Known TODOs:
+
+- [ ] Phase 21-Y should plan serving performance before any further model call, benchmark, serving-stack switch, quantization, Live Advisor simulation, iOS integration, endpoint, or production rollout.
+
 ## Phase 21-W-FINAL-R2 Controlled 12-fixture Benchmark Final Result
 
 Check:

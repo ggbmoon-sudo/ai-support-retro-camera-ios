@@ -8,6 +8,8 @@ Phase 17C-Prep hardens the boundary before real provider work. Phase 17C-R1 adds
 
 Phase 21-W-FINAL-R2 completes the backend-local controlled 12-fixture Transformers+FastAPI reference benchmark after runtime reconnect and routeability repair. The single approved run used `smoke_004` through `smoke_015`, made exactly `12` local/private model calls, used retry count `0`, and accepted all `12` fixtures with latency buckets `gt_15s x1` and `5s_to_15s x11`. Raw outputs, prompts, payloads, image paths, local config, fixture registry contents, server URL/logs, and secrets were not printed or committed; Qwen3-VL-30B-A3B was not used; `productionReady:false` remains locked.
 
+Phase 21-X is a documentation-only review gate for that accepted result. It marks the current Transformers+FastAPI path as a backend correctness baseline and records `decisionBucket:correctness_baseline_pass_latency_not_product_ready`; serving latency is not ready for live camera or production real-time flows, so the next backend direction is Phase 21-Y serving performance planning. Phase 21-X runs no model call, benchmark, inference endpoint call, serving switch, iOS integration, raw artifact, or production rollout.
+
 ## Run
 
 ```sh
