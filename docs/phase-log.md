@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 21-W-R2C - External Server Fixture-token Contract Fix
+Current phase: Phase 21-W-R2C2 - Backend No-model Contract Echo Validation
 Status: Implemented
-Latest implementation: Fixed the external Windows FastAPI server no-model fixture-token contract and route-error mapping for approved tokens `smoke_001` and `smoke_004` through `smoke_015`. Added an external no-model contract check script and sanitized main repo report. No model call, benchmark, healthz, fixture inference, inference endpoint call, serving switch, vLLM/SGLang/Ollama call, Qwen3-VL-30B-A3B switch/download/load/benchmark/call, iOS runtime change, endpoint addition, upload runtime, Auto-Trigger runtime, WSS runtime, raw artifact, secret, or production rollout occurred. Roadmap next is Phase 21-W-R2C2: Backend No-model Contract Echo Validation Against External Server.
+Latest implementation: Added backend-side no-model contract echo validator, CLI, tests, and sanitized report. External local no-model checker still passed, and the backend reached a local/private no-model contract echo endpoint, but validation blocked because unsupported and missing fixture-token responses returned `unknown` buckets instead of explicit sanitized buckets. No model call, benchmark, fixture inference, inference endpoint call, serving switch, vLLM/SGLang/Ollama call, Qwen3-VL-30B-A3B switch/download/load/benchmark/call, iOS runtime change, endpoint addition, upload runtime, Auto-Trigger runtime, WSS runtime, raw artifact, secret, or production rollout occurred. Roadmap next is Phase 21-W-R2C4: Contract Echo Validation Failure Fix.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -73,7 +73,46 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-W-R2C2: Backend No-model Contract Echo Validation Against External Server. It may call only the no-model contract echo endpoint and must not run model inference or benchmarks without separate explicit approval. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution beyond an explicitly approved future scope, model downloads, model cache changes, Qwen inference beyond an explicitly approved local/private benchmark, fixture inference beyond explicit approval, local CV runtime, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, or user-photo training / fine-tuning until explicitly requested.
+Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-W-R2C4: Contract Echo Validation Failure Fix. It must remain no-model/no-benchmark unless the user separately approves a later model/benchmark phase. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution beyond an explicitly approved future scope, model downloads, model cache changes, Qwen inference beyond an explicitly approved local/private benchmark, fixture inference beyond explicit approval, local CV runtime, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, or user-photo training / fine-tuning until explicitly requested.
+
+---
+
+## Phase 21-W-R2C2 - Backend No-model Contract Echo Validation
+
+Status: Implemented / blocked by contract echo bucket mismatch
+Date: 2026-06-19
+
+### Summary
+
+Added backend-side no-model contract echo validation for the external Windows FastAPI server. The validator reached a local/private no-model contract echo endpoint but blocked because unsupported and missing fixture-token responses returned `unknown` buckets instead of explicit sanitized buckets.
+
+### Completed Work
+
+- Added `backend/src/qa/openWeightVlmBackendContractEchoValidation.mjs`.
+- Added `backend/scripts/check-open-weight-vlm-backend-contract-echo-validation.mjs`.
+- Added npm script `qa:open-weight-vlm:backend-contract-echo-validation`.
+- Added tests in `backend/tests/backend-contract-echo-validation.test.mjs`.
+- Added sanitized report `docs/phase-21-w-r2c2-backend-no-model-contract-echo-validation.md`.
+- Updated roadmap next phase to Phase 21-W-R2C4.
+
+### Verification
+
+- External no-model checker passed.
+- Backend tests passed.
+- Backend contract echo validation CLI blocked safely with sanitized buckets only.
+
+### Boundaries
+
+- No-model HTTP endpoint available: yes
+- Inference endpoint called: no
+- Model call executed: no
+- Benchmark executed: no
+- Fixture inference executed: no
+- Call count: 0
+- Retry count: 0
+- `productionReady:false`
+
+Ready for Phase 21-W-R2C4: Contract Echo Validation Failure Fix.
 
 ---
 

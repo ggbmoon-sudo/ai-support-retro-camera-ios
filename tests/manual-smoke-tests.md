@@ -321,6 +321,16 @@ External server fixture-token contract fix:
 - [x] Confirm no model call, benchmark, fixture inference, inference endpoint call, serving switch, iOS runtime change, endpoint addition, raw artifact, secret, or production rollout occurred.
 - [x] Confirm next safe action is Phase 21-W-R2C2: Backend No-model Contract Echo Validation Against External Server.
 
+## Phase 21-W-R2C2
+
+Backend no-model contract echo validation:
+
+- [x] Confirm external no-model checker still passes with `approvedTokenCount:13`.
+- [x] Confirm backend validator/CLI exists and blocks model call, inference endpoint, benchmark, raw artifact leakage, and `productionReady:true`.
+- [x] Confirm backend no-model HTTP validation blocks safely when unsupported/missing token buckets are not explicit.
+- [x] Confirm no model call, benchmark, fixture inference, inference endpoint call, serving switch, iOS runtime change, endpoint addition, raw artifact, secret, or production rollout occurred.
+- [x] Confirm next safe action is Phase 21-W-R2C4: Contract Echo Validation Failure Fix.
+
 ## Phase 21-G2
 
 Missing feature + deferred roadmap register:

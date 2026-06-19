@@ -1366,6 +1366,8 @@ Phase 21-W-R2 adds `src/qa/openWeightVlmControlledMultifixtureRejectionDiagnosti
 
 Phase 21-W-R2C updates the external Windows FastAPI server workspace only for no-model fixture-token contract and route-error mapping. The external server now recognizes approved contract tokens `smoke_001` and `smoke_004` through `smoke_015`, accepts `fixtureId`, `fixtureToken`, or `fixture` keys on no-model contract paths, returns schema-shaped deterministic candidates for approved tokens, and fails closed with sanitized buckets for missing/unsupported tokens or route errors. No inference endpoint call, model call, benchmark, fixture inference, serving-stack switch, iOS runtime change, endpoint addition, raw artifact, secret, or production rollout occurred. Main repo docs point next to Phase 21-W-R2C2 for backend no-model contract echo validation against the external server.
 
+Phase 21-W-R2C2 adds `src/qa/openWeightVlmBackendContractEchoValidation.mjs` and `npm run qa:open-weight-vlm:backend-contract-echo-validation`. The CLI may call only no-model contract echo paths and must fail closed for model calls, inference endpoint calls, benchmark execution, raw artifact leakage, and `productionReady:true`. The external no-model checker passed, and the backend reached a local/private no-model HTTP endpoint, but validation blocked because unsupported/missing fixture-token responses returned `unknown` buckets instead of explicit sanitized buckets. Roadmap next is Phase 21-W-R2C4: Contract Echo Validation Failure Fix.
+
 ## Future TODO
 
 - Add authenticated backend boundary only after explicit approval.

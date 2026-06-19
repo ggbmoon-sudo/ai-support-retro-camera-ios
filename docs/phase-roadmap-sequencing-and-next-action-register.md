@@ -16,13 +16,13 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**Phase 21-W-R2C2: Backend No-model Contract Echo Validation Against External Server**
+**Phase 21-W-R2C4: Contract Echo Validation Failure Fix**
 
-Reason: Phase 21-W-R2C fixed the external Windows FastAPI server no-model fixture-token contract and route-error mapping for approved tokens `smoke_001` and `smoke_004` through `smoke_015`. The external contract check passed without model loading, inference endpoint calls, fixture inference, benchmark calls, serving-stack switch, raw artifacts, or production rollout.
+Reason: Phase 21-W-R2C2 added backend-side no-model contract echo validation. The external local no-model checker still passed, and the backend reached a local/private no-model contract echo endpoint, but validation blocked because unsupported and missing fixture-token responses returned `unknown` buckets instead of explicit sanitized `unsupported_fixture_token` and `missing_fixture_token` buckets.
 
 Marker note: Phase 21-W-R2 was implemented and pushed, but its visible commit marker missed the final `e` in `unavailable`. The corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable` without model calls, benchmarks, endpoint calls, external server edits, runtime changes, raw artifacts, secrets, or production rollout.
 
-Phase 21-W-R2C2 may validate only the backend no-model contract echo path against the external server. Do not call the inference route, rerun the controlled benchmark, run model calls, call SGLang/vLLM/Ollama, run quantization benchmarks, run concurrency benchmarks, run Live Advisor simulation, download models, switch serving stacks, add endpoints, add iOS integration, or start production rollout without separate explicit approval.
+Phase 21-W-R2C4 should fix only the no-model contract echo validation failure. Do not call the inference route, rerun the controlled benchmark, run model calls, call SGLang/vLLM/Ollama, run quantization benchmarks, run concurrency benchmarks, run Live Advisor simulation, download models, switch serving stacks, add app-facing endpoints, add iOS integration, or start production rollout without separate explicit approval.
 
 ## How Codex Should Use This File
 
@@ -82,6 +82,7 @@ Use cautious wording and re-check source docs before implementation:
 - Phase 21-W-R2 adds no-network rejection diagnostics for the W-R1B `local_model_unavailable` / `blocked_for_provider_integration` pattern. It compares the accepted Phase 21-U `smoke_001` path with the W-R1B controlled fixture path and identifies the likely failure layer as `external_route_error_mapping_or_fixture_token_contract`. It runs no model call, benchmark, healthz, inference endpoint call, fixture inference, serving switch, iOS integration, raw artifact, secret, or production rollout.
 - Phase 21-W-R2-marker corrects only the visible commit marker typo from `unavailabl` to the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. It does not amend or rebase pushed commits and runs no model call, benchmark, inference endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout.
 - Phase 21-W-R2C fixes the external Windows FastAPI server no-model fixture-token contract and route-error mapping for approved tokens `smoke_001` and `smoke_004` through `smoke_015`. The external contract check passed with `modelLoaded:false`, `inferenceEndpointCalled:false`, `benchmarkRun:false`, no raw leakage, and `productionReady:false`. It adds no iOS runtime change, app endpoint, serving-stack switch, model download, Qwen3-VL-30B-A3B call, or production rollout.
+- Phase 21-W-R2C2 adds backend-side no-model contract echo validation and a CLI. The external checker passed, and the backend reached a local/private no-model contract echo endpoint, but validation blocked because unsupported/missing token buckets were `unknown` instead of explicit sanitized buckets. No model call, benchmark, fixture inference, inference endpoint call, serving switch, iOS integration, raw artifact, secret, or production rollout occurred.
 - `productionReady:false` remains the cross-phase default.
 
 Source references for future operators include `docs/phase-log.md`, `docs/handoff/codex-transition-handoff.md`, `docs/missing-features-and-deferred-roadmap-register.md`, and the Phase 20/21 backend gateway docs.
