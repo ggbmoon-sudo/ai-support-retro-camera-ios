@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 21-Z2C-SF-RUN - Approved SiliconFlow 12-fixture API Benchmark
+Current phase: Phase 21-Z2D-SF - SiliconFlow Benchmark Review and Provider Decision Gate
 Status: completed
-Latest implementation: Phase 21-Z2C-SF-RUN completed the approved SiliconFlow 12-fixture API benchmark after RUN-PRE passed. It used SiliconFlow, `Qwen/Qwen3-VL-30B-A3B-Instruct`, fixtures `smoke_004` through `smoke_015`, planned calls `12`, actual calls `12`, retry `0`, image detail `low`, stream `false`, max output tokens `256`, and JavaScript / Node.js backend only. Sanitized aggregate result: accepted `0`, rejected `12`, validation bucket `provider_schema_invalid x12`, fallback bucket `provider_validation_rejected x12`, latency bucket `5s_to_15s x12`, token usage bucket `lte_20k`, and cost bucket `usage_available_cost_not_computed`. It printed/persisted no raw provider response, raw prompt, raw request payload, raw image/base64/path, API key, provider credential, account detail, or raw report; changed no iOS runtime/upload payload; added no live cloud AI runtime/app-facing/production endpoint; and kept `productionReady:false`.
+Latest implementation: Phase 21-Z2D-SF reviews the approved SiliconFlow 12-fixture benchmark result and classifies it as `provider_output_schema_alignment_failed`. The Phase 21-Z2C-SF-RUN evidence remains planned calls `12`, actual calls `12`, retry `0`, accepted `0`, rejected `12`, `provider_schema_invalid x12`, `provider_validation_rejected x12`, latency `5s_to_15s x12`, token usage bucket `lte_20k`, and cost bucket `usage_available_cost_not_computed`. Z2D-SF makes no provider API call, reads no API key, uploads no image, runs no benchmark, prints/persists no raw provider output/prompt/request/image data, changes no iOS runtime/upload payload, and keeps `productionReady:false`. Next safe phase is Phase 21-Z2D-SF-R1 prompt/schema alignment without API calls.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -73,7 +73,7 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-Z2D-SF: SiliconFlow Benchmark Review and Provider Decision Gate. Any provider API rerun, API key use beyond local ignored context, provider diagnosis, alternative model benchmark, image upload, model call, benchmark, RunPod provisioning, Qwen3 install/download/load/call, inference endpoint call, iOS integration, upload payload change, or production rollout requires separate explicit approval before execution. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution beyond an explicitly approved future scope, provider API calls, model downloads, model cache changes, Qwen inference beyond an explicitly approved benchmark, fixture inference beyond explicit approval, local CV runtime, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, RunPod provisioning, or user-photo training / fine-tuning until explicitly requested.
+Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-Z2D-SF-R1: SiliconFlow Prompt and Schema Alignment Gate Without API Calls. Any provider API rerun, API key use beyond local ignored context, provider diagnosis, alternative model benchmark, image upload, model call, benchmark, RunPod provisioning, Qwen3 install/download/load/call, inference endpoint call, iOS integration, upload payload change, or production rollout requires separate explicit approval before execution. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution beyond an explicitly approved future scope, provider API calls, model downloads, model cache changes, Qwen inference beyond an explicitly approved benchmark, fixture inference beyond explicit approval, local CV runtime, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, RunPod provisioning, or user-photo training / fine-tuning until explicitly requested.
 
 ---
 
@@ -519,8 +519,6 @@ Phase 21-Z2C-SF-RUN completed the approved SiliconFlow 12-fixture API benchmark 
 - Retry count: `0`
 - Accepted count: `0`
 - Rejected count: `12`
-- Validation buckets: none
-- Fallback buckets: none
 - Validation buckets: `provider_schema_invalid x12`
 - Fallback buckets: `provider_validation_rejected x12`
 - Error buckets: none
@@ -568,6 +566,58 @@ Phase 21-Z2C-SF-RUN completed the approved SiliconFlow 12-fixture API benchmark 
 ### Ready for Next Phase
 
 Yes, for Phase 21-Z2D-SF review/decision only. Not ready for production rollout.
+
+---
+
+## Phase 21-Z2D-SF - SiliconFlow Benchmark Review and Provider Decision Gate
+
+Status: completed
+Date: 2026-06-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase 21-Z2D-SF reviews the approved SiliconFlow benchmark result without rerunning API calls. It classifies the Phase 21-Z2C-SF-RUN outcome as `provider_output_schema_alignment_failed`: provider/model calls reached the runtime path, but every provider response was rejected by the strict backend Photo Advisor schema.
+
+### Completed Work
+
+- Added `docs/phase-21-z2d-sf-siliconflow-benchmark-review-and-provider-decision-gate.md`.
+- Recorded that the executed benchmark had planned calls `12`, actual attempts `12`, retry `0`, accepted `0`, rejected `12`, validation bucket `provider_schema_invalid x12`, fallback bucket `provider_validation_rejected x12`, latency `5s_to_15s x12`, token usage bucket `lte_20k`, and cost bucket `usage_available_cost_not_computed`.
+- Interpreted the result as schema/prompt/parser alignment failure rather than network/auth/base URL failure.
+- Recorded that this is not proof SiliconFlow is unusable, not proof Qwen3-VL quality is bad, and not production readiness.
+- Listed likely sanitized failure layers: weak exact JSON forcing, prose around JSON, unsupported enums, old field names, missing/extra fields, nested object shape mismatch, free-form text instead of semantic keys, safety/score/debug leakage, parser extraction limits, JSON mode unreliability, and intentional strict backend schema rejection.
+- Kept SiliconFlow as primary provider candidate and `Qwen/Qwen3-VL-30B-A3B-Instruct` as primary model candidate.
+- Kept RunPod as fallback/comparison.
+- Set next safe phase to `Phase 21-Z2D-SF-R1: SiliconFlow Prompt and Schema Alignment Gate Without API Calls`.
+- Updated roadmap, handoff, manual smoke tests, README, backend README, iOS README, and phase log.
+
+### Safety Notes
+
+- Provider API calls executed in this phase: no
+- Model calls executed in this phase: no
+- Benchmark executed in this phase: no
+- API key created/read/printed/committed: no
+- Raw provider output printed/persisted: no
+- Raw prompt/request/image printed/persisted: no
+- Fixture images opened: no
+- EXIF/GPS/sensor data inspected: no
+- iOS runtime changed: no
+- Upload payload changed: no
+- Camera live cloud AI runtime added: no
+- App-facing endpoint added: no
+- Production endpoint added: no
+- RunPod provisioned: no
+- vLLM/SGLang/Ollama run: no
+- `productionReady:false` remains locked.
+
+### Known TODOs
+
+- Phase 21-Z2D-SF-R1 should tighten the prompt/schema contract with synthetic provider-like strings only.
+- Do not rerun SiliconFlow, read API keys, upload images, benchmark, run alternative models, or start iOS integration without separate explicit approval.
+
+### Ready for Next Phase
+
+Yes, for Phase 21-Z2D-SF-R1 prompt/schema alignment without API calls. Not ready for production rollout.
 
 ## Phase 21-Y-R1 - Asia-first RunPod Region Selection Gate
 
@@ -3112,7 +3162,7 @@ Goal: Retry the previously blocked Phase 21-N one-fixture backend local/private 
 
 Summary:
 
-The user explicitly approved: "?????Phase 21-N-R1 ?豰刈??backend local/private model smoke retry". Phase 21-N-R1 stopped before healthz/model execution because the ignored local config fixture token was not `smoke_001`. No substitute fixture token was used.
+The user explicitly approved: "?????Phase 21-N-R1 ?豰�????backend local/private model smoke retry". Phase 21-N-R1 stopped before healthz/model execution because the ignored local config fixture token was not `smoke_001`. No substitute fixture token was used.
 
 This phase added a guarded retry CLI and npm script that require `--approved-one-call`, `--fixture smoke_001`, and `--no-retry`. The guarded CLI was not used to make a model call because preflight blocked first.
 
@@ -3359,7 +3409,7 @@ Goal: Run one controlled backend local/private `local_model` route smoke through
 
 Summary:
 
-The user explicitly approved: "?????Phase 21-N ?豰刈??backend local/private model smoke". The phase stopped before any healthz/model call because required preferred fixture token `smoke_001` was not present/approved in the ignored local fixture registry. No substitute fixture token was used.
+The user explicitly approved: "?????Phase 21-N ?豰�????backend local/private model smoke". The phase stopped before any healthz/model call because required preferred fixture token `smoke_001` was not present/approved in the ignored local fixture registry. No substitute fixture token was used.
 
 This phase did not run a model call, retry, serving benchmark, vLLM/SGLang/Ollama call, model download, serving-stack switch, production `local_model` enablement, iOS integration, Camera live cloud AI runtime entry, Auto-Trigger runtime, WSS runtime, local CV runtime, image upload runtime, image compression runtime, iOS upload payload change, app-facing endpoint, production endpoint, real user-photo upload, auth/billing/quota runtime, training/fine-tuning, validator weakening, safety/fallback weakening, or production rollout.
 
@@ -4518,7 +4568,7 @@ Date: 2026-06-14
 
 - Added `docs/future-phase-roadmap-gap-audit.md`.
 - Compared the proposed Phase 20-B through Phase 27+ roadmap against current Markdown planning for Photo Advisor, AI Snapshot, AI Filter Generator, Inspiration AI, live guidance, open-weight VLM, local/on-device AI, fine-tuning, privacy, StoreKit/quota, history, and production rollout.
-- Identified missing roadmap items: production Firebase/history, StoreKit/quota, account deletion/privacy release gates, History intelligence, paid AI image editing / ????? encrypted transfer/export, LiDAR/Core ML specifics, advanced retro effects, and app-wide Hong Kong / ?嚙????language-mode follow-through.
+- Identified missing roadmap items: production Firebase/history, StoreKit/quota, account deletion/privacy release gates, History intelligence, paid AI image editing / ????? encrypted transfer/export, LiDAR/Core ML specifics, advanced retro effects, and app-wide Hong Kong / ??????language-mode follow-through.
 - Identified outdated assumptions: older Gemini/OpenAI provider-first MVP docs, older Gemini Live phase ordering, old Camera snapshot cloud concepts, and old caption/social-copy ideas that conflict with current guardrails.
 - Produced a revised roadmap that keeps Phase 20-C as the immediate next phase and delays Camera cloud AI, live/voice AI, AI Filter Generator real backend, image editing, LoRA/QLoRA, and on-device model work until their own gated phases.
 
@@ -5199,19 +5249,19 @@ Date: 2026-06-14
 
 ### Completed
 
-- Reviewed local/mock Photo Advisor UI-facing localization across English, Traditional Chinese, Simplified Chinese, Cantonese-style, and non-explicit ?嚙????strings.
+- Reviewed local/mock Photo Advisor UI-facing localization across English, Traditional Chinese, Simplified Chinese, Cantonese-style, and non-explicit ??????strings.
 - Replaced visible mock/demo labels with calmer local/on-device wording.
-- Updated imported-photo limited-context copy so it says capture details / ?????嚙踝? / ????鞈歹蕭?嚙?/ ?????嚙踝? instead of raw ?雓ntext??
-- Softened provider-unavailable fallback copy from explicit Cloud AI wording to calmer remote / ???嚙踐插??? local fallback language.
-- Polished Cantonese-style / ?嚙????Photo Advisor strings to keep personality while reducing heavy slang, harsh judgment, and overly corrective phrasing.
+- Updated imported-photo limited-context copy so it says capture details / ??????��??? / ?????�歹????/ ??????��??? instead of raw ??�?�ntext??
+- Softened provider-unavailable fallback copy from explicit Cloud AI wording to calmer remote / ????��????? local fallback language.
+- Polished Cantonese-style / ??????Photo Advisor strings to keep personality while reducing heavy slang, harsh judgment, and overly corrective phrasing.
 - Updated README, iOS README, backend README, manual smoke tests, handoff, and phase log references.
 
 ### Multilingual QA Findings
 
-- English copy was mostly short and safe; visible ?雓ck demo??wording was too implementation-facing for beta UI.
-- Traditional Chinese fallback copy was generally usable but mixed in raw ?雓ntext??and ?雓蕭????AI??technical language.
+- English copy was mostly short and safe; visible ??�ck demo??wording was too implementation-facing for beta UI.
+- Traditional Chinese fallback copy was generally usable but mixed in raw ??�?�ntext??and ??�?????AI??technical language.
 - Simplified Chinese fallback copy needed the same capture-detail and calmer fallback wording.
-- Cantonese-style copy was natural but several ?嚙????strings were too slang-heavy or sharp for production-facing Advisor UI.
+- Cantonese-style copy was natural but several ??????strings were too slang-heavy or sharp for production-facing Advisor UI.
 
 ### Safety Notes
 
@@ -5254,7 +5304,7 @@ Date: 2026-06-14
 - Audited imported Photo Advisor flow through Inspiration/imported selected photos and confirmed imported inputs use `.imported` with imported capture context and limited-context fallback wording.
 - Updated `PhotoAdvisorResultValidator.fallback` so fallback results are always explicitly marked as `.fallback` instead of sometimes returning a normal mock fixture.
 - Updated fallback filter selection so the fallback recommendation chooses `soft_warm_400`, `original`, or another allowed local filter ID when possible.
-- Polished user-facing fallback/error copy so it no longer says ?雓ck advisor?? ?雓valid result?? or ?雓蕭?fe fallback filter??in visible UI.
+- Polished user-facing fallback/error copy so it no longer says ??�ck advisor?? ??�?�valid result?? or ??�??fe fallback filter??in visible UI.
 - Confirmed missing/unknown filter recommendations still show a calm unavailable note and no unusable apply action.
 - Updated README, iOS README, backend README, manual smoke tests, handoff, and phase log references.
 
@@ -5622,7 +5672,7 @@ Date: 2026-06-14
 - Updated `AGENTS.md` as the reusable repo-level project rules file for future Codex phases.
 - Consolidated long-term restrictions for iOS provider keys, direct provider calls, Camera cloud AI entry, capture-context upload, backend/iOS payload changes, provider QA artifacts, logging, GPS/raw EXIF/sensor persistence, sensitive inference, and `productionReady=false`.
 - Consolidated Photo Advisor language rules: Observation -> Mood -> Retro intent -> Optional action, never Score -> Problem -> Fix -> Retake.
-- Added required closeout sections for future Codex final responses, including `?????/ What changed` and `Xcode ?蝘???嚙踝蕭?? / What to check in Xcode`.
+- Added required closeout sections for future Codex final responses, including `?????/ What changed` and `Xcode ??��??????��???? / What to check in Xcode`.
 - Updated README and handoff references so future prompts can point to `AGENTS.md` instead of repeating all long-term project rules.
 
 ### Safety Notes
@@ -6237,7 +6287,7 @@ Date: 2026-06-13
 - Passed capture context through `CapturedPhoto`, selected-photo flow, imported-photo flow, and mock/local Photo Advisor input.
 - Updated mock/local Photo Advisor heuristic copy so blur / low light / tilt / grain / soft focus / high contrast / unusual framing are treated as possible intentional retro style.
 - Added intent-aware optional advice wording and conservative retake/crop behavior; retake is not the default for creative style signals.
-- Updated localization strings for English, Traditional Chinese, Simplified Chinese, Cantonese HK, and non-explicit ?嚙????copy.
+- Updated localization strings for English, Traditional Chinese, Simplified Chinese, Cantonese HK, and non-explicit ??????copy.
 
 ### Safety Notes
 
@@ -6811,18 +6861,18 @@ Date completed: 2026-06-12
 
 ### Goal
 
-Apply the latest product decision that Camera should only expose local guidance / ????嚙??, while cloud-style AI / Photo Advisor entry points live in Inspiration / imported / selected photo flows.
+Apply the latest product decision that Camera should only expose local guidance / ???????, while cloud-style AI / Photo Advisor entry points live in Inspiration / imported / selected photo flows.
 
 ### Completed
 
 - Removed / hid Camera AI Snapshot / cloud-style quick advice entry points from `CameraView`.
 - Removed the Camera guidance mode selector from the Camera UI so the Camera surface remains local-coach focused.
-- Kept Local Guidance / ??????嚙踝 on the Camera screen.
+- Kept Local Guidance / ???????��???on the Camera screen.
 - Local Guidance chip title now follows persisted language / tone preference.
 - Local Guidance sentence copy continues through the deterministic resolver and now covers more local signal fallback categories.
 - Main Camera selected-photo floating tray keeps filter access but no longer shows the AI Advisor button on the Camera tab.
 - Main Camera selected-photo floating filter grid no longer shows AI recommended filters.
-- Inspiration / imported photo selected flow still shows AI ?嚙???/ Photo Advisor and remains language-aware from Phase 16W.
+- Inspiration / imported photo selected flow still shows AI ?????/ Photo Advisor and remains language-aware from Phase 16W.
 - Kept Phase 15B brightness, Phase 15C face framing / headroom, and Phase 15D stability / priority / anti-flicker behavior intact.
 - Updated README, iOS README, transition handoff, phase log, and manual smoke tests.
 
@@ -6866,7 +6916,7 @@ Date completed: 2026-06-12
 
 ### Goal
 
-Make Post-capture Photo Advisor / AI ?嚙???/ ????頦蛛? follow the same persisted Language / Tone preference introduced in Phase 16V, while keeping the feature mock/local-only.
+Make Post-capture Photo Advisor / AI ?????/ ?????��??? follow the same persisted Language / Tone preference introduced in Phase 16V, while keeping the feature mock/local-only.
 
 ### Completed
 
@@ -6874,7 +6924,7 @@ Make Post-capture Photo Advisor / AI ?嚙???/ ????頦蛛? follow the same per
 - Extended `PhotoAdvisorInput` with language / tone fields.
 - `PhotoAdvisorResultView` now passes the persisted `CameraCoachToneSettingsStore` language / tone into Photo Advisor analysis input.
 - Mock / local Photo Advisor results now resolve summary, suggestions, filter recommendation reasons, retake advice, crop advice, and unavailable fallback copy through the deterministic resolver.
-- Added phrase keys for English neutral, Traditional Chinese neutral, Simplified Chinese neutral, Cantonese HK conversational, and Cantonese non-explicit ?嚙????Photo Advisor copy.
+- Added phrase keys for English neutral, Traditional Chinese neutral, Simplified Chinese neutral, Cantonese HK conversational, and Cantonese non-explicit ??????Photo Advisor copy.
 - Kept existing Photo Advisor result card structure, filter apply behavior, validator, mock service boundary, and no-upload footer.
 - Kept Local Camera Coach resolver working.
 - Kept Filter Lab, ?????/ image editing, AI Snapshot, History, and cloud AI surfaces unchanged.
@@ -6920,18 +6970,18 @@ Date completed: 2026-06-12
 
 ### Goal
 
-Promote the HK3 / HK4 language-tone work from Settings mock and neutral resolver scaffold into a limited production runtime path for Local Camera Coach / ????嚙?? only.
+Promote the HK3 / HK4 language-tone work from Settings mock and neutral resolver scaffold into a limited production runtime path for Local Camera Coach / ??????? only.
 
 ### Completed
 
 - Added centralized `CameraCoachToneSettingsStore` persistence for language / tone preference only.
 - Settings Language / Tone now saves `cameraCoach.languageMode` and `cameraCoach.toneMode`.
 - English, Traditional Chinese, and Simplified Chinese force neutral tone.
-- Cantonese supports Hong Kong conversational and non-explicit ?嚙????tone.
+- Cantonese supports Hong Kong conversational and non-explicit ??????tone.
 - `troublemakerExplicit` remains unavailable in Settings and falls back to non-explicit safe tone if encountered.
 - Local Camera Coach reads the selected language / tone at suggestion composition time.
 - Deterministic resolver supports lighting, headroom, stability, framing, background clutter, and success praise phrase categories.
-- Added language-specific phrase keys for English, Traditional Chinese, Simplified Chinese, Cantonese HK conversational, and Cantonese non-explicit ?嚙????
+- Added language-specific phrase keys for English, Traditional Chinese, Simplified Chinese, Cantonese HK conversational, and Cantonese non-explicit ??????
 - Preserved existing Phase 15D stability / priority / anti-flicker controller.
 - Kept Photo Advisor, Filter Lab, ?????/ image editing, AI Snapshot, History, and Inspiration runtime copy unchanged.
 - Updated README, iOS README, transition handoff, phase log, and manual smoke tests.
@@ -6985,25 +7035,25 @@ Date completed: 2026-06-12
 
 ### Goal
 
-Introduce a very limited deterministic copy resolver for Local Camera Coach / ????嚙?? copy, based on HK2 safety rules, without app-wide language switching or explicit profanity runtime.
+Introduce a very limited deterministic copy resolver for Local Camera Coach / ??????? copy, based on HK2 safety rules, without app-wide language switching or explicit profanity runtime.
 
 ### Completed
 
 - Added `GuidanceCopyResolver`, `SafetyCopyPolicy`, `GuidancePraiseResolver`, and `GuidanceIssueMemory` scaffolds.
 - Added `FeatureContext`, `GuidanceCopyCategory`, and runtime-safe `ToneMode` values.
-- Resolver supports neutral, Hong Kong conversational, and non-explicit ?嚙????copy keys.
+- Resolver supports neutral, Hong Kong conversational, and non-explicit ??????copy keys.
 - `troublemakerExplicit` is rejected for runtime and falls back to non-explicit `troublemaker`.
 - Public contexts and non-live-camera contexts fall back to neutral.
 - Routed selected Local Camera Coach deterministic categories through resolver: lighting, headroom, framing, and success praise.
 - Runtime Local Camera Coach uses neutral default tone only.
 - Kept existing Phase 15D stability / priority / anti-flicker controller untouched.
-- Added localized phrase bank keys for neutral / HK / non-explicit ?嚙????copy.
+- Added localized phrase bank keys for neutral / HK / non-explicit ??????copy.
 - Kept Settings Language / Tone UI mock-only and non-persistent.
 - Updated README, iOS README, transition handoff, phase log, and manual smoke tests.
 
 ### Runtime Tone Decision
 
-HK4 uses runtime default neutral only. The resolver scaffold can resolve HK conversational and non-explicit ?嚙????keys, but no Settings state, app-wide language switching, or persistence is connected to production runtime.
+HK4 uses runtime default neutral only. The resolver scaffold can resolve HK conversational and non-explicit ??????keys, but no Settings state, app-wide language switching, or persistence is connected to production runtime.
 
 ### Safety Notes
 
@@ -7053,7 +7103,7 @@ Keep the Language / Tone Settings UI production-clean by removing mock preview p
 - Removed production-visible Tip / After fixing praise loop examples.
 - Removed production-visible explicit profanity example.
 - Kept language buttons for English, Traditional Chinese, Simplified Chinese, and Cantonese.
-- Kept a short Cantonese / ?嚙????safety notice when Cantonese is selected.
+- Kept a short Cantonese / ??????safety notice when Cantonese is selected.
 - Updated English and Traditional Chinese localization keys.
 - Updated README, iOS README, transition handoff, phase log, and manual smoke tests.
 
@@ -7099,10 +7149,10 @@ Simplify the Phase 16T Settings mock so it shows language choices only, with pre
 
 ### Completed
 
-- Removed the separate tone selector buttons for Neutral, Hong Kong conversational, ?嚙???? and ?嚙????explicit.
+- Removed the separate tone selector buttons for Neutral, Hong Kong conversational, ?????? and ??????explicit.
 - Kept language choices: English, Traditional Chinese, Simplified Chinese, and Cantonese.
 - English, Traditional Chinese, and Simplified Chinese now show neutral mock previews.
-- Cantonese now shows a ?嚙????/ controlled explicit preview and Cantonese-only safety notice.
+- Cantonese now shows a ??????/ controlled explicit preview and Cantonese-only safety notice.
 - Kept all preview content deterministic and static.
 - Kept explicit / profanity direction preview-only and not runtime-enabled.
 - Updated English and Traditional Chinese localization keys.
@@ -7153,11 +7203,11 @@ Add a Settings-only mock language / tone preview based on Phase 16R research and
 - Added `LanguageToneSettingsView` to Settings.
 - Added view-local `AppLanguageMode` and `ToneMode` enum state for mock preview only.
 - Added language choices: English, Traditional Chinese, Simplified Chinese, Cantonese.
-- Added tone choices: Neutral, Hong Kong conversational, ?嚙???? and ?嚙????explicit as future / disabled.
-- Added deterministic static preview examples for neutral, Hong Kong conversational, ?嚙???? and disabled explicit mode.
-- Added safety notice: ?嚙????comments on shooting choices and photo state, not appearance, body, or identity.
+- Added tone choices: Neutral, Hong Kong conversational, ?????? and ??????explicit as future / disabled.
+- Added deterministic static preview examples for neutral, Hong Kong conversational, ?????? and disabled explicit mode.
+- Added safety notice: ??????comments on shooting choices and photo state, not appearance, body, or identity.
 - Added explicit mode notice: explicit mode is not enabled and would require future confirmation.
-- Added praise loop preview for "??????嚙踝蕭??嚙????嚙??嚙??嚙??.
+- Added praise loop preview for "???????��??????????????????.
 - Added localization keys for English and Traditional Chinese.
 - Updated README, iOS README, transition handoff, phase log, and manual smoke tests.
 
@@ -7193,19 +7243,19 @@ No.
 
 ---
 
-## Phase 16S - Save HK2 Hong Kong / ?嚙????Copy System + Safety Style Guide
+## Phase 16S - Save HK2 Hong Kong / ??????Copy System + Safety Style Guide
 
 Status: Documentation-only product / copy style guide save; ready to commit after final review
 Date completed: 2026-06-12
 
 ### Goal
 
-Save the user-provided ChatGPT HK2 product / copy style guide for Hong Kong / ?嚙????Copy System + Safety Style Guide into the repo, then update documentation indexes and handoff status.
+Save the user-provided ChatGPT HK2 product / copy style guide for Hong Kong / ??????Copy System + Safety Style Guide into the repo, then update documentation indexes and handoff status.
 
 ### Completed
 
 - Added `docs/product/hk-troublemaker-copy-system-style-guide.md`.
-- Preserved the provided document title: `HK2 ??Hong Kong / ?嚙????Copy System + Safety Style Guide`.
+- Preserved the provided document title: `HK2 ??Hong Kong / ??????Copy System + Safety Style Guide`.
 - Saved the full ChatGPT-provided HK2 Markdown content to the repo.
 - Removed `utm_source=chatgpt.com` query strings without changing source meaning.
 - Preserved the required sections:
@@ -7226,7 +7276,7 @@ Save the user-provided ChatGPT HK2 product / copy style guide for Hong Kong / ?�
 - Preserved the reference-style source links at the end of the provided document.
 - Recorded that HK2 is a product / copy style guide after Phase 16R, not a research report and not a runtime implementation spec.
 - Recorded that HK2 remains documentation-only with no runtime language mode, explicit profanity implementation, LLM-generated live copy, cloud dependency, or persistence change.
-- Recorded the deterministic copy system goal and the three core principles: ?謜??嚙??嚙???嚙踝蕭???????; ?謜?????嚙???嚙踝蕭?? ??????嚙踝蕭??嚙????嚙??嚙??嚙??
+- Recorded the deterministic copy system goal and the three core principles: ?謜�????????????��?????????; ?謜�????????????��???? ???????��??????????????????
 - Recorded the AppLanguageMode and ToneMode taxonomy, with MVP limited to neutral, Hong Kong conversational, and non-explicit troublemaker.
 - Recorded that `troublemakerExplicit` is future-only and explicit copy must not enter MVP, default UI, App Store screenshots, privacy / consent / legal copy, notifications, widgets, or post-capture criticism.
 - Recorded that future implementation should use deterministic templates and should not use AI to generate live profanity.
@@ -7267,19 +7317,19 @@ No.
 
 ---
 
-## Phase 16R - Save Hong Kong / ?嚙????Language Mode Research
+## Phase 16R - Save Hong Kong / ??????Language Mode Research
 
 Status: Documentation-only research save; ready to commit after final review
 Date completed: 2026-06-12
 
 ### Goal
 
-Save the user-provided ChatGPT research report for Hong Kong / ?嚙????Language Mode UX + Safety into the repo, then update documentation indexes and handoff status.
+Save the user-provided ChatGPT research report for Hong Kong / ??????Language Mode UX + Safety into the repo, then update documentation indexes and handoff status.
 
 ### Completed
 
 - Added `docs/research/hong-kong-troublemaker-language-mode-research.md`.
-- Preserved the provided report title: `Hong Kong / ?嚙????Language Mode UX + Safety for iOS Retro Camera App ?嚙?????嚙踝蕭????`.
+- Preserved the provided report title: `Hong Kong / ??????Language Mode UX + Safety for iOS Retro Camera App ????????��??????`.
 - Saved the full ChatGPT-provided Markdown research report to the repo.
 - Removed `utm_source=chatgpt.com` query strings without changing source meaning.
 - Preserved the required sections:
@@ -7288,11 +7338,11 @@ Save the user-provided ChatGPT research report for Hong Kong / ?嚙????Language 
   - Product Positioning: Local Interest and Brand Differentiation
   - Product Goal
   - Language Mode Taxonomy
-  - Hong Kong / ?嚙????Tone Definition
+  - Hong Kong / ??????Tone Definition
   - Profanity Policy
   - Safety Boundaries
   - Context-based Tone Rules
-  - Positive Feedback Loop: ??????嚙踝蕭??嚙????嚙??嚙??嚙??
+  - Positive Feedback Loop: ???????��??????????????????
   - UX Design
   - Copywriting System
   - Feature Integration
@@ -7305,13 +7355,13 @@ Save the user-provided ChatGPT research report for Hong Kong / ?嚙????Language 
   - Risk Table
   - Final Recommendation
   - Sources / Links
-- Recorded the research conclusion that ??鞊堊嚙?/ ?嚙????mode is a Hong Kong localization brand personality, not a generic AI tone pack, translation mode, or profanity feature.
+- Recorded the research conclusion that ???��?�??/ ??????mode is a Hong Kong localization brand personality, not a generic AI tone pack, translation mode, or profanity feature.
 - Recorded the core principles: criticize the shooting behavior / photo state, not the person; say it once; praise when the issue is fixed.
-- Recorded the tone taxonomy: Neutral, Hong Kong Conversational, ?嚙???? and ?嚙????+ explicit profanity opt-in.
+- Recorded the tone taxonomy: Neutral, Hong Kong Conversational, ?????? and ??????+ explicit profanity opt-in.
 - Recorded that profanity must be default off, explicit opt-in, double-confirmed, previewed, one-tap-off, excluded from public / legal / privacy contexts, and mainly limited to `??? as a Hong Kong tone particle.
 - Recorded that live camera copy should start with deterministic templates and should not use LLM-generated profanity / live camera copy.
 - Recorded that privacy / consent / legal copy must remain neutral and technical cloud AI / third-party AI disclosures must remain clear.
-- Recorded that MVP should start with HK conversational + non-explicit ?嚙????
+- Recorded that MVP should start with HK conversational + non-explicit ??????
 - Recorded that the next safe implementation candidate, if explicitly requested later, is HK2 copy system / style guide documentation, not runtime language mode.
 - Updated transition handoff and README references.
 
@@ -7361,7 +7411,7 @@ Save the user-provided ChatGPT research report for Paid AI Image Editing / ?????
 ### Completed
 
 - Added `docs/research/paid-ai-image-editing-research.md`.
-- Preserved the provided report title: `Paid AI Image Editing / ?????for iOS Retro Camera App ?嚙?????嚙踝蕭????`.
+- Preserved the provided report title: `Paid AI Image Editing / ?????for iOS Retro Camera App ????????��??????`.
 - Saved the full ChatGPT-provided Markdown research report to the repo.
 - Removed `utm_source=chatgpt.com` query strings without changing source meaning.
 - Preserved the required sections:
@@ -7386,7 +7436,7 @@ Save the user-provided ChatGPT research report for Paid AI Image Editing / ?????
   - Sources / Links
 - Recorded the research conclusion that ?????/ AI image editing should be a paid post-capture / imported-photo enhancement tool.
 - Recorded that it should not be used for pre-capture / in-capture continuous live guidance or as a general text-to-image generator.
-- Recorded that user-facing UI may call it ?????/ ?????嚙踝蕭???/ ?嚙????嚙????嚙??/ Photo Fix / Style Edit and can reduce everyday `AI` wording.
+- Recorded that user-facing UI may call it ?????/ ??????��?????/ ??????????????/ Photo Fix / Style Edit and can reduce everyday `AI` wording.
 - Recorded that privacy / consent screens must clearly disclose cloud AI / third-party AI.
 - Recorded that first implementation should be mock-first and real provider integration must be backend-mediated.
 - Recorded that iOS must not contain provider API keys or directly call OpenAI / Gemini / Stability / any provider.
@@ -7439,7 +7489,7 @@ Save the user-provided ChatGPT research report for Encrypted App-to-App High Qua
 ### Completed
 
 - Added `docs/research/encrypted-app-to-app-photo-transfer-research.md`.
-- Preserved the provided report title: `Encrypted App-to-App High Quality / Lossless Photo Transfer for iOS Retro Camera App ?嚙?????嚙踝蕭????`.
+- Preserved the provided report title: `Encrypted App-to-App High Quality / Lossless Photo Transfer for iOS Retro Camera App ????????��??????`.
 - Saved the full ChatGPT-provided Markdown research report to the repo.
 - Removed `utm_source=chatgpt.com` query strings without changing source meaning.
 - Preserved the required sections:
@@ -7514,7 +7564,7 @@ Save the user-provided ChatGPT research report for Local On-device Camera Coach 
 ### Completed
 
 - Added `docs/research/local-on-device-camera-coach-lidar-research.md`.
-- Preserved the provided report title: `Local On-device Camera Coach + LiDAR Scene Understanding for iOS Retro Camera App ?嚙?????嚙踝蕭????`.
+- Preserved the provided report title: `Local On-device Camera Coach + LiDAR Scene Understanding for iOS Retro Camera App ????????��??????`.
 - Saved the full ChatGPT-provided Markdown research report to the repo.
 - Removed `utm_source=chatgpt.com` query strings without changing source meaning.
 - Preserved the required sections:
@@ -7594,7 +7644,7 @@ Record the user's latest product decisions for future AI, local intelligence, pa
 - Recorded paid AI image editing / ?????policy, provider research requirement, backend proxy requirement, prompt guard, consent, quota, moderation, timeout, and cost guard.
 - Recorded AI Filter Generator / Filter Lab free vs paid policy: free session-only use; paid save / manage / reuse / future cloud sync.
 - Recorded advanced retro camera effects / double exposure ideas and research title.
-- Recorded Hong Kong / ?嚙????language mode policy: opt-in, default off, profanity as tone only, no identity / age / gender / race / body / appearance attacks, App Store age rating research required.
+- Recorded Hong Kong / ??????language mode policy: opt-in, default off, profanity as tone only, no identity / age / gender / race / body / appearance attacks, App Store age rating research required.
 - Recorded user-facing AI wording reduction guidance.
 - Added free / paid feature matrix.
 - Added research backlog and guardrails.
@@ -8364,7 +8414,7 @@ The overlay is a SwiftUI UI layer only. It is not part of `AVCapturePhotoOutput`
 - Replace placeholder outlines with original or commercially licensed PDF/vector pose assets in a later dedicated pose artwork phase.
 - Add a better pose gallery and broader pose categories in a later phase.
 - Tune overlay scale / offset per real device after iPhone Simulator and physical-device review.
-- Keep categories inclusive: `???` / `?嚙??` / `??獢謒 are browsing labels only, not user classification.
+- Keep categories inclusive: `???` / `????` / `???�謒 are browsing labels only, not user classification.
 - AI pose suggestion and Vision body matching remain future work and are not part of P1.
 
 ### Ready to Commit Phase 16E
@@ -10074,7 +10124,7 @@ Date completed: 2026-06-09
 
 ### Goal
 
-Backfill the filter research documentation from the supplied `/Users/a1234/Downloads/??嚙踝蕭???md` report and verify that the Phase 12B / Phase 13 Swift filter catalog still aligns with the documented product direction.
+Backfill the filter research documentation from the supplied `/Users/a1234/Downloads/???��?????md` report and verify that the Phase 12B / Phase 13 Swift filter catalog still aligns with the documented product direction.
 
 This is not a new implementation phase.
 

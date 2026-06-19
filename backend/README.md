@@ -28,6 +28,8 @@ Phase 21-Z2C-SF-RUN-PRE adds the missing no-network dry-run gate for that future
 
 Phase 21-Z2C-SF-RUN completed the approved SiliconFlow benchmark with exactly 12 calls and retry `0`. Sanitized aggregate result: accepted `0`, rejected `12`, `provider_schema_invalid x12`, `provider_validation_rejected x12`, `5s_to_15s x12`, token usage bucket `lte_20k`, and cost bucket `usage_available_cost_not_computed`. No raw provider response, prompt, request payload, image/base64/path, API key, provider credential, iOS runtime change, upload payload change, live cloud AI runtime, app-facing/production endpoint, raw artifact, secret, or production rollout was added.
 
+Phase 21-Z2D-SF reviews the SiliconFlow benchmark without rerunning API calls. The result is classified as `provider_output_schema_alignment_failed`: the provider path returned latency/token evidence, but no response matched the strict backend Photo Advisor schema. This does not prove SiliconFlow is unusable or Qwen3-VL quality is bad. The next backend-safe phase is `Phase 21-Z2D-SF-R1: SiliconFlow Prompt and Schema Alignment Gate Without API Calls`; it should use synthetic strings only and must not read API keys, upload images, call providers/models, rerun benchmarks, add endpoints, or change `productionReady:false`.
+
 ## Run
 
 ```sh

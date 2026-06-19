@@ -4366,6 +4366,27 @@ Known TODOs:
 
 - [ ] Phase 21-Z2D-SF should review the `provider_schema_invalid x12` result before any rerun, prompt/schema-alignment change, alternative model benchmark, provider diagnosis, or iOS integration planning.
 
+## Phase 21-Z2D-SF SiliconFlow Benchmark Review and Provider Decision Gate
+
+Check:
+
+- [x] Confirmed Phase 21-Z2C-SF-RUN executed exactly once with planned calls `12`, actual calls `12`, and retry `0`.
+- [x] Confirmed sanitized result remains accepted `0`, rejected `12`, validation bucket `provider_schema_invalid x12`, fallback bucket `provider_validation_rejected x12`, latency bucket `5s_to_15s x12`, token usage bucket `lte_20k`.
+- [x] Classified the result as provider-output/schema alignment failure, not network/auth/base URL failure.
+- [x] Confirmed this is not proof that SiliconFlow is unusable or that Qwen3-VL quality is bad.
+- [x] Confirmed no SiliconFlow API rerun, API key read, image upload, model call, benchmark, iOS runtime change, upload payload change, raw artifact, or production rollout happened in this review phase.
+- [x] Set next safe phase to Phase 21-Z2D-SF-R1 prompt/schema alignment without API calls.
+- [x] Kept `productionReady:false`.
+
+Manual Xcode check:
+
+- [ ] Launch only if desired; Xcode runtime behavior should be unchanged.
+- [ ] Confirm no Camera cloud AI entry, iOS provider/model key/direct call, SiliconFlow endpoint/API key in iOS, upload payload change, capture-context upload, app-facing endpoint, production rollout, provider raw output in app UI/history, or dependency on SiliconFlow credentials appears in Xcode.
+
+Known TODOs:
+
+- [ ] Do not rerun SiliconFlow or approve iOS integration until a separate prompt/schema alignment phase and explicit future approval.
+
 ## Phase 21-Y-R1 Asia-first RunPod Region Selection Gate
 
 Check:

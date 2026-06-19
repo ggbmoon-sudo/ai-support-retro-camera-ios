@@ -139,7 +139,10 @@ Latest Phase 21-Z2C-SF-RUN handoff refresh check on 2026-06-20:
 - Sanitized result: accepted `0`, rejected `12`, validation bucket `provider_schema_invalid x12`, fallback bucket `provider_validation_rejected x12`, latency bucket `5s_to_15s x12`, token usage bucket `lte_20k`, cost bucket `usage_available_cost_not_computed`.
 - No raw provider response, raw prompt, raw request payload, raw image/base64/path, API key, provider credential, account detail, stack trace with payload, or raw report was printed or persisted.
 - No iOS runtime change, upload payload change, live cloud AI runtime, app-facing endpoint, production endpoint, RunPod provisioning, vLLM/SGLang/Ollama run, or production rollout occurred.
-- Next recommended phase is `Phase 21-Z2D-SF: SiliconFlow Benchmark Review and Provider Decision Gate`.
+- Phase 21-Z2D-SF reviewed this as a provider-output/schema alignment failure, not a network/auth/base URL failure and not proof of poor model quality.
+- SiliconFlow and `Qwen/Qwen3-VL-30B-A3B-Instruct` remain the primary provider/model candidates; RunPod remains fallback/comparison.
+- Next recommended phase is `Phase 21-Z2D-SF-R1: SiliconFlow Prompt and Schema Alignment Gate Without API Calls`.
+- Do not rerun SiliconFlow, read API keys, upload images, call models, benchmark, add iOS integration, change upload payloads, or approve production rollout without a separate explicit phase.
 
 Latest Phase 20-D preflight check on 2026-06-14:
 
