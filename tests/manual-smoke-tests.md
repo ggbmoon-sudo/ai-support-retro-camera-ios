@@ -4212,3 +4212,28 @@ Known TODOs:
 - [ ] Physical-device layout should be checked for camera-shell proportions, control spacing, and one-handed reach.
 - [ ] Future real camera capability detection can be considered only in a later explicit phase.
 - [ ] Phase 15 remains blocked until Phase 14B is reviewed, committed, pushed, and read-only confirmed.
+## Phase 21-W-FINAL-R2 Controlled 12-fixture Benchmark Final Result
+
+Check:
+
+- [x] Restored the existing local/private Transformers+FastAPI reference server path without switching model or serving stack.
+- [x] Confirmed external no-model fixture-token contract and route-contract dry-run passed.
+- [x] Confirmed backend healthz was `safe` with `modelLoaded:true`.
+- [x] Confirmed backend live route dry-run accepted the approved 12 fixtures with `route_contract_ready`.
+- [x] Ran exactly one approved controlled benchmark with `smoke_004` through `smoke_015`.
+- [x] Confirmed benchmark call count `12` and retry count `0`.
+- [x] Confirmed sanitized aggregate result accepted `12`, rejected `0`, blocked `0`.
+- [x] Confirmed latency buckets `gt_15s x1` and `5s_to_15s x11`.
+- [x] Confirmed no raw output, prompt, payload, image path, registry contents, config contents, server URL/logs, EXIF/GPS/sensor data, or secrets were printed or committed.
+- [x] Confirmed no Qwen3-VL-30B-A3B install/load/call, no vLLM/SGLang/Ollama, no serving switch, no concurrency benchmark, no quantization benchmark, and no Live Advisor simulation.
+- [x] Confirmed no iOS runtime change, endpoint addition, Camera cloud AI entry, Auto-Trigger runtime, WSS runtime, upload runtime, upload payload change, or production rollout.
+- [x] Kept `productionReady:false`.
+
+Manual Xcode check:
+
+- [ ] Launch only if desired; Xcode runtime behavior should be unchanged.
+- [ ] Confirm no local CV runtime, Camera cloud AI runtime entry, Auto-Trigger runtime, WSS runtime, iOS provider/model key/direct call, upload payload change, capture-context upload, app-facing endpoint, production rollout, Windows local path dependency, or raw local model URL dependency appears in Xcode.
+
+Known TODOs:
+
+- [ ] Phase 21-X should review accepted aggregate quality/latency before any next benchmark, serving-stack comparison, quantization, Live Advisor, iOS integration, endpoint, or production rollout.

@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 21-W-FINAL-R1 - Model Runtime Readiness Reblocked
-Status: persistent server process availability blocker
-Latest implementation: Phase 21-W-FINAL-R1 attempted runtime reconnect only. External static no-model contracts passed, the expected local/private port was not listening, and a safe restart was attempted. A listener briefly appeared, but backend healthz still blocked with `connection_refused` and the listener exited. Backend live route dry-run was not run after healthz failed. Roadmap next is Phase 21-W-FINAL-R1A: Persistent Server Process Availability Fix.
+Current phase: Phase 21-W-FINAL-R2 - Controlled 12-fixture Benchmark Final Result
+Status: completed
+Latest implementation: Phase 21-W-FINAL-R2 completed the Phase 21-W controlled benchmark goal. Codex restored the existing local/private Transformers+FastAPI reference server, fixed live fixture routeability by mirroring the approved ignored 12-fixture set into the external ignored runtime registry, confirmed safe healthz and live no-model route dry-run, then ran exactly one approved 12-fixture benchmark. Result: accepted `12`, rejected `0`, call count `12`, retry count `0`, latency buckets `gt_15s x1` and `5s_to_15s x11`, raw artifact policy intact, no Qwen3-VL-30B-A3B use, no iOS runtime change, and `productionReady:false`.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -73,9 +73,70 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-W-FINAL-R1A: Persistent Server Process Availability Fix. Any further benchmark/model calls require separate explicit approval before execution. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution beyond an explicitly approved future scope, model downloads, model cache changes, Qwen inference beyond an explicitly approved local/private benchmark, fixture inference beyond explicit approval, local CV runtime, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, or user-photo training / fine-tuning until explicitly requested.
+Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-X: Controlled 12-fixture Benchmark Review + Latency Decision Gate. Any further benchmark/model calls require separate explicit approval before execution. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution beyond an explicitly approved future scope, model downloads, model cache changes, Qwen inference beyond an explicitly approved local/private benchmark, fixture inference beyond explicit approval, local CV runtime, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, or user-photo training / fine-tuning until explicitly requested.
 
 ---
+
+## Phase 21-W-FINAL-R2 - Controlled 12-fixture Benchmark Final Result
+
+Status: Completed
+Date: 2026-06-19
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase 21-W-FINAL-R2 completed the controlled 12-fixture Transformers+FastAPI benchmark goal. The existing local/private reference server was restored through the external workspace venv, the live route-contract dry-run was made routeable for the approved 12 fixtures, and exactly one benchmark run accepted all 12 fixtures.
+
+### Completed Work
+
+- Reconfirmed main repo cleanliness/upstream sync and prerequisite Phase 21 history.
+- Reconfirmed external static no-model fixture-token contract and route-contract dry-run.
+- Diagnosed the runtime blocker as local/private server process availability plus `fixture_lookup_mismatch`.
+- Restarted the existing local/private Transformers+FastAPI reference server without switching serving stack or model.
+- Mirrored the approved ignored fixture files and metadata for `smoke_004` through `smoke_015` into the external ignored runtime workspace without printing raw paths, images, registry contents, config contents, logs, prompts, outputs, payloads, or secrets.
+- Confirmed backend healthz `safe` with `modelLoaded:true` and live route dry-run `route_contract_ready`.
+- Ran exactly one approved controlled 12-fixture benchmark: call count `12`, retry count `0`.
+- Recorded sanitized aggregate result: accepted `12`, rejected `0`, blocked `0`, validation bucket `null x12`, fallback bucket `null x12`, latency buckets `gt_15s x1` and `5s_to_15s x11`.
+- Added `docs/phase-21-w-final-r2-controlled-12-fixture-benchmark-final-result.md`.
+- Updated README/backend/iOS/roadmap/handoff/manual smoke docs.
+
+### Changed Files
+
+- `README.md`
+- `backend/README.md`
+- `ios-app/README.md`
+- `docs/phase-21-w-final-r2-controlled-12-fixture-benchmark-final-result.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `tests/manual-smoke-tests.md`
+
+### Tests and Checks
+
+- `git diff --check`
+- `npm.cmd test`
+- `npm.cmd run qa:open-weight-vlm:backend-contract-echo-validation`
+- `npm.cmd run qa:open-weight-vlm:controlled-multifixture-rejection-diagnostics`
+- `npm.cmd run qa:open-weight-vlm:controlled-multifixture-serving-benchmark-approval-request`
+- `npm.cmd run qa:open-weight-vlm:serving-benchmark-approval-matrix`
+- `npm.cmd run qa:open-weight-vlm:serving-benchmark-scope-gate`
+- `npm.cmd run qa:open-weight-vlm:local-config`
+- `npm.cmd run qa:open-weight-vlm:local-smoke-gate`
+- `npm.cmd run qa:open-weight-vlm:local-model-route-approval`
+- `npm.cmd run qa:photo-advisor:gate`
+- External `check_fixture_token_contract.py`
+- External `check_route_contract_dry_run.py`
+- Backend `qa:open-weight-vlm:local-model-healthz-preflight`
+- Backend `qa:open-weight-vlm:benchmark-route-contract-dry-run`
+- One approved benchmark command: `qa:open-weight-vlm:transformers-fastapi-controlled-multifixture-serving-benchmark`
+
+### Known TODOs
+
+- Phase 21-X should review latency buckets before any serving-stack, quantization, Live Advisor, iOS integration, endpoint, or production decision.
+- The external mirrored fixture runtime state remains local/ignored and must not be committed.
+- Production rollout remains blocked.
+
+Ready for Phase 21-X: Controlled 12-fixture Benchmark Review + Latency Decision Gate. Any further model call or benchmark requires separate explicit approval.
 
 ## Phase 21-W-FINAL-R1 - Model Runtime Readiness Reblocked
 
