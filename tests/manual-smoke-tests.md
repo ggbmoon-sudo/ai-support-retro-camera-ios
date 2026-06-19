@@ -267,6 +267,17 @@ Approved fixture token inventory:
 - [x] Confirm model call executed `no`, benchmark executed `no`, endpoint called `no`, healthz checked `no`, call count `0`, retry count `0`, and `productionReady:false`.
 - [x] Confirm ignored local config, fixture registry, and fixture files remain ignored, untracked, and unstaged.
 
+## Phase 21-W
+
+Approved controlled 12-fixture Transformers+FastAPI serving benchmark:
+
+- [x] Confirm Phase 21-V and Phase 21-W0 commit markers were present before the approved controlled 12-fixture attempt.
+- [x] Confirm exact approved fixture tokens were `smoke_004` through `smoke_015`, with `smoke_001` excluded.
+- [x] Confirm standalone healthz preflight was safe before the benchmark attempt.
+- [x] Confirm the approved benchmark command ran exactly once and preflight-blocked with `blocked_for_unsafe_endpoint_bucket` before any model calls.
+- [x] Confirm model call count `0`, benchmark/inference endpoint call count `0`, retry count `0`, accepted count `0`, rejected count `0`, and `productionReady:false`.
+- [x] Confirm no concurrency benchmark, quantization benchmark, Live Advisor simulation, vLLM/SGLang/Ollama call, serving switch, iOS integration, endpoint, Auto-Trigger runtime, WSS runtime, upload runtime, raw artifact, secret, or production rollout was added.
+
 ## Phase 21-G2
 
 Missing feature + deferred roadmap register:

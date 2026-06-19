@@ -1356,6 +1356,8 @@ Phase 21-V adds `backend/src/qa/openWeightVlmControlledMultifixtureServingBenchm
 
 Phase 21-W0 adds `docs/phase-21-w0-approved-fixture-token-inventory.md`. It safely inventories the ignored local fixture registry with sanitized token/count output only and records 13 approved ready fixture tokens, not exactly 12. It does not run healthz, call endpoints, run model inference, run fixture inference, run a benchmark, modify ignored local config/registry/fixtures, or change `productionReady:false`.
 
+Phase 21-W adds `backend/scripts/run-open-weight-vlm-transformers-fastapi-controlled-multifixture-serving-benchmark.mjs` and `npm run qa:open-weight-vlm:transformers-fastapi-controlled-multifixture-serving-benchmark`. The guarded wrapper requires `--approved-controlled-benchmark`, `--serving-stack transformers_fastapi_reference`, exact fixtures `smoke_004` through `smoke_015`, `--call-count 12`, and `--no-retry`; it rejects `smoke_001`, duplicates, token mismatch, retry scope, wrong stack, raw artifact leakage, and `productionReady:true`. The approved Phase 21-W attempt ran the command exactly once but preflight-blocked before model calls with `blocked_for_unsafe_endpoint_bucket`, so no benchmark/model calls executed.
+
 ## Future TODO
 
 - Add authenticated backend boundary only after explicit approval.

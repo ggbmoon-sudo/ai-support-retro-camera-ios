@@ -104,11 +104,12 @@ Current phase:
 - Phase 21-U runs the explicitly approved Transformers+FastAPI reference one-fixture serving benchmark with `smoke_001`, exactly one backend local/private model call, and zero retries. The sanitized result is accepted with latency bucket `gt_15s`; no 12-fixture benchmark, concurrency benchmark, quantization benchmark, Live Advisor simulation, vLLM/SGLang/Ollama call, serving switch, endpoint, iOS integration, raw artifact, secret, or production rollout occurs.
 - Phase 21-V adds a controlled multi-fixture serving benchmark approval request draft and no-model dry-run gate. It proposes future Phase 21-W approval phrases for a controlled 3-fixture pilot or controlled 12-fixture benchmark while running no serving runtime, endpoint call, model call, Qwen inference, fixture inference, benchmark, serving switch, vLLM/SGLang/Ollama call, iOS integration, raw artifact, secret, or production rollout.
 - Phase 21-W0 inventories the ignored local fixture registry with sanitized token/count output only. It finds 13 approved ready fixture tokens, not exactly 12, so no benchmark, model call, endpoint call, fixture inference, registry/config/fixture modification, raw artifact, secret, or production rollout occurs.
+- Phase 21-W adds a guarded Transformers+FastAPI controlled 12-fixture benchmark wrapper and attempts the approved command exactly once for `smoke_004` through `smoke_015`. The attempt preflight-blocks before model calls with sanitized bucket `blocked_for_unsafe_endpoint_bucket`; call count remains `0`, retry count remains `0`, no raw artifacts are printed or persisted, and `productionReady:false` remains locked.
 - Phase 21-H adds the controlled backend `local_model` route dry-run plan. It is a no-network/no-model/no-Qwen/no-benchmark plan gate for a future explicitly approved one-fixture, one-call, no-retry backend-internal local/private route test. It does not enable `local_model`, run fixture inference, add iOS integration, add app-facing or production endpoints, accept user-photo uploads, or change `productionReady:false`.
 
 Next phase:
 
-- Recommended next step is Phase 21-W0: Approved Fixture Token Inventory / Registry Prep. The user must choose exactly 12 tokens or explicitly request a controlled 13-fixture scope before any Phase 21-W benchmark approval.
+- Recommended next step is Phase 21-W-R1: Controlled 12-fixture Serving Benchmark Block Resolution. It must not rerun model calls or the benchmark without separate explicit approval.
 - Do not start production cloud rollout without explicit approval
 - Production rollout remains blocked until a later explicit release phase
 

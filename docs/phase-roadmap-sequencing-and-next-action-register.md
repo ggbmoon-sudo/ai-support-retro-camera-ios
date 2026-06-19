@@ -16,11 +16,11 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**Phase 21-W0: Approved Fixture Token Inventory / Registry Prep**
+**Phase 21-W-R1: Controlled 12-fixture Serving Benchmark Block Resolution**
 
-Reason: Phase 21-W0 safely inspected the ignored local fixture registry and found 13 approved ready fixture tokens, not exactly 12. A future controlled 12-fixture Phase 21-W approval phrase still needs exactly 12 explicit tokens, or a later phase must define a controlled 13-fixture scope.
+Reason: Phase 21-W attempted the explicitly approved Transformers+FastAPI controlled 12-fixture benchmark command exactly once, but the guarded wrapper stopped before any model calls with sanitized blocker bucket `blocked_for_unsafe_endpoint_bucket`. Standalone healthz was safe before the attempt, fixture scope was exact, and call count remained `0`.
 
-Phase 21-W0 remains no-model inventory/registry-prep only. Do not run Phase 21-W, SGLang inference, vLLM inference, Ollama inference, quantization benchmarks, concurrency benchmarks, Live Advisor simulation, model downloads, serving-stack switches, endpoints, iOS integration, or production rollout without separate explicit approval.
+Phase 21-W-R1 should resolve only the blocked preflight bucket. Do not rerun Phase 21-W, run model calls, run SGLang/vLLM/Ollama inference, run quantization benchmarks, run concurrency benchmarks, run Live Advisor simulation, download models, switch serving stacks, add endpoints, add iOS integration, or start production rollout without separate explicit approval.
 
 ## How Codex Should Use This File
 
@@ -74,6 +74,7 @@ Use cautious wording and re-check source docs before implementation:
 - Phase 21-U ran the explicitly approved Transformers+FastAPI reference one-fixture serving benchmark with `smoke_001`, one call, and zero retries. The sanitized benchmark was accepted with latency bucket `gt_15s`; no 12-fixture, concurrency, quantization, Live Advisor, vLLM/SGLang/Ollama, serving-switch, endpoint, iOS integration, raw artifact, secret, or production rollout occurred.
 - Phase 21-V added the controlled multi-fixture serving benchmark approval request draft, no-model gate, CLI, and tests. It proposes future Phase 21-W approval phrases for either a controlled 3-fixture pilot or a controlled 12-fixture run, while running no model call, fixture inference, benchmark, endpoint call, serving runtime, serving switch, vLLM/SGLang/Ollama call, iOS integration, raw artifact, secret, or production rollout.
 - Phase 21-W0 inspected the ignored fixture registry with sanitized output only. It found 13 approved ready opaque fixture tokens with local ignored files present, so exactly-12 readiness is false and no Phase 21-W approval phrase was generated.
+- Phase 21-W added a guarded controlled 12-fixture Transformers+FastAPI wrapper and attempted the approved benchmark command exactly once with `smoke_004` through `smoke_015`, but preflight blocked with `blocked_for_unsafe_endpoint_bucket` before any model calls. Call count stayed `0`, retry count stayed `0`, standalone healthz was safe, no raw artifacts were printed/persisted, and `productionReady:false` remains locked.
 - `productionReady:false` remains the cross-phase default.
 
 Source references for future operators include `docs/phase-log.md`, `docs/handoff/codex-transition-handoff.md`, `docs/missing-features-and-deferred-roadmap-register.md`, and the Phase 20/21 backend gateway docs.
