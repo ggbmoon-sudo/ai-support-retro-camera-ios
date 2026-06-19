@@ -4496,3 +4496,16 @@ Known TODOs:
 - [x] Confirmed no iOS runtime change, upload payload change, Camera cloud AI entry, app-facing endpoint, production endpoint, live cloud AI runtime, or production rollout was added.
 - [ ] In Xcode, confirm runtime behavior is unchanged: no SiliconFlow endpoint/API key in iOS, no direct provider call, no upload payload change, no capture-context upload, no Camera cloud AI entry, no app-facing endpoint, and no provider raw output in app UI/history.
 - [ ] Phase 21-Z2F-SF should review accepted aggregate results, latency/cost/privacy/legal/beta-readiness boundaries, and must not start iOS integration or production rollout without separate explicit approval.
+
+
+## Phase 21-Z2F-SF-LATENCY SiliconFlow Single-image Latency Probe
+
+- [x] Confirmed repo was clean and upstream-synced before starting.
+- [x] Ran only approved single-image SiliconFlow probes with `smoke_004`, retry `0`, and sanitized output only.
+- [x] Confirmed total provider calls `11`, no alternative model calls, no fixture expansion, and no real user photos.
+- [x] Confirmed compact prompt + `max_tokens:192` accepted and improved token bucket to `lte_1k`.
+- [x] Confirmed `enable_thinking:false` was invalid for this VLM request shape and was not committed.
+- [x] Confirmed `max_tokens:128` was too tight for the current schema.
+- [x] Confirmed no raw provider response, raw model text, raw prompt, raw request payload, raw image/base64/path, API key, credential, or raw report was printed, persisted, staged, or committed.
+- [x] Confirmed no iOS runtime change, upload payload change, Camera cloud AI entry, app-facing endpoint, production endpoint, live cloud AI runtime, or production rollout was added.
+- [ ] In Xcode, confirm runtime behavior remains unchanged: no SiliconFlow endpoint/API key in iOS, no direct provider call, no upload payload change, no Camera cloud AI entry, and no app-facing endpoint.

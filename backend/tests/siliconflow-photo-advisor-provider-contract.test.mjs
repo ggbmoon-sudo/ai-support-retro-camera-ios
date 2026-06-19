@@ -75,7 +75,7 @@ test("SiliconFlow request builder creates stable placeholder request without exe
   assert.equal(shape.request.body.stream, false);
   assert.equal(shape.request.body.temperature, 0.1);
   assert.equal(shape.request.body.top_p, 0.8);
-  assert.equal(shape.request.body.max_tokens, 256);
+  assert.equal(shape.request.body.max_tokens, 192);
   assert.equal(shape.request.body.messages[1].content[0].image_url.detail, "low");
   assert.equal(shape.executionAllowed, false);
   assert.equal(shape.networkCallsMade, false);

@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  buildSiliconFlowPhotoAdvisorCompactSystemPrompt,
+  buildSiliconFlowPhotoAdvisorCompactUserPrompt,
   buildSiliconFlowPhotoAdvisorSystemPrompt,
   buildSiliconFlowPhotoAdvisorUserPrompt,
   siliconFlowPhotoAdvisorExampleCandidate
@@ -38,6 +40,25 @@ test("SiliconFlow prompt contract forces backend-only semantic JSON", () => {
   assert.match(userPrompt, /observation\.warm_indoor_light/);
   assert.match(userPrompt, /warm_film/);
   assert.match(userPrompt, /Output JSON only/);
+  assert.doesNotMatch(systemPrompt + userPrompt, /SILICONFLOW_API_KEY|Bearer [A-Za-z0-9]|data:image|https:\/\/api/i);
+});
+
+test("SiliconFlow compact prompt contract keeps safety and schema anchors", () => {
+  const systemPrompt = buildSiliconFlowPhotoAdvisorCompactSystemPrompt();
+  const userPrompt = buildSiliconFlowPhotoAdvisorCompactUserPrompt();
+
+  assert.match(systemPrompt, /strict JSON object/i);
+  assert.match(systemPrompt, /semantic keys/i);
+  assert.match(systemPrompt, /sensitive inference/i);
+  assert.match(systemPrompt, /chain-of-thought/i);
+  assert.match(systemPrompt, /capture-context claims/i);
+  assert.match(userPrompt, /photo_advisor_vlm_candidate\.v1/);
+  assert.match(userPrompt, /mood\.unknown/);
+  assert.match(userPrompt, /observation\.unknown/);
+  assert.match(userPrompt, /filterFamilyCandidate=/);
+  assert.match(userPrompt, /optionalActionKey=/);
+  assert.match(userPrompt, /JSON only/);
+  assert.ok(userPrompt.length < buildSiliconFlowPhotoAdvisorUserPrompt().length);
   assert.doesNotMatch(systemPrompt + userPrompt, /SILICONFLOW_API_KEY|Bearer [A-Za-z0-9]|data:image|https:\/\/api/i);
 });
 

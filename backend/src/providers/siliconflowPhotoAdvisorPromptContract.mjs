@@ -160,3 +160,30 @@ export function buildSiliconFlowPhotoAdvisorUserPrompt() {
     "Output JSON only. No markdown. No explanation."
   ].join("\n");
 }
+
+export function buildSiliconFlowPhotoAdvisorCompactSystemPrompt() {
+  return [
+    "Return one strict JSON object only for backend Photo Advisor routing.",
+    "Use only allowed semantic keys.",
+    "No markdown, prose, UI copy, score/rating, sensitive inference, chain-of-thought, debug/provider/prompt leakage, or capture-context claims.",
+    "If uncertain choose unknown/original/action.none and keep all safety booleans false."
+  ].join(" ");
+}
+
+export function buildSiliconFlowPhotoAdvisorCompactUserPrompt() {
+  const enums = SILICONFLOW_PHOTO_ADVISOR_SCHEMA_ENUMS;
+  return [
+    "Return exactly this JSON shape, no extra fields:",
+    JSON.stringify(siliconFlowPhotoAdvisorExampleCandidate()),
+    "sourceType=imported allowedContext=imageOnly retakeAllowed=false retakeReasonKey=null",
+    "moodKey=" + enums.moodKey.join("|"),
+    "visualObservationKey=" + enums.visualObservationKey.join("|"),
+    "creativeIntent.classification=" + enums.creativeIntentClassification.join("|"),
+    "creativeIntent.preserveSignals=" + enums.preserveSignals.join("|"),
+    "technicalRisk.level=" + enums.technicalRiskLevel.join("|"),
+    "technicalRisk.reasonKey=null|risk.severe_blur_unreadable|risk.black_image_unreadable|risk.severe_underexposure_unreadable|risk.severe_overexposure_unreadable",
+    "filterFamilyCandidate=" + enums.filterFamilyCandidate.join("|"),
+    "optionalActionKey=" + enums.optionalActionKey.join("|"),
+    "JSON only."
+  ].join("\n");
+}

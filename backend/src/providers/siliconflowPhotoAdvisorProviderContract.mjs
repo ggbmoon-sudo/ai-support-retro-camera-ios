@@ -16,8 +16,8 @@ import {
   sanitizedSiliconFlowError
 } from "./siliconflowPhotoAdvisorErrors.mjs";
 import {
-  buildSiliconFlowPhotoAdvisorSystemPrompt,
-  buildSiliconFlowPhotoAdvisorUserPrompt
+  buildSiliconFlowPhotoAdvisorCompactSystemPrompt,
+  buildSiliconFlowPhotoAdvisorCompactUserPrompt
 } from "./siliconflowPhotoAdvisorPromptContract.mjs";
 
 export const SILICONFLOW_CHAT_COMPLETIONS_PATH = "/chat/completions";
@@ -26,8 +26,8 @@ export const SILICONFLOW_PRIMARY_MODEL_ID = PHOTO_ADVISOR_MODEL_IDS[PhotoAdvisor
 
 const DEFAULT_PLACEHOLDERS = Object.freeze({
   imageUrlOrBase64Placeholder: "<SAFE_IMAGE_URL_OR_BASE64_PLACEHOLDER>",
-  systemPromptPlaceholder: buildSiliconFlowPhotoAdvisorSystemPrompt(),
-  userPromptPlaceholder: buildSiliconFlowPhotoAdvisorUserPrompt()
+  systemPromptPlaceholder: buildSiliconFlowPhotoAdvisorCompactSystemPrompt(),
+  userPromptPlaceholder: buildSiliconFlowPhotoAdvisorCompactUserPrompt()
 });
 
 export function defaultSiliconFlowPhotoAdvisorConfig() {
@@ -43,7 +43,7 @@ export function defaultSiliconFlowPhotoAdvisorConfig() {
     allowImageUpload: false,
     allowLiveCamera: false,
     allowJsonModeForVlm: false,
-    maxOutputTokens: 256,
+    maxOutputTokens: 192,
     imageDetail: "low",
     timeoutBucketOnly: true,
     productionReady: false
@@ -110,7 +110,7 @@ export function validateSiliconFlowPhotoAdvisorConfig(config = {}) {
     blockers.push("provider_invalid_response");
   }
 
-  if (merged.maxOutputTokens !== 256) {
+  if (merged.maxOutputTokens !== 192) {
     blockers.push("provider_invalid_response");
   }
 

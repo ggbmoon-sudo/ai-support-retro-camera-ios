@@ -1057,3 +1057,14 @@ Latest Phase 21-Z2E-SF-AUTO handoff refresh check on 2026-06-20:
 - Sanitized buckets: validation `accepted x13`, fallback `none x13`, latency `5s_to_15s x9` and `gt_15s x4`, token usage `lte_20k`, cost `usage_available_cost_not_computed`.
 - No raw provider response, raw model text, raw prompt, raw request payload, raw image/base64/path, API key, provider credential, raw report, iOS runtime change, upload payload change, live cloud AI runtime, app-facing endpoint, production endpoint, or production rollout occurred.
 - Next recommended phase is `Phase 21-Z2F-SF: SiliconFlow Accepted Benchmark Review and Beta Readiness Decision Gate`.
+
+
+Latest Phase 21-Z2F-SF-LATENCY handoff refresh check on 2026-06-20:
+
+- Phase 21-Z2F-SF-LATENCY ran operator-approved single-image SiliconFlow latency probes with `smoke_004` only.
+- Total provider calls: `11`, retry `0`, no alternative model calls, no fixture expansion, and no real user photos.
+- Best accepted compact probe: `5466ms`; post-patch accepted validation: `10473ms`; token bucket improved from `lte_5k` to `lte_1k`, but latency remained seconds-level.
+- Backend no-runtime contract now defaults to compact SiliconFlow prompt profile and `maxOutputTokens:192`.
+- `enable_thinking:false` was invalid for this VLM request shape; JSON mode remains disabled.
+- No raw provider response, raw model text, raw prompt, raw request payload, raw image/base64/path, API key, provider credential, raw report, iOS runtime change, upload payload change, live cloud AI runtime, app-facing endpoint, production endpoint, or production rollout occurred.
+- Next recommended phase is `Phase 21-Z2G-SF: SiliconFlow Latency Architecture Decision Gate`.

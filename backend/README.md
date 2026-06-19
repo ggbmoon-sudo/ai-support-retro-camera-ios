@@ -32,6 +32,8 @@ Phase 21-Z2D-SF reviews the SiliconFlow benchmark without rerunning API calls. T
 
 Phase 21-Z2E-SF-AUTO completes the explicitly approved bounded SiliconFlow prompt/schema alignment and retry. It adds a schema-enum-driven backend prompt contract, sanitized parser diagnostic buckets, and `npm run qa:siliconflow:prompt-schema`. The approved bounded run made `13` SiliconFlow calls of cap `28`, retry `0`, accepted `13`, rejected `0`, with latency buckets `5s_to_15s x9` and `gt_15s x4`; no raw provider response, prompt, request payload, image/base64/path, API key, credential, raw report, iOS runtime change, upload payload change, app-facing endpoint, production endpoint, or production rollout was added. `productionReady:false` remains locked.
 
+Phase 21-Z2F-SF-LATENCY runs approved single-image SiliconFlow latency probes with `smoke_004` only. The backend no-runtime contract now defaults to the compact SiliconFlow prompt profile and `maxOutputTokens:192` because `128` caused invalid output and `enable_thinking:false` was rejected for the VLM request shape. Best accepted probe was `5466ms`; post-patch validation was `10473ms`, so latency remains provider/serverless-bound and not product-ready. No provider runtime execution, iOS runtime change, upload payload change, app-facing endpoint, production endpoint, raw artifact, secret, or production rollout was added.
+
 ## Run
 
 ```sh
