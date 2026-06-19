@@ -354,6 +354,18 @@ Controlled 12-fixture benchmark retry after contract echo fix:
 - [x] Confirm no inference endpoint call, model call, benchmark, fixture inference, Qwen3-VL-30B-A3B use, serving switch, iOS runtime change, endpoint addition, raw artifact, secret, or production rollout occurred.
 - [x] Confirm next safe action is Phase 21-W-R3-R1 healthz block resolution.
 
+## Phase 21-W-R3-R1
+
+Healthz model-not-loaded block resolution:
+
+- [x] Confirm external no-model contract checker still passes.
+- [x] Confirm healthz-only checker remains blocked with `model_not_loaded`.
+- [x] Confirm sanitized dependency probe reports no missing dependency class.
+- [x] Confirm likely blocker bucket is `model_load_disabled`.
+- [x] Confirm resolved:no, modelLoaded:no, call count `0`, retry count `0`.
+- [x] Confirm no inference endpoint call, model call, benchmark, fixture inference, Qwen3-VL-30B-A3B install/load/call, serving switch, iOS runtime change, endpoint addition, raw artifact, secret, or production rollout occurred.
+- [x] Confirm next safe action is Phase 21-W-R3-R1A operator model-enabled server startup.
+
 ## Phase 21-G2
 
 Missing feature + deferred roadmap register:

@@ -1372,6 +1372,8 @@ Phase 21-W-R2C-FINAL fixes the no-model contract echo validation mismatch. The e
 
 Phase 21-W-R3 was explicitly approved to retry the controlled 12-fixture Transformers+FastAPI benchmark after contract echo validation passed. External and backend contract echo checks passed first, but `npm run qa:open-weight-vlm:local-model-healthz-preflight` blocked safely with sanitized bucket `model_not_loaded` before any benchmark/model call. Actual call count stayed `0`, retry count stayed `0`, no inference endpoint was called, no serving switch occurred, Qwen3-VL-30B-A3B was not used, no raw artifacts were printed or persisted, and `productionReady:false` remains locked. Roadmap next is Phase 21-W-R3-R1 healthz block resolution.
 
+Phase 21-W-R3-R1 diagnoses that healthz block without calling the inference endpoint, running fixture inference, or running a benchmark. The external no-model contract checker still passes, the healthz-only checker remains blocked with `model_not_loaded`, and a sanitized no-load dependency probe found no missing dependency class. The likely blocker bucket is `model_load_disabled`; the next safe action is operator model-enabled server startup for the existing local/private reference server. Qwen3-VL-30B-A3B was not installed, downloaded, loaded, benchmarked, or called, and `productionReady:false` remains locked.
+
 ## Future TODO
 
 - Add authenticated backend boundary only after explicit approval.

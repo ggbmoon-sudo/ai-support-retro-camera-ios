@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 21-W-R3 - Controlled 12-fixture Benchmark Retry After Contract Echo Fix
-Status: Blocked before benchmark/model calls
-Latest implementation: Phase 21-W-R3 was explicitly approved to retry exactly one controlled 12-fixture Transformers+FastAPI benchmark with `smoke_004` through `smoke_015`, call count `12`, and retry count `0`, but the required healthz preflight blocked before any benchmark/model calls with sanitized bucket `model_not_loaded`. External no-model contract echo and backend contract echo validation both passed first. Actual call count `0`, retry count `0`, no inference endpoint call, no Qwen3-VL-30B-A3B switch/download/load/benchmark/call, no serving switch, no iOS runtime change, no endpoint addition, no raw artifact, no secret, and no production rollout occurred. Roadmap next is Phase 21-W-R3-R1: Controlled 12-fixture Benchmark Healthz Block Resolution.
+Current phase: Phase 21-W-R3-R1 - Controlled 12-fixture Benchmark Healthz Block Resolution
+Status: Diagnosed / still blocked
+Latest implementation: Phase 21-W-R3-R1 diagnosed the `model_not_loaded` healthz blocker without running inference, model calls, fixture inference, or benchmarks. External no-model contract checking still passes, healthz-only checking remains blocked with `model_not_loaded`, and a sanitized no-load dependency probe found no missing runtime dependency classes. The likely blocker bucket is `model_load_disabled`, so the next safe phase is operator model-enabled startup for the existing reference server. No Qwen3-VL-30B-A3B switch/download/load/benchmark/call, no serving switch, no iOS runtime change, no endpoint addition, no raw artifact, no secret, and no production rollout occurred. Roadmap next is Phase 21-W-R3-R1A: Operator Model-enabled Server Startup.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -73,7 +73,65 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-W-R3-R1: Controlled 12-fixture Benchmark Healthz Block Resolution. Any later benchmark retry requires separate explicit approval before model or benchmark calls. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution beyond an explicitly approved future scope, model downloads, model cache changes, Qwen inference beyond an explicitly approved local/private benchmark, fixture inference beyond explicit approval, local CV runtime, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, or user-photo training / fine-tuning until explicitly requested.
+Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-W-R3-R1A: Operator Model-enabled Server Startup. Any later benchmark retry requires separate explicit approval before model or benchmark calls. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution beyond an explicitly approved future scope, model downloads, model cache changes, Qwen inference beyond an explicitly approved local/private benchmark, fixture inference beyond explicit approval, local CV runtime, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, or user-photo training / fine-tuning until explicitly requested.
+
+---
+
+## Phase 21-W-R3-R1 - Controlled 12-fixture Benchmark Healthz Block Resolution
+
+Status: Diagnosed / still blocked
+Date: 2026-06-19
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase 21-W-R3-R1 diagnosed the Phase 21-W-R3 `model_not_loaded` healthz block. The block is not resolved: healthz remains `model_not_loaded`, modelLoaded remains false, and the next safe step is operator model-enabled startup for the existing reference server.
+
+### Completed Work
+
+- Verified main repo was clean and upstream sync was `0 0`.
+- Verified prerequisite commit markers for Phase 21-W-R2C-FINAL and Phase 21-W-R3 were present.
+- Confirmed the external no-model contract checker still passed with approved token count `13`.
+- Ran healthz-only readiness check; it remained blocked with `model_not_loaded`.
+- Inspected startup/readiness scripts and server healthz/modelLoaded source behavior.
+- Ran a sanitized no-load dependency probe; no missing dependency classes were found.
+- Added sanitized healthz block diagnosis report.
+- Updated roadmap, README, backend README, iOS README, handoff, and manual smoke notes.
+
+### Diagnostic Result
+
+- Healthz checked: yes
+- Healthz result: `model_not_loaded`
+- Model loaded: no
+- Likely blocker bucket: `model_load_disabled`
+- Resolved: no
+- Inference endpoint called: no
+- Model call executed: no
+- Benchmark executed: no
+- Call count: `0`
+- Retry count: `0`
+
+### Changed Files
+
+- `docs/phase-21-w-r3-r1-healthz-model-not-loaded-block-resolution.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-log.md`
+- `README.md`
+- `backend/README.md`
+- `ios-app/README.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `tests/manual-smoke-tests.md`
+
+### Checks
+
+- External no-model fixture-token contract checker passed.
+- Healthz-only checker blocked safely with `model_not_loaded`.
+- Sanitized dependency probe passed with no missing dependency class.
+- No raw prompt, model output, image path, payload, local config contents, fixture registry contents, server URL, server log, EXIF/GPS/sensor data, or secret was printed or committed.
+
+### Next Step
+
+Ready for Phase 21-W-R3-R1A: Operator Model-enabled Server Startup. A later benchmark retry requires separate explicit approval before any model or benchmark calls.
 
 ---
 
