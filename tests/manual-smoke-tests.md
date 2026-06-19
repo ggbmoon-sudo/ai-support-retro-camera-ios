@@ -6,7 +6,7 @@ Qwen MoE + Live Advisor target re-evaluation gate:
 
 - [ ] From `backend/`, run `npm run qa:open-weight-vlm:qwen-moe-live-advisor-target`.
 - [ ] Confirm the gate reports `targetGateEligible:true`, `networkCallsMade:false`, `modelCallsMade:false`, `qwenInferenceRun:false`, `benchmarkRun:false`, and `productionReady:false`.
-- [ ] Confirm Qwen 3.5 35B-A3B MoE is only a preferred future target when vision-capable / VLM-compatible verification is true.
+- [ ] Confirm `Qwen3-VL-30B-A3B` is only a future target candidate for a later separately approved model phase when vision-capable / VLM-compatible verification is true.
 - [ ] Confirm text-only Qwen blocks for image analysis, and Qwen2.5-VL remains a reference baseline.
 - [ ] Confirm blockers cover missing non-thinking/direct-output mode, missing structured output, missing quantization plan, missing benchmark requirement, Auto-Trigger runtime, WSS runtime, iOS upload runtime, direct iOS model route, production readiness, model calls, Qwen inference, benchmark execution, free-form model text, score/rating, sensitive inference, chain-of-thought, and debug/provider leakage.
 - [ ] Confirm no model switch, `local_model` route enablement, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, iOS integration, endpoint, Qwen inference, fixture inference, serving benchmark, raw artifact, secret, or production readiness change is introduced.
@@ -278,13 +278,24 @@ Approved controlled 12-fixture Transformers+FastAPI serving benchmark:
 - [x] Confirm model call count `0`, benchmark/inference endpoint call count `0`, retry count `0`, accepted count `0`, rejected count `0`, and `productionReady:false`.
 - [x] Confirm no concurrency benchmark, quantization benchmark, Live Advisor simulation, vLLM/SGLang/Ollama call, serving switch, iOS integration, endpoint, Auto-Trigger runtime, WSS runtime, upload runtime, raw artifact, secret, or production rollout was added.
 
+## Phase 21-W-R1
+
+Controlled 12-fixture endpoint bucket block resolution:
+
+- [x] Confirm endpoint bucket mismatch was fixed by normalizing `local_loopback_name`, `local_loopback_ip`, and `private_lan_ipv4` to approved local/private buckets before controlled wrapper policy checks.
+- [x] Confirm unsafe buckets remain blocked, including public IP/domain, tunnel/ngrok, credentialed URL, query-string secret, `0.0.0.0`, missing, and unknown buckets.
+- [x] Confirm private LAN still requires explicit local opt-in.
+- [x] Confirm no model call, benchmark, fixture inference, inference endpoint call, 12-fixture benchmark rerun, serving switch, vLLM/SGLang/Ollama call, external server change, iOS runtime change, raw artifact, secret, or production rollout occurred.
+- [x] Confirm `Qwen3-VL-30B-A3B` is documented only as a future target candidate and was not installed, downloaded, loaded, benchmarked, or called in this phase.
+- [x] Confirm roadmap current next phase is Phase 21-W-R1B and requires separate explicit approval before model calls.
+
 ## Phase 21-G2
 
 Missing feature + deferred roadmap register:
 
 - [ ] Confirm `docs/missing-features-and-deferred-roadmap-register.md` exists.
 - [ ] Confirm it records Live Advisor, local CV, compression/upload payload, backend production API, VLM model/serving, Photo Advisor UX, iOS integration, Store/account/release, and advanced future-feature gaps.
-- [ ] Confirm it includes the newly discussed Qwen 3.5 35B-A3B MoE, non-thinking mode, vLLM/SGLang, Auto-Trigger stillness >1s, no capture/upload at <=1s, max 1 FPS cloud analysis, stateful WSS, frontend compression, INT4/INT8 quantization, local on-device CV split, and consent/no-silent-upload boundary.
+- [ ] Confirm it includes the updated `Qwen3-VL-30B-A3B` future target candidate, non-thinking mode, vLLM/SGLang, Auto-Trigger stillness >1s, no capture/upload at <=1s, max 1 FPS cloud analysis, stateful WSS, frontend compression, INT4/INT8 quantization, local on-device CV split, and consent/no-silent-upload boundary.
 - [ ] Confirm this phase adds no runtime implementation, no iOS integration, no Camera cloud AI runtime entry, no Auto-Trigger runtime, no WSS runtime, no upload/compression runtime, no endpoint, no model call, no Qwen inference, no benchmark, and no production readiness change.
 
 ## Phase 21-H
@@ -3911,7 +3922,7 @@ Check:
 - [x] Added `docs/quantization-serving-benchmark-plan.md` for planning/gate/source-audit only.
 - [x] Added `npm run qa:open-weight-vlm:quantization-serving-benchmark-plan`.
 - [x] Confirm the new gate validates policy objects only and reports `networkCallsMade:false`, `modelCallsMade:false`, `qwenInferenceRun:false`, `fixtureInferenceRun:false`, `servingBenchmarkRun:false`, and `productionReady:false`.
-- [x] Confirm future model candidates are documented as Qwen 3.5 35B-A3B MoE-if-VLM-compatible, Qwen2.5-VL reference baseline, Qwen 3 VL MoE fallback candidate, Qwen 9B vision-capable fallback, and text-only Qwen blocked for image analysis.
+- [x] Confirm future model candidates are documented as `Qwen3-VL-30B-A3B` future target candidate, Qwen2.5-VL reference baseline, alternative Qwen VLM fallback candidate, Qwen 9B vision-capable fallback, and text-only Qwen blocked for image analysis.
 - [x] Confirm future serving candidates are documented as Transformers+FastAPI reference, vLLM primary benchmark candidate, SGLang structured-output/performance challenger, and Ollama/LM Studio manual-only.
 - [x] Confirm future quantization dimensions include fp16/bf16, INT8, INT4, AWQ, GPTQ, and equivalent supported formats.
 - [x] Confirm benchmark fixture policy blocks real user photos, raw photo reports, raw model output, raw prompts, image/base64/path logs, and unapproved large benchmark sets.

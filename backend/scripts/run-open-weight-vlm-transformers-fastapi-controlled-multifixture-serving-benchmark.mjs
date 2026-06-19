@@ -29,32 +29,41 @@ const APPROVED_FIXTURE_TOKENS = Object.freeze([
   "smoke_015"
 ]);
 
-const options = parseArgs(process.argv.slice(2));
-const preflight = await runPreflight(options);
+const SCRIPT_PATH = fileURLToPath(import.meta.url);
 
-if (!preflight.ok) {
-  printSummary({
-    phaseResult: "preflight_blocked",
-    preflight,
-    benchmark: null
-  });
-  process.exit(1);
+if (process.argv[1] === SCRIPT_PATH) {
+  const exitCode = await main(process.argv.slice(2));
+  process.exit(exitCode);
 }
 
-const benchmark = await runBenchmark(preflight.runtimeConfig, preflight.healthz);
-const phaseResult = benchmark.acceptedCount === APPROVED_FIXTURE_TOKENS.length
-  ? "accepted"
-  : benchmark.blockedCount > 0
-    ? "unsafe_stopped"
-    : "mixed_rejected";
+async function main(args) {
+  const options = parseArgs(args);
+  const preflight = await runPreflight(options);
 
-printSummary({
-  phaseResult,
-  preflight,
-  benchmark
-});
+  if (!preflight.ok) {
+    printSummary({
+      phaseResult: "preflight_blocked",
+      preflight,
+      benchmark: null
+    });
+    return 1;
+  }
 
-process.exit(phaseResult === "unsafe_stopped" ? 1 : 0);
+  const benchmark = await runBenchmark(preflight.runtimeConfig, preflight.healthz);
+  const phaseResult = benchmark.acceptedCount === APPROVED_FIXTURE_TOKENS.length
+    ? "accepted"
+    : benchmark.blockedCount > 0
+      ? "unsafe_stopped"
+      : "mixed_rejected";
+
+  printSummary({
+    phaseResult,
+    preflight,
+    benchmark
+  });
+
+  return phaseResult === "unsafe_stopped" ? 1 : 0;
+}
 
 function parseArgs(args) {
   const parsed = {
@@ -164,7 +173,8 @@ async function runPreflight(options) {
   if (config.enabled !== true || config.allowNetworkCalls !== true || config.servingStack !== "transformers_fastapi") {
     blockers.push("blocked_for_transformers_fastapi_reference_not_ready");
   }
-  if (loaded.value?.modelServerUrlBucket !== "local_loopback" && loaded.value?.modelServerUrlBucket !== "private_lan") {
+  const endpointBucket = normalizeControlledBenchmarkEndpointBucket(loaded.value?.modelServerUrlBucket);
+  if (!isControlledBenchmarkEndpointBucketAllowed(endpointBucket)) {
     blockers.push("blocked_for_unsafe_endpoint_bucket");
   }
   if (loaded.value?.productionReady === true) {
@@ -200,6 +210,7 @@ async function runPreflight(options) {
         servingStack: loaded.value.servingStack,
         modelServerConfigured: loaded.value.modelServerConfigured === true,
         modelServerUrlBucket: loaded.value.modelServerUrlBucket || "missing",
+        endpointBucket,
         fixtureMode: loaded.value.fixtureMode,
         allowNetworkCalls: loaded.value.allowNetworkCalls === true,
         productionReady: false
@@ -581,6 +592,23 @@ function parseFixtureList(value) {
 
 function sameOrderedTokens(left, right) {
   return left.length === right.length && left.every((token, index) => token === right[index]);
+}
+
+export function normalizeControlledBenchmarkEndpointBucket(bucket) {
+  if (bucket === "local_loopback" || bucket === "local_loopback_name" || bucket === "local_loopback_ip" || bucket === "loopback") {
+    return "local_loopback";
+  }
+  if (bucket === "private_lan" || bucket === "private_lan_ipv4" || bucket === "approved_private_lan") {
+    return "private_lan";
+  }
+  if (bucket === "missing") {
+    return "missing";
+  }
+  return sanitizeToken(bucket || "unknown");
+}
+
+export function isControlledBenchmarkEndpointBucketAllowed(bucket) {
+  return ["local_loopback", "private_lan"].includes(normalizeControlledBenchmarkEndpointBucket(bucket));
 }
 
 function bucketCounts(values) {

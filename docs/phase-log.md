@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 21-W - Approved Controlled 12-fixture Transformers+FastAPI Serving Benchmark
-Status: Preflight blocked
-Latest implementation: Added the Phase 21-W guarded controlled 12-fixture benchmark wrapper, static guard test, sanitized blocked report, and docs updates. The approved benchmark command was run exactly once for `smoke_004` through `smoke_015`, but wrapper preflight blocked before model calls with `blocked_for_unsafe_endpoint_bucket`. Standalone healthz was safe, call count stayed `0`, retry count stayed `0`, no inference endpoint call/benchmark/model call ran, no raw artifacts were printed or persisted, and roadmap next is Phase 21-W-R1: Controlled 12-fixture Serving Benchmark Block Resolution.
+Current phase: Phase 21-W-R1 - Controlled 12-fixture Serving Benchmark Block Resolution
+Status: Implemented
+Latest implementation: Resolved the Phase 21-W `blocked_for_unsafe_endpoint_bucket` preflight blocker by normalizing controlled wrapper endpoint buckets such as `local_loopback_ip`, `local_loopback_name`, and `private_lan_ipv4` to the same local/private buckets used by healthz policy. Added focused no-network tests and a sanitized W-R1 report. No model call, benchmark, fixture inference, inference endpoint call, serving runtime change, serving switch, external server change, iOS runtime change, raw artifact, or production rollout occurred. Phase 21-W-R1 also clarifies `Qwen3-VL-30B-A3B` as a future target candidate only; it was not installed, downloaded, loaded, benchmarked, or called. Roadmap next is Phase 21-W-R1B, which requires separate explicit approval before any model calls.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -72,7 +72,7 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-W-R1: Controlled 12-fixture Serving Benchmark Block Resolution. Do not rerun Phase 21-W, run model calls, run benchmark calls, or call serving endpoints without separate explicit approval. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production endpoint work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution beyond an explicitly approved future scope, model downloads, model cache changes, Qwen inference beyond an explicitly approved local/private benchmark, fixture inference beyond explicit approval, local CV runtime, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, or user-photo training / fine-tuning until explicitly requested.
+Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-W-R1B: Approved Controlled 12-fixture Benchmark Retry After Endpoint Bucket Fix. Do not rerun Phase 21-W, run model calls, run benchmark calls, or call serving endpoints without separate explicit approval. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production endpoint work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution beyond an explicitly approved future scope, model downloads, model cache changes, Qwen inference beyond an explicitly approved local/private benchmark, fixture inference beyond explicit approval, local CV runtime, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, or user-photo training / fine-tuning until explicitly requested.
 
 ---
 
@@ -581,7 +581,7 @@ Phase 21-G2 adds a docs-only missing feature and deferred roadmap register so fu
 - Inspected current implementation structure without runtime changes: iOS source tree, `backend/src`, `backend/scripts`, `backend/package.json`, `backend/tests`, `docs/phase-log.md`, and `docs/handoff/codex-transition-handoff.md`.
 - Recorded the current confirmed foundation with cautious wording: post-capture Photo Advisor mock/local flow, backend validator/schema/QA gates, open-weight VLM synthetic benchmark harness, local Qwen2.5-VL sandbox and 12-fixture smoke history, backend gateway contract preflight, provider routing/no-model adapter checks, deployment config/env boundary, cross-platform boundary, local model route approval gate, Phase 21-H dry-run plan, and `productionReady:false`.
 - Added the missing/deferred feature register for Live Advisor/camera-view AI, local on-device CV camera aids, image compression/upload payload policy, backend production API, VLM model/serving, Photo Advisor UX/product, iOS integration, Store/account/release, and advanced future features.
-- Recorded the newly discussed direction: Qwen 3.5 35B-A3B MoE preferred target only if vision-capable/VLM-compatible, non-thinking/instruct mode, vLLM/SGLang serving direction, Auto-Trigger stillness >1s, no capture/upload at <=1s, max 1 FPS cloud analysis, stateful WSS, frontend compression, INT4/INT8 quantization, local on-device CV split, and consent/no-silent-upload boundary.
+- Recorded the then-current Qwen MoE target direction; Phase 21-W-R1 later clarifies the future target candidate as `Qwen3-VL-30B-A3B` for a separately approved model phase. The same non-thinking/instruct mode, vLLM/SGLang serving direction, Auto-Trigger stillness >1s, no capture/upload at <=1s, max 1 FPS cloud analysis, stateful WSS, frontend compression, INT4/INT8 quantization, local on-device CV split, and consent/no-silent-upload boundary remain.
 - Added tiny references in README, backend README, iOS README, handoff, and manual smoke docs.
 
 ### Verification
@@ -612,7 +612,7 @@ Phase 21-G3 adds a docs-only phase roadmap sequencing and next-action reminder r
 - Added phase-numbering reconciliation rules because the repo already contains a committed Phase 21-H local model route dry-run plan.
 - Added the recommended sequence from Phase 21-H2 through Phase 23+, covering model/live-advisor target reset, upload/compression policy, Auto-Trigger policy, WSS protocol preflight, local CV camera aids, quantization/serving benchmark planning, approved one-fixture local model route smoke, approved serving benchmark execution, debug-only iOS backend integration, debug compressed upload, debug Auto-Trigger Live Advisor, and beta/production readiness gates.
 - Added big phase grouping and feature-to-phase mapping.
-- Set the current next recommended phase to Phase 21-H2: Qwen 3.5 35B-A3B MoE + Live Advisor Target Re-evaluation Gate, docs/gate only.
+- Set the then-current next recommended phase to Phase 21-H2: Qwen VLM + Live Advisor Target Re-evaluation Gate, docs/gate only; Phase 21-W-R1 later clarifies `Qwen3-VL-30B-A3B` as the future target candidate.
 - Updated README, backend README, iOS README, handoff, and this phase log with minimal references.
 
 ### Verification
@@ -623,6 +623,61 @@ Phase 21-G3 adds a docs-only phase roadmap sequencing and next-action reminder r
 ### Ready for Next Phase
 
 Yes, for Phase 21-H2 only if explicitly requested as docs/gate-only target re-evaluation work. Any model call, upload, WSS runtime, iOS runtime, endpoint, serving benchmark, or production behavior requires separate explicit approval.
+
+---
+
+## Phase 21-W-R1 - Controlled 12-fixture Serving Benchmark Block Resolution
+
+Status: Implemented
+Date: 2026-06-19
+
+### Summary
+
+Resolved the Phase 21-W controlled benchmark preflight blocker `blocked_for_unsafe_endpoint_bucket` without running model calls, benchmark calls, fixture inference, or inference endpoint calls.
+
+### Root Cause
+
+The local config parser emits concrete sanitized endpoint buckets such as `local_loopback_ip`, `local_loopback_name`, and `private_lan_ipv4`. The healthz preflight already normalizes those to `local_loopback` / `private_lan`, but the controlled multi-fixture benchmark wrapper was checking only the normalized bucket names directly.
+
+### Completed Work
+
+- Updated `backend/scripts/run-open-weight-vlm-transformers-fastapi-controlled-multifixture-serving-benchmark.mjs` to normalize endpoint buckets before policy evaluation.
+- Exported no-network helper functions for endpoint bucket normalization tests.
+- Updated `backend/tests/transformers-fastapi-controlled-multifixture-serving-benchmark.test.mjs` with local loopback, private LAN, public IP/domain, tunnel, credentialed URL, query-string secret, `0.0.0.0`, and private-LAN opt-in coverage.
+- Added `docs/phase-21-w-r1-controlled-12-fixture-endpoint-bucket-block-resolution.md`.
+- Updated roadmap, readmes, handoff, and manual smoke docs.
+- Clarified `Qwen3-VL-30B-A3B` as the future target candidate for a later separately approved model upgrade/benchmark phase only.
+
+### Verification
+
+- Focused controlled wrapper test passed.
+- Sanitized config-bucket comparison showed current local config bucket normalizes to an allowed controlled wrapper bucket.
+- Final verification is recorded in task closeout.
+
+### Boundaries
+
+- No model call.
+- No benchmark call.
+- No fixture inference.
+- No inference endpoint call.
+- No 12-fixture benchmark command rerun.
+- No vLLM/SGLang/Ollama call.
+- No model install, download, load, switch, or benchmark for `Qwen3-VL-30B-A3B`.
+- No serving runtime change.
+- No serving stack switch.
+- No external server restart or modification.
+- No server prompt/mapper/model behavior patch.
+- No iOS integration.
+- No app-facing or production endpoint.
+- No Auto-Trigger runtime.
+- No WSS runtime.
+- No upload runtime.
+- No raw endpoint URL, local config contents, fixture registry contents, prompt, model output, image path, base64, request payload, server logs, EXIF/GPS/sensor data, or secrets printed or committed.
+- `productionReady:false` remains locked.
+
+### Ready for Next Phase
+
+Yes, for Phase 21-W-R1B only after separate explicit user approval because it may run controlled benchmark model calls.
 
 ---
 
@@ -1966,7 +2021,7 @@ Goal: Define and gate the future quantization and serving benchmark plan before 
 
 Summary:
 
-Phase 21-M defines the future model, serving stack, quantization, fixture, metrics, latency/throughput, safety/fallback, and hardware/cost planning policy for later benchmark work. It keeps Qwen 3.5 35B-A3B MoE as preferred only after verified VLM compatibility, keeps Qwen2.5-VL as the current correctness/reference baseline, and keeps all runtime benchmark/model work blocked.
+Phase 21-M defines the future model, serving stack, quantization, fixture, metrics, latency/throughput, safety/fallback, and hardware/cost planning policy for later benchmark work. Phase 21-W-R1 later clarifies `Qwen3-VL-30B-A3B` as the future target candidate only for a separately approved model phase, keeps Qwen2.5-VL as the current correctness/reference baseline, and keeps all runtime benchmark/model work blocked.
 
 This is a planning/gate/source-audit phase. It does not run serving benchmarks, real model smoke, Qwen inference, fixture inference, vLLM/SGLang/Ollama calls, model downloads, serving stack switches, `local_model` enablement, external workspace changes, iOS runtime dependencies, endpoints, uploads, compression runtime, local CV runtime, Auto-Trigger runtime, WSS runtime, auth/billing/quota runtime, or production rollout.
 
@@ -2160,7 +2215,7 @@ Yes, for an explicitly requested docs/gate-only Auto-Trigger + 1 FPS Live Adviso
 
 ---
 
-## Phase 21-H2 - Qwen 3.5 35B-A3B MoE + Live Advisor Target Re-evaluation Gate
+## Phase 21-H2 - Qwen VLM + Live Advisor Target Re-evaluation Gate
 
 Status: Implemented
 Date: 2026-06-17
@@ -2175,7 +2230,7 @@ Phase 21-H2 re-evaluates the future model, serving stack, Live Advisor, Auto-Tri
 - Added `backend/src/qa/openWeightVlmQwenMoELiveAdvisorTargetGate.mjs`.
 - Added `backend/scripts/check-open-weight-vlm-qwen-moe-live-advisor-target-gate.mjs`.
 - Added `npm run qa:open-weight-vlm:qwen-moe-live-advisor-target`.
-- Defined model policy: Qwen 3.5 35B-A3B MoE is preferred only when vision-capable / VLM-compatible and multimodal serving path verification are true; Qwen3-VL MoE remains a fallback candidate; Qwen2.5-VL remains current reference baseline; smaller Qwen 9B-class vision-capable model is latency/cost fallback only; text-only Qwen is blocked for image analysis.
+- Defined model policy later clarified by Phase 21-W-R1: `Qwen3-VL-30B-A3B` is the future target candidate only after vision-capable / VLM-compatible and multimodal serving path verification in a separately approved phase; Qwen2.5-VL remains current reference baseline; smaller Qwen 9B-class vision-capable model is latency/cost fallback only; text-only Qwen is blocked for image analysis.
 - Defined serving policy: Transformers + FastAPI remains correctness/reference baseline, vLLM is the primary future serving benchmark candidate, SGLang is the structured-output/performance challenger, and Ollama/LM Studio remain manual/local only.
 - Defined Auto-Trigger policy: stillness must be greater than 1 second, stability less than or equal to 1 second means no capture/no upload, max cloud-analysis cadence is 1 FPS, opt-in/consent/off/throttle/fail-closed behavior are required, and runtime remains blocked.
 - Defined WSS, compression/upload, local on-device CV, quantization, prompt/token, consent, retention, deletion, and production boundary policies.

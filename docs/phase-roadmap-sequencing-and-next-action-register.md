@@ -16,11 +16,11 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**Phase 21-W-R1: Controlled 12-fixture Serving Benchmark Block Resolution**
+**Phase 21-W-R1B: Approved Controlled 12-fixture Benchmark Retry After Endpoint Bucket Fix**
 
-Reason: Phase 21-W attempted the explicitly approved Transformers+FastAPI controlled 12-fixture benchmark command exactly once, but the guarded wrapper stopped before any model calls with sanitized blocker bucket `blocked_for_unsafe_endpoint_bucket`. Standalone healthz was safe before the attempt, fixture scope was exact, and call count remained `0`.
+Reason: Phase 21-W-R1 fixed the controlled wrapper endpoint bucket mismatch by normalizing concrete local config buckets such as `local_loopback_ip`, `local_loopback_name`, and `private_lan_ipv4` to the same `local_loopback` / `private_lan` policy buckets used by healthz. No model call, benchmark, fixture inference, inference endpoint call, serving switch, iOS integration, raw artifact, or production rollout occurred.
 
-Phase 21-W-R1 should resolve only the blocked preflight bucket. Do not rerun Phase 21-W, run model calls, run SGLang/vLLM/Ollama inference, run quantization benchmarks, run concurrency benchmarks, run Live Advisor simulation, download models, switch serving stacks, add endpoints, add iOS integration, or start production rollout without separate explicit approval.
+Phase 21-W-R1B requires separate explicit user approval before any model calls. Do not rerun Phase 21-W, run SGLang/vLLM/Ollama inference, run quantization benchmarks, run concurrency benchmarks, run Live Advisor simulation, download models, switch serving stacks, add endpoints, add iOS integration, or start production rollout without separate explicit approval.
 
 ## How Codex Should Use This File
 
@@ -94,7 +94,7 @@ Rules:
 
 | Phase label | Title | Purpose | Runtime change | Model call | iOS change | Endpoint change | Requires explicit approval | Depends on | Exit criteria |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Phase 21-H2 or next available label | Qwen 3.5 35B-A3B MoE + Live Advisor Target Re-evaluation Gate | Make Qwen 3.5 35B-A3B MoE the preferred target only if vision-capable/VLM-compatible is verified; record non-thinking mode, vLLM/SGLang, quantization, and Live Advisor directions | no | no | no | no | yes | Phase 21-G2 register | Docs/gate records model capability checks, blocked text-only models, target stack direction, and no-runtime boundaries |
+| Phase 21-H2 or next available label | Qwen VLM + Live Advisor Target Re-evaluation Gate | Phase 21-W-R1 clarifies `Qwen3-VL-30B-A3B` as the future target candidate for a later separately approved model upgrade/benchmark phase; record non-thinking mode, vLLM/SGLang, quantization, and Live Advisor directions | no | no | no | no | yes | Phase 21-G2 register | Docs/gate records model capability checks, blocked text-only models, target stack direction, and no-runtime boundaries |
 | Phase 21-I | Image Compression + Upload Payload Policy Gate | Define compressed preview frame, metadata stripping, consent, retention/deletion, no original full-res upload by default, and no capture-context upload unless approved | no | no | no | no | yes | Phase 21-H2 target reset | Policy/gate defines safe upload payload shape and stop conditions |
 | Phase 21-J | Auto-Trigger + 1 FPS Live Advisor Policy Gate | Define stillness >1s trigger, <=1s no capture/no upload, max 1 FPS, throttle, fail-closed behavior, off state | no | no | no | no | yes | Phase 21-I upload policy | Policy/gate covers trigger, rate, no-silent-upload, and failure states |
 | Phase 21-K | Stateful WSS Live Advisor Protocol Preflight | Define session state, backoff, server busy, structured advice, no video stream, backend-mediated only | no | no | no | no | yes | Phase 21-J trigger policy | Protocol/schema preflight exists with no WSS runtime |
@@ -141,7 +141,7 @@ Rules:
 
 | Feature | Proposed phase | Notes |
 | --- | --- | --- |
-| Qwen 3.5 35B-A3B MoE target | 21-H2 | Only if vision-capable/VLM-compatible |
+| Qwen3-VL-30B-A3B future target candidate | 21-W-R1 | Later separately approved model upgrade/benchmark phase only; not used by W-R1 |
 | Non-thinking mode | 21-H2 | Direct-output low-latency structured mode |
 | vLLM/SGLang target | 21-H2 / 21-M | Direction in H2, benchmark dimensions in M |
 | INT4/INT8 quantization | 21-M | AWQ/GPTQ/equivalent benchmark dimension |

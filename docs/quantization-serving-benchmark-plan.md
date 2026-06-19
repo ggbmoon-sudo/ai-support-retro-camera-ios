@@ -7,7 +7,7 @@ Production readiness: `productionReady:false`
 
 Phase 21-M defines the future quantization and serving benchmark plan before running any benchmark, downloading any model, switching serving stacks, enabling `local_model`, or making production/iOS claims.
 
-The plan keeps Qwen 3.5 35B-A3B MoE as the preferred future target only if a vision-capable / VLM-compatible path is verified. Qwen2.5-VL remains the current correctness/reference baseline from local sandbox evidence. Transformers+FastAPI remains the local/operator correctness reference. vLLM is the primary future benchmark candidate, SGLang is the structured-output/performance challenger, and Ollama/LM Studio remain manual/local smoke only.
+Phase 21-W-R1 clarifies the future strategic target candidate as `Qwen3-VL-30B-A3B`, but model upgrade/benchmarking remains a later separately approved phase. Qwen2.5-VL remains the current correctness/reference baseline from local sandbox evidence. Transformers+FastAPI remains the local/operator correctness reference. vLLM is the primary future benchmark candidate, SGLang is the structured-output/performance challenger, and Ollama/LM Studio remain manual/local smoke only.
 
 This phase does not run a serving benchmark, run real model smoke, run Qwen inference, run fixture inference, call vLLM/SGLang/Ollama, download quantized weights, modify the external server workspace, switch serving stacks, enable `local_model`, add iOS runtime dependency, add endpoints, or change `productionReady:false`.
 
@@ -39,9 +39,9 @@ Benchmark output can support planning decisions only. It must not be interpreted
 
 | Model class | Role | Benchmark requirement | Boundary |
 | --- | --- | --- | --- |
-| `qwen3_5_35b_a3b_moe_preferred` | Preferred future target | Only if vision-capable / VLM-compatible serving path is verified; must support non-thinking / instruct direct-output mode and structured output or deterministic mapping | Not adopted, not switched, and not production/iOS-claimable until benchmarked |
+| `qwen3_vl_30b_a3b_future_target_candidate` | Future strategic target candidate | Only in a later separately approved model upgrade/benchmark phase; must verify vision-capable / VLM-compatible serving path, direct-output mode, and structured output or deterministic mapping | Not adopted, not switched, and not production/iOS-claimable until benchmarked |
 | `qwen2_5_vl_reference` | Current correctness/reference baseline | Use existing local sandbox evidence as the reference behavior | Sandbox evidence only, not production approval |
-| `qwen3_vl_moe_fallback_candidate` | Fallback/candidate | Evaluate if preferred Qwen 3.5 35B-A3B vision path is unavailable | Must verify VLM compatibility first |
+| `qwen_vlm_fallback_candidate` | Fallback/candidate | Evaluate only if Qwen3-VL-30B-A3B path is unavailable | Must verify VLM compatibility first |
 | `qwen_9b_vision_fast_fallback` | Lower-cost/latency fallback | Consider only if vision-capable and schema/safety behavior holds | Cannot become production route by default |
 | `text_only_qwen_blocked` | Blocked | No benchmark for Photo Advisor image analysis | Text-only Qwen is blocked for image analysis |
 

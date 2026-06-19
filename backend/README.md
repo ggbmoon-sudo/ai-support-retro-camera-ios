@@ -947,13 +947,13 @@ Phase 21-G2 adds a docs-only missing/deferred roadmap register:
 docs/missing-features-and-deferred-roadmap-register.md
 ```
 
-The register records planned, missing, deferred, blocked, partially built, and not-yet-integrated app/backend/VLM features so future sessions do not rely on chat memory. It includes Live Advisor trigger/WSS/compression/local-CV policy directions, VLM model/serving candidates such as Qwen 3.5 35B-A3B MoE only if vision-capable, vLLM/SGLang serving direction, INT4/INT8 quantization planning, backend production API gaps, iOS integration gaps, Store/account/release gaps, and advanced future features.
+The register records planned, missing, deferred, blocked, partially built, and not-yet-integrated app/backend/VLM features so future sessions do not rely on chat memory. Phase 21-W-R1 clarifies the future strategic VLM target candidate as `Qwen3-VL-30B-A3B`; model upgrade/benchmarking remains a later separately approved phase. The current reference path remains the existing Transformers+FastAPI local/private Qwen VLM sandbox.
 
 Phase 21-G2 is documentation only. It does not enable routes, call Qwen, run model or fixture inference, run serving benchmarks, add iOS integration, add app-facing or production endpoints, implement Auto-Trigger/WSS/image compression/upload runtime, add auth/billing/quota runtime, or change `productionReady:false`.
 
 ## Phase 21-G3 Phase Roadmap Sequencing Register
 
-Phase 21-G3 adds `../docs/phase-roadmap-sequencing-and-next-action-register.md` as the docs-only "what next?" source of truth after a phase is committed and pushed. It recommends Phase 21-H2 as the next planning/gate phase for Qwen 3.5 35B-A3B MoE + Live Advisor target re-evaluation, while keeping model calls, upload, WSS, iOS runtime, endpoints, serving benchmarks, and production readiness blocked until explicitly approved.
+Phase 21-G3 adds `../docs/phase-roadmap-sequencing-and-next-action-register.md` as the docs-only "what next?" source of truth after a phase is committed and pushed. Later Phase 21-W-R1 clarifies `Qwen3-VL-30B-A3B` as the future target candidate, while keeping model calls, upload, WSS, iOS runtime, endpoints, serving benchmarks, and production readiness blocked until explicitly approved.
 
 ## Phase 21-H2 Qwen MoE + Live Advisor Target Gate
 
@@ -963,7 +963,7 @@ Phase 21-H2 adds the model/serving/live-advisor target re-evaluation policy:
 npm run qa:open-weight-vlm:qwen-moe-live-advisor-target
 ```
 
-The gate is no-network, no-model, no-Qwen, no-fixture-inference, and no-benchmark. It validates policy objects only: Qwen 3.5 35B-A3B MoE is preferred only if vision-capable/VLM-compatible is verified; Qwen2.5-VL remains the current reference baseline; text-only Qwen is blocked for image analysis; non-thinking/direct-output, structured output, quantization planning, benchmark requirement, Auto-Trigger policy, compression policy, WSS policy, local CV policy, consent, retention, and deletion boundaries are required.
+The gate is no-network, no-model, no-Qwen, no-fixture-inference, and no-benchmark. Phase 21-W-R1 clarifies the future target candidate as `Qwen3-VL-30B-A3B`, not as a model switch in the current reference path. Qwen2.5-VL remains the current reference baseline; text-only Qwen is blocked for image analysis; non-thinking/direct-output, structured output, quantization planning, benchmark requirement, Auto-Trigger policy, compression policy, WSS policy, local CV policy, consent, retention, and deletion boundaries are required.
 
 Phase 21-H2 does not enable `local_model`, switch models, run Qwen, run model inference, run fixture inference, run serving benchmarks, call vLLM/SGLang/Ollama, add iOS integration, add endpoints, implement Auto-Trigger/WSS/image compression/upload runtime, add auth/billing/quota runtime, or change `productionReady:false`.
 
@@ -1310,7 +1310,7 @@ npm run qa:open-weight-vlm:quantization-serving-benchmark-plan
 
 The gate validates sanitized benchmark-plan policy objects only. It keeps `benchmarkRuntimeEnabled:false`, `servingStackSwitchEnabled:false`, `modelDownloadEnabled:false`, `qwenInferenceRun:false`, `fixtureInferenceRun:false`, `servingBenchmarkRun:false`, `networkCallsMade:false`, and `productionReady:false`.
 
-The future plan records Qwen 3.5 35B-A3B MoE as preferred only after verified VLM compatibility, Qwen2.5-VL as the current correctness/reference baseline, vLLM as primary benchmark candidate, SGLang as structured-output/performance challenger, Transformers+FastAPI as reference/local-operator baseline, Ollama/LM Studio as manual-only, and INT4/INT8/AWQ/GPTQ/equivalent quantization as later benchmark dimensions.
+The future plan now treats `Qwen3-VL-30B-A3B` as the strategic target candidate for a later separately approved model upgrade/benchmark phase. Qwen2.5-VL remains the current correctness/reference baseline, vLLM remains a primary benchmark candidate, SGLang remains a structured-output/performance challenger, Transformers+FastAPI remains the reference/local-operator baseline, Ollama/LM Studio remains manual-only, and INT4/INT8/AWQ/GPTQ/equivalent quantization remains later benchmark dimensions.
 
 Phase 21-M does not run a serving benchmark, download model weights, switch serving stacks, enable `local_model`, call vLLM/SGLang/Ollama, run Qwen inference, run fixture inference, add an endpoint, add an iOS runtime dependency, or approve production rollout.
 
@@ -1357,6 +1357,8 @@ Phase 21-V adds `backend/src/qa/openWeightVlmControlledMultifixtureServingBenchm
 Phase 21-W0 adds `docs/phase-21-w0-approved-fixture-token-inventory.md`. It safely inventories the ignored local fixture registry with sanitized token/count output only and records 13 approved ready fixture tokens, not exactly 12. It does not run healthz, call endpoints, run model inference, run fixture inference, run a benchmark, modify ignored local config/registry/fixtures, or change `productionReady:false`.
 
 Phase 21-W adds `backend/scripts/run-open-weight-vlm-transformers-fastapi-controlled-multifixture-serving-benchmark.mjs` and `npm run qa:open-weight-vlm:transformers-fastapi-controlled-multifixture-serving-benchmark`. The guarded wrapper requires `--approved-controlled-benchmark`, `--serving-stack transformers_fastapi_reference`, exact fixtures `smoke_004` through `smoke_015`, `--call-count 12`, and `--no-retry`; it rejects `smoke_001`, duplicates, token mismatch, retry scope, wrong stack, raw artifact leakage, and `productionReady:true`. The approved Phase 21-W attempt ran the command exactly once but preflight-blocked before model calls with `blocked_for_unsafe_endpoint_bucket`, so no benchmark/model calls executed.
+
+Phase 21-W-R1 fixes only the endpoint bucket policy mismatch in the controlled wrapper. It normalizes local config buckets such as `local_loopback_name`, `local_loopback_ip`, and `private_lan_ipv4` to the same local/private buckets used by healthz policy, while keeping public IP/domain, ngrok/tunnel, credentialed URL, query-string secret, `0.0.0.0`, missing, and unknown buckets blocked. It runs no model call, benchmark, fixture inference, inference endpoint call, serving runtime change, serving switch, vLLM/SGLang/Ollama call, external server change, iOS integration, raw artifact, or production rollout.
 
 ## Future TODO
 

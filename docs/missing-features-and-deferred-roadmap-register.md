@@ -85,9 +85,9 @@ The following foundation appears present or planned through committed docs/sourc
 | Backend / production API | Production fallback | partial | Safe UX during provider failures | Fallback contract and UI mapping | Phase 23+ | Never display raw provider text/errors |
 | Backend / production API | Production incident controls | missing | Kill switch and rollback safety | Remote config, deployment controls | Phase 23+ | Must preserve `productionReady:false` until approved |
 | Backend / production API | `productionReady` false-to-true gate | blocked | Prevents accidental rollout | Explicit production rollout phase | Phase 23+ | Only user-approved rollout can change it |
-| VLM model/serving | Qwen 3.5 35B-A3B MoE preferred target | planned | Potential better quality/latency tradeoff | Verify vision-capable/VLM-compatible release and local serving support | Phase 21-H naming note / future re-evaluation gate | Do not adopt text-only model for image analysis |
+| VLM model/serving | Qwen3-VL-30B-A3B future target candidate | planned | Potential better quality/latency tradeoff | Verify vision-capable/VLM-compatible release and local serving support in a separately approved model phase | Phase 21-W-R1 clarification | Do not adopt text-only model for image analysis |
 | VLM model/serving | Qwen2.5-VL correctness/reference baseline | partial | Known sandbox baseline | Existing local Qwen2.5-VL smoke evidence | Phase 21-M | Baseline is not production approval |
-| VLM model/serving | Qwen3-VL MoE fallback/candidate | planned | Backup if Qwen 3.5 35B-A3B vision path is unavailable | Model availability and benchmark plan | Phase 21-H naming note / 21-M | Verify VLM compatibility first |
+| VLM model/serving | Alternative Qwen VLM fallback/candidate | planned | Backup if Qwen3-VL-30B-A3B path is unavailable | Model availability and benchmark plan | Phase 21-W-R1 clarification / 21-M | Verify VLM compatibility first |
 | VLM model/serving | Smaller Qwen 9B vision-capable fallback | planned | Cost/latency fallback | Candidate model verification and benchmark | Phase 21-M | Text-only 9B variants blocked for image analysis |
 | VLM model/serving | Text-only Qwen blocked for image analysis | blocked | Avoids invalid architecture | Model capability check | Phase 21-H naming note | Must be vision-capable before VLM adoption |
 | VLM model/serving | Non-thinking/instruct direct-output mode | planned | Lower latency, more deterministic JSON | Model mode verification and prompt/schema tests | Phase 21-H naming note / 21-M | Must still produce structured candidate JSON only |
@@ -133,9 +133,9 @@ The following foundation appears present or planned through committed docs/sourc
 
 The following direction is now recorded for future planning only:
 
-- Qwen 3.5 35B-A3B MoE is the preferred future model target only if its vision-capable / VLM-compatible path is verified.
+- Qwen3-VL-30B-A3B is the future target candidate only for a later separately approved model upgrade/benchmark phase.
 - Qwen2.5-VL remains the current correctness/reference baseline from local sandbox history.
-- Qwen3-VL MoE is a fallback/candidate if the preferred Qwen 3.5 35B-A3B vision path is unavailable.
+- Alternative Qwen VLM candidates remain fallback options if the Qwen3-VL-30B-A3B path is unavailable.
 - Smaller Qwen 9B vision-capable models remain cost/latency fallback candidates; text-only Qwen models are blocked for image analysis.
 - Non-thinking / instruct direct-output mode should be tested for lower latency and structured JSON stability.
 - vLLM and SGLang are the future production-serving direction candidates; Ollama/LM Studio remain manual/local-only.
@@ -153,7 +153,7 @@ The following direction is now recorded for future planning only:
 
 Phase 21-H2 formalizes the above direction as a docs/gate-only policy:
 
-- Qwen 3.5 35B-A3B MoE remains preferred only if vision-capable / VLM-compatible and multimodal serving is verified.
+- Phase 21-W-R1 supersedes the earlier Qwen 3.5 target wording with `Qwen3-VL-30B-A3B` as the future target candidate only after VLM-compatible serving is verified in a separately approved phase.
 - Text-only Qwen remains blocked for image analysis.
 - Qwen2.5-VL remains the current correctness/reference baseline.
 - Non-thinking / instruct direct-output, structured output or deterministic structured mapping, quantization planning, and benchmark requirement are required before production claims.
@@ -280,7 +280,7 @@ Phase 21-N-R1 was explicitly approved for exactly one backend local/private mode
 
 These are proposed planning labels only. Because the current repo already contains a committed Phase 21-H dry-run plan, future operators should reconcile numbering before implementation.
 
-- Phase 21-H: Qwen 3.5 35B-A3B MoE + Live Advisor Target Re-evaluation Gate
+- Phase 21-H: Qwen VLM + Live Advisor Target Re-evaluation Gate, later clarified by Phase 21-W-R1 to target `Qwen3-VL-30B-A3B` as a future candidate only
 - Phase 21-I: Image Compression + Upload Payload Policy Gate
 - Phase 21-J: Auto-Trigger + 1 FPS Live Advisor Policy Gate
 - Phase 21-K: Stateful WSS Protocol Preflight

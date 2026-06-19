@@ -1,8 +1,10 @@
-# Qwen 3.5 35B-A3B MoE + Live Advisor Target Re-evaluation
+# Qwen VLM + Live Advisor Target Re-evaluation
 
 Status: Phase 21-H2 planning/gate only  
 Date: 2026-06-17  
 Production readiness: `productionReady:false`
+
+Phase 21-W-R1 clarification: the future strategic open-weight VLM target candidate is `Qwen3-VL-30B-A3B`. This document is not approval to switch, install, download, load, benchmark, or call that model.
 
 ## Executive Summary
 
@@ -17,16 +19,16 @@ The project now has two durable planning sources:
 - `docs/missing-features-and-deferred-roadmap-register.md`
 - `docs/phase-roadmap-sequencing-and-next-action-register.md`
 
-Those docs record a newer target direction: prefer a future Qwen 3.5 35B-A3B MoE-class model only if it is verified as vision-capable / VLM-compatible, keep Qwen2.5-VL as the current correctness/reference baseline, separate local on-device CV from cloud VLM work, and avoid treating the Camera viewfinder as continuous video AI.
+Those docs now record a newer target direction: treat `Qwen3-VL-30B-A3B` as the future strategic target candidate only for a later separately approved model upgrade/benchmark phase, keep Qwen2.5-VL as the current correctness/reference baseline, separate local on-device CV from cloud VLM work, and avoid treating the Camera viewfinder as continuous video AI.
 
 Phase 21-H2 turns that direction into a gateable policy before any upload, WSS, Auto-Trigger, serving benchmark, iOS integration, or model route call is attempted.
 
 ## Preferred Future Model Target
 
-Preferred future target:
+Future strategic target candidate:
 
-- `qwen3_5_35b_a3b_moe_preferred`
-- It is preferred only if available and verified as vision-capable / VLM-compatible.
+- `qwen3_vl_30b_a3b_future_target_candidate`
+- It is a candidate only if available and verified as vision-capable / VLM-compatible.
 - It must support image input through a verified multimodal serving path.
 - It must support non-thinking / instruct / direct-output operation.
 - It must support structured output or deterministic structured mapping.
@@ -34,7 +36,7 @@ Preferred future target:
 
 Fallback candidates:
 
-- `qwen3_vl_moe_fallback_candidate` if the preferred Qwen 3.5 35B-A3B vision path is unavailable.
+- Alternative Qwen VLM candidates if the Qwen3-VL-30B-A3B path is unavailable.
 - `qwen2_5_vl_reference` remains the current correctness/reference baseline.
 - `qwen_9b_vision_fast_fallback` may be considered as a latency/cost fallback only.
 
@@ -248,7 +250,7 @@ After Phase 21-H2:
 2. Phase 21-J: Auto-Trigger + 1 FPS Live Advisor Policy Gate. Completed as a docs/gate/source-audit phase that keeps Auto-Trigger runtime, Camera live cloud AI runtime entry, WSS runtime, upload runtime, iOS payload changes, endpoints, model calls, Qwen inference, serving benchmarks, and production rollout blocked.
 3. Phase 21-K: Stateful WSS Live Advisor Protocol Preflight. Completed as a docs/gate/schema-policy/source-audit phase that keeps WSS runtime, WebSocket server/client runtime, Auto-Trigger runtime, Camera live cloud AI runtime, upload runtime, iOS payload changes, endpoints, model calls, Qwen inference, serving benchmarks, and production rollout blocked.
 4. Phase 21-L: Local On-device CV Camera Aids Plan. Completed as a docs/gate/source-audit phase that keeps local CV runtime, grid/horizon/exposure/motion runtime, Camera live cloud AI runtime, Auto-Trigger runtime, WSS runtime, upload runtime, iOS payload changes, endpoints, model calls, Qwen inference, serving benchmarks, and production rollout blocked.
-5. Phase 21-M: Quantization + Serving Benchmark Plan. Completed as a docs/gate/source-audit phase that records Qwen 3.5 35B-A3B MoE-if-VLM-compatible, Qwen2.5-VL reference baseline, vLLM/SGLang/Transformers+FastAPI/Ollama serving roles, INT4/INT8/AWQ/GPTQ/equivalent quantization dimensions, approved-fixture policy, sanitized metrics, and safety/fallback regression requirements while keeping serving benchmark execution, model download, model switch, `local_model` enablement, vLLM/SGLang/Ollama calls, Qwen inference, fixture inference, endpoints, iOS runtime dependencies, and production rollout blocked.
+5. Phase 21-M: Quantization + Serving Benchmark Plan. Completed as a docs/gate/source-audit phase that Phase 21-W-R1 later clarifies around `Qwen3-VL-30B-A3B` as the future target candidate, while keeping Qwen2.5-VL reference baseline, vLLM/SGLang/Transformers+FastAPI/Ollama serving roles, INT4/INT8/AWQ/GPTQ/equivalent quantization dimensions, approved-fixture policy, sanitized metrics, and safety/fallback regression requirements. Serving benchmark execution, model download, model switch, `local_model` enablement, vLLM/SGLang/Ollama calls, Qwen inference, fixture inference, endpoints, iOS runtime dependencies, and production rollout remain blocked.
 6. Phase 21-N or later: explicitly approved one-fixture backend `local_model` route smoke. This requires explicit user approval because it may run exactly one backend local/private model call.
 
 ## productionReady:false Boundary
