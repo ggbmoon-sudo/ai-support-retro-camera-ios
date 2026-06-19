@@ -394,6 +394,22 @@ Approved controlled 12-fixture benchmark retry after model runtime readiness:
 - [x] Confirm no retry, no extra fixture, no Qwen3-VL-30B-A3B install/download/load/call, no vLLM/SGLang/Ollama, no serving switch, no iOS runtime change, no endpoint addition, no Auto-Trigger runtime, no WSS runtime, no upload runtime, no local CV runtime, and no production rollout occurred.
 - [x] Confirm next safe action is Phase 21-W-GOAL-R2-R2 local model unavailable after model runtime readiness; any further model or benchmark call requires separate explicit approval.
 
+## Phase 21-W-GOAL-R2-R2
+
+Local model unavailable after runtime readiness diagnostics:
+
+- [x] Confirm external no-model contract checker still passes.
+- [x] Confirm backend no-model contract echo validation still passes.
+- [x] Confirm healthz preflight is `safe` with `modelLoaded:true`.
+- [x] Confirm no real inference endpoint call, model call, benchmark, fixture inference, fixture image open, OCR, EXIF/GPS/sensor inspection, Qwen inference, or Qwen3-VL-30B-A3B use occurred.
+- [x] Confirm external no-model route-contract dry-run was added.
+- [x] Confirm external dry-run accepted `smoke_004` through `smoke_015` with `acceptedDryRunCount:12`.
+- [x] Confirm external dry-run reports unsupported bucket `unsupported_fixture_token`, missing bucket `missing_fixture_token`, and routeability bucket `fixture_not_available x12`.
+- [x] Confirm backend dry-run CLI was added and blocks `unknown` / `local_model_unavailable` contract buckets.
+- [x] Confirm backend live dry-run safely blocked with `route_not_found` because the running external process had not loaded the new endpoint.
+- [x] Confirm benchmark wrapper preserves explicit HTTP error buckets instead of mapping every HTTP non-OK response to `local_model_unavailable`.
+- [x] Confirm next safe action is Phase 21-W-GOAL-R2-R2A route contract dry-run follow-up; any further model or benchmark call requires separate explicit approval.
+
 ## Phase 21-G2
 
 Missing feature + deferred roadmap register:

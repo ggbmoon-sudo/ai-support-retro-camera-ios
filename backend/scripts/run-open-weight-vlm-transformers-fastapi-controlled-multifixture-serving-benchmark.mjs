@@ -302,11 +302,12 @@ async function runFixtureCall(config, fixtureToken) {
   }
 
   if (!response.ok) {
+    const validationCode = await sanitizedHttpErrorBucket(response);
     return fixtureRow({
       fixtureToken,
       accepted: false,
-      validationCode: "local_model_unavailable",
-      fallbackCategory: "blocked_for_provider_integration",
+      validationCode,
+      fallbackCategory: httpErrorFallbackCategory(validationCode),
       latencyMs: Date.now() - startedAt
     });
   }
@@ -484,6 +485,44 @@ function fixtureRow({
     rawPayloadPersisted: false,
     rawPayloadPrinted: false
   };
+}
+
+async function sanitizedHttpErrorBucket(response) {
+  let parsed = null;
+  try {
+    parsed = await response.json();
+  } catch {
+    return "local_model_unavailable";
+  }
+  const bucket = sanitizeToken(parsed?.errorBucket || parsed?.validationCode || "local_model_unavailable");
+  return mapControlledBenchmarkHttpErrorBucket(bucket);
+}
+
+export function mapControlledBenchmarkHttpErrorBucket(bucket) {
+  const sanitized = sanitizeToken(bucket || "local_model_unavailable");
+  if ([
+    "missing_fixture_token",
+    "unsupported_fixture_token",
+    "fixture_not_available",
+    "route_not_found",
+    "method_not_allowed",
+    "contract_echo_disabled",
+    "provider_integration_blocked",
+    "local_model_unavailable"
+  ].includes(sanitized)) {
+    return sanitized;
+  }
+  return "local_model_unavailable";
+}
+
+function httpErrorFallbackCategory(validationCode) {
+  if (validationCode === "fixture_not_available") {
+    return "blocked_for_fixture_readiness";
+  }
+  if (validationCode === "missing_fixture_token" || validationCode === "unsupported_fixture_token") {
+    return "blocked_for_fixture_contract";
+  }
+  return "blocked_for_provider_integration";
 }
 
 function printSummary(summary) {

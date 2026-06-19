@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 import {
   isControlledBenchmarkEndpointBucketAllowed,
+  mapControlledBenchmarkHttpErrorBucket,
   normalizeControlledBenchmarkEndpointBucket
 } from "../scripts/run-open-weight-vlm-transformers-fastapi-controlled-multifixture-serving-benchmark.mjs";
 import {
@@ -103,6 +104,14 @@ test("controlled multi-fixture endpoint policy keeps unsafe config buckets block
     assert.equal(report.ok, false);
     assert.equal(report.error.code, expectedCode);
   }
+});
+
+test("controlled multi-fixture wrapper preserves sanitized HTTP error buckets", () => {
+  assert.equal(mapControlledBenchmarkHttpErrorBucket("fixture_not_available"), "fixture_not_available");
+  assert.equal(mapControlledBenchmarkHttpErrorBucket("missing_fixture_token"), "missing_fixture_token");
+  assert.equal(mapControlledBenchmarkHttpErrorBucket("unsupported_fixture_token"), "unsupported_fixture_token");
+  assert.equal(mapControlledBenchmarkHttpErrorBucket("route_not_found"), "route_not_found");
+  assert.equal(mapControlledBenchmarkHttpErrorBucket("unexpected raw server thing"), "local_model_unavailable");
 });
 
 test("controlled multi-fixture private LAN requires explicit local opt in", () => {
