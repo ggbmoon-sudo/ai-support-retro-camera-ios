@@ -24,6 +24,8 @@ Phase 21-Z2C-SF-RUN is backend benchmark execution only. Xcode runtime behavior 
 
 Phase 21-Z2D-SF is backend/docs review only. It classifies the SiliconFlow benchmark result as provider-output/schema alignment failure and recommends backend prompt/schema alignment without API calls. Xcode runtime behavior remains unchanged: no SiliconFlow endpoint/API key in iOS, no direct provider call, no upload payload change, no capture-context upload, no Camera cloud AI entry, no app-facing endpoint, no provider raw output in app UI/history, and no production rollout.
 
+Phase 21-Z2E-SF-AUTO is backend-only prompt/schema alignment plus an explicitly approved bounded SiliconFlow retry. Xcode runtime behavior remains unchanged: no SiliconFlow endpoint/API key in iOS, no direct provider call, no upload payload change, no capture-context upload, no Camera cloud AI entry, no app-facing endpoint, no provider raw output in app UI/history, and no production rollout.
+
 No local CV runtime, Camera cloud AI runtime entry, Auto-Trigger runtime, WSS runtime, iOS provider/model key, direct provider/model call, iOS upload payload change, capture-context upload, app-facing endpoint, production rollout, Windows local path dependency, or local model server URL dependency is added.
 
 Planned stack:

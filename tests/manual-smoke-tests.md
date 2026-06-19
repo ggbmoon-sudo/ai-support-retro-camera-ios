@@ -4483,3 +4483,16 @@ Manual Xcode check:
 Known TODOs:
 
 - [ ] Phase 21-X should review accepted aggregate quality/latency before any next benchmark, serving-stack comparison, quantization, Live Advisor, iOS integration, endpoint, or production rollout.
+
+
+## Phase 21-Z2E-SF-AUTO SiliconFlow Prompt/Schema Alignment and Bounded Retry
+
+- [x] Confirmed Phase 21-Z2D-SF was committed and upstream-synced before starting.
+- [x] Confirmed the phase had explicit approval for bounded SiliconFlow calls with cap `28`, retry `0`, model `Qwen/Qwen3-VL-30B-A3B-Instruct`, and fixtures `smoke_004` through `smoke_015` only.
+- [x] Added schema-enum-driven backend prompt contract and synthetic prompt/schema tests.
+- [x] Ran one canary call on `smoke_004` and one full controlled run over `smoke_004` through `smoke_015`.
+- [x] Confirmed total provider calls `13`, retry `0`, accepted `13`, rejected `0`, latency buckets `5s_to_15s x9` and `gt_15s x4`, token usage bucket `lte_20k`, and `productionReady:false`.
+- [x] Confirmed no raw provider response, raw model text, raw prompt, raw request payload, raw image/base64/path, API key, credential, or raw report was printed, persisted, staged, or committed.
+- [x] Confirmed no iOS runtime change, upload payload change, Camera cloud AI entry, app-facing endpoint, production endpoint, live cloud AI runtime, or production rollout was added.
+- [ ] In Xcode, confirm runtime behavior is unchanged: no SiliconFlow endpoint/API key in iOS, no direct provider call, no upload payload change, no capture-context upload, no Camera cloud AI entry, no app-facing endpoint, and no provider raw output in app UI/history.
+- [ ] Phase 21-Z2F-SF should review accepted aggregate results, latency/cost/privacy/legal/beta-readiness boundaries, and must not start iOS integration or production rollout without separate explicit approval.

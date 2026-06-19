@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 21-Z2D-SF - SiliconFlow Benchmark Review and Provider Decision Gate
+Current phase: Phase 21-Z2E-SF-AUTO - SiliconFlow Prompt/Schema Alignment and Bounded Retry
 Status: completed
-Latest implementation: Phase 21-Z2D-SF reviews the approved SiliconFlow 12-fixture benchmark result and classifies it as `provider_output_schema_alignment_failed`. The Phase 21-Z2C-SF-RUN evidence remains planned calls `12`, actual calls `12`, retry `0`, accepted `0`, rejected `12`, `provider_schema_invalid x12`, `provider_validation_rejected x12`, latency `5s_to_15s x12`, token usage bucket `lte_20k`, and cost bucket `usage_available_cost_not_computed`. Z2D-SF makes no provider API call, reads no API key, uploads no image, runs no benchmark, prints/persists no raw provider output/prompt/request/image data, changes no iOS runtime/upload payload, and keeps `productionReady:false`. Next safe phase is Phase 21-Z2D-SF-R1 prompt/schema alignment without API calls.
+Latest implementation: Phase 21-Z2E-SF-AUTO completes explicitly approved bounded SiliconFlow prompt/schema alignment and retry. It adds a backend prompt contract using existing schema enums, improves sanitized parser diagnostics, adds synthetic prompt/schema alignment tests, then runs one approved canary and one approved full controlled benchmark. Sanitized result: total provider calls `13` of cap `28`, canary calls `1`, full run count `1`, retry `0`, accepted `13`, rejected `0`, latency `5s_to_15s x9` and `gt_15s x4`, token usage bucket `lte_20k`, cost bucket `usage_available_cost_not_computed`, and `productionReady:false`. No raw provider output, prompt, request payload, image/base64/path, API key, credential, raw report, iOS runtime change, upload payload change, live cloud AI runtime, app-facing endpoint, production endpoint, or production rollout is added.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -73,7 +73,7 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-Z2D-SF-R1: SiliconFlow Prompt and Schema Alignment Gate Without API Calls. Any provider API rerun, API key use beyond local ignored context, provider diagnosis, alternative model benchmark, image upload, model call, benchmark, RunPod provisioning, Qwen3 install/download/load/call, inference endpoint call, iOS integration, upload payload change, or production rollout requires separate explicit approval before execution. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution beyond an explicitly approved future scope, provider API calls, model downloads, model cache changes, Qwen inference beyond an explicitly approved benchmark, fixture inference beyond explicit approval, local CV runtime, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, RunPod provisioning, or user-photo training / fine-tuning until explicitly requested.
+Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-Z2F-SF: SiliconFlow Accepted Benchmark Review and Beta Readiness Decision Gate. Any further provider API calls, API key use beyond local ignored context, provider diagnosis, alternative model benchmark, image upload, model call, benchmark, RunPod provisioning, Qwen3 install/download/load/call, inference endpoint call, iOS integration, upload payload change, app-facing endpoint, production endpoint, or production rollout requires separate explicit approval before execution. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution beyond an explicitly approved future scope, provider API calls, model downloads, model cache changes, Qwen inference beyond an explicitly approved benchmark, fixture inference beyond explicit approval, local CV runtime, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, RunPod provisioning, or user-photo training / fine-tuning until explicitly requested.
 
 ---
 
@@ -11872,3 +11872,75 @@ Add manual smoke tests, emulator notes, no-secrets validation, release checklist
 ### Notes
 
 Do not add new major product features in this phase.
+
+## Phase 21-Z2E-SF-AUTO - SiliconFlow Prompt/Schema Alignment and Bounded Retry
+
+Status: completed`r`nDate: 2026-06-20`r`nProduction readiness: `productionReady:false`
+
+### Summary
+
+Phase 21-Z2E-SF-AUTO completes explicitly approved bounded autonomous SiliconFlow prompt/schema alignment and API retry. The phase keeps SiliconFlow and `Qwen/Qwen3-VL-30B-A3B-Instruct` fixed, uses only approved fixtures `smoke_004` through `smoke_015`, keeps retry `0`, and stays below the hard provider-call cap of `28`.
+
+### Completed Work
+
+- Added `backend/src/providers/siliconflowPhotoAdvisorPromptContract.mjs` with a schema-enum-driven backend prompt contract.
+- Updated SiliconFlow provider parsing/diagnostics to report sanitized schema diagnostic buckets without raw provider text.
+- Added synthetic prompt/schema alignment tests for valid output, malformed JSON wrappers, unsupported enums, wrong shapes/types, unsafe language, prompt echo, debug leakage, retake-first language, and capture-context overclaim.
+- Ran one approved canary call on `smoke_004`, then one approved controlled 12-fixture run.
+- Added sanitized result doc `docs/phase-21-z2e-sf-auto-siliconflow-prompt-schema-alignment-and-bounded-retry-summary.md`.
+
+### Sanitized Result
+
+- Total provider calls made: `13` of cap `28`
+- Canary call count: `1`
+- Full run count: `1`
+- Retry count: `0`
+- Accepted count: `13`
+- Rejected count: `0`
+- Validation buckets: `accepted x13`
+- Fallback buckets: `none x13`
+- Error buckets: none
+- Schema diagnostic buckets: none
+- Latency buckets: `5s_to_15s x9`, `gt_15s x4`
+- Token usage bucket: `lte_20k`
+- Cost estimate bucket: `usage_available_cost_not_computed`
+
+### Boundary Checks
+
+- Raw provider response printed/persisted/committed: no
+- Raw model text printed/persisted/committed: no
+- Raw prompt/request payload printed/persisted/committed: no
+- Raw image/base64/path printed/persisted/committed: no
+- API key printed/persisted/committed: no
+- Provider credential or raw report committed: no
+- iOS runtime changed: no
+- Upload payload changed: no
+- Camera live cloud AI runtime added: no
+- App-facing endpoint added: no
+- Production endpoint added: no
+- Production rollout: no
+
+### Changed Files
+
+- `backend/package.json`
+- `backend/src/providers/siliconflowPhotoAdvisorProviderContract.mjs`
+- `backend/src/providers/siliconflowPhotoAdvisorPromptContract.mjs`
+- `backend/tests/siliconflow-photo-advisor-prompt-schema-alignment.test.mjs`
+- `docs/phase-21-z2e-sf-auto-siliconflow-prompt-schema-alignment-and-bounded-retry-summary.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `README.md`
+- `backend/README.md`
+- `ios-app/README.md`
+- `tests/manual-smoke-tests.md`
+
+### Known TODOs
+
+- Review latency buckets before any beta decision because `gt_15s` appeared in four accepted calls.
+- Recheck SiliconFlow pricing, terms, retention/training policy, and consent requirements before any real-user beta.
+- Keep iOS integration, upload-payload changes, app-facing endpoints, live camera cloud AI, and production rollout blocked until separately approved.
+
+### Next Phase
+
+Ready for Phase 21-Z2F-SF: SiliconFlow Accepted Benchmark Review and Beta Readiness Decision Gate. Not ready for production rollout.

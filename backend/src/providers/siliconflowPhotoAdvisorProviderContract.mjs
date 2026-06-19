@@ -15,6 +15,10 @@ import {
   mapSiliconFlowSyntheticErrorToBucket,
   sanitizedSiliconFlowError
 } from "./siliconflowPhotoAdvisorErrors.mjs";
+import {
+  buildSiliconFlowPhotoAdvisorSystemPrompt,
+  buildSiliconFlowPhotoAdvisorUserPrompt
+} from "./siliconflowPhotoAdvisorPromptContract.mjs";
 
 export const SILICONFLOW_CHAT_COMPLETIONS_PATH = "/chat/completions";
 export const SILICONFLOW_ENDPOINT_BUCKET = "siliconflow_chat_completions";
@@ -22,8 +26,8 @@ export const SILICONFLOW_PRIMARY_MODEL_ID = PHOTO_ADVISOR_MODEL_IDS[PhotoAdvisor
 
 const DEFAULT_PLACEHOLDERS = Object.freeze({
   imageUrlOrBase64Placeholder: "<SAFE_IMAGE_URL_OR_BASE64_PLACEHOLDER>",
-  systemPromptPlaceholder: "<PHOTO_ADVISOR_SYSTEM_PROMPT_PLACEHOLDER>",
-  userPromptPlaceholder: "<PHOTO_ADVISOR_PROMPT_PLACEHOLDER>"
+  systemPromptPlaceholder: buildSiliconFlowPhotoAdvisorSystemPrompt(),
+  userPromptPlaceholder: buildSiliconFlowPhotoAdvisorUserPrompt()
 });
 
 export function defaultSiliconFlowPhotoAdvisorConfig() {
@@ -199,12 +203,12 @@ export function extractSiliconFlowOpenAiCompatibleText(response = {}) {
 
 export function parseSiliconFlowPhotoAdvisorCandidateFromText(text) {
   if (typeof text !== "string") {
-    return rejected("provider_invalid_response");
+    return rejected("provider_invalid_response", ["wrong_type"]);
   }
 
   const trimmed = text.trim();
   if (!looksLikeSingleJsonObject(trimmed)) {
-    return rejected("provider_json_parse_failed");
+    return rejected("provider_json_parse_failed", preParseDiagnosticBuckets(trimmed));
   }
 
   const validation = validateOpenWeightVlmPhotoAdvisorCandidate(trimmed);
@@ -212,10 +216,12 @@ export function parseSiliconFlowPhotoAdvisorCandidateFromText(text) {
     const bucket = validation.error?.code === "invalid_json"
       ? "provider_json_parse_failed"
       : schemaErrorBucket(validation.error?.code);
+    const diagnostic = buildOpenWeightVlmSchemaDiagnostic(trimmed, validation.error);
     return {
       ok: false,
       bucket,
-      diagnostic: buildOpenWeightVlmSchemaDiagnostic(trimmed, validation.error),
+      diagnostic,
+      schemaDiagnosticBuckets: schemaDiagnosticBuckets(trimmed, validation.error, diagnostic),
       rawOutputPrinted: false,
       rawOutputPersisted: false
     };
@@ -313,10 +319,11 @@ export function validSyntheticPhotoAdvisorCandidate() {
   };
 }
 
-function rejected(bucket) {
+function rejected(bucket, schemaDiagnosticBuckets = []) {
   return {
     ok: false,
     bucket,
+    schemaDiagnosticBuckets: [...new Set(schemaDiagnosticBuckets)].sort(),
     rawOutputPrinted: false,
     rawOutputPersisted: false
   };
@@ -395,4 +402,71 @@ function sanitizePlaceholder(value, fallback) {
 
 function looksLikeSingleJsonObject(value) {
   return value.startsWith("{") && value.endsWith("}");
+}
+
+function preParseDiagnosticBuckets(value) {
+  const buckets = new Set();
+  if (/```/.test(value)) {
+    buckets.add("markdown_fence_detected");
+  }
+  if (value.length > 0 && (!value.startsWith("{") || !value.endsWith("}"))) {
+    buckets.add("free_form_text_detected");
+  }
+  if (buckets.size === 0) {
+    buckets.add("json_parse_failed");
+  }
+  return Array.from(buckets);
+}
+
+function schemaDiagnosticBuckets(text, validationError = {}, diagnostic = {}) {
+  const buckets = new Set(diagnostic.errorBuckets ?? []);
+
+  if (validationError.code === "invalid_json") {
+    buckets.add("json_parse_failed");
+  }
+  if (validationError.code === "unsupported_enum" || buckets.has("unsupported_filter_family")) {
+    buckets.add("unsupported_enum");
+  }
+  if (validationError.code === "source_context_overclaim" || buckets.has("source_context_overclaim")) {
+    buckets.add("capture_context_overclaim_detected");
+  }
+  if (validationError.code === "retake_gate" || buckets.has("retake_false_positive")) {
+    buckets.add("retake_first_language_detected");
+  }
+  if (validationError.code === "prompt_injection") {
+    buckets.add("debug_leakage_detected");
+  }
+
+  if (buckets.has("unsafe_response") || validationError.code === "unsafe_response") {
+    addUnsafeTextBuckets(text, buckets);
+  }
+  if (validationError.code === "unsafe_free_text") {
+    addUnsafeTextBuckets(text, buckets);
+    if (/retake|bad photo|wrong exposure|failed photo|must fix|out of focus/i.test(text)) {
+      buckets.add("retake_first_language_detected");
+    }
+  }
+  if (buckets.has("wrong_type") && ["creativeIntent", "technicalRisk", "safety"].some((field) => diagnostic.fieldBuckets?.includes(field))) {
+    buckets.add("wrong_object_shape");
+  }
+
+  return Array.from(buckets).sort();
+}
+
+function addUnsafeTextBuckets(text, buckets) {
+  if (/\b(score|rating|confidence\s*score|\d{1,3}\s*\/\s*10)\b/i.test(text)) {
+    buckets.add("score_or_rating_detected");
+  }
+  if (/\b(face|skin|age|gender|beauty|attractive|emotion|health|identity|ethnicity|race|religion|disability|body)\b/i.test(text)) {
+    buckets.add("sensitive_inference_detected");
+  }
+  if (/\b(chain[- ]?of[- ]?thought|reasoning trace|hidden reasoning)\b/i.test(text)) {
+    buckets.add("chain_of_thought_detected");
+  }
+  if (/\b(provider debug|system prompt|raw json|raw provider|stack trace|traceback|api key|authorization|prompt)\b/i.test(text)) {
+    buckets.add("debug_leakage_detected");
+  }
+  if (/\b(ignore previous instructions|ignore the schema|jailbreak|developer mode|system override)\b/i.test(text)) {
+    buckets.add("debug_leakage_detected");
+  }
 }

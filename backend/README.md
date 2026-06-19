@@ -30,6 +30,8 @@ Phase 21-Z2C-SF-RUN completed the approved SiliconFlow benchmark with exactly 12
 
 Phase 21-Z2D-SF reviews the SiliconFlow benchmark without rerunning API calls. The result is classified as `provider_output_schema_alignment_failed`: the provider path returned latency/token evidence, but no response matched the strict backend Photo Advisor schema. This does not prove SiliconFlow is unusable or Qwen3-VL quality is bad. The next backend-safe phase is `Phase 21-Z2D-SF-R1: SiliconFlow Prompt and Schema Alignment Gate Without API Calls`; it should use synthetic strings only and must not read API keys, upload images, call providers/models, rerun benchmarks, add endpoints, or change `productionReady:false`.
 
+Phase 21-Z2E-SF-AUTO completes the explicitly approved bounded SiliconFlow prompt/schema alignment and retry. It adds a schema-enum-driven backend prompt contract, sanitized parser diagnostic buckets, and `npm run qa:siliconflow:prompt-schema`. The approved bounded run made `13` SiliconFlow calls of cap `28`, retry `0`, accepted `13`, rejected `0`, with latency buckets `5s_to_15s x9` and `gt_15s x4`; no raw provider response, prompt, request payload, image/base64/path, API key, credential, raw report, iOS runtime change, upload payload change, app-facing endpoint, production endpoint, or production rollout was added. `productionReady:false` remains locked.
+
 ## Run
 
 ```sh

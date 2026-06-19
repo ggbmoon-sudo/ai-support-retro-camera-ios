@@ -1047,3 +1047,13 @@ Use this template:
 - Do not rely only on chat memory.
 - After each phase, update `docs/phase-log.md`; update this handoff too if there is a major state change during the transition period.
 - If anything is unclear, ask the user before starting Phase 17, backend work, real AI, upload, persistence, StoreKit, or provider integration.
+
+
+Latest Phase 21-Z2E-SF-AUTO handoff refresh check on 2026-06-20:
+
+- Phase 21-Z2D-SF was committed and upstream-synced before Phase 21-Z2E-SF-AUTO began.
+- Phase 21-Z2E-SF-AUTO adds backend-only SiliconFlow prompt/schema alignment, sanitized parser diagnostics, and synthetic prompt/schema alignment tests.
+- The explicitly approved bounded SiliconFlow retry made `13` provider calls of cap `28`: `1` canary call and `1` full controlled 12-fixture run, retry `0`, accepted `13`, rejected `0`.
+- Sanitized buckets: validation `accepted x13`, fallback `none x13`, latency `5s_to_15s x9` and `gt_15s x4`, token usage `lte_20k`, cost `usage_available_cost_not_computed`.
+- No raw provider response, raw model text, raw prompt, raw request payload, raw image/base64/path, API key, provider credential, raw report, iOS runtime change, upload payload change, live cloud AI runtime, app-facing endpoint, production endpoint, or production rollout occurred.
+- Next recommended phase is `Phase 21-Z2F-SF: SiliconFlow Accepted Benchmark Review and Beta Readiness Decision Gate`.
