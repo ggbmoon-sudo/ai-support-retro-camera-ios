@@ -4258,6 +4258,30 @@ Known TODOs:
 - [ ] Phase 21-Z2A should verify SiliconFlow / DashScope account feasibility, pricing, terms, retention/training policy, Hong Kong/Taiwan/Korea latency expectations, rate limits, and structured-output behavior without model calls or benchmarks.
 - [ ] Phase 21-Z2C requires separate explicit approval before any provider API VLM benchmark, model call, or fixture execution.
 
+## Phase 21-Z2A-SF SiliconFlow Qwen3-VL API Research and Model Selection Gate
+
+Check:
+
+- [x] Confirmed Phase 21-Z2A-SF is docs-only research consolidation.
+- [x] Confirmed both operator-provided research drafts were available and incorporated.
+- [x] Added `docs/phase-21-z2a-sf-siliconflow-qwen3-vl-api-research-and-model-selection-gate.md`.
+- [x] Recorded SiliconFlow as the primary API-first provider direction.
+- [x] Recorded `Qwen/Qwen3-VL-30B-A3B-Instruct` as the primary model direction.
+- [x] Confirmed RunPod A100 80GB remains fallback/comparison.
+- [x] Recorded model-page facts with JSON/structured-output, pricing, latency, and privacy/legal caveats.
+- [x] Recorded no provider API call, no API key creation/commit, no provider account, no provider SDK/runtime, no image upload, no model call, no benchmark, no real inference endpoint, no RunPod provisioning, no local Qwen3 install/download/load/call, no iOS runtime change, no upload payload change, no live cloud AI runtime, no raw artifact, no credential, no secret, and no production rollout.
+- [x] Kept `productionReady:false`.
+
+Manual Xcode check:
+
+- [ ] Launch only if desired; Xcode runtime behavior should be unchanged.
+- [ ] Confirm no Camera cloud AI entry, iOS provider/model key/direct call, upload payload change, capture-context upload, app-facing endpoint, production rollout, SiliconFlow endpoint/API key in iOS, provider raw output in app UI/history, RunPod raw URL, real region ID, or Windows raw local model path dependency appears in Xcode.
+
+Known TODOs:
+
+- [ ] Phase 21-Z2B-SF should add backend-only no-runtime SiliconFlow adapter contracts and tests without API calls, API keys, provider account creation, image upload, benchmark, iOS integration, or production endpoint.
+- [ ] Phase 21-Z2C-SF requires separate explicit approval before any live SiliconFlow 12-fixture benchmark using active credentials and external network access.
+
 ## Phase 21-Y-R1 Asia-first RunPod Region Selection Gate
 
 Check:

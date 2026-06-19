@@ -18,6 +18,8 @@ Phase 21-Z adds Asia-first RunPod deployment prep without model calls. It docume
 
 Phase 21-Z-R1 adds a backend/docs-only API-first serverless VLM alternative evaluation gate. SiliconFlow and DashScope / Alibaba Cloud Model Studio / 阿里雲百煉 are candidate providers only; RunPod A100 80GB remains fallback/comparison. The future adapter direction is backend-mediated and provider-agnostic across `siliconflow`, `dashscope`, and `runpod_self_hosted_fallback`, with raw provider text blocked from app display and the existing backend validator remaining the source of truth. Phase 21-Z-R1 adds no provider SDK/runtime, provider API call, API key, RunPod resource, Qwen3 install/download/load/call, model call, benchmark, inference endpoint call, iOS runtime change, upload payload change, raw artifact, credential, secret, or production rollout.
 
+Phase 21-Z2A-SF consolidates the provided SiliconFlow Qwen3-VL research drafts into a backend/docs-only model-selection gate. SiliconFlow is the primary API-first provider direction, `Qwen/Qwen3-VL-30B-A3B-Instruct` is the primary model direction, and RunPod A100 80GB remains fallback/comparison. The recommended next backend phase is `Phase 21-Z2B-SF: SiliconFlow No-runtime Backend Adapter Contract Gate`, limited to provider enum/config shapes, request-builder shape without execution, synthetic parser tests, sanitized error buckets, schema/fallback tests, absent-key readiness checks, and raw-logging/iOS-leakage scans. Phase 21-Z2A-SF adds no provider SDK/runtime, provider API call, API key, provider account, image upload, model call, benchmark, inference endpoint call, iOS runtime change, upload payload change, raw artifact, credential, secret, or production rollout.
+
 ## Run
 
 ```sh

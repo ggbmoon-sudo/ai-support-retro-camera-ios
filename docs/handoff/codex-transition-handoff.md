@@ -91,6 +91,20 @@ Latest Phase 21-Z-R1 handoff refresh check on 2026-06-19:
 - Next recommended phase is `Phase 21-Z2A: SiliconFlow / DashScope Account + Pricing + Terms Verification Gate`.
 - Any provider API call, key creation, image upload, model call, benchmark, RunPod provisioning, Qwen3 install/download/load/call, iOS integration, upload payload change, or production rollout requires separate explicit approval.
 
+Latest Phase 21-Z2A-SF handoff refresh check on 2026-06-20:
+
+- Branch: `feat/phase-02-auth`.
+- Use upstream shorthand such as `@{u}`; do not assume `origin/main` exists in this clone.
+- Phase 21-Z-R1 was committed and upstream-synced before Phase 21-Z2A-SF began.
+- Phase 21-Z2A-SF consolidates both operator-provided SiliconFlow Qwen3-VL research drafts into one repo-owned docs-only research gate.
+- SiliconFlow is selected as the primary API-first provider direction.
+- `Qwen/Qwen3-VL-30B-A3B-Instruct` is selected as the primary model direction.
+- RunPod A100 80GB remains fallback/comparison.
+- JSON mode and model-page pricing are recorded with caveats; backend parser/schema/fallback remain source of truth.
+- No provider API call, API key creation, provider account creation, provider SDK/runtime, image upload, model call, benchmark, inference endpoint call, RunPod provisioning, local Qwen3 install/download/load/call, iOS runtime change, upload payload change, raw artifact, provider credential, secret, or production rollout occurred.
+- Next recommended phase is `Phase 21-Z2B-SF: SiliconFlow No-runtime Backend Adapter Contract Gate`.
+- Any provider API call, key creation, account creation, image upload, model call, benchmark, provider runtime, iOS integration, upload payload change, RunPod provisioning, Qwen3 install/download/load/call, or production rollout requires separate explicit approval.
+
 Latest Phase 20-D preflight check on 2026-06-14:
 
 - Branch: `feat/phase-02-auth`.
