@@ -110,11 +110,12 @@ Current phase:
 - Phase 21-W-R2 diagnoses the W-R1B rejection path with no model call, benchmark, healthz, inference endpoint call, or external server change. It identifies the likely failure layer as `external_route_error_mapping_or_fixture_token_contract` and keeps `productionReady:false`.
 - Phase 21-W-R2C fixes the external Windows FastAPI server no-model fixture-token contract and route-error mapping for approved tokens `smoke_001` and `smoke_004` through `smoke_015`. It adds a no-model external contract check and docs only in the main repo; no model call, benchmark, inference endpoint call, serving switch, iOS integration, endpoint addition, raw artifact, secret, or production rollout occurred.
 - Phase 21-W-R2C2 adds backend-side no-model contract echo validation. The external checker still passes and a local/private no-model HTTP endpoint is reachable, but validation blocked because unsupported/missing token responses returned `unknown` buckets instead of explicit sanitized buckets.
+- Phase 21-W-R2C-FINAL fixes the no-model contract echo mismatch end to end. External checker and backend validation now pass with unsupported bucket `unsupported_fixture_token`, missing bucket `missing_fixture_token`, approved token count `13`, and no model call, benchmark, inference endpoint call, raw artifact, secret, or production rollout.
 - Phase 21-H adds the controlled backend `local_model` route dry-run plan. It is a no-network/no-model/no-Qwen/no-benchmark plan gate for a future explicitly approved one-fixture, one-call, no-retry backend-internal local/private route test. It does not enable `local_model`, run fixture inference, add iOS integration, add app-facing or production endpoints, accept user-photo uploads, or change `productionReady:false`.
 
 Next phase:
 
-- Recommended next step is Phase 21-W-R2C4: Contract Echo Validation Failure Fix. It must remain no-model/no-benchmark unless separately approved; any model calls or benchmark retry require separate explicit approval.
+- Recommended next step is Phase 21-W-R3: Approved Controlled 12-fixture Benchmark Retry After Contract Echo Fix. It requires separate explicit user approval before any model call or benchmark execution.
 - Do not start production cloud rollout without explicit approval
 - Production rollout remains blocked until a later explicit release phase
 

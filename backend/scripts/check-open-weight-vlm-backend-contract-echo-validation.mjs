@@ -79,6 +79,8 @@ async function runNoModelContractEchoValidation(baseUrl, plan) {
     unsupportedTokenBucket: sanitizeTokenBucket(unsupported?.errorBucket),
     missingTokenBucket: sanitizeTokenBucket(missing?.errorBucket),
     approvedTokenBuckets: [...BACKEND_CONTRACT_ECHO_APPROVED_TOKENS],
+    modelLoaded: false,
+    benchmarkRun: false,
     rawArtifactLeakageDetected: false
   };
 }
@@ -103,7 +105,10 @@ function sanitizeContractEchoResponse(value) {
     mode: sanitizeTokenBucket(value?.mode),
     fixtureIdBucket: sanitizeTokenBucket(value?.fixtureIdBucket),
     errorBucket: value?.errorBucket == null ? null : sanitizeTokenBucket(value.errorBucket),
+    modelLoaded: value?.modelLoaded === true,
     modelInferenceRun: value?.modelInferenceRun === true ? true : false,
+    inferenceEndpointCalled: value?.inferenceEndpointCalled === true,
+    benchmarkRun: value?.benchmarkRun === true,
     rawLoggingDisabled: value?.rawLoggingDisabled === true,
     publicExposure: value?.publicExposure === "no" ? "no" : "unknown",
     productionReady: value?.productionReady === true,
@@ -150,8 +155,7 @@ function resolveContractEchoBaseUrl() {
   if (envValue) {
     return normalizeBaseUrl(envValue);
   }
-  const localConfigValue = readLocalConfigBaseUrl();
-  return normalizeBaseUrl(localConfigValue || DEFAULT_LOOPBACK_BASE_URL);
+  return normalizeBaseUrl(DEFAULT_LOOPBACK_BASE_URL) || normalizeBaseUrl(readLocalConfigBaseUrl());
 }
 
 function readLocalConfigBaseUrl() {
@@ -213,8 +217,10 @@ function blockedOutput(plan, blocker, endpointBucket = "missing") {
     unsupportedTokenBucket: "missing",
     missingTokenBucket: "missing",
     modelCallExecuted: false,
+    modelLoaded: false,
     inferenceEndpointCalled: false,
     benchmarkExecuted: false,
+    benchmarkRun: false,
     retryCount: 0,
     rawArtifactLeakageDetected: false,
     productionReady: false,
@@ -229,7 +235,7 @@ function blockedOutput(plan, blocker, endpointBucket = "missing") {
 
 function printAndExit(output, exitCode) {
   console.log(JSON.stringify(output, null, 2));
-  process.exit(exitCode);
+  process.exitCode = exitCode;
 }
 
 main().catch(() => {

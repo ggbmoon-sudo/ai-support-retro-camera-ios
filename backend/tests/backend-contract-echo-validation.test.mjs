@@ -107,8 +107,10 @@ test("backend contract echo validation accepts sanitized unsupported and missing
 test("backend contract echo validation blocks execution flags", () => {
   for (const override of [
     { modelCallExecuted: true },
+    { modelLoaded: true },
     { inferenceEndpointCalled: true },
     { benchmarkExecuted: true },
+    { benchmarkRun: true },
     { productionReady: true }
   ]) {
     const result = validateBackendNoModelContractEchoResult(validResult(override));

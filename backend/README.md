@@ -1368,6 +1368,8 @@ Phase 21-W-R2C updates the external Windows FastAPI server workspace only for no
 
 Phase 21-W-R2C2 adds `src/qa/openWeightVlmBackendContractEchoValidation.mjs` and `npm run qa:open-weight-vlm:backend-contract-echo-validation`. The CLI may call only no-model contract echo paths and must fail closed for model calls, inference endpoint calls, benchmark execution, raw artifact leakage, and `productionReady:true`. The external no-model checker passed, and the backend reached a local/private no-model HTTP endpoint, but validation blocked because unsupported/missing fixture-token responses returned `unknown` buckets instead of explicit sanitized buckets. Roadmap next is Phase 21-W-R2C4: Contract Echo Validation Failure Fix.
 
+Phase 21-W-R2C-FINAL fixes the no-model contract echo validation mismatch. The external server now returns canonical no-model fields for approved, unsupported, and missing token responses; the backend CLI prefers the safe default no-model loopback path unless explicitly overridden and exits cleanly after validation. `npm run qa:open-weight-vlm:backend-contract-echo-validation` now passes with approved token count `13`, unsupported bucket `unsupported_fixture_token`, missing bucket `missing_fixture_token`, and `productionReady:false`.
+
 ## Future TODO
 
 - Add authenticated backend boundary only after explicit approval.

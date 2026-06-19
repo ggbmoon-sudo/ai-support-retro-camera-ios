@@ -73,11 +73,17 @@ export function validateBackendNoModelContractEchoResult(result = {}) {
   if (result.modelCallExecuted !== false) {
     blockers.push("blocked_for_model_call_execution");
   }
+  if (result.modelLoaded === true) {
+    blockers.push("blocked_for_model_loaded");
+  }
   if (result.inferenceEndpointCalled !== false) {
     blockers.push("blocked_for_inference_endpoint_call");
   }
   if (result.benchmarkExecuted !== false) {
     blockers.push("blocked_for_benchmark_execution");
+  }
+  if (result.benchmarkRun === true) {
+    blockers.push("blocked_for_benchmark_run");
   }
   if (result.retryCount !== 0) {
     blockers.push("blocked_for_retry_count");
@@ -112,8 +118,10 @@ export function validateBackendNoModelContractEchoResult(result = {}) {
     unsupportedTokenBucket: result.unsupportedTokenBucket || "missing",
     missingTokenBucket: result.missingTokenBucket || "missing",
     modelCallExecuted: result.modelCallExecuted === true,
+    modelLoaded: result.modelLoaded === true,
     inferenceEndpointCalled: result.inferenceEndpointCalled === true,
     benchmarkExecuted: result.benchmarkExecuted === true,
+    benchmarkRun: result.benchmarkRun === true,
     retryCount: Number.isInteger(result.retryCount) ? result.retryCount : null,
     rawArtifactLeakageDetected: hasRawArtifactLeakage(result),
     productionReady: result.productionReady === true,
@@ -155,6 +163,9 @@ export function isSanitizedContractEchoObject(value) {
     value &&
     typeof value === "object" &&
     value.modelInferenceRun === false &&
+    value.modelLoaded !== true &&
+    value.inferenceEndpointCalled !== true &&
+    value.benchmarkRun !== true &&
     value.rawLoggingDisabled === true &&
     value.publicExposure === "no" &&
     value.productionReady === false &&
