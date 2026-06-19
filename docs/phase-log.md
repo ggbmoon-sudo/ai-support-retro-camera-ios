@@ -11,6 +11,7 @@ Every Codex task must update this file before finishing.
 Current phase: Phase 21-W-R2 - Controlled Multi-fixture Benchmark Rejection Diagnostics
 Status: Implemented
 Latest implementation: Diagnosed the Phase 21-W-R1B controlled 12-fixture `local_model_unavailable` / `blocked_for_provider_integration` rejection pattern with no model call, benchmark, healthz, fixture inference, or inference endpoint call. Added a no-network diagnostics helper, CLI, tests, and sanitized report. The likely failure layer is `external_route_error_mapping_or_fixture_token_contract`; the wrapper/local client map fetch failure or HTTP non-OK responses to `local_model_unavailable` before JSON parsing/schema validation, making model quality unlikely for the `lt_1s x12` rejection pattern. No serving runtime change, serving switch, external server change, vLLM/SGLang/Ollama call, Qwen3-VL-30B-A3B switch/download/load/benchmark/call, iOS runtime change, endpoint, upload runtime, Auto-Trigger runtime, WSS runtime, raw artifact, secret, or production rollout occurred. Roadmap next is Phase 21-W-R2C: External Server Fixture-token Contract Fix.
+Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
 Phase 04 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -80,6 +81,8 @@ Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` befo
 
 Status: Implemented
 Date: 2026-06-19
+
+Marker correction: the Phase 21-W-R2 artifacts were implemented and pushed, but the visible commit marker was misspelled as `Phase 21-W-R2: diagnose controlled benchmark local model unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable` without amending or rebasing pushed commits. No model call, benchmark, inference endpoint call, external server edit, iOS runtime change, raw artifact, secret, or production rollout occurred; `productionReady:false` remains locked.
 
 ### Summary
 

@@ -20,6 +20,8 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 Reason: Phase 21-W-R2 diagnosed the W-R1B `local_model_unavailable` / `blocked_for_provider_integration` pattern without model calls, benchmark calls, healthz, or inference endpoint calls. The likely failure layer is `external_route_error_mapping_or_fixture_token_contract`: all 12 controlled calls failed in `lt_1s`, and the wrapper maps fetch failure or HTTP non-OK responses to `local_model_unavailable` before JSON parsing/schema validation.
 
+Marker note: Phase 21-W-R2 was implemented and pushed, but its visible commit marker missed the final `e` in `unavailable`. The corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable` without model calls, benchmarks, endpoint calls, external server edits, runtime changes, raw artifacts, secrets, or production rollout.
+
 Phase 21-W-R2C should align the external local server fixture-token contract or route-error mapping without running a benchmark by default. Do not rerun the controlled benchmark, run additional model calls, call SGLang/vLLM/Ollama, run quantization benchmarks, run concurrency benchmarks, run Live Advisor simulation, download models, switch serving stacks, add endpoints, add iOS integration, or start production rollout without separate explicit approval.
 
 ## How Codex Should Use This File
@@ -78,6 +80,7 @@ Use cautious wording and re-check source docs before implementation:
 - Phase 21-W-R1 resolved the controlled wrapper endpoint bucket mismatch by normalizing local/private endpoint buckets before policy checks and ran no model call or benchmark.
 - Phase 21-W-R1B retried the approved controlled 12-fixture Transformers+FastAPI benchmark exactly once after the endpoint bucket fix. It used `smoke_004` through `smoke_015`, made 12 approved local/private route calls, used zero retries, and returned a sanitized mixed rejection: accepted count `0`, rejected count `12`, validation bucket `local_model_unavailable`, fallback bucket `blocked_for_provider_integration`, latency bucket `lt_1s x12`; no raw artifacts were printed/persisted and `productionReady:false` remains locked.
 - Phase 21-W-R2 adds no-network rejection diagnostics for the W-R1B `local_model_unavailable` / `blocked_for_provider_integration` pattern. It compares the accepted Phase 21-U `smoke_001` path with the W-R1B controlled fixture path and identifies the likely failure layer as `external_route_error_mapping_or_fixture_token_contract`. It runs no model call, benchmark, healthz, inference endpoint call, fixture inference, serving switch, iOS integration, raw artifact, secret, or production rollout.
+- Phase 21-W-R2-marker corrects only the visible commit marker typo from `unavailabl` to the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. It does not amend or rebase pushed commits and runs no model call, benchmark, inference endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout.
 - `productionReady:false` remains the cross-phase default.
 
 Source references for future operators include `docs/phase-log.md`, `docs/handoff/codex-transition-handoff.md`, `docs/missing-features-and-deferred-roadmap-register.md`, and the Phase 20/21 backend gateway docs.
