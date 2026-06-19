@@ -4344,6 +4344,28 @@ Known TODOs:
 
 - [ ] Phase 21-Z2C-SF-RUN retry requires this dry-run gate to pass and still requires the recorded exact approval phrase plus local ignored API key, network approval, fixture readiness, budget cap, and terms/pricing acknowledgement.
 
+## Phase 21-Z2C-SF-RUN SiliconFlow 12-fixture API Benchmark
+
+Check:
+
+- [x] Confirmed exact approval phrase was present in the Codex session.
+- [x] Confirmed local ignored `backend/.env.local` had `SILICONFLOW_API_KEY` present without printing the key.
+- [x] Confirmed approved fixture tokens `smoke_004` through `smoke_015` were present and used.
+- [x] Ran exactly 12 approved SiliconFlow API attempts with retry `0`.
+- [x] Recorded sanitized aggregate only: accepted `0`, rejected `12`, validation bucket `provider_schema_invalid x12`, fallback bucket `provider_validation_rejected x12`, latency bucket `5s_to_15s x12`, token usage bucket `lte_20k`, cost bucket `usage_available_cost_not_computed`.
+- [x] Confirmed no raw provider response, raw prompt, raw request payload, raw image/base64/path, API key, provider credential, or raw report was printed or persisted.
+- [x] Confirmed no iOS runtime change, upload payload change, live cloud AI runtime, app-facing endpoint, production endpoint, RunPod provisioning, vLLM/SGLang/Ollama run, or production rollout.
+- [x] Kept `productionReady:false`.
+
+Manual Xcode check:
+
+- [ ] Launch only if desired; Xcode runtime behavior should be unchanged.
+- [ ] Confirm no Camera cloud AI entry, iOS provider/model key/direct call, SiliconFlow endpoint/API key in iOS, upload payload change, capture-context upload, app-facing endpoint, production rollout, provider raw output in app UI/history, or dependency on SiliconFlow credentials appears in Xcode.
+
+Known TODOs:
+
+- [ ] Phase 21-Z2D-SF should review the `provider_schema_invalid x12` result before any rerun, prompt/schema-alignment change, alternative model benchmark, provider diagnosis, or iOS integration planning.
+
 ## Phase 21-Y-R1 Asia-first RunPod Region Selection Gate
 
 Check:

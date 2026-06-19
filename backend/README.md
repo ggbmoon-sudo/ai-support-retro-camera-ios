@@ -26,6 +26,8 @@ Phase 21-Z2C-SF adds a docs-only approval request draft for a future SiliconFlow
 
 Phase 21-Z2C-SF-RUN-PRE adds the missing no-network dry-run gate for that future benchmark. Use `npm run qa:siliconflow:benchmark-dry-run` for the sanitized plan summary and `npm run qa:siliconflow:benchmark-plan` for the dry-run tests. These scripts do not call SiliconFlow, read API keys, open fixture images, upload images, execute provider runtime, run a benchmark, or change `productionReady:false`.
 
+Phase 21-Z2C-SF-RUN completed the approved SiliconFlow benchmark with exactly 12 calls and retry `0`. Sanitized aggregate result: accepted `0`, rejected `12`, `provider_schema_invalid x12`, `provider_validation_rejected x12`, `5s_to_15s x12`, token usage bucket `lte_20k`, and cost bucket `usage_available_cost_not_computed`. No raw provider response, prompt, request payload, image/base64/path, API key, provider credential, iOS runtime change, upload payload change, live cloud AI runtime, app-facing/production endpoint, raw artifact, secret, or production rollout was added.
+
 ## Run
 
 ```sh

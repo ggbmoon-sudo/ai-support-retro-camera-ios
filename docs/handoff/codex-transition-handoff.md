@@ -132,6 +132,15 @@ Latest Phase 21-Z2C-SF-RUN-PRE handoff refresh check on 2026-06-20:
 - No SiliconFlow API call, API key creation/read/print/commit, provider runtime execution, image upload, fixture image read, model call, real benchmark, iOS runtime change, upload payload change, raw artifact, secret, or production rollout occurred.
 - Next safe phase remains `Phase 21-Z2C-SF-RUN: Approved SiliconFlow 12-fixture API Benchmark`, only after the dry-run gate passes and the recorded approval/prerequisites remain satisfied.
 
+Latest Phase 21-Z2C-SF-RUN handoff refresh check on 2026-06-20:
+
+- Phase 21-Z2C-SF-RUN completed the approved SiliconFlow 12-fixture API benchmark.
+- Scope: SiliconFlow, `Qwen/Qwen3-VL-30B-A3B-Instruct`, fixtures `smoke_004` through `smoke_015`, planned calls `12`, actual calls `12`, retry `0`, image detail `low`, stream `false`, max output tokens `256`, JavaScript / Node.js backend only.
+- Sanitized result: accepted `0`, rejected `12`, validation bucket `provider_schema_invalid x12`, fallback bucket `provider_validation_rejected x12`, latency bucket `5s_to_15s x12`, token usage bucket `lte_20k`, cost bucket `usage_available_cost_not_computed`.
+- No raw provider response, raw prompt, raw request payload, raw image/base64/path, API key, provider credential, account detail, stack trace with payload, or raw report was printed or persisted.
+- No iOS runtime change, upload payload change, live cloud AI runtime, app-facing endpoint, production endpoint, RunPod provisioning, vLLM/SGLang/Ollama run, or production rollout occurred.
+- Next recommended phase is `Phase 21-Z2D-SF: SiliconFlow Benchmark Review and Provider Decision Gate`.
+
 Latest Phase 20-D preflight check on 2026-06-14:
 
 - Branch: `feat/phase-02-auth`.
