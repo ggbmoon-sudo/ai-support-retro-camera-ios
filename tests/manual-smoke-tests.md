@@ -301,6 +301,16 @@ Approved controlled 12-fixture benchmark retry after endpoint bucket fix:
 - [x] Confirm no concurrency benchmark, quantization benchmark, Live Advisor simulation, vLLM/SGLang/Ollama call, serving switch, Qwen3-VL-30B-A3B switch/download/load/benchmark/call, iOS integration, endpoint, Auto-Trigger runtime, WSS runtime, upload runtime, raw artifact, secret, or production rollout was added.
 - [x] Confirm roadmap current next phase is Phase 21-W-R2: Controlled Multi-fixture Benchmark Rejection Diagnostics.
 
+## Phase 21-W-R2
+
+Controlled multi-fixture rejection diagnostics:
+
+- [x] Confirm diagnostics ran no model call, no benchmark, no healthz, no fixture inference, and no inference endpoint call.
+- [x] Confirm diagnostics CLI reports `diagnosticEligible:true`, likely failure layer `external_route_error_mapping_or_fixture_token_contract`, and `productionReady:false`.
+- [x] Confirm Phase 21-U accepted path versus W-R1B rejected path comparison rules out serving stack switch, endpoint bucket mismatch, retry expansion, dry-run/no-network path, schema validation after JSON parse, and model-quality failure.
+- [x] Confirm next safe action is Phase 21-W-R2C: External Server Fixture-token Contract Fix.
+- [x] Confirm no serving switch, Qwen3-VL-30B-A3B switch/download/load/benchmark/call, vLLM/SGLang/Ollama, iOS integration, endpoint, Auto-Trigger runtime, WSS runtime, upload runtime, raw artifact, secret, or production rollout was added.
+
 ## Phase 21-G2
 
 Missing feature + deferred roadmap register:
