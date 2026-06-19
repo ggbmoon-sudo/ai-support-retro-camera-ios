@@ -22,6 +22,8 @@ Phase 21-Z2A-SF consolidates the provided SiliconFlow Qwen3-VL research drafts i
 
 Phase 21-Z2B-SF adds the SiliconFlow backend-only no-runtime contract. The backend implementation path is JavaScript / Node.js; the operator-provided SiliconFlow OpenAI-compatible base URL and `/chat/completions` path are recorded for future approved runtime work only. New scripts `npm run qa:siliconflow:contract` and `npm run qa:siliconflow:readiness` run synthetic tests and fail-closed readiness checks without network calls. No SiliconFlow API call, API key, provider account, provider SDK/runtime execution, image upload, model call, benchmark, iOS runtime change, upload payload change, raw artifact, credential, secret, or production rollout was added.
 
+Phase 21-Z2C-SF adds a docs-only approval request draft for a future SiliconFlow 12-fixture API benchmark. The future run is scoped to SiliconFlow, `Qwen/Qwen3-VL-30B-A3B-Instruct`, fixtures `smoke_004` through `smoke_015`, exactly 12 calls, retry 0, backend-mediated JavaScript / Node.js only, image detail low, stream false, max output tokens 256, sanitized aggregate report only, no iOS integration, no live camera upload, no raw image/base64/prompt/provider response/request payload logging, and `productionReady:false`. This draft does not approve execution and makes no API call, reads no key, uploads no image, runs no benchmark, and adds no provider runtime.
+
 ## Run
 
 ```sh

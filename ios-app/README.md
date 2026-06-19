@@ -16,6 +16,8 @@ Phase 21-Z2A-SF consolidates SiliconFlow Qwen3-VL research in backend docs only.
 
 Phase 21-Z2B-SF adds backend-only SiliconFlow no-runtime contracts and tests. Xcode runtime behavior is unchanged: no SiliconFlow endpoint/API key is added to iOS, no iOS provider SDK or direct provider call is added, no upload payload changes, no Camera cloud AI entry, no app-facing endpoint, no provider raw output in UI/history, and no production rollout.
 
+Phase 21-Z2C-SF is a docs-only approval request draft for a possible future backend SiliconFlow benchmark. Xcode runtime behavior remains unchanged: no SiliconFlow endpoint/API key in iOS, no direct provider call, no provider SDK, no upload payload change, no capture-context upload, no Camera cloud AI entry, no app-facing endpoint, no provider raw output in UI/history, and no production rollout.
+
 No local CV runtime, Camera cloud AI runtime entry, Auto-Trigger runtime, WSS runtime, iOS provider/model key, direct provider/model call, iOS upload payload change, capture-context upload, app-facing endpoint, production rollout, Windows local path dependency, or local model server URL dependency is added.
 
 Planned stack:

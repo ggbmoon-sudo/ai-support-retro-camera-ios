@@ -115,6 +115,16 @@ Latest Phase 21-Z2B-SF handoff refresh check on 2026-06-20:
 - Next recommended phase is `Phase 21-Z2C-SF Approval Request Draft for SiliconFlow 12-fixture API Benchmark`.
 - Any provider API call, key creation, account creation, image upload, model call, benchmark, provider runtime, iOS integration, upload payload change, RunPod provisioning, Qwen3 install/download/load/call, or production rollout requires separate explicit approval.
 
+Latest Phase 21-Z2C-SF handoff refresh check on 2026-06-20:
+
+- Branch: `feat/phase-02-auth`.
+- Phase 21-Z2B-SF was committed and upstream-synced before Phase 21-Z2C-SF began.
+- Phase 21-Z2C-SF adds a docs-only approval request draft for a future SiliconFlow 12-fixture API benchmark.
+- The draft records exact future scope, copyable approval wording, operator checklist, local ignored prerequisites, sanitized output format, failure gates, and success criteria.
+- No SiliconFlow API call, API key creation/read/print/commit, provider account creation, provider runtime execution, image upload, model call, benchmark, inference endpoint call, RunPod provisioning, local Qwen3 install/download/load/call, iOS runtime change, upload payload change, raw artifact, provider credential, secret, or production rollout occurred.
+- Next recommended phase is `Phase 21-Z2C-SF-RUN: Approved SiliconFlow 12-fixture API Benchmark`.
+- The RUN phase is not automatic; it requires separate explicit approval using the recorded wording plus local ignored prerequisites, network approval, and budget/terms acknowledgement.
+
 Latest Phase 20-D preflight check on 2026-06-14:
 
 - Branch: `feat/phase-02-auth`.
