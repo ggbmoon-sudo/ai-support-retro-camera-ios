@@ -14,6 +14,8 @@ Phase 21-Y is a backend/docs-only target runtime plan. It selects RunPod on-dema
 
 Phase 21-Y-R1 adds the Asia-first region/provider selection gate for Korea, Taiwan, and Hong Kong. RunPod A100 80GB remains primary only if Asia-near availability and cost are acceptable; Japan/Tokyo-like or Korea/Seoul-like regions are preferred, Singapore-like Asia is second, and US West is only a cost/functionality fallback rather than the first Asia latency baseline. Phase 21-Z must verify Asia-near A100 availability, current price, estimated daily 2-3 hour cost, storage/cache cost, fallback decision, no public inference endpoint, budget hard stop, manual kill switch, and no committed credentials before any provisioning. No RunPod provisioning, model call, benchmark, Qwen3 install/download/load/call, iOS integration, raw artifact, credential, secret, or production rollout occurs in Phase 21-Y-R1.
 
+Phase 21-Z adds Asia-first RunPod deployment prep without model calls. It documents the A100 80GB Asia-near selection checklist, fallback provider/GPU order, security/network/storage/budget guardrails, no-model healthz/contract/dry-run target shape, batch/queue startup-shutdown checklist, localization QA, and `backend/config/open-weight-vlm.runpod.example.json` as a placeholder-only bucket config. It does not create RunPod resources, provision GPU, create provider account resources, install/download/load/call `Qwen3-VL-30B-A3B`, run model calls, run benchmarks, call inference endpoints, install/run vLLM/SGLang/Ollama, switch serving stack, modify the external Windows server runtime, add iOS integration, add endpoints, commit raw URLs/real region IDs/credentials/secrets, or change `productionReady:false`.
+
 ## Run
 
 ```sh

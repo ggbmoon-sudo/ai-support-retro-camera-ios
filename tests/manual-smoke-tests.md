@@ -4212,6 +4212,30 @@ Known TODOs:
 - [ ] Physical-device layout should be checked for camera-shell proportions, control spacing, and one-handed reach.
 - [ ] Future real camera capability detection can be considered only in a later explicit phase.
 - [ ] Phase 15 remains blocked until Phase 14B is reviewed, committed, pushed, and read-only confirmed.
+## Phase 21-Z Asia-first RunPod A100 Qwen3-VL Deployment Prep Without Model Calls
+
+Check:
+
+- [x] Confirmed Phase 21-Z is docs/config-shape/security/operator-checklist only.
+- [x] Added Asia-first RunPod A100 80GB deployment prep for Korea, Taiwan, and Hong Kong.
+- [x] Added placeholder-only `backend/config/open-weight-vlm.runpod.example.json`.
+- [x] Confirmed placeholder config contains buckets only and no raw URL, real region ID, provider ID, account ID, API key, SSH key, token, credential, model path, or secret.
+- [x] Defined provider/GPU fallback policy: RunPod A100 Asia-near primary, H100 Asia-near short benchmark if needed, A100 US West fallback only, 48GB quantized experiment later, Vast.ai cheap experiment later, Lambda/AWS/GCP reliability/compliance/cost comparison later.
+- [x] Defined no-model contract plan for healthz, no-model contract echo, no-model route-contract dry-run, fixture-token-only benchmark interface, and sanitized error buckets.
+- [x] Added cloud security, network exposure, storage/cache, batch/queue startup-shutdown, budget guardrail, localization QA, no-raw-artifact, future Z1, and future Z2 benchmark gates.
+- [x] Confirmed no RunPod provisioning, provider account resource, model call, benchmark, inference endpoint call, Qwen3-VL-30B-A3B install/download/load/call, vLLM/SGLang/Ollama install/run, iOS runtime change, raw artifact, provider credential, secret, or production rollout.
+- [x] Kept `productionReady:false`.
+
+Manual Xcode check:
+
+- [ ] Launch only if desired; Xcode runtime behavior should be unchanged.
+- [ ] Confirm no Camera cloud AI entry, iOS provider/model key/direct call, upload payload change, capture-context upload, app-facing endpoint, production rollout, RunPod raw URL, provider credential, SSH key, real region ID, or Windows raw local model path dependency appears in Xcode.
+
+Known TODOs:
+
+- [ ] Phase 21-Z1 requires separate explicit approval before any RunPod instance inspection/provisioning or provider-console pricing verification.
+- [ ] Phase 21-Z2 requires separate explicit approval before any Qwen3 install/download/load/call, benchmark, or inference endpoint call.
+
 ## Phase 21-Y-R1 Asia-first RunPod Region Selection Gate
 
 Check:

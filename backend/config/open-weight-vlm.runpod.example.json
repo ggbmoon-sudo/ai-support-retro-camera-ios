@@ -1,0 +1,14 @@
+{
+  "enabled": false,
+  "providerBucket": "runpod",
+  "gpuBucket": "a100_80gb",
+  "modelCandidateBucket": "qwen3_vl_30b_a3b",
+  "userRegionBucket": "korea_taiwan_hong_kong",
+  "backendRegionPreference": "asia_near",
+  "gpuRegionPreference": "asia_near",
+  "endpointBucket": "private_cloud_gpu",
+  "allowPublicInference": false,
+  "budgetHardStopRequired": true,
+  "manualKillSwitchRequired": true,
+  "productionReady": false
+}

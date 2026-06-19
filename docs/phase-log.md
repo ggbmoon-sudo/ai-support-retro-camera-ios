@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 21-Y-R1 - Asia-first RunPod Region Selection Gate
+Current phase: Phase 21-Z - Asia-first RunPod A100 Qwen3-VL Deployment Prep Without Model Calls
 Status: completed
-Latest implementation: Phase 21-Y-R1 adds the Asia-first service audience and RunPod region/provider selection gate. Initial users are Korea, Taiwan, and Hong Kong; `userRegionBucket:korea_taiwan_hong_kong`, `backendRegionPreference:asia_near`, and `gpuRegionPreference:asia_near` are now part of the target runtime plan. RunPod A100 80GB remains primary only if Asia-near availability/cost is acceptable, and US/EU GPU capacity is fallback rather than the first Asia latency baseline. Phase 21-Y-R1 ran no model call, benchmark, inference endpoint call, RunPod provisioning, Qwen3-VL install/download/load/call, vLLM/SGLang/Ollama install/run, serving switch, iOS runtime change, raw artifact, provider credential, secret, or production rollout.
+Latest implementation: Phase 21-Z adds Asia-first RunPod A100 80GB deployment prep for a later `Qwen3-VL-30B-A3B` benchmark. It documents selection, fallback, security, no-model contract, batch/queue, budget, storage/cache, and localization QA checklists, plus a placeholder-only RunPod config shape. Phase 21-Z ran no model call, benchmark, inference endpoint call, RunPod provisioning, Qwen3-VL install/download/load/call, vLLM/SGLang/Ollama install/run, serving switch, iOS runtime change, raw artifact, provider credential, secret, or production rollout.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -73,9 +73,55 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-Z: Asia-first RunPod A100 Qwen3-VL Deployment Prep Without Model Calls. Any RunPod provisioning, model install/download/load/call, benchmark, inference endpoint call, or serving-stack execution requires separate explicit approval before execution. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution beyond an explicitly approved future scope, model downloads, model cache changes, Qwen inference beyond an explicitly approved local/private benchmark, fixture inference beyond explicit approval, local CV runtime, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, RunPod provisioning, or user-photo training / fine-tuning until explicitly requested.
+Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-Z1: Asia-first RunPod Instance Security + No-model Contract Gate. Any RunPod provisioning, provider-console/API mutation, pricing verification through a provider console, model install/download/load/call, benchmark, inference endpoint call, or serving-stack execution requires separate explicit approval before execution. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution beyond an explicitly approved future scope, model downloads, model cache changes, Qwen inference beyond an explicitly approved local/private benchmark, fixture inference beyond explicit approval, local CV runtime, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, RunPod provisioning, or user-photo training / fine-tuning until explicitly requested.
 
 ---
+
+## Phase 21-Z - Asia-first RunPod A100 Qwen3-VL Deployment Prep Without Model Calls
+
+Status: Completed
+Date: 2026-06-19
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase 21-Z prepares the Asia-first RunPod A100 80GB deployment gate for a later `Qwen3-VL-30B-A3B` benchmark. It is docs/config-shape/security/operator-checklist work only and does not create RunPod resources, provision cloud GPU, install/download/load/call Qwen3, run model calls, run benchmarks, call inference endpoints, or change iOS runtime.
+
+### Completed Work
+
+- Added `docs/phase-21-z-asia-first-runpod-a100-qwen3-vl-deployment-prep-without-model-calls.md`.
+- Added `backend/config/open-weight-vlm.runpod.example.json` as a placeholder-only bucket config with no raw URL, real region ID, provider ID, account ID, API key, SSH key, token, credential, model path, or secret.
+- Defined Asia-first RunPod selection checklist for Korea/Taiwan/Hong Kong, Asia-near backend/GPU region preference, A100 availability, price, daily/monthly/storage cost, cold-start risk, fallback, no public endpoint, budget hard stop, manual kill switch, and no committed credentials.
+- Defined provider/GPU fallback order: RunPod A100 Asia-near primary, RunPod H100 Asia-near short benchmark if needed, RunPod A100 US West fallback only, 48GB quantized experiment later, Vast.ai cheap experiment later, and Lambda/AWS/GCP reliability/compliance/cost comparison later.
+- Defined no-model contract plan for healthz, contract echo, route-contract dry-run, fixture-token-only benchmark interface, and sanitized cloud/resource/queue/budget buckets.
+- Added cloud security, network exposure, storage/cache, batch/queue startup-shutdown, budget guardrail, localization QA, no-raw-artifact, future Z1, and future Z2 benchmark gates.
+- Updated README/backend/iOS/roadmap/handoff/manual smoke docs.
+
+### Changed Files
+
+- `README.md`
+- `backend/README.md`
+- `ios-app/README.md`
+- `backend/config/open-weight-vlm.runpod.example.json`
+- `docs/phase-21-z-asia-first-runpod-a100-qwen3-vl-deployment-prep-without-model-calls.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `tests/manual-smoke-tests.md`
+
+### Tests and Checks
+
+- `git status`
+- `git diff --check`
+- Backend tests
+- No-model scans for secrets, artifacts, iOS provider/model calls, Camera cloud entry, payload drift, committed RunPod raw URLs, real region IDs, and staged local artifacts
+
+### Known TODOs
+
+- Phase 21-Z1 should happen only after explicit user approval to inspect/provision a RunPod instance or verify provider-console pricing.
+- Phase 21-Z2 benchmark requires separate explicit approval for any Qwen3 install/download/load/call, exact 12 fixtures, call count `12`, retry `0`, sanitized aggregate only, and Asia user-perspective latency metrics.
+
+Ready for Phase 21-Z1: Asia-first RunPod Instance Security + No-model Contract Gate. Any RunPod provisioning, provider-console/API mutation, pricing verification through a provider console, model call, model install/download/load, benchmark, or inference endpoint call requires separate explicit approval.
 
 ## Phase 21-Y-R1 - Asia-first RunPod Region Selection Gate
 

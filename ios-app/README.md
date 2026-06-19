@@ -8,6 +8,8 @@ Phase 21-M is a backend/docs-only Quantization + Serving Benchmark Plan. Phase 2
 
 Phase 21-Y-R1 adds an Asia-first backend planning gate for Korea, Taiwan, and Hong Kong. It requires Asia-near RunPod A100 availability/cost checks before provisioning and treats US/EU GPU capacity as fallback, not the first Asia latency baseline. No iOS runtime, Camera cloud AI entry, provider/model key, direct RunPod call, upload payload, app-facing endpoint, production endpoint, RunPod raw URL, provider credential, SSH key, region ID dependency, or production rollout is added.
 
+Phase 21-Z adds backend/docs-only Asia-first RunPod deployment prep and a placeholder-only config shape. It creates no RunPod resource, provisions no GPU, installs/downloads/loads/calls no Qwen3 model, runs no benchmark, calls no inference endpoint, and adds no iOS runtime, Camera cloud AI entry, provider/model key, direct RunPod call, upload payload change, app-facing endpoint, production endpoint, RunPod raw URL, provider credential, SSH key, real region ID, or production rollout.
+
 No local CV runtime, Camera cloud AI runtime entry, Auto-Trigger runtime, WSS runtime, iOS provider/model key, direct provider/model call, iOS upload payload change, capture-context upload, app-facing endpoint, production rollout, Windows local path dependency, or local model server URL dependency is added.
 
 Planned stack:
