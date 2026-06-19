@@ -16,11 +16,11 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**Phase 21-W-R1B: Approved Controlled 12-fixture Benchmark Retry After Endpoint Bucket Fix**
+**Phase 21-W-R2: Controlled Multi-fixture Benchmark Rejection Diagnostics**
 
-Reason: Phase 21-W-R1 fixed the controlled wrapper endpoint bucket mismatch by normalizing concrete local config buckets such as `local_loopback_ip`, `local_loopback_name`, and `private_lan_ipv4` to the same `local_loopback` / `private_lan` policy buckets used by healthz. No model call, benchmark, fixture inference, inference endpoint call, serving switch, iOS integration, raw artifact, or production rollout occurred.
+Reason: Phase 21-W-R1B retried the explicitly approved controlled 12-fixture Transformers+FastAPI reference benchmark after endpoint bucket normalization. The approved command ran once with `smoke_004` through `smoke_015`, call count `12`, retry count `0`, and sanitized aggregate output only. The result was mixed/rejected with accepted count `0`, rejected count `12`, validation bucket `local_model_unavailable`, fallback bucket `blocked_for_provider_integration`, and latency bucket `lt_1s x12`.
 
-Phase 21-W-R1B requires separate explicit user approval before any model calls. Do not rerun Phase 21-W, run SGLang/vLLM/Ollama inference, run quantization benchmarks, run concurrency benchmarks, run Live Advisor simulation, download models, switch serving stacks, add endpoints, add iOS integration, or start production rollout without separate explicit approval.
+Phase 21-W-R2 should diagnose sanitized rejection buckets only by default. Do not rerun the controlled benchmark, run additional model calls, call SGLang/vLLM/Ollama, run quantization benchmarks, run concurrency benchmarks, run Live Advisor simulation, download models, switch serving stacks, add endpoints, add iOS integration, or start production rollout without separate explicit approval.
 
 ## How Codex Should Use This File
 
@@ -75,6 +75,8 @@ Use cautious wording and re-check source docs before implementation:
 - Phase 21-V added the controlled multi-fixture serving benchmark approval request draft, no-model gate, CLI, and tests. It proposes future Phase 21-W approval phrases for either a controlled 3-fixture pilot or a controlled 12-fixture run, while running no model call, fixture inference, benchmark, endpoint call, serving runtime, serving switch, vLLM/SGLang/Ollama call, iOS integration, raw artifact, secret, or production rollout.
 - Phase 21-W0 inspected the ignored fixture registry with sanitized output only. It found 13 approved ready opaque fixture tokens with local ignored files present, so exactly-12 readiness is false and no Phase 21-W approval phrase was generated.
 - Phase 21-W added a guarded controlled 12-fixture Transformers+FastAPI wrapper and attempted the approved benchmark command exactly once with `smoke_004` through `smoke_015`, but preflight blocked with `blocked_for_unsafe_endpoint_bucket` before any model calls. Call count stayed `0`, retry count stayed `0`, standalone healthz was safe, no raw artifacts were printed/persisted, and `productionReady:false` remains locked.
+- Phase 21-W-R1 resolved the controlled wrapper endpoint bucket mismatch by normalizing local/private endpoint buckets before policy checks and ran no model call or benchmark.
+- Phase 21-W-R1B retried the approved controlled 12-fixture Transformers+FastAPI benchmark exactly once after the endpoint bucket fix. It used `smoke_004` through `smoke_015`, made 12 approved local/private route calls, used zero retries, and returned a sanitized mixed rejection: accepted count `0`, rejected count `12`, validation bucket `local_model_unavailable`, fallback bucket `blocked_for_provider_integration`, latency bucket `lt_1s x12`; no raw artifacts were printed/persisted and `productionReady:false` remains locked.
 - `productionReady:false` remains the cross-phase default.
 
 Source references for future operators include `docs/phase-log.md`, `docs/handoff/codex-transition-handoff.md`, `docs/missing-features-and-deferred-roadmap-register.md`, and the Phase 20/21 backend gateway docs.

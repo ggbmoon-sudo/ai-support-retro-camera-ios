@@ -289,6 +289,18 @@ Controlled 12-fixture endpoint bucket block resolution:
 - [x] Confirm `Qwen3-VL-30B-A3B` is documented only as a future target candidate and was not installed, downloaded, loaded, benchmarked, or called in this phase.
 - [x] Confirm roadmap current next phase is Phase 21-W-R1B and requires separate explicit approval before model calls.
 
+## Phase 21-W-R1B
+
+Approved controlled 12-fixture benchmark retry after endpoint bucket fix:
+
+- [x] Confirm prerequisite commit markers for Phase 21-W0, Phase 21-W, and Phase 21-W-R1 were present before healthz/benchmark.
+- [x] Confirm healthz preflight was safe and endpoint bucket normalization was active before the retry.
+- [x] Confirm the approved retry command ran exactly once with `smoke_004` through `smoke_015`, call count `12`, and retry count `0`.
+- [x] Confirm sanitized aggregate result was mixed/rejected with accepted count `0`, rejected count `12`, validation bucket `local_model_unavailable`, fallback bucket `blocked_for_provider_integration`, and latency bucket `lt_1s x12`.
+- [x] Confirm no raw prompt, raw model output, raw image path/content, request payload, local config contents, fixture registry contents, server logs, EXIF/GPS/sensor data, or secrets were printed or persisted.
+- [x] Confirm no concurrency benchmark, quantization benchmark, Live Advisor simulation, vLLM/SGLang/Ollama call, serving switch, Qwen3-VL-30B-A3B switch/download/load/benchmark/call, iOS integration, endpoint, Auto-Trigger runtime, WSS runtime, upload runtime, raw artifact, secret, or production rollout was added.
+- [x] Confirm roadmap current next phase is Phase 21-W-R2: Controlled Multi-fixture Benchmark Rejection Diagnostics.
+
 ## Phase 21-G2
 
 Missing feature + deferred roadmap register:

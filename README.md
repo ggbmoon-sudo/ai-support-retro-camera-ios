@@ -106,11 +106,12 @@ Current phase:
 - Phase 21-W0 inventories the ignored local fixture registry with sanitized token/count output only. It finds 13 approved ready fixture tokens, not exactly 12, so no benchmark, model call, endpoint call, fixture inference, registry/config/fixture modification, raw artifact, secret, or production rollout occurs.
 - Phase 21-W adds a guarded Transformers+FastAPI controlled 12-fixture benchmark wrapper and attempts the approved command exactly once for `smoke_004` through `smoke_015`. The attempt preflight-blocks before model calls with sanitized bucket `blocked_for_unsafe_endpoint_bucket`; call count remains `0`, retry count remains `0`, no raw artifacts are printed or persisted, and `productionReady:false` remains locked.
 - Phase 21-W-R1 resolves the controlled wrapper endpoint bucket mismatch by normalizing local config buckets such as `local_loopback_ip` and `private_lan_ipv4` before policy checks. It runs no model call, benchmark, fixture inference, inference endpoint call, serving switch, iOS integration, raw artifact, or production rollout. It also clarifies `Qwen3-VL-30B-A3B` as a future target candidate only, not used in this phase.
+- Phase 21-W-R1B retries the approved controlled 12-fixture Transformers+FastAPI benchmark exactly once after the endpoint bucket fix. It uses `smoke_004` through `smoke_015`, call count `12`, retry count `0`, and sanitized aggregate output only. The result is mixed/rejected with accepted count `0`, rejected count `12`, validation bucket `local_model_unavailable`, fallback bucket `blocked_for_provider_integration`, latency bucket `lt_1s x12`, no raw artifacts, no iOS/runtime/endpoint change, and `productionReady:false`.
 - Phase 21-H adds the controlled backend `local_model` route dry-run plan. It is a no-network/no-model/no-Qwen/no-benchmark plan gate for a future explicitly approved one-fixture, one-call, no-retry backend-internal local/private route test. It does not enable `local_model`, run fixture inference, add iOS integration, add app-facing or production endpoints, accept user-photo uploads, or change `productionReady:false`.
 
 Next phase:
 
-- Recommended next step is Phase 21-W-R1B: Approved Controlled 12-fixture Benchmark Retry After Endpoint Bucket Fix. It requires separate explicit user approval before any model calls.
+- Recommended next step is Phase 21-W-R2: Controlled Multi-fixture Benchmark Rejection Diagnostics. It should diagnose sanitized rejection buckets only by default; any new model calls or benchmark retry require separate explicit approval.
 - Do not start production cloud rollout without explicit approval
 - Production rollout remains blocked until a later explicit release phase
 
