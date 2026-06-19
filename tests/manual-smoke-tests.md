@@ -4325,6 +4325,25 @@ Known TODOs:
 
 - [ ] Phase 21-Z2C-SF-RUN requires separate explicit approval before any live SiliconFlow API call, API key use, image upload, model call, or benchmark.
 
+## Phase 21-Z2C-SF-RUN-PRE SiliconFlow Benchmark Dry-run Gate
+
+Check:
+
+- [x] Added a deterministic no-network SiliconFlow benchmark plan for fixtures `smoke_004` through `smoke_015`.
+- [x] Added `npm run qa:siliconflow:benchmark-dry-run` for sanitized dry-run output only.
+- [x] Added `npm run qa:siliconflow:benchmark-plan` for dry-run contract tests.
+- [x] Confirmed planned call count is `12`, actual call count is `0`, retry count is `0`, `benchmarkApproved:false`, `executionAllowed:false`, `networkCallsMade:false`, `apiKeyRead:false`, `fixtureImagesOpened:false`, and `productionReady:false`.
+- [x] Confirmed no SiliconFlow API call, API key creation/read/print/commit, provider runtime execution, image upload, fixture image read, model call, real benchmark, iOS runtime change, upload payload change, live cloud AI runtime, raw artifact, credential, secret, or production rollout.
+
+Manual Xcode check:
+
+- [ ] Launch only if desired; Xcode runtime behavior should be unchanged.
+- [ ] Confirm no Camera cloud AI entry, iOS provider/model key/direct call, SiliconFlow endpoint/API key in iOS, upload payload change, capture-context upload, app-facing endpoint, production rollout, provider raw output in app UI/history, RunPod raw URL, or Windows raw local model path dependency appears in Xcode.
+
+Known TODOs:
+
+- [ ] Phase 21-Z2C-SF-RUN retry requires this dry-run gate to pass and still requires the recorded exact approval phrase plus local ignored API key, network approval, fixture readiness, budget cap, and terms/pricing acknowledgement.
+
 ## Phase 21-Y-R1 Asia-first RunPod Region Selection Gate
 
 Check:

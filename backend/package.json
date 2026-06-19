@@ -52,7 +52,9 @@
     "qa:open-weight-vlm:local": "node scripts/run-open-weight-vlm-local-sandbox-smoke.mjs --run-local-model",
     "qa:open-weight-vlm:approved-one-fixture-local-model-smoke-retry": "node scripts/run-open-weight-vlm-approved-one-fixture-local-model-smoke-retry.mjs",
     "qa:siliconflow:readiness": "node scripts/check-siliconflow-photo-advisor-provider-readiness.mjs",
-    "qa:siliconflow:contract": "node --test tests/siliconflow-photo-advisor-provider-contract.test.mjs"
+    "qa:siliconflow:contract": "node --test tests/siliconflow-photo-advisor-provider-contract.test.mjs",
+    "qa:siliconflow:benchmark-dry-run": "node scripts/check-siliconflow-photo-advisor-benchmark-dry-run.mjs",
+    "qa:siliconflow:benchmark-plan": "node --test tests/siliconflow-photo-advisor-benchmark-dry-run.test.mjs"
   },
   "dependencies": {},
   "devDependencies": {}

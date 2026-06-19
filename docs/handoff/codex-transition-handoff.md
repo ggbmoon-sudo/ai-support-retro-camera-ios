@@ -125,6 +125,13 @@ Latest Phase 21-Z2C-SF handoff refresh check on 2026-06-20:
 - Next recommended phase is `Phase 21-Z2C-SF-RUN: Approved SiliconFlow 12-fixture API Benchmark`.
 - The RUN phase is not automatic; it requires separate explicit approval using the recorded wording plus local ignored prerequisites, network approval, and budget/terms acknowledgement.
 
+Latest Phase 21-Z2C-SF-RUN-PRE handoff refresh check on 2026-06-20:
+
+- Phase 21-Z2C-SF-RUN-PRE adds the missing no-network SiliconFlow benchmark dry-run gate before retrying RUN.
+- It adds a deterministic benchmark plan module, sanitized CLI, tests, and package scripts for `smoke_004` through `smoke_015`, planned calls `12`, actual calls `0`, retry `0`, no API key read, no fixture image open, no network call, and `productionReady:false`.
+- No SiliconFlow API call, API key creation/read/print/commit, provider runtime execution, image upload, fixture image read, model call, real benchmark, iOS runtime change, upload payload change, raw artifact, secret, or production rollout occurred.
+- Next safe phase remains `Phase 21-Z2C-SF-RUN: Approved SiliconFlow 12-fixture API Benchmark`, only after the dry-run gate passes and the recorded approval/prerequisites remain satisfied.
+
 Latest Phase 20-D preflight check on 2026-06-14:
 
 - Branch: `feat/phase-02-auth`.

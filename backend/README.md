@@ -24,6 +24,8 @@ Phase 21-Z2B-SF adds the SiliconFlow backend-only no-runtime contract. The backe
 
 Phase 21-Z2C-SF adds a docs-only approval request draft for a future SiliconFlow 12-fixture API benchmark. The future run is scoped to SiliconFlow, `Qwen/Qwen3-VL-30B-A3B-Instruct`, fixtures `smoke_004` through `smoke_015`, exactly 12 calls, retry 0, backend-mediated JavaScript / Node.js only, image detail low, stream false, max output tokens 256, sanitized aggregate report only, no iOS integration, no live camera upload, no raw image/base64/prompt/provider response/request payload logging, and `productionReady:false`. This draft does not approve execution and makes no API call, reads no key, uploads no image, runs no benchmark, and adds no provider runtime.
 
+Phase 21-Z2C-SF-RUN-PRE adds the missing no-network dry-run gate for that future benchmark. Use `npm run qa:siliconflow:benchmark-dry-run` for the sanitized plan summary and `npm run qa:siliconflow:benchmark-plan` for the dry-run tests. These scripts do not call SiliconFlow, read API keys, open fixture images, upload images, execute provider runtime, run a benchmark, or change `productionReady:false`.
+
 ## Run
 
 ```sh

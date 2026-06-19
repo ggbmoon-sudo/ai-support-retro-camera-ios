@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 21-Z2C-SF - Approval Request Draft for SiliconFlow 12-fixture API Benchmark
+Current phase: Phase 21-Z2C-SF-RUN-PRE - SiliconFlow Benchmark Dry-run Gate
 Status: completed
-Latest implementation: Phase 21-Z2C-SF adds a docs-only approval request draft for a future SiliconFlow 12-fixture API benchmark. It records exact future scope, copyable approval wording, operator confirmation checklist, local ignored prerequisites, sanitized output format, failure gates, and success criteria. Phase 21-Z2C-SF ran no SiliconFlow API call, created/read/printed/committed no API key, added no provider SDK/runtime execution, ran no model call, benchmark, inference endpoint call, RunPod provisioning, Qwen3-VL install/download/load/call, vLLM/SGLang/Ollama install/run, iOS runtime change, upload payload change, image upload, live cloud AI runtime, raw artifact, provider credential, secret, or production rollout.
+Latest implementation: Phase 21-Z2C-SF-RUN-PRE adds the missing no-network SiliconFlow benchmark dry-run gate before retrying the approved RUN phase. It adds a deterministic benchmark plan module, sanitized dry-run CLI, tests, and package scripts that pin fixtures `smoke_004` through `smoke_015`, planned calls `12`, actual calls `0`, retry `0`, `benchmarkApproved:false`, `executionAllowed:false`, `networkCallsMade:false`, `apiKeyRead:false`, `fixtureImagesOpened:false`, and `productionReady:false`. Phase 21-Z2C-SF-RUN-PRE ran no SiliconFlow API call, created/read/printed/committed no API key, added no provider SDK/runtime execution, opened no fixture image, uploaded no image, ran no model call, ran no real benchmark, changed no iOS runtime, changed no upload payload, added no live cloud AI runtime, committed no raw artifact/credential/secret, and did not change production readiness.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -73,7 +73,7 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-Z2C-SF-RUN: Approved SiliconFlow 12-fixture API Benchmark, but only after separate explicit approval using the recorded wording. Any provider API call, API key creation/read/use, provider account creation, provider SDK/runtime implementation, image upload, model call, benchmark, RunPod provisioning, Qwen3 install/download/load/call, inference endpoint call, iOS integration, upload payload change, or production rollout requires separate explicit approval before execution. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution beyond an explicitly approved future scope, provider API calls, model downloads, model cache changes, Qwen inference beyond an explicitly approved benchmark, fixture inference beyond explicit approval, local CV runtime, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, RunPod provisioning, or user-photo training / fine-tuning until explicitly requested.
+Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase remains Phase 21-Z2C-SF-RUN: Approved SiliconFlow 12-fixture API Benchmark, but only after the RUN-PRE dry-run gate passes and the recorded exact approval/prerequisites remain satisfied. Any provider API call, API key creation/read/use, provider account creation, provider SDK/runtime implementation, image upload, model call, benchmark, RunPod provisioning, Qwen3 install/download/load/call, inference endpoint call, iOS integration, upload payload change, or production rollout requires separate explicit approval before execution. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution beyond an explicitly approved future scope, provider API calls, model downloads, model cache changes, Qwen inference beyond an explicitly approved benchmark, fixture inference beyond explicit approval, local CV runtime, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, RunPod provisioning, or user-photo training / fine-tuning until explicitly requested.
 
 ---
 
@@ -418,6 +418,77 @@ Phase 21-Z2C-SF adds a docs-only approval request draft for a future SiliconFlow
 ### Ready for Next Phase
 
 Yes, for Phase 21-Z2C-SF-RUN only after separate explicit approval. Without that approval, do not call SiliconFlow APIs, read/use API keys, upload images, run model calls, run benchmarks, execute provider runtime, or change iOS/upload behavior.
+
+---
+
+## Phase 21-Z2C-SF-RUN-PRE - SiliconFlow Benchmark Dry-run Gate
+
+Status: completed
+Date: 2026-06-20
+
+### Summary
+
+Phase 21-Z2C-SF-RUN-PRE adds the missing no-network dry-run gate required before retrying the approved SiliconFlow 12-fixture API benchmark. It is preflight repair only and does not execute the benchmark.
+
+### Completed Work
+
+- Added a deterministic no-runtime SiliconFlow benchmark plan for `Phase 21-Z2C-SF-RUN-PRE`.
+- Pinned future RUN scope to SiliconFlow, `Qwen/Qwen3-VL-30B-A3B-Instruct`, fixtures `smoke_004` through `smoke_015`, planned calls `12`, actual calls `0`, retry `0`, image detail `low`, stream `false`, max output tokens `256`, and temperature `0.1`.
+- Added fail-closed evaluation blockers for fixture mismatch, call-count mismatch, retry mismatch, benchmark approval, execution enablement, network calls, API key reads, fixture image reads, and `productionReady:true`.
+- Added a sanitized dry-run CLI that prints no provider URL, API key, fixture path, raw image/base64, raw prompt, request payload, or provider response.
+- Added dry-run tests covering exact fixture tokens, zero actual calls, no API key read, no fixture image open, no fetch call, sanitized output, and unsafe mutation failures.
+- Added package scripts for the dry-run CLI and benchmark-plan tests.
+- Updated README/backend/iOS/roadmap/handoff/manual smoke docs.
+
+### Changed Files
+
+- `README.md`
+- `backend/README.md`
+- `backend/package.json`
+- `backend/scripts/check-siliconflow-photo-advisor-benchmark-dry-run.mjs`
+- `backend/src/providers/siliconflowPhotoAdvisorBenchmarkPlan.mjs`
+- `backend/tests/siliconflow-photo-advisor-benchmark-dry-run.test.mjs`
+- `docs/handoff/codex-transition-handoff.md`
+- `docs/phase-log.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `ios-app/README.md`
+- `tests/manual-smoke-tests.md`
+
+### Boundary Notes
+
+- Provider API calls executed: no
+- Model calls executed: no
+- Real benchmark executed: no
+- API keys created/read/printed/committed: no
+- Provider runtime execution added: no
+- Image upload executed: no
+- Fixture images opened: no
+- iOS runtime changed: no
+- Upload payload changed: no
+- Live camera cloud AI added: no
+- Raw artifacts committed: no
+- Secrets committed: no
+- `productionReady:false`
+
+### Verification
+
+- `git status`
+- `git diff --check`
+- backend tests
+- SiliconFlow provider contract tests
+- SiliconFlow readiness CLI
+- SiliconFlow benchmark dry-run CLI
+- SiliconFlow benchmark-plan tests
+- secret/artifact/provider/iOS/Camera/payload scans
+
+### Known TODOs
+
+- Phase 21-Z2C-SF-RUN retry still requires the recorded approval phrase, local ignored API key, network approval, fixture readiness, budget cap, terms/pricing acknowledgement, and sanitized reporting only.
+- Production rollout remains blocked.
+
+### Ready for Next Phase
+
+Yes, for Phase 21-Z2C-SF-RUN retry only after this dry-run gate passes and the recorded approval/prerequisites remain satisfied. Do not proceed to real SiliconFlow API calls, API key use, image upload, model calls, or benchmark execution unless the future RUN phase is explicitly active.
 
 ## Phase 21-Y-R1 - Asia-first RunPod Region Selection Gate
 
