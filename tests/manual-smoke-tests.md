@@ -439,6 +439,20 @@ Bounded route debug and benchmark finalization attempt:
 - [x] Confirm no controlled 12-fixture benchmark, one-fixture benchmark, real inference endpoint call, fixture inference, Qwen inference, Qwen3-VL-30B-A3B use, vLLM/SGLang/Ollama, serving switch, iOS runtime change, endpoint addition, raw artifact, secret, or production rollout occurred.
 - [x] Confirm next safe action is Phase 21-W-FINAL-R1 model runtime readiness reblocked; any further model or benchmark call requires separate explicit approval.
 
+## Phase 21-W-FINAL-R1
+
+Model runtime readiness reconnect:
+
+- [x] Confirm external fixture-token checker passed.
+- [x] Confirm external route-contract dry-run checker passed.
+- [x] Confirm the expected local/private port was not listening before restart.
+- [x] Confirm server restart was attempted through the approved local/private helper.
+- [x] Confirm a listener briefly appeared after restart.
+- [x] Confirm backend healthz blocked with `connection_refused`.
+- [x] Confirm backend live route dry-run was not run after healthz failed.
+- [x] Confirm no controlled 12-fixture benchmark, one-fixture benchmark, model call, real inference endpoint call, fixture inference, Qwen3-VL-30B-A3B use, vLLM/SGLang/Ollama, serving switch, iOS runtime change, endpoint addition, raw artifact, secret, or production rollout occurred.
+- [x] Confirm next safe action is Phase 21-W-FINAL-R1A persistent server process availability fix; any further model or benchmark call requires separate explicit approval.
+
 ## Phase 21-G2
 
 Missing feature + deferred roadmap register:

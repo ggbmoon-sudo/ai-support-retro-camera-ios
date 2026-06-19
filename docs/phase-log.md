@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 21-W-FINAL - Controlled Benchmark Finalization Attempt
-Status: blocked before model calls
-Latest implementation: Phase 21-W-FINAL was an approved bounded autonomous real-model route debug and benchmark finalization attempt. External static no-model contracts passed, and the external server error handler now preserves known sanitized buckets before generic `route_not_found`. The local/private server did not stay available after startup, backend healthz blocked with `connection_refused`, and the phase stopped with model-call usage `0/14`, diagnostic calls `0`, final benchmark calls `0`, retry count `0`. Roadmap next is Phase 21-W-FINAL-R1: Model Runtime Readiness Reblocked.
+Current phase: Phase 21-W-FINAL-R1 - Model Runtime Readiness Reblocked
+Status: persistent server process availability blocker
+Latest implementation: Phase 21-W-FINAL-R1 attempted runtime reconnect only. External static no-model contracts passed, the expected local/private port was not listening, and a safe restart was attempted. A listener briefly appeared, but backend healthz still blocked with `connection_refused` and the listener exited. Backend live route dry-run was not run after healthz failed. Roadmap next is Phase 21-W-FINAL-R1A: Persistent Server Process Availability Fix.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -73,9 +73,58 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-W-FINAL-R1: Model Runtime Readiness Reblocked. Any further benchmark/model calls require separate explicit approval before execution. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution beyond an explicitly approved future scope, model downloads, model cache changes, Qwen inference beyond an explicitly approved local/private benchmark, fixture inference beyond explicit approval, local CV runtime, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, or user-photo training / fine-tuning until explicitly requested.
+Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-W-FINAL-R1A: Persistent Server Process Availability Fix. Any further benchmark/model calls require separate explicit approval before execution. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution beyond an explicitly approved future scope, model downloads, model cache changes, Qwen inference beyond an explicitly approved local/private benchmark, fixture inference beyond explicit approval, local CV runtime, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, or user-photo training / fine-tuning until explicitly requested.
 
 ---
+
+## Phase 21-W-FINAL-R1 - Model Runtime Readiness Reblocked
+
+Status: persistent server process availability blocker
+Date: 2026-06-19
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase 21-W-FINAL-R1 attempted to restore the live local/private server runtime without running model inference or any benchmark. Static external no-model contracts still passed, but backend healthz remained blocked with `connection_refused` after a safe restart attempt.
+
+### Completed Work
+
+- Reconfirmed external static fixture-token contract checker passes.
+- Reconfirmed external static route-contract dry-run checker passes.
+- Confirmed no server process was listening on the expected local/private port before restart.
+- Started the server through the approved local/private startup helper.
+- Observed a listener briefly appear, then disappear after backend healthz blocked.
+- Stopped before backend live route dry-run because healthz failed.
+- Added sanitized report and updated roadmap/handoff/manual docs.
+
+### Changed Files
+
+- `README.md`
+- `backend/README.md`
+- `docs/phase-21-w-final-r1-model-runtime-readiness-reblocked.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `ios-app/README.md`
+- `tests/manual-smoke-tests.md`
+
+### Tests and Checks
+
+- External `server.py` syntax check: passed.
+- External `check_fixture_token_contract.py`: passed.
+- External `check_route_contract_dry_run.py`: passed.
+- Backend healthz preflight: blocked with `connection_refused`.
+- Backend live route dry-run after restart: not run because healthz failed.
+- No controlled benchmark, one-fixture benchmark, model call, real inference endpoint call, fixture inference, Qwen3-VL-30B-A3B use, vLLM/SGLang/Ollama, serving switch, iOS runtime change, raw artifact, secret, or production rollout occurred.
+
+### Known TODOs
+
+- Fix persistent local/private server process availability after startup.
+- Keep follow-up diagnostics sanitized and no-model unless separately approved.
+
+### Ready for Next Phase
+
+Ready for Phase 21-W-FINAL-R1A: Persistent Server Process Availability Fix. Any model call or benchmark retry requires separate explicit approval.
 
 ## Phase 21-W-FINAL - Controlled Benchmark Finalization Attempt
 
