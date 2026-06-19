@@ -424,6 +424,21 @@ Route contract dry-run follow-up:
 - [x] Confirm no controlled 12-fixture benchmark, one-fixture benchmark, model call, real inference endpoint call, fixture inference, Qwen inference, Qwen3-VL-30B-A3B use, vLLM/SGLang/Ollama, serving switch, iOS runtime change, raw artifact, secret, or production rollout occurred.
 - [x] Confirm next safe action is Phase 21-W-GOAL-R2-R2A-R2 healthz recheck / runtime restart follow-up; any further model or benchmark call requires separate explicit approval.
 
+## Phase 21-W-FINAL
+
+Bounded route debug and benchmark finalization attempt:
+
+- [x] Confirm total model-call cap was `14`, diagnostic cap was `2`, final benchmark cap was `12`, and retry count was `0`.
+- [x] Confirm external fixture-token checker passed.
+- [x] Confirm external route-contract dry-run checker passed.
+- [x] Confirm external route error mapping preserves known sanitized buckets before generic `route_not_found`.
+- [x] Confirm backend live dry-run was unavailable while the server was down.
+- [x] Confirm safe local/private server startup was attempted through the approved helper.
+- [x] Confirm backend healthz blocked with `connection_refused`.
+- [x] Confirm diagnostic model calls used `0`, final benchmark calls used `0`, total model calls used `0`, and retry count stayed `0`.
+- [x] Confirm no controlled 12-fixture benchmark, one-fixture benchmark, real inference endpoint call, fixture inference, Qwen inference, Qwen3-VL-30B-A3B use, vLLM/SGLang/Ollama, serving switch, iOS runtime change, endpoint addition, raw artifact, secret, or production rollout occurred.
+- [x] Confirm next safe action is Phase 21-W-FINAL-R1 model runtime readiness reblocked; any further model or benchmark call requires separate explicit approval.
+
 ## Phase 21-G2
 
 Missing feature + deferred roadmap register:

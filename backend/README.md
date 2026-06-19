@@ -1382,6 +1382,8 @@ Phase 21-W-GOAL-R2-R2 diagnoses and partially fixes the post-readiness `local_mo
 
 Phase 21-W-GOAL-R2-R2A follows up the live no-model route-contract dry-run. External static checkers still pass, and the initial backend live dry-run still failed closed with `route_not_found`, so the cause bucket is `stale_server_process`. The local/private server listener was restarted with the approved helper, but post-reload healthz blocked with `connection_refused`; the backend live dry-run was not rerun after healthz failed. No model call, benchmark, real inference endpoint call, fixture inference, Qwen3-VL-30B-A3B use, serving switch, iOS runtime change, raw artifact, secret, or production rollout occurred. `productionReady:false` remains locked.
 
+Phase 21-W-FINAL was an approved bounded route-debug and controlled benchmark finalization attempt. The total model-call cap was `14`, the final benchmark cap was `12`, and retry count was `0`, but no model calls were made because live healthz/model readiness blocked with `connection_refused` after server restart. The external FastAPI error handler now preserves known sanitized route detail buckets before generic `route_not_found` mapping. External static no-model contract checks passed, but backend live route/healthz was unavailable, so the final benchmark did not run. No Qwen3-VL-30B-A3B use, vLLM/SGLang/Ollama, serving switch, iOS runtime change, endpoint addition, raw artifact, secret, or production rollout occurred. `productionReady:false` remains locked.
+
 ## Future TODO
 
 - Add authenticated backend boundary only after explicit approval.
