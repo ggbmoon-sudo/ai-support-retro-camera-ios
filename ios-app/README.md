@@ -10,6 +10,8 @@ Phase 21-Y-R1 adds an Asia-first backend planning gate for Korea, Taiwan, and Ho
 
 Phase 21-Z adds backend/docs-only Asia-first RunPod deployment prep and a placeholder-only config shape. It creates no RunPod resource, provisions no GPU, installs/downloads/loads/calls no Qwen3 model, runs no benchmark, calls no inference endpoint, and adds no iOS runtime, Camera cloud AI entry, provider/model key, direct RunPod call, upload payload change, app-facing endpoint, production endpoint, RunPod raw URL, provider credential, SSH key, real region ID, or production rollout.
 
+Phase 21-Z-R1 adds backend/docs-only API-first serverless VLM alternative evaluation. SiliconFlow and DashScope / Alibaba Cloud Model Studio / 阿里雲百煉 are candidate providers only, RunPod remains fallback/comparison, and no provider API call, API key, provider SDK, direct iOS provider call, upload payload change, live cloud AI runtime, app-facing endpoint, provider raw URL, account ID, region ID, credential, secret, or production rollout is added.
+
 No local CV runtime, Camera cloud AI runtime entry, Auto-Trigger runtime, WSS runtime, iOS provider/model key, direct provider/model call, iOS upload payload change, capture-context upload, app-facing endpoint, production rollout, Windows local path dependency, or local model server URL dependency is added.
 
 Planned stack:

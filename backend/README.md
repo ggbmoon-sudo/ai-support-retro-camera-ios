@@ -16,6 +16,8 @@ Phase 21-Y-R1 adds the Asia-first region/provider selection gate for Korea, Taiw
 
 Phase 21-Z adds Asia-first RunPod deployment prep without model calls. It documents the A100 80GB Asia-near selection checklist, fallback provider/GPU order, security/network/storage/budget guardrails, no-model healthz/contract/dry-run target shape, batch/queue startup-shutdown checklist, localization QA, and `backend/config/open-weight-vlm.runpod.example.json` as a placeholder-only bucket config. It does not create RunPod resources, provision GPU, create provider account resources, install/download/load/call `Qwen3-VL-30B-A3B`, run model calls, run benchmarks, call inference endpoints, install/run vLLM/SGLang/Ollama, switch serving stack, modify the external Windows server runtime, add iOS integration, add endpoints, commit raw URLs/real region IDs/credentials/secrets, or change `productionReady:false`.
 
+Phase 21-Z-R1 adds a backend/docs-only API-first serverless VLM alternative evaluation gate. SiliconFlow and DashScope / Alibaba Cloud Model Studio / 阿里雲百煉 are candidate providers only; RunPod A100 80GB remains fallback/comparison. The future adapter direction is backend-mediated and provider-agnostic across `siliconflow`, `dashscope`, and `runpod_self_hosted_fallback`, with raw provider text blocked from app display and the existing backend validator remaining the source of truth. Phase 21-Z-R1 adds no provider SDK/runtime, provider API call, API key, RunPod resource, Qwen3 install/download/load/call, model call, benchmark, inference endpoint call, iOS runtime change, upload payload change, raw artifact, credential, secret, or production rollout.
+
 ## Run
 
 ```sh

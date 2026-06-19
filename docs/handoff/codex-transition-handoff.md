@@ -79,6 +79,18 @@ Latest Phase 20-C handoff refresh check on 2026-06-14:
 - Next planned phase is `Phase 20-D: First approved local real-model smoke run`, but it must start only after explicit user request. It must remain backend-only, local/self-hosted, ignored-config-only, approved-local-fixture-only, sanitized-output-only, and production-blocked.
 - This handoff refresh itself is documentation-only and should be committed separately if accepted.
 
+Latest Phase 21-Z-R1 handoff refresh check on 2026-06-19:
+
+- Branch: `feat/phase-02-auth`.
+- Use upstream shorthand such as `@{u}`; do not assume `origin/main` exists in this clone.
+- Phase 21-Z was already committed and upstream-synced before Phase 21-Z-R1 began.
+- Phase 21-Z-R1 adds a docs-only API-first serverless VLM alternative gate before RunPod provisioning.
+- SiliconFlow and DashScope / Alibaba Cloud Model Studio / 阿里雲百煉 are candidate providers only.
+- RunPod A100 80GB remains the self-hosted fallback/comparison path.
+- No provider API call, API key creation, provider SDK/runtime, RunPod provisioning, Qwen3 install/download/load/call, model call, benchmark, inference endpoint call, iOS runtime change, upload payload change, raw artifact, provider credential, secret, or production rollout occurred.
+- Next recommended phase is `Phase 21-Z2A: SiliconFlow / DashScope Account + Pricing + Terms Verification Gate`.
+- Any provider API call, key creation, image upload, model call, benchmark, RunPod provisioning, Qwen3 install/download/load/call, iOS integration, upload payload change, or production rollout requires separate explicit approval.
+
 Latest Phase 20-D preflight check on 2026-06-14:
 
 - Branch: `feat/phase-02-auth`.

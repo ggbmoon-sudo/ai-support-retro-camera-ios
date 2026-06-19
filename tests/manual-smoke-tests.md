@@ -4236,6 +4236,28 @@ Known TODOs:
 - [ ] Phase 21-Z1 requires separate explicit approval before any RunPod instance inspection/provisioning or provider-console pricing verification.
 - [ ] Phase 21-Z2 requires separate explicit approval before any Qwen3 install/download/load/call, benchmark, or inference endpoint call.
 
+## Phase 21-Z-R1 API-first Serverless VLM Alternative Evaluation Gate
+
+Check:
+
+- [x] Confirmed Phase 21-Z-R1 is docs-only and was added as an addendum because Phase 21-Z was already committed/pushed.
+- [x] Added `docs/phase-21-z-r1-api-first-serverless-vlm-alternative-evaluation-gate.md`.
+- [x] Recorded SiliconFlow and DashScope / Alibaba Cloud Model Studio / 阿里雲百煉 as candidate providers only.
+- [x] Confirmed RunPod A100 80GB remains fallback/comparison and was not removed.
+- [x] Added cost model, privacy/legal/data-governance, product-mode, provider-agnostic adapter, and future benchmark gates.
+- [x] Confirmed no provider API call, API key creation/commit, provider SDK/runtime, RunPod provisioning, Qwen3 install/download/load/call, model call, benchmark, inference endpoint call, image upload, iOS runtime change, upload payload change, live cloud AI runtime, raw artifact, credential, secret, or production rollout.
+- [x] Kept `productionReady:false`.
+
+Manual Xcode check:
+
+- [ ] Launch only if desired; Xcode runtime behavior should be unchanged.
+- [ ] Confirm no Camera cloud AI entry, iOS provider/model key/direct call, upload payload change, capture-context upload, app-facing endpoint, production rollout, SiliconFlow/DashScope raw URL, provider credential, API key, RunPod raw URL, real region ID, or Windows raw local model path dependency appears in Xcode.
+
+Known TODOs:
+
+- [ ] Phase 21-Z2A should verify SiliconFlow / DashScope account feasibility, pricing, terms, retention/training policy, Hong Kong/Taiwan/Korea latency expectations, rate limits, and structured-output behavior without model calls or benchmarks.
+- [ ] Phase 21-Z2C requires separate explicit approval before any provider API VLM benchmark, model call, or fixture execution.
+
 ## Phase 21-Y-R1 Asia-first RunPod Region Selection Gate
 
 Check:
