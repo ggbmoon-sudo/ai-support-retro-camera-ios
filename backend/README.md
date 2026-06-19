@@ -1370,6 +1370,8 @@ Phase 21-W-R2C2 adds `src/qa/openWeightVlmBackendContractEchoValidation.mjs` and
 
 Phase 21-W-R2C-FINAL fixes the no-model contract echo validation mismatch. The external server now returns canonical no-model fields for approved, unsupported, and missing token responses; the backend CLI prefers the safe default no-model loopback path unless explicitly overridden and exits cleanly after validation. `npm run qa:open-weight-vlm:backend-contract-echo-validation` now passes with approved token count `13`, unsupported bucket `unsupported_fixture_token`, missing bucket `missing_fixture_token`, and `productionReady:false`.
 
+Phase 21-W-R3 was explicitly approved to retry the controlled 12-fixture Transformers+FastAPI benchmark after contract echo validation passed. External and backend contract echo checks passed first, but `npm run qa:open-weight-vlm:local-model-healthz-preflight` blocked safely with sanitized bucket `model_not_loaded` before any benchmark/model call. Actual call count stayed `0`, retry count stayed `0`, no inference endpoint was called, no serving switch occurred, Qwen3-VL-30B-A3B was not used, no raw artifacts were printed or persisted, and `productionReady:false` remains locked. Roadmap next is Phase 21-W-R3-R1 healthz block resolution.
+
 ## Future TODO
 
 - Add authenticated backend boundary only after explicit approval.

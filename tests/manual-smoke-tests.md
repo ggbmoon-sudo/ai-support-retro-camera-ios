@@ -342,6 +342,18 @@ Backend no-model contract echo validation pass:
 - [x] Confirm no model call, benchmark, fixture inference, inference endpoint call, serving switch, iOS runtime change, endpoint addition, raw artifact, secret, or production rollout occurred.
 - [x] Confirm next safe action is Phase 21-W-R3 only after separate explicit approval.
 
+## Phase 21-W-R3
+
+Controlled 12-fixture benchmark retry after contract echo fix:
+
+- [x] Confirm external no-model contract checker passed before healthz.
+- [x] Confirm backend no-model contract echo validation passed before healthz.
+- [x] Confirm approved run scope was exactly `smoke_004` through `smoke_015`, call count `12`, retry count `0`.
+- [x] Confirm healthz preflight blocked with `model_not_loaded` before benchmark/model calls.
+- [x] Confirm actual call count `0`, retry count `0`, accepted count `0`, rejected count `0`.
+- [x] Confirm no inference endpoint call, model call, benchmark, fixture inference, Qwen3-VL-30B-A3B use, serving switch, iOS runtime change, endpoint addition, raw artifact, secret, or production rollout occurred.
+- [x] Confirm next safe action is Phase 21-W-R3-R1 healthz block resolution.
+
 ## Phase 21-G2
 
 Missing feature + deferred roadmap register:

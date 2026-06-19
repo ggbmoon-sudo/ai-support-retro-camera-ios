@@ -16,13 +16,13 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**Phase 21-W-R3: Approved Controlled 12-fixture Benchmark Retry After Contract Echo Fix**
+**Phase 21-W-R3-R1: Controlled 12-fixture Benchmark Healthz Block Resolution**
 
-Reason: Phase 21-W-R2C-FINAL fixed the end-to-end no-model contract echo mismatch. The external checker passes, backend no-model contract echo validation passes, approved token count is `13`, unsupported token bucket is `unsupported_fixture_token`, and missing token bucket is `missing_fixture_token`.
+Reason: Phase 21-W-R3 was explicitly approved to retry the controlled 12-fixture Transformers+FastAPI benchmark after contract echo validation passed, but the required healthz preflight blocked before any model or benchmark calls with sanitized bucket `model_not_loaded`.
 
 Marker note: Phase 21-W-R2 was implemented and pushed, but its visible commit marker missed the final `e` in `unavailable`. The corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable` without model calls, benchmarks, endpoint calls, external server edits, runtime changes, raw artifacts, secrets, or production rollout.
 
-Phase 21-W-R3 requires separate explicit user approval before any model call or benchmark execution. Do not call the inference route, rerun the controlled benchmark, run model calls, call SGLang/vLLM/Ollama, run quantization benchmarks, run concurrency benchmarks, run Live Advisor simulation, download models, switch serving stacks, add app-facing endpoints, add iOS integration, or start production rollout without separate explicit approval.
+Phase 21-W-R3-R1 should resolve the local/private healthz `model_not_loaded` blocker only. Do not call the inference route, rerun the controlled benchmark, run model calls, call SGLang/vLLM/Ollama, run quantization benchmarks, run concurrency benchmarks, run Live Advisor simulation, download models, switch serving stacks, add app-facing endpoints, add iOS integration, or start production rollout without separate explicit approval.
 
 ## How Codex Should Use This File
 
@@ -84,6 +84,7 @@ Use cautious wording and re-check source docs before implementation:
 - Phase 21-W-R2C fixes the external Windows FastAPI server no-model fixture-token contract and route-error mapping for approved tokens `smoke_001` and `smoke_004` through `smoke_015`. The external contract check passed with `modelLoaded:false`, `inferenceEndpointCalled:false`, `benchmarkRun:false`, no raw leakage, and `productionReady:false`. It adds no iOS runtime change, app endpoint, serving-stack switch, model download, Qwen3-VL-30B-A3B call, or production rollout.
 - Phase 21-W-R2C2 adds backend-side no-model contract echo validation and a CLI. The external checker passed, and the backend reached a local/private no-model contract echo endpoint, but validation blocked because unsupported/missing token buckets were `unknown` instead of explicit sanitized buckets. No model call, benchmark, fixture inference, inference endpoint call, serving switch, iOS integration, raw artifact, secret, or production rollout occurred.
 - Phase 21-W-R2C-FINAL fixes the no-model contract echo mismatch end to end. The external checker and backend contract echo validation both pass with approved token count `13`, unsupported bucket `unsupported_fixture_token`, missing bucket `missing_fixture_token`, no model call, no benchmark, no inference endpoint call, no fixture inference, no serving switch, no iOS runtime change, no raw artifact, no secret, and `productionReady:false`.
+- Phase 21-W-R3 attempted the explicitly approved controlled 12-fixture Transformers+FastAPI benchmark retry after contract echo validation passed, using only `smoke_004` through `smoke_015`, but healthz preflight blocked with `model_not_loaded` before any benchmark/model calls. Call count stayed `0`, retry count stayed `0`, no inference endpoint call occurred, no Qwen3-VL-30B-A3B switch/download/load/benchmark/call occurred, no raw artifact or secret was printed/persisted, and `productionReady:false` remains locked.
 - `productionReady:false` remains the cross-phase default.
 
 Source references for future operators include `docs/phase-log.md`, `docs/handoff/codex-transition-handoff.md`, `docs/missing-features-and-deferred-roadmap-register.md`, and the Phase 20/21 backend gateway docs.

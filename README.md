@@ -111,11 +111,12 @@ Current phase:
 - Phase 21-W-R2C fixes the external Windows FastAPI server no-model fixture-token contract and route-error mapping for approved tokens `smoke_001` and `smoke_004` through `smoke_015`. It adds a no-model external contract check and docs only in the main repo; no model call, benchmark, inference endpoint call, serving switch, iOS integration, endpoint addition, raw artifact, secret, or production rollout occurred.
 - Phase 21-W-R2C2 adds backend-side no-model contract echo validation. The external checker still passes and a local/private no-model HTTP endpoint is reachable, but validation blocked because unsupported/missing token responses returned `unknown` buckets instead of explicit sanitized buckets.
 - Phase 21-W-R2C-FINAL fixes the no-model contract echo mismatch end to end. External checker and backend validation now pass with unsupported bucket `unsupported_fixture_token`, missing bucket `missing_fixture_token`, approved token count `13`, and no model call, benchmark, inference endpoint call, raw artifact, secret, or production rollout.
+- Phase 21-W-R3 was explicitly approved to retry the controlled 12-fixture Transformers+FastAPI benchmark after contract echo validation passed, but healthz preflight blocked with `model_not_loaded` before any benchmark/model calls. Call count stayed `0`, retry count stayed `0`, no inference endpoint was called, no Qwen3-VL-30B-A3B switch/download/load/benchmark/call occurred, and `productionReady:false` remains locked.
 - Phase 21-H adds the controlled backend `local_model` route dry-run plan. It is a no-network/no-model/no-Qwen/no-benchmark plan gate for a future explicitly approved one-fixture, one-call, no-retry backend-internal local/private route test. It does not enable `local_model`, run fixture inference, add iOS integration, add app-facing or production endpoints, accept user-photo uploads, or change `productionReady:false`.
 
 Next phase:
 
-- Recommended next step is Phase 21-W-R3: Approved Controlled 12-fixture Benchmark Retry After Contract Echo Fix. It requires separate explicit user approval before any model call or benchmark execution.
+- Recommended next step is Phase 21-W-R3-R1: Controlled 12-fixture Benchmark Healthz Block Resolution. Any later benchmark retry requires separate explicit user approval before model or benchmark calls.
 - Do not start production cloud rollout without explicit approval
 - Production rollout remains blocked until a later explicit release phase
 
