@@ -12,6 +12,8 @@ Phase 21-X is a documentation-only review gate for that accepted result. It mark
 
 Phase 21-Y is a backend/docs-only target runtime plan. It selects RunPod on-demand A100 80GB as the first target benchmark environment and `Qwen3-VL-30B-A3B` as the target model candidate, with the existing Qwen2.5 / Qwen VLM Transformers+FastAPI path retained as a correctness baseline only. The first product serving pattern is post-capture batch/queue Photo Advisor with scheduled 2-3 hour GPU windows and a rough `$80-$170/month` cost assumption to verify before purchase. Phase 21-Y runs no model call, benchmark, inference endpoint call, RunPod provisioning, Qwen3-VL install/download/load/call, vLLM/SGLang/Ollama install/run, serving switch, iOS integration, raw artifact, or production rollout.
 
+Phase 21-Y-R1 adds the Asia-first region/provider selection gate for Korea, Taiwan, and Hong Kong. RunPod A100 80GB remains primary only if Asia-near availability and cost are acceptable; Japan/Tokyo-like or Korea/Seoul-like regions are preferred, Singapore-like Asia is second, and US West is only a cost/functionality fallback rather than the first Asia latency baseline. Phase 21-Z must verify Asia-near A100 availability, current price, estimated daily 2-3 hour cost, storage/cache cost, fallback decision, no public inference endpoint, budget hard stop, manual kill switch, and no committed credentials before any provisioning. No RunPod provisioning, model call, benchmark, Qwen3 install/download/load/call, iOS integration, raw artifact, credential, secret, or production rollout occurs in Phase 21-Y-R1.
+
 ## Run
 
 ```sh

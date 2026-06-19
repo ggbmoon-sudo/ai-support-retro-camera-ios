@@ -13,6 +13,7 @@ The next benchmark path should move toward the intended deployment class instead
 - Primary provider target: RunPod.
 - Primary GPU target: on-demand A100 80GB.
 - Primary model candidate: `Qwen3-VL-30B-A3B`.
+- Initial service audience: Korea, Taiwan, Hong Kong.
 - Product serving pattern: post-capture batch/queue Photo Advisor, not live camera real-time.
 - Current Qwen2.5 / existing Qwen VLM Transformers+FastAPI path: retained as the correctness baseline only.
 - Cost assumption: daily 2-3 hour GPU windows, roughly `$80-$170/month` class, to be verified against current provider pricing before purchase.
@@ -21,9 +22,41 @@ This phase is planning only. It creates no RunPod resource, installs no model, d
 
 ## Decision
 
-`decisionBucket`: `target_runtime_plan_runpod_a100_batch_queue`
+`decisionBucket`: `target_runtime_plan_runpod_a100_batch_queue_asia_first`
 
-RunPod on-demand A100 80GB is the first target benchmark environment because the product question is no longer whether the backend validator can accept model output. The useful next question is whether the target model and deployment class can produce accepted, safe Photo Advisor results with latency and cost suitable for a queued post-capture flow.
+RunPod on-demand A100 80GB is the first target benchmark environment if Asia-near availability and cost are acceptable because the product question is no longer whether the backend validator can accept model output. The useful next question is whether the target model and deployment class can produce accepted, safe Photo Advisor results with latency and cost suitable for a queued post-capture flow for Korea, Taiwan, and Hong Kong users.
+
+## Asia-first Service Audience and Region Strategy
+
+- Primary user regions: Korea, Taiwan, Hong Kong.
+- `userRegionBucket`: `korea_taiwan_hong_kong`
+- `backendRegionPreference`: `asia_near`
+- `gpuRegionPreference`: `asia_near`
+- Product serving path remains post-capture batch/queue Photo Advisor.
+- Live camera / real-time cloud analysis remains out of scope.
+- US/EU GPU latency must not be treated as the first user-latency baseline.
+
+## Provider and GPU Region Decision
+
+Primary:
+
+- RunPod on-demand A100 80GB.
+- Asia-near region if available and affordable.
+
+Region preference:
+
+1. Japan/Tokyo-like or Korea/Seoul-like Asia-near region if available.
+2. Singapore-like Asia region if Japan/Korea-like capacity is unavailable.
+3. US West only as a cost/functionality fallback, not the Asia latency baseline.
+
+Fallback:
+
+- RunPod H100 80GB Asia-near short benchmark only if A100 latency fails or A100 Asia availability is poor.
+- 48GB GPU only for a later quantized experiment, not the first `Qwen3-VL-30B-A3B` target baseline.
+- Vast.ai only as a later cheap experiment, not the first trusted beta baseline.
+- Lambda/AWS/GCP only as later reliability/compliance/cost comparison, not the initial cheap path.
+
+Do not hardcode real provider region IDs, RunPod pod IDs, raw URLs, account IDs, API keys, provider tokens, SSH keys, or credentials unless a future approved provisioning phase verifies them and keeps secrets out of the repo.
 
 ## Why Local Windows Benchmarking Is Not Enough
 
@@ -81,6 +114,7 @@ This path deliberately avoids live viewfinder analysis, WSS, Auto-Trigger, 1 FPS
 ## Cost and Risk Plan
 
 - Primary target: RunPod on-demand A100 80GB.
+- Primary region target: Asia-near if available and affordable for Korea, Taiwan, and Hong Kong users.
 - Initial operating window: daily 2-3 hours for internal/beta testing.
 - Monthly cost assumption: roughly `$80-$170/month` class, subject to actual RunPod pricing, utilization, cold-start overhead, storage, bandwidth, and scheduling behavior.
 - Pricing must be verified before purchase or provisioning.
@@ -91,6 +125,7 @@ This path deliberately avoids live viewfinder analysis, WSS, Auto-Trigger, 1 FPS
 - Job queue limits and per-user quotas should be defined before production.
 - Manual kill switch is required before any rollout.
 - Budget hard stop is required before production.
+- Phase 21-Z must verify RunPod A100 80GB Asia-near availability, current price, estimated daily 2-3 hour cost, storage/cache cost, fallback decision if Asia-near A100 is unavailable, no public inference endpoint, budget hard stop, manual kill switch, and no committed credentials before any provisioning.
 
 No credentials, provider IDs, API keys, SSH keys, raw URLs, or account-specific identifiers are committed.
 
@@ -116,8 +151,27 @@ Compare against Phase 21-W baseline:
 - Cold-start latency.
 - Warm-start latency.
 - Cost per accepted result.
+- App/user region bucket.
+- Backend region bucket.
+- GPU region bucket.
+- Queue wait bucket.
+- p50 and p95 result-ready time from Asia user perspective.
 - VRAM bucket.
 - Queue throughput.
+
+The batch/queue UX can tolerate seconds-to-minutes better than live camera. Live camera cloud AI remains a separate future architecture.
+
+## Localization QA Plan
+
+Future Qwen3 benchmark review should include:
+
+- Hong Kong Traditional Chinese tone.
+- Taiwan Traditional Chinese tone.
+- Korean output QA.
+- English fallback only.
+- No harsh retake-first language.
+- No score/rating/aesthetic grading.
+- No sensitive inference.
 
 ## Serving Stack Path
 
@@ -130,10 +184,10 @@ Compare against Phase 21-W baseline:
 
 ## Recommended Next Phases
 
-1. `Phase 21-Z: RunPod A100 Qwen3-VL Deployment Prep Without Model Calls`
-2. `Phase 21-Z1: RunPod Instance Security + No-model Contract Gate`
-3. `Phase 21-Z2: Approved Qwen3-VL-30B-A3B 12-fixture Benchmark on RunPod A100`
-4. `Phase 21-Z3: A100 vs H100 Latency/Cost Decision`, if needed
+1. `Phase 21-Z: Asia-first RunPod A100 Qwen3-VL Deployment Prep Without Model Calls`
+2. `Phase 21-Z1: Asia-first RunPod Instance Security + No-model Contract Gate`
+3. `Phase 21-Z2: Approved Qwen3-VL-30B-A3B 12-fixture Benchmark on RunPod A100 Asia-near`
+4. `Phase 21-Z3: A100 vs H100 Asia latency/cost decision`, if needed
 5. `Phase 22-A: Debug-only iOS Backend Integration Plan`, only after target server benchmark review
 
 Any phase that provisions RunPod, installs/downloads/loads Qwen3-VL-30B-A3B, calls inference, or runs a benchmark requires separate explicit approval.

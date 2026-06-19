@@ -4212,6 +4212,31 @@ Known TODOs:
 - [ ] Physical-device layout should be checked for camera-shell proportions, control spacing, and one-handed reach.
 - [ ] Future real camera capability detection can be considered only in a later explicit phase.
 - [ ] Phase 15 remains blocked until Phase 14B is reviewed, committed, pushed, and read-only confirmed.
+## Phase 21-Y-R1 Asia-first RunPod Region Selection Gate
+
+Check:
+
+- [x] Confirmed Phase 21-Y-R1 is docs/planning only.
+- [x] Recorded initial user regions: Korea, Taiwan, Hong Kong.
+- [x] Recorded `userRegionBucket:korea_taiwan_hong_kong`, `backendRegionPreference:asia_near`, and `gpuRegionPreference:asia_near`.
+- [x] Confirmed post-capture batch/queue Photo Advisor remains the product serving path.
+- [x] Confirmed live camera / real-time cloud analysis remains out of scope.
+- [x] Confirmed US/EU GPU capacity is fallback, not the first Asia latency baseline.
+- [x] Added Phase 21-Z gate for Asia-near A100 availability, current price, daily 2-3 hour cost, storage/cache cost, fallback decision, no public endpoint, budget hard stop, manual kill switch, and no committed credentials.
+- [x] Added future Asia user-perspective latency/cost buckets and localization QA for Hong Kong Traditional Chinese, Taiwan Traditional Chinese, Korean, and English fallback only.
+- [x] Confirmed no RunPod provisioning, model call, benchmark, real inference endpoint call, Qwen3-VL-30B-A3B install/download/load/call, vLLM/SGLang/Ollama install/run, iOS runtime change, raw artifact, provider credential, secret, or production rollout.
+- [x] Kept `productionReady:false`.
+
+Manual Xcode check:
+
+- [ ] Launch only if desired; Xcode runtime behavior should be unchanged.
+- [ ] Confirm no Camera cloud AI entry, iOS provider/model key/direct call, upload payload change, capture-context upload, app-facing endpoint, production rollout, RunPod raw URL, provider credential, SSH key, region ID dependency, or Windows raw local model path dependency appears in Xcode.
+
+Known TODOs:
+
+- [ ] Phase 21-Z should remain no-provisioning by default and verify Asia-near RunPod A100 availability/cost before any resource creation.
+- [ ] Any RunPod provisioning, Qwen3 install/download/load/call, model call, benchmark, or inference endpoint call requires separate explicit approval.
+
 ## Phase 21-Y RunPod A100 Qwen3-VL Runtime and Batch Queue Plan
 
 Check:
