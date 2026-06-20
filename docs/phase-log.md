@@ -12600,3 +12600,64 @@ Phase OD-R2 adds the safe dataset/source manifest schema layer for the OD-R rese
 ### Next Phase
 
 Recommended next OD-R phase: `Phase OD-R3 - Parameter Mining Bot Dry-run`. Not ready for production rollout.
+
+## Phase OD-R3 - Parameter Mining Bot Dry-run
+
+Status: completed
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase OD-R3 adds a backend-only Parameter Mining Bot dry-run for the OD-R research / parameter / dataset / labeling / benchmark / fine-tune preparation track. It connects the OD-R1 Aesthetic Parameter Registry and OD-R2 Dataset / Source Manifest Schema, then emits sanitized label-job planning output from in-memory synthetic manifests only.
+
+### Completed Work
+
+- Added `backend/src/qa/aestheticParameterMiningBotDryRun.mjs`.
+- Added `backend/scripts/run-aesthetic-parameter-mining-bot-dry-run.mjs`.
+- Added `backend/tests/aesthetic-parameter-mining-bot-dry-run.test.mjs`.
+- Added `npm run qa:aesthetic-parameters:bot-dry-run`.
+- Added `docs/od-r3-parameter-mining-bot-dry-run.md`.
+- Updated roadmap, README, backend/iOS README, handoff, and manual smoke notes for OD-R3.
+
+### Changed Files
+
+- `backend/package.json`
+- `backend/src/qa/aestheticParameterMiningBotDryRun.mjs`
+- `backend/scripts/run-aesthetic-parameter-mining-bot-dry-run.mjs`
+- `backend/tests/aesthetic-parameter-mining-bot-dry-run.test.mjs`
+- `docs/od-r3-parameter-mining-bot-dry-run.md`
+- `docs/on-device-live-framing-ai-roadmap.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `README.md`
+- `backend/README.md`
+- `ios-app/README.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `tests/manual-smoke-tests.md`
+
+### Boundary Checks
+
+- Backend dry-run planner only: yes
+- Swift runtime file added: no
+- OD-03B Swift placeholder brought back: no
+- Model file / Core ML package / model download added: no
+- Runtime inference / Camera integration / live frame processing added: no
+- Image reads performed: no
+- Network calls made: no
+- Crawler/download mode added: no
+- Cloud teacher call added: no
+- Training/fine-tuning/distillation run added: no
+- Upload path / provider call / API key added: no
+- Dataset, fixture, photo, local config, generated report, raw image path, or actual photo URL added: no
+- Production rollout: no
+
+### Verification
+
+- `git diff --check` should pass before commit.
+- `cd backend && npm test` should pass before commit.
+- `cd backend && npm run qa:aesthetic-parameters:bot-dry-run` should pass before commit.
+
+### Next Phase
+
+Recommended next OD-R phase: `Phase OD-R4 - Cloud AI Teacher Contract`, no-runtime contract only. Not ready for production rollout.

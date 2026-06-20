@@ -4640,6 +4640,15 @@ Backend manifest verification:
 - [ ] Confirm CLI output is sanitized and reports `productionReady:false`, `crawlerEnabled:false`, `downloadEnabled:false`, `cloudTeacherEnabled:false`, `trainingEnabled:false`, `runtimeIntegrationEnabled:false`, and `rawImagesCommitted:false`.
 - [ ] Confirm no Swift runtime file, model file, Core ML package, model download, inference, Camera integration, upload path, provider/model key, API key, real dataset/photo/local config/generated report, crawler/download mode, cloud teacher call, training, or production rollout was added.
 - [ ] Confirm image manifests use opaque/redacted references only and do not commit raw image paths or actual photo URLs.
+## Phase OD-R3 - Parameter Mining Bot Dry-run
+
+Backend dry-run verification:
+
+- [ ] From `backend/`, run `npm run qa:aesthetic-parameters:bot-dry-run`.
+- [ ] From `backend/`, run `node --test tests/aesthetic-parameter-mining-bot-dry-run.test.mjs`.
+- [ ] Confirm CLI output is sanitized and reports `eligibleJobCount:1`, `blockedReasons:[]`, `crawlerEnabled:false`, `downloadEnabled:false`, `cloudTeacherEnabled:false`, `trainingEnabled:false`, `runtimeIntegrationEnabled:false`, `imageReadsPerformed:false`, `networkCallsMade:false`, `rawImagesCommitted:false`, and `productionReady:false`.
+- [ ] Confirm output job plans contain only opaque IDs, `assetRefBucket`, allowed tag subsets, `humanReviewRequired:true`, `teacherMode:"stub_only"`, status, and sanitized blocker buckets.
+- [ ] Confirm no Swift runtime file, model file, Core ML package, model download, inference, Camera integration, upload path, provider/model key, API key, real dataset/photo/local config/generated report, crawler/download mode, image read, cloud teacher call, training, or production rollout was added.
 ## Phase 21-A2 - Live Framing Aesthetic Spatial Codebook
 
 Docs-only verification:

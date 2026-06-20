@@ -16,13 +16,15 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**Phase OD-R2: Dataset / Source Manifest Schema**
+**Phase OD-R4: Cloud AI Teacher Contract**
 
-Reason: Phase OD-R1 added the starter Aesthetic Parameter Registry. The next OD-R layer is a safe dataset/source manifest schema before any parameter mining bot, cloud teacher, human review queue, training, or product runtime exists.
+Reason: Phase OD-R3 now connects the OD-R1 registry and OD-R2 manifest schema in a backend-only Parameter Mining Bot dry-run. The next OD-R layer should define a no-runtime Cloud AI Teacher Contract before any cloud teacher sandbox, human review queue, training, or product runtime exists.
 
-OD-R2 should add backend-only source/image/label-job manifest schemas, validators, a sanitized CLI, tests, and docs. It must not add Swift runtime files, model installation, Core ML packages, crawler/download mode, cloud teacher calls, training, inference, Camera integration, upload paths, provider/model keys, real datasets/photos/local configs/generated reports, or production rollout. OD-03B Swift placeholder work remains paused. App/model installation belongs later to OD-P product integration after benchmark and safety gates pass. `productionReady:false` remains locked.
+OD-R4 should define backend-only teacher request/response contracts, enum-only candidate output, sanitizer/fallback rules, consent/source gating, and no-runtime tests. It must not add Swift runtime files, model installation, Core ML packages, crawler/download mode, cloud teacher calls, training, inference, Camera integration, upload paths, provider/model keys, real datasets/photos/local configs/generated reports, or production rollout. OD-03B Swift placeholder work remains paused. App/model installation belongs later to OD-P product integration after benchmark and safety gates pass. `productionReady:false` remains locked.
 
 Planned OD-R sequence: `OD-R1` Aesthetic Parameter Registry, `OD-R2` Dataset / Source Manifest Schema, `OD-R3` Parameter Mining Bot Dry-run, `OD-R4` Cloud AI Teacher Contract, `OD-R5` Cloud AI Teacher Labeling Stub / Sandbox, `OD-R6` Human Review Queue Schema, `OD-R7` Local CV Feature Extractor Benchmark, `OD-R8` Parameter Tuning Harness, `OD-R9` Fine-tune / Distillation Readiness Gate, then `OD-P1` Product Integration Candidate. Parameter Mining Bot is not a public web crawler. Cloud AI is a future offline structured-labeling teacher, not live app runtime. Local CV / local AI is the future runtime student.
+
+Implementation status note: `docs/od-r3-parameter-mining-bot-dry-run.md` records the backend-only dry-run bot. It emits sanitized job planning output only and keeps crawler/download/cloud-teacher/training/runtime flags disabled.
 
 Naming note: older committed Phase 21-A backend-internal VLM records remain historical evidence. The completed on-device geometry phase should be referenced by its full title: `Phase 21-A - On-device Vision Geometry Spike`.
 

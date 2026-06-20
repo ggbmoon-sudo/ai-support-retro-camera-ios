@@ -42,6 +42,8 @@ Parameter Mining Bot work must not be a public web crawler. Cloud AI is a future
 
 OD-R2 implementation note: `docs/od-r2-dataset-source-manifest-schema.md` defines source, image, and label-job manifests with safe opaque asset references, consent/license/review gates, metadata stripping requirements, and no crawler/download/cloud-teacher/training/runtime behavior.
 
+OD-R3 implementation note: `docs/od-r3-parameter-mining-bot-dry-run.md` adds a backend-only dry-run Parameter Mining Bot that connects the OD-R1 registry and OD-R2 manifest validators, then emits sanitized label-job planning output from inline synthetic manifest objects only. It does not crawl, download, read images, call cloud AI, train, fine-tune, install models, or integrate with iOS runtime.
+
 ## Product Language Rule
 
 Live hints must keep the Photo Advisor style:

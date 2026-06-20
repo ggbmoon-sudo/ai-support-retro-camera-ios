@@ -1160,3 +1160,11 @@ Latest Phase OD-R2 Dataset / Source Manifest Schema on 2026-06-21:
 - Image manifests use opaque/redacted references only and require GPS/EXIF/camera serial/raw sensor removal or not-applicable status before approved use.
 - Label jobs can reference OD-R1 registry tags, keep human review required, and represent teacher-labeling permission without enabling cloud calls.
 - No Swift runtime file, model install, Core ML package, crawler/download mode, cloud teacher call, training/fine-tuning, inference, Camera integration, upload path, provider/model key, real dataset/photo/local config/generated report, or production rollout is added. `productionReady:false` remains locked.
+
+Latest Phase OD-R3 Parameter Mining Bot Dry-run on 2026-06-21:
+
+- OD-R3 adds a backend-only dry-run bot that connects the OD-R1 Aesthetic Parameter Registry and OD-R2 Dataset / Source Manifest Schema.
+- Added `backend/src/qa/aestheticParameterMiningBotDryRun.mjs`, `backend/scripts/run-aesthetic-parameter-mining-bot-dry-run.mjs`, backend tests, `npm run qa:aesthetic-parameters:bot-dry-run`, and `docs/od-r3-parameter-mining-bot-dry-run.md`.
+- The dry-run accepts in-memory synthetic manifest objects only and emits sanitized job planning output with category/tag counts, job eligibility, and blocker buckets.
+- Job plans keep only opaque IDs, asset reference buckets, allowed tag subsets, human-review requirement, `teacherMode:"stub_only"`, status, and sanitized blocked reasons.
+- No Swift runtime file, model install, Core ML package, crawler/download mode, image read, cloud teacher call, training/fine-tuning, inference, Camera integration, upload path, provider/model key, real dataset/photo/local config/generated report, or production rollout is added. `productionReady:false` remains locked.

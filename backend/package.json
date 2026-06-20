@@ -52,6 +52,7 @@
     "qa:depth-anything:preflight": "node scripts/check-depth-anything-v2-small-coreml-sandbox-preflight.mjs",
     "qa:aesthetic-parameters:registry": "node scripts/check-aesthetic-parameter-registry.mjs",
     "qa:aesthetic-dataset:manifest": "node scripts/check-aesthetic-dataset-manifest-schema.mjs",
+    "qa:aesthetic-parameters:bot-dry-run": "node scripts/run-aesthetic-parameter-mining-bot-dry-run.mjs",
     "qa:open-weight-vlm:local": "node scripts/run-open-weight-vlm-local-sandbox-smoke.mjs --run-local-model",
     "qa:open-weight-vlm:approved-one-fixture-local-model-smoke-retry": "node scripts/run-open-weight-vlm-approved-one-fixture-local-model-smoke-retry.mjs",
     "qa:siliconflow:readiness": "node scripts/check-siliconflow-photo-advisor-provider-readiness.mjs",
