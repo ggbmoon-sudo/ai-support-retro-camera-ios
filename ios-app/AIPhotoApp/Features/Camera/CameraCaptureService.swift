@@ -29,9 +29,20 @@ final class CameraCaptureService {
     private let frameSignalState = FrameSignalState()
     private var frameSignalDelegate: FrameSignalDelegate?
     private var frameSignalHandler: (@MainActor @Sendable ([LiveGuidanceSignal]) -> Void)?
+    private var currentVideoInput: AVCaptureDeviceInput?
     private(set) var depthCapability: CameraDepthCapability = .unavailable
+    private(set) var currentLensOption = LensOption.classic35
+    private(set) var currentPosition: AVCaptureDevice.Position = .back
     private var isConfigured = false
     private var delegates: [PhotoCaptureDelegate] = []
+
+    var isUsingFrontCamera: Bool {
+        currentPosition == .front
+    }
+
+    var isHardwareFlashAvailable: Bool {
+        currentVideoInput?.device.hasFlash == true
+    }
 
     func setFrameSignalHandler(_ handler: (@MainActor @Sendable ([LiveGuidanceSignal]) -> Void)?) {
         frameSignalHandler = handler
@@ -44,7 +55,8 @@ final class CameraCaptureService {
     func configureSessionIfNeeded() throws {
         guard !isConfigured else { return }
 
-        guard let camera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) else {
+        let initialLensOption = preferredDefaultLensOption(for: currentPosition) ?? .classic35
+        guard let camera = cameraDevice(for: initialLensOption) else {
             throw CameraCaptureError.cameraUnavailable
         }
 
@@ -58,16 +70,33 @@ final class CameraCaptureService {
         }
 
         session.addInput(input)
+        currentVideoInput = input
+        currentLensOption = initialLensOption
+        currentPosition = camera.position
         session.addOutput(photoOutput)
-        depthCapability = depthCapabilityProbe.capability(
-            for: camera,
-            photoOutput: photoOutput
-        )
-        frameSignalState.depthSignals = DepthSignals(capability: depthCapability)
+        refreshDepthCapability(for: camera)
 
         configureFrameSignalOutputIfPossible()
         session.commitConfiguration()
         isConfigured = true
+    }
+
+    func availableLensOptionsForCurrentPosition() -> [LensOption] {
+        let options = availableLensOptions(for: currentPosition)
+        return options.isEmpty ? availableLensOptions(for: .back) : options
+    }
+
+    func switchCameraPosition() throws {
+        let targetPosition: AVCaptureDevice.Position = currentPosition == .front ? .back : .front
+        guard let targetLensOption = preferredDefaultLensOption(for: targetPosition) else {
+            throw CameraCaptureError.cameraUnavailable
+        }
+
+        try switchToLensOption(targetLensOption)
+    }
+
+    func selectLensOption(_ option: LensOption) throws {
+        try switchToLensOption(option)
     }
 
     func startSession() {
@@ -80,13 +109,17 @@ final class CameraCaptureService {
         session.stopRunning()
     }
 
-    func capturePhoto(completion: @MainActor @escaping (Result<Data, Error>) -> Void) {
+    func capturePhoto(
+        flashEnabled: Bool,
+        completion: @MainActor @escaping (Result<Data, Error>) -> Void
+    ) {
         guard isConfigured else {
             completion(.failure(CameraCaptureError.cameraUnavailable))
             return
         }
 
         let settings = AVCapturePhotoSettings()
+        settings.flashMode = resolvedFlashMode(isEnabled: flashEnabled)
         let delegateID = UUID()
         let delegate = PhotoCaptureDelegate(id: delegateID) { [weak self] result in
             completion(result)
@@ -95,6 +128,130 @@ final class CameraCaptureService {
 
         delegates.append(delegate)
         photoOutput.capturePhoto(with: settings, delegate: delegate)
+    }
+
+    private func switchToLensOption(_ option: LensOption) throws {
+        guard let camera = cameraDevice(for: option) else {
+            throw CameraCaptureError.cameraUnavailable
+        }
+
+        let input = try AVCaptureDeviceInput(device: camera)
+
+        guard isConfigured else {
+            currentVideoInput = input
+            currentLensOption = option
+            currentPosition = camera.position
+            return
+        }
+
+        session.beginConfiguration()
+        defer {
+            session.commitConfiguration()
+        }
+
+        if let currentVideoInput {
+            session.removeInput(currentVideoInput)
+        }
+
+        guard session.canAddInput(input) else {
+            if let currentVideoInput,
+               session.canAddInput(currentVideoInput) {
+                session.addInput(currentVideoInput)
+            }
+            throw CameraCaptureError.cameraUnavailable
+        }
+
+        session.addInput(input)
+        currentVideoInput = input
+        currentLensOption = option
+        currentPosition = camera.position
+        refreshDepthCapability(for: camera)
+    }
+
+    private func resolvedFlashMode(isEnabled: Bool) -> AVCaptureDevice.FlashMode {
+        guard isEnabled,
+              isHardwareFlashAvailable,
+              photoOutput.supportedFlashModes.contains(.on) else {
+            return .off
+        }
+
+        return .on
+    }
+
+    private func refreshDepthCapability(for camera: AVCaptureDevice) {
+        depthCapability = depthCapabilityProbe.capability(
+            for: camera,
+            photoOutput: photoOutput
+        )
+        frameSignalState.depthSignals = DepthSignals(capability: depthCapability)
+    }
+
+    private func preferredDefaultLensOption(for position: AVCaptureDevice.Position) -> LensOption? {
+        let options = availableLensOptions(for: position)
+        switch position {
+        case .back:
+            return options.first { $0.id == LensOption.classic35.id } ?? options.first
+        case .front:
+            return options.first { $0.id == LensOption.frontSelfie.id } ?? options.first
+        case .unspecified:
+            return nil
+        @unknown default:
+            return nil
+        }
+    }
+
+    private func availableLensOptions(for position: AVCaptureDevice.Position) -> [LensOption] {
+        switch position {
+        case .front:
+            return cameraDevice(for: .frontSelfie) == nil ? [] : [.frontSelfie]
+        case .back:
+            let options = LensOption.all.filter { cameraDevice(for: $0) != nil }
+            return options.isEmpty && fallbackBackCameraDevice() != nil ? [.classic35] : options
+        case .unspecified:
+            return []
+        @unknown default:
+            return []
+        }
+    }
+
+    private func cameraDevice(for option: LensOption) -> AVCaptureDevice? {
+        switch option.id {
+        case LensOption.wide24.id:
+            return AVCaptureDevice.default(.builtInUltraWideCamera, for: .video, position: .back)
+        case LensOption.classic35.id:
+            return AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
+                ?? fallbackBackCameraDevice()
+        case LensOption.portrait77.id:
+            return AVCaptureDevice.default(.builtInTelephotoCamera, for: .video, position: .back)
+        case LensOption.frontSelfie.id:
+            return frontCameraDevice()
+        default:
+            return nil
+        }
+    }
+
+    private func fallbackBackCameraDevice() -> AVCaptureDevice? {
+        AVCaptureDevice.DiscoverySession(
+            deviceTypes: [
+                .builtInWideAngleCamera,
+                .builtInDualWideCamera,
+                .builtInDualCamera,
+                .builtInTripleCamera
+            ],
+            mediaType: .video,
+            position: .back
+        ).devices.first
+    }
+
+    private func frontCameraDevice() -> AVCaptureDevice? {
+        AVCaptureDevice.DiscoverySession(
+            deviceTypes: [
+                .builtInTrueDepthCamera,
+                .builtInWideAngleCamera
+            ],
+            mediaType: .video,
+            position: .front
+        ).devices.first
     }
 
     private func configureFrameSignalOutputIfPossible() {
@@ -178,7 +335,7 @@ private final class FrameSignalState: @unchecked Sendable {
 }
 
 private final class FrameSignalDelegate: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
-    private let minimumAnalysisInterval: TimeInterval = 0.6
+    private let minimumAnalysisInterval: TimeInterval = 0.5
     private let brightnessAnalyzer = LiveGuidanceBrightnessAnalyzer()
     private let geometryAnalyzer = LiveGuidanceVisionGeometryAnalyzer()
     private let state: FrameSignalState

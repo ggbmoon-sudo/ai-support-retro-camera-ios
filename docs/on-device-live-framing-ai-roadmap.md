@@ -71,6 +71,30 @@ Implementation note:
 - It adds iOS Apple Vision geometry-only signals and keeps live guidance local-only.
 - The next recommended phase after commit/push is `Phase 21-B - AVFoundation Depth Capability Probe`.
 
+### Phase 21-A3 - Live Vision Geometry Smoothness and Hint Stability Tuning
+
+Scope:
+
+- Tune the already-running Apple Vision geometry path after physical-device feedback.
+- Keep the path free, on-device, and local-only.
+- Improve perceived smoothness with more conservative geometry thresholds and stronger hint stability.
+- Keep lighting hints responsive.
+
+Boundaries:
+
+- No Depth Anything runtime.
+- No Core ML inference.
+- No Florence-2.
+- No cloud/provider call.
+- No preview-frame upload.
+- No raw frame/depth persistence.
+- `productionReady:false`.
+
+Implementation note:
+
+- Phase 21-A3 now has a tuning summary at `docs/phase-21-a3-live-vision-geometry-smoothness-and-hint-stability-tuning.md`.
+- The next practical step is physical-device feedback after the user tests the tuned build.
+
 ### Phase 21-B - AVFoundation Depth Capability Probe
 
 Scope:

@@ -235,9 +235,10 @@
 "camera.pose.guide.seated_side_pose.title" = "Side Seated";
 "camera.pose.guide.seated_side_pose.hint" = "Good for cafe and travel photos.";
 "camera.shell.status" = "Local";
-"camera.lens.24mm" = "24mm mock wide lens";
-"camera.lens.35mm" = "35mm mock classic lens";
-"camera.lens.77mm" = "77mm mock portrait lens";
+"camera.lens.24mm" = "24mm wide lens";
+"camera.lens.35mm" = "35mm classic lens";
+"camera.lens.77mm" = "77mm portrait lens";
+"camera.lens.front_selfie" = "Front selfie camera";
 "camera.control.flash" = "Flash";
 "camera.control.timer" = "Timer";
 "camera.control.flip" = "Flip";

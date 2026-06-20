@@ -18,13 +18,15 @@ final class CameraViewModel: ObservableObject {
     @Published private(set) var liveGuidanceSuggestions: [LiveGuidanceSuggestion] = []
     @Published private(set) var cloudSnapshotGuidanceState: CloudSnapshotGuidanceState = .idle
     @Published private(set) var selectedLensOption = LensOption.classic35
+    @Published private(set) var lensOptions = LensOption.all
+    @Published private(set) var isUsingFrontCamera = false
+    @Published private(set) var isHardwareFlashAvailable = false
     @Published private(set) var isLoading = false
     @Published private(set) var isFiltering = false
     @Published var pickerItem: PhotosPickerItem?
 
     let service: CameraCaptureService
     let filterPresets = FilterPresetCatalog.all
-    let lensOptions = LensOption.all
 
     private let filterPipeline = FilterPipeline()
     private let photoSaveService: any PhotoSaveService
@@ -60,6 +62,7 @@ final class CameraViewModel: ObservableObject {
         self.service.setFrameSignalHandler { [weak self] signals in
             self?.updateLiveGuidanceFrameSignals(signals)
         }
+        refreshCameraControlState()
         updateFrameSignalAnalysisAvailability()
         refreshLiveGuidanceSuggestions()
     }
@@ -131,12 +134,12 @@ final class CameraViewModel: ObservableObject {
         await prepareCamera()
     }
 
-    func capturePhoto() {
+    func capturePhoto(isFlashEnabled: Bool) {
         guard permissionState == .authorized else { return }
         isLoading = true
         errorMessage = nil
 
-        service.capturePhoto { [weak self] result in
+        service.capturePhoto(flashEnabled: isFlashEnabled) { [weak self] result in
             guard let self else { return }
             self.isLoading = false
 
@@ -334,7 +337,21 @@ final class CameraViewModel: ObservableObject {
     }
 
     func selectLensOption(_ option: LensOption) {
-        selectedLensOption = option
+        do {
+            try service.selectLensOption(option)
+            refreshCameraControlState()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    func toggleCameraPosition() {
+        do {
+            try service.switchCameraPosition()
+            refreshCameraControlState()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
     }
 
     func requestCloudSnapshotGuidanceConsent() {
@@ -388,6 +405,7 @@ final class CameraViewModel: ObservableObject {
     private func configureAndStart() {
         do {
             try service.configureSessionIfNeeded()
+            refreshCameraControlState()
             service.startSession()
             permissionState = .authorized
             startCaptureSignalMonitoringIfNeeded()
@@ -491,5 +509,15 @@ final class CameraViewModel: ObservableObject {
         }
 
         captureSignalMonitor.start()
+    }
+
+    private func refreshCameraControlState() {
+        let availableOptions = service.availableLensOptionsForCurrentPosition()
+        lensOptions = availableOptions.isEmpty ? [service.currentLensOption] : availableOptions
+        selectedLensOption = lensOptions.contains(service.currentLensOption)
+            ? service.currentLensOption
+            : lensOptions[0]
+        isUsingFrontCamera = service.isUsingFrontCamera
+        isHardwareFlashAvailable = service.isHardwareFlashAvailable
     }
 }

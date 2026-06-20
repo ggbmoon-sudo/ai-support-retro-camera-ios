@@ -59,10 +59,10 @@ nonisolated struct LiveGuidanceVisionGeometryAnalyzer: Sendable {
         }
 
         let points = recognizedPoints.values
-            .filter { $0.confidence >= 0.2 }
+            .filter { $0.confidence >= 0.35 }
             .map(\.location)
 
-        guard !points.isEmpty else {
+        guard points.count >= 4 else {
             return nil
         }
 
@@ -97,13 +97,13 @@ nonisolated struct LiveVisionGeometryAnalysis: Equatable, Sendable {
 }
 
 nonisolated struct LiveVisionCompositionAnalyzer: Sendable {
-    private let centerTolerance: CGFloat = 0.18
-    private let nearEdgeThreshold: CGFloat = 0.08
-    private let lowHeadroomThreshold: CGFloat = 0.88
-    private let lowFootroomThreshold: CGFloat = 0.08
-    private let tooLargeAreaThreshold: CGFloat = 0.44
-    private let tooSmallAreaThreshold: CGFloat = 0.04
-    private let thirdsTolerance: CGFloat = 0.08
+    private let centerTolerance: CGFloat = 0.22
+    private let nearEdgeThreshold: CGFloat = 0.06
+    private let lowHeadroomThreshold: CGFloat = 0.92
+    private let lowFootroomThreshold: CGFloat = 0.05
+    private let tooLargeAreaThreshold: CGFloat = 0.52
+    private let tooSmallAreaThreshold: CGFloat = 0.03
+    private let thirdsTolerance: CGFloat = 0.06
 
     func analysis(
         subjectBox: LiveFrameNormalizedRect,
@@ -185,14 +185,6 @@ nonisolated struct LiveVisionCompositionAnalyzer: Sendable {
             signals.append(.portraitLikely)
         case .balanced, .unknown:
             break
-        }
-
-        if composition.ruleOfThirdsBucket == .balanced,
-           signals.isEmpty {
-            signals.append(.ruleOfThirdsAligned)
-        } else if composition.verticalBalanceBucket == .balanced,
-                  signals.isEmpty {
-            signals.append(.verticalBalanceReady)
         }
 
         return unique(signals)

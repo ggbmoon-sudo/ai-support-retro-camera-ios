@@ -27,5 +27,12 @@ nonisolated struct LensOption: Identifiable, Equatable, Sendable {
         accessibilityKey: "camera.lens.77mm"
     )
 
+    static let frontSelfie = LensOption(
+        id: "front_selfie",
+        focalLengthLabel: "Selfie",
+        zoomLabel: "1x",
+        accessibilityKey: "camera.lens.front_selfie"
+    )
+
     static let all = [wide24, classic35, portrait77]
 }

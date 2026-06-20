@@ -29,7 +29,6 @@ struct CameraView: View {
     @State private var isTimerDialogPresented = false
     @State private var timerCountdown: Int?
     @State private var captureCountdownTask: Task<Void, Never>?
-    @State private var isUsingFrontCameraMock = false
     @State private var isScreenFlashVisible = false
     @State private var isLiveGuidanceExpanded = false
     @State private var activeCameraCallout: CameraCallout = .none
@@ -328,7 +327,11 @@ struct CameraView: View {
 
             switch viewModel.permissionState {
             case .authorized:
-                CameraPreviewView(session: viewModel.service.session)
+                CameraPreviewView(
+                    session: viewModel.service.session,
+                    isMirrored: viewModel.isUsingFrontCamera
+                )
+                    .liveFilterPreview(viewModel.selectedFilterPreset)
                     .ignoresSafeArea()
                     .overlay {
                         ruleOfThirdsGrid
@@ -756,11 +759,11 @@ struct CameraView: View {
             systemImage: "arrow.triangle.2.circlepath.camera",
             label: "camera.control.flip",
             valueKey: nil,
-            isActive: isUsingFrontCameraMock
+            isActive: viewModel.isUsingFrontCamera
         ) {
             activeCameraCallout = .none
             isLiveGuidanceExpanded = false
-            isUsingFrontCameraMock.toggle()
+            viewModel.toggleCameraPosition()
         }
     }
 
@@ -906,7 +909,11 @@ struct CameraView: View {
 
             switch viewModel.permissionState {
             case .authorized:
-                CameraPreviewView(session: viewModel.service.session)
+                CameraPreviewView(
+                    session: viewModel.service.session,
+                    isMirrored: viewModel.isUsingFrontCamera
+                )
+                    .liveFilterPreview(viewModel.selectedFilterPreset)
                     .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.md))
                     .overlay {
                         ruleOfThirdsGrid
@@ -927,7 +934,7 @@ struct CameraView: View {
             }
             .padding(AppSpacing.sm)
         }
-        .aspectRatio(4 / 5, contentMode: .fit)
+        .aspectRatio(3 / 4, contentMode: .fit)
         .frame(maxWidth: 330)
         .padding(8)
         .background(Color(red: 0.012, green: 0.012, blue: 0.011))
@@ -1095,7 +1102,7 @@ struct CameraView: View {
                 systemImage: "arrow.triangle.2.circlepath.camera",
                 label: "camera.control.flip"
             ) {
-                isUsingFrontCameraMock.toggle()
+                viewModel.toggleCameraPosition()
             }
         }
         .padding(.vertical, AppSpacing.xs)
@@ -1476,11 +1483,11 @@ struct CameraView: View {
 
     private func performCaptureNow() {
         triggerScreenFlashIfNeeded()
-        viewModel.capturePhoto()
+        viewModel.capturePhoto(isFlashEnabled: isFlashEnabled)
     }
 
     private func triggerScreenFlashIfNeeded() {
-        guard isUsingFrontCameraMock, isFlashEnabled else { return }
+        guard viewModel.isUsingFrontCamera, isFlashEnabled else { return }
 
         withAnimation(.easeOut(duration: 0.04)) {
             isScreenFlashVisible = true

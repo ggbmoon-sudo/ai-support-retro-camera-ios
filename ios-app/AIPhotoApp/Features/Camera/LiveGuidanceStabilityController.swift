@@ -3,9 +3,10 @@ import Foundation
 @MainActor
 final class LiveGuidanceStabilityController {
     private let maxVisibleSuggestions = 2
-    private let repeatCooldown: TimeInterval = 4
-    private let holdDuration: TimeInterval = 2
-    private let confirmationCount = 2
+    private let repeatCooldown: TimeInterval = 6
+    private let holdDuration: TimeInterval = 3
+    private let minimumVisibleDuration: TimeInterval = 1.2
+    private let confirmationCount = 3
 
     private var stableSuggestions: [LiveGuidanceSuggestion] = []
     private var stableUpdatedAt = Date.distantPast
@@ -46,7 +47,7 @@ final class LiveGuidanceStabilityController {
             return stableSuggestions
         }
 
-        if stableSuggestions.isEmpty || shouldReplaceImmediately(with: nextSuggestions) {
+        if stableSuggestions.isEmpty || shouldReplaceImmediately(with: nextSuggestions, now: now) {
             return accept(nextSuggestions, now: now)
         }
 
@@ -93,7 +94,14 @@ final class LiveGuidanceStabilityController {
         return now.timeIntervalSince(lastShown) < repeatCooldown
     }
 
-    private func shouldReplaceImmediately(with nextSuggestions: [LiveGuidanceSuggestion]) -> Bool {
+    private func shouldReplaceImmediately(
+        with nextSuggestions: [LiveGuidanceSuggestion],
+        now: Date
+    ) -> Bool {
+        guard now.timeIntervalSince(stableUpdatedAt) >= minimumVisibleDuration else {
+            return false
+        }
+
         guard let nextPriority = nextSuggestions.map(\.guidancePriority).min(),
               let stablePriority = stableSuggestions.map(\.guidancePriority).min() else {
             return false
