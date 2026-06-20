@@ -4666,6 +4666,18 @@ Docs-only blocked verification:
 - [ ] Confirm no `.mlmodel`, `.mlmodelc`, `.mlpackage`, ONNX, TFLite, MLX, model weight, checksum file, source URL, local model path, raw report, dataset, real photo, provider response, or local config is staged.
 - [ ] Confirm no inference run, benchmark run, Camera integration, preview-frame upload, upload payload change, provider/model key, direct provider/model call, raw frame/depth/image/path logging, or production rollout appears.
 - [ ] Confirm `productionReady:false` remains unchanged.
+## Phase 21-A3 - Live Vision Geometry Smoothness and Hint Stability Tuning
+
+Physical-device verification:
+
+- [ ] Build and run on iPhone.
+- [ ] Open Camera with local guidance enabled.
+- [ ] Confirm lighting hints still respond to darker/brighter scenes.
+- [ ] Move a person/face slowly near frame edges and confirm framing hints feel less jumpy.
+- [ ] Move headroom near the top edge and confirm headroom hints do not flicker excessively.
+- [ ] Move subject center/side slowly and confirm suggestions hold before changing.
+- [ ] Confirm no Depth Anything inference, Core ML runtime execution, Camera cloud AI entry, provider/model key, direct provider/model call, preview-frame upload, raw frame/depth persistence, upload payload change, or production rollout appears.
+- [ ] Confirm `productionReady:false` remains unchanged.
 ## Phase 21-A2 - Live Framing Aesthetic Spatial Codebook
 
 Docs-only verification:

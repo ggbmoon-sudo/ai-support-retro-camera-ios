@@ -1175,3 +1175,11 @@ Latest Phase 21-C-R3-RUN blocked prerequisite check on 2026-06-21:
 - No Depth Anything model artifact, Core ML package, model download, inference, benchmark, Camera runtime integration, preview-frame upload, Camera live cloud AI, iOS provider/model key, direct provider/model call, upload payload change, raw frame/depth/image/path/model output logging or persistence, sensitive inference, secret, or production rollout was added.
 - `productionReady:false` remains locked.
 - Next recommended phase remains `Phase 21-C-R3-RUN - Approved Depth Anything V2 Small Physical-device Benchmark`, only after exact approval phrase, local ignored artifact readiness, and MacBook/Xcode physical-device availability.
+
+Latest Phase 21-A3 Live Vision Geometry Smoothness and Hint Stability Tuning on 2026-06-21:
+
+- User confirmed brightness guidance and Apple Vision geometry guidance run on iPhone, but geometry hints were not fully smooth.
+- Phase 21-A3 tunes the free on-device path: analysis interval `0.5s`, hint hold `3s`, repeat cooldown `6s`, replacement confirmation `3`, minimum visible duration `1.2s`, body-pose confidence `0.35`, at least `4` body-pose points, less sensitive geometry thresholds, and no automatic positive rule-of-thirds/vertical-balance ready hints.
+- No Depth Anything runtime, Core ML inference, provider/cloud call, preview-frame upload, upload payload change, Camera live cloud AI entry, raw frame/depth persistence, sensitive inference, secret, or production rollout was added.
+- `productionReady:false` remains locked.
+- Next recommended phase is `Phase 21-A3-R1 - Physical-device Live Guidance Tuning Feedback Pass` after the user tests the tuned build.

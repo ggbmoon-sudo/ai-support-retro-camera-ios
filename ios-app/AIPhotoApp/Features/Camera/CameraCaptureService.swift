@@ -178,7 +178,7 @@ private final class FrameSignalState: @unchecked Sendable {
 }
 
 private final class FrameSignalDelegate: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
-    private let minimumAnalysisInterval: TimeInterval = 0.6
+    private let minimumAnalysisInterval: TimeInterval = 0.5
     private let brightnessAnalyzer = LiveGuidanceBrightnessAnalyzer()
     private let geometryAnalyzer = LiveGuidanceVisionGeometryAnalyzer()
     private let state: FrameSignalState

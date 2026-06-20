@@ -16,11 +16,11 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**Phase 21-C-R3-RUN: Approved Depth Anything V2 Small Physical-device Benchmark**
+**Phase 21-A3-R1: Physical-device Live Guidance Tuning Feedback Pass**
 
-Reason: Phase 21-B added an AVFoundation-only hardware depth / portrait matte capability probe. Phase 21-C-PRE added the no-runtime preflight gate. Phase 21-C added a disabled-by-default iOS sandbox scaffold and sanitized benchmark metric contract. Phase 21-C-R1 added the model artifact source/license and Xcode benchmark harness approval gate. Phase 21-C-R2 added the local-only ignored artifact folder policy and Xcode benchmark harness draft. Phase 21-C-R3 added the operator model-artifact verification and physical-device benchmark approval request. A C-R3-RUN prerequisite check then blocked before execution because exact approval, local ignored artifact, and MacBook/Xcode physical-device prerequisites were not ready. The next practical step remains the explicitly approved C-R3-RUN benchmark only if local ignored artifact prerequisites and the exact approval phrase are present.
+Reason: The user installed the app on iPhone and confirmed brightness guidance plus Apple Vision geometry guidance run on device, but geometry hints were not fully smooth. Phase 21-A3 tunes the free on-device path by adjusting sampling cadence, suggestion stability, and geometry thresholds. The next practical step is a physical-device feedback pass after the user tests A3. Phase 21-C-R3-RUN remains available only if local ignored artifact prerequisites and the exact approval phrase are present.
 
-Phase 21-C-R3-RUN requires explicit approval using the exact phrase in `docs/phase-21-c-r3-depth-anything-operator-artifact-verification-and-physical-device-benchmark-approval-request.md`. It must not add production Depth Anything bundling, default model downloads, Florence-2, cloud calls, frame uploads, upload payload changes, Camera live cloud AI, provider keys, sensitive inference, raw frame/depth persistence, or production rollout. Any Core ML package/model file handling must remain local-only and ignored. Benchmark output must be sanitized aggregate metrics only. `productionReady:false` remains locked.
+Phase 21-A3-R1 should remain free/on-device/local-only unless separately expanded. Do not add Depth Anything runtime, Core ML inference, Florence-2, cloud calls, frame uploads, upload payload changes, Camera live cloud AI, provider keys, sensitive inference, raw frame/depth persistence, or production rollout. `productionReady:false` remains locked.
 
 Naming note: older committed Phase 21-A backend-internal VLM records remain historical evidence. The completed on-device geometry phase should be referenced by its full title: `Phase 21-A - On-device Vision Geometry Spike`.
 
