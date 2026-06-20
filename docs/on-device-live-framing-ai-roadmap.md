@@ -48,6 +48,8 @@ OD-R4 implementation note: `docs/od-r4-cloud-ai-teacher-contract.md` adds a back
 
 OD-R5A implementation note: `docs/od-r5a-cloud-ai-teacher-sandbox-preflight.md` adds a backend-only Cloud AI Teacher sandbox preflight and stub adapter. It accepts OD-R3-style sanitized job plans, emits OD-R4-contract-shaped stub responses, validates them locally, and keeps provider/cloud/network/image/training/runtime/app-transfer flags disabled.
 
+OD-R6A implementation note: `docs/od-r6a-parameter-candidate-runner-dry-run.md` adds a backend-only Parameter Candidate Runner dry-run. It converts validated teacher stub labels into structured parameter candidates and aggregate counts while keeping provider/cloud/network/image/training/runtime/app-transfer flags disabled.
+
 ## Product Language Rule
 
 Live hints must keep the Photo Advisor style:

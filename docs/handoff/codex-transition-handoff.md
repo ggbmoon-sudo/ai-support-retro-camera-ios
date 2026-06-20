@@ -1186,3 +1186,12 @@ Latest Phase OD-R5A Cloud AI Teacher Sandbox Preflight on 2026-06-21:
 - Stub labels are enum/bucket-only, use OD-R1 registry tags, keep `needsHumanReview:true`, `humanReviewRequired:true`, and `reviewStatus:"pending"`.
 - App-transfer-readiness remains blocked with `eligibleForAppRuntime:false` and `appRuntimeTransferBlocked:true`; future app transfer must use reviewed parameter packs, threshold maps, suppression maps, and safe action maps rather than raw teacher text.
 - No Swift runtime file, OD-03B placeholder, model install, Core ML package, crawler/download mode, image read/upload, real cloud teacher call, provider/model key, training/fine-tuning, inference, Camera integration, upload path, real dataset/photo/local config/generated report, raw prompt/provider payload, app runtime transfer, or production rollout is added. `productionReady:false` remains locked.
+
+Latest Phase OD-R6A Parameter Candidate Runner Dry-run on 2026-06-21:
+
+- OD-R6A adds a backend-only Parameter Candidate Runner dry-run.
+- Added `backend/src/qa/aestheticParameterCandidateRunner.mjs`, `backend/scripts/run-aesthetic-parameter-candidate-dry-run.mjs`, backend tests, `npm run qa:aesthetic-parameters:candidate-dry-run`, and `docs/od-r6a-parameter-candidate-runner-dry-run.md`.
+- The runner accepts OD-R4-shaped teacher request/response pairs, validates them through the OD-R4 Cloud AI Teacher contract, and converts accepted teacher stub labels into structured parameter candidates.
+- Dry-run output includes `parameterCandidateCount`, category/tag/feature/threshold/suppression/safe-action counts, and app-transfer-readiness gates.
+- App-transfer-readiness remains blocked with `eligibleForAppRuntime:false` and `appRuntimeTransferBlocked:true`; future app transfer must use reviewed parameter packs, threshold maps, suppression maps, and safe action maps rather than raw teacher text.
+- No Swift runtime file, OD-03B placeholder, model install, Core ML package, crawler/download mode, image read/upload, real cloud teacher call, provider/model key, training/fine-tuning, inference, Camera integration, upload path, real dataset/photo/local config/generated report, raw prompt/provider payload, app runtime transfer, or production rollout is added. `productionReady:false` remains locked.

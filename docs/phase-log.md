@@ -12786,3 +12786,66 @@ Phase OD-R5A adds a backend-only Cloud AI Teacher labeling sandbox preflight and
 ### Next Phase
 
 Recommended next OD-R phase: `Phase OD-R5B - Cloud AI Teacher Opt-in Provider Sandbox`, requiring separate explicit approval before any provider call. Not ready for production rollout.
+
+## Phase OD-R6A - Parameter Candidate Runner Dry-run
+
+Status: completed
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase OD-R6A adds a backend-only Parameter Candidate Runner dry-run. It converts validated OD-R4/OD-R5A teacher stub labels into structured parameter candidates and aggregate count buckets for later human review, tuning, benchmark, and app-transfer planning.
+
+### Completed Work
+
+- Added `backend/src/qa/aestheticParameterCandidateRunner.mjs`.
+- Added `backend/scripts/run-aesthetic-parameter-candidate-dry-run.mjs`.
+- Added `backend/tests/aesthetic-parameter-candidate-runner.test.mjs`.
+- Added `npm run qa:aesthetic-parameters:candidate-dry-run`.
+- Added `docs/od-r6a-parameter-candidate-runner-dry-run.md`.
+- Updated roadmap, README, backend/iOS README, handoff, and manual smoke notes for OD-R6A.
+
+### Changed Files
+
+- `backend/package.json`
+- `backend/src/qa/aestheticParameterCandidateRunner.mjs`
+- `backend/scripts/run-aesthetic-parameter-candidate-dry-run.mjs`
+- `backend/tests/aesthetic-parameter-candidate-runner.test.mjs`
+- `docs/od-r6a-parameter-candidate-runner-dry-run.md`
+- `docs/on-device-live-framing-ai-roadmap.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `README.md`
+- `backend/README.md`
+- `ios-app/README.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `tests/manual-smoke-tests.md`
+
+### Boundary Checks
+
+- Backend parameter candidate dry-run only: yes
+- Teacher responses validate against OD-R4 contract before conversion: yes
+- App runtime transfer blocked: yes
+- Swift runtime file added: no
+- OD-03B Swift placeholder brought back: no
+- Model file / Core ML package / model download added: no
+- Runtime inference / Camera integration / live frame processing added: no
+- Image reads performed: no
+- Network calls made: no
+- Crawler/download mode added: no
+- Real cloud teacher call added: no
+- Training/fine-tuning/distillation run added: no
+- Upload path / provider call / API key added: no
+- Dataset, fixture, photo, local config, generated report, raw prompt, or raw provider output added: no
+- Production rollout: no
+
+### Verification
+
+- `git diff --check` should pass before commit.
+- `cd backend && npm test` should pass before commit.
+- `cd backend && npm run qa:aesthetic-parameters:candidate-dry-run` should pass before commit.
+
+### Next Phase
+
+Recommended next OD-R phase: `Phase OD-R6B - Human Review Queue Schema`, backend-only/schema-dry-run only. Not ready for production rollout.

@@ -55,6 +55,7 @@
     "qa:aesthetic-parameters:bot-dry-run": "node scripts/run-aesthetic-parameter-mining-bot-dry-run.mjs",
     "qa:aesthetic-teacher:contract": "node scripts/check-aesthetic-cloud-teacher-contract.mjs",
     "qa:aesthetic-teacher:sandbox-preflight": "node scripts/run-aesthetic-cloud-teacher-sandbox-preflight.mjs",
+    "qa:aesthetic-parameters:candidate-dry-run": "node scripts/run-aesthetic-parameter-candidate-dry-run.mjs",
     "qa:open-weight-vlm:local": "node scripts/run-open-weight-vlm-local-sandbox-smoke.mjs --run-local-model",
     "qa:open-weight-vlm:approved-one-fixture-local-model-smoke-retry": "node scripts/run-open-weight-vlm-approved-one-fixture-local-model-smoke-retry.mjs",
     "qa:siliconflow:readiness": "node scripts/check-siliconflow-photo-advisor-provider-readiness.mjs",

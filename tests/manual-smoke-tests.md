@@ -4667,6 +4667,15 @@ Backend sandbox preflight verification:
 - [ ] Confirm CLI output is sanitized and reports `runMode:"stub_only"`, `acceptedStubResponseCount:1`, `rejectedStubResponseCount:0`, `blockedReasons:[]`, `cloudTeacherEnabled:false`, `providerConfigured:false`, `networkCallsMade:false`, `imageReadsPerformed:false`, `crawlerEnabled:false`, `downloadEnabled:false`, `trainingEnabled:false`, `runtimeIntegrationEnabled:false`, and `productionReady:false`.
 - [ ] Confirm app-transfer-readiness output reports `eligibleForAppRuntime:false` and `appRuntimeTransferBlocked:true`.
 - [ ] Confirm no Swift runtime file, model file, Core ML package, model download, inference, Camera integration, upload path, provider/model key, API key, real dataset/photo/local config/generated report, crawler/download mode, image read/upload, cloud teacher call, training, app runtime transfer, or production rollout was added.
+## Phase OD-R6A - Parameter Candidate Runner Dry-run
+
+Backend parameter candidate verification:
+
+- [ ] From `backend/`, run `npm run qa:aesthetic-parameters:candidate-dry-run`.
+- [ ] From `backend/`, run `node --test tests/aesthetic-parameter-candidate-runner.test.mjs`.
+- [ ] Confirm CLI output is sanitized and reports nonzero `parameterCandidateCount`, populated `categoryCounts`, `tagCounts`, `featureKeyCounts`, `thresholdKeyCounts`, `suppressionCandidateCounts`, and `safeActionCounts`.
+- [ ] Confirm app-transfer-readiness output reports `eligibleForAppRuntime:false`, `appRuntimeTransferBlocked:true`, and `productionReady:false`.
+- [ ] Confirm no Swift runtime file, model file, Core ML package, model download, inference, Camera integration, upload path, provider/model key, API key, real dataset/photo/local config/generated report, crawler/download mode, image read/upload, cloud teacher call, training, app runtime transfer, or production rollout was added.
 ## Phase 21-A2 - Live Framing Aesthetic Spatial Codebook
 
 Docs-only verification:
