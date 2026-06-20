@@ -21,6 +21,7 @@ The research set is documentation-only. It adds no runtime code, no model files,
 7. `docs/research/live-ai-privacy-safety-appstore-report.md`
 8. `docs/research/dataset-collector-bot-labeling-pipeline-report.md`
 9. `docs/research/florence-2-finetune-distillation-workflow.md`
+10. `docs/research/live-framing-aesthetic-spatial-codebook.md`
 
 ## Reports Created
 
@@ -34,6 +35,7 @@ The research set is documentation-only. It adds no runtime code, no model files,
 | `live-ai-privacy-safety-appstore-report.md` | Privacy, App Store, and safety policy | Local/ephemeral live inference; legal gates for data |
 | `dataset-collector-bot-labeling-pipeline-report.md` | Dataset and AI-assisted labeling pipeline | Manifest-only first; no crawler now |
 | `florence-2-finetune-distillation-workflow.md` | Fine-tuning/distillation workflow | Blocked until dataset/legal/eval gates pass |
+| `live-framing-aesthetic-spatial-codebook.md` | Shared allowed signal/action/safety codebook for live framing, dataset labels, AI-assisted labeling, Florence-2 feasibility, and distillation planning | Docs-only now; schema validator later |
 
 ## Recommended Next Implementation Phases
 
@@ -114,4 +116,3 @@ Do not convert guidance into:
 - Preview frames uploaded: no.
 - Backend/iOS upload payload changed: no.
 - `productionReady:false` remains locked.
-

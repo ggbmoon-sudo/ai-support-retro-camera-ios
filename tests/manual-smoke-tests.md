@@ -4586,3 +4586,22 @@ Manual Xcode check:
 - [ ] Confirm capture/import, local filters, selected-photo review, mock save, and post-capture advisor behavior still work as before.
 - [ ] Confirm backend/iOS upload payloads are unchanged.
 - [ ] Confirm `productionReady:false` remains unchanged.
+## Phase 21-A2 - Live Framing Aesthetic Spatial Codebook
+
+Docs-only verification:
+
+- [ ] Confirm `docs/research/live-framing-aesthetic-spatial-codebook.md` exists and is linked from `docs/research/on-device-ai-research-index.md`.
+- [ ] Confirm the codebook uses Risk Signal, Strength Signal, Retro Intent Preservation, Advisor Action, and Safety Rejection codebooks instead of a good/bad photo scoring dictionary.
+- [ ] Confirm severity/confidence/review buckets use `low | medium | high | unknown` or review status enums and no numeric quality score, 0-100 value, star rating, or good/bad photo label.
+- [ ] Confirm the proposed label candidate JSON is documented as non-runtime only.
+- [ ] Confirm no Xcode runtime behavior is expected to change.
+- [ ] Confirm no new Swift runtime file, backend runtime file, model file, Core ML / ONNX / TFLite / MLX package, dataset crawler, provider labeling adapter, provider call, raw label, report, local config, real photo, upload payload change, Camera live cloud AI entry, or production rollout was added by this phase.
+- [ ] Confirm `productionReady:false` remains unchanged.
+
+Xcode check:
+
+- [ ] No Xcode runtime behavior should change.
+- [ ] No new Swift runtime file should be required for this docs-only phase.
+- [ ] No model file should appear in the app bundle.
+- [ ] No Camera behavior, permission, network, upload, or Photo Advisor flow should change.
+- [ ] Existing app should build/run as before.

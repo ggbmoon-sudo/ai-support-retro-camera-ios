@@ -49,6 +49,7 @@
     "qa:open-weight-vlm:stateful-wss-live-advisor-protocol": "node scripts/check-open-weight-vlm-stateful-wss-live-advisor-protocol-preflight.mjs",
     "qa:open-weight-vlm:local-cv-camera-aids-plan": "node scripts/check-open-weight-vlm-local-cv-camera-aids-plan-gate.mjs",
     "qa:open-weight-vlm:quantization-serving-benchmark-plan": "node scripts/check-open-weight-vlm-quantization-serving-benchmark-plan-gate.mjs",
+    "qa:depth-anything:preflight": "node scripts/check-depth-anything-v2-small-coreml-sandbox-preflight.mjs",
     "qa:open-weight-vlm:local": "node scripts/run-open-weight-vlm-local-sandbox-smoke.mjs --run-local-model",
     "qa:open-weight-vlm:approved-one-fixture-local-model-smoke-retry": "node scripts/run-open-weight-vlm-approved-one-fixture-local-model-smoke-retry.mjs",
     "qa:siliconflow:readiness": "node scripts/check-siliconflow-photo-advisor-provider-readiness.mjs",

@@ -1119,3 +1119,12 @@ Latest Phase 21-B AVFoundation Depth Capability Probe on 2026-06-20:
 - No Depth Anything, Florence-2, Core ML package, model file, provider key, direct iOS provider/model call, cloud live AI, frame upload, backend/iOS upload payload change, raw depth artifact, sensitive inference, or production rollout was added.
 - `productionReady:false` remains locked.
 - Next recommended phase after commit/push is `Phase 21-C - Depth Anything V2 Small Core ML Sandbox`, still debug/benchmark-only and requiring explicit approval before any model package is added.
+Latest Phase 21-A2 Live Framing Aesthetic Spatial Codebook on 2026-06-20:
+
+- Phase 21-A2 added `docs/research/live-framing-aesthetic-spatial-codebook.md` as a docs-only shared codebook.
+- It defines Risk Signal, Strength Signal, Retro Intent Preservation, Advisor Action, and Safety Rejection codes for future live framing rules, dataset labels, AI-assisted label candidates, Florence-2 feasibility, and distillation planning.
+- It explicitly avoids good/bad photo labels, numeric quality scoring, star ratings, score/rating language, bad-photo wording, and retake-first guidance.
+- It includes severity, confidence, review status, evidence type buckets, and a non-runtime label candidate JSON example.
+- It links the codebook from `docs/research/on-device-ai-research-index.md`.
+- No Swift/iOS runtime code, backend runtime code, JSON schema implementation, dataset crawler, provider labeling adapter, model file, Core ML / ONNX / TFLite / MLX package, Florence-2 runtime, Depth Anything runtime, provider call, API key, Camera live cloud AI entry, upload payload change, raw label, report, local config, dataset, or training was added.
+- `productionReady:false` remains locked.

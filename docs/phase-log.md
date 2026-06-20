@@ -12250,3 +12250,62 @@ Phase 21-B adds an AVFoundation-only depth capability probe to the on-device liv
 ### Next Phase
 
 Ready for `Phase 21-C - Depth Anything V2 Small Core ML Sandbox` after Phase 21-B is committed and pushed. Not ready for production rollout.
+## Phase 21-A2 - Live Framing Aesthetic Spatial Codebook
+
+Status: completed
+Date: 2026-06-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase 21-A2 adds a docs-only Live Framing Aesthetic Spatial Codebook for future live framing labels, AI-assisted label candidates, Florence-2 feasibility, and distillation planning. It does not define a good/bad photo dictionary and does not add runtime behavior.
+
+### Completed Work
+
+- Added `docs/research/live-framing-aesthetic-spatial-codebook.md`.
+- Defined Risk Signal, Strength Signal, Retro Intent Preservation, Advisor Action, and Safety Rejection codebooks.
+- Defined severity, confidence, review status, and evidence buckets without numeric scoring.
+- Added a non-runtime label candidate JSON example for future schema planning.
+- Linked the codebook from `docs/research/on-device-ai-research-index.md`.
+- Recorded this docs-only phase in handoff and manual smoke test notes.
+
+### Changed Files
+
+- `docs/research/live-framing-aesthetic-spatial-codebook.md`
+- `docs/research/on-device-ai-research-index.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `tests/manual-smoke-tests.md`
+
+### Boundary Checks
+
+- Docs-only update: yes
+- Swift/iOS runtime code changed by this phase: no
+- Backend runtime code changed by this phase: no
+- JSON schema implementation files added: no
+- Dataset crawler added: no
+- AI provider labeling adapter added: no
+- Model files / Core ML / ONNX / TFLite / MLX packages added: no
+- Florence-2 / Depth Anything runtime added: no
+- Provider/model calls made: no
+- API keys, local configs, raw labels, provider outputs, reports, datasets, or photos added: no
+- Camera live cloud AI entry added: no
+- Backend/iOS upload payload changed: no
+- Good/bad photo scoring dictionary added: no
+- `productionReady:false` remains locked.
+
+### Verification
+
+- Git baseline before editing showed existing uncommitted Phase 21-A / Phase 21-B runtime and docs changes; upstream divergence was `0 0` and there were no local-only commits.
+- `git diff --check` should be run before commit.
+- Runtime build/Xcode behavior is not expected to change from this docs-only phase.
+
+### Known TODOs
+
+- Phase 21-A and Phase 21-B runtime changes remain pending Xcode verification in the existing worktree.
+- Convert codebook enums into schema files only in a later explicitly approved phase.
+- Add dry-run validators and dataset/label-candidate plumbing only in later phases.
+
+### Next Phase
+
+This phase does not change the current main next implementation phase. The roadmap still lists `Phase 21-C - Depth Anything V2 Small Core ML Sandbox` after Phase 21-B commit/push, with explicit debug/benchmark approval required before any model package is added. Not ready for production rollout.
