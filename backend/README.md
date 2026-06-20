@@ -14,6 +14,8 @@ Phase 21-B is also iOS-local only. It adds AVFoundation depth capability detecti
 
 Phase 21-C-PRE adds backend no-runtime preflight tooling for the future Depth Anything V2 Small Core ML sandbox. It adds a sanitized CLI and tests only; no backend endpoint, provider call, model call, model file, Core ML package, iOS runtime execution, benchmark, preview-frame upload, upload payload change, raw depth/frame artifact, credential, secret, or production rollout is added.
 
+Phase 21-C is iOS-local sandbox scaffolding only. Backend runtime remains unchanged: no endpoint, provider call, model call, model file, Core ML package, benchmark, preview-frame upload, upload payload change, raw depth/frame artifact, credential, secret, or production rollout is added.
+
 Phase 17C-Prep hardens the boundary before real provider work. Phase 17C-R1 adds backend-only QweAPI gateway support for the Photo Advisor internal beta at `/v1/ai/photo-advisor`; production rollout is still out of scope.
 
 Phase 21-W-FINAL-R2 completes the backend-local controlled 12-fixture Transformers+FastAPI reference benchmark after runtime reconnect and routeability repair. The single approved run used `smoke_004` through `smoke_015`, made exactly `12` local/private model calls, used retry count `0`, and accepted all `12` fixtures with latency buckets `gt_15s x1` and `5s_to_15s x11`. Raw outputs, prompts, payloads, image paths, local config, fixture registry contents, server URL/logs, and secrets were not printed or committed; Qwen3-VL-30B-A3B was not used; `productionReady:false` remains locked.

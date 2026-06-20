@@ -4603,6 +4603,17 @@ Xcode check:
 - [ ] Confirm no Camera live cloud AI entry, preview-frame upload, provider/model key, direct provider/model call, or upload payload change appears.
 - [ ] Confirm Phase 21-A/B local camera behavior still builds/runs as before.
 - [ ] Confirm `productionReady:false` remains unchanged.
+## Phase 21-C - Depth Anything V2 Small Core ML Sandbox
+
+Xcode check:
+
+- [ ] Build the app in Xcode.
+- [ ] Confirm `DepthAnythingV2SmallSandbox.swift` compiles.
+- [ ] Confirm no `DepthAnythingV2Small.mlmodel`, `.mlmodelc`, `.mlpackage`, ONNX, TFLite, or MLX package appears in the iOS bundle.
+- [ ] Confirm Camera opens as before and local Vision geometry/depth capability behavior from Phase 21-A/B is unchanged.
+- [ ] Confirm the Depth Anything sandbox is disabled by default and not connected to live Camera runtime.
+- [ ] Confirm no inference run, benchmark run, raw frame/depth/image logging, raw depth map persistence, preview-frame upload, Camera live cloud AI entry, provider/model key, direct provider/model call, or upload payload change appears.
+- [ ] Confirm `productionReady:false` remains unchanged.
 ## Phase 21-A2 - Live Framing Aesthetic Spatial Codebook
 
 Docs-only verification:

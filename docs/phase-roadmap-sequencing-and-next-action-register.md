@@ -16,11 +16,11 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**Phase 21-C: Depth Anything V2 Small Core ML Sandbox**
+**Phase 21-C-R1: Depth Anything Model Artifact Source and Xcode Benchmark Harness Approval Gate**
 
-Reason: Phase 21-B now adds an AVFoundation-only hardware depth / portrait matte capability probe. Phase 21-C-PRE then adds a no-runtime preflight gate for the Depth Anything V2 Small Core ML sandbox. The next logical research-backed step is the debug-only sandbox path, after the preflight is committed/pushed and Xcode verification is available.
+Reason: Phase 21-B added an AVFoundation-only hardware depth / portrait matte capability probe. Phase 21-C-PRE added the no-runtime preflight gate. Phase 21-C added a disabled-by-default iOS sandbox scaffold and sanitized benchmark metric contract without adding a model file, Core ML package, inference, benchmark, Camera runtime integration, upload path, or production rollout. The next practical step, if continuing Depth Anything, is to verify model source/license and define an Xcode/device benchmark harness before any model artifact or inference run.
 
-Phase 21-C should remain debug/benchmark-only. It must not add production Depth Anything bundling, default model downloads, Florence-2, cloud calls, frame uploads, upload payload changes, Camera live cloud AI, provider keys, sensitive inference, raw frame/depth persistence, or production rollout. Any Core ML package/model file addition requires explicit approval and benchmark gates. `productionReady:false` remains locked.
+Phase 21-C-R1 should remain approval-gate/debug-benchmark planning only unless explicitly expanded. It must not add production Depth Anything bundling, default model downloads, Florence-2, cloud calls, frame uploads, upload payload changes, Camera live cloud AI, provider keys, sensitive inference, raw frame/depth persistence, or production rollout. Any Core ML package/model file addition requires explicit approval and benchmark gates. `productionReady:false` remains locked.
 
 Naming note: older committed Phase 21-A backend-internal VLM records remain historical evidence. The completed on-device geometry phase should be referenced by its full title: `Phase 21-A - On-device Vision Geometry Spike`.
 
@@ -29,6 +29,8 @@ Implementation status note: `docs/phase-21-a-on-device-vision-geometry-spike-sum
 Depth status note: `docs/phase-21-b-avfoundation-depth-capability-probe-summary.md` records the Phase 21-B AVFoundation capability-only probe and Xcode verification checklist.
 
 Depth Anything preflight note: `docs/phase-21-c-pre-depth-anything-v2-small-coreml-sandbox-preflight.md` records the no-runtime sandbox preflight gate, required metrics, pass/fail boundaries, and sanitized CLI/test entry points. It adds no model file, Core ML package, runtime inference, or benchmark.
+
+Depth Anything sandbox note: `docs/phase-21-c-depth-anything-v2-small-coreml-sandbox-summary.md` records the disabled-by-default iOS sandbox scaffold. It adds no Depth Anything model artifact, Core ML package, inference execution, benchmark run, Camera runtime integration, upload path, or production rollout.
 
 Research support note: `docs/research/on-device-ai-research-index.md` links deep research reports for the on-device live framing direction. These reports support Phase 21-B/C/D/E planning but do not approve model downloads, cloud live AI, frame upload, or production rollout.
 

@@ -1136,3 +1136,11 @@ Latest Phase 21-C-PRE Depth Anything V2 Small Core ML Sandbox Preflight on 2026-
 - No Depth Anything model file, Core ML package, ONNX/TFLite/MLX package, model download, Core ML runtime, inference, benchmark, preview-frame upload, Camera live cloud AI, iOS provider/model key, direct provider/model call, upload payload change, raw frame/depth/image logging or persistence, sensitive inference, or production rollout was added.
 - `productionReady:false` remains locked.
 - Next recommended phase after commit/push is `Phase 21-C - Depth Anything V2 Small Core ML Sandbox`, still debug/benchmark-only and hardware-depth-first.
+Latest Phase 21-C Depth Anything V2 Small Core ML Sandbox on 2026-06-20:
+
+- Phase 21-C adds a disabled-by-default iOS Depth Anything V2 Small sandbox scaffold for future Core ML depth fallback benchmarking.
+- Added `DepthAnythingV2SmallSandbox.swift` with configuration, readiness, missing-artifact, hardware-depth-first, thermal/Low Power Mode, raw logging/persistence, and sanitized metric-bucket contracts.
+- The sandbox is not connected to Camera runtime and does not include a model file, Core ML package, model download, inference execution, or benchmark run.
+- No preview-frame upload, Camera live cloud AI, iOS provider/model key, direct provider/model call, upload payload change, raw frame/depth/image logging or persistence, sensitive inference, or production rollout was added.
+- `productionReady:false` remains locked.
+- Next recommended phase if continuing Depth Anything is `Phase 21-C-R1 - Depth Anything Model Artifact Source and Xcode Benchmark Harness Approval Gate`.

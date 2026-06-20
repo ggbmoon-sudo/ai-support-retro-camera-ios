@@ -114,6 +114,13 @@ Boundaries:
 - No model file should be added unless the sandbox phase explicitly keeps it debug-only, ignored/reviewed as needed, and benchmark-gated.
 - `productionReady:false`.
 
+Implementation note:
+
+- Phase 21-C now has a sandbox summary at `docs/phase-21-c-depth-anything-v2-small-coreml-sandbox-summary.md`.
+- It adds a disabled-by-default iOS sandbox scaffold and sanitized benchmark metric contract only.
+- It does not add a Depth Anything model file, Core ML package, model download, inference execution, benchmark run, Camera runtime integration, upload path, or production rollout.
+- The next practical step is MacBook/Xcode build verification, then a separate model-artifact/source/license and device benchmark harness gate before any real Depth Anything inference.
+
 ### Phase 21-D - Florence-2-base Feasibility Study
 
 Scope:
