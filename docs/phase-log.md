@@ -12542,3 +12542,61 @@ Phase OD-R1 starts the OD-R research / definition / parameter / dataset / fine-t
 ### Next Phase
 
 Recommended next OD-R phase: `Phase OD-R2 - Dataset / Source Manifest Schema`. Not ready for production rollout.
+## Phase OD-R2 - Dataset / Source Manifest Schema
+
+Status: completed
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase OD-R2 adds the safe dataset/source manifest schema layer for the OD-R research / parameter / dataset / labeling / benchmark / fine-tune preparation track. It defines source, image, and label-job manifests before any dataset bot, crawler, cloud teacher, training, or product runtime exists.
+
+### Completed Work
+
+- Added `backend/src/qa/aestheticDatasetManifestSchema.mjs`.
+- Added `backend/scripts/check-aesthetic-dataset-manifest-schema.mjs`.
+- Added `backend/tests/aesthetic-dataset-manifest-schema.test.mjs`.
+- Added `npm run qa:aesthetic-dataset:manifest`.
+- Added `docs/od-r2-dataset-source-manifest-schema.md`.
+- Updated roadmap, README, backend/iOS README, handoff, and manual smoke notes for OD-R2.
+
+### Changed Files
+
+- `backend/package.json`
+- `backend/src/qa/aestheticDatasetManifestSchema.mjs`
+- `backend/scripts/check-aesthetic-dataset-manifest-schema.mjs`
+- `backend/tests/aesthetic-dataset-manifest-schema.test.mjs`
+- `docs/od-r2-dataset-source-manifest-schema.md`
+- `docs/on-device-live-framing-ai-roadmap.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `README.md`
+- `backend/README.md`
+- `ios-app/README.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `tests/manual-smoke-tests.md`
+
+### Boundary Checks
+
+- Backend schema/validator only: yes
+- Swift runtime file added: no
+- OD-03B Swift placeholder brought back: no
+- Model file / Core ML package / model download added: no
+- Runtime inference / Camera integration / live frame processing added: no
+- Crawler/download mode added: no
+- Cloud teacher call added: no
+- Training/fine-tuning/distillation run added: no
+- Upload path / provider call / API key added: no
+- Dataset, fixture, photo, local config, generated report, raw image path, or actual photo URL added: no
+- Production rollout: no
+
+### Verification
+
+- `git diff --check` should pass before commit.
+- `cd backend && npm test` should pass before commit.
+- `cd backend && npm run qa:aesthetic-dataset:manifest` should pass before commit.
+
+### Next Phase
+
+Recommended next OD-R phase: `Phase OD-R3 - Parameter Mining Bot Dry-run`. Not ready for production rollout.

@@ -1151,3 +1151,12 @@ Latest Phase OD-R1 Aesthetic Parameter Registry direction on 2026-06-21:
 - OD-03B Swift placeholder work is paused and the external `DepthAnythingV2SmallSandbox.swift` file must not be brought back into this branch.
 - Parameter Mining Bot is not a public web crawler. Cloud AI is a future offline structured-labeling teacher, not live app runtime. Local CV / local AI is the future runtime student.
 - No Swift runtime file, model install, Core ML package, crawler/download mode, cloud teacher call, training, inference, Camera integration, upload path, provider/model key, dataset/photo/local config/generated report, or production rollout is added. `productionReady:false` remains locked.
+
+Latest Phase OD-R2 Dataset / Source Manifest Schema on 2026-06-21:
+
+- OD-R2 adds backend-only schemas and validation for source manifests, image manifests, and label-job manifests before any dataset bot or cloud teacher exists.
+- Added `backend/src/qa/aestheticDatasetManifestSchema.mjs`, `backend/scripts/check-aesthetic-dataset-manifest-schema.mjs`, backend tests, `npm run qa:aesthetic-dataset:manifest`, and `docs/od-r2-dataset-source-manifest-schema.md`.
+- Source manifests use approved source categories only and ban random web/social/scraped/unknown-license sources.
+- Image manifests use opaque/redacted references only and require GPS/EXIF/camera serial/raw sensor removal or not-applicable status before approved use.
+- Label jobs can reference OD-R1 registry tags, keep human review required, and represent teacher-labeling permission without enabling cloud calls.
+- No Swift runtime file, model install, Core ML package, crawler/download mode, cloud teacher call, training/fine-tuning, inference, Camera integration, upload path, provider/model key, real dataset/photo/local config/generated report, or production rollout is added. `productionReady:false` remains locked.

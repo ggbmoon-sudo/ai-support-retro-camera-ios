@@ -40,6 +40,8 @@ Planned OD-R sequence:
 
 Parameter Mining Bot work must not be a public web crawler. Cloud AI is a future offline teacher for structured labeling, not live app runtime. Local CV / local AI is the future runtime student. `productionReady:false` remains locked.
 
+OD-R2 implementation note: `docs/od-r2-dataset-source-manifest-schema.md` defines source, image, and label-job manifests with safe opaque asset references, consent/license/review gates, metadata stripping requirements, and no crawler/download/cloud-teacher/training/runtime behavior.
+
 ## Product Language Rule
 
 Live hints must keep the Photo Advisor style:
