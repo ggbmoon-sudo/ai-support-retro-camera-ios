@@ -121,7 +121,8 @@ Implementation note:
 - It does not add a Depth Anything model file, Core ML package, model download, inference execution, benchmark run, Camera runtime integration, upload path, or production rollout.
 - Phase 21-C-R1 now has an approval-gate summary at `docs/phase-21-c-r1-depth-anything-model-artifact-source-and-xcode-benchmark-harness-gate.md`.
 - Phase 21-C-R2 now has a harness-draft summary at `docs/phase-21-c-r2-depth-anything-local-ignored-artifact-and-xcode-harness-draft.md`.
-- The next practical step is an operator model-artifact verification and physical-device benchmark approval request before any real Depth Anything inference.
+- Phase 21-C-R3 now has an approval-request summary at `docs/phase-21-c-r3-depth-anything-operator-artifact-verification-and-physical-device-benchmark-approval-request.md`.
+- The next practical step is `Phase 21-C-R3-RUN - Approved Depth Anything V2 Small Physical-device Benchmark`, only after exact approval and local ignored artifact readiness. It must remain physical-device-only, hardware-depth-first, sanitized-metrics-only, and not production-ready.
 
 ### Phase 21-D - Florence-2-base Feasibility Study
 

@@ -1,4 +1,4 @@
-# Phase Log
+ï»¿# Phase Log
 
 This file records the progress of each development phase.
 
@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 21-Z2G-SF - SiliconFlow Network/Parameter Latency Probe
+Current phase: Phase 21-C-R3 - Operator Model Artifact Verification and Physical-device Benchmark Approval Request
 Status: completed
-Latest implementation: Phase 21-Z2G-SF runs approved backend-only SiliconFlow network/parameter latency probes with `smoke_004` only and retry `0`. It makes `5` successful escalated provider calls, confirms sequential same-process `fetch` compact `max_tokens:192` remains accepted but seconds-level (`8637ms`, `8529ms`), confirms `stream:true` gives TTFT `3979ms` but full validated JSON `9898ms`, and confirms ultra-short `max_tokens:80` and `50` fail schema. The backend contract remains compact prompt + `maxOutputTokens:192`; `productionReady:false` remains locked. No raw provider output, prompt, request payload, image/base64/path, API key, credential, raw report, iOS runtime change, upload payload change, live cloud AI runtime, app-facing endpoint, production endpoint, or production rollout is added.
+Latest implementation: Phase 21-C-R3 adds an approval-request document for a future Depth Anything V2 Small physical-device benchmark. It records the exact future C-R3-RUN approval phrase, operator source/license/model-card/checksum/local-ignore prerequisites, physical-device-only Xcode benchmark scope, hardware-depth-first rule, sanitized aggregate output format, failure gates, and success criteria. It adds no model artifact, Core ML package, model download, inference, benchmark, Camera runtime integration, preview-frame upload, upload payload change, provider/cloud call, iOS provider/model key, raw artifact, sensitive inference, or production rollout. `productionReady:false` remains locked.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -73,7 +73,7 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-Z2H-SF: SiliconFlow Latency Architecture Decision Gate. Any further provider API calls, API key use beyond local ignored context, provider diagnosis, alternative model benchmark, image upload, model call, benchmark, RunPod provisioning, Qwen3 install/download/load/call, inference endpoint call, iOS integration, upload payload change, app-facing endpoint, production endpoint, or production rollout requires separate explicit approval before execution. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution beyond an explicitly approved future scope, provider API calls, model downloads, model cache changes, Qwen inference beyond an explicitly approved benchmark, fixture inference beyond explicit approval, local CV runtime, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, RunPod provisioning, or user-photo training / fine-tuning until explicitly requested.
+Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-C-R3-RUN: Approved Depth Anything V2 Small Physical-device Benchmark, only after the exact approval phrase is provided and local ignored artifact prerequisites are ready. Any model artifact handling, Core ML package use, inference execution, benchmark run, Camera runtime integration, preview-frame upload, upload payload change, provider/cloud call, iOS provider/model key, raw artifact, sensitive inference, or production rollout requires separate explicit approval before execution. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution beyond an explicitly approved future scope, provider API calls, model downloads, model cache changes, Qwen inference beyond an explicitly approved benchmark, fixture inference beyond explicit approval, local CV runtime beyond explicit scope, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, RunPod provisioning, or user-photo training / fine-tuning until explicitly requested.
 
 ---
 
@@ -3162,7 +3162,7 @@ Goal: Retry the previously blocked Phase 21-N one-fixture backend local/private 
 
 Summary:
 
-The user explicitly approved: "?????Phase 21-N-R1 ?è±°å????backend local/private model smoke retry". Phase 21-N-R1 stopped before healthz/model execution because the ignored local config fixture token was not `smoke_001`. No substitute fixture token was used.
+The user explicitly approved: "?????Phase 21-N-R1 ?éžŠå•£????backend local/private model smoke retry". Phase 21-N-R1 stopped before healthz/model execution because the ignored local config fixture token was not `smoke_001`. No substitute fixture token was used.
 
 This phase added a guarded retry CLI and npm script that require `--approved-one-call`, `--fixture smoke_001`, and `--no-retry`. The guarded CLI was not used to make a model call because preflight blocked first.
 
@@ -3409,7 +3409,7 @@ Goal: Run one controlled backend local/private `local_model` route smoke through
 
 Summary:
 
-The user explicitly approved: "?????Phase 21-N ?è±°å????backend local/private model smoke". The phase stopped before any healthz/model call because required preferred fixture token `smoke_001` was not present/approved in the ignored local fixture registry. No substitute fixture token was used.
+The user explicitly approved: "?????Phase 21-N ?éžŠå•£????backend local/private model smoke". The phase stopped before any healthz/model call because required preferred fixture token `smoke_001` was not present/approved in the ignored local fixture registry. No substitute fixture token was used.
 
 This phase did not run a model call, retry, serving benchmark, vLLM/SGLang/Ollama call, model download, serving-stack switch, production `local_model` enablement, iOS integration, Camera live cloud AI runtime entry, Auto-Trigger runtime, WSS runtime, local CV runtime, image upload runtime, image compression runtime, iOS upload payload change, app-facing endpoint, production endpoint, real user-photo upload, auth/billing/quota runtime, training/fine-tuning, validator weakening, safety/fallback weakening, or production rollout.
 
@@ -5251,15 +5251,15 @@ Date: 2026-06-14
 
 - Reviewed local/mock Photo Advisor UI-facing localization across English, Traditional Chinese, Simplified Chinese, Cantonese-style, and non-explicit ??????strings.
 - Replaced visible mock/demo labels with calmer local/on-device wording.
-- Updated imported-photo limited-context copy so it says capture details / ??????™è??? / ?????ˆæ­¹????/ ??????™è??? instead of raw ??“îš¯?²ntext??
-- Softened provider-unavailable fallback copy from explicit Cloud AI wording to calmer remote / ????™è????? local fallback language.
+- Updated imported-photo limited-context copy so it says capture details / ??????î©–??? / ?????ïŽ‡é£Ÿ????/ ??????î©–??? instead of raw ??îš®îªº?çˆ½text??
+- Softened provider-unavailable fallback copy from explicit Cloud AI wording to calmer remote / ????î©–????? local fallback language.
 - Polished Cantonese-style / ??????Photo Advisor strings to keep personality while reducing heavy slang, harsh judgment, and overly corrective phrasing.
 - Updated README, iOS README, backend README, manual smoke tests, handoff, and phase log references.
 
 ### Multilingual QA Findings
 
-- English copy was mostly short and safe; visible ??“îš®î­–ck demo??wording was too implementation-facing for beta UI.
-- Traditional Chinese fallback copy was generally usable but mixed in raw ??“îš¯?²ntext??and ??“î«º?????AI??technical language.
+- English copy was mostly short and safe; visible ??îš®îª¹è¬†î œk demo??wording was too implementation-facing for beta UI.
+- Traditional Chinese fallback copy was generally usable but mixed in raw ??îš®îªº?çˆ½text??and ??îš®å§¿?????AI??technical language.
 - Simplified Chinese fallback copy needed the same capture-detail and calmer fallback wording.
 - Cantonese-style copy was natural but several ??????strings were too slang-heavy or sharp for production-facing Advisor UI.
 
@@ -5304,7 +5304,7 @@ Date: 2026-06-14
 - Audited imported Photo Advisor flow through Inspiration/imported selected photos and confirmed imported inputs use `.imported` with imported capture context and limited-context fallback wording.
 - Updated `PhotoAdvisorResultValidator.fallback` so fallback results are always explicitly marked as `.fallback` instead of sometimes returning a normal mock fixture.
 - Updated fallback filter selection so the fallback recommendation chooses `soft_warm_400`, `original`, or another allowed local filter ID when possible.
-- Polished user-facing fallback/error copy so it no longer says ??“îš®î­–ck advisor?? ??“îš®?¿valid result?? or ??“îš¯??fe fallback filter??in visible UI.
+- Polished user-facing fallback/error copy so it no longer says ??îš®îª¹è¬†î œk advisor?? ??îš®îª¹?ç¯‰alid result?? or ??îš®îªº??fe fallback filter??in visible UI.
 - Confirmed missing/unknown filter recommendations still show a calm unavailable note and no unusable apply action.
 - Updated README, iOS README, backend README, manual smoke tests, handoff, and phase log references.
 
@@ -5672,7 +5672,7 @@ Date: 2026-06-14
 - Updated `AGENTS.md` as the reusable repo-level project rules file for future Codex phases.
 - Consolidated long-term restrictions for iOS provider keys, direct provider calls, Camera cloud AI entry, capture-context upload, backend/iOS payload changes, provider QA artifacts, logging, GPS/raw EXIF/sensor persistence, sensitive inference, and `productionReady=false`.
 - Consolidated Photo Advisor language rules: Observation -> Mood -> Retro intent -> Optional action, never Score -> Problem -> Fix -> Retake.
-- Added required closeout sections for future Codex final responses, including `?????/ What changed` and `Xcode ??˜ï??????™è???? / What to check in Xcode`.
+- Added required closeout sections for future Codex final responses, including `?????/ What changed` and `Xcode ??î§€??????î©–???? / What to check in Xcode`.
 - Updated README and handoff references so future prompts can point to `AGENTS.md` instead of repeating all long-term project rules.
 
 ### Safety Notes
@@ -6867,7 +6867,7 @@ Apply the latest product decision that Camera should only expose local guidance 
 
 - Removed / hid Camera AI Snapshot / cloud-style quick advice entry points from `CameraView`.
 - Removed the Camera guidance mode selector from the Camera UI so the Camera surface remains local-coach focused.
-- Kept Local Guidance / ???????™è???on the Camera screen.
+- Kept Local Guidance / ???????î©–???on the Camera screen.
 - Local Guidance chip title now follows persisted language / tone preference.
 - Local Guidance sentence copy continues through the deterministic resolver and now covers more local signal fallback categories.
 - Main Camera selected-photo floating tray keeps filter access but no longer shows the AI Advisor button on the Camera tab.
@@ -6916,7 +6916,7 @@ Date completed: 2026-06-12
 
 ### Goal
 
-Make Post-capture Photo Advisor / AI ?????/ ?????¦è??? follow the same persisted Language / Tone preference introduced in Phase 16V, while keeping the feature mock/local-only.
+Make Post-capture Photo Advisor / AI ?????/ ?????è¥¿??? follow the same persisted Language / Tone preference introduced in Phase 16V, while keeping the feature mock/local-only.
 
 ### Completed
 
@@ -7207,7 +7207,7 @@ Add a Settings-only mock language / tone preview based on Phase 16R research and
 - Added deterministic static preview examples for neutral, Hong Kong conversational, ?????? and disabled explicit mode.
 - Added safety notice: ??????comments on shooting choices and photo state, not appearance, body, or identity.
 - Added explicit mode notice: explicit mode is not enabled and would require future confirmation.
-- Added praise loop preview for "???????™è??????????????????.
+- Added praise loop preview for "???????î©–??????????????????.
 - Added localization keys for English and Traditional Chinese.
 - Updated README, iOS README, transition handoff, phase log, and manual smoke tests.
 
@@ -7276,7 +7276,7 @@ Save the user-provided ChatGPT HK2 product / copy style guide for Hong Kong / ??
 - Preserved the reference-style source links at the end of the provided document.
 - Recorded that HK2 is a product / copy style guide after Phase 16R, not a research report and not a runtime implementation spec.
 - Recorded that HK2 remains documentation-only with no runtime language mode, explicit profanity implementation, LLM-generated live copy, cloud dependency, or persistence change.
-- Recorded the deterministic copy system goal and the three core principles: ?è¬œî????????????™è?????????; ?è¬œî????????????™è???? ???????™è??????????????????
+- Recorded the deterministic copy system goal and the three core principles: ?é›“î°³????????????î©–?????????; ?é›“î°³????????????î©–???? ???????î©–??????????????????
 - Recorded the AppLanguageMode and ToneMode taxonomy, with MVP limited to neutral, Hong Kong conversational, and non-explicit troublemaker.
 - Recorded that `troublemakerExplicit` is future-only and explicit copy must not enter MVP, default UI, App Store screenshots, privacy / consent / legal copy, notifications, widgets, or post-capture criticism.
 - Recorded that future implementation should use deterministic templates and should not use AI to generate live profanity.
@@ -7329,7 +7329,7 @@ Save the user-provided ChatGPT research report for Hong Kong / ??????Language Mo
 ### Completed
 
 - Added `docs/research/hong-kong-troublemaker-language-mode-research.md`.
-- Preserved the provided report title: `Hong Kong / ??????Language Mode UX + Safety for iOS Retro Camera App ????????™è??????`.
+- Preserved the provided report title: `Hong Kong / ??????Language Mode UX + Safety for iOS Retro Camera App ????????î©–??????`.
 - Saved the full ChatGPT-provided Markdown research report to the repo.
 - Removed `utm_source=chatgpt.com` query strings without changing source meaning.
 - Preserved the required sections:
@@ -7342,7 +7342,7 @@ Save the user-provided ChatGPT research report for Hong Kong / ??????Language Mo
   - Profanity Policy
   - Safety Boundaries
   - Context-based Tone Rules
-  - Positive Feedback Loop: ???????™è??????????????????
+  - Positive Feedback Loop: ???????î©–??????????????????
   - UX Design
   - Copywriting System
   - Feature Integration
@@ -7355,7 +7355,7 @@ Save the user-provided ChatGPT research report for Hong Kong / ??????Language Mo
   - Risk Table
   - Final Recommendation
   - Sources / Links
-- Recorded the research conclusion that ???Šå?îª´å??/ ??????mode is a Hong Kong localization brand personality, not a generic AI tone pack, translation mode, or profanity feature.
+- Recorded the research conclusion that ???ï“€?è¬‡æ¸¸??/ ??????mode is a Hong Kong localization brand personality, not a generic AI tone pack, translation mode, or profanity feature.
 - Recorded the core principles: criticize the shooting behavior / photo state, not the person; say it once; praise when the issue is fixed.
 - Recorded the tone taxonomy: Neutral, Hong Kong Conversational, ?????? and ??????+ explicit profanity opt-in.
 - Recorded that profanity must be default off, explicit opt-in, double-confirmed, previewed, one-tap-off, excluded from public / legal / privacy contexts, and mainly limited to `??? as a Hong Kong tone particle.
@@ -7411,7 +7411,7 @@ Save the user-provided ChatGPT research report for Paid AI Image Editing / ?????
 ### Completed
 
 - Added `docs/research/paid-ai-image-editing-research.md`.
-- Preserved the provided report title: `Paid AI Image Editing / ?????for iOS Retro Camera App ????????™è??????`.
+- Preserved the provided report title: `Paid AI Image Editing / ?????for iOS Retro Camera App ????????î©–??????`.
 - Saved the full ChatGPT-provided Markdown research report to the repo.
 - Removed `utm_source=chatgpt.com` query strings without changing source meaning.
 - Preserved the required sections:
@@ -7436,7 +7436,7 @@ Save the user-provided ChatGPT research report for Paid AI Image Editing / ?????
   - Sources / Links
 - Recorded the research conclusion that ?????/ AI image editing should be a paid post-capture / imported-photo enhancement tool.
 - Recorded that it should not be used for pre-capture / in-capture continuous live guidance or as a general text-to-image generator.
-- Recorded that user-facing UI may call it ?????/ ??????™è?????/ ??????????????/ Photo Fix / Style Edit and can reduce everyday `AI` wording.
+- Recorded that user-facing UI may call it ?????/ ??????î©–?????/ ??????????????/ Photo Fix / Style Edit and can reduce everyday `AI` wording.
 - Recorded that privacy / consent screens must clearly disclose cloud AI / third-party AI.
 - Recorded that first implementation should be mock-first and real provider integration must be backend-mediated.
 - Recorded that iOS must not contain provider API keys or directly call OpenAI / Gemini / Stability / any provider.
@@ -7489,7 +7489,7 @@ Save the user-provided ChatGPT research report for Encrypted App-to-App High Qua
 ### Completed
 
 - Added `docs/research/encrypted-app-to-app-photo-transfer-research.md`.
-- Preserved the provided report title: `Encrypted App-to-App High Quality / Lossless Photo Transfer for iOS Retro Camera App ????????™è??????`.
+- Preserved the provided report title: `Encrypted App-to-App High Quality / Lossless Photo Transfer for iOS Retro Camera App ????????î©–??????`.
 - Saved the full ChatGPT-provided Markdown research report to the repo.
 - Removed `utm_source=chatgpt.com` query strings without changing source meaning.
 - Preserved the required sections:
@@ -7564,7 +7564,7 @@ Save the user-provided ChatGPT research report for Local On-device Camera Coach 
 ### Completed
 
 - Added `docs/research/local-on-device-camera-coach-lidar-research.md`.
-- Preserved the provided report title: `Local On-device Camera Coach + LiDAR Scene Understanding for iOS Retro Camera App ????????™è??????`.
+- Preserved the provided report title: `Local On-device Camera Coach + LiDAR Scene Understanding for iOS Retro Camera App ????????î©–??????`.
 - Saved the full ChatGPT-provided Markdown research report to the repo.
 - Removed `utm_source=chatgpt.com` query strings without changing source meaning.
 - Preserved the required sections:
@@ -8414,7 +8414,7 @@ The overlay is a SwiftUI UI layer only. It is not part of `AVCapturePhotoOutput`
 - Replace placeholder outlines with original or commercially licensed PDF/vector pose assets in a later dedicated pose artwork phase.
 - Add a better pose gallery and broader pose categories in a later phase.
 - Tune overlay scale / offset per real device after iPhone Simulator and physical-device review.
-- Keep categories inclusive: `???` / `????` / `???¢Â€è¬’î–¥ are browsing labels only, not user classification.
+- Keep categories inclusive: `???` / `????` / `???â…©Â€é›“î˜‘î ¼ are browsing labels only, not user classification.
 - AI pose suggestion and Vision body matching remain future work and are not part of P1.
 
 ### Ready to Commit Phase 16E
@@ -10124,7 +10124,7 @@ Date completed: 2026-06-09
 
 ### Goal
 
-Backfill the filter research documentation from the supplied `/Users/a1234/Downloads/???™è?????md` report and verify that the Phase 12B / Phase 13 Swift filter catalog still aligns with the documented product direction.
+Backfill the filter research documentation from the supplied `/Users/a1234/Downloads/???î©–?????md` report and verify that the Phase 12B / Phase 13 Swift filter catalog still aligns with the documented product direction.
 
 This is not a new implementation phase.
 
@@ -12547,3 +12547,61 @@ Phase 21-C-R2 adds the local-only ignored artifact folder policy and an iOS Xcod
 ### Next Phase
 
 Recommended next if continuing Depth Anything: `Phase 21-C-R3 - Operator Model Artifact Verification and Physical-device Benchmark Approval Request`. Not ready for production rollout.
+## Phase 21-C-R3 - Operator Model Artifact Verification and Physical-device Benchmark Approval Request
+
+Status: completed
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase 21-C-R3 adds an approval-request draft for a future Depth Anything V2 Small physical-device benchmark. It does not approve execution by itself and adds no model artifact, Core ML package, download, inference, benchmark, Camera runtime integration, upload path, raw artifact, or production rollout.
+
+### Completed Work
+
+- Added `docs/phase-21-c-r3-depth-anything-operator-artifact-verification-and-physical-device-benchmark-approval-request.md`.
+- Recorded exact future C-R3-RUN approval wording.
+- Defined source/license/model-card/checksum/local-ignore prerequisites.
+- Defined physical-device-only Xcode benchmark scope and simulator block.
+- Defined hardware AVFoundation depth first policy.
+- Defined sanitized aggregate output format, failure gates, and success criteria.
+- Updated README, iOS/backend docs, roadmap, handoff, and manual smoke checklist.
+
+### Changed Files
+
+- `README.md`
+- `backend/README.md`
+- `ios-app/README.md`
+- `docs/on-device-live-framing-ai-roadmap.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-21-c-r3-depth-anything-operator-artifact-verification-and-physical-device-benchmark-approval-request.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `tests/manual-smoke-tests.md`
+
+### Boundary Confirmations
+
+- Model artifact added/committed: no
+- Core ML package added: no
+- Model download: no
+- Inference run: no
+- Benchmark run: no
+- Camera runtime integration: no
+- Preview-frame upload: no
+- Upload payload changed: no
+- Provider/cloud call: no
+- iOS provider/model key or direct call: no
+- Raw frame/depth/image/path/model output persisted or committed: no
+- Sensitive inference added: no
+- `productionReady:false` remains locked.
+
+### Verification
+
+- `git diff --check` should pass.
+- Backend Depth Anything gates should still pass.
+- Artifact scans should show no model files, local configs, raw reports, real photos, datasets, or provider responses staged.
+- Xcode runtime behavior should be unchanged; physical-device benchmark is not run in this phase.
+
+### Ready for Next Phase
+
+Ready for `Phase 21-C-R3-RUN - Approved Depth Anything V2 Small Physical-device Benchmark` only after the exact approval phrase is provided and local ignored artifact prerequisites are ready. Not ready for production rollout.

@@ -1159,3 +1159,11 @@ Latest Phase 21-C-R2 Local-Ignored Depth Anything Artifact and Xcode Harness Dra
 - No Depth Anything model artifact, Core ML package, model download, inference, benchmark, Camera integration, preview-frame upload, Camera live cloud AI, iOS provider/model key, direct provider/model call, upload payload change, raw frame/depth/image/path logging or persistence, sensitive inference, or production rollout was added.
 - `productionReady:false` remains locked.
 - Next recommended phase if continuing Depth Anything is `Phase 21-C-R3 - Operator Model Artifact Verification and Physical-device Benchmark Approval Request`.
+Latest Phase 21-C-R3 Operator Model Artifact Verification and Physical-device Benchmark Approval Request on 2026-06-21:
+
+- Phase 21-C-R3 adds an approval-request document for a future Depth Anything V2 Small physical-device benchmark.
+- Added exact future C-R3-RUN approval wording, operator source/license/model-card/checksum/local-ignore prerequisites, physical-device-only Xcode benchmark scope, hardware-depth-first policy, sanitized aggregate output format, failure gates, and success criteria.
+- This phase does not approve execution by itself.
+- No Depth Anything model artifact, Core ML package, model download, inference, benchmark, Camera runtime integration, preview-frame upload, Camera live cloud AI, iOS provider/model key, direct provider/model call, upload payload change, raw frame/depth/image/path/model output logging or persistence, sensitive inference, secret, or production rollout was added.
+- `productionReady:false` remains locked.
+- Next recommended phase if continuing Depth Anything is `Phase 21-C-R3-RUN - Approved Depth Anything V2 Small Physical-device Benchmark`, only after exact operator approval and local ignored artifact readiness.

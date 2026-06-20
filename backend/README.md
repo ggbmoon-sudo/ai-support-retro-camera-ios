@@ -20,6 +20,8 @@ Phase 21-C-R1 adds backend no-runtime approval-gate tooling for Depth Anything V
 
 Phase 21-C-R2 is iOS-local harness-draft work only. Backend runtime remains unchanged: no endpoint, provider call, model call, model artifact, Core ML package, model download, inference, benchmark, upload payload change, raw artifact, credential, secret, or production rollout is added.
 
+Phase 21-C-R3 is approval-request documentation for a future Depth Anything V2 Small physical-device benchmark. Backend runtime remains unchanged: no endpoint, provider call, model call, model artifact, Core ML package, model download, inference, benchmark, upload payload change, raw artifact, credential, secret, or production rollout is added. Future C-R3-RUN requires exact operator approval and local ignored artifact verification.
+
 Phase 17C-Prep hardens the boundary before real provider work. Phase 17C-R1 adds backend-only QweAPI gateway support for the Photo Advisor internal beta at `/v1/ai/photo-advisor`; production rollout is still out of scope.
 
 Phase 21-W-FINAL-R2 completes the backend-local controlled 12-fixture Transformers+FastAPI reference benchmark after runtime reconnect and routeability repair. The single approved run used `smoke_004` through `smoke_015`, made exactly `12` local/private model calls, used retry count `0`, and accepted all `12` fixtures with latency buckets `gt_15s x1` and `5s_to_15s x11`. Raw outputs, prompts, payloads, image paths, local config, fixture registry contents, server URL/logs, and secrets were not printed or committed; Qwen3-VL-30B-A3B was not used; `productionReady:false` remains locked.

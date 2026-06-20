@@ -4642,6 +4642,21 @@ Xcode check:
 - [ ] Confirm Camera behavior remains unchanged.
 - [ ] Confirm no preview-frame upload, Camera live cloud AI entry, provider/model key, direct provider/model call, upload payload change, raw frame/depth/image/path logging, or production rollout appears.
 - [ ] Confirm `productionReady:false` remains unchanged.
+## Phase 21-C-R3 - Depth Anything Artifact Verification and Benchmark Approval Request
+
+Docs-only verification:
+
+- [ ] Confirm `docs/phase-21-c-r3-depth-anything-operator-artifact-verification-and-physical-device-benchmark-approval-request.md` exists.
+- [ ] Confirm the approval request says it does not approve execution by itself.
+- [ ] Confirm the future C-R3-RUN scope requires operator-verified local ignored artifact, source/license/model-card/checksum verification, Xcode physical device only, hardware depth first, sanitized aggregate metrics only, and `productionReady:false`.
+- [ ] Confirm no `.mlmodel`, `.mlmodelc`, `.mlpackage`, ONNX, TFLite, MLX, model weight, checksum file, source URL, local model path, raw report, dataset, real photo, provider response, or local config is staged.
+
+Xcode check:
+
+- [ ] Xcode runtime behavior should be unchanged by this approval request.
+- [ ] Confirm no Depth Anything model artifact appears in the app bundle.
+- [ ] Confirm no inference run, benchmark run, Camera integration, preview-frame upload, upload payload change, provider/model key, direct provider/model call, raw frame/depth/image/path logging, or production rollout appears.
+- [ ] Confirm `productionReady:false` remains unchanged.
 ## Phase 21-A2 - Live Framing Aesthetic Spatial Codebook
 
 Docs-only verification:
