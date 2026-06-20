@@ -22,7 +22,9 @@ Phase 21-C-R2 adds a local-only ignored artifact folder placeholder and an Xcode
 
 Phase 21-C-R3 drafts the operator artifact-verification and physical-device benchmark approval request. Xcode runtime behavior should remain unchanged: no model artifact, Core ML package, model download, inference execution, benchmark run, Camera integration, preview-frame upload, upload payload change, provider/model key, direct provider/model call, raw artifact persistence, or production rollout is added. Future C-R3-RUN requires the exact approval phrase and local ignored artifact readiness.
 
-The research index for this direction is `../docs/research/on-device-ai-research-index.md`. Later Depth Anything / Florence work remains blocked until separately approved and benchmarked. The next recommended phase after Phase 21-C-R3 is `Phase 21-C-R3-RUN - Approved Depth Anything V2 Small Physical-device Benchmark`, only after exact operator approval.
+Phase 21-C-R3-RUN prerequisite check safely blocked before execution because the exact approval phrase was absent, the local ignored artifact folder contained only the placeholder README, and this Windows environment has no Xcode/physical-device benchmark capability. Xcode runtime behavior remains unchanged: no model artifact, Core ML package, model download, inference execution, benchmark run, Camera integration, preview-frame upload, upload payload change, provider/model key, direct provider/model call, raw artifact persistence, or production rollout is added.
+
+The research index for this direction is `../docs/research/on-device-ai-research-index.md`. Later Depth Anything / Florence work remains blocked until separately approved and benchmarked. The next recommended phase remains `Phase 21-C-R3-RUN - Approved Depth Anything V2 Small Physical-device Benchmark`, only after exact operator approval, local ignored artifact readiness, and MacBook/Xcode physical-device availability.
 
 ## Phase 21-M / 21-N / 21-N-R0 / 21-N-R0B / 21-N-R0C / 21-N-R1B / 21-N-R1C / 21-N-R1D Xcode Boundary
 

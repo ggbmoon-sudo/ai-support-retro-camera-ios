@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 21-C-R3 - Operator Model Artifact Verification and Physical-device Benchmark Approval Request
+Current phase: Phase 21-C-R3-RUN - Depth Anything Physical-device Benchmark Blocked Prerequisite Check
 Status: completed
-Latest implementation: Phase 21-C-R3 adds an approval-request document for a future Depth Anything V2 Small physical-device benchmark. It records the exact future C-R3-RUN approval phrase, operator source/license/model-card/checksum/local-ignore prerequisites, physical-device-only Xcode benchmark scope, hardware-depth-first rule, sanitized aggregate output format, failure gates, and success criteria. It adds no model artifact, Core ML package, model download, inference, benchmark, Camera runtime integration, preview-frame upload, upload payload change, provider/cloud call, iOS provider/model key, raw artifact, sensitive inference, or production rollout. `productionReady:false` remains locked.
+Latest implementation: Phase 21-C-R3-RUN prerequisite check followed the roadmap into the next benchmark step and safely blocked before execution because the exact C-R3-RUN approval phrase was absent, the local ignored Depth Anything artifact folder contained only the placeholder README, and this Windows environment has no Xcode/physical-device benchmark capability. It adds no model artifact, Core ML package, model download, inference, benchmark, Camera runtime integration, preview-frame upload, upload payload change, provider/cloud call, iOS provider/model key, raw artifact, sensitive inference, or production rollout. `productionReady:false` remains locked.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -73,7 +73,7 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-C-R3-RUN: Approved Depth Anything V2 Small Physical-device Benchmark, only after the exact approval phrase is provided and local ignored artifact prerequisites are ready. Any model artifact handling, Core ML package use, inference execution, benchmark run, Camera runtime integration, preview-frame upload, upload payload change, provider/cloud call, iOS provider/model key, raw artifact, sensitive inference, or production rollout requires separate explicit approval before execution. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution beyond an explicitly approved future scope, provider API calls, model downloads, model cache changes, Qwen inference beyond an explicitly approved benchmark, fixture inference beyond explicit approval, local CV runtime beyond explicit scope, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, RunPod provisioning, or user-photo training / fine-tuning until explicitly requested.
+Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase remains Phase 21-C-R3-RUN: Approved Depth Anything V2 Small Physical-device Benchmark, only after the exact approval phrase is provided, a local ignored artifact is ready, and MacBook/Xcode physical-device benchmarking is available. Any model artifact handling, Core ML package use, inference execution, benchmark run, Camera runtime integration, preview-frame upload, upload payload change, provider/cloud call, iOS provider/model key, raw artifact, sensitive inference, or production rollout requires separate explicit approval before execution. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution beyond an explicitly approved future scope, provider API calls, model downloads, model cache changes, Qwen inference beyond an explicitly approved benchmark, fixture inference beyond explicit approval, local CV runtime beyond explicit scope, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, RunPod provisioning, or user-photo training / fine-tuning until explicitly requested.
 
 ---
 
@@ -12605,3 +12605,61 @@ Phase 21-C-R3 adds an approval-request draft for a future Depth Anything V2 Smal
 ### Ready for Next Phase
 
 Ready for `Phase 21-C-R3-RUN - Approved Depth Anything V2 Small Physical-device Benchmark` only after the exact approval phrase is provided and local ignored artifact prerequisites are ready. Not ready for production rollout.
+
+## Phase 21-C-R3-RUN - Depth Anything Physical-device Benchmark Blocked Prerequisite Check
+
+Status: blocked before execution
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase 21-C-R3-RUN followed the roadmap into the next benchmark step and safely blocked before execution. The exact C-R3-RUN approval phrase was absent, the local ignored Depth Anything artifact folder contained only the placeholder README, and this Windows environment has no Xcode/physical-device benchmark capability.
+
+### Completed Work
+
+- Verified repo was clean before the prerequisite check.
+- Verified upstream divergence was `0 0`.
+- Checked `ios-app/LocalOnlyModels/DepthAnythingV2Small/` and found only the placeholder `README.md`.
+- Checked local tooling and confirmed `xcodebuild` and `swift` are unavailable in this Windows environment.
+- Added `docs/phase-21-c-r3-run-depth-anything-physical-device-benchmark-blocked-prerequisite-check.md`.
+- Updated README, iOS/backend docs, roadmap, handoff, and manual smoke checklist.
+
+### Blocker Buckets
+
+- `blocked_for_missing_exact_c_r3_run_approval_phrase`
+- `blocked_for_missing_local_ignored_depth_anything_artifact`
+- `blocked_for_xcode_unavailable_in_windows_environment`
+- `blocked_for_missing_physical_device_benchmark_environment`
+
+### Changed Files
+
+- `README.md`
+- `backend/README.md`
+- `ios-app/README.md`
+- `docs/on-device-live-framing-ai-roadmap.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-21-c-r3-run-depth-anything-physical-device-benchmark-blocked-prerequisite-check.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `tests/manual-smoke-tests.md`
+
+### Boundary Confirmations
+
+- Model artifact added/committed: no
+- Core ML package added: no
+- Model download: no
+- Inference run: no
+- Benchmark run: no
+- Camera runtime integration: no
+- Preview-frame upload: no
+- Upload payload changed: no
+- Provider/cloud call: no
+- iOS provider/model key or direct call: no
+- Raw frame/depth/image/path/model output persisted or committed: no
+- Sensitive inference added: no
+- `productionReady:false` remains locked.
+
+### Ready for Next Phase
+
+Remain on `Phase 21-C-R3-RUN - Approved Depth Anything V2 Small Physical-device Benchmark` only after exact approval phrase, local ignored artifact readiness, and MacBook/Xcode physical-device environment are available. Not ready for production rollout.

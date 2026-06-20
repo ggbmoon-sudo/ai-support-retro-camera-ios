@@ -1167,3 +1167,11 @@ Latest Phase 21-C-R3 Operator Model Artifact Verification and Physical-device Be
 - No Depth Anything model artifact, Core ML package, model download, inference, benchmark, Camera runtime integration, preview-frame upload, Camera live cloud AI, iOS provider/model key, direct provider/model call, upload payload change, raw frame/depth/image/path/model output logging or persistence, sensitive inference, secret, or production rollout was added.
 - `productionReady:false` remains locked.
 - Next recommended phase if continuing Depth Anything is `Phase 21-C-R3-RUN - Approved Depth Anything V2 Small Physical-device Benchmark`, only after exact operator approval and local ignored artifact readiness.
+
+Latest Phase 21-C-R3-RUN blocked prerequisite check on 2026-06-21:
+
+- Codex followed the roadmap to Phase 21-C-R3-RUN and performed a prerequisite check only.
+- The check blocked before execution because the exact C-R3-RUN approval phrase was absent, the local ignored Depth Anything artifact folder contained only the placeholder README, and this Windows environment has no Xcode/physical-device benchmark capability.
+- No Depth Anything model artifact, Core ML package, model download, inference, benchmark, Camera runtime integration, preview-frame upload, Camera live cloud AI, iOS provider/model key, direct provider/model call, upload payload change, raw frame/depth/image/path/model output logging or persistence, sensitive inference, secret, or production rollout was added.
+- `productionReady:false` remains locked.
+- Next recommended phase remains `Phase 21-C-R3-RUN - Approved Depth Anything V2 Small Physical-device Benchmark`, only after exact approval phrase, local ignored artifact readiness, and MacBook/Xcode physical-device availability.

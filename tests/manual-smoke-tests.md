@@ -4657,6 +4657,15 @@ Xcode check:
 - [ ] Confirm no Depth Anything model artifact appears in the app bundle.
 - [ ] Confirm no inference run, benchmark run, Camera integration, preview-frame upload, upload payload change, provider/model key, direct provider/model call, raw frame/depth/image/path logging, or production rollout appears.
 - [ ] Confirm `productionReady:false` remains unchanged.
+## Phase 21-C-R3-RUN - Blocked Prerequisite Check
+
+Docs-only blocked verification:
+
+- [ ] Confirm `docs/phase-21-c-r3-run-depth-anything-physical-device-benchmark-blocked-prerequisite-check.md` exists.
+- [ ] Confirm blocker buckets include missing exact approval phrase, missing local ignored Depth Anything artifact, Xcode unavailable in Windows environment, and missing physical-device benchmark environment.
+- [ ] Confirm no `.mlmodel`, `.mlmodelc`, `.mlpackage`, ONNX, TFLite, MLX, model weight, checksum file, source URL, local model path, raw report, dataset, real photo, provider response, or local config is staged.
+- [ ] Confirm no inference run, benchmark run, Camera integration, preview-frame upload, upload payload change, provider/model key, direct provider/model call, raw frame/depth/image/path logging, or production rollout appears.
+- [ ] Confirm `productionReady:false` remains unchanged.
 ## Phase 21-A2 - Live Framing Aesthetic Spatial Codebook
 
 Docs-only verification:
