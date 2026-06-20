@@ -1109,3 +1109,13 @@ Latest Phase 21-A on-device Vision Geometry Spike on 2026-06-20:
 - No Depth Anything, Florence-2, Core ML package, model file, provider key, direct iOS provider/model call, cloud live AI, frame upload, backend/iOS upload payload change, raw frame persistence, sensitive inference, or production rollout was added.
 - `productionReady:false` remains locked.
 - Next recommended phase after commit/push is `Phase 21-B - AVFoundation Depth Capability Probe`.
+Latest Phase 21-B AVFoundation Depth Capability Probe on 2026-06-20:
+
+- Phase 21-B adds an iOS-local AVFoundation-only depth capability probe.
+- Added `CameraDepthCapabilityProbe` for active camera/photo-output support detection.
+- Added safe states `hardwareDepthAvailable`, `portraitMatteAvailable`, and `depthUnavailable`.
+- Threaded capability-only `DepthSignals` into the existing local Vision geometry path.
+- Did not add `AVCaptureDepthDataOutput`, did not enable depth delivery or portrait matte delivery, and did not read/log/persist/upload raw `AVDepthData`.
+- No Depth Anything, Florence-2, Core ML package, model file, provider key, direct iOS provider/model call, cloud live AI, frame upload, backend/iOS upload payload change, raw depth artifact, sensitive inference, or production rollout was added.
+- `productionReady:false` remains locked.
+- Next recommended phase after commit/push is `Phase 21-C - Depth Anything V2 Small Core ML Sandbox`, still debug/benchmark-only and requiring explicit approval before any model package is added.

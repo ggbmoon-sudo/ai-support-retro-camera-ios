@@ -24,10 +24,12 @@ final class CameraCaptureService {
 
     private let photoOutput = AVCapturePhotoOutput()
     private let videoOutput = AVCaptureVideoDataOutput()
+    private let depthCapabilityProbe = CameraDepthCapabilityProbe()
     private let frameSignalQueue = DispatchQueue(label: "ai.photo.camera.frame-signal", qos: .utility)
     private let frameSignalState = FrameSignalState()
     private var frameSignalDelegate: FrameSignalDelegate?
     private var frameSignalHandler: (@MainActor @Sendable ([LiveGuidanceSignal]) -> Void)?
+    private(set) var depthCapability: CameraDepthCapability = .unavailable
     private var isConfigured = false
     private var delegates: [PhotoCaptureDelegate] = []
 
@@ -57,6 +59,11 @@ final class CameraCaptureService {
 
         session.addInput(input)
         session.addOutput(photoOutput)
+        depthCapability = depthCapabilityProbe.capability(
+            for: camera,
+            photoOutput: photoOutput
+        )
+        frameSignalState.depthSignals = DepthSignals(capability: depthCapability)
 
         configureFrameSignalOutputIfPossible()
         session.commitConfiguration()
@@ -145,6 +152,7 @@ private final class PhotoCaptureDelegate: NSObject, AVCapturePhotoCaptureDelegat
 private final class FrameSignalState: @unchecked Sendable {
     private let lock = NSLock()
     nonisolated(unsafe) private var _isEnabled = false
+    nonisolated(unsafe) private var _depthSignals = DepthSignals.unavailable
 
     nonisolated var isEnabled: Bool {
         get {
@@ -153,6 +161,17 @@ private final class FrameSignalState: @unchecked Sendable {
         set {
             lock.withLock {
                 _isEnabled = newValue
+            }
+        }
+    }
+
+    nonisolated var depthSignals: DepthSignals {
+        get {
+            lock.withLock { _depthSignals }
+        }
+        set {
+            lock.withLock {
+                _depthSignals = newValue
             }
         }
     }
@@ -187,7 +206,10 @@ private final class FrameSignalDelegate: NSObject, AVCaptureVideoDataOutputSampl
 
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
         let brightnessSignals = brightnessAnalyzer.signals(from: pixelBuffer)
-        let geometrySignals = geometryAnalyzer.signals(from: pixelBuffer)
+        let geometrySignals = geometryAnalyzer.signals(
+            from: pixelBuffer,
+            depthSignals: state.depthSignals
+        )
         let signals = combinedSignals(geometrySignals: geometrySignals, brightnessSignals: brightnessSignals)
         guard !signals.isEmpty else { return }
 

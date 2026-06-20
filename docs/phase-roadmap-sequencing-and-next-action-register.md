@@ -16,15 +16,17 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**Phase 21-B: AVFoundation Depth Capability Probe**
+**Phase 21-C: Depth Anything V2 Small Core ML Sandbox**
 
-Reason: Phase 21-A now starts the on-device live framing track with Apple Vision geometry-only analysis and safe composition buckets. The next logical step is to probe AVFoundation hardware depth / portrait matte capability without persisting depth maps, uploading frames, adding model files, or changing production readiness.
+Reason: Phase 21-B now adds an AVFoundation-only hardware depth / portrait matte capability probe. It records only local capability state, does not enable depth delivery, does not read or persist raw `AVDepthData`, and does not upload frames. The next logical research-backed step is a debug-only Depth Anything V2 Small Core ML sandbox plan/benchmark path.
 
-Phase 21-B should be AVFoundation-only and should detect capability states such as `hardwareDepthAvailable`, `portraitMatteAvailable`, and `depthUnavailable`. Depth may be used only as a composition / foreground-background signal. It must not persist raw depth maps, upload preview frames, add Depth Anything, add Florence-2, add cloud calls, change upload payloads, add Camera live cloud AI, add provider keys, infer sensitive attributes, or enable production rollout. `productionReady:false` remains locked.
+Phase 21-C should remain debug/benchmark-only. It must not add production Depth Anything bundling, default model downloads, Florence-2, cloud calls, frame uploads, upload payload changes, Camera live cloud AI, provider keys, sensitive inference, raw frame/depth persistence, or production rollout. Any Core ML package/model file addition requires explicit approval and benchmark gates. `productionReady:false` remains locked.
 
 Naming note: older committed Phase 21-A backend-internal VLM records remain historical evidence. The completed on-device geometry phase should be referenced by its full title: `Phase 21-A - On-device Vision Geometry Spike`.
 
 Implementation status note: `docs/phase-21-a-on-device-vision-geometry-spike-summary.md` records the current Phase 21-A implementation boundary and Xcode verification checklist.
+
+Depth status note: `docs/phase-21-b-avfoundation-depth-capability-probe-summary.md` records the Phase 21-B AVFoundation capability-only probe and Xcode verification checklist.
 
 Research support note: `docs/research/on-device-ai-research-index.md` links deep research reports for the on-device live framing direction. These reports support Phase 21-B/C/D/E planning but do not approve model downloads, cloud live AI, frame upload, or production rollout.
 

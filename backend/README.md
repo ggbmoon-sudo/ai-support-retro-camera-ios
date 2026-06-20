@@ -8,7 +8,9 @@ Today's AI direction update is docs-only: live camera guidance should prioritize
 
 The on-device live framing research index is `../docs/research/on-device-ai-research-index.md`. It proposes future backend/offline dataset and labeling skeletons as research only; no schemas, scripts, local configs, datasets, reports, provider adapters, provider calls, or training jobs are added by the research set.
 
-Phase 21-A implements the first iOS on-device Vision geometry spike only. Backend runtime remains unchanged: no endpoint, provider call, model call, dataset crawler, AI labeling adapter, upload payload change, raw artifact, credential, secret, or production rollout is added. The next recommended backend-neutral live-framing step is `Phase 21-B - AVFoundation Depth Capability Probe`.
+Phase 21-A implements the first iOS on-device Vision geometry spike only. Backend runtime remains unchanged: no endpoint, provider call, model call, dataset crawler, AI labeling adapter, upload payload change, raw artifact, credential, secret, or production rollout is added.
+
+Phase 21-B is also iOS-local only. It adds AVFoundation depth capability detection for the active camera/photo-output path and records only safe in-memory capability buckets. Backend runtime remains unchanged: no endpoint, provider call, model call, dataset crawler, AI labeling adapter, upload payload change, raw depth artifact, credential, secret, or production rollout is added.
 
 Phase 17C-Prep hardens the boundary before real provider work. Phase 17C-R1 adds backend-only QweAPI gateway support for the Photo Advisor internal beta at `/v1/ai/photo-advisor`; production rollout is still out of scope.
 

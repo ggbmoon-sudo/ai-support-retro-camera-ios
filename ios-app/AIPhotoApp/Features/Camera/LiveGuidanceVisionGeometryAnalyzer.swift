@@ -7,7 +7,10 @@ import Vision
 nonisolated struct LiveGuidanceVisionGeometryAnalyzer: Sendable {
     private let compositionAnalyzer = LiveVisionCompositionAnalyzer()
 
-    func analysis(from pixelBuffer: CVPixelBuffer) -> LiveVisionGeometryAnalysis {
+    func analysis(
+        from pixelBuffer: CVPixelBuffer,
+        depthSignals: DepthSignals = .unavailable
+    ) -> LiveVisionGeometryAnalysis {
         let faceRequest = VNDetectFaceRectanglesRequest()
         let bodyPoseRequest = VNDetectHumanBodyPoseRequest()
         let handler = VNImageRequestHandler(
@@ -38,12 +41,16 @@ nonisolated struct LiveGuidanceVisionGeometryAnalyzer: Sendable {
         return compositionAnalyzer.analysis(
             subjectBox: subjectBox,
             faceBox: faceBox,
-            bodyBox: bodyBox
+            bodyBox: bodyBox,
+            depthSignals: depthSignals
         )
     }
 
-    func signals(from pixelBuffer: CVPixelBuffer) -> [LiveGuidanceSignal] {
-        analysis(from: pixelBuffer).signals
+    func signals(
+        from pixelBuffer: CVPixelBuffer,
+        depthSignals: DepthSignals = .unavailable
+    ) -> [LiveGuidanceSignal] {
+        analysis(from: pixelBuffer, depthSignals: depthSignals).signals
     }
 
     private func bodyBoundingBox(from observation: VNHumanBodyPoseObservation) -> LiveFrameNormalizedRect? {
@@ -101,7 +108,8 @@ nonisolated struct LiveVisionCompositionAnalyzer: Sendable {
     func analysis(
         subjectBox: LiveFrameNormalizedRect,
         faceBox: LiveFrameNormalizedRect?,
-        bodyBox: LiveFrameNormalizedRect?
+        bodyBox: LiveFrameNormalizedRect?,
+        depthSignals: DepthSignals = .unavailable
     ) -> LiveVisionGeometryAnalysis {
         let geometry = geometrySignals(
             subjectBox: subjectBox,
@@ -111,6 +119,7 @@ nonisolated struct LiveVisionCompositionAnalyzer: Sendable {
         let composition = compositionSignals(from: geometry)
         let liveFrameSignals = LiveFrameSignals(
             geometry: geometry,
+            depth: depthSignals,
             composition: composition
         )
 
@@ -251,4 +260,3 @@ nonisolated struct LiveVisionCompositionAnalyzer: Sendable {
         }
     }
 }
-

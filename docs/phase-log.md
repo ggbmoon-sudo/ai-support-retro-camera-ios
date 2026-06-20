@@ -12193,3 +12193,60 @@ Phase 21-A starts the revised on-device live framing intelligence track with App
 ### Next Phase
 
 Ready for `Phase 21-B - AVFoundation Depth Capability Probe` after Phase 21-A is committed and pushed. Not ready for production rollout.
+## Phase 21-B - AVFoundation Depth Capability Probe
+
+Status: implemented, pending Xcode verification
+Date: 2026-06-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase 21-B adds an AVFoundation-only depth capability probe to the on-device live framing track. It detects whether the active camera/photo-output path supports hardware depth data delivery or portrait effects matte support and stores only safe in-memory capability state in local `DepthSignals`.
+
+### Completed Work
+
+- Added `CameraDepthCapabilityProbe` for AVFoundation support detection.
+- Added capability states: `hardwareDepthAvailable`, `portraitMatteAvailable`, and `depthUnavailable`.
+- Extended `LiveFrameDepthState` with the same states.
+- Threaded depth capability state into the existing local Vision geometry analysis path.
+- Kept foreground/background separation, subject distance, and confidence buckets as `unknown` until a future phase explicitly uses real depth data.
+- Added `docs/phase-21-b-avfoundation-depth-capability-probe-summary.md`.
+
+### Changed Files
+
+- `ios-app/AIPhotoApp/Features/Camera/CameraDepthCapabilityProbe.swift`
+- `ios-app/AIPhotoApp/Features/Camera/CameraCaptureService.swift`
+- `ios-app/AIPhotoApp/Features/Camera/LiveFrameGeometrySignals.swift`
+- `ios-app/AIPhotoApp/Features/Camera/LiveGuidanceVisionGeometryAnalyzer.swift`
+- `docs/phase-21-b-avfoundation-depth-capability-probe-summary.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/on-device-live-framing-ai-roadmap.md`
+- `README.md`
+- `backend/README.md`
+- `ios-app/README.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `tests/manual-smoke-tests.md`
+
+### Boundary Checks
+
+- AVFoundation-only capability probe: yes
+- Raw `AVDepthData` read/logged/persisted/uploaded: no
+- `AVCaptureDepthDataOutput` added: no
+- Depth delivery enabled: no
+- Portrait matte delivery enabled: no
+- Depth Anything / Florence / Core ML runtime added: no
+- Model files / packages added: no
+- Preview frame upload added: no
+- Backend/iOS upload payload changed: no
+- Sensitive inference added: no
+- Production rollout: no
+
+### Verification
+
+- Source-level checks and repository scans are recorded in the final Phase 21-B handoff.
+- Xcode build/run still needs local verification on macOS/Xcode.
+
+### Next Phase
+
+Ready for `Phase 21-C - Depth Anything V2 Small Core ML Sandbox` after Phase 21-B is committed and pushed. Not ready for production rollout.

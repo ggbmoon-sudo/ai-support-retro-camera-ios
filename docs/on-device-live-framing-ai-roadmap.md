@@ -89,6 +89,13 @@ Boundaries:
 - No cloud upload.
 - `productionReady:false`.
 
+Implementation note:
+
+- Phase 21-B now has an implementation summary at `docs/phase-21-b-avfoundation-depth-capability-probe-summary.md`.
+- It detects AVFoundation hardware depth / portrait matte capability only.
+- It does not enable depth delivery, read raw `AVDepthData`, persist depth maps, or upload frames.
+- The next recommended phase after commit/push is `Phase 21-C - Depth Anything V2 Small Core ML Sandbox`.
+
 ### Phase 21-C - Depth Anything V2 Small Core ML Sandbox
 
 Scope:

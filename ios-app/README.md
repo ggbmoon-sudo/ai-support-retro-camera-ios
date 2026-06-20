@@ -10,7 +10,9 @@ This docs-only update adds no iOS runtime behavior, no model file, no Core ML pa
 
 Phase 21-A starts this path in iOS with Apple Vision geometry-only live guidance. It adds typed local geometry/composition signal contracts, Vision face/body/pose geometry analysis on ephemeral preview frames, and a normalized overlay coordinate mapper for future debug overlays. It does not add model bundles, provider SDKs, API keys, direct provider/model calls, Camera live cloud AI, frame upload, upload payload changes, raw frame persistence, sensitive inference, or production rollout.
 
-The research index for this direction is `../docs/research/on-device-ai-research-index.md`. Later Depth Anything / Florence work remains blocked until separately approved and benchmarked. The next recommended phase after Phase 21-A commit/push is `Phase 21-B - AVFoundation Depth Capability Probe`.
+Phase 21-B adds an AVFoundation-only depth capability probe. It checks whether the active camera/photo-output path supports hardware depth or portrait matte, then stores only local in-memory capability buckets in `DepthSignals`. It does not enable depth delivery, read or persist raw `AVDepthData`, add `AVCaptureDepthDataOutput`, upload frames, change upload payloads, add model bundles, add provider SDKs/keys, or add Camera live cloud AI.
+
+The research index for this direction is `../docs/research/on-device-ai-research-index.md`. Later Depth Anything / Florence work remains blocked until separately approved and benchmarked. The next recommended phase after Phase 21-B commit/push is `Phase 21-C - Depth Anything V2 Small Core ML Sandbox`.
 
 ## Phase 21-M / 21-N / 21-N-R0 / 21-N-R0B / 21-N-R0C / 21-N-R1B / 21-N-R1C / 21-N-R1D Xcode Boundary
 

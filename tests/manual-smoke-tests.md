@@ -4574,3 +4574,15 @@ Manual Xcode check:
 - [ ] Confirm capture/import, local filters, selected-photo review, mock save, and post-capture advisor behavior still work as before.
 - [ ] Confirm backend/iOS upload payloads are unchanged.
 - [ ] Confirm `productionReady:false` remains unchanged.
+## Phase 21-B - AVFoundation Depth Capability Probe
+
+- [ ] Build and run the iOS app in Xcode.
+- [ ] Open Camera with local guidance enabled on Simulator; confirm no crash and depth state safely falls back when unavailable.
+- [ ] If a depth-capable iPhone is available, open Camera and confirm the app still starts without permission changes or raw depth prompts.
+- [ ] Confirm no raw depth map, `AVDepthData`, depth image, face descriptor, GPS, EXIF, raw sensor stream, or sensitive attribute appears in logs/UI/history.
+- [ ] Confirm no `AVCaptureDepthDataOutput`, depth delivery enablement, or portrait matte delivery enablement is active in product behavior.
+- [ ] Confirm no Depth Anything / Florence / Core ML package / model file appears in the iOS bundle.
+- [ ] Confirm no frame upload, Camera live cloud AI entry, provider/model key, SDK, endpoint, or direct provider/model call appears.
+- [ ] Confirm capture/import, local filters, selected-photo review, mock save, and post-capture advisor behavior still work as before.
+- [ ] Confirm backend/iOS upload payloads are unchanged.
+- [ ] Confirm `productionReady:false` remains unchanged.

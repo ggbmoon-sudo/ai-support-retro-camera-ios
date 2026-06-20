@@ -9,6 +9,8 @@ nonisolated enum LiveGeometryBucket: String, Sendable {
 }
 
 nonisolated enum LiveFrameDepthState: String, Sendable {
+    case hardwareDepthAvailable
+    case portraitMatteAvailable
     case depthUnavailable
 }
 
@@ -151,4 +153,3 @@ nonisolated struct AdvisorHintCandidate: Equatable, Sendable {
     let priorityBucket: LiveGeometryBucket
     let showHint: Bool
 }
-
