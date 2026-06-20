@@ -1136,3 +1136,9 @@ Latest Phase OD-03 Depth Anything V2 Small Core ML Sandbox Preflight Plan on 202
 - Future benchmark metrics should include model load time, first/warmed inference latency, peak memory, preview FPS impact, thermal state, battery drain, depth stability, invalid output rate, and app size increase buckets.
 - `productionReady:false` remains locked.
 - Next recommended phase if continuing Depth Anything is a separately approved `Phase OD-03B - Depth Anything iOS Sandbox Placeholder`, still debug/benchmark-only and hardware-depth-first.
+Latest Phase OD-03A Depth Anything Backend No-runtime Preflight Gate on 2026-06-21:
+
+- Phase OD-03A adds `backend/src/qa/depthAnythingV2SmallCoreMlSandboxPreflightGate.mjs`, `backend/scripts/check-depth-anything-v2-small-coreml-sandbox-preflight.mjs`, backend tests, and the `qa:depth-anything:preflight` package script.
+- The gate validates policy objects only and reports sanitized aggregate output: `eligibleForFutureBenchmark`, `productionReady`, `networkCallsMade`, `modelCallsMade`, `runtimeInferenceEnabled`, `cameraPreviewIntegrationEnabled`, `blockedReasons`, and `requiredFutureGates`.
+- No Swift runtime file, iOS project change, model file, Core ML package, model download, inference, benchmark, Camera integration, preview-frame upload, upload payload change, provider call, API key, dataset, local config, generated report, or production rollout was added.
+- Hardware AVFoundation depth remains first priority, Depth Anything remains a future fallback candidate only after benchmark gates, and `productionReady:false` remains locked.

@@ -7,7 +7,7 @@ const report = evaluateDepthAnythingV2SmallCoreMlSandboxPreflightGateSamples();
 
 console.log(JSON.stringify(report, null, 2));
 
-if (!report.sandboxPreflightEligible) {
+if (!report.sandboxPreflightEligible || !report.eligibleForFutureBenchmark) {
   process.exit(1);
 }
 

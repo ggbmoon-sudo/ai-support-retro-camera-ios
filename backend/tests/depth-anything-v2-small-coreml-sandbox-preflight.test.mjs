@@ -12,6 +12,7 @@ test("Depth Anything sandbox preflight passes default approved no-runtime gate",
     depthAnythingV2SmallCoreMlSandboxPreflightPolicy()
   );
 
+  assert.equal(report.phase, "Phase_OD-03A");
   assert.equal(report.sandboxPreflightEligible, true);
   assert.equal(report.eligibleForFutureBenchmark, true);
   assert.equal(report.modelFileAdded, false);
@@ -158,11 +159,26 @@ test("Depth Anything sandbox preflight report is sanitized", () => {
   const report = evaluateDepthAnythingV2SmallCoreMlSandboxPreflightGateSamples();
   const redaction = assertDepthAnythingV2SmallCoreMlSandboxPreflightReportRedacted(report);
 
+  assert.equal(report.phase, "Phase OD-03A");
   assert.equal(report.sandboxPreflightEligible, true);
   assert.equal(report.networkCallsMade, false);
   assert.equal(report.modelCallsMade, false);
   assert.equal(report.productionReady, false);
   assert.equal(redaction.ok, true);
+});
+
+test("Depth Anything sandbox preflight redacts model and weight artifact references", () => {
+  const report = evaluateDepthAnythingV2SmallCoreMlSandboxPreflightGate({
+    ...depthAnythingV2SmallCoreMlSandboxPreflightPolicy(),
+    probeValues: [
+      { artifact: "DepthAnythingV2Small.coreml" },
+      { artifact: "weights.safetensors" },
+      { artifact: "model.gguf" }
+    ]
+  });
+
+  assert.equal(report.sandboxPreflightEligible, false);
+  assert.equal(report.blockers.includes("blocked_for_probe_value_leak_model_artifact_reference"), true);
 });
 
 test("Depth Anything sandbox preflight does not require provider model or cloud fields", () => {

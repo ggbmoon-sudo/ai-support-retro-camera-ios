@@ -16,6 +16,8 @@ Phase 21-C-PRE is a backend no-runtime preflight gate for the future Depth Anyth
 
 Phase OD-03 is docs-only Depth Anything V2 Small Core ML sandbox preflight planning. This commit adds no Swift runtime file, no model file, no Core ML package, no model download, no inference execution, no benchmark run, no Camera integration, no preview-frame upload, no upload payload change, no Camera live cloud AI entry, no provider/model key, no direct provider/model call, no raw frame/depth persistence, and no production rollout. The local `AIPhotoApp/Features/Camera/DepthAnythingV2SmallSandbox.swift` scaffold remains untracked for a later separate phase and must not be staged with this docs-only commit.
 
+Phase OD-03A adds backend-only no-runtime Depth Anything preflight tooling. Xcode behavior should remain unchanged: no Swift file, model file, Core ML package, Depth Anything inference, Camera integration, preview-frame upload, upload payload change, provider/model key, direct provider/model call, or production rollout is added.
+
 The research index for this direction is `../docs/research/on-device-ai-research-index.md`. Later Depth Anything / Florence work remains blocked until separately approved and benchmarked. The next recommended phase after Phase 21-B commit/push is `Phase 21-C - Depth Anything V2 Small Core ML Sandbox`.
 
 ## Phase 21-M / 21-N / 21-N-R0 / 21-N-R0B / 21-N-R0C / 21-N-R1B / 21-N-R1C / 21-N-R1D Xcode Boundary

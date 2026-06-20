@@ -17,8 +17,14 @@ const FORBIDDEN_REPORT_SNIPPETS = Object.freeze([
   ".mov",
   ".mlmodel",
   ".mlpackage",
+  ".coreml",
   ".onnx",
   ".tflite",
+  ".pt",
+  ".pth",
+  ".safetensors",
+  ".bin",
+  ".gguf",
   "CVPixelBuffer",
   "AVDepthData(",
   "rawPrompt",
@@ -63,7 +69,7 @@ const ALLOWED_FRAME_SOURCE_BUCKETS = new Set([
 export function depthAnythingV2SmallCoreMlSandboxPreflightPolicy() {
   return {
     schemaVersion: DEPTH_ANYTHING_V2_SMALL_COREML_SANDBOX_PREFLIGHT_SCHEMA_VERSION,
-    phase: "Phase 21-C-PRE",
+    phase: "Phase OD-03A",
     sandboxClass: "depth_anything_v2_small_coreml_debug_benchmark_preflight",
     implementationTarget: "ios_coreml_debug_only",
     hardwareDepthPriority: true,
@@ -218,10 +224,14 @@ export function evaluateDepthAnythingV2SmallCoreMlSandboxPreflightGateSamples() 
   );
   const blocked = evaluateDepthAnythingV2SmallCoreMlSandboxPreflightGate({
     ...depthAnythingV2SmallCoreMlSandboxPreflightPolicy(),
+    modelFileAdded: true,
     modelFilesBundled: true,
     coreMlPackageAdded: true,
+    runtimeInferenceEnabled: true,
     coreMlRuntimeEnabled: true,
     modelDownloadEnabled: true,
+    cameraPreviewIntegrationEnabled: true,
+    liveFrameProcessingEnabled: true,
     depthAnythingInferenceRun: true,
     benchmarkRun: true,
     productionReady: true
@@ -232,7 +242,7 @@ export function evaluateDepthAnythingV2SmallCoreMlSandboxPreflightGateSamples() 
 
   const report = {
     schemaVersion: DEPTH_ANYTHING_V2_SMALL_COREML_SANDBOX_PREFLIGHT_SCHEMA_VERSION,
-    phase: "Phase 21-C-PRE",
+    phase: "Phase OD-03A",
     sandboxClass: "depth_anything_v2_small_coreml_debug_benchmark_preflight",
     implementationTarget: "ios_coreml_debug_only",
     reviewedPolicyCount: 2,
@@ -423,7 +433,16 @@ function sanitizedLeakBucket(snippet) {
   if (snippet.includes("http") || snippet.includes("data:image")) {
     return "url_or_base64_reference";
   }
-  if (snippet.includes(".ml") || snippet.includes(".onnx") || snippet.includes(".tflite")) {
+  if (
+    snippet.includes(".ml") ||
+    snippet.includes(".onnx") ||
+    snippet.includes(".tflite") ||
+    snippet.includes(".pt") ||
+    snippet.includes(".pth") ||
+    snippet.includes(".safetensors") ||
+    snippet.includes(".bin") ||
+    snippet.includes(".gguf")
+  ) {
     return "model_artifact_reference";
   }
   if (snippet.includes(".jpg") || snippet.includes(".png") || snippet.includes(".heic")) {

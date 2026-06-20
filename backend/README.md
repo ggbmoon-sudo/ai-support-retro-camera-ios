@@ -14,7 +14,7 @@ Phase 21-B is also iOS-local only. It adds AVFoundation depth capability detecti
 
 Phase 21-C-PRE adds backend no-runtime preflight tooling for the future Depth Anything V2 Small Core ML sandbox. It adds a sanitized CLI and tests only; no backend endpoint, provider call, model call, model file, Core ML package, iOS runtime execution, benchmark, preview-frame upload, upload payload change, raw depth/frame artifact, credential, secret, or production rollout is added.
 
-Phase OD-03 is docs-only sandbox preflight planning. This commit adds no backend preflight gate, no CLI script, no backend tests, no endpoint, no provider call, no model call, no model file, no Core ML package, no benchmark, no preview-frame upload, no upload payload change, no raw depth/frame artifact, no credential, no secret, and no production rollout.
+Phase OD-03A adds backend no-runtime preflight tooling for the future Depth Anything V2 Small Core ML sandbox. It adds a sanitized policy gate, CLI, and backend tests only; no backend endpoint, provider call, model call, model file, Core ML package, benchmark, preview-frame upload, upload payload change, raw depth/frame artifact, credential, secret, Swift runtime file, or production rollout is added.
 
 Phase 17C-Prep hardens the boundary before real provider work. Phase 17C-R1 adds backend-only QweAPI gateway support for the Photo Advisor internal beta at `/v1/ai/photo-advisor`; production rollout is still out of scope.
 

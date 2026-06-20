@@ -42,6 +42,8 @@ The local `ios-app/AIPhotoApp/Features/Camera/DepthAnythingV2SmallSandbox.swift`
 
 ## Future Gate Shape
 
+Phase OD-03A adds the backend no-runtime preflight gate, sanitized CLI, and backend tests for this plan. It remains policy-object validation only and does not read images, load models, call Core ML, call network, inspect local model paths, or alter iOS runtime behavior.
+
 A later explicitly approved phase may add one or more of:
 
 - `Phase OD-03B - Depth Anything iOS Sandbox Placeholder`

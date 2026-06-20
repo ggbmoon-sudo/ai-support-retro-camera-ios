@@ -4613,6 +4613,15 @@ Docs-only check:
 - [ ] Confirm no `DepthAnythingV2Small.mlmodel`, `.mlmodelc`, `.mlpackage`, ONNX, TFLite, or MLX package appears in the iOS bundle.
 - [ ] Confirm no inference run, benchmark run, Camera integration, raw frame/depth/image logging, raw depth map persistence, preview-frame upload, Camera live cloud AI entry, provider/model key, direct provider/model call, upload, or upload payload change appears.
 - [ ] Confirm `productionReady:false` remains unchanged.
+## Phase OD-03A - Depth Anything Backend No-runtime Preflight Gate
+
+Backend no-runtime verification:
+
+- [ ] From `backend/`, run `npm run qa:depth-anything:preflight`.
+- [ ] From `backend/`, run `node --test tests/depth-anything-v2-small-coreml-sandbox-preflight.test.mjs`.
+- [ ] Confirm CLI output is sanitized and reports `eligibleForFutureBenchmark:true`, `networkCallsMade:false`, `modelCallsMade:false`, `runtimeInferenceEnabled:false`, `cameraPreviewIntegrationEnabled:false`, `blockedReasons:[]`, and `productionReady:false`.
+- [ ] Confirm no Swift runtime file, model file, Core ML package, model download, inference, benchmark, Camera integration, preview-frame upload, upload payload change, provider/model key, API key, dataset, local config, generated report, or production rollout was added.
+- [ ] Confirm hardware AVFoundation depth remains first priority and Depth Anything remains future fallback only after benchmark gates.
 ## Phase 21-A2 - Live Framing Aesthetic Spatial Codebook
 
 Docs-only verification:

@@ -12431,3 +12431,56 @@ The local `ios-app/AIPhotoApp/Features/Camera/DepthAnythingV2SmallSandbox.swift`
 ### Next Phase
 
 Recommended next if continuing Depth Anything: `Phase OD-03B - Depth Anything iOS Sandbox Placeholder`, requiring separate explicit approval. Not ready for production rollout.
+## Phase OD-03A - Depth Anything V2 Small Core ML Backend No-runtime Preflight Gate
+
+Status: completed
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase OD-03A adds the backend no-runtime preflight gate for future Depth Anything V2 Small Core ML sandbox work. The gate validates policy objects only and does not read images, load models, call Core ML, call network, inspect local model paths, run inference, or change iOS runtime behavior.
+
+### Completed Work
+
+- Added/confirmed `backend/src/qa/depthAnythingV2SmallCoreMlSandboxPreflightGate.mjs`.
+- Added/confirmed `backend/scripts/check-depth-anything-v2-small-coreml-sandbox-preflight.mjs`.
+- Added/confirmed backend tests for default pass, fail-closed forbidden flags, missing required gates, and no required provider/cloud fields.
+- Added/confirmed `npm run qa:depth-anything:preflight`.
+- Updated README, backend/iOS README, handoff, manual smoke notes, and OD-03 summary docs.
+
+### Changed Files
+
+- `backend/src/qa/depthAnythingV2SmallCoreMlSandboxPreflightGate.mjs`
+- `backend/scripts/check-depth-anything-v2-small-coreml-sandbox-preflight.mjs`
+- `backend/tests/depth-anything-v2-small-coreml-sandbox-preflight.test.mjs`
+- `README.md`
+- `backend/README.md`
+- `ios-app/README.md`
+- `docs/phase-21-c-depth-anything-v2-small-coreml-sandbox-summary.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `tests/manual-smoke-tests.md`
+
+### Boundary Checks
+
+- Backend policy gate only: yes
+- Swift runtime file added: no
+- iOS project/runtime change: no
+- Model file / Core ML package / model download added: no
+- Runtime inference / benchmark run added: no
+- Camera integration / camera frame processing added: no
+- Upload path / provider call / API key added: no
+- Dataset, fixture, local config, generated report, or real photo added: no
+- Raw frame/image/depth persistence added: no
+- Production rollout: no
+
+### Verification
+
+- `git diff --check` should pass before commit.
+- `cd backend && npm test` should pass before commit.
+- `cd backend && npm run qa:depth-anything:preflight` should pass before commit.
+
+### Next Phase
+
+Recommended next if continuing Depth Anything: `Phase OD-03B - Depth Anything iOS Sandbox Placeholder`, requiring separate explicit approval. Not ready for production rollout.
