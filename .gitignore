@@ -43,6 +43,7 @@ coverage/
 dist/
 tmp/
 *.xcresult/
+ai-support-retro-camera-ios-codebook/
 tests/manual/local-results/
 backend/reports/provider-qa/
 backend/reports/vlm-benchmark/
