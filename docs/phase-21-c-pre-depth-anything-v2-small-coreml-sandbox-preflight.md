@@ -14,7 +14,8 @@ This phase exists so the next sandbox phase can be debug/benchmark-only, hardwar
 
 - Adds a backend no-runtime contract for the Depth Anything V2 Small sandbox preflight.
 - Adds a sanitized CLI for the preflight report.
-- Adds tests that block model files, Core ML runtime, model downloads, inference, benchmark execution, raw logging, uploads, cloud/provider calls, iOS provider keys, sensitive inference, and `productionReady:true`.
+- Adds tests that block `modelFileAdded`, `coreMlPackageAdded`, `modelDownloadEnabled`, `runtimeInferenceEnabled`, `cameraPreviewIntegrationEnabled`, `liveFrameProcessingEnabled`, raw frame/depth persistence, network/model calls, uploads, cloud/provider calls, iOS provider keys, sensitive inference, and `productionReady:true`.
+- Requires `hardwareDepthPriority:true`, `debugOnly:true`, `benchmarkRequired:true`, `thermalGateRequired:true`, `fpsGateRequired:true`, `memoryGateRequired:true`, `batteryGateRequired:true`, and `safetySensitiveInferenceBlocked:true`.
 - Records the future benchmark metrics required before model use:
   - model load time bucket.
   - first inference latency bucket.
@@ -74,9 +75,13 @@ node --test tests/depth-anything-v2-small-coreml-sandbox-preflight.test.mjs
 The CLI output is sanitized and reports:
 
 - `sandboxPreflightEligible:true`
+- `eligibleForFutureBenchmark:true`
 - `networkCallsMade:false`
 - `modelCallsMade:false`
+- `runtimeInferenceEnabled:false`
 - `productionReady:false`
+- `blockedReasons:[]`
+- `requiredFutureGates:["benchmarkRequired","thermalGateRequired","fpsGateRequired","memoryGateRequired","batteryGateRequired"]`
 
 ## Roadmap Position
 

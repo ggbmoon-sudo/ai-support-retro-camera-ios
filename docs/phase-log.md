@@ -12327,6 +12327,7 @@ Phase 21-C-PRE adds a no-runtime preflight gate before the Depth Anything V2 Sma
 - Added `npm run qa:depth-anything:preflight`.
 - Added `docs/phase-21-c-pre-depth-anything-v2-small-coreml-sandbox-preflight.md`.
 - Updated roadmap, README, backend/iOS README, handoff, and manual smoke notes.
+- Aligned the preflight policy/output with the requested Phase 21-C keys: `eligibleForFutureBenchmark`, `modelFileAdded`, `runtimeInferenceEnabled`, `cameraPreviewIntegrationEnabled`, `liveFrameProcessingEnabled`, `rawFramePersistence`, `rawDepthMapPersistence`, `hardwareDepthPriority`, `requiredFutureGates`, and `blockedReasons`.
 
 ### Changed Files
 

@@ -4592,7 +4592,7 @@ Backend no-runtime verification:
 
 - [ ] Run `cd backend && npm run qa:depth-anything:preflight`.
 - [ ] Run `cd backend && node --test tests/depth-anything-v2-small-coreml-sandbox-preflight.test.mjs`.
-- [ ] Confirm output stays sanitized and reports `networkCallsMade:false`, `modelCallsMade:false`, and `productionReady:false`.
+- [ ] Confirm output stays sanitized and reports `eligibleForFutureBenchmark:true`, `networkCallsMade:false`, `modelCallsMade:false`, `runtimeInferenceEnabled:false`, `blockedReasons:[]`, and `productionReady:false`.
 - [ ] Confirm no `.mlmodel`, `.mlpackage`, `.onnx`, `.tflite`, model weight, dataset, real photo, local config, raw depth/frame/image artifact, provider response, or generated raw report is staged.
 
 Xcode check:

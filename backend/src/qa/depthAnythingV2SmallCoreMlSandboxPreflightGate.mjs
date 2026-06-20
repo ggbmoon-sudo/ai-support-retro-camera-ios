@@ -47,6 +47,14 @@ const REQUIRED_METRICS = Object.freeze([
   "app_size_increase_bucket"
 ]);
 
+const REQUIRED_FUTURE_GATES = Object.freeze([
+  "benchmarkRequired",
+  "thermalGateRequired",
+  "fpsGateRequired",
+  "memoryGateRequired",
+  "batteryGateRequired"
+]);
+
 const ALLOWED_FRAME_SOURCE_BUCKETS = new Set([
   "debug_resized_preview_frame",
   "debug_still_frame"
@@ -58,19 +66,35 @@ export function depthAnythingV2SmallCoreMlSandboxPreflightPolicy() {
     phase: "Phase 21-C-PRE",
     sandboxClass: "depth_anything_v2_small_coreml_debug_benchmark_preflight",
     implementationTarget: "ios_coreml_debug_only",
+    hardwareDepthPriority: true,
     hardwareDepthFirstRequired: true,
     phase21BDepthProbeRequired: true,
+    debugOnly: true,
+    benchmarkRequired: true,
+    thermalGateRequired: true,
+    fpsGateRequired: true,
+    memoryGateRequired: true,
+    batteryGateRequired: true,
+    safetySensitiveInferenceBlocked: true,
+    modelFileAdded: false,
     modelFilesBundled: false,
     coreMlPackageAdded: false,
+    runtimeInferenceEnabled: false,
     coreMlRuntimeEnabled: false,
     modelDownloadEnabled: false,
+    cameraPreviewIntegrationEnabled: false,
+    liveFrameProcessingEnabled: false,
     depthAnythingInferenceRun: false,
     benchmarkRun: false,
+    networkCallsMade: false,
+    modelCallsMade: false,
     providerOrNetworkCallMade: false,
     iOSProviderKeyAdded: false,
     cameraLiveCloudEntryAdded: false,
     uploadPayloadChanged: false,
     previewFrameUploadEnabled: false,
+    rawFramePersistence: false,
+    rawDepthMapPersistence: false,
     rawFrameLoggingAllowed: false,
     rawDepthLoggingAllowed: false,
     rawImagePersistenceAllowed: false,
@@ -116,21 +140,37 @@ export function evaluateDepthAnythingV2SmallCoreMlSandboxPreflightGate(
     phase: sanitizeToken(policy.phase || "unknown"),
     sandboxClass: sanitizeToken(policy.sandboxClass || "unknown"),
     implementationTarget: sanitizeToken(policy.implementationTarget || "unknown"),
+    hardwareDepthPriority: policy.hardwareDepthPriority === true,
     hardwareDepthFirstRequired: policy.hardwareDepthFirstRequired === true,
     phase21BDepthProbeRequired: policy.phase21BDepthProbeRequired === true,
+    debugOnly: policy.debugOnly === true,
+    benchmarkRequired: policy.benchmarkRequired === true,
+    thermalGateRequired: policy.thermalGateRequired === true,
+    fpsGateRequired: policy.fpsGateRequired === true,
+    memoryGateRequired: policy.memoryGateRequired === true,
+    batteryGateRequired: policy.batteryGateRequired === true,
+    safetySensitiveInferenceBlocked: policy.safetySensitiveInferenceBlocked === true,
     explicitSandboxApprovalRequired: policy.explicitSandboxApprovalRequired === true,
     explicitSandboxApprovalRecorded: policy.explicitSandboxApprovalRecorded === true,
+    modelFileAdded: policy.modelFileAdded === true,
     modelFilesBundled: policy.modelFilesBundled === true,
     coreMlPackageAdded: policy.coreMlPackageAdded === true,
+    runtimeInferenceEnabled: policy.runtimeInferenceEnabled === true,
     coreMlRuntimeEnabled: policy.coreMlRuntimeEnabled === true,
     modelDownloadEnabled: policy.modelDownloadEnabled === true,
+    cameraPreviewIntegrationEnabled: policy.cameraPreviewIntegrationEnabled === true,
+    liveFrameProcessingEnabled: policy.liveFrameProcessingEnabled === true,
     depthAnythingInferenceRun: policy.depthAnythingInferenceRun === true,
     benchmarkRun: policy.benchmarkRun === true,
+    networkCallsMade: policy.networkCallsMade === true,
+    modelCallsMade: policy.modelCallsMade === true,
     providerOrNetworkCallMade: policy.providerOrNetworkCallMade === true,
     iOSProviderKeyAdded: policy.iOSProviderKeyAdded === true,
     cameraLiveCloudEntryAdded: policy.cameraLiveCloudEntryAdded === true,
     uploadPayloadChanged: policy.uploadPayloadChanged === true,
     previewFrameUploadEnabled: policy.previewFrameUploadEnabled === true,
+    rawFramePersistence: policy.rawFramePersistence === true,
+    rawDepthMapPersistence: policy.rawDepthMapPersistence === true,
     rawFrameLoggingAllowed: policy.rawFrameLoggingAllowed === true,
     rawDepthLoggingAllowed: policy.rawDepthLoggingAllowed === true,
     rawImagePersistenceAllowed: policy.rawImagePersistenceAllowed === true,
@@ -138,10 +178,11 @@ export function evaluateDepthAnythingV2SmallCoreMlSandboxPreflightGate(
     sensitiveInferenceAllowed: policy.sensitiveInferenceAllowed === true,
     benchmarkPlan: summarizeBenchmarkPlan(policy.benchmarkPlan || {}),
     sandboxPreflightEligible: blockers.length === 0,
+    eligibleForFutureBenchmark: blockers.length === 0,
     blockers,
-    networkCallsMade: false,
-    modelCallsMade: false,
-    productionReady: false,
+    blockedReasons: blockers,
+    requiredFutureGates: [...REQUIRED_FUTURE_GATES],
+    productionReady: policy.productionReady === true,
     statusCategories: unique([
       blockers.length === 0
         ? "pass_for_depth_anything_v2_small_coreml_sandbox_preflight"
@@ -200,9 +241,13 @@ export function evaluateDepthAnythingV2SmallCoreMlSandboxPreflightGateSamples() 
     expectedBlockedReasons: blocked.blockers,
     benchmarkPlan: valid.benchmarkPlan,
     sandboxPreflightEligible: blockers.length === 0,
+    eligibleForFutureBenchmark: blockers.length === 0,
     blockers,
+    blockedReasons: blockers,
+    requiredFutureGates: [...REQUIRED_FUTURE_GATES],
     networkCallsMade: false,
     modelCallsMade: false,
+    runtimeInferenceEnabled: false,
     productionReady: false,
     statusCategories: unique([
       blockers.length === 0
@@ -262,20 +307,34 @@ function approvalBlockers(policy) {
 
 function runtimeBlockers(policy) {
   const blockers = [];
+  if (policy.modelFileAdded === true) blockers.push("blocked_for_model_file_added_in_preflight");
   if (policy.modelFilesBundled === true) blockers.push("blocked_for_model_file_bundled_in_preflight");
   if (policy.coreMlPackageAdded === true) blockers.push("blocked_for_coreml_package_added_in_preflight");
+  if (policy.runtimeInferenceEnabled === true) blockers.push("blocked_for_runtime_inference_enabled_in_preflight");
   if (policy.coreMlRuntimeEnabled === true) blockers.push("blocked_for_coreml_runtime_enabled_in_preflight");
   if (policy.modelDownloadEnabled === true) blockers.push("blocked_for_model_download_enabled_in_preflight");
+  if (policy.cameraPreviewIntegrationEnabled === true) blockers.push("blocked_for_camera_preview_integration_enabled_in_preflight");
+  if (policy.liveFrameProcessingEnabled === true) blockers.push("blocked_for_live_frame_processing_enabled_in_preflight");
   if (policy.depthAnythingInferenceRun === true) blockers.push("blocked_for_depth_anything_inference_run_in_preflight");
   if (policy.benchmarkRun === true) blockers.push("blocked_for_benchmark_run_in_preflight");
+  if (policy.networkCallsMade === true) blockers.push("blocked_for_network_call");
+  if (policy.modelCallsMade === true) blockers.push("blocked_for_model_call");
   if (policy.providerOrNetworkCallMade === true) blockers.push("blocked_for_network_or_provider_call");
   return blockers;
 }
 
 function boundaryBlockers(policy) {
   const blockers = [];
+  if (policy.hardwareDepthPriority !== true) blockers.push("blocked_for_missing_hardware_depth_priority");
   if (policy.hardwareDepthFirstRequired !== true) blockers.push("blocked_for_missing_hardware_depth_first_policy");
   if (policy.phase21BDepthProbeRequired !== true) blockers.push("blocked_for_missing_phase_21_b_depth_probe_dependency");
+  if (policy.debugOnly !== true) blockers.push("blocked_for_missing_debug_only_policy");
+  if (policy.benchmarkRequired !== true) blockers.push("blocked_for_missing_benchmark_requirement");
+  if (policy.thermalGateRequired !== true) blockers.push("blocked_for_missing_thermal_gate_requirement");
+  if (policy.fpsGateRequired !== true) blockers.push("blocked_for_missing_fps_gate_requirement");
+  if (policy.memoryGateRequired !== true) blockers.push("blocked_for_missing_memory_gate_requirement");
+  if (policy.batteryGateRequired !== true) blockers.push("blocked_for_missing_battery_gate_requirement");
+  if (policy.safetySensitiveInferenceBlocked !== true) blockers.push("blocked_for_missing_sensitive_inference_block");
   if (policy.iOSProviderKeyAdded === true) blockers.push("blocked_for_ios_provider_key");
   if (policy.cameraLiveCloudEntryAdded === true) blockers.push("blocked_for_camera_live_cloud_entry");
   if (policy.uploadPayloadChanged === true) blockers.push("blocked_for_upload_payload_change");
@@ -285,6 +344,8 @@ function boundaryBlockers(policy) {
 
 function privacyBlockers(policy) {
   const blockers = [];
+  if (policy.rawFramePersistence === true) blockers.push("blocked_for_raw_frame_persistence");
+  if (policy.rawDepthMapPersistence === true) blockers.push("blocked_for_raw_depth_map_persistence");
   if (policy.rawFrameLoggingAllowed === true) blockers.push("blocked_for_raw_frame_logging");
   if (policy.rawDepthLoggingAllowed === true) blockers.push("blocked_for_raw_depth_logging");
   if (policy.rawImagePersistenceAllowed === true) blockers.push("blocked_for_raw_image_persistence");

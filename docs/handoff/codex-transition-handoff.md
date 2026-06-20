@@ -1132,6 +1132,7 @@ Latest Phase 21-C-PRE Depth Anything V2 Small Core ML Sandbox Preflight on 2026-
 
 - Phase 21-C-PRE adds a backend no-runtime preflight gate for the future Depth Anything V2 Small Core ML sandbox.
 - Added sanitized contract/CLI/tests for the debug-only sandbox boundary, hardware-depth-first rule, required benchmark metrics, Xcode/device-run requirement, and fail-closed blockers.
+- The gate now exposes first-class policy/output keys for `eligibleForFutureBenchmark`, `modelFileAdded`, `runtimeInferenceEnabled`, `cameraPreviewIntegrationEnabled`, `liveFrameProcessingEnabled`, `rawFramePersistence`, `rawDepthMapPersistence`, `hardwareDepthPriority`, `requiredFutureGates`, and `blockedReasons`.
 - Required future benchmark metrics include model load time, first/warmed inference latency, peak memory, preview FPS impact, thermal state, battery drain, depth stability, invalid output rate, and app size increase buckets.
 - No Depth Anything model file, Core ML package, ONNX/TFLite/MLX package, model download, Core ML runtime, inference, benchmark, preview-frame upload, Camera live cloud AI, iOS provider/model key, direct provider/model call, upload payload change, raw frame/depth/image logging or persistence, sensitive inference, or production rollout was added.
 - `productionReady:false` remains locked.
