@@ -4630,6 +4630,18 @@ Xcode check:
 - [ ] Confirm no benchmark harness runtime, inference run, Camera integration, preview-frame upload, upload payload change, provider/model key, or production rollout appears.
 - [ ] Confirm Phase 21-A/B/C app behavior still builds/runs as before.
 - [ ] Confirm `productionReady:false` remains unchanged.
+## Phase 21-C-R2 - Local-Ignored Depth Anything Artifact and Xcode Harness Draft
+
+Xcode check:
+
+- [ ] Build the app in Xcode.
+- [ ] Confirm `DepthAnythingV2SmallBenchmarkHarnessDraft.swift` compiles.
+- [ ] Confirm `ios-app/LocalOnlyModels/DepthAnythingV2Small/` contains only the committed README.
+- [ ] Confirm no `.mlmodel`, `.mlmodelc`, `.mlpackage`, ONNX, TFLite, MLX, or model weight artifact is present or staged.
+- [ ] Confirm the benchmark harness draft does not run inference or benchmark.
+- [ ] Confirm Camera behavior remains unchanged.
+- [ ] Confirm no preview-frame upload, Camera live cloud AI entry, provider/model key, direct provider/model call, upload payload change, raw frame/depth/image/path logging, or production rollout appears.
+- [ ] Confirm `productionReady:false` remains unchanged.
 ## Phase 21-A2 - Live Framing Aesthetic Spatial Codebook
 
 Docs-only verification:

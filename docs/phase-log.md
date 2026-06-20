@@ -12488,3 +12488,62 @@ Phase 21-C-R1 adds a no-runtime approval gate for Depth Anything V2 Small model 
 ### Next Phase
 
 Recommended next if continuing Depth Anything: `Phase 21-C-R2 - Approved Local-Ignored Depth Anything Model Artifact and Xcode Benchmark Harness Draft`. Not ready for production rollout.
+## Phase 21-C-R2 - Approved Local-Ignored Depth Anything Model Artifact and Xcode Benchmark Harness Draft
+
+Status: completed
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase 21-C-R2 adds the local-only ignored artifact folder policy and an iOS Xcode benchmark harness draft for future Depth Anything V2 Small physical-device benchmarking. It does not add a model artifact, Core ML package, model download, inference execution, benchmark run, Camera runtime integration, or production rollout.
+
+### Completed Work
+
+- Added `ios-app/LocalOnlyModels/DepthAnythingV2Small/README.md`.
+- Added `.gitignore` rules for future local-only Depth Anything artifacts.
+- Added `ios-app/AIPhotoApp/Features/Camera/DepthAnythingV2SmallBenchmarkHarnessDraft.swift`.
+- Added draft plan/readiness contracts for physical-device benchmark requirements, input size buckets, metric buckets, stop conditions, and raw-artifact blockers.
+- Added `docs/phase-21-c-r2-depth-anything-local-ignored-artifact-and-xcode-harness-draft.md`.
+- Updated roadmap, README, backend/iOS README, handoff, and manual smoke notes.
+
+### Changed Files
+
+- `.gitignore`
+- `ios-app/LocalOnlyModels/DepthAnythingV2Small/README.md`
+- `ios-app/AIPhotoApp/Features/Camera/DepthAnythingV2SmallBenchmarkHarnessDraft.swift`
+- `docs/phase-21-c-r2-depth-anything-local-ignored-artifact-and-xcode-harness-draft.md`
+- `docs/on-device-live-framing-ai-roadmap.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `README.md`
+- `backend/README.md`
+- `ios-app/README.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `tests/manual-smoke-tests.md`
+
+### Boundary Checks
+
+- Model artifact added/committed: no
+- Core ML package added: no
+- Automated model download added: no
+- Inference execution added: no
+- Benchmark run: no
+- Camera runtime integration added: no
+- Preview-frame upload added: no
+- Camera live cloud AI entry added: no
+- iOS provider/model key or direct provider/model call added: no
+- Backend/iOS upload payload changed: no
+- Raw frame/depth/image/path logging or persistence added: no
+- Sensitive inference added: no
+- Production rollout: no
+
+### Verification
+
+- `git diff --check` should be run before commit.
+- Backend Depth Anything gates should still pass.
+- Xcode build/run still needs local verification on macOS/Xcode.
+
+### Next Phase
+
+Recommended next if continuing Depth Anything: `Phase 21-C-R3 - Operator Model Artifact Verification and Physical-device Benchmark Approval Request`. Not ready for production rollout.

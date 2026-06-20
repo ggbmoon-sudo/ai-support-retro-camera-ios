@@ -16,11 +16,11 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**Phase 21-C-R2: Approved Local-Ignored Depth Anything Model Artifact and Xcode Benchmark Harness Draft**
+**Phase 21-C-R3: Operator Model Artifact Verification and Physical-device Benchmark Approval Request**
 
-Reason: Phase 21-B added an AVFoundation-only hardware depth / portrait matte capability probe. Phase 21-C-PRE added the no-runtime preflight gate. Phase 21-C added a disabled-by-default iOS sandbox scaffold and sanitized benchmark metric contract. Phase 21-C-R1 added the model artifact source/license and Xcode benchmark harness approval gate without adding a model artifact, Core ML package, inference, benchmark, Camera runtime integration, upload path, or production rollout. The next practical step, if continuing Depth Anything, is a separately approved local-ignored artifact and Xcode physical-device benchmark harness draft.
+Reason: Phase 21-B added an AVFoundation-only hardware depth / portrait matte capability probe. Phase 21-C-PRE added the no-runtime preflight gate. Phase 21-C added a disabled-by-default iOS sandbox scaffold and sanitized benchmark metric contract. Phase 21-C-R1 added the model artifact source/license and Xcode benchmark harness approval gate. Phase 21-C-R2 added the local-only ignored artifact folder policy and Xcode benchmark harness draft without adding a model artifact, Core ML package, download, inference, benchmark, Camera runtime integration, upload path, or production rollout. The next practical step is an operator approval request for exact source/license/checksum/local-ignore and physical-device benchmark conditions.
 
-Phase 21-C-R2 must remain debug/benchmark-only and local-ignored unless explicitly expanded. It must not add production Depth Anything bundling, default model downloads, Florence-2, cloud calls, frame uploads, upload payload changes, Camera live cloud AI, provider keys, sensitive inference, raw frame/depth persistence, or production rollout. Any Core ML package/model file addition requires exact source/license/checksum/local-ignore approval and benchmark gates. `productionReady:false` remains locked.
+Phase 21-C-R3 must remain approval-request only unless explicitly expanded. It must not add production Depth Anything bundling, default model downloads, Florence-2, cloud calls, frame uploads, upload payload changes, Camera live cloud AI, provider keys, sensitive inference, raw frame/depth persistence, or production rollout. Any Core ML package/model file addition or benchmark execution requires exact source/license/checksum/local-ignore approval and physical-device benchmark gates. `productionReady:false` remains locked.
 
 Naming note: older committed Phase 21-A backend-internal VLM records remain historical evidence. The completed on-device geometry phase should be referenced by its full title: `Phase 21-A - On-device Vision Geometry Spike`.
 
@@ -33,6 +33,8 @@ Depth Anything preflight note: `docs/phase-21-c-pre-depth-anything-v2-small-core
 Depth Anything sandbox note: `docs/phase-21-c-depth-anything-v2-small-coreml-sandbox-summary.md` records the disabled-by-default iOS sandbox scaffold. It adds no Depth Anything model artifact, Core ML package, inference execution, benchmark run, Camera runtime integration, upload path, or production rollout.
 
 Depth Anything artifact gate note: `docs/phase-21-c-r1-depth-anything-model-artifact-source-and-xcode-benchmark-harness-gate.md` records the source/license/checksum/local-ignore and Xcode physical-device benchmark harness approval gate. It adds no model artifact, Core ML package, download, inference, benchmark, Camera runtime integration, upload path, or production rollout.
+
+Depth Anything harness draft note: `docs/phase-21-c-r2-depth-anything-local-ignored-artifact-and-xcode-harness-draft.md` records the local-only ignored artifact folder policy and Xcode benchmark harness draft. It adds no model artifact, Core ML package, download, inference, benchmark, Camera runtime integration, upload path, or production rollout.
 
 Research support note: `docs/research/on-device-ai-research-index.md` links deep research reports for the on-device live framing direction. These reports support Phase 21-B/C/D/E planning but do not approve model downloads, cloud live AI, frame upload, or production rollout.
 
