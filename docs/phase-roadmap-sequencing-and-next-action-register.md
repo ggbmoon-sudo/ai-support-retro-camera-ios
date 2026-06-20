@@ -18,7 +18,7 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 **Phase 21-C: Depth Anything V2 Small Core ML Sandbox**
 
-Reason: Phase 21-B now adds an AVFoundation-only hardware depth / portrait matte capability probe. It records only local capability state, does not enable depth delivery, does not read or persist raw `AVDepthData`, and does not upload frames. The next logical research-backed step is a debug-only Depth Anything V2 Small Core ML sandbox plan/benchmark path.
+Reason: Phase 21-B now adds an AVFoundation-only hardware depth / portrait matte capability probe. Phase 21-C-PRE then adds a no-runtime preflight gate for the Depth Anything V2 Small Core ML sandbox. The next logical research-backed step is the debug-only sandbox path, after the preflight is committed/pushed and Xcode verification is available.
 
 Phase 21-C should remain debug/benchmark-only. It must not add production Depth Anything bundling, default model downloads, Florence-2, cloud calls, frame uploads, upload payload changes, Camera live cloud AI, provider keys, sensitive inference, raw frame/depth persistence, or production rollout. Any Core ML package/model file addition requires explicit approval and benchmark gates. `productionReady:false` remains locked.
 
@@ -27,6 +27,8 @@ Naming note: older committed Phase 21-A backend-internal VLM records remain hist
 Implementation status note: `docs/phase-21-a-on-device-vision-geometry-spike-summary.md` records the current Phase 21-A implementation boundary and Xcode verification checklist.
 
 Depth status note: `docs/phase-21-b-avfoundation-depth-capability-probe-summary.md` records the Phase 21-B AVFoundation capability-only probe and Xcode verification checklist.
+
+Depth Anything preflight note: `docs/phase-21-c-pre-depth-anything-v2-small-coreml-sandbox-preflight.md` records the no-runtime sandbox preflight gate, required metrics, pass/fail boundaries, and sanitized CLI/test entry points. It adds no model file, Core ML package, runtime inference, or benchmark.
 
 Research support note: `docs/research/on-device-ai-research-index.md` links deep research reports for the on-device live framing direction. These reports support Phase 21-B/C/D/E planning but do not approve model downloads, cloud live AI, frame upload, or production rollout.
 

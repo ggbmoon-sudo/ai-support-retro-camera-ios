@@ -4586,6 +4586,23 @@ Manual Xcode check:
 - [ ] Confirm capture/import, local filters, selected-photo review, mock save, and post-capture advisor behavior still work as before.
 - [ ] Confirm backend/iOS upload payloads are unchanged.
 - [ ] Confirm `productionReady:false` remains unchanged.
+## Phase 21-C-PRE - Depth Anything V2 Small Core ML Sandbox Preflight
+
+Backend no-runtime verification:
+
+- [ ] Run `cd backend && npm run qa:depth-anything:preflight`.
+- [ ] Run `cd backend && node --test tests/depth-anything-v2-small-coreml-sandbox-preflight.test.mjs`.
+- [ ] Confirm output stays sanitized and reports `networkCallsMade:false`, `modelCallsMade:false`, and `productionReady:false`.
+- [ ] Confirm no `.mlmodel`, `.mlpackage`, `.onnx`, `.tflite`, model weight, dataset, real photo, local config, raw depth/frame/image artifact, provider response, or generated raw report is staged.
+
+Xcode check:
+
+- [ ] Xcode runtime behavior should be unchanged by this preflight.
+- [ ] Confirm no Depth Anything model appears in the iOS bundle.
+- [ ] Confirm no Core ML runtime path or model package is added.
+- [ ] Confirm no Camera live cloud AI entry, preview-frame upload, provider/model key, direct provider/model call, or upload payload change appears.
+- [ ] Confirm Phase 21-A/B local camera behavior still builds/runs as before.
+- [ ] Confirm `productionReady:false` remains unchanged.
 ## Phase 21-A2 - Live Framing Aesthetic Spatial Codebook
 
 Docs-only verification:

@@ -12309,3 +12309,63 @@ Phase 21-A2 adds a docs-only Live Framing Aesthetic Spatial Codebook for future 
 ### Next Phase
 
 This phase does not change the current main next implementation phase. The roadmap still lists `Phase 21-C - Depth Anything V2 Small Core ML Sandbox` after Phase 21-B commit/push, with explicit debug/benchmark approval required before any model package is added. Not ready for production rollout.
+## Phase 21-C-PRE - Depth Anything V2 Small Core ML Sandbox Preflight
+
+Status: completed
+Date: 2026-06-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase 21-C-PRE adds a no-runtime preflight gate before the Depth Anything V2 Small Core ML sandbox. It defines the debug-only sandbox boundary, hardware-depth-first rule, required benchmark metrics, sanitized CLI output, and fail-closed blockers before any model file or Core ML runtime is considered.
+
+### Completed Work
+
+- Added `backend/src/qa/depthAnythingV2SmallCoreMlSandboxPreflightGate.mjs`.
+- Added `backend/scripts/check-depth-anything-v2-small-coreml-sandbox-preflight.mjs`.
+- Added `backend/tests/depth-anything-v2-small-coreml-sandbox-preflight.test.mjs`.
+- Added `npm run qa:depth-anything:preflight`.
+- Added `docs/phase-21-c-pre-depth-anything-v2-small-coreml-sandbox-preflight.md`.
+- Updated roadmap, README, backend/iOS README, handoff, and manual smoke notes.
+
+### Changed Files
+
+- `backend/package.json`
+- `backend/src/qa/depthAnythingV2SmallCoreMlSandboxPreflightGate.mjs`
+- `backend/scripts/check-depth-anything-v2-small-coreml-sandbox-preflight.mjs`
+- `backend/tests/depth-anything-v2-small-coreml-sandbox-preflight.test.mjs`
+- `docs/phase-21-c-pre-depth-anything-v2-small-coreml-sandbox-preflight.md`
+- `docs/on-device-live-framing-ai-roadmap.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `README.md`
+- `backend/README.md`
+- `ios-app/README.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `tests/manual-smoke-tests.md`
+
+### Boundary Checks
+
+- Model file / package added: no
+- Core ML runtime enabled: no
+- Model download added: no
+- Depth Anything inference run: no
+- Benchmark run: no
+- Preview-frame upload added: no
+- Camera live cloud AI entry added: no
+- iOS provider/model key or direct provider/model call added: no
+- Backend/iOS upload payload changed: no
+- Raw frame/depth/image logging or persistence added: no
+- Sensitive inference added: no
+- Production rollout: no
+
+### Verification
+
+- `git diff --check` should be run before commit.
+- `cd backend && npm run qa:depth-anything:preflight` should pass.
+- `cd backend && node --test tests/depth-anything-v2-small-coreml-sandbox-preflight.test.mjs` should pass.
+- Xcode build/run still needs local verification on macOS/Xcode.
+
+### Next Phase
+
+Ready for `Phase 21-C - Depth Anything V2 Small Core ML Sandbox` after Phase 21-C-PRE is committed/pushed and Xcode verification is available. The sandbox remains debug/benchmark-only, hardware-depth-first, local-only, and not production-ready.

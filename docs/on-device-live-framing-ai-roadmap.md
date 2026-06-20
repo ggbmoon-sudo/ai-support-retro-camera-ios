@@ -94,7 +94,8 @@ Implementation note:
 - Phase 21-B now has an implementation summary at `docs/phase-21-b-avfoundation-depth-capability-probe-summary.md`.
 - It detects AVFoundation hardware depth / portrait matte capability only.
 - It does not enable depth delivery, read raw `AVDepthData`, persist depth maps, or upload frames.
-- The next recommended phase after commit/push is `Phase 21-C - Depth Anything V2 Small Core ML Sandbox`.
+- Phase 21-C-PRE now has a no-runtime preflight summary at `docs/phase-21-c-pre-depth-anything-v2-small-coreml-sandbox-preflight.md`.
+- The next recommended phase after commit/push is `Phase 21-C - Depth Anything V2 Small Core ML Sandbox`, still debug/benchmark-only.
 
 ### Phase 21-C - Depth Anything V2 Small Core ML Sandbox
 
@@ -104,12 +105,13 @@ Scope:
 - Measure latency, memory, FPS, thermal, and battery.
 - Use resized preview frames only.
 - Compare against AVFoundation hardware depth availability.
+- Start only after the 21-C-PRE gate passes.
 
 Boundaries:
 
 - No production bundling until explicitly approved.
 - No raw frame logging.
-- No model file added in this direction-update phase.
+- No model file should be added unless the sandbox phase explicitly keeps it debug-only, ignored/reviewed as needed, and benchmark-gated.
 - `productionReady:false`.
 
 ### Phase 21-D - Florence-2-base Feasibility Study
