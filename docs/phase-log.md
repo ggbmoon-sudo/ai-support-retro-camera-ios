@@ -12084,3 +12084,54 @@ Updated roadmap documentation to reflect today's AI direction change: real-time 
 ### Next Phase
 
 Ready for Phase 21-A: On-device Vision Geometry Spike. Not ready for production rollout.
+
+## Research Docs - On-device Live Framing AI Research Set
+
+Status: completed
+Date: 2026-06-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+Added deep research Markdown reports for the new on-device Live Framing AI direction. The research set supports the existing roadmap/register decision and does not change the next recommended implementation phase: `Phase 21-A - On-device Vision Geometry Spike`.
+
+### Created Reports
+
+- `docs/research/on-device-ai-research-index.md`
+- `docs/research/apple-vision-live-framing-advisor-report.md`
+- `docs/research/on-device-live-framing-hybrid-architecture.md`
+- `docs/research/device-capability-matrix-live-ai.md`
+- `docs/research/depth-anything-v2-small-coreml-report.md`
+- `docs/research/florence-2-base-ios-live-framing-report.md`
+- `docs/research/live-ai-privacy-safety-appstore-report.md`
+- `docs/research/dataset-collector-bot-labeling-pipeline-report.md`
+- `docs/research/florence-2-finetune-distillation-workflow.md`
+
+### Updated Existing Docs
+
+- `README.md`
+- `backend/README.md`
+- `ios-app/README.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `tests/manual-smoke-tests.md`
+
+### Boundary Checks
+
+- Research Markdown only: yes
+- Runtime code added: no
+- Model files / Core ML / ONNX / TFLite packages added: no
+- Dataset crawler code added: no
+- AI provider labeling adapter added: no
+- Provider/model API keys added: no
+- Direct provider/model calls in iOS added: no
+- Camera live cloud AI added: no
+- Preview frames uploaded: no
+- Backend/iOS upload payload changed: no
+- Real photos, generated reports, local fixtures, model outputs, downloaded datasets, local configs, provider responses, or raw labels committed: no
+- `productionReady:false` remains locked.
+
+### Next Phase
+
+Ready for `Phase 21-A - On-device Vision Geometry Spike`. Not ready for production rollout.

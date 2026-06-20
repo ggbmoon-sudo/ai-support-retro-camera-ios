@@ -4529,6 +4529,24 @@ Manual Xcode check:
 - [ ] Confirm no SiliconFlow / RunPod / model endpoint or API key appears in iOS.
 - [ ] Confirm no upload payload, Photos permission, or Camera permission behavior changed.
 
+## Research Docs - On-device Live Framing AI Research Set
+
+Check:
+
+- [x] Added `docs/research/on-device-ai-research-index.md`.
+- [x] Added research reports for Apple Vision / AVFoundation, hybrid architecture, device tiers, Depth Anything V2 Small, Florence-2-base, privacy/App Store safety, dataset collection, and fine-tuning/distillation.
+- [x] Confirmed the next recommended implementation phase remains `Phase 21-A - On-device Vision Geometry Spike`.
+- [x] Confirmed research-docs-only: no runtime code, model file, Core ML / ONNX / TFLite package, dataset crawler, provider labeling adapter, provider/model API key, direct iOS provider/model call, Camera live cloud AI entry, preview-frame upload, backend/iOS upload payload change, generated report, local fixture, real photo, dataset, local config, provider response, raw label, secret, or production rollout was added.
+- [x] Kept `productionReady:false`.
+
+Manual Xcode check:
+
+- [ ] Launch only if desired; Xcode runtime behavior should be unchanged.
+- [ ] Confirm no model files appear in the iOS bundle.
+- [ ] Confirm no new iOS provider/model SDK or API key appears.
+- [ ] Confirm no Camera live cloud AI entry appears.
+- [ ] Confirm no upload payload or Photos/Camera permission behavior changed.
+
 
 ## Phase 21-Z2G-SF SiliconFlow Network/Parameter Latency Probe
 

@@ -24,6 +24,8 @@ Phase 21-A should be Apple Vision / AVFoundation only and should detect subject/
 
 Naming note: older committed Phase 21-A backend-internal VLM records remain historical evidence. The current next recommended phase should be referenced by its full title: `Phase 21-A - On-device Vision Geometry Spike`.
 
+Research support note: `docs/research/on-device-ai-research-index.md` now links deep research reports for the on-device live framing direction. These reports support Phase 21-A/B/C/D/E planning but do not change the current next recommended implementation phase.
+
 Marker note: Phase 21-W-R2 was implemented and pushed, but its visible commit marker missed the final `e` in `unavailable`. The corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable` without model calls, benchmarks, endpoint calls, external server edits, runtime changes, raw artifacts, secrets, or production rollout.
 
 The former Phase 21-Z2H-SF SiliconFlow latency architecture decision remains useful as a post-capture / backend provider evaluation branch, but it is no longer the primary live guidance path.

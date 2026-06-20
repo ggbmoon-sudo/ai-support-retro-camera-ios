@@ -1090,3 +1090,9 @@ Latest on-device live framing AI roadmap direction update on 2026-06-20:
 - Added `docs/on-device-live-framing-ai-roadmap.md` and updated roadmap docs only.
 - No runtime code, model file, Core ML package, dataset crawler, AI-assisted labeling provider adapter, network/model/provider call, iOS provider/model key, direct iOS provider/model call, Camera live cloud AI entry, preview-frame upload, upload payload change, generated report, local fixture, real photo, dataset, local config, provider response, secret, or production rollout was added.
 - Next recommended phase is `Phase 21-A: On-device Vision Geometry Spike`.
+
+Latest on-device live framing AI research set on 2026-06-20:
+
+- Added `docs/research/on-device-ai-research-index.md` and deep research reports for Apple Vision / AVFoundation, hybrid architecture, device tiers, Depth Anything V2 Small, Florence-2-base, privacy/App Store safety, dataset collection, and fine-tuning/distillation.
+- The research set does not change the next recommended implementation phase: `Phase 21-A - On-device Vision Geometry Spike`.
+- No runtime code, model files, Core ML / ONNX / TFLite packages, dataset crawler, provider labeling adapter, provider/model API key, direct iOS provider/model call, Camera live cloud AI entry, preview-frame upload, backend/iOS upload payload change, generated report, local fixture, real photo, dataset, local config, provider response, raw label, secret, or production rollout was added.
