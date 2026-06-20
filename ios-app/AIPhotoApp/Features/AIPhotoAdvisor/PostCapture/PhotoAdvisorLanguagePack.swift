@@ -1,6 +1,6 @@
 import Foundation
 
-enum PhotoAdvisorLanguagePack {
+nonisolated enum PhotoAdvisorLanguagePack {
     static func moodSummaryKey(for scene: PhotoAdvisorMockScene, input: PhotoAdvisorInput) -> String {
         switch scene {
         case .warmPortrait:

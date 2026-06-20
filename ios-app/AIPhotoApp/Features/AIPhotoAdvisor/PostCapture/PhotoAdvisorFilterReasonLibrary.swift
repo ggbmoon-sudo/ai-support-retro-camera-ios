@@ -1,6 +1,6 @@
 import Foundation
 
-enum PhotoAdvisorFilterLanguageFamily: String, CaseIterable, Codable, Hashable {
+nonisolated enum PhotoAdvisorFilterLanguageFamily: String, CaseIterable, Codable, Hashable {
     case warmFilm = "warm_film"
     case fadedPastel = "faded_pastel"
     case cinematicContrast = "cinematic_contrast"
@@ -12,7 +12,7 @@ enum PhotoAdvisorFilterLanguageFamily: String, CaseIterable, Codable, Hashable {
     case classicFilm = "classic_film"
 }
 
-enum PhotoAdvisorFilterSignalBucket: String, Codable, Hashable {
+nonisolated enum PhotoAdvisorFilterSignalBucket: String, Codable, Hashable {
     case balanced
     case warmLight = "warm_light"
     case coolTone = "cool_tone"
@@ -25,7 +25,7 @@ enum PhotoAdvisorFilterSignalBucket: String, Codable, Hashable {
     case framingClutter = "framing_clutter"
 }
 
-struct PhotoAdvisorFilterReasonProfile {
+nonisolated struct PhotoAdvisorFilterReasonProfile {
     let filterId: String
     let displayName: String
     let languageFamily: PhotoAdvisorFilterLanguageFamily
@@ -36,7 +36,7 @@ struct PhotoAdvisorFilterReasonProfile {
     let fallbackReasonKey: String
 }
 
-enum PhotoAdvisorFilterReasonLibrary {
+nonisolated enum PhotoAdvisorFilterReasonLibrary {
     static let profilesByFilterId: [String: PhotoAdvisorFilterReasonProfile] = Dictionary(uniqueKeysWithValues: [
         profile(
             "original",

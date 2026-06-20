@@ -27,7 +27,7 @@ nonisolated struct CameraDualFocalZoomConfiguration: Equatable, Sendable {
     }
 
     static func focalLengthRange(forBaseFocalLength baseFocalLength: Double) -> ClosedRange<Double> {
-        let minimumFocalLength = sanitizedFocalLength(baseFocalLength)
+        let minimumFocalLength = Self.sanitizedFocalLength(baseFocalLength)
         let maximumFocalLength = max(minimumFocalLength, maximumFocalLengthMillimeters)
         return minimumFocalLength...maximumFocalLength
     }
@@ -50,7 +50,7 @@ nonisolated struct CameraDualFocalZoomConfiguration: Equatable, Sendable {
     }
 
     func zoomFactor(relativeToBaseFocalLength baseFocalLength: Double) -> CGFloat {
-        CGFloat(max(focalLengthMillimeters / sanitizedFocalLength(baseFocalLength), 1))
+        CGFloat(max(focalLengthMillimeters / Self.sanitizedFocalLength(baseFocalLength), 1))
     }
 
     func progress(in range: ClosedRange<Double>) -> Double {

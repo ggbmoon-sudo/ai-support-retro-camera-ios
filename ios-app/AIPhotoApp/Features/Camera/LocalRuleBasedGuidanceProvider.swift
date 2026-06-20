@@ -9,11 +9,11 @@ struct LocalRuleBasedGuidanceProvider: LiveGuidanceProvider {
     init(
         frameAnalyzer: LiveGuidanceFrameAnalyzer = LiveGuidanceFrameAnalyzer(),
         suggestionComposer: LiveGuidanceSuggestionComposer = LiveGuidanceSuggestionComposer(),
-        toneSettingsStore: CameraCoachToneSettingsStore = .shared
+        toneSettingsStore: CameraCoachToneSettingsStore? = nil
     ) {
         self.frameAnalyzer = frameAnalyzer
         self.suggestionComposer = suggestionComposer
-        self.toneSettingsStore = toneSettingsStore
+        self.toneSettingsStore = toneSettingsStore ?? CameraCoachToneSettingsStore.shared
     }
 
     func suggestions(

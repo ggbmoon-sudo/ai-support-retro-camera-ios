@@ -49,12 +49,14 @@ final class PreviewContainerView: UIView {
     private func updateConnection() {
         previewLayer.videoGravity = .resizeAspect
 
-        guard let connection = previewLayer.connection,
-              connection.isVideoOrientationSupported else {
+        guard let connection = previewLayer.connection else {
             return
         }
 
-        connection.videoOrientation = .portrait
+        if connection.isVideoRotationAngleSupported(90) {
+            connection.videoRotationAngle = 90
+        }
+
         if connection.isVideoMirroringSupported {
             connection.automaticallyAdjustsVideoMirroring = false
             connection.isVideoMirrored = isMirrored

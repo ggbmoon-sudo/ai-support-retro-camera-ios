@@ -158,7 +158,7 @@ nonisolated struct GuidanceIssueMemory: Sendable {
 }
 
 private extension AppLanguageMode {
-    var keyComponent: String {
+    nonisolated var keyComponent: String {
         switch self {
         case .english:
             return "en"
@@ -171,7 +171,7 @@ private extension AppLanguageMode {
         }
     }
 
-    func resolvedTone(for tone: ToneMode) -> ToneMode {
+    nonisolated func resolvedTone(for tone: ToneMode) -> ToneMode {
         switch self {
         case .english, .traditionalChinese, .simplifiedChinese:
             return .neutral
@@ -189,7 +189,7 @@ private extension AppLanguageMode {
 }
 
 private extension ToneMode {
-    var keyComponent: String {
+    nonisolated var keyComponent: String {
         switch self {
         case .neutral:
             return "neutral"
