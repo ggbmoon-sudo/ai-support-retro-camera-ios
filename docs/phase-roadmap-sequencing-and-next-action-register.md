@@ -16,13 +16,17 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**Phase 21-Z2H-SF: SiliconFlow Latency Architecture Decision Gate**
+**Phase 21-A: On-device Vision Geometry Spike**
 
-Reason: Phase 21-Z2G-SF ran operator-approved backend-only SiliconFlow network/parameter latency probes with `smoke_004` only. Sequential same-process `fetch` with compact `max_tokens:192` stayed accepted but seconds-level (`8637ms`, `8529ms`), `stream:true` exposed first chunk at `3979ms` but full validated JSON at `9898ms`, and ultra-short `max_tokens:80` / `50` failed schema. The next safe step is an architecture decision gate for provider/SLA, smaller-model canary, alternative provider, RunPod warm-worker comparison, direct URL/base64 hosting experiments, or asynchronous UX, not immediate iOS integration or production rollout.
+Reason: today's AI direction update changes the live guidance priority. Real-time / live camera guidance should move away from cloud live VLM as the primary path and prioritize on-device Apple Vision / AVFoundation geometry, hardware depth when available, and app-side retro-aware rules. SiliconFlow / RunPod / open-weight VLM work remains valid for post-capture Photo Advisor, offline benchmark, internal evaluation, and future labeling/distillation, but it is no longer the default live camera guidance answer.
+
+Phase 21-A should be Apple Vision / AVFoundation only and should detect subject/person/face/body/pose as geometry only. Safe composition signals may include subject center, edge margin, headroom, footroom, rule-of-thirds proximity, subject size ratio, and horizon / vertical balance heuristic if available. It must not add sensitive inference, model downloads, cloud calls, frame uploads, upload payload changes, Camera live cloud AI entry, provider keys, dataset crawlers, or production rollout. `productionReady:false` remains locked.
+
+Naming note: older committed Phase 21-A backend-internal VLM records remain historical evidence. The current next recommended phase should be referenced by its full title: `Phase 21-A - On-device Vision Geometry Spike`.
 
 Marker note: Phase 21-W-R2 was implemented and pushed, but its visible commit marker missed the final `e` in `unavailable`. The corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable` without model calls, benchmarks, endpoint calls, external server edits, runtime changes, raw artifacts, secrets, or production rollout.
 
-Phase 21-Z2H-SF should decide whether to request explicit approval for bounded single-image alternative-model latency canaries, provider capacity/SLA checks, direct URL/base64 hosting experiments, RunPod warm-worker comparison, or async product UX changes. It must not add iOS integration, upload-payload changes, app-facing endpoints, live camera cloud AI, production endpoints, or production rollout by default.
+The former Phase 21-Z2H-SF SiliconFlow latency architecture decision remains useful as a post-capture / backend provider evaluation branch, but it is no longer the primary live guidance path.
 
 ## How Codex Should Use This File
 

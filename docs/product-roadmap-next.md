@@ -1,5 +1,11 @@
 # Next Product Roadmap
 
+## Today's AI Direction Change
+
+Live camera guidance should now prioritize on-device Vision / AVFoundation geometry, hardware depth when available, and app-side retro-aware rules instead of cloud live VLM as the primary path. Cloud/self-hosted/API VLM work remains valid for post-capture Photo Advisor, offline benchmark, internal evaluation, schema validation, and future model-assisted labeling, but it is no longer the default live guidance direction.
+
+See `docs/on-device-live-framing-ai-roadmap.md` for the revised Phase 21-A through Phase 21-E plan. This roadmap update is docs-only and adds no runtime code, model files, provider calls, frame upload, Camera live cloud AI entry, dataset crawler, or production readiness change.
+
 This document captures the next product direction after the current local/mock MVP and proposes a phased roadmap from Phase 11 through Phase 17.
 
 The roadmap is planning-only. It does not start Phase 11 and does not authorize implementation of real Firebase, real AI, Cloud Functions, StoreKit, persistence, export, or production services.

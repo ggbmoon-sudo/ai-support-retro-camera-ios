@@ -248,3 +248,9 @@ The Phase 21-L gate validates local CV camera aids plan policy objects only and 
 `productionReady:false` remains locked.
 
 Passing Phase 21-L means only that future local on-device CV camera aids are documented and gate-tested. It is not local CV runtime approval, not grid/horizon/exposure/motion runtime approval, not Auto-Trigger runtime approval, not WSS runtime approval, not cloud upload approval, not iOS payload approval, not endpoint approval, not model-call approval, not Qwen approval, not serving benchmark approval, and not production rollout.
+
+## Today's Direction Change Addendum
+
+Live camera guidance should now prioritize on-device Apple Vision / AVFoundation geometry, hardware depth when available, and app-side retro-aware rules instead of cloud live VLM. Depth Anything V2 Small is only a future Core ML fallback benchmark candidate, and Florence-2-base is only a research feasibility candidate for object detection, grounding, detailed caption, and segmentation. The app rules engine remains the brain that converts coordinates, regions, depth, and typed signals into short guidance.
+
+This addendum is docs-only. It adds no local CV runtime, no model file, no Core ML package, no dataset crawler, no provider call, no frame upload, no upload payload change, no Camera live cloud AI entry, and no production rollout. `productionReady:false` remains locked.

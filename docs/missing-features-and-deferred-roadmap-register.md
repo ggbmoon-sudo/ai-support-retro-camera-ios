@@ -4,6 +4,8 @@ Status: Phase 21-G2 docs-only memory/backlog audit
 Date: 2026-06-17  
 Production readiness: `productionReady:false`
 
+Today direction update: live camera guidance should now prioritize on-device Vision / AVFoundation geometry, hardware depth when available, and app-side retro-aware rules instead of cloud live VLM. SiliconFlow / RunPod / open-weight VLM work remains valid for post-capture Photo Advisor, offline benchmark, internal evaluation, schema validation, and future model-assisted labeling, but Phase 21 should become the on-device live framing intelligence track. See `docs/on-device-live-framing-ai-roadmap.md`.
+
 ## Executive Summary
 
 This register records planned, missing, deferred, blocked, partially built, or not-yet-integrated app/backend/VLM features so future ChatGPT/Codex sessions do not rely only on chat memory.

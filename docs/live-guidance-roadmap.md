@@ -4,6 +4,12 @@ This roadmap formalizes the staged path for live camera guidance after Phase 13.
 
 Phase 14R is documentation-only. It does not start Phase 14 implementation.
 
+## Today's Direction Change
+
+Real-time / live camera guidance should now prioritize on-device intelligence instead of cloud live VLM. Cloud/self-hosted VLM remains useful for post-capture Photo Advisor, offline benchmark, internal evaluation, and future model-assisted labeling, but live guidance should become Apple Vision / AVFoundation geometry, hardware depth when available, and app-side composition rules first.
+
+Depth Anything V2 Small is only a future Core ML fallback sandbox after latency, memory, FPS, thermal, and battery checks. Florence-2-base is only a feasibility/research candidate for object detection, grounding, detailed caption, and segmentation; do not assume production live runtime until benchmarked.
+
 ## Roadmap Principles
 
 - Keep the camera-first experience primary.
@@ -14,6 +20,9 @@ Phase 14R is documentation-only. It does not start Phase 14 implementation.
 - Keep guidance short, calm, and camera-like.
 - Do not claim mock guidance is real AI.
 - Keep future provider architecture replaceable.
+- Keep live hints short, non-judgmental, retro-aware, and creative-intent preserving.
+- Preserve the language shape: Observation -> Mood -> Retro intent -> Optional action.
+- Do not turn guidance into Score -> Problem -> Fix -> Retake.
 
 ## Phase 14: Mock UX Only
 

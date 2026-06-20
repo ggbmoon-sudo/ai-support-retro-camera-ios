@@ -4510,6 +4510,25 @@ Known TODOs:
 - [x] Confirmed no iOS runtime change, upload payload change, Camera cloud AI entry, app-facing endpoint, production endpoint, live cloud AI runtime, or production rollout was added.
 - [ ] In Xcode, confirm runtime behavior remains unchanged: no SiliconFlow endpoint/API key in iOS, no direct provider call, no upload payload change, no Camera cloud AI entry, and no app-facing endpoint.
 
+## Docs - On-device Live Framing AI Roadmap Direction Update
+
+Check:
+
+- [x] Added `docs/on-device-live-framing-ai-roadmap.md`.
+- [x] Recorded today's direction change: real-time guidance should prioritize on-device Vision / AVFoundation geometry, hardware depth when available, and app-side retro-aware rules instead of cloud live VLM.
+- [x] Preserved SiliconFlow / RunPod / open-weight VLM work for post-capture Photo Advisor, offline benchmark, internal evaluation, schema validation, and future model-assisted labeling/distillation.
+- [x] Recorded revised Phase 21-A through Phase 21-E plan.
+- [x] Confirmed no runtime code, model file, Core ML package, Florence-2 implementation, Depth Anything production bundle, dataset crawler, AI provider labeling adapter, network/model/provider call, iOS provider/model key, direct provider/model call, Camera live cloud AI entry, preview-frame upload, backend/iOS upload payload change, raw artifact, secret, or production rollout was added.
+- [x] Kept `productionReady:false`.
+
+Manual Xcode check:
+
+- [ ] Launch only if desired; Xcode runtime behavior should be unchanged.
+- [ ] Confirm no new iOS SDK/model/provider dependency appears.
+- [ ] Confirm no Camera live cloud AI entry appears.
+- [ ] Confirm no SiliconFlow / RunPod / model endpoint or API key appears in iOS.
+- [ ] Confirm no upload payload, Photos permission, or Camera permission behavior changed.
+
 
 ## Phase 21-Z2G-SF SiliconFlow Network/Parameter Latency Probe
 

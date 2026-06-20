@@ -12033,3 +12033,54 @@ Phase 21-Z2G-SF responds to operator-proposed latency tactics: keep-alive / conn
 ### Next Phase
 
 Ready for Phase 21-Z2H-SF: SiliconFlow Latency Architecture Decision Gate. Not ready for production rollout.
+
+## Docs - On-device Live Framing AI Roadmap Direction Update
+
+Status: completed
+Date: 2026-06-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+Updated roadmap documentation to reflect today's AI direction change: real-time / live camera guidance should move away from cloud live VLM as the primary path and prioritize on-device Apple Vision / AVFoundation geometry, hardware depth when available, and app-side retro-aware composition rules.
+
+### Completed Work
+
+- Added `docs/on-device-live-framing-ai-roadmap.md`.
+- Repositioned SiliconFlow / RunPod / open-weight VLM work as valid for post-capture Photo Advisor, offline benchmark, internal evaluation, schema validation, and possible future labeling/distillation, but not the default live camera guidance path.
+- Set revised Phase 21 plan: Phase 21-A Vision geometry spike, Phase 21-B AVFoundation depth capability probe, Phase 21-C Depth Anything V2 Small Core ML sandbox, Phase 21-D Florence-2-base feasibility study, and Phase 21-E dataset collector + AI-assisted labeling pipeline skeleton.
+- Recorded safety language: short, non-judgmental, retro-aware hints following Observation -> Mood -> Retro intent -> Optional action.
+- Recorded not-now boundaries for Florence-2 production integration, Depth Anything production bundle, live cloud AI, automatic dataset crawler, AI provider labeling run, fine-tuning, and user-photo training.
+
+### Changed Files
+
+- `README.md`
+- `backend/README.md`
+- `ios-app/README.md`
+- `docs/on-device-live-framing-ai-roadmap.md`
+- `docs/product-roadmap-next.md`
+- `docs/missing-features-and-deferred-roadmap-register.md`
+- `docs/live-guidance-roadmap.md`
+- `docs/local-on-device-cv-camera-aids-plan.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `tests/manual-smoke-tests.md`
+
+### Boundary Checks
+
+- Docs-only update: yes
+- Runtime code changed: no
+- Model files / Core ML packages added: no
+- Dataset crawler or provider labeling adapter added: no
+- Network/model/provider calls made: no
+- iOS provider/model SDK/key/direct call added: no
+- Camera live cloud AI entry added: no
+- Preview frame upload added: no
+- Backend/iOS upload payload changed: no
+- Raw frames/images/GPS/EXIF/sensor data/face descriptors/sensitive attributes persisted: no
+- Generated reports, local fixtures, real photos, model outputs, downloaded datasets, local configs, or provider responses committed: no
+
+### Next Phase
+
+Ready for Phase 21-A: On-device Vision Geometry Spike. Not ready for production rollout.

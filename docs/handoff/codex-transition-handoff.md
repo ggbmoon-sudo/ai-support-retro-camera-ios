@@ -1079,3 +1079,14 @@ Latest Phase 21-Z2G-SF handoff refresh check on 2026-06-20:
 - Ultra-short `max_tokens:80` and `50` failed schema with `provider_json_parse_failed` / `free_form_text_detected`; backend contract remains compact prompt + `maxOutputTokens:192`.
 - No raw provider response, raw model text, raw prompt, raw request payload, raw image/base64/path, API key, provider credential, raw report, iOS runtime change, upload payload change, live cloud AI runtime, app-facing endpoint, production endpoint, or production rollout occurred.
 - Next recommended phase is `Phase 21-Z2H-SF: SiliconFlow Latency Architecture Decision Gate`.
+
+Latest on-device live framing AI roadmap direction update on 2026-06-20:
+
+- Today's direction change makes on-device live framing intelligence the primary live camera guidance track.
+- Apple Vision / AVFoundation geometry and hardware depth are now the first production-leaning path for subject boxes, face/body/pose regions as geometry, margins, headroom, footroom, rule-of-thirds proximity, subject size ratio, and depth-aware foreground/background signals.
+- Depth Anything V2 Small is a future Core ML fallback sandbox only after benchmark, memory, FPS, battery, and thermal checks.
+- Florence-2-base is a feasibility/research candidate for object detection, grounding, detailed caption, and segmentation, not an assumed first live production engine.
+- SiliconFlow / RunPod / open-weight VLM work remains valid for post-capture Photo Advisor, offline benchmark, internal evaluation, schema validation, and possible future model-assisted labeling/distillation.
+- Added `docs/on-device-live-framing-ai-roadmap.md` and updated roadmap docs only.
+- No runtime code, model file, Core ML package, dataset crawler, AI-assisted labeling provider adapter, network/model/provider call, iOS provider/model key, direct iOS provider/model call, Camera live cloud AI entry, preview-frame upload, upload payload change, generated report, local fixture, real photo, dataset, local config, provider response, secret, or production rollout was added.
+- Next recommended phase is `Phase 21-A: On-device Vision Geometry Spike`.
