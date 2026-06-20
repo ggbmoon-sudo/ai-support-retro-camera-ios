@@ -12135,3 +12135,61 @@ Added deep research Markdown reports for the new on-device Live Framing AI direc
 ### Next Phase
 
 Ready for `Phase 21-A - On-device Vision Geometry Spike`. Not ready for production rollout.
+## Phase 21-A - On-device Vision Geometry Spike
+
+Status: implemented, pending Xcode verification
+Date: 2026-06-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase 21-A starts the revised on-device live framing intelligence track with Apple Vision / AVFoundation only. It extends the existing local live guidance path so sampled preview frames can produce geometry-only composition signals without cloud VLM latency, frame upload, provider keys, model files, or backend payload changes.
+
+### Completed Work
+
+- Added typed local `LiveFrameSignals` / `GeometrySignals` / `DepthSignals` / `CompositionSignals` / `SafetyFlags` contracts.
+- Added Apple Vision geometry analysis for face rectangles and human body pose-derived subject bounds.
+- Added composition buckets for subject center, edge margin, headroom, footroom, subject size ratio, rule-of-thirds proximity, negative space, subject balance, and vertical balance.
+- Added a normalized coordinate mapper for future SwiftUI debug overlays.
+- Connected the analyzer into the existing local live guidance sample-buffer path with the existing `0.6s` throttle.
+- Reused existing safe guidance copy keys and stability logic; no score/rating, harsh critique, sensitive inference, or retake-first language was added.
+
+### Changed Files
+
+- `ios-app/AIPhotoApp/Features/Camera/LiveFrameGeometrySignals.swift`
+- `ios-app/AIPhotoApp/Features/Camera/LiveGuidanceVisionGeometryAnalyzer.swift`
+- `ios-app/AIPhotoApp/Features/Camera/CameraOverlayCoordinateMapper.swift`
+- `ios-app/AIPhotoApp/Features/Camera/CameraCaptureService.swift`
+- `ios-app/AIPhotoApp/Features/Camera/LiveGuidanceSignal.swift`
+- `ios-app/AIPhotoApp/Features/Camera/LiveGuidanceSuggestionComposer.swift`
+- `ios-app/AIPhotoApp/Features/Camera/LiveGuidanceStabilityController.swift`
+- `docs/phase-21-a-on-device-vision-geometry-spike-summary.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `README.md`
+- `backend/README.md`
+- `ios-app/README.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `tests/manual-smoke-tests.md`
+
+### Boundary Checks
+
+- Apple Vision / AVFoundation only: yes
+- Cloud live AI added: no
+- Provider/model key or direct iOS provider/model call added: no
+- Model files / Core ML / ONNX / TFLite packages added: no
+- Depth Anything / Florence runtime added: no
+- Preview frame upload added: no
+- Backend/iOS upload payload changed: no
+- Raw frame/image/GPS/EXIF/sensor stream/face descriptor/sensitive attribute persistence added: no
+- Sensitive inference added: no
+- Production rollout: no
+
+### Verification
+
+- Source-level checks and repository scans are recorded in the final Phase 21-A handoff.
+- Xcode build/run still needs local verification on macOS/Xcode.
+
+### Next Phase
+
+Ready for `Phase 21-B - AVFoundation Depth Capability Probe` after Phase 21-A is committed and pushed. Not ready for production rollout.

@@ -6,19 +6,24 @@ nonisolated enum LiveGuidanceSignal: Hashable, Sendable {
     case tooDark
     case tooBright
     case subjectOffCenter
+    case subjectNearEdge
     case lowHeadroom
     case faceTooClose
     case faceTooFar
+    case subjectTooLarge
+    case subjectTooSmall
     case portraitLikely
+    case ruleOfThirdsAligned
+    case verticalBalanceReady
     case warmFilterHelpful
 
     var guidancePriority: Int {
         switch self {
-        case .tooDark, .tooBright, .faceTooClose, .faceTooFar:
+        case .tooDark, .tooBright, .faceTooClose, .faceTooFar, .subjectTooLarge, .subjectTooSmall:
             return 0
-        case .lowHeadroom, .subjectOffCenter:
+        case .lowHeadroom, .subjectOffCenter, .subjectNearEdge:
             return 1
-        case .warmFilterHelpful, .portraitLikely, .lightingLooksBalanced:
+        case .warmFilterHelpful, .portraitLikely, .lightingLooksBalanced, .ruleOfThirdsAligned, .verticalBalanceReady:
             return 2
         case .localSignalUnavailable:
             return 3
@@ -35,18 +40,28 @@ nonisolated enum LiveGuidanceSignal: Hashable, Sendable {
             return 2
         case .faceTooFar:
             return 3
-        case .lowHeadroom:
+        case .subjectTooLarge:
             return 4
-        case .subjectOffCenter:
+        case .subjectTooSmall:
             return 5
-        case .warmFilterHelpful:
+        case .lowHeadroom:
             return 6
-        case .portraitLikely:
+        case .subjectNearEdge:
             return 7
-        case .lightingLooksBalanced:
+        case .subjectOffCenter:
             return 8
-        case .localSignalUnavailable:
+        case .ruleOfThirdsAligned:
             return 9
+        case .verticalBalanceReady:
+            return 10
+        case .warmFilterHelpful:
+            return 11
+        case .portraitLikely:
+            return 12
+        case .lightingLooksBalanced:
+            return 13
+        case .localSignalUnavailable:
+            return 14
         }
     }
 }

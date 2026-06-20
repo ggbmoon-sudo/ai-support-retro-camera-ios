@@ -16,15 +16,17 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**Phase 21-A: On-device Vision Geometry Spike**
+**Phase 21-B: AVFoundation Depth Capability Probe**
 
-Reason: today's AI direction update changes the live guidance priority. Real-time / live camera guidance should move away from cloud live VLM as the primary path and prioritize on-device Apple Vision / AVFoundation geometry, hardware depth when available, and app-side retro-aware rules. SiliconFlow / RunPod / open-weight VLM work remains valid for post-capture Photo Advisor, offline benchmark, internal evaluation, and future labeling/distillation, but it is no longer the default live camera guidance answer.
+Reason: Phase 21-A now starts the on-device live framing track with Apple Vision geometry-only analysis and safe composition buckets. The next logical step is to probe AVFoundation hardware depth / portrait matte capability without persisting depth maps, uploading frames, adding model files, or changing production readiness.
 
-Phase 21-A should be Apple Vision / AVFoundation only and should detect subject/person/face/body/pose as geometry only. Safe composition signals may include subject center, edge margin, headroom, footroom, rule-of-thirds proximity, subject size ratio, and horizon / vertical balance heuristic if available. It must not add sensitive inference, model downloads, cloud calls, frame uploads, upload payload changes, Camera live cloud AI entry, provider keys, dataset crawlers, or production rollout. `productionReady:false` remains locked.
+Phase 21-B should be AVFoundation-only and should detect capability states such as `hardwareDepthAvailable`, `portraitMatteAvailable`, and `depthUnavailable`. Depth may be used only as a composition / foreground-background signal. It must not persist raw depth maps, upload preview frames, add Depth Anything, add Florence-2, add cloud calls, change upload payloads, add Camera live cloud AI, add provider keys, infer sensitive attributes, or enable production rollout. `productionReady:false` remains locked.
 
-Naming note: older committed Phase 21-A backend-internal VLM records remain historical evidence. The current next recommended phase should be referenced by its full title: `Phase 21-A - On-device Vision Geometry Spike`.
+Naming note: older committed Phase 21-A backend-internal VLM records remain historical evidence. The completed on-device geometry phase should be referenced by its full title: `Phase 21-A - On-device Vision Geometry Spike`.
 
-Research support note: `docs/research/on-device-ai-research-index.md` now links deep research reports for the on-device live framing direction. These reports support Phase 21-A/B/C/D/E planning but do not change the current next recommended implementation phase.
+Implementation status note: `docs/phase-21-a-on-device-vision-geometry-spike-summary.md` records the current Phase 21-A implementation boundary and Xcode verification checklist.
+
+Research support note: `docs/research/on-device-ai-research-index.md` links deep research reports for the on-device live framing direction. These reports support Phase 21-B/C/D/E planning but do not approve model downloads, cloud live AI, frame upload, or production rollout.
 
 Marker note: Phase 21-W-R2 was implemented and pushed, but its visible commit marker missed the final `e` in `unavailable`. The corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable` without model calls, benchmarks, endpoint calls, external server edits, runtime changes, raw artifacts, secrets, or production rollout.
 

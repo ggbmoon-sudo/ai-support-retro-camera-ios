@@ -108,6 +108,16 @@ nonisolated struct LiveGuidanceSuggestionComposer: Sendable {
                 ),
                 category: .composition
             )
+        case .subjectNearEdge:
+            return LiveGuidanceSuggestion(
+                id: "leave_edge_air",
+                messageKey: copyResolver.messageKey(
+                    for: .framing,
+                    language: languageMode,
+                    requestedTone: toneMode
+                ),
+                category: .composition
+            )
         case .lowHeadroom:
             return LiveGuidanceSuggestion(
                 id: "more_headroom",
@@ -118,7 +128,7 @@ nonisolated struct LiveGuidanceSuggestionComposer: Sendable {
                 ),
                 category: .portrait
             )
-        case .faceTooClose:
+        case .faceTooClose, .subjectTooLarge:
             return LiveGuidanceSuggestion(
                 id: "step_back_portrait",
                 messageKey: copyResolver.messageKey(
@@ -128,7 +138,7 @@ nonisolated struct LiveGuidanceSuggestionComposer: Sendable {
                 ),
                 category: .portrait
             )
-        case .faceTooFar:
+        case .faceTooFar, .subjectTooSmall:
             return LiveGuidanceSuggestion(
                 id: "move_closer_portrait",
                 messageKey: copyResolver.messageKey(
@@ -138,7 +148,7 @@ nonisolated struct LiveGuidanceSuggestionComposer: Sendable {
                 ),
                 category: .portrait
             )
-        case .portraitLikely:
+        case .portraitLikely, .ruleOfThirdsAligned, .verticalBalanceReady:
             return LiveGuidanceSuggestion(
                 id: "portrait_framing_ready",
                 messageKey: copyResolver.messageKey(

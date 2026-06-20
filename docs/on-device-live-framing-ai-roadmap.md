@@ -65,6 +65,12 @@ Boundaries:
 - No raw frame persistence.
 - `productionReady:false`.
 
+Implementation note:
+
+- Phase 21-A now has an implementation summary at `docs/phase-21-a-on-device-vision-geometry-spike-summary.md`.
+- It adds iOS Apple Vision geometry-only signals and keeps live guidance local-only.
+- The next recommended phase after commit/push is `Phase 21-B - AVFoundation Depth Capability Probe`.
+
 ### Phase 21-B - AVFoundation Depth Capability Probe
 
 Scope:

@@ -8,7 +8,9 @@ Live camera guidance should now prioritize on-device Apple Vision / AVFoundation
 
 This docs-only update adds no iOS runtime behavior, no model file, no Core ML package, no Florence-2 integration, no Depth Anything bundle, no provider SDK/key, no direct provider/model call, no Camera live cloud AI entry, no frame upload, no upload payload change, and no production rollout. `productionReady:false` remains locked.
 
-The research index for this direction is `../docs/research/on-device-ai-research-index.md`. It is research Markdown only and does not add iOS source, model bundles, provider SDKs, API keys, direct provider/model calls, Camera live cloud AI, or upload payload changes. The next recommended implementation phase remains `Phase 21-A - On-device Vision Geometry Spike`.
+Phase 21-A starts this path in iOS with Apple Vision geometry-only live guidance. It adds typed local geometry/composition signal contracts, Vision face/body/pose geometry analysis on ephemeral preview frames, and a normalized overlay coordinate mapper for future debug overlays. It does not add model bundles, provider SDKs, API keys, direct provider/model calls, Camera live cloud AI, frame upload, upload payload changes, raw frame persistence, sensitive inference, or production rollout.
+
+The research index for this direction is `../docs/research/on-device-ai-research-index.md`. Later Depth Anything / Florence work remains blocked until separately approved and benchmarked. The next recommended phase after Phase 21-A commit/push is `Phase 21-B - AVFoundation Depth Capability Probe`.
 
 ## Phase 21-M / 21-N / 21-N-R0 / 21-N-R0B / 21-N-R0C / 21-N-R1B / 21-N-R1C / 21-N-R1D Xcode Boundary
 

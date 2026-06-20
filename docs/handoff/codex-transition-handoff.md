@@ -1096,3 +1096,16 @@ Latest on-device live framing AI research set on 2026-06-20:
 - Added `docs/research/on-device-ai-research-index.md` and deep research reports for Apple Vision / AVFoundation, hybrid architecture, device tiers, Depth Anything V2 Small, Florence-2-base, privacy/App Store safety, dataset collection, and fine-tuning/distillation.
 - The research set does not change the next recommended implementation phase: `Phase 21-A - On-device Vision Geometry Spike`.
 - No runtime code, model files, Core ML / ONNX / TFLite packages, dataset crawler, provider labeling adapter, provider/model API key, direct iOS provider/model call, Camera live cloud AI entry, preview-frame upload, backend/iOS upload payload change, generated report, local fixture, real photo, dataset, local config, provider response, raw label, secret, or production rollout was added.
+
+Latest Phase 21-A on-device Vision Geometry Spike on 2026-06-20:
+
+- Phase 21-A starts the revised on-device live framing implementation track.
+- Added iOS local-only Apple Vision geometry analysis for ephemeral preview frames.
+- Added typed `LiveFrameSignals`, `GeometrySignals`, `DepthSignals`, `CompositionSignals`, `SafetyFlags`, and `AdvisorHintCandidate` contracts.
+- Added face rectangle and human body pose-derived subject geometry analysis.
+- Added safe composition buckets for edge margin, headroom, footroom, subject size ratio, rule-of-thirds proximity, negative space, subject balance, and vertical balance.
+- Added `CameraOverlayCoordinateMapper` for future debug overlays.
+- Reused existing local live guidance copy/stability path and existing `0.6s` frame-analysis throttle.
+- No Depth Anything, Florence-2, Core ML package, model file, provider key, direct iOS provider/model call, cloud live AI, frame upload, backend/iOS upload payload change, raw frame persistence, sensitive inference, or production rollout was added.
+- `productionReady:false` remains locked.
+- Next recommended phase after commit/push is `Phase 21-B - AVFoundation Depth Capability Probe`.

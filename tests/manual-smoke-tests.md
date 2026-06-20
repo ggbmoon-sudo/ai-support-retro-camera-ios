@@ -4559,3 +4559,18 @@ Manual Xcode check:
 - [x] Confirmed no raw provider response, raw model text, raw prompt, raw request payload, raw image/base64/path, API key, credential, or raw report was printed, persisted, staged, or committed.
 - [x] Confirmed no iOS runtime change, upload payload change, Camera cloud AI entry, app-facing endpoint, production endpoint, live cloud AI runtime, or production rollout was added.
 - [ ] In Xcode, confirm runtime behavior remains unchanged: no SiliconFlow endpoint/API key in iOS, no direct provider call, no upload payload change, no Camera cloud AI entry, and no app-facing endpoint.
+
+## Phase 21-A - On-device Vision Geometry Spike
+
+- [ ] Build and run the iOS app in Xcode.
+- [ ] Open Camera and keep Live Guidance in local mode.
+- [ ] Confirm live guidance still appears without crashes while moving a face/person subject around the frame.
+- [ ] Confirm edge/headroom/subject-size guidance remains short, optional, non-judgmental, and retro-aware.
+- [ ] Confirm no score/rating, attractiveness, identity, age, gender, emotion, health, ethnicity, religion, disability, body judgement, or harsh retake-first wording appears.
+- [ ] Confirm preview frames are not uploaded and no backend request is made for live guidance.
+- [ ] Confirm no Camera live cloud AI entry appears.
+- [ ] Confirm no iOS provider/model key, SDK, endpoint, or direct provider/model call appears.
+- [ ] Confirm no model file, Core ML package, ONNX/TFLite package, Florence-2 runtime, or Depth Anything runtime appears in the iOS bundle.
+- [ ] Confirm capture/import, local filters, selected-photo review, mock save, and post-capture advisor behavior still work as before.
+- [ ] Confirm backend/iOS upload payloads are unchanged.
+- [ ] Confirm `productionReady:false` remains unchanged.

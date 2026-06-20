@@ -128,6 +128,7 @@ private extension LiveGuidanceSuggestion {
              "move_closer_portrait":
             return 0
         case "more_headroom",
+             "leave_edge_air",
              "center_subject":
             return 1
         case "try_warm_filter",

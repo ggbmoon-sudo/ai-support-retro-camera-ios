@@ -161,7 +161,7 @@ private final class FrameSignalState: @unchecked Sendable {
 private final class FrameSignalDelegate: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     private let minimumAnalysisInterval: TimeInterval = 0.6
     private let brightnessAnalyzer = LiveGuidanceBrightnessAnalyzer()
-    private let faceAnalyzer = LiveGuidanceFaceAnalyzer()
+    private let geometryAnalyzer = LiveGuidanceVisionGeometryAnalyzer()
     private let state: FrameSignalState
     private let onSignals: @MainActor @Sendable ([LiveGuidanceSignal]) -> Void
     nonisolated(unsafe) private var lastAnalysisDate = Date.distantPast
@@ -187,8 +187,8 @@ private final class FrameSignalDelegate: NSObject, AVCaptureVideoDataOutputSampl
 
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
         let brightnessSignals = brightnessAnalyzer.signals(from: pixelBuffer)
-        let faceSignals = faceAnalyzer.signals(from: pixelBuffer)
-        let signals = combinedSignals(faceSignals: faceSignals, brightnessSignals: brightnessSignals)
+        let geometrySignals = geometryAnalyzer.signals(from: pixelBuffer)
+        let signals = combinedSignals(geometrySignals: geometrySignals, brightnessSignals: brightnessSignals)
         guard !signals.isEmpty else { return }
 
         Task { @MainActor in
@@ -197,13 +197,13 @@ private final class FrameSignalDelegate: NSObject, AVCaptureVideoDataOutputSampl
     }
 
     private nonisolated func combinedSignals(
-        faceSignals: [LiveGuidanceSignal],
+        geometrySignals: [LiveGuidanceSignal],
         brightnessSignals: [LiveGuidanceSignal]
     ) -> [LiveGuidanceSignal] {
         let hasLightingWarning = brightnessSignals.contains(.tooDark) || brightnessSignals.contains(.tooBright)
         let orderedSignals = hasLightingWarning
-            ? brightnessSignals + faceSignals
-            : faceSignals + brightnessSignals
+            ? brightnessSignals + geometrySignals
+            : geometrySignals + brightnessSignals
 
         return orderedSignals.reduce(into: []) { result, signal in
             guard !result.contains(signal) else { return }
