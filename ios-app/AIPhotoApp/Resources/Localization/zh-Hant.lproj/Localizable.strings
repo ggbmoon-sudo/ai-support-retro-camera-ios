@@ -235,9 +235,10 @@
 "camera.pose.guide.seated_side_pose.title" = "側坐姿勢";
 "camera.pose.guide.seated_side_pose.hint" = "適合咖啡店和旅行照。";
 "camera.shell.status" = "本機";
-"camera.lens.24mm" = "24mm mock 廣角鏡";
-"camera.lens.35mm" = "35mm mock 經典鏡";
-"camera.lens.77mm" = "77mm mock 人像鏡";
+"camera.lens.24mm" = "24mm 廣角鏡";
+"camera.lens.35mm" = "35mm 經典鏡";
+"camera.lens.77mm" = "77mm 人像鏡";
+"camera.lens.front_selfie" = "前置自拍鏡";
 "camera.control.flash" = "閃光";
 "camera.control.timer" = "計時";
 "camera.control.flip" = "翻轉";

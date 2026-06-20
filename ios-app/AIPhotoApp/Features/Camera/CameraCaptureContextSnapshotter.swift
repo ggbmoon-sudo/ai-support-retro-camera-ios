@@ -154,6 +154,13 @@ enum CameraCaptureContextSnapshotter {
                 zoomBucket: .moderate,
                 digitalZoomLikely: false
             )
+        case LensOption.frontSelfie.id:
+            return CameraLensContext(
+                cameraPosition: .front,
+                lensType: .wide,
+                zoomBucket: .normal,
+                digitalZoomLikely: false
+            )
         default:
             return CameraLensContext(
                 cameraPosition: .back,

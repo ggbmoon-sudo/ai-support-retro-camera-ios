@@ -16,11 +16,11 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**Phase 21-A3-R1: Physical-device Live Guidance Tuning Feedback Pass**
+**MacBook/Xcode physical-device verification for Phase 21-A3-R1**
 
-Reason: The user installed the app on iPhone and confirmed brightness guidance plus Apple Vision geometry guidance run on device, but geometry hints were not fully smooth. Phase 21-A3 tunes the free on-device path by adjusting sampling cadence, suggestion stability, and geometry thresholds. The next practical step is a physical-device feedback pass after the user tests A3. Phase 21-C-R3-RUN remains available only if local ignored artifact prerequisites and the exact approval phrase are present.
+Reason: The user installed the app on iPhone and reported five Camera runtime bugs after Phase 21-A3: front-camera toggle did not switch the real camera, lens/mm controls did not switch the real camera/lens and needed device-specific options, viewfinder framing looked zoomed versus capture, filters appeared only after capture, and flash did not fire. Phase 21-A3-R1 implements the local AVFoundation/SwiftUI fixes. The next practical step is MacBook/Xcode physical-device verification of those five items. Phase 21-C-R3-RUN remains available only if local ignored artifact prerequisites and the exact approval phrase are present.
 
-Phase 21-A3-R1 should remain free/on-device/local-only unless separately expanded. Do not add Depth Anything runtime, Core ML inference, Florence-2, cloud calls, frame uploads, upload payload changes, Camera live cloud AI, provider keys, sensitive inference, raw frame/depth persistence, or production rollout. `productionReady:false` remains locked.
+If any of the five reported Camera bugs remain, use a focused `Phase 21-A3-R2 - Real-device Camera QA Follow-up` before continuing larger AI roadmap work. If they pass, return to the roadmap decision point. This path should remain free/on-device/local-only unless separately expanded. Do not add Depth Anything runtime, Core ML inference, Florence-2, cloud calls, frame uploads, upload payload changes, Camera live cloud AI, provider keys, sensitive inference, raw frame/depth/image persistence, or production rollout. `productionReady:false` remains locked.
 
 Naming note: older committed Phase 21-A backend-internal VLM records remain historical evidence. The completed on-device geometry phase should be referenced by its full title: `Phase 21-A - On-device Vision Geometry Spike`.
 

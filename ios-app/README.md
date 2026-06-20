@@ -26,6 +26,8 @@ Phase 21-C-R3-RUN prerequisite check safely blocked before execution because the
 
 Phase 21-A3 tunes the on-device Apple Vision geometry path after physical-device feedback confirmed brightness and Vision geometry hints work but need smoother behavior. It updates only local sampling cadence, suggestion stability, and geometry thresholds. It adds no Depth Anything runtime, Core ML inference, cloud AI, provider key, direct provider/model call, upload payload change, raw frame/depth persistence, or production rollout.
 
+Phase 21-A3-R1 fixes real-device Camera controls and preview behavior after iPhone testing: front/back switching now uses AVFoundation input switching, lens options are device-detected, lens taps reconfigure the active camera, preview framing is aspect-fit, front preview is mirrored, filters have a lightweight live viewfinder preview, and supported back-camera captures request hardware flash. It adds no Depth Anything runtime, Core ML inference, cloud AI, provider key, direct provider/model call, preview-frame upload, upload payload change, raw frame/depth/image persistence, or production rollout.
+
 The research index for this direction is `../docs/research/on-device-ai-research-index.md`. Later Depth Anything / Florence work remains blocked until separately approved and benchmarked. The next recommended phase remains `Phase 21-C-R3-RUN - Approved Depth Anything V2 Small Physical-device Benchmark`, only after exact operator approval, local ignored artifact readiness, and MacBook/Xcode physical-device availability.
 
 ## Phase 21-M / 21-N / 21-N-R0 / 21-N-R0B / 21-N-R0C / 21-N-R1B / 21-N-R1C / 21-N-R1D Xcode Boundary

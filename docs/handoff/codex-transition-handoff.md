@@ -1183,3 +1183,11 @@ Latest Phase 21-A3 Live Vision Geometry Smoothness and Hint Stability Tuning on 
 - No Depth Anything runtime, Core ML inference, provider/cloud call, preview-frame upload, upload payload change, Camera live cloud AI entry, raw frame/depth persistence, sensitive inference, secret, or production rollout was added.
 - `productionReady:false` remains locked.
 - Next recommended phase is `Phase 21-A3-R1 - Physical-device Live Guidance Tuning Feedback Pass` after the user tests the tuned build.
+
+Latest Phase 21-A3-R1 Real-device Camera Controls and Preview Fixes on 2026-06-21:
+
+- User reported five iPhone Camera bugs: front-camera toggle had no effect, mm/lens switching had no effect and needed device-specific options, viewfinder framing was visibly zoomed versus captured output, filters were visible only after capture, and flash did not fire.
+- Phase 21-A3-R1 wires the controls to local AVFoundation/SwiftUI runtime: real front/back input switching, device-detected physical lens options, lens selection session reconfiguration, aspect-fit preview framing, mirrored front preview, lightweight live filter preview overlay, hardware flash settings for supported back cameras, and screen flash for front camera.
+- No Depth Anything runtime, Core ML inference, provider/cloud call, preview-frame upload, upload payload change, Camera live cloud AI entry, raw frame/depth/image persistence, sensitive inference, secret, or production rollout was added.
+- `productionReady:false` remains locked.
+- Next practical step is MacBook/Xcode physical-device verification. If the five reported bugs pass, return to the roadmap decision point; if any remain, use a focused `Phase 21-A3-R2 - Real-device Camera QA Follow-up`.

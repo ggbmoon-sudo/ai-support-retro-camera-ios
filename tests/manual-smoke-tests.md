@@ -4678,6 +4678,24 @@ Physical-device verification:
 - [ ] Move subject center/side slowly and confirm suggestions hold before changing.
 - [ ] Confirm no Depth Anything inference, Core ML runtime execution, Camera cloud AI entry, provider/model key, direct provider/model call, preview-frame upload, raw frame/depth persistence, upload payload change, or production rollout appears.
 - [ ] Confirm `productionReady:false` remains unchanged.
+
+## Phase 21-A3-R1 - Real-device Camera Controls and Preview Fixes
+
+Physical-device verification:
+
+- [ ] Build and run on iPhone.
+- [ ] Tap the flip-camera button and confirm the live feed switches between back and front cameras.
+- [ ] Confirm the front-camera preview is mirrored like a normal selfie camera.
+- [ ] Open the lens picker and confirm only lenses physically available on that iPhone are shown.
+- [ ] On iPhone 13 without telephoto hardware, confirm the unavailable 77mm option is not shown.
+- [ ] Tap each available lens option and confirm the live feed actually changes camera/lens.
+- [ ] Capture a photo and confirm the viewfinder framing is no longer obviously zoomed compared with the saved/captured preview.
+- [ ] Select a non-original filter while still in the live viewfinder and confirm the live feed appearance changes before capture.
+- [ ] Capture with a selected filter and confirm post-capture rendering still uses the selected filter.
+- [ ] Enable flash on a supported back camera, capture in a dim scene, and confirm hardware flash fires.
+- [ ] Enable flash on front camera and confirm local screen flash appears.
+- [ ] Confirm no provider/model key, direct provider/model call, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame/image/depth persistence, Depth Anything runtime, Core ML inference, or production rollout appears.
+- [ ] Confirm `productionReady:false` remains unchanged.
 ## Phase 21-A2 - Live Framing Aesthetic Spatial Codebook
 
 Docs-only verification:
