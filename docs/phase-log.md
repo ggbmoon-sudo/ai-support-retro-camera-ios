@@ -12661,3 +12661,65 @@ Phase OD-R3 adds a backend-only Parameter Mining Bot dry-run for the OD-R resear
 ### Next Phase
 
 Recommended next OD-R phase: `Phase OD-R4 - Cloud AI Teacher Contract`, no-runtime contract only. Not ready for production rollout.
+## Phase OD-R4 - Cloud AI Teacher Contract
+
+Status: completed
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase OD-R4 adds the backend-only Cloud AI Teacher contract for future offline structured labeling and app-transfer-readiness planning. It defines contract-stub request/response validation, enum/bucket-only candidate labels, safety/review gates, sanitized CLI output, tests, and app-transfer-readiness fields that keep app runtime transfer blocked.
+
+### Completed Work
+
+- Added `backend/src/qa/aestheticCloudTeacherContract.mjs`.
+- Added `backend/scripts/check-aesthetic-cloud-teacher-contract.mjs`.
+- Added `backend/tests/aesthetic-cloud-teacher-contract.test.mjs`.
+- Added `npm run qa:aesthetic-teacher:contract`.
+- Added `docs/od-r4-cloud-ai-teacher-contract.md`.
+- Updated roadmap, README, backend/iOS README, handoff, and manual smoke notes for OD-R4.
+
+### Changed Files
+
+- `backend/package.json`
+- `backend/src/qa/aestheticCloudTeacherContract.mjs`
+- `backend/scripts/check-aesthetic-cloud-teacher-contract.mjs`
+- `backend/tests/aesthetic-cloud-teacher-contract.test.mjs`
+- `docs/od-r4-cloud-ai-teacher-contract.md`
+- `docs/on-device-live-framing-ai-roadmap.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `README.md`
+- `backend/README.md`
+- `ios-app/README.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `tests/manual-smoke-tests.md`
+
+### Boundary Checks
+
+- Backend contract/validator only: yes
+- App-transfer readiness documented: yes
+- App runtime transfer blocked: yes
+- Swift runtime file added: no
+- OD-03B Swift placeholder brought back: no
+- Model file / Core ML package / model download added: no
+- Runtime inference / Camera integration / live frame processing added: no
+- Image reads performed: no
+- Network calls made: no
+- Crawler/download mode added: no
+- Real cloud teacher call added: no
+- Training/fine-tuning/distillation run added: no
+- Upload path / provider call / API key added: no
+- Dataset, fixture, photo, local config, generated report, raw prompt, or raw provider output added: no
+- Production rollout: no
+
+### Verification
+
+- `git diff --check` should pass before commit.
+- `cd backend && npm test` should pass before commit.
+- `cd backend && npm run qa:aesthetic-teacher:contract` should pass before commit.
+
+### Next Phase
+
+Recommended next OD-R phase: `Phase OD-R5 - Cloud AI Teacher Labeling Stub / Sandbox`, requiring separate explicit approval before any provider call. Not ready for production rollout.

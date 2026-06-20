@@ -44,6 +44,8 @@ OD-R2 implementation note: `docs/od-r2-dataset-source-manifest-schema.md` define
 
 OD-R3 implementation note: `docs/od-r3-parameter-mining-bot-dry-run.md` adds a backend-only dry-run Parameter Mining Bot that connects the OD-R1 registry and OD-R2 manifest validators, then emits sanitized label-job planning output from inline synthetic manifest objects only. It does not crawl, download, read images, call cloud AI, train, fine-tune, install models, or integrate with iOS runtime.
 
+OD-R4 implementation note: `docs/od-r4-cloud-ai-teacher-contract.md` adds a backend-only Cloud AI Teacher request/response contract with app-transfer-readiness fields. It is contract-only and keeps `eligibleForAppRuntime:false` and `appRuntimeTransferBlocked:true`; no cloud call, image read/upload, crawler/download, training, model install, Swift runtime, or app transfer is added.
+
 ## Product Language Rule
 
 Live hints must keep the Photo Advisor style:

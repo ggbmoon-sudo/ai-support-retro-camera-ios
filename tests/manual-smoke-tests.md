@@ -4649,6 +4649,15 @@ Backend dry-run verification:
 - [ ] Confirm CLI output is sanitized and reports `eligibleJobCount:1`, `blockedReasons:[]`, `crawlerEnabled:false`, `downloadEnabled:false`, `cloudTeacherEnabled:false`, `trainingEnabled:false`, `runtimeIntegrationEnabled:false`, `imageReadsPerformed:false`, `networkCallsMade:false`, `rawImagesCommitted:false`, and `productionReady:false`.
 - [ ] Confirm output job plans contain only opaque IDs, `assetRefBucket`, allowed tag subsets, `humanReviewRequired:true`, `teacherMode:"stub_only"`, status, and sanitized blocker buckets.
 - [ ] Confirm no Swift runtime file, model file, Core ML package, model download, inference, Camera integration, upload path, provider/model key, API key, real dataset/photo/local config/generated report, crawler/download mode, image read, cloud teacher call, training, or production rollout was added.
+## Phase OD-R4 - Cloud AI Teacher Contract
+
+Backend contract verification:
+
+- [ ] From `backend/`, run `npm run qa:aesthetic-teacher:contract`.
+- [ ] From `backend/`, run `node --test tests/aesthetic-cloud-teacher-contract.test.mjs`.
+- [ ] Confirm CLI output is sanitized and reports `requestValid:true`, `responseValid:true`, `candidateLabelCount:1`, `blockedReasons:[]`, `cloudTeacherEnabled:false`, `providerConfigured:false`, `networkCallsMade:false`, `imageReadsPerformed:false`, `trainingEnabled:false`, `runtimeIntegrationEnabled:false`, and `productionReady:false`.
+- [ ] Confirm app-transfer-readiness output reports `eligibleForAppRuntime:false` and `appRuntimeTransferBlocked:true`.
+- [ ] Confirm no Swift runtime file, model file, Core ML package, model download, inference, Camera integration, upload path, provider/model key, API key, real dataset/photo/local config/generated report, crawler/download mode, image read/upload, cloud teacher call, training, app runtime transfer, or production rollout was added.
 ## Phase 21-A2 - Live Framing Aesthetic Spatial Codebook
 
 Docs-only verification:
