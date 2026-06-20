@@ -4696,6 +4696,23 @@ Physical-device verification:
 - [ ] Enable flash on front camera and confirm local screen flash appears.
 - [ ] Confirm no provider/model key, direct provider/model call, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame/image/depth persistence, Depth Anything runtime, Core ML inference, or production rollout appears.
 - [ ] Confirm `productionReady:false` remains unchanged.
+
+## Phase 21-A3-R2 - Adjustable Dual Focal PiP Zoom
+
+Physical-device verification:
+
+- [ ] Build and run on iPhone.
+- [ ] Open Camera and confirm normal preview, lens switching, live filter preview, and flash behavior from Phase 21-A3-R1 still work.
+- [ ] Tap the PiP / dual focal chip and confirm a center picture-in-picture inset appears.
+- [ ] On `35mm`, drag inside the PiP inset left/right and confirm the focal label moves continuously from `35mm` to `100mm` without fixed 50/71/90/110 jumps.
+- [ ] Open the PiP slider callout and confirm the slider also adjusts continuously from the selected lens focal length to `100mm`.
+- [ ] Move the control to around `50mm` on a `35mm` base and confirm the inset field of view behaves like a moderate tele crop rather than an arbitrary zoom jump.
+- [ ] Switch to `24mm` if available and confirm the PiP lower bound becomes `24mm`.
+- [ ] Switch to `77mm` only on devices where the lens is physically available and confirm the PiP lower bound becomes `77mm`.
+- [ ] Capture a photo with PiP enabled and confirm the saved/captured result includes the same inset style and focal label.
+- [ ] Disable PiP and confirm capture returns to normal single-frame output.
+- [ ] Confirm no provider/model key, direct provider/model call, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame/image/depth persistence beyond normal captured photo flow, Depth Anything runtime, Core ML inference, or production rollout appears.
+- [ ] Confirm `productionReady:false` remains unchanged.
 ## Phase 21-A2 - Live Framing Aesthetic Spatial Codebook
 
 Docs-only verification:

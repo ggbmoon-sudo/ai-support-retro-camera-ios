@@ -13,6 +13,7 @@ private enum CameraCallout {
     case filter
     case lens
     case pose
+    case dualFocalZoom
 }
 
 struct CameraView: View {
@@ -274,8 +275,14 @@ struct CameraView: View {
 
                     HStack {
                         VStack(alignment: .leading, spacing: AppSpacing.xs) {
+                            if activeCameraCallout == .dualFocalZoom {
+                                dualFocalZoomCallout
+                                    .transition(.opacity.combined(with: .move(edge: .bottom)))
+                            }
+
                             poseViewportButton
                             filterViewportButton
+                            dualFocalViewportButton
                         }
 
                         Spacer()
@@ -335,6 +342,19 @@ struct CameraView: View {
                     .ignoresSafeArea()
                     .overlay {
                         ruleOfThirdsGrid
+                    }
+                    .overlay {
+                        if viewModel.isDualFocalZoomEnabled {
+                            CameraDualFocalViewfinderOverlay(
+                                session: viewModel.service.session,
+                                isMirrored: viewModel.isUsingFrontCamera,
+                                configuration: viewModel.dualFocalZoomConfiguration,
+                                baseFocalLengthMillimeters: viewModel.selectedLensOption.focalLengthMillimeters,
+                                focalLengthRange: viewModel.dualFocalZoomRange,
+                                selectedFilterPreset: viewModel.selectedFilterPreset,
+                                onFocalLengthChange: viewModel.updateDualFocalLength
+                            )
+                        }
                     }
             case .notDetermined, .denied, .restricted, .unavailable:
                 permissionMessage
@@ -653,6 +673,102 @@ struct CameraView: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel("camera.filter.entry")
+    }
+
+    private var dualFocalViewportButton: some View {
+        Button {
+            withAnimation(.snappy(duration: 0.16)) {
+                if !viewModel.isDualFocalZoomEnabled {
+                    viewModel.enableDualFocalZoom()
+                }
+                activeCameraCallout = activeCameraCallout == .dualFocalZoom ? .none : .dualFocalZoom
+                isLiveGuidanceExpanded = false
+            }
+        } label: {
+            HStack(spacing: AppSpacing.xs) {
+                Image(systemName: "rectangle.inset.filled")
+                    .font(.system(size: 13, weight: .bold))
+
+                Text(viewModel.isDualFocalZoomEnabled ? viewModel.selectedDualFocalLengthLabel : "PiP")
+                    .font(.caption2.weight(.semibold))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.72)
+            }
+            .padding(.vertical, AppSpacing.xs)
+            .padding(.horizontal, AppSpacing.sm)
+            .background(viewModel.isDualFocalZoomEnabled ? AppColors.accent.opacity(0.28) : Color.black.opacity(0.48))
+            .foregroundStyle(viewModel.isDualFocalZoomEnabled ? AppColors.accent : .white)
+            .clipShape(Capsule())
+            .overlay {
+                Capsule()
+                    .stroke(viewModel.isDualFocalZoomEnabled ? AppColors.accent.opacity(0.44) : .white.opacity(0.2), lineWidth: 1)
+            }
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("camera.dual_focal.toggle")
+    }
+
+    private var dualFocalZoomCallout: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.xs) {
+            HStack(spacing: AppSpacing.sm) {
+                VStack(alignment: .leading, spacing: 1) {
+                    Text("camera.dual_focal.title")
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(.white.opacity(0.74))
+
+                    Text(viewModel.selectedDualFocalLengthLabel)
+                        .font(.caption.weight(.bold))
+                        .foregroundStyle(AppColors.accent)
+                }
+
+                Spacer(minLength: AppSpacing.sm)
+
+                Button {
+                    viewModel.disableDualFocalZoom()
+                    withAnimation(.snappy(duration: 0.16)) {
+                        activeCameraCallout = .none
+                    }
+                } label: {
+                    Image(systemName: "xmark")
+                        .font(.system(size: 10, weight: .bold))
+                        .frame(width: 28, height: 26)
+                        .background(Color.white.opacity(0.1))
+                        .foregroundStyle(.white.opacity(0.84))
+                        .clipShape(Capsule())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("camera.dual_focal.off")
+            }
+
+            Slider(
+                value: Binding(
+                    get: { viewModel.selectedDualFocalLengthMillimeters },
+                    set: { viewModel.updateDualFocalLength($0) }
+                ),
+                in: viewModel.dualFocalZoomRange
+            )
+            .tint(AppColors.accent)
+            .accessibilityLabel("camera.dual_focal.slider")
+
+            HStack {
+                Text(viewModel.dualFocalMinimumLengthLabel)
+                Spacer()
+                Text("camera.dual_focal.drag_hint")
+                Spacer()
+                Text(viewModel.dualFocalMaximumLengthLabel)
+            }
+            .font(.caption2.weight(.medium))
+            .foregroundStyle(.white.opacity(0.66))
+        }
+        .frame(width: 234)
+        .padding(AppSpacing.sm)
+        .background(Color.black.opacity(0.58))
+        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .stroke(Color.white.opacity(0.16), lineWidth: 1)
+        }
+        .shadow(color: .black.opacity(0.24), radius: 10, x: 0, y: 5)
     }
 
     private var nativeBottomControls: some View {

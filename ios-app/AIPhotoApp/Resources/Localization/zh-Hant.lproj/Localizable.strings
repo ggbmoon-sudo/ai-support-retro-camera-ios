@@ -239,6 +239,11 @@
 "camera.lens.35mm" = "35mm 經典鏡";
 "camera.lens.77mm" = "77mm 人像鏡";
 "camera.lens.front_selfie" = "前置自拍鏡";
+"camera.dual_focal.toggle" = "切換雙焦段子母畫面";
+"camera.dual_focal.title" = "雙焦段";
+"camera.dual_focal.slider" = "調整雙焦段焦距";
+"camera.dual_focal.drag_hint" = "拖拉";
+"camera.dual_focal.off" = "關閉雙焦段放大";
 "camera.control.flash" = "閃光";
 "camera.control.timer" = "計時";
 "camera.control.flip" = "翻轉";

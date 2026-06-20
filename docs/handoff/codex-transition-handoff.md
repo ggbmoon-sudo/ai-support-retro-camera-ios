@@ -1191,3 +1191,13 @@ Latest Phase 21-A3-R1 Real-device Camera Controls and Preview Fixes on 2026-06-2
 - No Depth Anything runtime, Core ML inference, provider/cloud call, preview-frame upload, upload payload change, Camera live cloud AI entry, raw frame/depth/image persistence, sensitive inference, secret, or production rollout was added.
 - `productionReady:false` remains locked.
 - Next practical step is MacBook/Xcode physical-device verification. If the five reported bugs pass, return to the roadmap decision point; if any remain, use a focused `Phase 21-A3-R2 - Real-device Camera QA Follow-up`.
+
+Latest Phase 21-A3-R2 Adjustable Dual Focal PiP Zoom on 2026-06-21:
+
+- User requested a Dazz-like dual focal / picture-in-picture zoom mode, not a full-frame zoom.
+- Phase 21-A3-R2 adds a local-only PiP zoom chip, live PiP inset overlay, continuous drag adjustment inside the inset, compact slider callout, and captured-photo PiP rendering.
+- The lower bound is the selected lens focal length, the upper bound is `100mm`, and equivalent-FOV crop math uses `targetFocalLength / selectedLensFocalLength`.
+- On `24mm`, the range is `24mm...100mm`; on `35mm`, it is `35mm...100mm`; on `77mm`, it is `77mm...100mm`.
+- No Depth Anything runtime, Core ML inference, provider/cloud call, preview-frame upload, upload payload change, Camera live cloud AI entry, raw frame/depth/image persistence beyond normal captured photo flow, sensitive inference, secret, or production rollout was added.
+- `productionReady:false` remains locked.
+- Next practical step is MacBook/Xcode physical-device verification of Phase 21-A3-R2, then compare against `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next phase.

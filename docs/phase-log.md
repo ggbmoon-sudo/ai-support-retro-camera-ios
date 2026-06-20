@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 21-A3-R1 - Real-device Camera Controls and Preview Fixes
+Current phase: Phase 21-A3-R2 - Adjustable Dual Focal PiP Zoom
 Status: completed
-Latest implementation: Phase 21-A3-R1 fixes physical-device Camera controls and preview behavior after iPhone testing found the front-camera toggle, lens switching, preview/capture framing, live filter preview, and flash behavior were not wired to real capture runtime. It adds real AVFoundation camera/lens switching, device-detected lens options, aspect-fit preview framing, a lightweight live filter preview overlay, hardware flash settings for supported back cameras, front-camera screen flash, and mirrored selfie preview. It adds no Depth Anything runtime, Core ML inference, cloud AI, provider call, preview-frame upload, upload payload change, raw frame persistence, or production rollout. `productionReady:false` remains locked.
+Latest implementation: Phase 21-A3-R2 adds a Dazz-like adjustable dual focal / picture-in-picture zoom mode to the local Camera surface. The PiP inset can be dragged continuously or adjusted with a slider from the selected lens focal length up to `100mm`; the crop math uses `target mm / selected lens mm` for equivalent-FOV behavior, and captured photos burn in the inset. It adds no Depth Anything runtime, Core ML inference, cloud AI, provider call, preview-frame upload, upload payload change, raw frame persistence beyond normal captured photo flow, or production rollout. `productionReady:false` remains locked.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -73,7 +73,7 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current practical next step is MacBook/Xcode physical-device verification of Phase 21-A3-R1. If the five reported Camera bugs pass, return to the roadmap decision point; if any remain, use a focused Phase 21-A3-R2 real-device camera QA follow-up. Any model artifact handling, Core ML package use, inference execution, benchmark run, Camera runtime integration beyond explicit local scope, preview-frame upload, upload payload change, provider/cloud call, iOS provider/model key, raw artifact, sensitive inference, or production rollout requires separate explicit approval before execution. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution beyond an explicitly approved future scope, provider API calls, model downloads, model cache changes, Qwen inference beyond an explicitly approved benchmark, fixture inference beyond explicit approval, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, RunPod provisioning, or user-photo training / fine-tuning until explicitly requested.
+Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current practical next step is MacBook/Xcode physical-device verification of Phase 21-A3-R2. Confirm the PiP chip enables dual focal mode, the inset/slider adjusts continuously from the selected lens focal length to `100mm`, switching lenses updates the lower bound, and captured photos include the inset effect. Any model artifact handling, Core ML package use, inference execution, benchmark run, Camera runtime integration beyond explicit local scope, preview-frame upload, upload payload change, provider/cloud call, iOS provider/model key, raw artifact, sensitive inference, or production rollout requires separate explicit approval before execution. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution beyond an explicitly approved future scope, provider API calls, model downloads, model cache changes, Qwen inference beyond an explicitly approved benchmark, fixture inference beyond explicit approval, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, RunPod provisioning, or user-photo training / fine-tuning until explicitly requested.
 
 ---
 
@@ -12780,3 +12780,62 @@ Build and run on a physical iPhone. Confirm front/back switching, device-specifi
 ### Ready for Next Phase
 
 Ready for MacBook/Xcode physical-device verification. If the five reported bugs pass, return to the roadmap decision point; if any remain, use `Phase 21-A3-R2 - Real-device Camera QA Follow-up`. Not ready for production rollout.
+
+## Phase 21-A3-R2 - Adjustable Dual Focal PiP Zoom
+
+Status: implemented, pending Xcode physical-device verification
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase 21-A3-R2 adds a Dazz-like adjustable dual focal / picture-in-picture zoom mode to the local iOS Camera surface. The main preview remains on the selected physical lens while the center PiP inset shows a continuous equivalent-focal crop, and captured photos burn in the same inset effect.
+
+### Completed Work
+
+- Added `CameraDualFocalZoomConfiguration`, viewfinder overlay, and photo renderer.
+- Added a PiP chip on the Camera surface.
+- Added continuous focal adjustment by dragging inside the PiP inset.
+- Added a compact slider callout for continuous focal adjustment.
+- Enforced lower bound as the current selected lens focal length.
+- Enforced a reasonable upper bound of `100mm`.
+- Used equivalent-FOV crop math: `targetFocalLength / selectedLensFocalLength`.
+- Added focal length metadata to `LensOption`.
+- Added English and Traditional Chinese localization/accessibility keys.
+- Added `docs/phase-21-a3-r2-adjustable-dual-focal-pip-zoom.md`.
+
+### Changed Files
+
+- `ios-app/AIPhotoApp/Features/Camera/CameraDualFocalZoom.swift`
+- `ios-app/AIPhotoApp/Features/Camera/CameraView.swift`
+- `ios-app/AIPhotoApp/Features/Camera/CameraViewModel.swift`
+- `ios-app/AIPhotoApp/Features/Camera/LensOption.swift`
+- `ios-app/AIPhotoApp/Resources/Localization/en.lproj/Localizable.strings`
+- `ios-app/AIPhotoApp/Resources/Localization/zh-Hant.lproj/Localizable.strings`
+- `README.md`
+- `ios-app/README.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-21-a3-r2-adjustable-dual-focal-pip-zoom.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `tests/manual-smoke-tests.md`
+
+### Boundary Confirmations
+
+- Depth Anything runtime added: no
+- Core ML inference run: no
+- Provider/model/cloud call: no
+- Camera live cloud AI entry: no
+- Preview-frame upload: no
+- Upload payload changed: no
+- Raw frame/depth/image persistence beyond normal captured photo flow: no
+- Sensitive inference added: no
+- `productionReady:false` remains locked.
+
+### Xcode Verification Needed
+
+Build and run on iPhone. Confirm the PiP chip enables dual focal mode, the inset and slider adjust continuously from the selected lens focal length to `100mm`, switching lenses updates the lower bound, and captured photos include the same inset effect.
+
+### Ready for Next Phase
+
+Ready for MacBook/Xcode physical-device verification of Phase 21-A3-R2. After verification, compare against the roadmap again before deciding whether to continue Camera QA or return to the Phase 21 on-device AI track. Not ready for production rollout.

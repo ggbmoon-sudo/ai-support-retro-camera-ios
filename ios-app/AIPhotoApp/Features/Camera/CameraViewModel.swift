@@ -21,6 +21,10 @@ final class CameraViewModel: ObservableObject {
     @Published private(set) var lensOptions = LensOption.all
     @Published private(set) var isUsingFrontCamera = false
     @Published private(set) var isHardwareFlashAvailable = false
+    @Published private(set) var isDualFocalZoomEnabled = false
+    @Published private(set) var selectedDualFocalLengthMillimeters = CameraDualFocalZoomConfiguration.defaultFocalLength(
+        forBaseFocalLength: LensOption.classic35.focalLengthMillimeters
+    )
     @Published private(set) var isLoading = false
     @Published private(set) var isFiltering = false
     @Published var pickerItem: PhotosPickerItem?
@@ -82,6 +86,28 @@ final class CameraViewModel: ObservableObject {
 
     var legacyLiveGuidanceStateTitleKey: String {
         liveGuidanceState.titleKey(for: liveGuidanceMode)
+    }
+
+    var dualFocalZoomConfiguration: CameraDualFocalZoomConfiguration {
+        CameraDualFocalZoomConfiguration(focalLengthMillimeters: selectedDualFocalLengthMillimeters)
+    }
+
+    var dualFocalZoomRange: ClosedRange<Double> {
+        CameraDualFocalZoomConfiguration.focalLengthRange(
+            forBaseFocalLength: selectedLensOption.focalLengthMillimeters
+        )
+    }
+
+    var selectedDualFocalLengthLabel: String {
+        CameraDualFocalZoomConfiguration.focalLengthLabel(for: selectedDualFocalLengthMillimeters)
+    }
+
+    var dualFocalMinimumLengthLabel: String {
+        CameraDualFocalZoomConfiguration.focalLengthLabel(for: dualFocalZoomRange.lowerBound)
+    }
+
+    var dualFocalMaximumLengthLabel: String {
+        CameraDualFocalZoomConfiguration.focalLengthLabel(for: dualFocalZoomRange.upperBound)
     }
 
     func prepareCamera() async {
@@ -149,10 +175,17 @@ final class CameraViewModel: ObservableObject {
                     self.errorMessage = CameraCaptureError.imageDataUnavailable.localizedDescription
                     return
                 }
-                let analyzedImageSignals = LocalImageSignalAnalyzer.analyze(image)
+                let outputImage = self.isDualFocalZoomEnabled
+                    ? CameraDualFocalPhotoRenderer.render(
+                        image: image,
+                        configuration: self.dualFocalZoomConfiguration,
+                        baseFocalLengthMillimeters: self.selectedLensOption.focalLengthMillimeters
+                    )
+                    : image
+                let analyzedImageSignals = LocalImageSignalAnalyzer.analyze(outputImage)
                 let captureContext = CameraCaptureContextSnapshotter.snapshot(
                     source: .captured,
-                    imageSize: image.size,
+                    imageSize: outputImage.size,
                     selectedFilterId: self.selectedFilterPreset.id,
                     previewFilterId: self.selectedFilterPreset.id,
                     lensOption: self.selectedLensOption,
@@ -167,7 +200,7 @@ final class CameraViewModel: ObservableObject {
                 )
                 self.setSelectedPhoto(
                     CapturedPhoto(
-                        image: image,
+                        image: outputImage,
                         source: .camera,
                         captureContext: captureContext
                     )
@@ -354,6 +387,26 @@ final class CameraViewModel: ObservableObject {
         }
     }
 
+    func enableDualFocalZoom() {
+        selectedDualFocalLengthMillimeters = CameraDualFocalZoomConfiguration.clampedFocalLength(
+            selectedDualFocalLengthMillimeters,
+            baseFocalLength: selectedLensOption.focalLengthMillimeters
+        )
+        isDualFocalZoomEnabled = true
+    }
+
+    func disableDualFocalZoom() {
+        isDualFocalZoomEnabled = false
+    }
+
+    func updateDualFocalLength(_ focalLength: Double) {
+        selectedDualFocalLengthMillimeters = CameraDualFocalZoomConfiguration.clampedFocalLength(
+            focalLength,
+            baseFocalLength: selectedLensOption.focalLengthMillimeters
+        )
+        isDualFocalZoomEnabled = true
+    }
+
     func requestCloudSnapshotGuidanceConsent() {
         guard !cloudSnapshotGuidanceState.isWorking else { return }
         cloudSnapshotGuidanceState = .consentRequired
@@ -519,5 +572,17 @@ final class CameraViewModel: ObservableObject {
             : lensOptions[0]
         isUsingFrontCamera = service.isUsingFrontCamera
         isHardwareFlashAvailable = service.isHardwareFlashAvailable
+        refreshDualFocalZoomForSelectedLens()
+    }
+
+    private func refreshDualFocalZoomForSelectedLens() {
+        let baseFocalLength = selectedLensOption.focalLengthMillimeters
+        let currentFocalLength = isDualFocalZoomEnabled
+            ? selectedDualFocalLengthMillimeters
+            : CameraDualFocalZoomConfiguration.defaultFocalLength(forBaseFocalLength: baseFocalLength)
+        selectedDualFocalLengthMillimeters = CameraDualFocalZoomConfiguration.clampedFocalLength(
+            currentFocalLength,
+            baseFocalLength: baseFocalLength
+        )
     }
 }

@@ -16,15 +16,17 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**MacBook/Xcode physical-device verification for Phase 21-A3-R1**
+**MacBook/Xcode physical-device verification for Phase 21-A3-R2**
 
-Reason: The user installed the app on iPhone and reported five Camera runtime bugs after Phase 21-A3: front-camera toggle did not switch the real camera, lens/mm controls did not switch the real camera/lens and needed device-specific options, viewfinder framing looked zoomed versus capture, filters appeared only after capture, and flash did not fire. Phase 21-A3-R1 implements the local AVFoundation/SwiftUI fixes. The next practical step is MacBook/Xcode physical-device verification of those five items. Phase 21-C-R3-RUN remains available only if local ignored artifact prerequisites and the exact approval phrase are present.
+Reason: Phase 21-A3-R2 adds the requested Dazz-like adjustable dual focal / picture-in-picture zoom mode on top of the already fixed local Camera controls. The next practical step is MacBook/Xcode physical-device verification that the PiP chip enables dual focal mode, the inset and slider adjust continuously from the selected lens focal length up to `100mm`, switching lenses updates the lower bound, and captured photos include the inset effect. Phase 21-C-R3-RUN remains available only if local ignored artifact prerequisites and the exact approval phrase are present.
 
-If any of the five reported Camera bugs remain, use a focused `Phase 21-A3-R2 - Real-device Camera QA Follow-up` before continuing larger AI roadmap work. If they pass, return to the roadmap decision point. This path should remain free/on-device/local-only unless separately expanded. Do not add Depth Anything runtime, Core ML inference, Florence-2, cloud calls, frame uploads, upload payload changes, Camera live cloud AI, provider keys, sensitive inference, raw frame/depth/image persistence, or production rollout. `productionReady:false` remains locked.
+If Phase 21-A3-R2 PiP zoom has real-device issues, use a focused `Phase 21-A3-R3 - Dual Focal PiP Real-device QA Follow-up` before continuing larger AI roadmap work. If it passes, return to the roadmap decision point. This path should remain free/on-device/local-only unless separately expanded. Do not add Depth Anything runtime, Core ML inference, Florence-2, cloud calls, frame uploads, upload payload changes, Camera live cloud AI, provider keys, sensitive inference, raw frame/depth/image persistence beyond normal captured photo flow, or production rollout. `productionReady:false` remains locked.
 
 Naming note: older committed Phase 21-A backend-internal VLM records remain historical evidence. The completed on-device geometry phase should be referenced by its full title: `Phase 21-A - On-device Vision Geometry Spike`.
 
 Implementation status note: `docs/phase-21-a-on-device-vision-geometry-spike-summary.md` records the current Phase 21-A implementation boundary and Xcode verification checklist.
+
+Camera PiP zoom status note: `docs/phase-21-a3-r2-adjustable-dual-focal-pip-zoom.md` records the current adjustable dual focal PiP implementation boundary and Xcode verification checklist.
 
 Depth status note: `docs/phase-21-b-avfoundation-depth-capability-probe-summary.md` records the Phase 21-B AVFoundation capability-only probe and Xcode verification checklist.
 
