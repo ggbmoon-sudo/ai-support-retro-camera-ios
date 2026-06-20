@@ -4658,6 +4658,15 @@ Backend contract verification:
 - [ ] Confirm CLI output is sanitized and reports `requestValid:true`, `responseValid:true`, `candidateLabelCount:1`, `blockedReasons:[]`, `cloudTeacherEnabled:false`, `providerConfigured:false`, `networkCallsMade:false`, `imageReadsPerformed:false`, `trainingEnabled:false`, `runtimeIntegrationEnabled:false`, and `productionReady:false`.
 - [ ] Confirm app-transfer-readiness output reports `eligibleForAppRuntime:false` and `appRuntimeTransferBlocked:true`.
 - [ ] Confirm no Swift runtime file, model file, Core ML package, model download, inference, Camera integration, upload path, provider/model key, API key, real dataset/photo/local config/generated report, crawler/download mode, image read/upload, cloud teacher call, training, app runtime transfer, or production rollout was added.
+## Phase OD-R5A - Cloud AI Teacher Sandbox Preflight
+
+Backend sandbox preflight verification:
+
+- [ ] From `backend/`, run `npm run qa:aesthetic-teacher:sandbox-preflight`.
+- [ ] From `backend/`, run `node --test tests/aesthetic-cloud-teacher-sandbox.test.mjs`.
+- [ ] Confirm CLI output is sanitized and reports `runMode:"stub_only"`, `acceptedStubResponseCount:1`, `rejectedStubResponseCount:0`, `blockedReasons:[]`, `cloudTeacherEnabled:false`, `providerConfigured:false`, `networkCallsMade:false`, `imageReadsPerformed:false`, `crawlerEnabled:false`, `downloadEnabled:false`, `trainingEnabled:false`, `runtimeIntegrationEnabled:false`, and `productionReady:false`.
+- [ ] Confirm app-transfer-readiness output reports `eligibleForAppRuntime:false` and `appRuntimeTransferBlocked:true`.
+- [ ] Confirm no Swift runtime file, model file, Core ML package, model download, inference, Camera integration, upload path, provider/model key, API key, real dataset/photo/local config/generated report, crawler/download mode, image read/upload, cloud teacher call, training, app runtime transfer, or production rollout was added.
 ## Phase 21-A2 - Live Framing Aesthetic Spatial Codebook
 
 Docs-only verification:

@@ -46,6 +46,8 @@ OD-R3 implementation note: `docs/od-r3-parameter-mining-bot-dry-run.md` adds a b
 
 OD-R4 implementation note: `docs/od-r4-cloud-ai-teacher-contract.md` adds a backend-only Cloud AI Teacher request/response contract with app-transfer-readiness fields. It is contract-only and keeps `eligibleForAppRuntime:false` and `appRuntimeTransferBlocked:true`; no cloud call, image read/upload, crawler/download, training, model install, Swift runtime, or app transfer is added.
 
+OD-R5A implementation note: `docs/od-r5a-cloud-ai-teacher-sandbox-preflight.md` adds a backend-only Cloud AI Teacher sandbox preflight and stub adapter. It accepts OD-R3-style sanitized job plans, emits OD-R4-contract-shaped stub responses, validates them locally, and keeps provider/cloud/network/image/training/runtime/app-transfer flags disabled.
+
 ## Product Language Rule
 
 Live hints must keep the Photo Advisor style:

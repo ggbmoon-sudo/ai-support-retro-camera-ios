@@ -16,17 +16,19 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**Phase OD-R5: Cloud AI Teacher Labeling Stub / Sandbox**
+**Phase OD-R5B: Cloud AI Teacher Opt-in Provider Sandbox**
 
-Reason: Phase OD-R4 now defines the backend-only Cloud AI Teacher Contract, including structured request/response validation, sanitized CLI output, tests, and app-transfer-readiness fields that keep app runtime transfer blocked. The next OD-R layer may add a separately approved backend-only teacher labeling stub/sandbox, still without product runtime integration.
+Reason: Phase OD-R5A now adds the backend-only Cloud AI Teacher sandbox preflight and stub adapter. It validates OD-R3-style job plans, emits OD-R4-contract-shaped stub responses, and keeps provider/cloud/network/image/training/runtime/app-transfer flags disabled. The next OD-R layer may add an explicitly approved opt-in provider sandbox, still without product runtime integration.
 
-OD-R5 should remain backend-only and explicitly sandboxed. It must not add Swift runtime files, model installation, Core ML packages, crawler/download mode, product runtime transfer, Camera integration, upload paths, provider/model keys in committed files, real datasets/photos/local configs/generated reports, training, inference rollout, or production rollout. Any real cloud teacher call requires separate explicit approval, ignored local credentials, approved non-real or consented samples, sanitized output only, and human review gates. OD-03B Swift placeholder work remains paused. App/model installation belongs later to OD-P product integration after benchmark and safety gates pass. `productionReady:false` remains locked.
+OD-R5B should remain backend-only and explicitly opt-in. It must not add Swift runtime files, model installation, Core ML packages, crawler/download mode, product runtime transfer, Camera integration, upload paths, provider/model keys in committed files, real datasets/photos/local configs/generated reports, training, inference rollout, or production rollout. Any real cloud teacher call requires separate explicit approval, ignored local credentials, approved non-real or consented samples, sanitized output only, and human review gates. OD-03B Swift placeholder work remains paused. App/model installation belongs later to OD-P product integration after benchmark and safety gates pass. `productionReady:false` remains locked.
 
 Planned OD-R sequence: `OD-R1` Aesthetic Parameter Registry, `OD-R2` Dataset / Source Manifest Schema, `OD-R3` Parameter Mining Bot Dry-run, `OD-R4` Cloud AI Teacher Contract, `OD-R5` Cloud AI Teacher Labeling Stub / Sandbox, `OD-R6` Human Review Queue Schema, `OD-R7` Local CV Feature Extractor Benchmark, `OD-R8` Parameter Tuning Harness, `OD-R9` Fine-tune / Distillation Readiness Gate, then `OD-P1` Product Integration Candidate. Parameter Mining Bot is not a public web crawler. Cloud AI is a future offline structured-labeling teacher, not live app runtime. Local CV / local AI is the future runtime student.
 
 Implementation status note: `docs/od-r3-parameter-mining-bot-dry-run.md` records the backend-only dry-run bot. It emits sanitized job planning output only and keeps crawler/download/cloud-teacher/training/runtime flags disabled.
 
 Implementation status note: `docs/od-r4-cloud-ai-teacher-contract.md` records the backend-only Cloud AI Teacher contract. It validates stub request/response shapes, rejects unsafe fields, reports app-transfer-readiness gates, and keeps cloud/provider/network/image/training/runtime flags disabled.
+
+Implementation status note: `docs/od-r5a-cloud-ai-teacher-sandbox-preflight.md` records the backend-only Cloud AI Teacher sandbox preflight and stub adapter. It emits local stub responses only, validates them against the OD-R4 contract, and keeps app runtime transfer blocked.
 
 Naming note: older committed Phase 21-A backend-internal VLM records remain historical evidence. The completed on-device geometry phase should be referenced by its full title: `Phase 21-A - On-device Vision Geometry Spike`.
 

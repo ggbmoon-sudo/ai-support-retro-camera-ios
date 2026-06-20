@@ -1177,3 +1177,12 @@ Latest Phase OD-R4 Cloud AI Teacher Contract on 2026-06-21:
 - Response candidates are enum/bucket-only: registry tag, confidence/severity bucket, evidence keys, feature buckets, threshold signals, suppression candidates, safe action key, and `needsHumanReview:true`.
 - App-transfer-readiness is documented for later mainline handoff, but OD-R4 requires `eligibleForAppRuntime:false` and `appRuntimeTransferBlocked:true`; teacher output must later become human-reviewed labels and parameter packs, not raw UI copy or direct app runtime input.
 - No Swift runtime file, OD-03B placeholder, model install, Core ML package, crawler/download mode, image read/upload, real cloud teacher call, provider/model key, training/fine-tuning, inference, Camera integration, upload path, real dataset/photo/local config/generated report, raw prompt/provider payload, app runtime transfer, or production rollout is added. `productionReady:false` remains locked.
+
+Latest Phase OD-R5A Cloud AI Teacher Sandbox Preflight on 2026-06-21:
+
+- OD-R5A adds a backend-only Cloud AI Teacher labeling sandbox preflight and stub adapter.
+- Added `backend/src/qa/aestheticCloudTeacherSandbox.mjs`, `backend/scripts/run-aesthetic-cloud-teacher-sandbox-preflight.mjs`, backend tests, `npm run qa:aesthetic-teacher:sandbox-preflight`, and `docs/od-r5a-cloud-ai-teacher-sandbox-preflight.md`.
+- The sandbox accepts sanitized OD-R3-style job plans, emits OD-R4-contract-shaped stub responses, and validates every stub response through the OD-R4 Cloud AI Teacher contract validator.
+- Stub labels are enum/bucket-only, use OD-R1 registry tags, keep `needsHumanReview:true`, `humanReviewRequired:true`, and `reviewStatus:"pending"`.
+- App-transfer-readiness remains blocked with `eligibleForAppRuntime:false` and `appRuntimeTransferBlocked:true`; future app transfer must use reviewed parameter packs, threshold maps, suppression maps, and safe action maps rather than raw teacher text.
+- No Swift runtime file, OD-03B placeholder, model install, Core ML package, crawler/download mode, image read/upload, real cloud teacher call, provider/model key, training/fine-tuning, inference, Camera integration, upload path, real dataset/photo/local config/generated report, raw prompt/provider payload, app runtime transfer, or production rollout is added. `productionReady:false` remains locked.

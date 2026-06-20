@@ -12723,3 +12723,66 @@ Phase OD-R4 adds the backend-only Cloud AI Teacher contract for future offline s
 ### Next Phase
 
 Recommended next OD-R phase: `Phase OD-R5 - Cloud AI Teacher Labeling Stub / Sandbox`, requiring separate explicit approval before any provider call. Not ready for production rollout.
+
+## Phase OD-R5A - Cloud AI Teacher Sandbox Preflight
+
+Status: completed
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase OD-R5A adds a backend-only Cloud AI Teacher labeling sandbox preflight and stub adapter. It accepts sanitized OD-R3-style job plans, emits OD-R4 teacher-contract-shaped stub responses, validates those responses through the OD-R4 contract validator, and keeps app runtime transfer blocked.
+
+### Completed Work
+
+- Added `backend/src/qa/aestheticCloudTeacherSandbox.mjs`.
+- Added `backend/scripts/run-aesthetic-cloud-teacher-sandbox-preflight.mjs`.
+- Added `backend/tests/aesthetic-cloud-teacher-sandbox.test.mjs`.
+- Added `npm run qa:aesthetic-teacher:sandbox-preflight`.
+- Added `docs/od-r5a-cloud-ai-teacher-sandbox-preflight.md`.
+- Updated roadmap, README, backend/iOS README, handoff, and manual smoke notes for OD-R5A.
+
+### Changed Files
+
+- `backend/package.json`
+- `backend/src/qa/aestheticCloudTeacherSandbox.mjs`
+- `backend/scripts/run-aesthetic-cloud-teacher-sandbox-preflight.mjs`
+- `backend/tests/aesthetic-cloud-teacher-sandbox.test.mjs`
+- `docs/od-r5a-cloud-ai-teacher-sandbox-preflight.md`
+- `docs/on-device-live-framing-ai-roadmap.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `README.md`
+- `backend/README.md`
+- `ios-app/README.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `tests/manual-smoke-tests.md`
+
+### Boundary Checks
+
+- Backend sandbox preflight/stub adapter only: yes
+- Stub responses validate against OD-R4 contract: yes
+- App runtime transfer blocked: yes
+- Swift runtime file added: no
+- OD-03B Swift placeholder brought back: no
+- Model file / Core ML package / model download added: no
+- Runtime inference / Camera integration / live frame processing added: no
+- Image reads performed: no
+- Network calls made: no
+- Crawler/download mode added: no
+- Real cloud teacher call added: no
+- Training/fine-tuning/distillation run added: no
+- Upload path / provider call / API key added: no
+- Dataset, fixture, photo, local config, generated report, raw prompt, or raw provider output added: no
+- Production rollout: no
+
+### Verification
+
+- `git diff --check` should pass before commit.
+- `cd backend && npm test` should pass before commit.
+- `cd backend && npm run qa:aesthetic-teacher:sandbox-preflight` should pass before commit.
+
+### Next Phase
+
+Recommended next OD-R phase: `Phase OD-R5B - Cloud AI Teacher Opt-in Provider Sandbox`, requiring separate explicit approval before any provider call. Not ready for production rollout.
