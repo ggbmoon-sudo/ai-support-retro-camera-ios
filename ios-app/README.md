@@ -16,6 +16,8 @@ Phase 21-C-PRE is a backend no-runtime preflight gate for the future Depth Anyth
 
 Phase 21-C adds a debug-only Depth Anything V2 Small sandbox scaffold. It is disabled by default, not connected to Camera runtime, hardware-depth-first, and sanitized-metrics-only. It adds no model file, Core ML package, model download, inference execution, benchmark run, preview-frame upload, upload payload change, Camera live cloud AI entry, provider/model key, direct provider/model call, raw frame/depth persistence, or production rollout.
 
+Phase 21-C-R1 is backend/docs approval-gate tooling for a possible future local-ignored Depth Anything model artifact and Xcode physical-device benchmark harness. Xcode runtime behavior should remain unchanged in this phase: no model artifact, Core ML package, model download, benchmark harness runtime, inference run, Camera integration, preview-frame upload, upload payload change, provider/model key, or production rollout is added.
+
 The research index for this direction is `../docs/research/on-device-ai-research-index.md`. Later Depth Anything / Florence work remains blocked until separately approved and benchmarked. The next recommended phase after Phase 21-B commit/push is `Phase 21-C - Depth Anything V2 Small Core ML Sandbox`.
 
 ## Phase 21-M / 21-N / 21-N-R0 / 21-N-R0B / 21-N-R0C / 21-N-R1B / 21-N-R1C / 21-N-R1D Xcode Boundary

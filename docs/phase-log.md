@@ -12426,3 +12426,65 @@ Phase 21-C adds a disabled-by-default iOS Depth Anything V2 Small sandbox scaffo
 ### Next Phase
 
 Recommended next if continuing Depth Anything: `Phase 21-C-R1 - Depth Anything Model Artifact Source and Xcode Benchmark Harness Approval Gate`. Not ready for production rollout.
+## Phase 21-C-R1 - Depth Anything Model Artifact Source and Xcode Benchmark Harness Approval Gate
+
+Status: completed
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase 21-C-R1 adds a no-runtime approval gate for Depth Anything V2 Small model artifact source/license review and a future Xcode physical-device benchmark harness. It does not approve execution by itself and adds no model artifact, Core ML package, download, inference, benchmark, Camera integration, or production rollout.
+
+### Completed Work
+
+- Added `backend/src/qa/depthAnythingV2SmallModelArtifactBenchmarkHarnessGate.mjs`.
+- Added `backend/scripts/check-depth-anything-v2-small-model-artifact-benchmark-harness-gate.mjs`.
+- Added `backend/tests/depth-anything-v2-small-model-artifact-benchmark-harness-gate.test.mjs`.
+- Added `npm run qa:depth-anything:artifact-gate`.
+- Added `docs/phase-21-c-r1-depth-anything-model-artifact-source-and-xcode-benchmark-harness-gate.md`.
+- Updated roadmap, README, backend/iOS README, handoff, and manual smoke notes.
+
+### Changed Files
+
+- `backend/package.json`
+- `backend/src/qa/depthAnythingV2SmallModelArtifactBenchmarkHarnessGate.mjs`
+- `backend/scripts/check-depth-anything-v2-small-model-artifact-benchmark-harness-gate.mjs`
+- `backend/tests/depth-anything-v2-small-model-artifact-benchmark-harness-gate.test.mjs`
+- `docs/phase-21-c-r1-depth-anything-model-artifact-source-and-xcode-benchmark-harness-gate.md`
+- `docs/on-device-live-framing-ai-roadmap.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `README.md`
+- `backend/README.md`
+- `ios-app/README.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `tests/manual-smoke-tests.md`
+
+### Boundary Checks
+
+- Model artifact added/committed: no
+- Core ML package added: no
+- Automated model download added: no
+- Xcode benchmark harness runtime added: no
+- Depth Anything inference run: no
+- Benchmark run: no
+- Camera runtime integration added: no
+- Preview-frame upload added: no
+- Camera live cloud AI entry added: no
+- iOS provider/model key or direct provider/model call added: no
+- Backend/iOS upload payload changed: no
+- Raw frame/depth/image/path logging or persistence added: no
+- Sensitive inference added: no
+- Production rollout: no
+
+### Verification
+
+- `git diff --check` should be run before commit.
+- `cd backend && npm run qa:depth-anything:artifact-gate` should pass.
+- `cd backend && node --test tests/depth-anything-v2-small-model-artifact-benchmark-harness-gate.test.mjs` should pass.
+- Xcode build/run still needs local verification on macOS/Xcode.
+
+### Next Phase
+
+Recommended next if continuing Depth Anything: `Phase 21-C-R2 - Approved Local-Ignored Depth Anything Model Artifact and Xcode Benchmark Harness Draft`. Not ready for production rollout.

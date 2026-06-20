@@ -4614,6 +4614,22 @@ Xcode check:
 - [ ] Confirm the Depth Anything sandbox is disabled by default and not connected to live Camera runtime.
 - [ ] Confirm no inference run, benchmark run, raw frame/depth/image logging, raw depth map persistence, preview-frame upload, Camera live cloud AI entry, provider/model key, direct provider/model call, or upload payload change appears.
 - [ ] Confirm `productionReady:false` remains unchanged.
+## Phase 21-C-R1 - Depth Anything Model Artifact Source and Xcode Benchmark Harness Gate
+
+Backend no-runtime verification:
+
+- [ ] Run `cd backend && npm run qa:depth-anything:artifact-gate`.
+- [ ] Run `cd backend && node --test tests/depth-anything-v2-small-model-artifact-benchmark-harness-gate.test.mjs`.
+- [ ] Confirm output stays sanitized and reports `networkCallsMade:false`, `modelCallsMade:false`, and `productionReady:false`.
+- [ ] Confirm no `.mlmodel`, `.mlmodelc`, `.mlpackage`, ONNX, TFLite, MLX, model weight, checksum file, local model path, source URL, raw report, dataset, real photo, provider response, or local config is staged.
+
+Xcode check:
+
+- [ ] Xcode runtime behavior should be unchanged by this gate.
+- [ ] Confirm no model artifact appears in the app bundle.
+- [ ] Confirm no benchmark harness runtime, inference run, Camera integration, preview-frame upload, upload payload change, provider/model key, or production rollout appears.
+- [ ] Confirm Phase 21-A/B/C app behavior still builds/runs as before.
+- [ ] Confirm `productionReady:false` remains unchanged.
 ## Phase 21-A2 - Live Framing Aesthetic Spatial Codebook
 
 Docs-only verification:

@@ -1144,3 +1144,10 @@ Latest Phase 21-C Depth Anything V2 Small Core ML Sandbox on 2026-06-20:
 - No preview-frame upload, Camera live cloud AI, iOS provider/model key, direct provider/model call, upload payload change, raw frame/depth/image logging or persistence, sensitive inference, or production rollout was added.
 - `productionReady:false` remains locked.
 - Next recommended phase if continuing Depth Anything is `Phase 21-C-R1 - Depth Anything Model Artifact Source and Xcode Benchmark Harness Approval Gate`.
+Latest Phase 21-C-R1 Depth Anything Model Artifact Source and Xcode Benchmark Harness Approval Gate on 2026-06-21:
+
+- Phase 21-C-R1 adds a backend no-runtime approval gate for Depth Anything V2 Small model artifact source/license review and a future Xcode physical-device benchmark harness.
+- Added sanitized contract/CLI/tests for source verification, license/model-card review, checksum/local-ignore requirements, physical-device benchmark metrics, and stop conditions.
+- No Depth Anything model artifact, Core ML package, model download, Xcode harness runtime, inference, benchmark, Camera integration, preview-frame upload, Camera live cloud AI, iOS provider/model key, direct provider/model call, upload payload change, raw frame/depth/image/path logging or persistence, sensitive inference, or production rollout was added.
+- `productionReady:false` remains locked.
+- Next recommended phase if continuing Depth Anything is `Phase 21-C-R2 - Approved Local-Ignored Depth Anything Model Artifact and Xcode Benchmark Harness Draft`.
