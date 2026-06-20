@@ -1201,3 +1201,15 @@ Latest Phase 21-A3-R2 Adjustable Dual Focal PiP Zoom on 2026-06-21:
 - No Depth Anything runtime, Core ML inference, provider/cloud call, preview-frame upload, upload payload change, Camera live cloud AI entry, raw frame/depth/image persistence beyond normal captured photo flow, sensitive inference, secret, or production rollout was added.
 - `productionReady:false` remains locked.
 - Next practical step is MacBook/Xcode physical-device verification of Phase 21-A3-R2, then compare against `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next phase.
+
+Latest Phase 21-A3-R2-R2 Default-on Transparent Dual Focal PiP on 2026-06-21:
+
+- User reported that PiP should not require manual enablement, the whole viewfinder should not shrink/turn black, and the PiP box should resize with focal length while the surrounding view remains transparent.
+- Phase 21-A3-R2-R2 makes dual focal PiP default-on when Camera opens.
+- The focal chip is now a controls entry, not an enable/disable switch.
+- The PiP overlay no longer creates a second nested `CameraPreviewView`; it uses a local in-memory `AVCaptureVideoDataOutput` preview frame for the PiP inset, leaving the main `AVCaptureVideoPreviewLayer` full-frame.
+- `CameraPreviewView` now defaults to full-frame `resizeAspectFill` so PiP does not make the main viewfinder look black, aspect-fit, or shrunken.
+- The PiP inset grows near the selected lens focal length and shrinks toward `100mm`.
+- No Depth Anything runtime, Core ML inference, provider/cloud call, preview-frame upload, upload payload change, Camera live cloud AI entry, raw frame/depth/image persistence beyond normal captured photo flow, sensitive inference, secret, or production rollout was added.
+- `productionReady:false` remains locked.
+- Next practical step remains MacBook/Xcode physical-device verification of Phase 21-A3-R2 PiP behavior.

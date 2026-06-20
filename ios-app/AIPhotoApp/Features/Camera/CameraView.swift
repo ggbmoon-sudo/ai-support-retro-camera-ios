@@ -346,11 +346,11 @@ struct CameraView: View {
                     .overlay {
                         if viewModel.isDualFocalZoomEnabled {
                             CameraDualFocalViewfinderOverlay(
-                                session: viewModel.service.session,
                                 isMirrored: viewModel.isUsingFrontCamera,
                                 configuration: viewModel.dualFocalZoomConfiguration,
                                 baseFocalLengthMillimeters: viewModel.selectedLensOption.focalLengthMillimeters,
                                 focalLengthRange: viewModel.dualFocalZoomRange,
+                                previewFrameImage: viewModel.dualFocalPreviewFrameImage,
                                 selectedFilterPreset: viewModel.selectedFilterPreset,
                                 onFocalLengthChange: viewModel.updateDualFocalLength
                             )
@@ -678,9 +678,6 @@ struct CameraView: View {
     private var dualFocalViewportButton: some View {
         Button {
             withAnimation(.snappy(duration: 0.16)) {
-                if !viewModel.isDualFocalZoomEnabled {
-                    viewModel.enableDualFocalZoom()
-                }
                 activeCameraCallout = activeCameraCallout == .dualFocalZoom ? .none : .dualFocalZoom
                 isLiveGuidanceExpanded = false
             }
@@ -689,7 +686,7 @@ struct CameraView: View {
                 Image(systemName: "rectangle.inset.filled")
                     .font(.system(size: 13, weight: .bold))
 
-                Text(viewModel.isDualFocalZoomEnabled ? viewModel.selectedDualFocalLengthLabel : "PiP")
+                Text(viewModel.selectedDualFocalLengthLabel)
                     .font(.caption2.weight(.semibold))
                     .lineLimit(1)
                     .minimumScaleFactor(0.72)
@@ -724,7 +721,6 @@ struct CameraView: View {
                 Spacer(minLength: AppSpacing.sm)
 
                 Button {
-                    viewModel.disableDualFocalZoom()
                     withAnimation(.snappy(duration: 0.16)) {
                         activeCameraCallout = .none
                     }

@@ -1,5 +1,10 @@
 import AVFoundation
+import CoreImage
 import UIKit
+
+nonisolated struct CameraPreviewFrameSnapshot: @unchecked Sendable {
+    let image: UIImage
+}
 
 enum CameraCaptureError: LocalizedError {
     case cameraUnavailable
@@ -29,6 +34,7 @@ final class CameraCaptureService {
     private let frameSignalState = FrameSignalState()
     private var frameSignalDelegate: FrameSignalDelegate?
     private var frameSignalHandler: (@MainActor @Sendable ([LiveGuidanceSignal]) -> Void)?
+    private var previewFrameHandler: (@MainActor @Sendable (CameraPreviewFrameSnapshot) -> Void)?
     private var currentVideoInput: AVCaptureDeviceInput?
     private(set) var depthCapability: CameraDepthCapability = .unavailable
     private(set) var currentLensOption = LensOption.classic35
@@ -48,8 +54,16 @@ final class CameraCaptureService {
         frameSignalHandler = handler
     }
 
+    func setPreviewFrameHandler(_ handler: (@MainActor @Sendable (CameraPreviewFrameSnapshot) -> Void)?) {
+        previewFrameHandler = handler
+    }
+
     func setFrameSignalAnalysisEnabled(_ isEnabled: Bool) {
         frameSignalState.isEnabled = isEnabled
+    }
+
+    func setDualFocalPreviewFrameStreamingEnabled(_ isEnabled: Bool) {
+        frameSignalState.isPreviewFrameEnabled = isEnabled
     }
 
     func configureSessionIfNeeded() throws {
@@ -257,9 +271,15 @@ final class CameraCaptureService {
     private func configureFrameSignalOutputIfPossible() {
         guard session.canAddOutput(videoOutput) else { return }
 
-        let delegate = FrameSignalDelegate(state: frameSignalState) { [weak self] signals in
-            self?.frameSignalHandler?(signals)
-        }
+        let delegate = FrameSignalDelegate(
+            state: frameSignalState,
+            onSignals: { [weak self] signals in
+                self?.frameSignalHandler?(signals)
+            },
+            onPreviewFrame: { [weak self] snapshot in
+                self?.previewFrameHandler?(snapshot)
+            }
+        )
 
         frameSignalDelegate = delegate
         videoOutput.alwaysDiscardsLateVideoFrames = true
@@ -268,6 +288,10 @@ final class CameraCaptureService {
         ]
         videoOutput.setSampleBufferDelegate(delegate, queue: frameSignalQueue)
         session.addOutput(videoOutput)
+        if let connection = videoOutput.connection(with: .video),
+           connection.isVideoRotationAngleSupported(90) {
+            connection.videoRotationAngle = 90
+        }
     }
 }
 
@@ -309,6 +333,7 @@ private final class PhotoCaptureDelegate: NSObject, AVCapturePhotoCaptureDelegat
 private final class FrameSignalState: @unchecked Sendable {
     private let lock = NSLock()
     nonisolated(unsafe) private var _isEnabled = false
+    nonisolated(unsafe) private var _isPreviewFrameEnabled = false
     nonisolated(unsafe) private var _depthSignals = DepthSignals.unavailable
 
     nonisolated var isEnabled: Bool {
@@ -332,22 +357,39 @@ private final class FrameSignalState: @unchecked Sendable {
             }
         }
     }
+
+    nonisolated var isPreviewFrameEnabled: Bool {
+        get {
+            lock.withLock { _isPreviewFrameEnabled }
+        }
+        set {
+            lock.withLock {
+                _isPreviewFrameEnabled = newValue
+            }
+        }
+    }
 }
 
 private final class FrameSignalDelegate: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     private let minimumAnalysisInterval: TimeInterval = 0.5
+    private let minimumPreviewFrameInterval: TimeInterval = 1.0 / 12.0
     private let brightnessAnalyzer = LiveGuidanceBrightnessAnalyzer()
     private let geometryAnalyzer = LiveGuidanceVisionGeometryAnalyzer()
+    private let previewFrameRenderer = CameraPreviewFrameRenderer()
     private let state: FrameSignalState
     private let onSignals: @MainActor @Sendable ([LiveGuidanceSignal]) -> Void
+    private let onPreviewFrame: @MainActor @Sendable (CameraPreviewFrameSnapshot) -> Void
     nonisolated(unsafe) private var lastAnalysisDate = Date.distantPast
+    nonisolated(unsafe) private var lastPreviewFrameDate = Date.distantPast
 
     init(
         state: FrameSignalState,
-        onSignals: @escaping @MainActor @Sendable ([LiveGuidanceSignal]) -> Void
+        onSignals: @escaping @MainActor @Sendable ([LiveGuidanceSignal]) -> Void,
+        onPreviewFrame: @escaping @MainActor @Sendable (CameraPreviewFrameSnapshot) -> Void
     ) {
         self.state = state
         self.onSignals = onSignals
+        self.onPreviewFrame = onPreviewFrame
     }
 
     nonisolated func captureOutput(
@@ -355,13 +397,26 @@ private final class FrameSignalDelegate: NSObject, AVCaptureVideoDataOutputSampl
         didOutput sampleBuffer: CMSampleBuffer,
         from connection: AVCaptureConnection
     ) {
-        guard state.isEnabled else { return }
+        let shouldAnalyzeSignals = state.isEnabled
+        let shouldEmitPreviewFrame = state.isPreviewFrameEnabled
+        guard shouldAnalyzeSignals || shouldEmitPreviewFrame else { return }
+        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
 
         let now = Date()
+        if shouldEmitPreviewFrame,
+           now.timeIntervalSince(lastPreviewFrameDate) >= minimumPreviewFrameInterval {
+            lastPreviewFrameDate = now
+            if let previewFrame = previewFrameRenderer.snapshot(from: pixelBuffer) {
+                Task { @MainActor in
+                    onPreviewFrame(previewFrame)
+                }
+            }
+        }
+
+        guard shouldAnalyzeSignals else { return }
         guard now.timeIntervalSince(lastAnalysisDate) >= minimumAnalysisInterval else { return }
         lastAnalysisDate = now
 
-        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
         let brightnessSignals = brightnessAnalyzer.signals(from: pixelBuffer)
         let geometrySignals = geometryAnalyzer.signals(
             from: pixelBuffer,
@@ -388,5 +443,22 @@ private final class FrameSignalDelegate: NSObject, AVCaptureVideoDataOutputSampl
             guard !result.contains(signal) else { return }
             result.append(signal)
         }
+    }
+}
+
+private final class CameraPreviewFrameRenderer: @unchecked Sendable {
+    private let context = CIContext(options: [.cacheIntermediates: false])
+
+    nonisolated func snapshot(from pixelBuffer: CVPixelBuffer) -> CameraPreviewFrameSnapshot? {
+        let width = CVPixelBufferGetWidth(pixelBuffer)
+        let height = CVPixelBufferGetHeight(pixelBuffer)
+        let image = CIImage(cvPixelBuffer: pixelBuffer)
+        let rect = CGRect(x: 0, y: 0, width: CGFloat(width), height: CGFloat(height))
+
+        guard let cgImage = context.createCGImage(image, from: rect) else {
+            return nil
+        }
+
+        return CameraPreviewFrameSnapshot(image: UIImage(cgImage: cgImage))
     }
 }

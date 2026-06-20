@@ -53,6 +53,12 @@ nonisolated struct CameraDualFocalZoomConfiguration: Equatable, Sendable {
         CGFloat(max(focalLengthMillimeters / Self.sanitizedFocalLength(baseFocalLength), 1))
     }
 
+    func insetSideRatio(relativeToBaseFocalLength baseFocalLength: Double) -> CGFloat {
+        let zoomFactor = Double(zoomFactor(relativeToBaseFocalLength: baseFocalLength))
+        let sideRatio = 0.58 / sqrt(max(zoomFactor, 1))
+        return min(max(CGFloat(sideRatio), 0.28), 0.58)
+    }
+
     func progress(in range: ClosedRange<Double>) -> Double {
         let span = max(range.upperBound - range.lowerBound, 1)
         return min(max((focalLengthMillimeters - range.lowerBound) / span, 0), 1)
@@ -78,7 +84,11 @@ enum CameraDualFocalPhotoRenderer {
             return image
         }
 
-        let insetRect = insetRect(for: imageSize, configuration: configuration)
+        let insetRect = insetRect(
+            for: imageSize,
+            configuration: configuration,
+            baseFocalLengthMillimeters: baseFocalLengthMillimeters
+        )
         let sourceCropRect = cropRect(
             imageSize: imageSize,
             insetRect: insetRect,
@@ -129,9 +139,12 @@ enum CameraDualFocalPhotoRenderer {
 
     private static func insetRect(
         for imageSize: CGSize,
-        configuration: CameraDualFocalZoomConfiguration
+        configuration: CameraDualFocalZoomConfiguration,
+        baseFocalLengthMillimeters: Double
     ) -> CGRect {
-        let side = min(imageSize.width, imageSize.height) * configuration.insetSideRatio
+        let side = min(imageSize.width, imageSize.height) * configuration.insetSideRatio(
+            relativeToBaseFocalLength: baseFocalLengthMillimeters
+        )
         let center = CGPoint(
             x: imageSize.width * configuration.insetCenterXRatio,
             y: imageSize.height * configuration.insetCenterYRatio
@@ -208,20 +221,21 @@ enum CameraDualFocalPhotoRenderer {
 }
 
 struct CameraDualFocalViewfinderOverlay: View {
-    let session: AVCaptureSession
     let isMirrored: Bool
     let configuration: CameraDualFocalZoomConfiguration
     let baseFocalLengthMillimeters: Double
     let focalLengthRange: ClosedRange<Double>
+    let previewFrameImage: UIImage?
     let selectedFilterPreset: FilterPreset
     let onFocalLengthChange: (Double) -> Void
 
     var body: some View {
         GeometryReader { proxy in
-            let side = min(proxy.size.width, proxy.size.height) * configuration.insetSideRatio
+            let side = min(proxy.size.width, proxy.size.height) * configuration.insetSideRatio(
+                relativeToBaseFocalLength: baseFocalLengthMillimeters
+            )
             let centerX = proxy.size.width * configuration.insetCenterXRatio
             let centerY = proxy.size.height * configuration.insetCenterYRatio
-            let progress = CGFloat(configuration.progress(in: focalLengthRange))
 
             ZStack {
                 Text(configuration.focalLengthLabel)
@@ -234,17 +248,16 @@ struct CameraDualFocalViewfinderOverlay: View {
                     )
 
                 ZStack {
-                    CameraPreviewView(session: session, isMirrored: isMirrored)
-                        .liveFilterPreview(selectedFilterPreset)
-                        .scaleEffect(
-                            configuration.zoomFactor(relativeToBaseFocalLength: baseFocalLengthMillimeters),
-                            anchor: .center
-                        )
-
-                    VStack {
-                        Spacer()
-                        focalScrubber(progress: progress, width: side * 0.68)
-                            .padding(.bottom, 8)
+                    if let previewFrameImage {
+                        Image(uiImage: previewFrameImage)
+                            .resizable()
+                            .scaledToFill()
+                            .scaleEffect(
+                                configuration.zoomFactor(relativeToBaseFocalLength: baseFocalLengthMillimeters),
+                                anchor: .center
+                            )
+                            .scaleEffect(x: isMirrored ? -1 : 1, y: 1, anchor: .center)
+                            .liveFilterPreview(selectedFilterPreset)
                     }
                 }
                 .frame(width: side, height: side)
@@ -270,25 +283,6 @@ struct CameraDualFocalViewfinderOverlay: View {
             .frame(width: proxy.size.width, height: proxy.size.height)
         }
         .accessibilityHidden(true)
-    }
-
-    private func focalScrubber(progress: CGFloat, width: CGFloat) -> some View {
-        ZStack(alignment: .leading) {
-            Capsule()
-                .fill(.black.opacity(0.34))
-                .frame(width: width, height: 4)
-
-            Capsule()
-                .fill(.white.opacity(0.9))
-                .frame(width: max(width * progress, 4), height: 4)
-
-            Circle()
-                .fill(.white)
-                .frame(width: 12, height: 12)
-                .shadow(color: .black.opacity(0.24), radius: 3, x: 0, y: 1)
-                .offset(x: min(max(width * progress - 6, 0), max(width - 12, 0)))
-        }
-        .frame(width: width, height: 16, alignment: .leading)
     }
 }
 
