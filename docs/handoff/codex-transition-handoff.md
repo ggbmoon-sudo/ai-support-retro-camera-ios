@@ -1142,3 +1142,12 @@ Latest Phase OD-03A Depth Anything Backend No-runtime Preflight Gate on 2026-06-
 - The gate validates policy objects only and reports sanitized aggregate output: `eligibleForFutureBenchmark`, `productionReady`, `networkCallsMade`, `modelCallsMade`, `runtimeInferenceEnabled`, `cameraPreviewIntegrationEnabled`, `blockedReasons`, and `requiredFutureGates`.
 - No Swift runtime file, iOS project change, model file, Core ML package, model download, inference, benchmark, Camera integration, preview-frame upload, upload payload change, provider call, API key, dataset, local config, generated report, or production rollout was added.
 - Hardware AVFoundation depth remains first priority, Depth Anything remains a future fallback candidate only after benchmark gates, and `productionReady:false` remains locked.
+
+Latest Phase OD-R1 Aesthetic Parameter Registry direction on 2026-06-21:
+
+- The on-device/live-framing AI track is now split into `OD-R` research / definition / parameter / dataset / labeling / benchmark / fine-tune preparation and later `OD-P` product/runtime integration.
+- OD-R1 adds a backend-only Aesthetic Parameter Registry with structured starter tags, feature keys, symbolic threshold keys, creative-intent suppression keys, safe action keys, evidence/source types, human review flags, and safety notes.
+- Added `backend/src/qa/aestheticParameterRegistry.mjs`, `backend/scripts/check-aesthetic-parameter-registry.mjs`, backend tests, `npm run qa:aesthetic-parameters:registry`, and `docs/od-r1-aesthetic-parameter-registry.md`.
+- OD-03B Swift placeholder work is paused and the external `DepthAnythingV2SmallSandbox.swift` file must not be brought back into this branch.
+- Parameter Mining Bot is not a public web crawler. Cloud AI is a future offline structured-labeling teacher, not live app runtime. Local CV / local AI is the future runtime student.
+- No Swift runtime file, model install, Core ML package, crawler/download mode, cloud teacher call, training, inference, Camera integration, upload path, provider/model key, dataset/photo/local config/generated report, or production rollout is added. `productionReady:false` remains locked.

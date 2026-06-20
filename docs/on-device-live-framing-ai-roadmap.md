@@ -16,6 +16,30 @@ The live guidance direction is now on-device geometry / depth / rules first:
 - Microsoft Florence-2-base is a feasibility/research candidate for object detection, grounding, detailed caption, and segmentation, not an assumed first live production engine.
 - The app rules engine remains the brain: AI/model layers may provide coordinates, regions, depth, and typed signals, while the app produces short mood-first retro-aware guidance.
 
+## OD-R / OD-P Direction
+
+The on-device live-framing work is now split into two tracks:
+
+- `OD-R`: research / definition / parameter / dataset / labeling / benchmark / fine-tune preparation.
+- `OD-P`: product / runtime / mainline-ready integration after benchmark and safety gates pass.
+
+OD-R is not an app/model installation track. App/model installation belongs later to OD-P only when the work is practical, testable, and ready for product integration. OD-03B Swift placeholder work is paused and should not continue on this branch.
+
+Planned OD-R sequence:
+
+- `OD-R1`: Aesthetic Parameter Registry.
+- `OD-R2`: Dataset / Source Manifest Schema.
+- `OD-R3`: Parameter Mining Bot Dry-run.
+- `OD-R4`: Cloud AI Teacher Contract.
+- `OD-R5`: Cloud AI Teacher Labeling Stub / Sandbox.
+- `OD-R6`: Human Review Queue Schema.
+- `OD-R7`: Local CV Feature Extractor Benchmark.
+- `OD-R8`: Parameter Tuning Harness.
+- `OD-R9`: Fine-tune / Distillation Readiness Gate.
+- `OD-P1`: Product Integration Candidate, only after benchmark and safety gates pass.
+
+Parameter Mining Bot work must not be a public web crawler. Cloud AI is a future offline teacher for structured labeling, not live app runtime. Local CV / local AI is the future runtime student. `productionReady:false` remains locked.
+
 ## Product Language Rule
 
 Live hints must keep the Photo Advisor style:

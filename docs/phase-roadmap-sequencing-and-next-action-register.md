@@ -16,11 +16,13 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**Phase OD-03B: Depth Anything iOS Sandbox Placeholder**
+**Phase OD-R1: Aesthetic Parameter Registry**
 
-Reason: Phase OD-03 is now docs-only sandbox preflight planning. It adds no backend gate/script/tests, no Swift runtime file, no model file, no Core ML package, no inference, no benchmark, no Camera runtime integration, no upload path, and no production rollout. The local `ios-app/AIPhotoApp/Features/Camera/DepthAnythingV2SmallSandbox.swift` scaffold remains untracked and should only be considered in a separate explicitly approved phase.
+Reason: The live-framing direction has shifted from installing a model first to building a practical photography AI system through codebooks, parameter registries, dataset/source manifests, offline teacher labeling, validation, human review, local CV/local AI feature extraction, benchmark tuning, and only later OD-P product integration.
 
-Phase OD-03B should remain a disabled-by-default iOS placeholder only unless explicitly expanded. It must not add production Depth Anything bundling, default model downloads, Florence-2, cloud calls, frame uploads, upload payload changes, Camera live cloud AI, provider keys, sensitive inference, raw frame/depth persistence, or production rollout. Any Core ML package/model file addition requires explicit approval and benchmark gates. `productionReady:false` remains locked.
+OD-R1 should add a backend-only Aesthetic Parameter Registry with structured enum/key tags for photography aesthetic parameters. It must not add Swift runtime files, model installation, Core ML packages, crawler/download mode, cloud teacher calls, training, inference, Camera integration, upload paths, provider/model keys, datasets, local configs, generated reports, or production rollout. OD-03B Swift placeholder work is paused. App/model installation belongs later to OD-P product integration after benchmark and safety gates pass. `productionReady:false` remains locked.
+
+Planned OD-R sequence: `OD-R1` Aesthetic Parameter Registry, `OD-R2` Dataset / Source Manifest Schema, `OD-R3` Parameter Mining Bot Dry-run, `OD-R4` Cloud AI Teacher Contract, `OD-R5` Cloud AI Teacher Labeling Stub / Sandbox, `OD-R6` Human Review Queue Schema, `OD-R7` Local CV Feature Extractor Benchmark, `OD-R8` Parameter Tuning Harness, `OD-R9` Fine-tune / Distillation Readiness Gate, then `OD-P1` Product Integration Candidate. Parameter Mining Bot is not a public web crawler. Cloud AI is a future offline structured-labeling teacher, not live app runtime. Local CV / local AI is the future runtime student.
 
 Naming note: older committed Phase 21-A backend-internal VLM records remain historical evidence. The completed on-device geometry phase should be referenced by its full title: `Phase 21-A - On-device Vision Geometry Spike`.
 

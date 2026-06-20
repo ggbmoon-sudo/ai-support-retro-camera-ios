@@ -4622,6 +4622,15 @@ Backend no-runtime verification:
 - [ ] Confirm CLI output is sanitized and reports `eligibleForFutureBenchmark:true`, `networkCallsMade:false`, `modelCallsMade:false`, `runtimeInferenceEnabled:false`, `cameraPreviewIntegrationEnabled:false`, `blockedReasons:[]`, and `productionReady:false`.
 - [ ] Confirm no Swift runtime file, model file, Core ML package, model download, inference, benchmark, Camera integration, preview-frame upload, upload payload change, provider/model key, API key, dataset, local config, generated report, or production rollout was added.
 - [ ] Confirm hardware AVFoundation depth remains first priority and Depth Anything remains future fallback only after benchmark gates.
+## Phase OD-R1 - Aesthetic Parameter Registry
+
+Backend registry verification:
+
+- [ ] From `backend/`, run `npm run qa:aesthetic-parameters:registry`.
+- [ ] From `backend/`, run `node --test tests/aesthetic-parameter-registry.test.mjs`.
+- [ ] Confirm CLI output is sanitized and reports `productionReady:false`, `crawlerEnabled:false`, `downloadEnabled:false`, `cloudTeacherEnabled:false`, `trainingEnabled:false`, and `runtimeIntegrationEnabled:false`.
+- [ ] Confirm no Swift runtime file, model file, Core ML package, model download, inference, Camera integration, upload path, provider/model key, API key, dataset, local config, generated report, crawler/download mode, cloud teacher call, training, or production rollout was added.
+- [ ] Confirm OD-03B Swift placeholder work remains paused and `DepthAnythingV2SmallSandbox.swift` was not brought back.
 ## Phase 21-A2 - Live Framing Aesthetic Spatial Codebook
 
 Docs-only verification:

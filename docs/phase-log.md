@@ -12484,3 +12484,61 @@ Phase OD-03A adds the backend no-runtime preflight gate for future Depth Anythin
 ### Next Phase
 
 Recommended next if continuing Depth Anything: `Phase OD-03B - Depth Anything iOS Sandbox Placeholder`, requiring separate explicit approval. Not ready for production rollout.
+## Phase OD-R1 - Aesthetic Parameter Registry
+
+Status: completed
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase OD-R1 starts the OD-R research / definition / parameter / dataset / fine-tune preparation direction. It adds a backend-only Aesthetic Parameter Registry for structured photography aesthetic error tags and keeps app/model installation for later OD-P product integration after benchmark and safety gates pass.
+
+### Completed Work
+
+- Added `backend/src/qa/aestheticParameterRegistry.mjs`.
+- Added `backend/scripts/check-aesthetic-parameter-registry.mjs`.
+- Added `backend/tests/aesthetic-parameter-registry.test.mjs`.
+- Added `npm run qa:aesthetic-parameters:registry`.
+- Added `docs/od-r1-aesthetic-parameter-registry.md`.
+- Updated roadmap, README, backend/iOS README, handoff, and manual smoke notes for the OD-R / OD-P direction.
+
+### Changed Files
+
+- `backend/package.json`
+- `backend/src/qa/aestheticParameterRegistry.mjs`
+- `backend/scripts/check-aesthetic-parameter-registry.mjs`
+- `backend/tests/aesthetic-parameter-registry.test.mjs`
+- `docs/od-r1-aesthetic-parameter-registry.md`
+- `docs/on-device-live-framing-ai-roadmap.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `README.md`
+- `backend/README.md`
+- `ios-app/README.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `tests/manual-smoke-tests.md`
+
+### Boundary Checks
+
+- Backend registry/validator only: yes
+- Swift runtime file added: no
+- OD-03B Swift placeholder brought back: no
+- Model file / Core ML package / model download added: no
+- Runtime inference / Camera integration / live frame processing added: no
+- Crawler/download mode added: no
+- Cloud teacher call added: no
+- Training/fine-tuning/distillation run added: no
+- Upload path / provider call / API key added: no
+- Dataset, fixture, photo, local config, generated report, or raw label added: no
+- Production rollout: no
+
+### Verification
+
+- `git diff --check` should pass before commit.
+- `cd backend && npm test` should pass before commit.
+- `cd backend && npm run qa:aesthetic-parameters:registry` should pass before commit.
+
+### Next Phase
+
+Recommended next OD-R phase: `Phase OD-R2 - Dataset / Source Manifest Schema`. Not ready for production rollout.
