@@ -114,6 +114,13 @@ Boundaries:
 - No model file should be added unless the sandbox phase explicitly keeps it debug-only, ignored/reviewed as needed, and benchmark-gated.
 - `productionReady:false`.
 
+Planning note:
+
+- Phase OD-03 now has a docs-only sandbox preflight plan at `docs/phase-21-c-depth-anything-v2-small-coreml-sandbox-summary.md`.
+- This commit does not add a backend preflight gate/script/tests, Swift runtime file, Depth Anything model file, Core ML package, model download, inference execution, benchmark run, Camera runtime integration, upload path, provider call, or production rollout.
+- The local `ios-app/AIPhotoApp/Features/Camera/DepthAnythingV2SmallSandbox.swift` scaffold remains untracked for a later separate phase.
+- The next practical step is a separate Phase OD-03B approval if an iOS sandbox placeholder should be added, followed later by model-artifact/source/license and device benchmark harness gates before any real Depth Anything inference.
+
 ### Phase 21-D - Florence-2-base Feasibility Study
 
 Scope:

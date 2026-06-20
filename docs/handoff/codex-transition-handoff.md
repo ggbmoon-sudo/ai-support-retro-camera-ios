@@ -1128,12 +1128,11 @@ Latest Phase 21-A2 Live Framing Aesthetic Spatial Codebook on 2026-06-20:
 - It links the codebook from `docs/research/on-device-ai-research-index.md`.
 - No Swift/iOS runtime code, backend runtime code, JSON schema implementation, dataset crawler, provider labeling adapter, model file, Core ML / ONNX / TFLite / MLX package, Florence-2 runtime, Depth Anything runtime, provider call, API key, Camera live cloud AI entry, upload payload change, raw label, report, local config, dataset, or training was added.
 - `productionReady:false` remains locked.
-Latest Phase 21-C-PRE Depth Anything V2 Small Core ML Sandbox Preflight on 2026-06-20:
+Latest Phase OD-03 Depth Anything V2 Small Core ML Sandbox Preflight Plan on 2026-06-20:
 
-- Phase 21-C-PRE adds a backend no-runtime preflight gate for the future Depth Anything V2 Small Core ML sandbox.
-- Added sanitized contract/CLI/tests for the debug-only sandbox boundary, hardware-depth-first rule, required benchmark metrics, Xcode/device-run requirement, and fail-closed blockers.
-- The gate now exposes first-class policy/output keys for `eligibleForFutureBenchmark`, `modelFileAdded`, `runtimeInferenceEnabled`, `cameraPreviewIntegrationEnabled`, `liveFrameProcessingEnabled`, `rawFramePersistence`, `rawDepthMapPersistence`, `hardwareDepthPriority`, `requiredFutureGates`, and `blockedReasons`.
-- Required future benchmark metrics include model load time, first/warmed inference latency, peak memory, preview FPS impact, thermal state, battery drain, depth stability, invalid output rate, and app size increase buckets.
-- No Depth Anything model file, Core ML package, ONNX/TFLite/MLX package, model download, Core ML runtime, inference, benchmark, preview-frame upload, Camera live cloud AI, iOS provider/model key, direct provider/model call, upload payload change, raw frame/depth/image logging or persistence, sensitive inference, or production rollout was added.
+- Phase OD-03 records a docs-only preflight plan for a future Depth Anything V2 Small Core ML sandbox.
+- No backend preflight gate, CLI script, backend tests, Swift runtime file, model file, Core ML package, model download, inference, benchmark, Camera integration, preview-frame upload, Camera live cloud AI, provider/model key, provider call, upload payload change, raw frame/depth/image logging or persistence, sensitive inference, or production rollout was added in this commit.
+- The local `ios-app/AIPhotoApp/Features/Camera/DepthAnythingV2SmallSandbox.swift` scaffold remains untracked for a later separate phase and must not be staged with this docs-only plan.
+- Future benchmark metrics should include model load time, first/warmed inference latency, peak memory, preview FPS impact, thermal state, battery drain, depth stability, invalid output rate, and app size increase buckets.
 - `productionReady:false` remains locked.
-- Next recommended phase after commit/push is `Phase 21-C - Depth Anything V2 Small Core ML Sandbox`, still debug/benchmark-only and hardware-depth-first.
+- Next recommended phase if continuing Depth Anything is a separately approved `Phase OD-03B - Depth Anything iOS Sandbox Placeholder`, still debug/benchmark-only and hardware-depth-first.

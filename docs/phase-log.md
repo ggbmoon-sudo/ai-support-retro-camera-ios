@@ -12369,4 +12369,65 @@ Phase 21-C-PRE adds a no-runtime preflight gate before the Depth Anything V2 Sma
 
 ### Next Phase
 
-Ready for `Phase 21-C - Depth Anything V2 Small Core ML Sandbox` after Phase 21-C-PRE is committed/pushed and Xcode verification is available. The sandbox remains debug/benchmark-only, hardware-depth-first, local-only, and not production-ready.
+Ready for Phase OD naming. A future Depth Anything sandbox remains debug/benchmark-only, hardware-depth-first, local-only, and not production-ready.
+## Phase OD-03 - Depth Anything V2 Small Core ML Sandbox Preflight Plan
+
+Status: completed
+Date: 2026-06-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase OD-03 records a docs-only plan for a future Depth Anything V2 Small Core ML sandbox. It does not add a backend preflight gate, CLI script, backend tests, Swift runtime file, model file, Core ML package, model download, inference execution, benchmark run, Camera integration, upload path, provider call, API key, or production rollout.
+
+The local `ios-app/AIPhotoApp/Features/Camera/DepthAnythingV2SmallSandbox.swift` scaffold remains untracked for a later separate phase such as `Phase OD-03B - Depth Anything iOS Sandbox Placeholder` and must not be staged with this docs-only commit.
+
+### Completed Work
+
+- Added a docs-only Depth Anything V2 Small Core ML sandbox preflight plan.
+- Recorded future hardware-depth-first, debug-only, sanitized-metric, and benchmark-gate expectations.
+- Recorded that no backend preflight gate/script/tests were added in this commit.
+- Recorded that no Swift runtime/scaffold file is included in this commit.
+- Added `docs/phase-21-c-depth-anything-v2-small-coreml-sandbox-summary.md` as a planning document only.
+- Updated roadmap, README, backend/iOS README, handoff, and manual smoke notes.
+
+### Changed Files
+
+- `docs/phase-21-c-depth-anything-v2-small-coreml-sandbox-summary.md`
+- `docs/on-device-live-framing-ai-roadmap.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `README.md`
+- `backend/README.md`
+- `ios-app/README.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `tests/manual-smoke-tests.md`
+
+### Boundary Checks
+
+- Docs-only planning: yes
+- Backend preflight gate/script/tests added: no
+- Swift runtime/scaffold file staged: no
+- Depth Anything model file / package added: no
+- Core ML package added: no
+- Model download added: no
+- Inference execution added: no
+- Benchmark run: no
+- Camera runtime integration added: no
+- Preview-frame upload added: no
+- Camera live cloud AI entry added: no
+- Provider/model key or direct provider/model call added: no
+- Backend/iOS upload payload changed: no
+- Raw frame/depth/image logging or persistence added: no
+- Sensitive inference added: no
+- Production rollout: no
+
+### Verification
+
+- `git diff --check` should be run before commit.
+- `git diff --cached --check` should be run before commit.
+- Xcode runtime behavior is not expected to change because this commit is docs-only.
+
+### Next Phase
+
+Recommended next if continuing Depth Anything: `Phase OD-03B - Depth Anything iOS Sandbox Placeholder`, requiring separate explicit approval. Not ready for production rollout.
