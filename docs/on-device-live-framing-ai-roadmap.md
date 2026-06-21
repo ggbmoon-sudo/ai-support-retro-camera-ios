@@ -58,6 +58,8 @@ OD-R5C implementation note: `docs/od-r5c-cloud-teacher-provider-smoke-harness.md
 
 OD-R7A implementation note: `docs/od-r7a-local-cv-feature-vector-benchmark.md` adds a backend-only Local CV Feature Vector Benchmark dry-run. It evaluates safe inline synthetic numeric feature vectors against OD-R1 registry keys, OD-R6A parameter candidates, and OD-R6B review decisions while keeping image reads, CV inference, provider/cloud/network calls, training, runtime integration, app transfer, and production rollout disabled.
 
+OD-R8A implementation note: `docs/od-r8a-parameter-tuning-harness-dry-run.md` adds a backend-only Parameter Tuning Harness dry-run. It converts reviewed synthetic parameter candidates and synthetic local CV benchmark signals into a structured parameter-pack candidate while keeping real image reads, CV inference, provider/cloud/network calls, training/fine-tuning, runtime integration, app transfer, and production rollout disabled.
+
 ## Product Language Rule
 
 Live hints must keep the Photo Advisor style:

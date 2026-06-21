@@ -4717,6 +4717,20 @@ Backend local CV feature benchmark verification:
 - [ ] Confirm execution flags report `imageReadsPerformed:false`, `networkCallsMade:false`, `providerConfigured:false`, `cloudTeacherEnabled:false`, `crawlerEnabled:false`, `downloadEnabled:false`, `trainingEnabled:false`, and `runtimeIntegrationEnabled:false`.
 - [ ] Confirm no Xcode runtime behavior is expected to change.
 - [ ] Confirm no Swift runtime file, model file, Core ML package, model download, CV inference, Camera integration, upload path, provider/model key, API key, real dataset/photo/local config/generated report, crawler/download mode, image read/upload, cloud teacher call, training, app runtime transfer, or production rollout was added.
+
+## Phase OD-R8A - Parameter Tuning Harness Dry-run
+
+Backend parameter tuning dry-run verification:
+
+- [ ] From `backend/`, run `npm run qa:aesthetic-parameters:tuning-dry-run`.
+- [ ] From `backend/`, run `node --test tests/aesthetic-parameter-tuning-harness.test.mjs`.
+- [ ] Confirm CLI output is sanitized and reports `runMode:"parameter_tuning_dry_run"`, `inputCandidateCount`, `acceptedForCalibrationCount`, `acceptedForEvalOnlyCount`, `rejectedCandidateCount`, `parameterPackCandidate`, `thresholdMapCandidate`, `suppressionRuleMapCandidate`, and `safeActionMapCandidate`.
+- [ ] Confirm the parameter-pack candidate reports `eligibleForAppRuntime:false`, `appRuntimeTransferBlocked:true`, and structured fallback/review/benchmark/safety requirements only.
+- [ ] Confirm execution flags report `imageReadsPerformed:false`, `networkCallsMade:false`, `providerConfigured:false`, `cloudTeacherEnabled:false`, `cvInferencePerformed:false`, `crawlerEnabled:false`, `downloadEnabled:false`, `trainingEnabled:false`, `fineTuningEnabled:false`, `runtimeIntegrationEnabled:false`, and `productionReady:false`.
+- [ ] Confirm rejected, blocked, unreviewed, unsupported, raw/leaky, score/rating, sensitive-inference, and free-form UI-copy candidates cannot influence the parameter-pack candidate.
+- [ ] Confirm no Xcode runtime behavior is expected to change.
+- [ ] Confirm no Swift runtime file, model file, Core ML package, model download, CV inference, Camera integration, upload path, provider/model key, API key, real dataset/photo/local config/generated report, crawler/download mode, image read/upload, cloud teacher call, training/fine-tuning, app runtime transfer, or production rollout was added.
+
 ## Phase 21-A2 - Live Framing Aesthetic Spatial Codebook
 
 Docs-only verification:

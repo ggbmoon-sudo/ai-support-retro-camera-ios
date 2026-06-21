@@ -1229,3 +1229,12 @@ Latest Phase OD-R7A Local CV Feature Vector Benchmark Dry-run on 2026-06-21:
 - The benchmark checks OD-R1 registry feature keys, threshold signals, suppression candidates, and safe action keys against OD-R6A parameter candidates and OD-R6B human review decisions.
 - Output reports `runMode:"local_cv_feature_benchmark_dry_run"`, accepted/rejected vector counts, tag/feature/threshold/suppression count buckets, app-transfer-readiness, `imageReadsPerformed:false`, `networkCallsMade:false`, `trainingEnabled:false`, `runtimeIntegrationEnabled:false`, and `productionReady:false`.
 - No real image read, CV inference, Python/OpenCV/PyTorch dependency, provider/cloud call, network call, crawler/download, training/fine-tuning, iOS runtime integration, Swift file, model install, upload path, real dataset/photo/local config/generated report, app runtime transfer, or production rollout is added. `productionReady:false` remains locked.
+
+Latest Phase OD-R8A Parameter Tuning Harness Dry-run on 2026-06-21:
+
+- OD-R8A adds a backend-only Parameter Tuning Harness dry-run using safe inline synthetic parameter candidates, human review decisions, and local CV benchmark signals only.
+- Added `backend/src/qa/aestheticParameterTuningHarness.mjs`, `backend/scripts/run-aesthetic-parameter-tuning-dry-run.mjs`, backend tests, `npm run qa:aesthetic-parameters:tuning-dry-run`, and `docs/od-r8a-parameter-tuning-harness-dry-run.md`.
+- The harness converts accepted calibration/eval-only reviewed synthetic candidates plus accepted synthetic benchmark signals into a structured `parameterPackCandidate` with threshold maps, suppression maps, safe action maps, fallback rules, review requirements, benchmark requirements, safety requirements, and app-transfer blockers.
+- Rejected, blocked, unreviewed, unsupported, unsafe, or raw/leaky candidates cannot influence the parameter-pack candidate.
+- Output reports `runMode:"parameter_tuning_dry_run"`, accepted/rejected candidate counts, `eligibleForAppRuntime:false`, `appRuntimeTransferBlocked:true`, `cvInferencePerformed:false`, `trainingEnabled:false`, `fineTuningEnabled:false`, `runtimeIntegrationEnabled:false`, and `productionReady:false`.
+- No real image read, CV inference, Python/OpenCV/PyTorch dependency, provider/cloud call, network call, crawler/download, training/fine-tuning, iOS runtime integration, Swift file, model install, upload path, real dataset/photo/local config/generated report, app runtime transfer, or production rollout is added. `productionReady:false` remains locked.

@@ -13124,3 +13124,74 @@ Phase OD-R7A adds a backend-only Local CV Feature Vector Benchmark dry-run. It e
 ### Ready for Next Phase
 
 Ready for `Phase OD-R8 - Parameter Tuning Harness` after commit/push. Not ready for production rollout.
+
+## Phase OD-R8A - Parameter Tuning Harness Dry-run
+
+Status: completed
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase OD-R8A adds a backend-only Parameter Tuning Harness dry-run. It converts reviewed synthetic parameter candidates and synthetic local CV benchmark signals into a structured, versioned parameter-pack candidate while keeping app runtime transfer blocked.
+
+### Completed Work
+
+- Added `backend/src/qa/aestheticParameterTuningHarness.mjs`.
+- Added `backend/scripts/run-aesthetic-parameter-tuning-dry-run.mjs`.
+- Added `backend/tests/aesthetic-parameter-tuning-harness.test.mjs`.
+- Added `npm run qa:aesthetic-parameters:tuning-dry-run`.
+- Added `docs/od-r8a-parameter-tuning-harness-dry-run.md`.
+- Updated README, backend/iOS README, roadmap, handoff, phase log, and manual smoke notes for OD-R8A.
+
+### Changed Files
+
+- `README.md`
+- `backend/README.md`
+- `backend/package.json`
+- `backend/scripts/run-aesthetic-parameter-tuning-dry-run.mjs`
+- `backend/src/qa/aestheticParameterTuningHarness.mjs`
+- `backend/tests/aesthetic-parameter-tuning-harness.test.mjs`
+- `docs/od-r8a-parameter-tuning-harness-dry-run.md`
+- `docs/on-device-live-framing-ai-roadmap.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `ios-app/README.md`
+- `tests/manual-smoke-tests.md`
+
+### Boundary Checks
+
+- Backend-only parameter tuning dry-run: yes
+- Safe inline synthetic parameter candidates, review decisions, and benchmark signals only: yes
+- Parameter-pack candidate generated: yes
+- Real image read/upload performed: no
+- Real CV inference performed: no
+- Python/OpenCV/PyTorch dependency added: no
+- Provider/cloud AI call made: no
+- Network call made: no
+- Crawler/download mode added: no
+- Training/fine-tuning enabled: no
+- iOS runtime integration added: no
+- Swift runtime file added: no
+- Model/Core ML/ONNX/TFLite/weight file added: no
+- Upload path or app payload changed: no
+- Real dataset/photo/local config/generated report committed: no
+- App runtime transfer enabled: no
+- Production rollout: no
+- `productionReady:false`: yes
+
+### Tests / Manual Checks
+
+- `node --test tests/aesthetic-parameter-tuning-harness.test.mjs`: passed
+- `npm run qa:aesthetic-parameters:tuning-dry-run`: passed
+- Full `npm test`, diff checks, and safety scans should pass before commit/push.
+
+### Known TODOs
+
+- OD-R8A does not train, fine-tune, export to app runtime, or run real CV inference. Future OD-R8B/OD-R9 gates should handle benchmark thresholds, export readiness, and distillation/fine-tune readiness only after separate approval.
+- App/model transfer remains blocked until later review, benchmark, safety, performance, and product integration gates pass.
+
+### Ready for Next Phase
+
+Ready for a future `Phase OD-R8B / OD-R9 - Parameter Pack Benchmark Thresholds and Export Readiness Gate` after commit/push. Not ready for production rollout.
