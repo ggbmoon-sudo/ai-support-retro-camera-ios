@@ -18,7 +18,7 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 **Phase OD-R7: Local CV Feature Extractor Benchmark**
 
-Reason: Phase OD-R6B now adds the backend-only Human Review Queue schema. It validates review items and decisions before teacher labels or parameter candidates can become calibration, evaluation, or tuning candidates while keeping provider/cloud/network/image/training/runtime/app-transfer flags disabled. The next OD-R layer should benchmark local CV feature extraction against reviewed synthetic/approved candidate shapes before tuning or product-transfer artifacts.
+Reason: Phase OD-R6B adds the backend-only Human Review Queue schema, and Phase OD-R5B now adds the backend-only Cloud Teacher provider sandbox readiness gate plus redacted request-envelope builder. Provider smoke remains deferred to OD-R5C and requires explicit approval. The next OD-R layer should benchmark local CV feature extraction against reviewed synthetic/approved candidate shapes before tuning or product-transfer artifacts.
 
 OD-R7 should remain backend-only and benchmark-planning/dry-run only unless separately approved for approved synthetic samples. It must not add Swift runtime files, model installation, Core ML packages, crawler/download mode, product runtime transfer, Camera integration, upload paths, provider/model keys in committed files, real datasets/photos/local configs/generated reports, training, inference rollout, or production rollout. OD-03B Swift placeholder work remains paused. App/model installation belongs later to OD-P product integration after benchmark and safety gates pass. `productionReady:false` remains locked.
 
@@ -33,6 +33,8 @@ Implementation status note: `docs/od-r5a-cloud-ai-teacher-sandbox-preflight.md` 
 Implementation status note: `docs/od-r6a-parameter-candidate-runner-dry-run.md` records the backend-only Parameter Candidate Runner dry-run. It converts safe teacher stub labels into structured parameter candidates and aggregate counts while keeping app runtime transfer blocked.
 
 Implementation status note: `docs/od-r6b-human-review-queue-schema.md` records the backend-only Human Review Queue schema. It validates review items and decisions before labels/candidates can become calibration, evaluation, or tuning candidates while keeping app runtime transfer blocked.
+
+Implementation status note: `docs/od-r5b-cloud-teacher-provider-sandbox-readiness-gate.md` records the backend-only Cloud Teacher provider sandbox readiness gate. It validates disabled local config shape, redacted request-envelope output, ignored config/sample/report boundaries, no-call provider readiness, and app-transfer blocks while keeping `productionReady:false`.
 
 Naming note: older committed Phase 21-A backend-internal VLM records remain historical evidence. The completed on-device geometry phase should be referenced by its full title: `Phase 21-A - On-device Vision Geometry Spike`.
 

@@ -1203,3 +1203,12 @@ Latest Phase OD-R6B Human Review Queue Schema on 2026-06-21:
 - The schema validates review items, review decisions, accepted-use flags, registry tags, feature keys, threshold keys, suppression candidates, and safe action keys before candidates can become calibration, evaluation, or tuning candidates.
 - App runtime transfer remains blocked with `eligibleForAppRuntime:false`, `appRuntimeEligibleCount:0`, and `appRuntimeTransferBlocked:true`; human review is required before later benchmark/tuning use.
 - No Swift runtime file, OD-03B placeholder, model install, Core ML package, crawler/download mode, image read/upload, real cloud teacher call, provider/model key, training/fine-tuning, inference, Camera integration, upload path, real dataset/photo/local config/generated report, raw prompt/provider payload, app runtime transfer, or production rollout is added. `productionReady:false` remains locked.
+
+Latest Phase OD-R5B Cloud Teacher Provider Sandbox Readiness Gate on 2026-06-21:
+
+- OD-R5B adds a backend-only, fail-closed Cloud Teacher provider sandbox readiness gate and redacted request-envelope builder.
+- Added `backend/config/aesthetic-cloud-teacher.local.example.json`, `backend/src/qa/aestheticCloudTeacherProviderGate.mjs`, `backend/src/qa/aestheticCloudTeacherRequestEnvelope.mjs`, `backend/scripts/check-aesthetic-cloud-teacher-provider-gate.mjs`, backend tests, `npm run qa:aesthetic-teacher:provider-gate`, and `docs/od-r5b-cloud-teacher-provider-sandbox-readiness-gate.md`.
+- The committed example config is disabled and safe; real local config, approved local samples, and generated provider sandbox reports are ignored.
+- The gate defaults to `eligibleForProviderSmoke:false`, `providerConfigured:false`, `cloudTeacherEnabled:false`, `allowNetworkCalls:false`, `allowImageUpload:false`, `networkCallsMade:false`, `imageReadsPerformed:false`, `trainingEnabled:false`, `runtimeIntegrationEnabled:false`, and `productionReady:false`.
+- The request envelope contains only opaque IDs, registry version, allowed tag subset, asset reference type/bucket, source type, `teacherMode:"provider_sandbox_pending"`, human-review/review-queue requirements, and redaction policy.
+- No provider/cloud AI call, network call, image read/upload, crawler/download, training/fine-tuning, iOS runtime integration, Swift file, model install, upload path, real dataset/photo/local config/generated report, app runtime transfer, or production rollout is added. `productionReady:false` remains locked.

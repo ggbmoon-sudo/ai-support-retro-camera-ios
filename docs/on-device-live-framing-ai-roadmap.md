@@ -52,6 +52,8 @@ OD-R6A implementation note: `docs/od-r6a-parameter-candidate-runner-dry-run.md` 
 
 OD-R6B implementation note: `docs/od-r6b-human-review-queue-schema.md` adds a backend-only Human Review Queue schema. It validates review items and decisions before label/parameter candidates can become calibration, evaluation, or tuning candidates while keeping provider/cloud/network/image/training/runtime/app-transfer flags disabled.
 
+OD-R5B implementation note: `docs/od-r5b-cloud-teacher-provider-sandbox-readiness-gate.md` adds a backend-only Cloud Teacher provider sandbox readiness gate and redacted request-envelope builder. It prepares for a future explicitly approved OD-R5C provider smoke while keeping provider/cloud/network/image/training/runtime/app-transfer behavior disabled by default.
+
 ## Product Language Rule
 
 Live hints must keep the Photo Advisor style:

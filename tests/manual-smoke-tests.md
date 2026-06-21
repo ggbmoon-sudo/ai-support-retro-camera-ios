@@ -4667,6 +4667,16 @@ Backend sandbox preflight verification:
 - [ ] Confirm CLI output is sanitized and reports `runMode:"stub_only"`, `acceptedStubResponseCount:1`, `rejectedStubResponseCount:0`, `blockedReasons:[]`, `cloudTeacherEnabled:false`, `providerConfigured:false`, `networkCallsMade:false`, `imageReadsPerformed:false`, `crawlerEnabled:false`, `downloadEnabled:false`, `trainingEnabled:false`, `runtimeIntegrationEnabled:false`, and `productionReady:false`.
 - [ ] Confirm app-transfer-readiness output reports `eligibleForAppRuntime:false` and `appRuntimeTransferBlocked:true`.
 - [ ] Confirm no Swift runtime file, model file, Core ML package, model download, inference, Camera integration, upload path, provider/model key, API key, real dataset/photo/local config/generated report, crawler/download mode, image read/upload, cloud teacher call, training, app runtime transfer, or production rollout was added.
+## Phase OD-R5B - Cloud Teacher Provider Sandbox Readiness Gate
+
+Backend provider gate verification:
+
+- [ ] From `backend/`, run `npm run qa:aesthetic-teacher:provider-gate`.
+- [ ] From `backend/`, run `node --test tests/aesthetic-cloud-teacher-provider-gate.test.mjs`.
+- [ ] Confirm CLI output is sanitized and reports `eligibleForProviderSmoke:false`, `providerConfigured:false`, `cloudTeacherEnabled:false`, `allowNetworkCalls:false`, `allowImageUpload:false`, `networkCallsMade:false`, `imageReadsPerformed:false`, `trainingEnabled:false`, `runtimeIntegrationEnabled:false`, and `productionReady:false`.
+- [ ] Confirm the redacted request envelope contains only opaque IDs, registry version, allowed tag subset, asset reference type/bucket, source type, `teacherMode:"provider_sandbox_pending"`, human-review/review-queue requirements, and redaction policy.
+- [ ] Confirm no Xcode runtime behavior is expected to change.
+- [ ] Confirm no Swift runtime file, model file, Core ML package, model download, inference, Camera integration, upload path, provider/model key, API key, real dataset/photo/local config/generated report, crawler/download mode, network call, image read/upload, cloud teacher call, training, app runtime transfer, or production rollout was added.
 ## Phase OD-R6A - Parameter Candidate Runner Dry-run
 
 Backend parameter candidate verification:

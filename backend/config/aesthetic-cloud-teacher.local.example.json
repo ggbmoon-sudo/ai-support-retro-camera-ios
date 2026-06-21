@@ -1,0 +1,14 @@
+{
+  "enabled": false,
+  "allowNetworkCalls": false,
+  "providerConfigured": false,
+  "providerName": "disabled",
+  "modelNameBucket": "not_configured",
+  "approvedSampleMode": "none",
+  "allowImageUpload": false,
+  "allowRawPromptLogging": false,
+  "allowRawProviderResponseLogging": false,
+  "allowRequestPayloadLogging": false,
+  "allowGeneratedReports": false,
+  "productionReady": false
+}

@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 21-Z2G-SF - SiliconFlow Network/Parameter Latency Probe
+Current phase: Phase OD-R5B - Cloud Teacher Provider Sandbox Readiness Gate
 Status: completed
-Latest implementation: Phase 21-Z2G-SF runs approved backend-only SiliconFlow network/parameter latency probes with `smoke_004` only and retry `0`. It makes `5` successful escalated provider calls, confirms sequential same-process `fetch` compact `max_tokens:192` remains accepted but seconds-level (`8637ms`, `8529ms`), confirms `stream:true` gives TTFT `3979ms` but full validated JSON `9898ms`, and confirms ultra-short `max_tokens:80` and `50` fail schema. The backend contract remains compact prompt + `maxOutputTokens:192`; `productionReady:false` remains locked. No raw provider output, prompt, request payload, image/base64/path, API key, credential, raw report, iOS runtime change, upload payload change, live cloud AI runtime, app-facing endpoint, production endpoint, or production rollout is added.
+Latest implementation: Phase OD-R5B adds a backend-only, fail-closed Cloud Teacher provider sandbox readiness gate and redacted request-envelope builder. It prepares for a future explicitly approved OD-R5C provider smoke, but makes no real provider/cloud AI call, network call, image read/upload, crawler/download, training/fine-tuning, iOS runtime integration, Swift file, model install, upload path, app runtime transfer, real dataset/photo/local config/generated report, or production rollout. `productionReady:false` remains locked.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -12911,3 +12911,76 @@ Phase OD-R6B adds a backend-only Human Review Queue schema for reviewing teacher
 ### Next Phase
 
 Recommended next OD-R phase: `Phase OD-R7 - Local CV Feature Extractor Benchmark`, backend-only/dry-run or approved synthetic benchmark planning only. Not ready for production rollout.
+## Phase OD-R5B - Cloud Teacher Provider Sandbox Readiness Gate
+
+Status: completed
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase OD-R5B adds a backend-only, fail-closed Cloud Teacher provider sandbox readiness gate plus a redacted future-provider request-envelope builder. It prepares for a future opt-in provider smoke without making any provider, cloud, network, image-read, image-upload, training, or app-runtime call.
+
+### Completed Work
+
+- Added disabled safe example config at `backend/config/aesthetic-cloud-teacher.local.example.json`.
+- Added ignore rules for real ignored local config, approved local samples, and generated provider sandbox reports.
+- Added `backend/src/qa/aestheticCloudTeacherProviderGate.mjs`.
+- Added `backend/src/qa/aestheticCloudTeacherRequestEnvelope.mjs`.
+- Added `backend/scripts/check-aesthetic-cloud-teacher-provider-gate.mjs`.
+- Added `npm run qa:aesthetic-teacher:provider-gate`.
+- Added `backend/tests/aesthetic-cloud-teacher-provider-gate.test.mjs`.
+- Added `docs/od-r5b-cloud-teacher-provider-sandbox-readiness-gate.md`.
+- Updated README, backend/iOS README, roadmap, handoff, phase log, and manual smoke notes for OD-R5B.
+
+### Changed Files
+
+- `.gitignore`
+- `README.md`
+- `backend/README.md`
+- `backend/config/aesthetic-cloud-teacher.local.example.json`
+- `backend/package.json`
+- `backend/scripts/check-aesthetic-cloud-teacher-provider-gate.mjs`
+- `backend/src/qa/aestheticCloudTeacherProviderGate.mjs`
+- `backend/src/qa/aestheticCloudTeacherRequestEnvelope.mjs`
+- `backend/tests/aesthetic-cloud-teacher-provider-gate.test.mjs`
+- `docs/od-r5b-cloud-teacher-provider-sandbox-readiness-gate.md`
+- `docs/on-device-live-framing-ai-roadmap.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `ios-app/README.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `tests/manual-smoke-tests.md`
+
+### Boundary Checks
+
+- Backend-only readiness gate: yes
+- Redacted request-envelope builder only: yes
+- Provider/cloud AI call made: no
+- Network call made: no
+- Image read/upload performed: no
+- Crawler/download mode added: no
+- Training/fine-tuning/distillation run: no
+- iOS runtime integration / Swift file added: no
+- OD-03B Swift placeholder brought back: no
+- Model file / Core ML package / model download added: no
+- Upload path or app payload changed: no
+- Real dataset/photo/local config/generated report committed: no
+- Raw prompt/provider response/request payload logging added: no
+- App runtime transfer enabled: no
+- Production rollout: no
+
+### Verification
+
+- `cd backend && node --test tests/aesthetic-cloud-teacher-provider-gate.test.mjs` passes.
+- `cd backend && npm run qa:aesthetic-teacher:provider-gate` passes and prints sanitized JSON only.
+- Full `npm test`, `git diff --check`, and safety scans should pass before commit.
+
+### Known TODOs
+
+- OD-R5C real provider smoke remains deferred and requires explicit approval, ignored local config, approved sample mode, redacted logging, and no app transfer.
+- OD-R7 remains the next OD-R research step after this readiness gate is committed and pushed.
+
+### Ready for Next Phase
+
+Ready for `Phase OD-R7 - Local CV Feature Extractor Benchmark` after commit/push. Not ready for production rollout.
