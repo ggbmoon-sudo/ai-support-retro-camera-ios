@@ -183,6 +183,8 @@ Phase 17C-Prep hardens the backend boundary before any real provider work: mock-
 
 Phase 17C-R1 switches the backend-only Photo Advisor internal beta to the QweAPI OpenAI-compatible gateway. It is disabled by default and only runs when backend config explicitly sets `ALLOW_INTERNAL_CLOUD_AI=true`, `CLOUD_AI_PROVIDER_MODE=qweInternal`, an internal debug header / token guard passes, server-side `QWE_API_KEY` is configured, `QWE_BASE_URL=https://qweapi.com`, and `QWE_PHOTO_ADVISOR_MODEL=gemini-3.1-flash-image-preview`. iOS still has no provider SDK, provider key, or direct QweAPI call; production/default Photo Advisor remains mock/local, and Camera remains local-only.
 
+PT2 adds a backend-only Xiaoyi OpenAI-compatible relay path for internal/debug Photo Advisor and Filter Lab generation using `deepseek-v4-flash`. It is disabled by default and only runs when backend config explicitly sets `ALLOW_INTERNAL_CLOUD_AI=true`, `CLOUD_AI_PROVIDER_MODE=xiaoyiRelayInternal`, an internal debug header / token guard passes, and server-side `XIAOYI_API_KEY` is configured. Filter Lab receives a validated structured recipe only, not generated bitmaps, shader/code, LUT URLs, or rendering instructions. iOS still has no provider SDK, provider key, or direct Xiaoyi call; production/default behavior remains mock/local, and Camera remains local-only.
+
 Current MVP demo / QA readiness docs:
 
 - `docs/mvp-demo-script.md`
@@ -254,6 +256,8 @@ Phase 17B keeps the same production boundary. The remote chain is DEBUG/internal
 Phase 17C-Prep keeps provider integration blocked. It only prepares the backend boundary with mock-only provider plumbing, schema hardening, safety fallback, and no-payload logging rules.
 
 Phase 17C is still not a production rollout. It adds backend-only QweAPI OpenAI-compatible internal beta support for Photo Advisor, with structured output validation, safety validation, retry/fallback, and server-side secrets only. Current verification confirms QweAPI text-only chat works and `gemini-3.1-flash-image-preview` returns a validated Photo Advisor image result in internal testing.
+
+PT2 is still not a production rollout. It adds backend-only Xiaoyi OpenAI-compatible internal/debug support for Photo Advisor and Filter Lab with `deepseek-v4-flash`, structured JSON parsing, Filter Lab recipe validation, retry/fallback, and server-side secrets only. No iOS provider key/direct provider call, Camera cloud AI entry, image editing provider, StoreKit/payment, or production rollout is added.
 
 Phase 17C-R2 adds a backend provider QA batch workflow for the internal Photo Advisor beta. It records sanitized latency / schema / safety / fallback metrics only; generated QA reports and local QA images are ignored, and production/default remains mock/local.
 

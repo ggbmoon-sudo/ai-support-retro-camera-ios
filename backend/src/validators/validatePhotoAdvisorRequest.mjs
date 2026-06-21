@@ -50,7 +50,7 @@ export function validatePhotoAdvisorRequest(request) {
   return { ok: true };
 }
 
-function validateImageShape(image) {
+export function validateImageShape(image) {
   if (!image || typeof image !== "object" || Array.isArray(image)) {
     return invalid("invalid_image", "image must be an object");
   }

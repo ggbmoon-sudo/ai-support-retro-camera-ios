@@ -1,6 +1,7 @@
 import http from "node:http";
 import { healthResponse } from "./routes/health.mjs";
 import { handlePhotoAdvisorRequest } from "./routes/photoAdvisor.mjs";
+import { handleFilterLabRequest } from "./routes/filterLab.mjs";
 import { CLOUD_AI_ERROR_CODES } from "./responses/cloudAIErrorCodes.mjs";
 import { fallbackCloudAIResponse } from "./responses/fallbackResponse.mjs";
 import { CLOUD_AI_LIMITS } from "./security/limits.mjs";
@@ -15,6 +16,12 @@ export function createServer() {
       if (request.method === "POST" && request.url === "/v1/ai/photo-advisor") {
         const body = await readJsonBody(request);
         const result = await handlePhotoAdvisorRequest(body, { headers: request.headers });
+        return sendJson(response, result.status, result.body);
+      }
+
+      if (request.method === "POST" && request.url === "/v1/ai/filter-lab") {
+        const body = await readJsonBody(request);
+        const result = await handleFilterLabRequest(body, { headers: request.headers });
         return sendJson(response, result.status, result.body);
       }
 

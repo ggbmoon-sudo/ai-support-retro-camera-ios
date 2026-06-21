@@ -9,4 +9,8 @@ export class CloudAIProvider {
   async analyzePhotoAdvisor(_input) {
     throw new Error("CloudAIProvider.analyzePhotoAdvisor must be implemented by a safe provider");
   }
+
+  async generateFilterRecipe(_input) {
+    throw new Error("CloudAIProvider.generateFilterRecipe must be implemented by a safe provider");
+  }
 }

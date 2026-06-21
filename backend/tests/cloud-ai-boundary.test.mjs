@@ -4,9 +4,15 @@ import { existsSync } from "node:fs";
 import test from "node:test";
 import { healthResponse } from "../src/routes/health.mjs";
 import { handlePhotoAdvisorRequest } from "../src/routes/photoAdvisor.mjs";
+import { handleFilterLabRequest, resolveFilterLabProviderKind } from "../src/routes/filterLab.mjs";
 import { executableProviderKinds } from "../src/providers/ProviderRegistry.mjs";
 import { providerBoundaryStatus } from "../src/providers/providerTypes.mjs";
 import { QwePhotoAdvisorProvider, parseQweCloudAIResponse } from "../src/providers/QwePhotoAdvisorProvider.mjs";
+import {
+  XiaoyiDeepseekRelayProvider,
+  parseXiaoyiGeneratedFilterRecipeResponse
+} from "../src/providers/XiaoyiDeepseekRelayProvider.mjs";
+import { generatedFilterRecipeExampleCandidate } from "../src/providers/generatedFilterRecipeContract.mjs";
 import { cloudAIConfig } from "../src/config/cloudAIConfig.mjs";
 import { buildPhotoAdvisorPrompt } from "../src/prompts/photoAdvisorPrompt.mjs";
 import { resolveProviderKind } from "../src/routes/photoAdvisor.mjs";
@@ -14,6 +20,7 @@ import { validateCloudAIResponse } from "../src/validators/validateCloudAIRespon
 import { validatePhotoAdvisorRequest } from "../src/validators/validatePhotoAdvisorRequest.mjs";
 import { fallbackCloudAIResponse } from "../src/responses/fallbackResponse.mjs";
 import { safeErrorMetadata } from "../src/logging/safeLog.mjs";
+import { resetDevRateLimitForTests } from "../src/security/rateLimit.mjs";
 import {
   assertQAReportRedacted,
   sanitizePhotoAdvisorQACase,
@@ -325,11 +332,11 @@ test("unsafe provider output maps to fallback response", async () => {
 test("provider key is not required and mock provider is the only active path", () => {
   assert.deepEqual(providerBoundaryStatus(), {
     mode: "mock-only",
-    executableProviders: ["mock", "qweInternal", "disabled"],
+    executableProviders: ["mock", "qweInternal", "xiaoyiRelayInternal", "disabled"],
     providerCallsEnabled: false,
     providerKeyRequired: false
   });
-  assert.deepEqual(executableProviderKinds(), ["mock", "qweInternal", "disabled"]);
+  assert.deepEqual(executableProviderKinds(), ["mock", "qweInternal", "xiaoyiRelayInternal", "disabled"]);
 });
 
 test("qwe provider is not used when mode is mock", () => {
@@ -515,7 +522,187 @@ test("qwe internal path returns validated structured response when enabled", asy
   assert.equal(result.body.mode, "post_capture");
 });
 
+test("xiaoyi config trims and allows only the supported relay url, path, and model", () => {
+  const config = cloudAIConfig({
+    CLOUD_AI_PROVIDER_MODE: "xiaoyiRelayInternal",
+    XIAOYI_BASE_URL: " https://xiaoyiapi.xyz/ ",
+    XIAOYI_CHAT_COMPLETIONS_PATH: " /v1/chat/completions ",
+    XIAOYI_PHOTO_ADVISOR_MODEL: " deepseek-v4-flash ",
+    XIAOYI_FILTER_LAB_MODEL: " deepseek-v4-flash "
+  });
+
+  assert.equal(config.providerMode, "xiaoyiRelayInternal");
+  assert.equal(config.xiaoyiBaseURL, "https://xiaoyiapi.xyz");
+  assert.equal(config.xiaoyiChatCompletionsPath, "/v1/chat/completions");
+  assert.equal(config.xiaoyiPhotoAdvisorModel, "deepseek-v4-flash");
+  assert.equal(config.xiaoyiFilterLabModel, "deepseek-v4-flash");
+  assert.equal(cloudAIConfig({ XIAOYI_BASE_URL: "https://xiaoyiapi.xyz/v1" }).xiaoyiBaseURL, "");
+  assert.equal(cloudAIConfig({ XIAOYI_BASE_URL: "http://xiaoyiapi.xyz" }).xiaoyiBaseURL, "");
+  assert.equal(cloudAIConfig({ XIAOYI_BASE_URL: "https://evil.example" }).xiaoyiBaseURL, "");
+  assert.equal(cloudAIConfig({ XIAOYI_CHAT_COMPLETIONS_PATH: "/v1/chat/completions?token=bad" }).xiaoyiChatCompletionsPath, "");
+  assert.equal(cloudAIConfig({ XIAOYI_PHOTO_ADVISOR_MODEL: "other-model" }).xiaoyiPhotoAdvisorModel, "");
+});
+
+test("xiaoyi provider uses deepseek-v4-flash for photo advisor request shape", async () => {
+  let capturedURL;
+  let capturedHeaders;
+  let capturedRequest;
+  const provider = new XiaoyiDeepseekRelayProvider({
+    apiKey: "test-key",
+    baseURL: "https://xiaoyiapi.xyz",
+    photoAdvisorModel: "deepseek-v4-flash",
+    path: "/v1/chat/completions",
+    fetchImpl: async (url, request) => {
+      capturedURL = url;
+      capturedHeaders = request.headers;
+      capturedRequest = JSON.parse(request.body);
+      return okJSON(await fixture("qwe-gateway-valid.json"));
+    }
+  });
+
+  const response = await provider.analyzePhotoAdvisor(providerInput());
+
+  assert.equal(response.source, "cloud");
+  assert.equal(capturedURL, "https://xiaoyiapi.xyz/v1/chat/completions");
+  assert.equal(capturedHeaders.authorization, "Bearer test-key");
+  assert.equal(capturedRequest.model, "deepseek-v4-flash");
+  assert.equal(capturedRequest.stream, false);
+  assert.deepEqual(capturedRequest.response_format, { type: "json_object" });
+  assert.equal(capturedRequest.messages[1].content[0].text.includes("Do not identify people"), true);
+  assert.equal(capturedRequest.messages[1].content[1].image_url.url, "data:image/jpeg;base64,/9j/");
+  assert.equal(capturedRequest.messages[1].content[1].image_url.detail, "low");
+});
+
+test("xiaoyi provider uses deepseek-v4-flash for generated Filter Lab recipes", async () => {
+  let capturedRequest;
+  const recipe = generatedFilterRecipeExampleCandidate();
+  const provider = new XiaoyiDeepseekRelayProvider({
+    apiKey: "test-key",
+    baseURL: "https://xiaoyiapi.xyz",
+    filterLabModel: "deepseek-v4-flash",
+    path: "/v1/chat/completions",
+    fetchImpl: async (_url, request) => {
+      capturedRequest = JSON.parse(request.body);
+      return okJSON(openAICompatibleJSON(recipe));
+    }
+  });
+
+  const response = await provider.generateFilterRecipe(providerInput());
+
+  assert.deepEqual(response, recipe);
+  assert.equal(capturedRequest.model, "deepseek-v4-flash");
+  assert.equal(capturedRequest.stream, false);
+  assert.deepEqual(capturedRequest.response_format, { type: "json_object" });
+  assert.equal(capturedRequest.messages[0].content.includes("Filter Lab recipe writer"), true);
+  assert.equal(capturedRequest.messages[1].content[0].text.includes("Allowed recipeVersion: 1.0"), true);
+  assert.equal(capturedRequest.messages[1].content[1].image_url.url, "data:image/jpeg;base64,/9j/");
+  assert.equal(capturedRequest.messages[1].content[1].image_url.detail, "low");
+});
+
+test("xiaoyi generated filter parser rejects invalid recipe schema without raw output", () => {
+  assert.throws(() => parseXiaoyiGeneratedFilterRecipeResponse(openAICompatibleJSON({
+    ...generatedFilterRecipeExampleCandidate(),
+    source: "provider_debug"
+  })), (error) => {
+    assert.equal(error.code, "provider_invalid_schema");
+    assert.equal(String(error.message).includes("provider_debug"), false);
+    return true;
+  });
+});
+
+test("filter lab route requires xiaoyi internal debug approval", async () => {
+  let calls = 0;
+  const provider = {
+    async generateFilterRecipe() {
+      calls += 1;
+      return generatedFilterRecipeExampleCandidate();
+    }
+  };
+
+  const result = await handleFilterLabRequest(validFilterLabRequest(), {
+    provider,
+    config: {
+      ...enabledXiaoyiAPIConfig(),
+      allowInternalCloudAI: false
+    },
+    headers: { "x-internal-debug-cloudai": "true" }
+  });
+
+  assert.equal(calls, 0);
+  assert.equal(result.status, 200);
+  assert.equal(result.body.mode, "unavailable");
+  assert.equal(result.body.error.code, "internal_cloud_disabled");
+});
+
+test("filter lab route returns validated generated recipe when xiaoyi is enabled", async () => {
+  const provider = {
+    async generateFilterRecipe() {
+      return generatedFilterRecipeExampleCandidate();
+    }
+  };
+
+  const result = await handleFilterLabRequest(validFilterLabRequest(), {
+    provider,
+    config: enabledXiaoyiAPIConfig(),
+    headers: { "x-internal-debug-cloudai": "true" }
+  });
+
+  assert.equal(result.status, 200);
+  assert.equal(result.body.mode, "filter_generation");
+  assert.equal(result.body.source, "cloud");
+  assert.equal(result.body.generatedFilter.source, "cloud");
+  assert.equal(result.body.generatedFilter.recipeVersion, "1.0");
+  assert.equal(result.body.safety.containsSensitiveInference, false);
+  assert.equal(result.metadata.providerKind, "xiaoyiRelayInternal");
+});
+
+test("filter lab route falls back after generated recipe schema retry failure", async () => {
+  let calls = 0;
+  const provider = {
+    async generateFilterRecipe() {
+      calls += 1;
+      return {
+        ...generatedFilterRecipeExampleCandidate(),
+        parameters: {
+          exposure: 0
+        }
+      };
+    }
+  };
+
+  const result = await handleFilterLabRequest(validFilterLabRequest(), {
+    provider,
+    config: enabledXiaoyiAPIConfig(),
+    headers: { "x-internal-debug-cloudai": "true" }
+  });
+
+  assert.equal(calls, 2);
+  assert.equal(result.status, 200);
+  assert.equal(result.body.mode, "unavailable");
+  assert.equal(result.body.generatedFilter, null);
+  assert.equal(result.body.error.code, "provider_invalid_schema");
+});
+
+test("filter lab provider kind only enables xiaoyi relay with full backend config", () => {
+  assert.equal(resolveFilterLabProviderKind({
+    config: enabledQweAPIConfig(),
+    headers: { "x-internal-debug-cloudai": "true" }
+  }), "disabled");
+  assert.equal(resolveFilterLabProviderKind({
+    config: enabledXiaoyiAPIConfig(),
+    headers: { "x-internal-debug-cloudai": "true" }
+  }), "xiaoyiRelayInternal");
+  assert.equal(resolveFilterLabProviderKind({
+    config: {
+      ...enabledXiaoyiAPIConfig(),
+      xiaoyiAPIKey: ""
+    },
+    headers: { "x-internal-debug-cloudai": "true" }
+  }), "disabled");
+});
+
 test("provider invalid json falls back after retry", async () => {
+  resetDevRateLimitForTests();
   let calls = 0;
   const provider = {
     async analyzePhotoAdvisor() {
@@ -538,6 +725,7 @@ test("provider invalid json falls back after retry", async () => {
 });
 
 test("provider invalid schema falls back after retry", async () => {
+  resetDevRateLimitForTests();
   let calls = 0;
   const provider = {
     async analyzePhotoAdvisor() {
@@ -558,6 +746,7 @@ test("provider invalid schema falls back after retry", async () => {
 });
 
 test("unsafe provider output returns unsafe fallback without retry", async () => {
+  resetDevRateLimitForTests();
   let calls = 0;
   const provider = {
     async analyzePhotoAdvisor() {
@@ -1098,6 +1287,18 @@ function okJSON(body) {
   };
 }
 
+function openAICompatibleJSON(value) {
+  return {
+    choices: [
+      {
+        message: {
+          content: JSON.stringify(value)
+        }
+      }
+    ]
+  };
+}
+
 function providerInput() {
   return {
     locale: "en",
@@ -1112,6 +1313,18 @@ function providerInput() {
   };
 }
 
+function enabledXiaoyiAPIConfig() {
+  return {
+    providerMode: "xiaoyiRelayInternal",
+    allowInternalCloudAI: true,
+    xiaoyiAPIKey: "test-key",
+    xiaoyiBaseURL: "https://xiaoyiapi.xyz",
+    xiaoyiChatCompletionsPath: "/v1/chat/completions",
+    xiaoyiPhotoAdvisorModel: "deepseek-v4-flash",
+    xiaoyiFilterLabModel: "deepseek-v4-flash"
+  };
+}
+
 function enabledQweAPIConfig() {
   return {
     providerMode: "qweInternal",
@@ -1121,6 +1334,30 @@ function enabledQweAPIConfig() {
     qwePhotoAdvisorModel: "gemini-3.1-flash-image-preview",
     qweChatCompletionsPath: "/v1/chat/completions",
     qweAuthHeader: "authorization_bearer"
+  };
+}
+
+function validFilterLabRequest() {
+  return {
+    schemaVersion: "1.0",
+    feature: "filter_lab",
+    mode: "reference_image",
+    locale: "zh-Hant-HK",
+    consent: {
+      imageUploadAccepted: true,
+      consentVersion: "2026-06-21.pt2.xiaoyi.v1"
+    },
+    image: {
+      contentType: "image/jpeg",
+      width: 1024,
+      height: 768,
+      metadataStripped: true,
+      dataBase64: "/9j/"
+    },
+    client: {
+      platform: "iOS",
+      appVersion: "debug"
+    }
   };
 }
 

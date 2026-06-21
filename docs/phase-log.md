@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 21-A5 - Composition Guidance Ownership Boundary
-Status: docs-only boundary update
-Latest implementation: Phase 21-A5 records the product direction clarification that richer composition guidance should be owned by the training-AI branch, not expanded inside the on-device Camera runtime. The app-side Camera layer remains responsible for safe local geometry/depth signals, lightweight hint shell UX, and conservative fallback copy only. It adds no Swift runtime, Depth Anything runtime, Core ML model inference, Florence runtime, cloud AI, provider call, preview-frame upload, upload payload change, raw frame persistence, dataset crawler, AI-assisted labeling run, user-photo training, or production rollout. `productionReady:false` remains locked.
+Current phase: PT2 - Xiaoyi DeepSeek Relay Backend Internal Photo Advisor and Filter Lab Wiring
+Status: implemented, pending operator backend credential/runtime verification
+Latest implementation: PT2 adds backend-only Xiaoyi OpenAI-compatible relay wiring for internal/debug Photo Advisor and Filter Lab generation using `deepseek-v4-flash`. `/v1/ai/filter-lab` is backend-gated, validates explicit consent and stripped JPEG payload shape, returns only a validated structured generated filter recipe, and falls back safely when disabled, unconfigured, or invalid. No iOS provider key/direct provider call, Camera cloud AI entry, image editing provider, raw payload/provider logging, StoreKit/payment, or production rollout was added. Local verification used synthetic tests only; no real Xiaoyi provider call was made because `XIAOYI_API_KEY` is not configured in this environment. `productionReady:false` remains locked.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -74,6 +74,71 @@ Phase 17C-R3 verification: generated five ignored synthetic local QA images and 
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
 Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. If continuing app-side feature development, choose a non-composition Camera feature or focused runtime/UI polish. If continuing composition intelligence, use a separate training-AI branch phase that begins with dataset/label schema, source/license/consent gates, and human review policy, not app runtime composition logic. Any model artifact handling, Core ML package use, inference execution, benchmark run, Camera runtime integration beyond explicit local scope, preview-frame upload/upload persistence, upload payload change, provider/cloud call, iOS provider/model key, raw artifact, sensitive inference, dataset crawler, user-photo training, or production rollout requires separate explicit approval before execution. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries.
+
+---
+
+## PT2 - Xiaoyi DeepSeek Relay Backend Internal Photo Advisor and Filter Lab Wiring
+
+Status: implemented, pending operator backend credential/runtime verification
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+PT2 wires the Xiaoyi OpenAI-compatible relay into the backend-only Cloud AI boundary for internal/debug Photo Advisor and Filter Lab generated-filter experiments. Both product surfaces use `deepseek-v4-flash` through server-side configuration only.
+
+### Completed Work
+
+- Added server-side Xiaoyi env placeholders for `XIAOYI_API_KEY`, `XIAOYI_BASE_URL`, `/v1/chat/completions`, and `deepseek-v4-flash` Photo Advisor / Filter Lab model config.
+- Added `/v1/ai/filter-lab` backend route with internal debug guard, consent validation, stripped JPEG/base64 validation, dev rate limit/quota checks, provider timeout, retry/fallback, and safe response envelope.
+- Added Filter Lab request validation for `schemaVersion: "1.0"`, `feature: "filter_lab"`, `mode: "reference_image"`, locale, consent, client, and image payload shape.
+- Reused the existing backend Xiaoyi provider for Photo Advisor and generated filter recipes.
+- Kept Filter Lab output constrained to validated structured recipe JSON with localization keys and safe numeric parameter ranges.
+- Added tests for Xiaoyi config normalization, Photo Advisor request shape, Filter Lab request shape, Bearer auth, `response_format: { type: "json_object" }`, low-detail image payloads, route gating, retry/fallback, and invalid recipe rejection without raw output leakage.
+- Updated README/backend docs with Xiaoyi setup and backend-only provider boundary notes.
+
+### Changed Files
+
+- `.env.example`
+- `README.md`
+- `backend/README.md`
+- `backend/src/server.mjs`
+- `backend/src/routes/filterLab.mjs`
+- `backend/src/validators/validateFilterLabRequest.mjs`
+- `backend/src/validators/validatePhotoAdvisorRequest.mjs`
+- `backend/tests/cloud-ai-boundary.test.mjs`
+- `docs/phase-log.md`
+
+### Tests and Checks
+
+- `npm test --prefix backend`
+- `node backend/scripts/check-xiaoyi-deepseek-relay-readiness.mjs`
+
+### Known TODOs
+
+- Operator must configure a real backend/local ignored `XIAOYI_API_KEY` before any real-provider internal runtime verification.
+- Xiaoyi/deepseek image understanding quality, latency, cost, provider terms, and model vision support still need internal QA.
+- iOS Filter Lab still needs a separate explicit phase before calling the backend route from the app.
+- 改圖師 / image editing provider integration remains future-only and was not added in PT2.
+
+### Boundary Confirmations
+
+- iOS runtime changed: no
+- Camera page changed: no
+- Camera cloud AI entry: no
+- iOS provider SDK/key/direct Xiaoyi call: no
+- Provider keys committed: no
+- Real Xiaoyi provider call in this environment: no
+- Raw image/base64/prompt/provider response logging: no
+- Upload payload changed: no
+- Generated filter bitmap/shader/LUT/image-edit provider: no
+- StoreKit/payment/quota production path: no
+- Sensitive inference added: no
+- `productionReady:false` remains locked.
+
+### Ready for Next Phase
+
+Ready for backend internal credential verification once the operator supplies a local ignored/server-side `XIAOYI_API_KEY`. Not ready for production rollout.
 
 ---
 

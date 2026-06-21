@@ -112,6 +112,32 @@ Firebase-friendly deployment direction:
 - keep `ALLOW_INTERNAL_CLOUD_AI=false` unless intentionally running an internal beta
 - do not commit Firebase project IDs, service account JSON, or production secrets
 
+## Local Xiaoyi DeepSeek Relay Internal Setup
+
+Do not commit real secrets. The Xiaoyi relay key is backend/server-side only and must never be added to iOS.
+
+Local internal test config:
+
+```sh
+XIAOYI_API_KEY=replace_me
+XIAOYI_BASE_URL=https://xiaoyiapi.xyz
+XIAOYI_CHAT_COMPLETIONS_PATH=/v1/chat/completions
+XIAOYI_PHOTO_ADVISOR_MODEL=deepseek-v4-flash
+XIAOYI_FILTER_LAB_MODEL=deepseek-v4-flash
+CLOUD_AI_PROVIDER_MODE=xiaoyiRelayInternal
+ALLOW_INTERNAL_CLOUD_AI=true
+```
+
+The active base URL is `https://xiaoyiapi.xyz`, and the provider adapter posts to `/v1/chat/completions` with OpenAI-compatible JSON chat completions. Photo Advisor and Filter Lab both use `deepseek-v4-flash` by default.
+
+The auth header is OpenAI-compatible:
+
+- `Authorization: Bearer <XIAOYI_API_KEY>`
+
+The API key, raw prompt, raw request body, raw provider response, and raw image/base64 payload must not be printed, committed, persisted, or sent to iOS.
+
+Filter Lab returns a validated structured generated filter recipe only. It does not return generated bitmaps, arbitrary Core Image filter names, shader code, LUT URLs, exact-copy claims, or direct rendering instructions.
+
 ## Endpoints
 
 - `GET /health`
@@ -124,7 +150,13 @@ Firebase-friendly deployment direction:
   - Validates optional `selectedFilterId` against the app filter whitelist.
   - Returns a structured `CloudAIResponse`.
   - Uses mock provider by default.
-  - Can use QweAPI internal provider only when explicitly enabled and internally guarded.
+  - Can use QweAPI or Xiaoyi internal provider only when explicitly enabled and internally guarded.
+- `POST /v1/ai/filter-lab`
+  - Validates a backend-only internal reference-image request shape.
+  - Requires `schemaVersion: "1.0"`, `feature: "filter_lab"`, `mode: "reference_image"`, locale, explicit consent, JPEG image payload, and stripped metadata.
+  - Returns a structured `CloudAIResponse` with `mode: "filter_generation"` and a validated `generatedFilter` recipe on success.
+  - Uses Xiaoyi internal provider only when explicitly enabled and internally guarded.
+  - Falls back to an unavailable response when internal cloud is disabled, credentials are missing, validation fails, provider output is invalid, or the provider is unavailable.
 
 ## Provider Boundary
 
@@ -132,9 +164,10 @@ Executable provider kinds:
 
 - `mock`
 - `qweInternal`
+- `xiaoyiRelayInternal`
 - `disabled`
 
-There is no Firebase AI, Stability, or image-generation provider implementation. QweAPI gateway access is backend-only and internal/debug guarded. Do not add provider SDKs to iOS or provider keys to the repo.
+There is no Firebase AI, Stability, or image-generation provider implementation. QweAPI and Xiaoyi gateway access is backend-only and internal/debug guarded. Do not add provider SDKs to iOS or provider keys to the repo.
 
 ## Validation / Safety
 
