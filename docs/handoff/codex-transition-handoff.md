@@ -1313,3 +1313,15 @@ Latest Phase 21-A7-VERIFY QA Handoff and Uninstalled App Feature Inventory on 20
 - Next recommended step remains operator-run `Phase 21-A7-VERIFY-RUN - Operator MacBook/Xcode Physical-device QA`.
 - No Swift runtime, iOS project setting, provider/cloud call, provider key, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame/depth/image persistence, model file, dataset crawler, AI-assisted labeling run, user-photo training, Depth Anything runtime, Florence runtime, sensitive inference, secret, or production rollout was added.
 - `productionReady:false` remains locked.
+
+Latest PT2-SF-R4 Debug-only iOS Inspiration Backend Integration Plan on 2026-06-21:
+
+- PT2-SF-R4 is docs-only and records the next selected-photo Inspiration backend integration boundary after accepted PT2-SF-R2C Photo Advisor image QA and PT2-SF-R3 Filter Lab structured recipe QA.
+- Added `docs/pt2-sf-r4-debug-ios-inspiration-backend-integration-plan.md`.
+- The plan scopes future app integration to Inspiration selected-photo Photo Advisor and Filter Lab only.
+- Future R5 should reuse existing CloudAI / PhotoAdvisor / Filter Lab abstractions, keep production/default mock/local, and keep provider credentials server-side only.
+- Required R5 gates include DEBUG/internal enablement, explicit AI analysis consent, quota/operator cap, one selected image, metadata-stripping compression, timeout/cancel behavior, sanitized backend errors, and safe fallback.
+- Blocked scopes remain Camera cloud AI, Live Advisor, preview-frame upload, WSS, Auto-Trigger, direct provider URL/key in iOS, image editor / 改圖師 provider behavior, generated image output, StoreKit/quota runtime, and production rollout.
+- No Swift runtime, Xcode project setting, backend runtime, provider/cloud call, API key read/print/commit, image upload, upload payload change, Camera cloud entry, image editor provider behavior, StoreKit/quota runtime, or production rollout was added.
+- `productionReady:false` remains locked.
+- Next recommended step is `PT2-SF-R5 - Debug-only iOS Inspiration Backend Integration Scaffold`.

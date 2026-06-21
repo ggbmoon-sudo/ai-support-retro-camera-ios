@@ -14097,3 +14097,61 @@ Run `Phase 21-A7-VERIFY-RUN - Operator MacBook/Xcode Physical-device QA` on iPho
 ### Ready for Next Phase
 
 Current recommended next step is `Phase 21-A7-VERIFY-RUN - Operator MacBook/Xcode Physical-device QA`. Not ready for production rollout.
+
+## PT2-SF-R4 - Debug-only iOS Inspiration Backend Integration Plan
+
+Status: completed docs-only planning
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+PT2-SF-R4 records the selected-photo Inspiration backend integration plan after accepted PT2-SF-R2C Photo Advisor image QA and PT2-SF-R3 Filter Lab structured recipe QA. It defines how the next phase should connect Photo Advisor and Filter Lab through the backend boundary without provider keys or SiliconFlow URLs in iOS.
+
+### Completed Work
+
+- Added `docs/pt2-sf-r4-debug-ios-inspiration-backend-integration-plan.md`.
+- Defined Inspiration selected-photo scope for Photo Advisor and Filter Lab.
+- Recorded iOS boundaries around existing CloudAI / PhotoAdvisor / Filter Lab abstractions.
+- Recorded backend-only provider credential and response-validation boundaries.
+- Defined debug/internal gates for consent, quota/operator cap, timeout/cancel, fallback, Auth/App Check direction, and default mock/local behavior.
+- Documented request-shape guardrails, response handling, blocked Camera/live/image-editor/provider/direct-iOS scopes, and PT2-SF-R5 exit criteria.
+- Updated the roadmap so the next recommended mainline is `PT2-SF-R5 - Debug-only iOS Inspiration Backend Integration Scaffold`.
+
+### Changed Files
+
+- `docs/pt2-sf-r4-debug-ios-inspiration-backend-integration-plan.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `backend/README.md`
+
+### Tests and Checks
+
+- `git diff --check`
+- Docs/runtime-boundary safety scans for Swift/Xcode/backend runtime drift, provider keys, direct provider URLs in iOS, provider/network/upload execution markers, raw artifact leakage, and `productionReady:true`
+
+### Boundary Confirmations
+
+- Docs-only phase: yes
+- Swift runtime changed: no
+- Xcode project changed: no
+- Backend runtime changed: no
+- Provider/model/cloud call: no
+- API key read/printed/committed: no
+- Image upload: no
+- Upload payload changed: no
+- Camera cloud AI entry: no
+- Filter Lab generated bitmap/shader/LUT behavior: no
+- Image editor provider behavior: no
+- StoreKit/quota runtime: no
+- Production rollout: no
+- `productionReady:false` remains locked.
+
+### Xcode Verification Needed
+
+None for this docs-only phase. Xcode runtime behavior should be unchanged; no Swift or Xcode project file was changed.
+
+### Ready for Next Phase
+
+Recommended next step is `PT2-SF-R5 - Debug-only iOS Inspiration Backend Integration Scaffold`. Keep it small, debug/internal only, selected-photo Inspiration only, backend-mediated only, production/default mock/local, and Camera local-only. Do not run provider calls unless separately approved.
