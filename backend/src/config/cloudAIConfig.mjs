@@ -6,6 +6,14 @@ const SUPPORTED_QWE_BASE_URL = "https://qweapi.com";
 const DEFAULT_XIAOYI_CHAT_COMPLETIONS_PATH = "/v1/chat/completions";
 const SUPPORTED_XIAOYI_BASE_URL = "https://xiaoyiapi.xyz";
 const DEFAULT_XIAOYI_MODEL = "deepseek-v4-flash";
+const DEFAULT_SILICONFLOW_CHAT_COMPLETIONS_PATH = "/v1/chat/completions";
+const SUPPORTED_SILICONFLOW_BASE_URL = "https://api.siliconflow.com";
+const DEFAULT_SILICONFLOW_VISION_MODEL = "Qwen/Qwen3-VL-32B-Instruct";
+const SUPPORTED_SILICONFLOW_VISION_MODELS = new Set([
+  DEFAULT_SILICONFLOW_VISION_MODEL,
+  "Qwen/Qwen3-VL-8B-Instruct",
+  "Qwen/Qwen3-VL-30B-A3B-Instruct"
+]);
 
 export function cloudAIConfig(env = process.env) {
   return {
@@ -21,7 +29,12 @@ export function cloudAIConfig(env = process.env) {
     xiaoyiBaseURL: normalizeXiaoyiRelayBaseURL(env.XIAOYI_BASE_URL),
     xiaoyiChatCompletionsPath: normalizeXiaoyiRelayPath(env.XIAOYI_CHAT_COMPLETIONS_PATH),
     xiaoyiPhotoAdvisorModel: normalizeXiaoyiModel(env.XIAOYI_PHOTO_ADVISOR_MODEL),
-    xiaoyiFilterLabModel: normalizeXiaoyiModel(env.XIAOYI_FILTER_LAB_MODEL)
+    xiaoyiFilterLabModel: normalizeXiaoyiModel(env.XIAOYI_FILTER_LAB_MODEL),
+    siliconFlowAPIKey: env.SILICONFLOW_API_KEY ?? "",
+    siliconFlowBaseURL: normalizeSiliconFlowBaseURL(env.SILICONFLOW_BASE_URL),
+    siliconFlowChatCompletionsPath: normalizeSiliconFlowPath(env.SILICONFLOW_CHAT_COMPLETIONS_PATH),
+    siliconFlowPhotoAdvisorModel: normalizeSiliconFlowVisionModel(env.SILICONFLOW_PHOTO_ADVISOR_MODEL),
+    siliconFlowFilterLabModel: normalizeSiliconFlowVisionModel(env.SILICONFLOW_FILTER_LAB_MODEL)
   };
 }
 
@@ -31,6 +44,8 @@ function normalizeProviderMode(value) {
     return ProviderKind.qweInternal;
   case ProviderKind.xiaoyiRelayInternal:
     return ProviderKind.xiaoyiRelayInternal;
+  case ProviderKind.siliconflowInternal:
+    return ProviderKind.siliconflowInternal;
   case ProviderKind.disabled:
     return ProviderKind.disabled;
   case ProviderKind.mock:
@@ -148,4 +163,56 @@ function normalizeXiaoyiModel(value) {
     return DEFAULT_XIAOYI_MODEL;
   }
   return trimmed === DEFAULT_XIAOYI_MODEL ? DEFAULT_XIAOYI_MODEL : "";
+}
+
+function normalizeSiliconFlowBaseURL(value) {
+  const trimmed = String(value ?? "").trim();
+  if (trimmed.length === 0) {
+    return SUPPORTED_SILICONFLOW_BASE_URL;
+  }
+
+  let url;
+  try {
+    url = new URL(trimmed);
+  } catch {
+    return "";
+  }
+
+  if (url.protocol !== "https:" || url.search || url.hash) {
+    return "";
+  }
+
+  const pathname = url.pathname.replace(/\/+$/, "");
+  const normalized = `${url.origin}${pathname}`;
+  return [
+    SUPPORTED_SILICONFLOW_BASE_URL,
+    `${SUPPORTED_SILICONFLOW_BASE_URL}/v1`,
+    `${SUPPORTED_SILICONFLOW_BASE_URL}/v1/chat/completions`
+  ].includes(normalized) ? SUPPORTED_SILICONFLOW_BASE_URL : "";
+}
+
+function normalizeSiliconFlowPath(value) {
+  const trimmed = String(value ?? "").trim();
+  if (trimmed.length === 0) {
+    return DEFAULT_SILICONFLOW_CHAT_COMPLETIONS_PATH;
+  }
+
+  if (!trimmed.startsWith("/") || trimmed.includes("?") || trimmed.includes("#")) {
+    return "";
+  }
+
+  try {
+    const url = new URL(trimmed, SUPPORTED_SILICONFLOW_BASE_URL);
+    return url.pathname === DEFAULT_SILICONFLOW_CHAT_COMPLETIONS_PATH ? DEFAULT_SILICONFLOW_CHAT_COMPLETIONS_PATH : "";
+  } catch {
+    return "";
+  }
+}
+
+function normalizeSiliconFlowVisionModel(value) {
+  const trimmed = String(value ?? "").trim();
+  if (trimmed.length === 0) {
+    return DEFAULT_SILICONFLOW_VISION_MODEL;
+  }
+  return SUPPORTED_SILICONFLOW_VISION_MODELS.has(trimmed) ? trimmed : "";
 }

@@ -125,6 +125,21 @@ export function resolveProviderKind({ config, headers = {} }) {
     return ProviderKind.xiaoyiRelayInternal;
   }
 
+  if (config.providerMode === ProviderKind.siliconflowInternal) {
+    if (!isInternalCloudAIAllowed({ headers, config })) {
+      return ProviderKind.mock;
+    }
+    if (
+      !config.siliconFlowAPIKey ||
+      !config.siliconFlowBaseURL ||
+      !config.siliconFlowChatCompletionsPath ||
+      !config.siliconFlowPhotoAdvisorModel
+    ) {
+      return ProviderKind.disabled;
+    }
+    return ProviderKind.siliconflowInternal;
+  }
+
   if (config.providerMode === ProviderKind.disabled) {
     return ProviderKind.disabled;
   }

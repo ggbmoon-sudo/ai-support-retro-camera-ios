@@ -12,6 +12,11 @@ import {
   XiaoyiDeepseekRelayProvider,
   parseXiaoyiGeneratedFilterRecipeResponse
 } from "../src/providers/XiaoyiDeepseekRelayProvider.mjs";
+import {
+  SiliconFlowCloudAIProvider,
+  parseSiliconFlowGeneratedFilterRecipeResponse
+} from "../src/providers/SiliconFlowCloudAIProvider.mjs";
+import { validSyntheticPhotoAdvisorCandidate } from "../src/providers/siliconflowPhotoAdvisorProviderContract.mjs";
 import { generatedFilterRecipeExampleCandidate } from "../src/providers/generatedFilterRecipeContract.mjs";
 import { cloudAIConfig } from "../src/config/cloudAIConfig.mjs";
 import { buildPhotoAdvisorPrompt } from "../src/prompts/photoAdvisorPrompt.mjs";
@@ -332,11 +337,11 @@ test("unsafe provider output maps to fallback response", async () => {
 test("provider key is not required and mock provider is the only active path", () => {
   assert.deepEqual(providerBoundaryStatus(), {
     mode: "mock-only",
-    executableProviders: ["mock", "qweInternal", "xiaoyiRelayInternal", "disabled"],
+    executableProviders: ["mock", "qweInternal", "xiaoyiRelayInternal", "siliconflowInternal", "disabled"],
     providerCallsEnabled: false,
     providerKeyRequired: false
   });
-  assert.deepEqual(executableProviderKinds(), ["mock", "qweInternal", "xiaoyiRelayInternal", "disabled"]);
+  assert.deepEqual(executableProviderKinds(), ["mock", "qweInternal", "xiaoyiRelayInternal", "siliconflowInternal", "disabled"]);
 });
 
 test("qwe provider is not used when mode is mock", () => {
@@ -522,6 +527,26 @@ test("qwe internal path returns validated structured response when enabled", asy
   assert.equal(result.body.mode, "post_capture");
 });
 
+test("siliconflow internal path returns validated photo advisor response when enabled", async () => {
+  const provider = new SiliconFlowCloudAIProvider({
+    apiKey: "test-key",
+    baseURL: "https://api.siliconflow.com",
+    photoAdvisorModel: "Qwen/Qwen3-VL-32B-Instruct",
+    fetchImpl: async () => okJSON(openAICompatibleJSON(validSyntheticPhotoAdvisorCandidate()))
+  });
+
+  const result = await handlePhotoAdvisorRequest(validRequest(), {
+    provider,
+    config: enabledSiliconFlowAPIConfig(),
+    headers: { "x-internal-debug-cloudai": "true" }
+  });
+
+  assert.equal(result.status, 200);
+  assert.equal(result.body.source, "cloud");
+  assert.equal(result.body.mode, "post_capture");
+  assert.equal(result.metadata.providerKind, "siliconflowInternal");
+});
+
 test("xiaoyi config trims and allows only the supported relay url, path, and model", () => {
   const config = cloudAIConfig({
     CLOUD_AI_PROVIDER_MODE: "xiaoyiRelayInternal",
@@ -610,7 +635,109 @@ test("xiaoyi generated filter parser rejects invalid recipe schema without raw o
   });
 });
 
+test("siliconflow config trims supported base url variants, path, and vision models", () => {
+  const config = cloudAIConfig({
+    CLOUD_AI_PROVIDER_MODE: "siliconflowInternal",
+    SILICONFLOW_BASE_URL: " https://api.siliconflow.com/v1/chat/completions ",
+    SILICONFLOW_CHAT_COMPLETIONS_PATH: " /v1/chat/completions ",
+    SILICONFLOW_PHOTO_ADVISOR_MODEL: " Qwen/Qwen3-VL-32B-Instruct ",
+    SILICONFLOW_FILTER_LAB_MODEL: " Qwen/Qwen3-VL-32B-Instruct "
+  });
+
+  assert.equal(config.providerMode, "siliconflowInternal");
+  assert.equal(config.siliconFlowBaseURL, "https://api.siliconflow.com");
+  assert.equal(config.siliconFlowChatCompletionsPath, "/v1/chat/completions");
+  assert.equal(config.siliconFlowPhotoAdvisorModel, "Qwen/Qwen3-VL-32B-Instruct");
+  assert.equal(config.siliconFlowFilterLabModel, "Qwen/Qwen3-VL-32B-Instruct");
+  assert.equal(cloudAIConfig({}).siliconFlowBaseURL, "https://api.siliconflow.com");
+  assert.equal(cloudAIConfig({ SILICONFLOW_BASE_URL: "https://api.siliconflow.com" }).siliconFlowBaseURL, "https://api.siliconflow.com");
+  assert.equal(cloudAIConfig({ SILICONFLOW_BASE_URL: "https://api.siliconflow.com/v1" }).siliconFlowBaseURL, "https://api.siliconflow.com");
+  assert.equal(cloudAIConfig({ SILICONFLOW_BASE_URL: "http://api.siliconflow.com" }).siliconFlowBaseURL, "");
+  assert.equal(cloudAIConfig({ SILICONFLOW_BASE_URL: "https://api.siliconflow.com?token=bad" }).siliconFlowBaseURL, "");
+  assert.equal(cloudAIConfig({ SILICONFLOW_BASE_URL: "https://evil.example" }).siliconFlowBaseURL, "");
+  assert.equal(cloudAIConfig({ SILICONFLOW_CHAT_COMPLETIONS_PATH: "/v1/chat/completions?token=bad" }).siliconFlowChatCompletionsPath, "");
+  assert.equal(cloudAIConfig({ SILICONFLOW_PHOTO_ADVISOR_MODEL: "deepseek-ai/DeepSeek-V4-Flash" }).siliconFlowPhotoAdvisorModel, "");
+});
+
+test("siliconflow provider builds image-first photo advisor request and maps semantic output", async () => {
+  let capturedURL;
+  let capturedHeaders;
+  let capturedRequest;
+  const provider = new SiliconFlowCloudAIProvider({
+    apiKey: "test-key",
+    baseURL: "https://api.siliconflow.com",
+    photoAdvisorModel: "Qwen/Qwen3-VL-32B-Instruct",
+    path: "/v1/chat/completions",
+    fetchImpl: async (url, request) => {
+      capturedURL = url;
+      capturedHeaders = request.headers;
+      capturedRequest = JSON.parse(request.body);
+      return okJSON(openAICompatibleJSON(validSyntheticPhotoAdvisorCandidate()));
+    }
+  });
+
+  const response = await provider.analyzePhotoAdvisor(providerInput());
+
+  assert.equal(response.source, "cloud");
+  assert.equal(response.recommendedFilters[0].filterId, "soft_warm_400");
+  assert.equal(validateCloudAIResponse(response).ok, true);
+  assert.equal(capturedURL, "https://api.siliconflow.com/v1/chat/completions");
+  assert.equal(capturedHeaders.authorization, "Bearer test-key");
+  assert.equal(capturedRequest.model, "Qwen/Qwen3-VL-32B-Instruct");
+  assert.equal(capturedRequest.stream, false);
+  assert.equal(capturedRequest.temperature, 0.1);
+  assert.equal(capturedRequest.top_p, 0.8);
+  assert.equal(capturedRequest.max_tokens, 192);
+  assert.equal(capturedRequest.messages[1].content[0].image_url.url, "data:image/jpeg;base64,/9j/");
+  assert.equal(capturedRequest.messages[1].content[0].image_url.detail, "low");
+  assert.equal(capturedRequest.messages[1].content[1].text.includes("filterFamilyCandidate"), true);
+});
+
+test("siliconflow provider builds image-first Filter Lab recipe request", async () => {
+  let capturedURL;
+  let capturedHeaders;
+  let capturedRequest;
+  const recipe = generatedFilterRecipeExampleCandidate();
+  const provider = new SiliconFlowCloudAIProvider({
+    apiKey: "test-key",
+    baseURL: "https://api.siliconflow.com",
+    filterLabModel: "Qwen/Qwen3-VL-32B-Instruct",
+    path: "/v1/chat/completions",
+    fetchImpl: async (url, request) => {
+      capturedURL = url;
+      capturedHeaders = request.headers;
+      capturedRequest = JSON.parse(request.body);
+      return okJSON(openAICompatibleJSON(recipe));
+    }
+  });
+
+  const response = await provider.generateFilterRecipe(providerInput());
+
+  assert.deepEqual(response, recipe);
+  assert.equal(capturedURL, "https://api.siliconflow.com/v1/chat/completions");
+  assert.equal(capturedHeaders.authorization, "Bearer test-key");
+  assert.equal(capturedRequest.model, "Qwen/Qwen3-VL-32B-Instruct");
+  assert.equal(capturedRequest.stream, false);
+  assert.deepEqual(capturedRequest.response_format, { type: "json_object" });
+  assert.equal(capturedRequest.messages[0].content.includes("Filter Lab recipe"), true);
+  assert.equal(capturedRequest.messages[1].content[0].image_url.url, "data:image/jpeg;base64,/9j/");
+  assert.equal(capturedRequest.messages[1].content[0].image_url.detail, "low");
+  assert.equal(capturedRequest.messages[1].content[1].text.includes("Allowed recipeVersion: 1.0"), true);
+});
+
+test("siliconflow generated filter parser rejects invalid recipe schema without raw output", () => {
+  assert.throws(() => parseSiliconFlowGeneratedFilterRecipeResponse(openAICompatibleJSON({
+    ...generatedFilterRecipeExampleCandidate(),
+    source: "provider_debug"
+  })), (error) => {
+    assert.equal(error.code, "provider_invalid_schema");
+    assert.equal(String(error.message).includes("provider_debug"), false);
+    return true;
+  });
+});
+
 test("filter lab route requires xiaoyi internal debug approval", async () => {
+  resetDevRateLimitForTests();
   let calls = 0;
   const provider = {
     async generateFilterRecipe() {
@@ -635,6 +762,7 @@ test("filter lab route requires xiaoyi internal debug approval", async () => {
 });
 
 test("filter lab route returns validated generated recipe when xiaoyi is enabled", async () => {
+  resetDevRateLimitForTests();
   const provider = {
     async generateFilterRecipe() {
       return generatedFilterRecipeExampleCandidate();
@@ -656,7 +784,31 @@ test("filter lab route returns validated generated recipe when xiaoyi is enabled
   assert.equal(result.metadata.providerKind, "xiaoyiRelayInternal");
 });
 
+test("filter lab route returns validated generated recipe when siliconflow is enabled", async () => {
+  resetDevRateLimitForTests();
+  const provider = {
+    async generateFilterRecipe() {
+      return generatedFilterRecipeExampleCandidate();
+    }
+  };
+
+  const result = await handleFilterLabRequest(validFilterLabRequest(), {
+    provider,
+    config: enabledSiliconFlowAPIConfig(),
+    headers: { "x-internal-debug-cloudai": "true" }
+  });
+
+  assert.equal(result.status, 200);
+  assert.equal(result.body.mode, "filter_generation");
+  assert.equal(result.body.source, "cloud");
+  assert.equal(result.body.generatedFilter.source, "cloud");
+  assert.equal(result.body.generatedFilter.recipeVersion, "1.0");
+  assert.equal(result.body.safety.containsSensitiveInference, false);
+  assert.equal(result.metadata.providerKind, "siliconflowInternal");
+});
+
 test("filter lab route falls back after generated recipe schema retry failure", async () => {
+  resetDevRateLimitForTests();
   let calls = 0;
   const provider = {
     async generateFilterRecipe() {
@@ -683,7 +835,7 @@ test("filter lab route falls back after generated recipe schema retry failure", 
   assert.equal(result.body.error.code, "provider_invalid_schema");
 });
 
-test("filter lab provider kind only enables xiaoyi relay with full backend config", () => {
+test("filter lab provider kind only enables approved internal providers with full backend config", () => {
   assert.equal(resolveFilterLabProviderKind({
     config: enabledQweAPIConfig(),
     headers: { "x-internal-debug-cloudai": "true" }
@@ -696,6 +848,17 @@ test("filter lab provider kind only enables xiaoyi relay with full backend confi
     config: {
       ...enabledXiaoyiAPIConfig(),
       xiaoyiAPIKey: ""
+    },
+    headers: { "x-internal-debug-cloudai": "true" }
+  }), "disabled");
+  assert.equal(resolveFilterLabProviderKind({
+    config: enabledSiliconFlowAPIConfig(),
+    headers: { "x-internal-debug-cloudai": "true" }
+  }), "siliconflowInternal");
+  assert.equal(resolveFilterLabProviderKind({
+    config: {
+      ...enabledSiliconFlowAPIConfig(),
+      siliconFlowAPIKey: ""
     },
     headers: { "x-internal-debug-cloudai": "true" }
   }), "disabled");
@@ -1322,6 +1485,18 @@ function enabledXiaoyiAPIConfig() {
     xiaoyiChatCompletionsPath: "/v1/chat/completions",
     xiaoyiPhotoAdvisorModel: "deepseek-v4-flash",
     xiaoyiFilterLabModel: "deepseek-v4-flash"
+  };
+}
+
+function enabledSiliconFlowAPIConfig() {
+  return {
+    providerMode: "siliconflowInternal",
+    allowInternalCloudAI: true,
+    siliconFlowAPIKey: "test-key",
+    siliconFlowBaseURL: "https://api.siliconflow.com",
+    siliconFlowChatCompletionsPath: "/v1/chat/completions",
+    siliconFlowPhotoAdvisorModel: "Qwen/Qwen3-VL-32B-Instruct",
+    siliconFlowFilterLabModel: "Qwen/Qwen3-VL-32B-Instruct"
   };
 }
 

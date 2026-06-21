@@ -14284,3 +14284,74 @@ Build the app again on MacBook/Xcode and confirm the two `CloudAIEndpointClient`
 ### Ready for Next Phase
 
 Recommended next step remains `PT2-SF-R5-VERIFY - MacBook/Xcode Debug Inspiration Backend Smoke`. Start with backend disabled/fallback verification only. A provider-backed debug smoke still requires separate explicit approval and should be one selected image only.
+
+## PT2-SF-R6 - Backend SiliconFlow App Endpoint Routing Fix
+
+Status: implemented, pending MacBook/Xcode debug verification
+Date: 2026-06-22
+Production readiness: `productionReady:false`
+
+### Summary
+
+PT2-SF-R6 fixes the backend routing gap reported after the app ran normally but Filter Lab generation did not reach AI. The app-side DEBUG scaffold could call the backend path, but backend Filter Lab provider resolution still only enabled the old Xiaoyi relay mode. This phase wires `siliconflowInternal` into the internal/debug Photo Advisor and Filter Lab backend routes using server-side-only config.
+
+### Completed Work
+
+- Added `SiliconFlowCloudAIProvider` for OpenAI-compatible SiliconFlow chat completions.
+- Added SiliconFlow config normalization for API key, base URL, chat completions path, Photo Advisor model, and Filter Lab model.
+- Registered `siliconflowInternal` in the backend provider registry and provider boundary metadata.
+- Updated Photo Advisor route provider resolution so `CLOUD_AI_PROVIDER_MODE=siliconflowInternal` can execute under the internal debug gate.
+- Updated Filter Lab route provider resolution so `CLOUD_AI_PROVIDER_MODE=siliconflowInternal` can execute under the internal debug gate.
+- Added mocked tests for SiliconFlow config normalization, request shape, parser rejection, Photo Advisor route activation, and Filter Lab route activation.
+- Added `docs/pt2-sf-r6-backend-siliconflow-app-endpoint-routing-fix.md`.
+- Updated README/backend README/roadmap next action so the next step is R6 verification rather than more Camera work.
+
+### Changed Files
+
+- `backend/src/config/cloudAIConfig.mjs`
+- `backend/src/providers/ProviderRegistry.mjs`
+- `backend/src/providers/providerTypes.mjs`
+- `backend/src/providers/SiliconFlowCloudAIProvider.mjs`
+- `backend/src/routes/filterLab.mjs`
+- `backend/src/routes/photoAdvisor.mjs`
+- `backend/tests/cloud-ai-boundary.test.mjs`
+- `backend/README.md`
+- `README.md`
+- `docs/pt2-sf-r6-backend-siliconflow-app-endpoint-routing-fix.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-log.md`
+
+### Tests and Checks
+
+- `npm --prefix backend test`
+  - Result: 408 tests passed.
+- `git diff --check`
+- Safety scans for Swift/Xcode/model artifact changes, provider key/secret leakage, runtime execution markers, and `productionReady:true`.
+- Xcode/MacBook app-to-backend verification was not run in this Windows environment.
+
+### Boundary Confirmations
+
+- Swift runtime changed: no
+- Xcode project changed: no
+- Backend runtime changed: yes, internal/debug SiliconFlow routing only
+- Provider/model call run: no
+- API key read/printed/committed: no
+- Tests used mocked fetch only: yes
+- Direct provider URL/key in iOS: no
+- Provider SDK in iOS: no
+- Image upload run during this phase: no
+- Upload payload changed for production/default: no
+- Camera cloud AI entry: no
+- Image editor provider behavior: no
+- Generated bitmap/shader/LUT behavior: no
+- StoreKit/quota runtime: no
+- Production rollout: no
+- `productionReady:false` remains locked.
+
+### Xcode Verification Needed
+
+Run `PT2-SF-R6-VERIFY - MacBook/Xcode Debug SiliconFlow App Endpoint Routing Verification`. Start with backend disabled/fallback verification. If separately approved, run one selected-photo provider-backed debug smoke through the backend only and confirm no provider key, direct provider URL, raw prompt/request/response/image/base64, or Authorization header appears in iOS logs/UI.
+
+### Ready for Next Phase
+
+Recommended next step is `PT2-SF-R6-VERIFY - MacBook/Xcode Debug SiliconFlow App Endpoint Routing Verification`. Keep selected-photo Inspiration only, debug/internal only, backend-mediated only, production/default mock/local, and Camera local-only. Do not start image editor provider work, Camera AI work, direct iOS provider calls, live provider smoke, or production rollout without separate explicit approval.

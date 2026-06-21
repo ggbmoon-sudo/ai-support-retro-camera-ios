@@ -83,7 +83,10 @@ export async function handleFilterLabRequest(requestBody, options = {}) {
 }
 
 export function resolveFilterLabProviderKind({ config, headers = {} }) {
-  if (config.providerMode !== ProviderKind.xiaoyiRelayInternal) {
+  if (
+    config.providerMode !== ProviderKind.xiaoyiRelayInternal &&
+    config.providerMode !== ProviderKind.siliconflowInternal
+  ) {
     return ProviderKind.disabled;
   }
 
@@ -91,16 +94,29 @@ export function resolveFilterLabProviderKind({ config, headers = {} }) {
     return ProviderKind.disabled;
   }
 
+  if (config.providerMode === ProviderKind.xiaoyiRelayInternal) {
+    if (
+      !config.xiaoyiAPIKey ||
+      !config.xiaoyiBaseURL ||
+      !config.xiaoyiChatCompletionsPath ||
+      !config.xiaoyiFilterLabModel
+    ) {
+      return ProviderKind.disabled;
+    }
+
+    return ProviderKind.xiaoyiRelayInternal;
+  }
+
   if (
-    !config.xiaoyiAPIKey ||
-    !config.xiaoyiBaseURL ||
-    !config.xiaoyiChatCompletionsPath ||
-    !config.xiaoyiFilterLabModel
+    !config.siliconFlowAPIKey ||
+    !config.siliconFlowBaseURL ||
+    !config.siliconFlowChatCompletionsPath ||
+    !config.siliconFlowFilterLabModel
   ) {
     return ProviderKind.disabled;
   }
 
-  return ProviderKind.xiaoyiRelayInternal;
+  return ProviderKind.siliconflowInternal;
 }
 
 async function generateWithRetry({ provider, input, timeoutMs }) {

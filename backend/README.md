@@ -119,10 +119,12 @@ Do not commit real secrets. The SiliconFlow key is backend/server-side only and 
 Local internal text-only credential smoke config:
 
 ```sh
+CLOUD_AI_PROVIDER_MODE=siliconflowInternal
+ALLOW_INTERNAL_CLOUD_AI=true
 SILICONFLOW_API_KEY=replace_me
 SILICONFLOW_BASE_URL=https://api.siliconflow.com
 SILICONFLOW_CHAT_COMPLETIONS_PATH=/v1/chat/completions
-SILICONFLOW_PHOTO_ADVISOR_MODEL=deepseek-ai/DeepSeek-V4-Flash
+SILICONFLOW_PHOTO_ADVISOR_MODEL=Qwen/Qwen3-VL-32B-Instruct
 SILICONFLOW_FILTER_LAB_MODEL=Qwen/Qwen3-VL-32B-Instruct
 ```
 
@@ -187,7 +189,9 @@ The default command is dry-run only and makes no network call or image read. The
 
 Current PT2-SF-R3 result: the explicitly approved one-image synthetic Filter Lab recipe QA made exactly one backend-only provider/model call with `qwen3_vl_32b_instruct`, read exactly one ignored synthetic image, attempted exactly one image upload, and returned sanitized `acceptedCount:1`, `httpStatusBucket:2xx`, and latency bucket `gt_15s`. The gate validates generated filter recipe JSON only and blocks generated bitmaps, shader/code, LUT URLs, rendering instructions, final localized UI copy, raw recipe/provider text, iOS integration, Camera AI, image editor provider behavior, and production rollout. `productionReady:false` remains locked.
 
-Next recommended backend/app step: PT2-SF-R5-VERIFY MacBook/Xcode debug Inspiration backend smoke. PT2-SF-R5 added the debug-only selected-photo Filter Lab backend scaffold in iOS. Verify disabled/fallback behavior against the local backend boundary first; no provider run unless separately approved. Keep selected-photo Inspiration only, debug/internal only, backend-mediated only, production/default mock/local, and Camera local-only; no iOS provider key, no direct SiliconFlow URL in iOS, and no production/default cloud rollout.
+PT2-SF-R6 fixes the backend app endpoint routing gap after the app-side DEBUG scaffold: when the backend env uses `CLOUD_AI_PROVIDER_MODE=siliconflowInternal`, both `/v1/ai/photo-advisor` and `/v1/ai/filter-lab` can resolve the server-side SiliconFlow provider under the internal debug gate. The runtime provider posts to `/v1/chat/completions` with OpenAI-compatible `Authorization: Bearer` auth, maps Photo Advisor semantic output through the backend validator, and validates Filter Lab generated recipe JSON before returning it to the app. This phase used mocked tests only; no live credential smoke, provider credential commit, iOS provider URL/key, Camera cloud entry, production/default rollout, or provider output/raw image logging was added.
+
+Next recommended backend/app step: PT2-SF-R6-VERIFY MacBook/Xcode debug SiliconFlow app endpoint routing verification. Verify disabled/fallback behavior first, then a single selected-photo Photo Advisor or Filter Lab provider-backed debug smoke only if separately approved and using server-side env credentials. Keep selected-photo Inspiration only, debug/internal only, backend-mediated only, production/default mock/local, and Camera local-only; no iOS provider key, no direct SiliconFlow URL in iOS, and no production/default cloud rollout.
 
 ## Local Xiaoyi DeepSeek Relay Internal Setup (Historical Fallback)
 
