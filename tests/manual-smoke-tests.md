@@ -4759,6 +4759,23 @@ Backend local CV calibration smoke verification:
 - [ ] Confirm no Xcode runtime behavior is expected to change.
 - [ ] Confirm no Swift runtime file, model file, Core ML package, model download, Camera integration, upload path, provider/model key, API key, Xiaoyi relay call, crawler/download mode, image upload, cloud/provider call, network call, training/fine-tuning, app runtime transfer, or production rollout was added.
 
+## Phase OD-R7E - Local CV Expected Range Comparison
+
+Backend local CV expected range verification:
+
+- [ ] From `backend/`, run `npm run qa:aesthetic-local-cv:expected-range`.
+- [ ] From `backend/`, run `node --test tests/aesthetic-local-cv-expected-range-comparison.test.mjs`.
+- [ ] Confirm output has `runMode:"expected_range_comparison_no_image_read"`.
+- [ ] Confirm `fixtureToken:"calibration_001"`, `comparisonPassed:true`, and `acceptedForRangeReview:true`.
+- [ ] Confirm execution flags report `imageReadsPerformed:false`, `cvInferencePerformed:false`, `networkCallsMade:false`, `uploadPerformed:false`, `providerCallAttempted:false`, `generatedReportsPersisted:false`, `appRuntimeIntegrationEnabled:false`, and `productionReady:false`.
+- [ ] Confirm `horizonAngle:-4` creates a soft warning only.
+- [ ] Confirm `visualWeightMoment:"right_heavy"` creates a soft spatial-balance warning only.
+- [ ] Confirm there are no blocker buckets for the OD-R7D-R1 inline fixture.
+- [ ] Confirm the output does not emit score, rating, or aesthetic grading fields.
+- [ ] Confirm no image path, base64, EXIF/GPS, raw metadata, provider payload, or debug dump is printed.
+- [ ] Confirm no Xcode runtime behavior is expected to change.
+- [ ] Confirm no Swift runtime file, model file, Core ML package, model download, Camera integration, upload path, provider/model key, API key, Xiaoyi relay call, crawler/download mode, image read by default, image upload, cloud/provider call, network call, training/fine-tuning, app runtime transfer, or production rollout was added.
+
 ## Phase OD-R8A - Parameter Tuning Harness Dry-run
 
 Backend parameter tuning dry-run verification:

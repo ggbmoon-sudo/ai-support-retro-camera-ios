@@ -8,7 +8,7 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase OD-R7D - Explicit Ignored Local Fixture Calibration Smoke
+Current phase: Phase OD-R7E - Local CV Calibration Expected Range Comparison
 Status: completed
 Latest implementation: Phase OD-R7D adds a backend/local-only ignored local fixture calibration smoke for OD-R7B/OD-R7C. The default CLI safely blocks when ignored config or fixture prerequisites are absent. If explicitly approved locally, it may read exactly one ignored `calibration_001` fixture and emit sanitized in-memory feature buckets only. It writes no reports and makes no provider/cloud/Xiaoyi relay call, network call, upload, crawler/download, training/fine-tuning, iOS runtime integration, Swift file, model install, app runtime transfer, real photo/local config/generated report commit, or production rollout. `productionReady:false` remains locked.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
@@ -137,7 +137,7 @@ Phase OD-R7D adds a backend/local-only ignored local fixture calibration smoke f
 
 ### Known TODOs
 
-- OD-R7D does not compare calibration output against expected manual-review ranges. Future OD-R7E may add expected range comparison using sanitized fixture-token output only.
+- OD-R7E now compares sanitized calibration output against expected manual-review ranges using inline sanitized fixture-token output only.
 - OD-R7D does not write reports, commit real fixtures/configs, train, fine-tune, or enable app runtime behavior.
 
 ### Ready for Next Phase
@@ -13092,6 +13092,72 @@ Phase OD-R6B adds a backend-only Human Review Queue schema for reviewing teacher
 ### Next Phase
 
 Recommended next OD-R phase: `Phase OD-R7 - Local CV Feature Extractor Benchmark`, backend-only/dry-run or approved synthetic benchmark planning only. Not ready for production rollout.
+## Phase OD-R7E - Local CV Calibration Expected Range Comparison
+
+Status: completed
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase OD-R7E adds backend/local-only expected range comparison for sanitized OD-R7D calibration feature output. It uses the OD-R7D-R1 `calibration_001` vector as an inline fixture and reads no images by default.
+
+### Completed Work
+
+- Added `backend/src/qa/aestheticLocalCvExpectedRangeComparison.mjs`.
+- Added `backend/scripts/run-aesthetic-local-cv-expected-range-comparison.mjs`.
+- Added `backend/tests/aesthetic-local-cv-expected-range-comparison.test.mjs`.
+- Added `npm run qa:aesthetic-local-cv:expected-range`.
+- Added `docs/od-r7e-local-cv-expected-range-comparison.md`.
+- Updated README, backend/iOS README, roadmap, handoff, phase log, and manual smoke notes for OD-R7E.
+
+### Changed Files
+
+- `README.md`
+- `backend/README.md`
+- `backend/package.json`
+- `backend/scripts/run-aesthetic-local-cv-expected-range-comparison.mjs`
+- `backend/src/qa/aestheticLocalCvExpectedRangeComparison.mjs`
+- `backend/tests/aesthetic-local-cv-expected-range-comparison.test.mjs`
+- `docs/od-r7e-local-cv-expected-range-comparison.md`
+- `docs/on-device-live-framing-ai-roadmap.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `ios-app/README.md`
+- `tests/manual-smoke-tests.md`
+
+### Boundary Checks
+
+- Backend/local-only expected range comparison: yes
+- Inline sanitized OD-R7D-R1 feature vector only: yes
+- Soft warning buckets rather than scores: yes
+- Image read by default: no
+- Real CV inference performed: no
+- Provider/cloud/Xiaoyi relay call made: no
+- Network/upload performed: no
+- Real photos/local configs/generated reports committed: no
+- Swift/Xcode/runtime integration added: no
+- Model/Core ML/ONNX/TFLite/weight file added: no
+- Training/fine-tuning enabled: no
+- App runtime transfer enabled: no
+- Production rollout: no
+- `productionReady:false`: yes
+
+### Verification
+
+- `node --test tests/aesthetic-local-cv-expected-range-comparison.test.mjs` should pass.
+- `npm run qa:aesthetic-local-cv:expected-range` should pass.
+- Full `npm test`, diff checks, and safety scans should pass before commit/push.
+
+### Known TODOs
+
+- Future OD-R7F may aggregate multiple approved local calibration outputs after manual review.
+- Any future image-read calibration remains ignored-local, approval-gated, sanitized, and separate from iOS runtime behavior.
+
+### Ready for Next Phase
+
+Ready for a future `Phase OD-R7F - Local CV Calibration Multi-fixture Aggregation Gate` after commit/push. Not ready for production rollout.
 ## Phase OD-R5B - Cloud Teacher Provider Sandbox Readiness Gate
 
 Status: completed

@@ -1283,3 +1283,12 @@ Latest Phase OD-R7D Local CV Calibration Smoke on 2026-06-21:
 - If an ignored local config and `calibration_001` fixture exist, the smoke may read exactly one ignored local fixture and emit sanitized in-memory feature buckets only.
 - No report file is written, no real photos/local configs/generated reports are committed, and no provider/cloud/Xiaoyi relay call, network call, upload, model file, Swift/Xcode runtime change, training/fine-tuning, app runtime transfer, or production rollout is added.
 - Suggested next local-AI phase is `Phase OD-R7E - Local CV Calibration Expected Range Comparison`, after manual review of sanitized calibration output.
+
+Latest Phase OD-R7E Local CV Expected Range Comparison on 2026-06-21:
+
+- OD-R7E adds backend/local-only expected range comparison for sanitized OD-R7D calibration output.
+- Added `backend/src/qa/aestheticLocalCvExpectedRangeComparison.mjs`, `backend/scripts/run-aesthetic-local-cv-expected-range-comparison.mjs`, backend tests, `npm run qa:aesthetic-local-cv:expected-range`, and `docs/od-r7e-local-cv-expected-range-comparison.md`.
+- The default CLI compares the inline sanitized OD-R7D-R1 `calibration_001` feature vector only.
+- It reads no images by default, runs no CV inference, writes no reports, and emits soft warning buckets rather than scores.
+- No real photos/local configs/generated reports are committed, and no provider/cloud/Xiaoyi relay call, network call, upload, model file, Swift/Xcode runtime change, training/fine-tuning, app runtime transfer, or production rollout is added.
+- Suggested next local-AI phase is `Phase OD-R7F - Local CV Calibration Multi-fixture Aggregation Gate`, after manual review approves additional sanitized calibration outputs.
