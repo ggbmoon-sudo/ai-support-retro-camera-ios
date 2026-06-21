@@ -60,6 +60,7 @@
     "qa:aesthetic-parameters:candidate-dry-run": "node scripts/run-aesthetic-parameter-candidate-dry-run.mjs",
     "qa:aesthetic-review:queue": "node scripts/check-aesthetic-human-review-queue.mjs",
     "qa:aesthetic-local-cv:feature-benchmark": "node scripts/run-aesthetic-local-cv-feature-benchmark.mjs",
+    "qa:aesthetic-local-cv:feature-extractor": "node scripts/run-aesthetic-local-cv-feature-extractor-prototype.mjs",
     "qa:aesthetic-parameters:tuning-dry-run": "node scripts/run-aesthetic-parameter-tuning-dry-run.mjs",
     "qa:aesthetic-parameters:export-gate": "node scripts/check-aesthetic-parameter-pack-export-gate.mjs",
     "qa:aesthetic-parameters:app-transfer-preflight": "node scripts/check-aesthetic-app-transfer-preflight-gate.mjs",

@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase OD-R7A - Local CV Feature Vector Benchmark Dry-run
+Current phase: Phase OD-R7B - Local CV Feature Extractor Prototype
 Status: completed
-Latest implementation: Phase OD-R7A adds a backend-only Local CV Feature Vector Benchmark dry-run. It evaluates safe inline synthetic numeric feature vectors against OD-R1 registry tags, OD-R6A parameter candidates, and OD-R6B review decisions. It makes no real image read, CV inference, provider/cloud AI call, network call, crawler/download, training/fine-tuning, iOS runtime integration, Swift file, model install, upload path, app runtime transfer, real dataset/photo/local config/generated report, or production rollout. `productionReady:false` remains locked.
+Latest implementation: Phase OD-R7B adds a backend/local-only Local CV Feature Extractor prototype. It maps safe inline synthetic local-CV observations into OD-R7A-compatible feature vectors for the local AI parameter-pack pipeline. It makes no real image read, CV inference, provider/cloud/Xiaoyi relay call, network call, crawler/download, training/fine-tuning, iOS runtime integration, Swift file, model install, upload path, app runtime transfer, real dataset/photo/local config/generated report, or production rollout. `productionReady:false` remains locked.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -76,6 +76,61 @@ Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-o
 Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-Z2H-SF: SiliconFlow Latency Architecture Decision Gate. Any further provider API calls, API key use beyond local ignored context, provider diagnosis, alternative model benchmark, image upload, model call, benchmark, RunPod provisioning, Qwen3 install/download/load/call, inference endpoint call, iOS integration, upload payload change, app-facing endpoint, production endpoint, or production rollout requires separate explicit approval before execution. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution beyond an explicitly approved future scope, provider API calls, model downloads, model cache changes, Qwen inference beyond an explicitly approved benchmark, fixture inference beyond explicit approval, local CV runtime, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, RunPod provisioning, or user-photo training / fine-tuning until explicitly requested.
 
 ---
+
+## Phase OD-R7B - Local CV Feature Extractor Prototype
+
+Status: completed
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase OD-R7B adds a backend/local-only Local CV Feature Extractor prototype that maps safe inline synthetic local-CV observations into OD-R7A-compatible feature vectors for the local AI parameter-pack pipeline.
+
+### Completed Work
+
+- Added `backend/src/qa/aestheticLocalCvFeatureExtractorPrototype.mjs`.
+- Added `backend/scripts/run-aesthetic-local-cv-feature-extractor-prototype.mjs` and package script `qa:aesthetic-local-cv:feature-extractor`.
+- Added backend tests for valid extraction, OD-R7A compatibility, unsafe field rejection, execution flags, app-runtime blockers, and CLI output.
+- Added `docs/od-r7b-local-cv-feature-extractor-prototype.md`.
+- Kept Xiaoyi relay, generated filter provider runtime, cloud/provider/network, iOS runtime, Camera live cloud AI, model files, real photos, and production rollout untouched.
+
+### Changed Files
+
+- `backend/package.json`
+- `backend/scripts/run-aesthetic-local-cv-feature-extractor-prototype.mjs`
+- `backend/src/qa/aestheticLocalCvFeatureExtractorPrototype.mjs`
+- `backend/tests/aesthetic-local-cv-feature-extractor-prototype.test.mjs`
+- `docs/od-r7b-local-cv-feature-extractor-prototype.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/on-device-live-framing-ai-roadmap.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `docs/phase-log.md`
+- `README.md`
+- `backend/README.md`
+- `ios-app/README.md`
+- `tests/manual-smoke-tests.md`
+
+### Tests and Checks
+
+- `cd backend && npm test`
+- `cd backend && npm run qa:aesthetic-local-cv:feature-extractor`
+
+### Boundary Confirmations
+
+- Swift runtime changed: no
+- iOS project settings changed: no
+- Real image read/CV inference: no
+- Provider/cloud/Xiaoyi relay call: no
+- Network/upload: no
+- Training/fine-tuning: no
+- Model file / Core ML package added: no
+- App runtime transfer: no
+- `productionReady:false` remains locked.
+
+### Ready for Next Phase
+
+Recommended next local-AI phase is `Phase OD-R7C - Local CV Feature Extractor Calibration Fixture Gate`. It should stay backend/local-only and define approved ignored fixture handling before any real image read or runtime integration. Not ready for production rollout.
 
 ## Phase 21-Z - Asia-first RunPod A100 Qwen3-VL Deployment Prep Without Model Calls
 

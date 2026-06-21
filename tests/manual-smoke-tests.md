@@ -4718,6 +4718,19 @@ Backend local CV feature benchmark verification:
 - [ ] Confirm no Xcode runtime behavior is expected to change.
 - [ ] Confirm no Swift runtime file, model file, Core ML package, model download, CV inference, Camera integration, upload path, provider/model key, API key, real dataset/photo/local config/generated report, crawler/download mode, image read/upload, cloud teacher call, training, app runtime transfer, or production rollout was added.
 
+## Phase OD-R7B - Local CV Feature Extractor Prototype
+
+Backend local CV extractor prototype verification:
+
+- [ ] From `backend/`, run `npm run qa:aesthetic-local-cv:feature-extractor`.
+- [ ] From `backend/`, run `node --test tests/aesthetic-local-cv-feature-extractor-prototype.test.mjs`.
+- [ ] Confirm CLI output is sanitized and reports `runMode:"local_cv_feature_extractor_prototype"`, `extractorPrototypeValid:true`, `inputObservationCount`, `outputFeatureVectorCount`, `featureVectors`, and `extractionSummary`.
+- [ ] Confirm emitted feature vectors use `sourceType:"synthetic_inline_numeric_features"` and stay compatible with OD-R7A benchmark input.
+- [ ] Confirm execution flags report `imageReadsPerformed:false`, `cvInferencePerformed:false`, `networkCallsMade:false`, `providerConfigured:false`, `cloudTeacherEnabled:false`, `crawlerEnabled:false`, `downloadEnabled:false`, `trainingEnabled:false`, `fineTuningEnabled:false`, `runtimeIntegrationEnabled:false`, and `productionReady:false`.
+- [ ] Confirm raw image/base64/path/URL, prompt/provider/debug leakage, score/rating, sensitive inference, unknown measurement keys, unsupported buckets, runtime eligibility, and app transfer unblock attempts fail closed.
+- [ ] Confirm no Xcode runtime behavior is expected to change.
+- [ ] Confirm no Swift runtime file, model file, Core ML package, model download, real image read, CV inference, Camera integration, upload path, provider/model key, API key, Xiaoyi relay call, real dataset/photo/local config/generated report, crawler/download mode, image upload, cloud teacher call, training/fine-tuning, app runtime transfer, or production rollout was added.
+
 ## Phase OD-R8A - Parameter Tuning Harness Dry-run
 
 Backend parameter tuning dry-run verification:
