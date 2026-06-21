@@ -1257,6 +1257,14 @@ Latest Phase OD-P1A App Transfer Preflight Gate on 2026-06-21:
 - The transfer candidate is structurally validated only; it is not written to the app, not copied into the app bundle, not wired into Xcode, and not runtime-enabled.
 - No provider/cloud call, API key use, network call, image read/upload, real CV inference, Python/OpenCV/PyTorch dependency, crawler/download, training/fine-tuning, iOS runtime integration, Swift file, model install, upload path, real dataset/photo/local config/generated report, Xcode project modification, app bundle write, app runtime write, app transfer, or production rollout is added. `productionReady:false` remains locked.
 
+Latest Phase OD-R8C Parameter Tuning Aggregation Bridge on 2026-06-22:
+
+- OD-R8C adds a backend/local-only bridge from the sanitized OD-R7F-R2 five-fixture aggregation summary into internal tuning review signals.
+- Added `backend/src/qa/aestheticParameterTuningAggregationBridge.mjs`, `backend/scripts/run-aesthetic-parameter-tuning-aggregation-bridge.mjs`, backend tests, `npm run qa:aesthetic-parameters:tuning-aggregation-bridge`, and `docs/od-r8c-parameter-tuning-aggregation-bridge.md`.
+- Output reports `runMode:"parameter_tuning_aggregation_bridge_no_runtime"`, `fixtureCount:5`, `sampleSizeGatePassed:true`, `blockerGatePassed:true`, `acceptedForTuningBridgeReview:true`, `eligibleForParameterTuningDryRun:true`, `eligibleForParameterPackExport:false`, `eligibleForAppRuntime:false`, and `productionReady:false`.
+- Proposed tuning signals remain internal-only and non-user-facing; they are not scores, ratings, aesthetic grades, or retake-first advice.
+- No image read, CV inference, provider/cloud/Xiaoyi relay call, network/upload/download/crawler, report write, real fixture/config/report commit, Swift/Xcode change, model file, training/fine-tuning, app runtime transfer, Camera behavior change, or production rollout is added.
+
 Latest Phase OD-R7B Local CV Feature Extractor Prototype on 2026-06-21:
 
 - OD-R7B adds a backend/local-only Local CV Feature Extractor prototype using safe inline synthetic local-CV observations only.

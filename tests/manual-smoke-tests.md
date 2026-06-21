@@ -4831,6 +4831,20 @@ Backend parameter pack export gate verification:
 - [ ] Confirm no Xcode runtime behavior is expected to change.
 - [ ] Confirm no Swift runtime file, model file, Core ML package, model download, CV inference, Camera integration, upload path, provider/model key, API key, real dataset/photo/local config/generated report, crawler/download mode, image read/upload, cloud teacher call, training/fine-tuning, app runtime write, app runtime transfer, or production rollout was added.
 
+## Phase OD-R8C - Parameter Tuning Aggregation Bridge
+
+Backend parameter tuning bridge verification:
+
+- [ ] From `backend/`, run `npm run qa:aesthetic-parameters:tuning-aggregation-bridge`.
+- [ ] From `backend/`, run `node --test tests/aesthetic-parameter-tuning-aggregation-bridge.test.mjs`.
+- [ ] Confirm CLI output is sanitized and reports `runMode:"parameter_tuning_aggregation_bridge_no_runtime"`, `fixtureCount:5`, `sampleSizeGatePassed:true`, `blockerGatePassed:true`, and `acceptedForTuningBridgeReview:true`.
+- [ ] Confirm `eligibleForParameterTuningDryRun:true`, `eligibleForParameterPackExport:false`, `eligibleForAppRuntime:false`, and `productionReady:false`.
+- [ ] Confirm proposed tuning signals are internal-only and non-user-facing.
+- [ ] Confirm execution flags report `imageReadsPerformed:false`, `cvInferencePerformed:false`, `networkCallsMade:false`, `uploadPerformed:false`, `providerCallAttempted:false`, `generatedReportsPersisted:false`, and `appRuntimeIntegrationEnabled:false`.
+- [ ] Confirm output does not emit score/rating/aesthetic grading fields and does not create retake-first guidance.
+- [ ] Confirm no Xcode runtime behavior is expected to change.
+- [ ] Confirm no Swift runtime file, Xcode project change, model file, Core ML package, model download, CV inference, Camera integration, upload path, provider/model key, API key, real dataset/photo/local config/generated report, crawler/download mode, image read/upload, cloud/provider call, training/fine-tuning, app runtime write, app runtime transfer, or production rollout was added.
+
 ## Phase OD-P1A - App Transfer Preflight Gate
 
 Backend app transfer preflight verification:

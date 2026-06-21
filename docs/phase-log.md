@@ -13727,3 +13727,75 @@ Phase OD-P1A adds a backend-only App Transfer Preflight Gate. It validates a saf
 ### Ready for Next Phase
 
 Ready for a future `Phase OD-P1B - Explicit App Integration Review` or `Phase OD-R9 - Fine-tune / Distillation Readiness Gate` after commit/push. Not ready for production rollout.
+## Phase OD-R8C - Parameter Tuning Aggregation Bridge
+
+Status: completed
+Date: 2026-06-22
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase OD-R8C adds a backend/local-only Parameter Tuning Aggregation Bridge. It converts the sanitized OD-R7F-R2 five-fixture calibration aggregation summary into internal tuning review signals for a future OD-R8D dry-run while keeping parameter-pack export, app runtime, and production rollout blocked.
+
+### Completed Work
+
+- Added `backend/src/qa/aestheticParameterTuningAggregationBridge.mjs`.
+- Added `backend/scripts/run-aesthetic-parameter-tuning-aggregation-bridge.mjs`.
+- Added `backend/tests/aesthetic-parameter-tuning-aggregation-bridge.test.mjs`.
+- Added `npm run qa:aesthetic-parameters:tuning-aggregation-bridge`.
+- Added `docs/od-r8c-parameter-tuning-aggregation-bridge.md`.
+- Updated README, backend/iOS README, roadmap, handoff, phase log, sequencing register, and manual smoke notes for OD-R8C.
+
+### Changed Files
+
+- `README.md`
+- `backend/README.md`
+- `backend/package.json`
+- `backend/scripts/run-aesthetic-parameter-tuning-aggregation-bridge.mjs`
+- `backend/src/qa/aestheticParameterTuningAggregationBridge.mjs`
+- `backend/tests/aesthetic-parameter-tuning-aggregation-bridge.test.mjs`
+- `docs/od-r8c-parameter-tuning-aggregation-bridge.md`
+- `docs/on-device-live-framing-ai-roadmap.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `ios-app/README.md`
+- `tests/manual-smoke-tests.md`
+
+### Boundary Checks
+
+- Backend/local-only tuning bridge: yes
+- Safe inline sanitized OD-R7F-R2 aggregation summary only: yes
+- Sample size gate passed for current reviewed aggregation: yes
+- Blocker gate passed for current reviewed aggregation: yes
+- Internal tuning signals emitted: yes
+- User-facing advice emitted: no
+- Parameter-pack export enabled: no
+- App runtime eligibility enabled: no
+- App runtime write performed: no
+- Real image read/upload performed: no
+- Real CV inference performed: no
+- Provider/cloud/Xiaoyi relay call made: no
+- Network/upload/download/crawler mode added: no
+- Training/fine-tuning enabled: no
+- iOS runtime integration added: no
+- Swift/Xcode file changed: no
+- Model/Core ML/ONNX/TFLite/weight file added: no
+- Real dataset/photo/local config/generated report committed: no
+- Production rollout: no
+- `productionReady:false`: yes
+
+### Tests / Manual Checks
+
+- `node --test tests/aesthetic-parameter-tuning-aggregation-bridge.test.mjs`: passed
+- `npm run qa:aesthetic-parameters:tuning-aggregation-bridge`: passed
+- Full `npm test`, diff checks, and safety scans should pass before commit/push.
+
+### Known TODOs
+
+- OD-R8C does not run a full OD-R8A parameter tuning dry-run from bridge output. Future OD-R8D may do that after manual local AI review.
+- OD-R8C does not create a production parameter pack, write an export artifact, write to iOS, or enable app runtime behavior.
+
+### Ready for Next Phase
+
+Ready for a future `Phase OD-R8D - Parameter Tuning Dry-run From Aggregation Bridge` after commit/push. Not ready for production rollout.

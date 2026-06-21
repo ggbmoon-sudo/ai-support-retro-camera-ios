@@ -234,6 +234,7 @@ Boundaries:
 - Phase 21 becomes the on-device live framing intelligence track.
 - Future Phase 22+ should integrate debug-only iOS overlays only after Phase 21-A and Phase 21-B are documented and scoped.
 - Fine-tuning / distillation should come after dataset manifest, label schema, human review, and benchmark gaps are proven.
+- OD-R8C bridges the reviewed OD-R7F-R2 local CV aggregation summary into internal parameter tuning review signals only. It does not read images, run CV inference, create a production parameter pack, write to iOS, or add user-facing advice; it preserves the Observation -> Mood -> Retro intent -> Optional action direction and rejects Score -> Problem -> Fix -> Retake framing.
 
 ## Safety and Data Governance
 
