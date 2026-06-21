@@ -1,6 +1,6 @@
 # PT2-SF-R7 - Filter Lab Two-image Apply Preview UX
 
-Status: implemented, pending MacBook/Xcode verification
+Status: implemented, user verified on physical device
 Date: 2026-06-22
 Production readiness: `productionReady:false`
 
@@ -35,10 +35,10 @@ PT2-SF-R7 updates the iOS Filter Lab flow so custom filter generation no longer 
 - Production rollout: no.
 - `productionReady:false` remains locked.
 
-## Manual Verification Needed
+## Manual Verification Result
 
-Build and run on MacBook/Xcode. Open Filter Lab, choose a target filter image, then choose a different original/apply image. Confirm generation starts only after both exist, the result shows the target filter image plus original/effect preview, intensity changes re-render the effect image, and `Choose other images` clears both images. In DEBUG, confirm the backend test action appears only after both images exist and, if tested with consent, sends only the style reference image through the backend while the original/apply image stays local.
+The operator reported physical-device testing OK on 2026-06-22. Filter Lab's two-image app-side flow is accepted for this phase. Provider-backed DEBUG AI behavior remains separate and was not run in this phase.
 
 ## Recommended Next Step
 
-Run `PT2-SF-R7-VERIFY - MacBook/Xcode Filter Lab Two-image Apply Preview Verification`. Start with local/sample/fallback verification. Any provider-backed debug smoke still requires separate explicit approval and must remain backend-mediated with server-side credentials only.
+Run `PT2-SF-R8 - Debug-only Filter Lab Provider-backed One-reference Smoke Approval Gate` only if the operator wants to verify real AI next. Any provider-backed debug smoke still requires separate explicit approval and must remain backend-mediated with server-side credentials only. The backend may receive only the selected style reference image; the original/apply image must stay local.
