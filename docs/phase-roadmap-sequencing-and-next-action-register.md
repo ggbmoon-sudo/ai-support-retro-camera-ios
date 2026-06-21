@@ -16,13 +16,22 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**Phase 21-A7-VERIFY-RUN - Operator MacBook/Xcode Physical-device QA**
+**PT2-R1 - Xiaoyi Relay Backend Credential Smoke Gate**
 
-Reason: Phase 21-A7-VERIFY created a docs-only QA handoff and roadmap-based inventory of features not yet installed in the app runtime. It did not run Xcode/iPhone verification from this Windows environment. The next safe step is operator MacBook/Xcode physical-device QA for Phase 21-A7 behavior, not another app-side composition rules phase. If the goal is richer composition intelligence, use a separate training-AI branch phase for dataset/label schema, legal/source/consent gates, human review, and typed composition outputs before any iOS runtime integration. Phase 21-C-R3-RUN remains available only if local ignored artifact prerequisites and the exact approval phrase are present.
+Reason: The user explicitly paused Camera-page AI and small Camera polish, and redirected the active product path to backend-mediated relay AI for Inspiration / post-capture surfaces. PT2 has added the backend-only Xiaoyi relay wiring for Photo Advisor and Filter Lab using `deepseek-v4-flash`, but the operator still needs to supply a local ignored/server-side `XIAOYI_API_KEY` and run a tightly bounded internal smoke gate before any iOS integration or product QA. No Camera AI, Camera polish, Depth Anything, live upload, WSS, or production rollout should be the next mainline phase unless the user explicitly reverses this direction.
 
 Product correction: Camera-page Live Cloud AI / Live Advisor is no longer needed under the current direction because local on-device guidance replaces it. Cloud AI remains needed for Inspiration / post-capture photo analysis, generated filters, and image editing through backend-mediated mainland relay providers; direct iOS provider calls and iOS provider keys remain blocked.
 
-If Phase 21-A4/A6/A7 hint UX behavior or Camera runtime stability regresses, use a focused Camera QA follow-up before continuing larger AI roadmap work. Do not add more app-authored composition advice, scoring, retake-first language, cloud calls, frame uploads, upload payload changes, provider keys, sensitive inference, raw frame/depth/image persistence, model artifacts, training data collection, or production rollout in the verification step. `productionReady:false` remains locked.
+Camera status: Phase 21-A7-VERIFY-RUN remains a known pending operator QA task, not the next implementation mainline. Only return to Camera QA if the user asks for it or reports a blocking Camera regression. Do not add more app-authored composition advice, Camera cloud calls, frame uploads, upload payload changes, provider keys, sensitive inference, raw frame/depth/image persistence, model artifacts, training data collection, or production rollout. `productionReady:false` remains locked.
+
+PT2 relay sequence:
+
+1. `PT2-R1 - Xiaoyi Relay Backend Credential Smoke Gate`: backend-only, local ignored/server-side key, one tiny approved synthetic request per surface or text-only readiness first, sanitized output only, no iOS integration.
+2. `PT2-R2 - Xiaoyi Photo Advisor Internal QA`: run a bounded synthetic/internal Photo Advisor QA set through backend only, validate app language contract, filter reasons, safety, fallback, latency, and raw-artifact redaction.
+3. `PT2-R3 - Xiaoyi Filter Lab Internal QA`: run bounded synthetic/internal reference-image QA for generated filter recipes, validate only structured recipe JSON, numeric clamps, allowed localization keys, and no shader/LUT/bitmap/direct-render output.
+4. `PT2-R4 - Debug-only iOS Inspiration Backend Integration Plan`: plan app-side integration for selected-photo Photo Advisor and Filter Lab only after backend QA is acceptable; no provider key or direct relay URL in iOS.
+5. `PT2-R5 - Debug-only iOS Inspiration Backend Integration`: implement only if explicitly requested after PT2-R4; keep production/default mock/local and keep Camera local-only.
+6. `PT3 - Image Editor / 改圖師 Provider Contract`: separate future backend contract after Photo Advisor and Filter Lab are stable; do not mix image editing into PT2.
 
 Naming note: older committed Phase 21-A backend-internal VLM records remain historical evidence. The completed on-device geometry phase should be referenced by its full title: `Phase 21-A - On-device Vision Geometry Spike`.
 
@@ -78,6 +87,9 @@ git rev-list --left-right --count "@{u}...HEAD"
 
 Use cautious wording and re-check source docs before implementation:
 
+- PT2 Xiaoyi relay backend wiring exists for internal/debug Photo Advisor and Filter Lab using `deepseek-v4-flash`. It is backend-only, disabled unless explicitly configured with server-side env and internal debug guard, and still needs operator credential/runtime verification. No real Xiaoyi provider call was run in the Windows/Codex environment because `XIAOYI_API_KEY` is not configured.
+- The active post-PT2 implementation mainline is relay/API stabilization first: backend credential smoke gate, Photo Advisor QA, Filter Lab QA, then debug-only iOS Inspiration integration planning. Camera AI and small Camera polish are not the current mainline.
+- 改圖師 / image editor belongs to a later separate provider contract phase after Photo Advisor and Filter Lab are stable. Do not add image editing provider calls, generated image output, or image editing UI/backend coupling in PT2 follow-ups.
 - Phase 20 local VLM sandbox work appears to provide local/private Qwen2.5-VL evidence, including accepted one-fixture and 12-fixture smoke history. This remains sandbox evidence only, not production readiness.
 - Phase 21 backend gateway work appears to provide contract, adapter, routing, no-model HTTP, cross-platform deployment, deployment config/env, approval, and dry-run plan gates.
 - Phase 21-G local model route approval gate appears to keep `local_model` disabled and blocks model calls, Qwen inference, endpoints, iOS integration, raw artifacts, and `productionReady:true`.

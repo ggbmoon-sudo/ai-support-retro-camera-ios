@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: PT2 - Xiaoyi DeepSeek Relay Backend Internal Photo Advisor and Filter Lab Wiring
-Status: implemented, pending operator backend credential/runtime verification
-Latest implementation: PT2 adds backend-only Xiaoyi OpenAI-compatible relay wiring for internal/debug Photo Advisor and Filter Lab generation using `deepseek-v4-flash`. `/v1/ai/filter-lab` is backend-gated, validates explicit consent and stripped JPEG payload shape, returns only a validated structured generated filter recipe, and falls back safely when disabled, unconfigured, or invalid. No iOS provider key/direct provider call, Camera cloud AI entry, image editing provider, raw payload/provider logging, StoreKit/payment, or production rollout was added. Local verification used synthetic tests only; no real Xiaoyi provider call was made because `XIAOYI_API_KEY` is not configured in this environment. `productionReady:false` remains locked.
+Current phase: PT2-R0 - Relay-first Roadmap Realignment
+Status: docs-only sequencing update after PT2 backend wiring
+Latest implementation: PT2-R0 updates the roadmap so the next mainline is Xiaoyi relay/API stabilization, not Camera AI or small Camera polish. PT2 backend wiring already exists for backend-only internal/debug Photo Advisor and Filter Lab generation using `deepseek-v4-flash`; the next recommended phase is `PT2-R1 - Xiaoyi Relay Backend Credential Smoke Gate`. Camera A7 physical-device QA remains a known pending operator task, but not the next implementation mainline unless the user explicitly asks to return to Camera. No runtime code, iOS integration, provider call, provider key, Camera cloud AI entry, image editing provider, raw payload/provider logging, StoreKit/payment, or production rollout was added by this roadmap update. `productionReady:false` remains locked.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -139,6 +139,64 @@ PT2 wires the Xiaoyi OpenAI-compatible relay into the backend-only Cloud AI boun
 ### Ready for Next Phase
 
 Ready for backend internal credential verification once the operator supplies a local ignored/server-side `XIAOYI_API_KEY`. Not ready for production rollout.
+
+---
+
+## PT2-R0 - Relay-first Roadmap Realignment
+
+Status: docs-only sequencing update
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+PT2-R0 records the user's direction to continue with the relay API path first and stop treating Camera AI / small Camera polish as the active mainline. The app Camera remains local-only; Cloud AI work moves to Inspiration / post-capture Photo Advisor, Filter Lab generated filters, and later image editing through backend-mediated providers only.
+
+### Completed Work
+
+- Updated `docs/phase-roadmap-sequencing-and-next-action-register.md` so the current next recommended phase is `PT2-R1 - Xiaoyi Relay Backend Credential Smoke Gate`.
+- Added a PT2 relay sequence:
+  - `PT2-R1` backend credential smoke gate.
+  - `PT2-R2` Xiaoyi Photo Advisor internal QA.
+  - `PT2-R3` Xiaoyi Filter Lab internal QA.
+  - `PT2-R4` debug-only iOS Inspiration backend integration plan.
+  - `PT2-R5` debug-only iOS Inspiration backend integration only if explicitly requested.
+  - `PT3` separate future 改圖師 / image editor provider contract.
+- Reframed `Phase 21-A7-VERIFY-RUN` as a pending operator QA task, not the next implementation mainline.
+- Reconfirmed that Camera cloud AI, Camera upload, direct iOS provider calls, iOS provider keys, and production rollout remain blocked.
+
+### Changed Files
+
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-log.md`
+
+### Tests and Checks
+
+- Documentation-only update; runtime tests not required.
+- `git diff --check`
+
+### Known TODOs
+
+- Run PT2-R1 only after the operator provides a local ignored/server-side `XIAOYI_API_KEY` and approves the bounded smoke gate.
+- Keep real-provider QA reports sanitized and ignored unless a future safe-asset policy says otherwise.
+- Do not wire iOS to the backend route until PT2-R2/PT2-R3 QA is acceptable and a debug-only app integration phase is explicitly requested.
+
+### Boundary Confirmations
+
+- Runtime code changed: no
+- iOS runtime changed: no
+- Camera page changed: no
+- Provider/model call: no
+- Provider key committed: no
+- Camera cloud AI entry: no
+- Upload payload changed: no
+- Image editor provider added: no
+- Production rollout: no
+- `productionReady:false` remains locked.
+
+### Ready for Next Phase
+
+Next recommended phase is `PT2-R1 - Xiaoyi Relay Backend Credential Smoke Gate`. Not ready for production rollout.
 
 ---
 
