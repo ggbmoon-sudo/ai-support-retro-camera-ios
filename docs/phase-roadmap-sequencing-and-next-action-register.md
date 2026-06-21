@@ -16,22 +16,22 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**PT2-R1 - Xiaoyi Relay Backend Credential Smoke Gate**
+**PT2-SF-R2 - SiliconFlow Photo Advisor Internal Image QA**
 
-Reason: The user explicitly paused Camera-page AI and small Camera polish, and redirected the active product path to backend-mediated relay AI for Inspiration / post-capture surfaces. PT2 has added the backend-only Xiaoyi relay wiring for Photo Advisor and Filter Lab using `deepseek-v4-flash`, but the operator still needs to supply a local ignored/server-side `XIAOYI_API_KEY` and run a tightly bounded internal smoke gate before any iOS integration or product QA. No Camera AI, Camera polish, Depth Anything, live upload, WSS, or production rollout should be the next mainline phase unless the user explicitly reverses this direction.
+Reason: The user explicitly switched the active provider setup to SiliconFlow while keeping the URL/provider path SiliconFlow, not Xiaoyi. PT2-SF-R1 added a backend-only SiliconFlow text-only credential smoke gate using the official OpenAI-compatible `https://api.siliconflow.com/v1/chat/completions` endpoint and `deepseek-ai/DeepSeek-V4-Flash`. Text-only Photo Advisor and Filter Lab label smokes both returned accepted sanitized reports with `imageUploadAttempted:false`. The next mainline should be a bounded backend-only image-bearing Photo Advisor QA using ignored approved samples/synthetic fixtures, strict schema/language/safety validation, and sanitized reports only. No Camera AI, Camera polish, Depth Anything, live upload, WSS, or production rollout should be the next mainline phase unless the user explicitly reverses this direction.
 
 Product correction: Camera-page Live Cloud AI / Live Advisor is no longer needed under the current direction because local on-device guidance replaces it. Cloud AI remains needed for Inspiration / post-capture photo analysis, generated filters, and image editing through backend-mediated mainland relay providers; direct iOS provider calls and iOS provider keys remain blocked.
 
 Camera status: Phase 21-A7-VERIFY-RUN remains a known pending operator QA task, not the next implementation mainline. Only return to Camera QA if the user asks for it or reports a blocking Camera regression. Do not add more app-authored composition advice, Camera cloud calls, frame uploads, upload payload changes, provider keys, sensitive inference, raw frame/depth/image persistence, model artifacts, training data collection, or production rollout. `productionReady:false` remains locked.
 
-PT2 relay sequence:
+PT2 SiliconFlow sequence:
 
-1. `PT2-R1 - Xiaoyi Relay Backend Credential Smoke Gate`: backend-only, local ignored/server-side key, one tiny approved synthetic request per surface or text-only readiness first, sanitized output only, no iOS integration.
-2. `PT2-R2 - Xiaoyi Photo Advisor Internal QA`: run a bounded synthetic/internal Photo Advisor QA set through backend only, validate app language contract, filter reasons, safety, fallback, latency, and raw-artifact redaction.
-3. `PT2-R3 - Xiaoyi Filter Lab Internal QA`: run bounded synthetic/internal reference-image QA for generated filter recipes, validate only structured recipe JSON, numeric clamps, allowed localization keys, and no shader/LUT/bitmap/direct-render output.
-4. `PT2-R4 - Debug-only iOS Inspiration Backend Integration Plan`: plan app-side integration for selected-photo Photo Advisor and Filter Lab only after backend QA is acceptable; no provider key or direct relay URL in iOS.
-5. `PT2-R5 - Debug-only iOS Inspiration Backend Integration`: implement only if explicitly requested after PT2-R4; keep production/default mock/local and keep Camera local-only.
-6. `PT3 - Image Editor / 改圖師 Provider Contract`: separate future backend contract after Photo Advisor and Filter Lab are stable; do not mix image editing into PT2.
+1. `PT2-SF-R1 - SiliconFlow Text-only Credential Smoke Gate`: implemented backend-only text-only credential gate; default dry-run/no-network, sanitized output only, no iOS integration. Photo Advisor text-only smoke accepted; Filter Lab text-only smoke accepted with a 30s timeout window.
+2. `PT2-SF-R2 - SiliconFlow Photo Advisor Internal Image QA`: next recommended phase; run bounded backend-only image-bearing Photo Advisor QA with approved ignored samples/synthetic fixtures, validate Observation -> Mood -> Retro intent -> Optional action, filter reasons, safety, fallback, latency, and raw-artifact redaction.
+3. `PT2-SF-R3 - SiliconFlow Filter Lab Structured Recipe QA`: after Photo Advisor QA is acceptable, run bounded backend-only reference-image QA for generated filter recipes, validate only structured recipe JSON, numeric clamps, allowed localization keys, and no shader/LUT/bitmap/direct-render output.
+4. `PT2-SF-R4 - Debug-only iOS Inspiration Backend Integration Plan`: plan app-side integration for selected-photo Photo Advisor and Filter Lab only after backend QA is acceptable; no provider key or direct relay URL in iOS.
+5. `PT2-SF-R5 - Debug-only iOS Inspiration Backend Integration`: implement only if explicitly requested after PT2-SF-R4; keep production/default mock/local and keep Camera local-only.
+6. `PT3 - Image Editor / 改圖師 Provider Contract`: separate future backend contract after Photo Advisor and Filter Lab are stable; do not mix image editing into PT2-SF.
 
 Naming note: older committed Phase 21-A backend-internal VLM records remain historical evidence. The completed on-device geometry phase should be referenced by its full title: `Phase 21-A - On-device Vision Geometry Spike`.
 
@@ -87,8 +87,8 @@ git rev-list --left-right --count "@{u}...HEAD"
 
 Use cautious wording and re-check source docs before implementation:
 
-- PT2 Xiaoyi relay backend wiring exists for internal/debug Photo Advisor and Filter Lab using `deepseek-v4-flash`. It is backend-only, disabled unless explicitly configured with server-side env and internal debug guard, and still needs operator credential/runtime verification. No real Xiaoyi provider call was run in the Windows/Codex environment because `XIAOYI_API_KEY` is not configured.
-- The active post-PT2 implementation mainline is relay/API stabilization first: backend credential smoke gate, Photo Advisor QA, Filter Lab QA, then debug-only iOS Inspiration integration planning. Camera AI and small Camera polish are not the current mainline.
+- PT2-SF SiliconFlow credential smoke wiring exists for internal/debug Photo Advisor and Filter Lab labels using `deepseek-ai/DeepSeek-V4-Flash`. It is backend-only, server-side-only, and text-only in PT2-SF-R1; both label smokes accepted with `imageUploadAttempted:false`.
+- The active post-PT2-SF implementation mainline is SiliconFlow backend QA first: Photo Advisor internal image QA, Filter Lab structured recipe QA, then debug-only iOS Inspiration integration planning. Camera AI and small Camera polish are not the current mainline.
 - 改圖師 / image editor belongs to a later separate provider contract phase after Photo Advisor and Filter Lab are stable. Do not add image editing provider calls, generated image output, or image editing UI/backend coupling in PT2 follow-ups.
 - Phase 20 local VLM sandbox work appears to provide local/private Qwen2.5-VL evidence, including accepted one-fixture and 12-fixture smoke history. This remains sandbox evidence only, not production readiness.
 - Phase 21 backend gateway work appears to provide contract, adapter, routing, no-model HTTP, cross-platform deployment, deployment config/env, approval, and dry-run plan gates.

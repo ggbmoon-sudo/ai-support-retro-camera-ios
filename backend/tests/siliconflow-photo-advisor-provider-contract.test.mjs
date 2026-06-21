@@ -29,6 +29,8 @@ test("SiliconFlow default config is disabled no-runtime only", () => {
   assert.equal(config.allowLiveCamera, false);
   assert.equal(config.allowJsonModeForVlm, false);
   assert.equal(config.productionReady, false);
+  assert.equal(config.modelCandidate, PhotoAdvisorModelCandidate.deepseekV4Flash);
+  assert.equal(config.model, "deepseek-ai/DeepSeek-V4-Flash");
   assert.equal(validation.networkCallsMade, false);
 });
 
@@ -70,8 +72,8 @@ test("SiliconFlow request builder creates stable placeholder request without exe
   assert.equal(shape.baseUrlEnvName, "SILICONFLOW_BASE_URL");
   assert.equal(shape.apiKeyEnvName, "SILICONFLOW_API_KEY");
   assert.equal(shape.request.method, "POST");
-  assert.equal(shape.request.path, "/chat/completions");
-  assert.equal(shape.request.body.model, "Qwen/Qwen3-VL-30B-A3B-Instruct");
+  assert.equal(shape.request.path, "/v1/chat/completions");
+  assert.equal(shape.request.body.model, "deepseek-ai/DeepSeek-V4-Flash");
   assert.equal(shape.request.body.stream, false);
   assert.equal(shape.request.body.temperature, 0.1);
   assert.equal(shape.request.body.top_p, 0.8);
@@ -171,6 +173,7 @@ test("SiliconFlow readiness CLI fails closed without runtime execution", () => {
 });
 
 test("SiliconFlow model alternatives remain contract-only enum values", () => {
+  assert.equal(PhotoAdvisorModelCandidate.deepseekV4Flash, "deepseek_v4_flash");
   assert.equal(PhotoAdvisorModelCandidate.qwen3Vl30BA3BInstruct, "qwen3_vl_30b_a3b_instruct");
   assert.equal(PhotoAdvisorModelCandidate.qwen3Vl32BInstruct, "qwen3_vl_32b_instruct");
   assert.equal(PhotoAdvisorModelCandidate.qwen3Vl8BInstruct, "qwen3_vl_8b_instruct");

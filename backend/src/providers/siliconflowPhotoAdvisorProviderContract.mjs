@@ -20,9 +20,9 @@ import {
   buildSiliconFlowPhotoAdvisorCompactUserPrompt
 } from "./siliconflowPhotoAdvisorPromptContract.mjs";
 
-export const SILICONFLOW_CHAT_COMPLETIONS_PATH = "/chat/completions";
+export const SILICONFLOW_CHAT_COMPLETIONS_PATH = "/v1/chat/completions";
 export const SILICONFLOW_ENDPOINT_BUCKET = "siliconflow_chat_completions";
-export const SILICONFLOW_PRIMARY_MODEL_ID = PHOTO_ADVISOR_MODEL_IDS[PhotoAdvisorModelCandidate.qwen3Vl30BA3BInstruct];
+export const SILICONFLOW_PRIMARY_MODEL_ID = PHOTO_ADVISOR_MODEL_IDS[PhotoAdvisorModelCandidate.deepseekV4Flash];
 
 const DEFAULT_PLACEHOLDERS = Object.freeze({
   imageUrlOrBase64Placeholder: "<SAFE_IMAGE_URL_OR_BASE64_PLACEHOLDER>",
@@ -34,7 +34,7 @@ export function defaultSiliconFlowPhotoAdvisorConfig() {
   return {
     provider: PhotoAdvisorProviderKind.siliconflow,
     providerMode: PhotoAdvisorProviderMode.noRuntimeContract,
-    modelCandidate: PhotoAdvisorModelCandidate.qwen3Vl30BA3BInstruct,
+    modelCandidate: PhotoAdvisorModelCandidate.deepseekV4Flash,
     model: SILICONFLOW_PRIMARY_MODEL_ID,
     enabled: false,
     apiKeyEnvName: "SILICONFLOW_API_KEY",

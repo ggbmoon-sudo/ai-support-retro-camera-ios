@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: PT2-R0 - Relay-first Roadmap Realignment
-Status: docs-only sequencing update after PT2 backend wiring
-Latest implementation: PT2-R0 updates the roadmap so the next mainline is Xiaoyi relay/API stabilization, not Camera AI or small Camera polish. PT2 backend wiring already exists for backend-only internal/debug Photo Advisor and Filter Lab generation using `deepseek-v4-flash`; the next recommended phase is `PT2-R1 - Xiaoyi Relay Backend Credential Smoke Gate`. Camera A7 physical-device QA remains a known pending operator task, but not the next implementation mainline unless the user explicitly asks to return to Camera. No runtime code, iOS integration, provider call, provider key, Camera cloud AI entry, image editing provider, raw payload/provider logging, StoreKit/payment, or production rollout was added by this roadmap update. `productionReady:false` remains locked.
+Current phase: PT2-SF-R1 - SiliconFlow Text-only Credential Smoke Gate
+Status: implemented; text-only credential smoke accepted for Photo Advisor and Filter Lab labels
+Latest implementation: PT2-SF-R1 switches the active relay credential path from Xiaoyi to SiliconFlow using the official OpenAI-compatible `https://api.siliconflow.com/v1/chat/completions` endpoint and `deepseek-ai/DeepSeek-V4-Flash`. A backend-only text-only credential smoke gate was added for Photo Advisor and Filter Lab labels. The local ignored `.env` variable names were updated to `SILICONFLOW_*` without printing or committing the key. Photo Advisor text-only smoke returned `2xx` / accepted, and Filter Lab text-only smoke returned `2xx` / accepted after a 30s timeout window. All smokes remained text-only with `imageUploadAttempted:false`, no raw key/prompt/payload/provider output printed, and `productionReady:false`. Next recommended action is bounded image-bearing SiliconFlow Photo Advisor internal QA through backend only, then bounded Filter Lab recipe QA; no iOS integration, Camera cloud AI entry, upload payload change, provider credential commit, raw payload/provider logging, image editor provider, StoreKit/payment, or production rollout was added.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -101,6 +101,7 @@ PT2 wires the Xiaoyi OpenAI-compatible relay into the backend-only Cloud AI boun
 
 - `.env.example`
 - `README.md`
+- `.env.example`
 - `backend/README.md`
 - `backend/src/server.mjs`
 - `backend/src/routes/filterLab.mjs`
@@ -142,6 +143,78 @@ Ready for backend internal credential verification once the operator supplies a 
 
 ---
 
+## PT2-SF-R1 - SiliconFlow Text-only Credential Smoke Gate
+
+Status: implemented; text-only provider smoke accepted for Photo Advisor and Filter Lab labels
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+PT2-SF-R1 switches the active relay credential setup to SiliconFlow. It adds a backend-only text-only credential smoke gate for the official OpenAI-compatible chat completions endpoint and uses `deepseek-ai/DeepSeek-V4-Flash` for both Photo Advisor and Filter Lab labels. This phase verifies credential/model/endpoint reachability only; it does not upload images or run image-bearing Photo Advisor / Filter Lab QA.
+
+### Completed Work
+
+- Updated SiliconFlow model candidates so the active default model is `deepseek-ai/DeepSeek-V4-Flash`.
+- Updated SiliconFlow no-runtime provider contract path to `/v1/chat/completions`.
+- Added `backend/src/qa/siliconFlowCredentialSmokeGate.mjs` with dry-run default behavior, explicit `--run-provider` opt-in, surface selection, config preflight, sanitized latency/status/error buckets, and `productionReady:false`.
+- Added `backend/scripts/run-siliconflow-credential-smoke.mjs`, which reads local ignored `.env` values but fails closed unless SiliconFlow backend env is complete and a surface is explicitly selected.
+- Added npm scripts `qa:siliconflow:credential-smoke` and `qa:siliconflow:smoke`.
+- Updated local ignored `.env` variable names from `XIAOYI_*` to `SILICONFLOW_*` without printing or committing the key.
+- Ran a text-only Photo Advisor label smoke: `2xx`, accepted count `1`, `imageUploadAttempted:false`.
+- Ran a text-only Filter Lab label smoke. The first 10s attempt timed out; the bounded 30s retry returned `2xx`, accepted count `1`, `imageUploadAttempted:false`.
+- Updated README/backend/roadmap docs so SiliconFlow is the active PT2 mainline and Xiaoyi is no longer the active next step.
+
+### Changed Files
+
+- `README.md`
+- `backend/README.md`
+- `backend/package.json`
+- `backend/scripts/run-siliconflow-credential-smoke.mjs`
+- `backend/src/providers/photoAdvisorProviderTypes.mjs`
+- `backend/src/providers/siliconflowPhotoAdvisorProviderContract.mjs`
+- `backend/src/qa/siliconFlowCredentialSmokeGate.mjs`
+- `backend/tests/siliconflow-credential-smoke-gate.test.mjs`
+- `backend/tests/siliconflow-photo-advisor-provider-contract.test.mjs`
+- `docs/phase-log.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+
+### Tests and Checks
+
+- `git check-ignore -v .env`
+- `node --test backend/tests/siliconflow-credential-smoke-gate.test.mjs`
+- `node --test backend/tests/siliconflow-photo-advisor-provider-contract.test.mjs`
+- `npm --prefix backend run qa:siliconflow:credential-smoke`
+- `npm --prefix backend run qa:siliconflow:readiness`
+- `npm --prefix backend run qa:siliconflow:credential-smoke -- --run-provider --surface=photo-analysis`
+- `npm --prefix backend run qa:siliconflow:credential-smoke -- --run-provider --surface=filter-lab --timeout-ms=30000`
+
+### Known TODOs
+
+- Next recommended phase: `PT2-SF-R2 - SiliconFlow Photo Advisor Internal Image QA`.
+- Only after PT2-SF-R2 passes, run `PT2-SF-R3 - SiliconFlow Filter Lab Structured Recipe QA`.
+- Keep image-bearing QA bounded, backend-only, internal/debug only, sanitized, and ignored for raw artifacts.
+- 改圖師 / image editor provider remains future-only and separate from PT2-SF Photo Advisor / Filter Lab QA.
+
+### Boundary Confirmations
+
+- `.env` committed: no, ignored
+- Real provider calls made: yes, text-only credential smokes only
+- Image upload attempted: no
+- Raw key/prompt/request/provider output/image logged: no
+- iOS runtime changed: no
+- Swift/Xcode project changed: no
+- Camera cloud AI entry: no
+- Upload payload changed: no
+- Production rollout: no
+- `productionReady:false` remains locked.
+
+### Ready for Next Phase
+
+Ready for bounded backend-only SiliconFlow Photo Advisor internal image QA. Not ready for iOS integration, Filter Lab image/recipe QA beyond the next explicit phase, 改圖師, or production rollout.
+
+---
+
 ## PT2-R0 - Relay-first Roadmap Realignment
 
 Status: docs-only sequencing update
@@ -154,11 +227,11 @@ PT2-R0 records the user's direction to continue with the relay API path first an
 
 ### Completed Work
 
-- Updated `docs/phase-roadmap-sequencing-and-next-action-register.md` so the current next recommended phase is `PT2-R1 - Xiaoyi Relay Backend Credential Smoke Gate`.
+- Updated `docs/phase-roadmap-sequencing-and-next-action-register.md` so the then-current next recommended phase was relay credential smoke first; this has since been superseded by the SiliconFlow PT2-SF sequence.
 - Added a PT2 relay sequence:
-  - `PT2-R1` backend credential smoke gate.
-  - `PT2-R2` Xiaoyi Photo Advisor internal QA.
-  - `PT2-R3` Xiaoyi Filter Lab internal QA.
+  - backend credential smoke gate.
+  - Photo Advisor internal QA.
+  - Filter Lab internal QA.
   - `PT2-R4` debug-only iOS Inspiration backend integration plan.
   - `PT2-R5` debug-only iOS Inspiration backend integration only if explicitly requested.
   - `PT3` separate future 改圖師 / image editor provider contract.
@@ -177,9 +250,9 @@ PT2-R0 records the user's direction to continue with the relay API path first an
 
 ### Known TODOs
 
-- Run PT2-R1 only after the operator provides a local ignored/server-side `XIAOYI_API_KEY` and approves the bounded smoke gate.
+- Superseded by PT2-SF-R1 after the user switched the active provider to SiliconFlow.
 - Keep real-provider QA reports sanitized and ignored unless a future safe-asset policy says otherwise.
-- Do not wire iOS to the backend route until PT2-R2/PT2-R3 QA is acceptable and a debug-only app integration phase is explicitly requested.
+- Do not wire iOS to the backend route until PT2-SF-R2/PT2-SF-R3 QA is acceptable and a debug-only app integration phase is explicitly requested.
 
 ### Boundary Confirmations
 
@@ -196,7 +269,7 @@ PT2-R0 records the user's direction to continue with the relay API path first an
 
 ### Ready for Next Phase
 
-Next recommended phase is `PT2-R1 - Xiaoyi Relay Backend Credential Smoke Gate`. Not ready for production rollout.
+Next recommended phase is now tracked by the roadmap register. After PT2-SF-R1, the recommended next phase is `PT2-SF-R2 - SiliconFlow Photo Advisor Internal Image QA`. Not ready for production rollout.
 
 ---
 

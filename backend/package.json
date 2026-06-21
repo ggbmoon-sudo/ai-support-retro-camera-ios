@@ -57,7 +57,9 @@
     "qa:siliconflow:contract": "node --test tests/siliconflow-photo-advisor-provider-contract.test.mjs",
     "qa:siliconflow:benchmark-dry-run": "node scripts/check-siliconflow-photo-advisor-benchmark-dry-run.mjs",
     "qa:siliconflow:benchmark-plan": "node --test tests/siliconflow-photo-advisor-benchmark-dry-run.test.mjs",
-    "qa:siliconflow:prompt-schema": "node --test tests/siliconflow-photo-advisor-prompt-schema-alignment.test.mjs"
+    "qa:siliconflow:prompt-schema": "node --test tests/siliconflow-photo-advisor-prompt-schema-alignment.test.mjs",
+    "qa:siliconflow:credential-smoke": "node scripts/run-siliconflow-credential-smoke.mjs",
+    "qa:siliconflow:smoke": "node scripts/run-siliconflow-credential-smoke.mjs"
   },
   "dependencies": {},
   "devDependencies": {}

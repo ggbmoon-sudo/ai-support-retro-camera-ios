@@ -112,7 +112,44 @@ Firebase-friendly deployment direction:
 - keep `ALLOW_INTERNAL_CLOUD_AI=false` unless intentionally running an internal beta
 - do not commit Firebase project IDs, service account JSON, or production secrets
 
-## Local Xiaoyi DeepSeek Relay Internal Setup
+## Local SiliconFlow Internal Credential Smoke Setup
+
+Do not commit real secrets. The SiliconFlow key is backend/server-side only and must never be added to iOS.
+
+Local internal text-only credential smoke config:
+
+```sh
+SILICONFLOW_API_KEY=replace_me
+SILICONFLOW_BASE_URL=https://api.siliconflow.com
+SILICONFLOW_CHAT_COMPLETIONS_PATH=/v1/chat/completions
+SILICONFLOW_PHOTO_ADVISOR_MODEL=deepseek-ai/DeepSeek-V4-Flash
+SILICONFLOW_FILTER_LAB_MODEL=deepseek-ai/DeepSeek-V4-Flash
+```
+
+The active endpoint is `https://api.siliconflow.com/v1/chat/completions` with OpenAI-compatible JSON chat completions.
+
+The auth header is OpenAI-compatible:
+
+- `Authorization: Bearer <SILICONFLOW_API_KEY>`
+
+The API key, raw prompt, raw request body, raw provider response, and raw image/base64 payload must not be printed, committed, persisted, or sent to iOS.
+
+PT2-SF-R1 adds a fail-closed text-only credential smoke gate. The default command is dry-run only and makes no network call:
+
+```sh
+npm run qa:siliconflow:credential-smoke
+```
+
+After the local ignored/server-side env is configured, run explicit provider smoke commands one surface at a time:
+
+```sh
+npm run qa:siliconflow:credential-smoke -- --run-provider --surface=photo-analysis
+npm run qa:siliconflow:credential-smoke -- --run-provider --surface=filter-lab --timeout-ms=30000
+```
+
+The PT2-SF-R1 smoke is text-only. It verifies the SiliconFlow credential/base/model path with `imageUploadAttempted:false`; image-bearing Photo Advisor and Filter Lab QA must stay in later bounded PT2-SF-R2/PT2-SF-R3 phases.
+
+## Local Xiaoyi DeepSeek Relay Internal Setup (Historical Fallback)
 
 Do not commit real secrets. The Xiaoyi relay key is backend/server-side only and must never be added to iOS.
 
@@ -137,6 +174,9 @@ The auth header is OpenAI-compatible:
 The API key, raw prompt, raw request body, raw provider response, and raw image/base64 payload must not be printed, committed, persisted, or sent to iOS.
 
 Filter Lab returns a validated structured generated filter recipe only. It does not return generated bitmaps, arbitrary Core Image filter names, shader code, LUT URLs, exact-copy claims, or direct rendering instructions.
+
+This path is not the current PT2 mainline. SiliconFlow is the active provider direction unless a future phase explicitly switches back.
+
 
 ## Endpoints
 
