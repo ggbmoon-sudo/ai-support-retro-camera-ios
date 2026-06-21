@@ -14424,3 +14424,63 @@ The operator reported physical-device testing OK on 2026-06-22. Filter Lab's two
 ### Ready for Next Phase
 
 Recommended next step is `PT2-SF-R8 - Debug-only Filter Lab Provider-backed One-reference Smoke Approval Gate` if the operator wants to verify real AI next. Any provider-backed debug smoke still requires separate explicit approval and must remain backend-mediated with server-side credentials only. The backend may receive only the selected style reference image; the original/apply image must stay local. Do not start image editor provider work, Camera AI work, direct iOS provider calls, live provider smoke, or production rollout without separate explicit approval.
+
+## PT2-SF-R8 - Debug-only Filter Lab Provider-backed One-reference Smoke Approval Gate
+
+Status: implemented, no provider run
+Date: 2026-06-22
+Production readiness: `productionReady:false`
+
+### Summary
+
+PT2-SF-R8 defines the no-runtime approval gate for the first app-driven DEBUG Filter Lab provider-backed smoke after the two-image Filter Lab app flow was physically verified. It records the future smoke scope, exact approval phrase, preconditions, stop conditions, and manual verification checklist while keeping provider execution blocked until a separate explicit R8-RUN approval.
+
+### Completed Work
+
+- Added `docs/pt2-sf-r8-debug-filter-lab-provider-backed-one-reference-smoke-approval-gate.md`.
+- Defined the future R8-RUN boundary: one app-driven DEBUG Filter Lab backend smoke request only.
+- Required backend/provider image input to be only the selected style reference image.
+- Required the original/apply image to stay local-only and receive only the returned recipe through local rendering.
+- Recorded required backend server-side env buckets without reading or printing values.
+- Recorded stop conditions for missing approval, non-DEBUG build, direct iOS provider calls, raw logs, payload expansion, Camera AI, image editor provider, production rollout, and `productionReady:true`.
+- Added an exact approval phrase for a future run.
+- Updated roadmap next action notes.
+
+### Changed Files
+
+- `README.md`
+- `ios-app/README.md`
+- `docs/pt2-sf-r8-debug-filter-lab-provider-backed-one-reference-smoke-approval-gate.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-log.md`
+
+### Tests and Checks
+
+- `git diff --check`
+- Docs-only safety scans for Swift/Xcode/backend runtime drift, provider credential leakage, direct iOS provider calls, raw image/base64/request/provider-output leakage, upload payload expansion, and `productionReady:true`
+- No Xcode build was run because no iOS runtime code changed in this phase.
+
+### Boundary Confirmations
+
+- Swift runtime changed: no
+- Xcode project changed: no
+- Backend runtime changed: no
+- Backend payload expanded: no
+- Provider/model call run: no
+- API key read/printed/committed: no
+- Direct provider URL/key in iOS: no
+- Provider SDK in iOS: no
+- Image upload run during this phase: no
+- Camera cloud AI entry: no
+- Image editor provider behavior: no
+- StoreKit/quota runtime: no
+- Production rollout: no
+- `productionReady:false` remains locked.
+
+### Xcode Verification Needed
+
+None for this docs-only approval gate. Xcode runtime behavior should remain unchanged from the already accepted PT2-SF-R7 two-image Filter Lab flow.
+
+### Ready for Next Phase
+
+Recommended next step is `PT2-SF-R8-RUN - Approved Debug Filter Lab Provider-backed One-reference Smoke` only if the operator gives the exact approval phrase recorded in the R8 gate document. Do not run a provider smoke, read provider credentials, start image editor provider work, Camera AI work, direct iOS provider calls, live provider smoke outside the gate, or production rollout without that separate explicit approval.

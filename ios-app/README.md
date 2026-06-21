@@ -50,6 +50,8 @@ PT2-SF-R5 adds a DEBUG-only selected-photo Filter Lab backend scaffold. After a 
 
 PT2-SF-R7 updates Filter Lab to use two app-side image slots: a target filter reference image for recipe generation and a separate original/apply image for the local before/after preview. The backend Filter Lab payload remains one reference image only; the apply image stays local and is rendered through the existing local preview renderer. No provider key/direct provider call, backend route change, upload payload expansion, Camera cloud AI entry, image editor provider behavior, or production rollout is added.
 
+PT2-SF-R8 adds a docs-only approval gate for a future DEBUG Filter Lab provider-backed one-reference smoke. It does not run a provider call or change iOS runtime. Any future R8-RUN must use the backend boundary only, send only the style reference image, keep the original/apply image local, and require the exact approval phrase recorded in the R8 gate document.
+
 The research index for this direction is `../docs/research/on-device-ai-research-index.md`. Later Depth Anything / Florence work remains blocked until separately approved and benchmarked. If continuing app-side development, choose a non-composition Camera feature or focused runtime/UI polish.
 
 ## Phase 21-M / 21-N / 21-N-R0 / 21-N-R0B / 21-N-R0C / 21-N-R1B / 21-N-R1C / 21-N-R1D Xcode Boundary
