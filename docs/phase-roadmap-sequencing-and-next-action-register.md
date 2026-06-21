@@ -16,15 +16,17 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**Phase 21-A4 - On-device Live Framing Hint UX Pass**
+**MacBook/Xcode physical-device verification for Phase 21-A4**
 
-Reason: Phase 21-A3-R5 physical-device verification is accepted by the operator as temporarily OK, so the roadmap can leave focused Camera bug polish and return to feature development. The next recommended feature step is a local-only live-framing UX pass that improves how the existing Apple Vision / AVFoundation geometry and depth signals become short, mood-first Camera hints. Keep it on-device and free: refine hint priority, cooldown, placement, copy variants, optional debug signal visibility, and fallback behavior without adding cloud calls, model downloads, frame upload, iOS provider/model keys, production endpoints, or production rollout. Phase 21-C-R3-RUN remains available only if local ignored artifact prerequisites and the exact approval phrase are present.
+Reason: Phase 21-A4 implements a local-only live-framing hint UX pass on top of the existing Apple Vision / AVFoundation geometry and depth signal path. It replaces local guidance debug-style state cycling with a `Next hint` action, adds manual visible-hint cycling, and adds category-specific icons for lighting, composition, background, portrait, and filter hints. The next practical step is MacBook/Xcode physical-device verification that compact hint icons are readable, expanded `Next hint` cycles visible local hints, the action is dimmed/disabled when only one hint exists, and Camera filter preview, selfie mirror parity, flash behavior, and focal crop still work. Phase 21-C-R3-RUN remains available only if local ignored artifact prerequisites and the exact approval phrase are present.
 
-If Phase 21-A3-R5 flash, orientation, filter memory/FPS, selfie parity, or focal crop issues reappear, pause A4 and use a focused Camera QA follow-up. Otherwise, A4 should stay free/on-device/local-only unless separately expanded. Do not add Depth Anything runtime, Core ML inference, Florence-2, cloud calls, frame uploads, upload payload changes, Camera live cloud AI, provider keys, sensitive inference, raw frame/depth/image persistence beyond in-memory rendering, or production rollout. `productionReady:false` remains locked.
+If Phase 21-A4 hint UX behavior or Camera runtime stability regresses, use a focused Camera QA follow-up before continuing larger AI roadmap work. This path should remain free/on-device/local-only unless separately expanded. Do not add Depth Anything runtime, Core ML inference, Florence-2, cloud calls, frame uploads, upload payload changes, Camera live cloud AI, provider keys, sensitive inference, raw frame/depth/image persistence beyond in-memory rendering, or production rollout. `productionReady:false` remains locked.
 
 Naming note: older committed Phase 21-A backend-internal VLM records remain historical evidence. The completed on-device geometry phase should be referenced by its full title: `Phase 21-A - On-device Vision Geometry Spike`.
 
 Implementation status note: `docs/phase-21-a-on-device-vision-geometry-spike-summary.md` records the current Phase 21-A implementation boundary and Xcode verification checklist.
+
+Live hint UX status note: `docs/phase-21-a4-on-device-live-framing-hint-ux-pass-summary.md` records the Phase 21-A4 local-only hint UX pass and physical-device verification checklist.
 
 Camera focal crop status note: `docs/phase-21-a3-r3-focal-framing-box-crop.md` records the current focal framing-box crop implementation boundary and Xcode verification checklist.
 

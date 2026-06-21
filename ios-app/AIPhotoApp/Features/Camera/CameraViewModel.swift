@@ -92,6 +92,22 @@ final class CameraViewModel: ObservableObject {
         liveGuidanceState.titleKey(for: liveGuidanceMode)
     }
 
+    var liveGuidanceOverlayActionTitleKey: String {
+        if liveGuidanceMode == .local {
+            return "camera.guidance.action.next_hint"
+        }
+
+        return "camera.guidance.action.next_state"
+    }
+
+    var isLiveGuidanceOverlayActionEnabled: Bool {
+        if liveGuidanceMode == .local {
+            return liveGuidanceSuggestions.count > 1
+        }
+
+        return liveGuidanceState != .off
+    }
+
     var dualFocalZoomConfiguration: CameraDualFocalZoomConfiguration {
         CameraDualFocalZoomConfiguration(
             focalLengthMillimeters: selectedDualFocalLengthMillimeters,
@@ -446,6 +462,17 @@ final class CameraViewModel: ObservableObject {
         }
         updateFrameSignalAnalysisAvailability()
         refreshLiveGuidanceSuggestions(resetStability: true)
+    }
+
+    func performLiveGuidanceOverlayAction() {
+        guard liveGuidanceMode == .local else {
+            advanceLiveGuidanceMockState()
+            return
+        }
+
+        guard liveGuidanceSuggestions.count > 1 else { return }
+        let firstSuggestion = liveGuidanceSuggestions.removeFirst()
+        liveGuidanceSuggestions.append(firstSuggestion)
     }
 
     func selectLensOption(_ option: LensOption) {

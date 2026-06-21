@@ -1250,3 +1250,23 @@ Latest Phase 21-A3-R4 Realtime Filter Preview and Selfie Mirror Save on 2026-06-
 - No provider/cloud call, provider key, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame persistence beyond in-memory rendering, Depth Anything runtime, Core ML model inference, sensitive inference, secret, or production rollout was added.
 - `productionReady:false` remains locked.
 - Next practical step is MacBook/Xcode physical-device verification of Phase 21-A3-R4 filter preview parity, Metal preview performance, and selfie mirror-save behavior.
+
+Latest Phase 21-A3-R5 Camera Runtime Polish and Stability Pass on 2026-06-21:
+
+- Phase 21-A3-R5 stabilizes local Camera flash availability, session threading, and live filtered preview memory behavior.
+- Front camera keeps local screen flash; back camera flash is hardware-gated; unsupported flash UI is dimmed/disabled.
+- `AVCaptureSession.startRunning()` / `stopRunning()` run on a dedicated background queue.
+- Live filtered preview rendering is throttled and disables Core Image intermediate caching to reduce memory pressure.
+- Operator reported MacBook/Xcode physical-device verification is temporarily OK.
+- No provider/cloud call, provider key, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame persistence beyond in-memory rendering, Depth Anything runtime, Core ML model inference, sensitive inference, secret, or production rollout was added.
+- `productionReady:false` remains locked.
+
+Latest Phase 21-A4 On-device Live Framing Hint UX Pass on 2026-06-21:
+
+- Phase 21-A4 improves the local-only live framing hint UX using the existing Apple Vision / AVFoundation signal path.
+- Expanded local guidance now uses a user-facing `Next hint` action instead of debug-style state cycling.
+- Users can manually rotate visible local hints, and compact/expanded hints use category-specific icons for lighting, composition, background, portrait, and filter suggestions.
+- Added `docs/phase-21-a4-on-device-live-framing-hint-ux-pass-summary.md`.
+- No provider/cloud call, provider key, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame persistence beyond in-memory rendering, Depth Anything runtime, Florence runtime, Core ML model inference, sensitive inference, secret, or production rollout was added.
+- `productionReady:false` remains locked.
+- Next practical step is MacBook/Xcode physical-device verification of Phase 21-A4 hint icons, `Next hint` cycling, disabled single-hint action state, and Camera runtime regressions.

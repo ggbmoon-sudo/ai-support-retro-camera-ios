@@ -94,6 +94,8 @@ Implementation note:
 
 - Phase 21-A3 now has a tuning summary at `docs/phase-21-a3-live-vision-geometry-smoothness-and-hint-stability-tuning.md`.
 - The next practical step is physical-device feedback after the user tests the tuned build.
+- Phase 21-A4 now has a hint UX summary at `docs/phase-21-a4-on-device-live-framing-hint-ux-pass-summary.md`.
+- The current practical step after Phase 21-A4 is MacBook/Xcode physical-device verification of local hint icons and `Next hint` cycling.
 
 ### Phase 21-B - AVFoundation Depth Capability Probe
 

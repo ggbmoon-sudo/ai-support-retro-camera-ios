@@ -34,7 +34,9 @@ Phase 21-A3-R4 replaces the old approximate SwiftUI live-filter overlay with a l
 
 Phase 21-A3-R5 polishes Camera flash availability, session-threading, and live filtered preview memory state after physical-device verification of selfie parity. Front camera keeps the local screen-flash behavior, back camera flash is hardware-gated, unsupported flash controls are dimmed/disabled, capture only receives an effective flash-enabled value, `AVCaptureSession.startRunning()` / `stopRunning()` run on a dedicated background queue, and live filtered preview rendering is throttled with Core Image intermediate caching disabled to reduce memory pressure. It adds no cloud AI, provider/model call, provider key, preview-frame upload, upload payload change, raw frame/depth/image persistence beyond in-memory rendering, model package, or production rollout.
 
-The research index for this direction is `../docs/research/on-device-ai-research-index.md`. Later Depth Anything / Florence work remains blocked until separately approved and benchmarked. The next recommended feature phase is `Phase 21-A4 - On-device Live Framing Hint UX Pass`, focused on local-only, mood-first hint UX using existing Apple Vision / AVFoundation geometry and depth signals.
+Phase 21-A4 improves local-only live framing hint UX using the existing Apple Vision / AVFoundation signal path. Expanded local guidance now uses `Next hint` for manual visible-hint cycling, compact and expanded hints use category-specific icons, and the path remains on-device/free with no cloud/provider call, frame upload, model runtime, upload payload change, or production rollout.
+
+The research index for this direction is `../docs/research/on-device-ai-research-index.md`. Later Depth Anything / Florence work remains blocked until separately approved and benchmarked. The next practical step is MacBook/Xcode physical-device verification of Phase 21-A4.
 
 ## Phase 21-M / 21-N / 21-N-R0 / 21-N-R0B / 21-N-R0C / 21-N-R1B / 21-N-R1C / 21-N-R1D Xcode Boundary
 

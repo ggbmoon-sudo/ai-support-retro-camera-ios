@@ -4,7 +4,9 @@ struct LiveGuidanceOverlayView: View {
     let state: LiveGuidanceMockState
     let stateTitleKey: String
     let suggestions: [LiveGuidanceSuggestion]
-    let advanceState: () -> Void
+    let actionTitleKey: String
+    let isActionEnabled: Bool
+    let performAction: () -> Void
 
     private var showsSuggestions: Bool {
         state != .off && state != .paused && !suggestions.isEmpty
@@ -23,15 +25,17 @@ struct LiveGuidanceOverlayView: View {
                 Spacer(minLength: AppSpacing.sm)
 
                 Button {
-                    advanceState()
+                    performAction()
                 } label: {
-                    Text("camera.guidance.action.next_state")
+                    Text(LocalizedStringKey(actionTitleKey))
                         .font(.caption2.weight(.semibold))
                         .lineLimit(1)
                         .minimumScaleFactor(0.8)
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel("camera.guidance.action.next_state")
+                .disabled(!isActionEnabled)
+                .opacity(isActionEnabled ? 1 : 0.42)
+                .accessibilityLabel(LocalizedStringKey(actionTitleKey))
             }
 
             if state == .scanning {
@@ -54,7 +58,7 @@ struct LiveGuidanceOverlayView: View {
                                 .lineLimit(2)
                                 .fixedSize(horizontal: false, vertical: true)
                         } icon: {
-                            Image(systemName: "sparkle")
+                            Image(systemName: suggestion.category.systemImageName)
                                 .font(.system(size: 10, weight: .bold))
                         }
                     }
@@ -101,7 +105,9 @@ struct LiveGuidanceOverlayView: View {
                 category: .composition
             )
         ],
-        advanceState: {}
+        actionTitleKey: "camera.guidance.action.next_hint",
+        isActionEnabled: true,
+        performAction: {}
     )
     .padding()
     .background(Color.black)

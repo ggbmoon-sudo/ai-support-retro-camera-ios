@@ -532,7 +532,9 @@ struct CameraView: View {
                         state: viewModel.liveGuidanceState,
                         stateTitleKey: viewModel.liveGuidanceStateTitleKey,
                         suggestions: viewModel.liveGuidanceSuggestions,
-                        advanceState: viewModel.advanceLiveGuidanceMockState
+                        actionTitleKey: viewModel.liveGuidanceOverlayActionTitleKey,
+                        isActionEnabled: viewModel.isLiveGuidanceOverlayActionEnabled,
+                        performAction: viewModel.performLiveGuidanceOverlayAction
                     )
                     .frame(width: 244, alignment: .trailing)
 
@@ -567,7 +569,7 @@ struct CameraView: View {
             }
         } label: {
             HStack(spacing: AppSpacing.xs) {
-                Image(systemName: "sparkles")
+                Image(systemName: viewModel.liveGuidanceSuggestions.first?.category.systemImageName ?? "sparkles")
                     .font(.system(size: 12, weight: .bold))
 
                 Text(LocalizedStringKey(viewModel.liveGuidanceStateTitleKey))
@@ -1215,7 +1217,7 @@ struct CameraView: View {
                     }
                 } label: {
                     HStack(spacing: AppSpacing.xs) {
-                        Image(systemName: "sparkles")
+                        Image(systemName: viewModel.liveGuidanceSuggestions.first?.category.systemImageName ?? "sparkles")
                             .font(.system(size: 12, weight: .bold))
 
                         Text(LocalizedStringKey(viewModel.liveGuidanceStateTitleKey))
@@ -1253,7 +1255,9 @@ struct CameraView: View {
                         state: viewModel.liveGuidanceState,
                         stateTitleKey: viewModel.liveGuidanceStateTitleKey,
                         suggestions: viewModel.liveGuidanceSuggestions,
-                        advanceState: viewModel.advanceLiveGuidanceMockState
+                        actionTitleKey: viewModel.liveGuidanceOverlayActionTitleKey,
+                        isActionEnabled: viewModel.isLiveGuidanceOverlayActionEnabled,
+                        performAction: viewModel.performLiveGuidanceOverlayAction
                     )
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .transition(.opacity.combined(with: .move(edge: .top)))

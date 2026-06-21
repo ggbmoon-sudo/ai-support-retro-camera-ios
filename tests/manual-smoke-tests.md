@@ -4805,6 +4805,21 @@ Physical-device verification:
 - [ ] Confirm no provider/model key, direct provider/model call, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame/image/depth persistence beyond in-memory rendering, Depth Anything runtime, Core ML model inference, or production rollout appears.
 - [ ] Confirm `productionReady:false` remains unchanged.
 
+## Phase 21-A4 - On-device Live Framing Hint UX Pass
+
+Physical-device verification:
+
+- [ ] Build and run on iPhone.
+- [ ] Open Camera with local guidance enabled.
+- [ ] Confirm the compact guidance pill uses a category-specific icon for the current hint instead of always using sparkles.
+- [ ] Expand the guidance panel and confirm the action label is `Next hint` / `下一個提示` in local guidance mode.
+- [ ] When two visible local hints are shown, tap `Next hint` and confirm the hint order rotates.
+- [ ] When only one local hint is shown, confirm the action is dimmed/disabled and does not break guidance state.
+- [ ] Confirm the hint copy remains short, non-judgmental, mood-first, and does not use score/rating or retake-first wording.
+- [ ] Confirm filter preview, selfie mirror parity, flash behavior, and focal crop still work.
+- [ ] Confirm no provider/model key, direct provider/model call, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame/image/depth persistence beyond in-memory rendering, Depth Anything runtime, Core ML model inference, Florence runtime, or production rollout appears.
+- [ ] Confirm `productionReady:false` remains unchanged.
+
 ## Phase 21-A2 - Live Framing Aesthetic Spatial Codebook
 
 Docs-only verification:

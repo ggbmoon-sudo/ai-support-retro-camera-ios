@@ -283,6 +283,7 @@
 "camera.guidance.state.local_suggestion_available" = "Local hints";
 "camera.guidance.state.paused" = "Paused";
 "camera.guidance.action.next_state" = "Next";
+"camera.guidance.action.next_hint" = "Next hint";
 "camera.guidance.scanning_note" = "Checking the frame with local guidance hints.";
 "camera.guidance.suggestion.move_closer_to_light" = "Frame is a little dark. Move closer to a light source.";
 "camera.guidance.suggestion.avoid_direct_light" = "Frame is very bright. Try avoiding direct light.";

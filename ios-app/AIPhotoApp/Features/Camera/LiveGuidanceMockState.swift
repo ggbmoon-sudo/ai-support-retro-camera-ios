@@ -46,6 +46,21 @@ nonisolated enum LiveGuidanceSuggestionCategory: String, Hashable, Sendable {
     case background
     case portrait
     case filter
+
+    var systemImageName: String {
+        switch self {
+        case .lighting:
+            return "sun.max"
+        case .composition:
+            return "viewfinder"
+        case .background:
+            return "square.stack.3d.up"
+        case .portrait:
+            return "person.crop.rectangle"
+        case .filter:
+            return "camera.filters"
+        }
+    }
 }
 
 nonisolated struct LiveGuidanceSuggestion: Identifiable, Hashable, Sendable {
