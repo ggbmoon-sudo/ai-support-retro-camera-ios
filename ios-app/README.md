@@ -40,6 +40,8 @@ Phase 21-A5 records the composition guidance ownership boundary. Richer composit
 
 Phase 21-A6 applies that boundary to the iOS Camera runtime. Local geometry/depth/lighting signals can still be collected in memory, but app-authored composition and portrait-layout hint copy is suppressed; richer composition guidance remains for the training-AI branch. Lighting, filter, and local-unavailable hints remain available. It adds no provider/model call, provider key, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame/depth/image persistence, model package, dataset crawler, AI labeling run, user-photo training, or production rollout.
 
+Phase 21-A7 polishes the non-composition Camera guidance runtime after A6. If local signals produce no visible safe hint after composition / portrait-layout filtering, the UI falls back to the existing safe local-unavailable hint instead of an empty expanded surface. Compact local guidance also uses a plain guidance icon instead of `sparkles` when no visible hint is present. It adds no provider/model call, provider key, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame/depth/image persistence, model package, dataset crawler, AI labeling run, user-photo training, or production rollout.
+
 The research index for this direction is `../docs/research/on-device-ai-research-index.md`. Later Depth Anything / Florence work remains blocked until separately approved and benchmarked. If continuing app-side development, choose a non-composition Camera feature or focused runtime/UI polish.
 
 ## Phase 21-M / 21-N / 21-N-R0 / 21-N-R0B / 21-N-R0C / 21-N-R1B / 21-N-R1C / 21-N-R1D Xcode Boundary

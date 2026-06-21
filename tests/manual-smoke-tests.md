@@ -4849,6 +4849,21 @@ Physical-device verification:
 - [ ] Confirm no provider/model key, direct provider/model call, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame/image/depth persistence, dataset crawler, AI-assisted labeling run, user-photo training, Depth Anything runtime, Core ML model inference, Florence runtime, or production rollout appears.
 - [ ] Confirm `productionReady:false` remains unchanged.
 
+## Phase 21-A7 - Camera Runtime Non-composition Polish
+
+Physical-device verification:
+
+- [ ] Build and run on iPhone.
+- [ ] Open Camera with local guidance enabled.
+- [ ] Confirm safe lighting / filter / unavailable hints can still appear.
+- [ ] Confirm app-authored subject-centering, edge-margin, headroom, face-distance, subject-size, portrait-ready, rule-of-thirds, and vertical-balance hints remain suppressed.
+- [ ] Create a scene where geometry is detected but no lighting/filter hint is visible, and confirm the expanded guidance surface falls back to the safe local-unavailable hint instead of appearing blank.
+- [ ] Confirm compact local guidance does not show the `sparkles` icon when no visible suggestion is present.
+- [ ] Confirm `Next hint` is disabled when only one hint is visible.
+- [ ] Confirm Camera capture, live filter preview, selfie mirror parity, flash, and focal crop behavior remain unchanged.
+- [ ] Confirm no provider/model key, direct provider/model call, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame/image/depth persistence, dataset crawler, AI-assisted labeling run, user-photo training, Depth Anything runtime, Core ML model inference, Florence runtime, or production rollout appears.
+- [ ] Confirm `productionReady:false` remains unchanged.
+
 ## Phase 21-A2 - Live Framing Aesthetic Spatial Codebook
 
 Docs-only verification:

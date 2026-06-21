@@ -1291,3 +1291,14 @@ Latest Phase 21-A6 App-side Composition Hint Suppression on 2026-06-21:
 - Added `docs/phase-21-a6-app-side-composition-hint-suppression-summary.md`.
 - No provider/cloud call, provider key, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame/depth/image persistence, dataset crawler, AI-assisted labeling run, user-photo training, Depth Anything runtime, Florence runtime, Core ML model inference, sensitive inference, secret, or production rollout was added.
 - `productionReady:false` remains locked.
+
+Latest Phase 21-A7 Camera Runtime Non-composition Polish on 2026-06-21:
+
+- Phase 21-A7 keeps follow-up app work non-composition-focused.
+- `LocalRuleBasedGuidanceProvider` now returns the existing safe local-unavailable hint when current local signals produce no visible post-A6 suggestion.
+- `CameraViewModel` centralizes compact guidance icon selection with `liveGuidanceCompactIconName`.
+- Both compact guidance pill surfaces use the shared icon decision, so local guidance does not show `sparkles` when no visible hint is present.
+- App-authored composition / portrait-layout hints remain suppressed; lighting, filter, and unavailable hints remain available.
+- Added `docs/phase-21-a7-camera-runtime-non-composition-polish-summary.md`.
+- No provider/cloud call, provider key, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame/depth/image persistence, dataset crawler, AI-assisted labeling run, user-photo training, Depth Anything runtime, Florence runtime, Core ML model inference, sensitive inference, secret, or production rollout was added.
+- `productionReady:false` remains locked.

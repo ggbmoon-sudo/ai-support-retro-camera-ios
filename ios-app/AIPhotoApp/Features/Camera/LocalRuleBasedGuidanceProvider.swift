@@ -25,33 +25,37 @@ struct LocalRuleBasedGuidanceProvider: LiveGuidanceProvider {
         case .off, .paused, .scanning:
             return []
         case .idle:
-            return [
-                LiveGuidanceSuggestion(
-                    id: "local_signal_unavailable",
-                    messageKey: "camera.guidance.suggestion.local_signal_unavailable",
-                    category: .composition
-                )
-            ]
+            return [localSignalUnavailableSuggestion]
         case .suggestionAvailable:
             let languageMode = toneSettingsStore.runtimeLanguageMode
             let toneMode = toneSettingsStore.runtimeToneMode
 
             if let frameSignals {
-                return suggestionComposer.suggestions(
+                let suggestions = suggestionComposer.suggestions(
                     for: frameSignals,
                     selectedPreset: selectedPreset,
                     languageMode: languageMode,
                     toneMode: toneMode
                 )
+                return suggestions.isEmpty ? [localSignalUnavailableSuggestion] : suggestions
             }
 
             let signals = frameAnalyzer.fallbackSignals(selectedPreset: selectedPreset)
-            return suggestionComposer.suggestions(
+            let suggestions = suggestionComposer.suggestions(
                 for: signals,
                 selectedPreset: selectedPreset,
                 languageMode: languageMode,
                 toneMode: toneMode
             )
+            return suggestions.isEmpty ? [localSignalUnavailableSuggestion] : suggestions
         }
+    }
+
+    private var localSignalUnavailableSuggestion: LiveGuidanceSuggestion {
+        LiveGuidanceSuggestion(
+            id: "local_signal_unavailable",
+            messageKey: "camera.guidance.suggestion.local_signal_unavailable",
+            category: .composition
+        )
     }
 }

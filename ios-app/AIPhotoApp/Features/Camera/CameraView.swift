@@ -569,7 +569,7 @@ struct CameraView: View {
             }
         } label: {
             HStack(spacing: AppSpacing.xs) {
-                Image(systemName: viewModel.liveGuidanceSuggestions.first?.category.systemImageName ?? "sparkles")
+                Image(systemName: viewModel.liveGuidanceCompactIconName)
                     .font(.system(size: 12, weight: .bold))
 
                 Text(LocalizedStringKey(viewModel.liveGuidanceStateTitleKey))
@@ -1217,7 +1217,7 @@ struct CameraView: View {
                     }
                 } label: {
                     HStack(spacing: AppSpacing.xs) {
-                        Image(systemName: viewModel.liveGuidanceSuggestions.first?.category.systemImageName ?? "sparkles")
+                        Image(systemName: viewModel.liveGuidanceCompactIconName)
                             .font(.system(size: 12, weight: .bold))
 
                         Text(LocalizedStringKey(viewModel.liveGuidanceStateTitleKey))

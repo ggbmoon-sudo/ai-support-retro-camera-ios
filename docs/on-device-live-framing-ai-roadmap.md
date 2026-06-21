@@ -98,6 +98,7 @@ Implementation note:
 - The current practical step after Phase 21-A4 is MacBook/Xcode physical-device verification of local hint icons and `Next hint` cycling.
 - Phase 21-A5 now records the composition guidance ownership boundary at `docs/phase-21-a5-composition-guidance-ownership-boundary.md`: richer composition advice belongs to the training-AI branch, while iOS Camera remains a local signal / hint-shell layer.
 - Phase 21-A6 now applies that ownership boundary in runtime at `docs/phase-21-a6-app-side-composition-hint-suppression-summary.md`: app-authored composition / portrait-layout hint copy is suppressed, while safe local signals and conservative lighting/filter/unavailable hints remain.
+- Phase 21-A7 now records non-composition Camera guidance polish at `docs/phase-21-a7-camera-runtime-non-composition-polish-summary.md`: empty post-A6 local hint surfaces fall back to a safe unavailable hint, and compact local guidance avoids a suggestion-like sparkle icon when no visible hint exists.
 
 ### Phase 21-B - AVFoundation Depth Capability Probe
 
@@ -204,6 +205,7 @@ Boundaries:
 - Phase 21 becomes the on-device live framing intelligence track.
 - Richer composition guidance should be owned by the training-AI branch; the app-side Camera runtime should provide safe typed local signals and lightweight UX, not deeper app-authored composition advice.
 - Phase 21-A6 suppresses app-authored composition copy in Camera runtime so training-AI can own richer guidance without creating a second competing rules engine in iOS.
+- Phase 21-A7 keeps follow-up app work non-composition-focused and limits runtime changes to safe hint fallback / icon polish.
 - Future Phase 22+ should integrate debug-only iOS overlays only after Phase 21-A and Phase 21-B are documented and scoped.
 - Fine-tuning / distillation should come after dataset manifest, label schema, human review, and benchmark gaps are proven.
 

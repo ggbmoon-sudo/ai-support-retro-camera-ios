@@ -100,6 +100,25 @@ final class CameraViewModel: ObservableObject {
         return "camera.guidance.action.next_state"
     }
 
+    var liveGuidanceCompactIconName: String {
+        if let firstSuggestion = liveGuidanceSuggestions.first {
+            return firstSuggestion.category.systemImageName
+        }
+
+        switch liveGuidanceState {
+        case .off:
+            return "lightbulb.slash"
+        case .idle:
+            return "lightbulb"
+        case .scanning:
+            return "scope"
+        case .suggestionAvailable:
+            return liveGuidanceMode == .local ? "lightbulb" : "sparkles"
+        case .paused:
+            return "pause.circle"
+        }
+    }
+
     var isLiveGuidanceOverlayActionEnabled: Bool {
         if liveGuidanceMode == .local {
             return liveGuidanceSuggestions.count > 1

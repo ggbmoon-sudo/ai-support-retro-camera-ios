@@ -13492,3 +13492,68 @@ Build and run on iPhone. Confirm lighting/filter/unavailable local hints can sti
 ### Ready for Next Phase
 
 Current recommended app-side next step is `Phase 21-A7 - Camera Runtime Non-composition Polish`. If continuing composition intelligence, use a separate training-AI branch phase for dataset/label schema, legal/source/consent gates, human review, and typed composition outputs. Not ready for production rollout.
+
+## Phase 21-A7 - Camera Runtime Non-composition Polish
+
+Status: implemented, pending MacBook/Xcode physical-device verification
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase 21-A7 is a focused non-composition Camera runtime polish pass after Phase 21-A6. It improves local guidance behavior when post-A6 filtering leaves no visible suggestion, without adding composition advice, cloud AI, model runtime, upload behavior, or production rollout.
+
+### Completed Work
+
+- Added a safe fallback in `LocalRuleBasedGuidanceProvider` so local guidance returns the existing local-unavailable hint when current local signals produce no visible suggestion.
+- Added `liveGuidanceCompactIconName` to centralize compact guidance icon selection.
+- Updated both compact guidance pill surfaces in `CameraView` to use the shared icon decision.
+- Avoided the `sparkles` suggestion icon for local guidance when no visible hint is present.
+- Kept lighting, filter, and local-unavailable hints available.
+- Kept app-authored composition / portrait-layout hint copy suppressed.
+- Added `docs/phase-21-a7-camera-runtime-non-composition-polish-summary.md`.
+
+### Changed Files
+
+- `ios-app/AIPhotoApp/Features/Camera/LocalRuleBasedGuidanceProvider.swift`
+- `ios-app/AIPhotoApp/Features/Camera/CameraViewModel.swift`
+- `ios-app/AIPhotoApp/Features/Camera/CameraView.swift`
+- `docs/phase-21-a7-camera-runtime-non-composition-polish-summary.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-log.md`
+- `docs/03-camera-filter-image-pipeline.md`
+- `docs/on-device-live-framing-ai-roadmap.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `README.md`
+- `ios-app/README.md`
+- `tests/manual-smoke-tests.md`
+
+### Tests and Checks
+
+- `git diff --check`
+- Focused source scan for provider keys, network/provider calls, upload payload changes, model artifacts, raw frame persistence, Camera cloud AI entries, dataset crawler, AI labeling runtime, and production readiness changes
+- Xcode physical-device build remains required for runtime verification.
+
+### Boundary Confirmations
+
+- Provider/model/cloud call: no
+- Camera live cloud AI entry: no
+- Preview-frame upload: no
+- Upload payload changed: no
+- Raw frame/depth/image persistence: no
+- Dataset crawler added: no
+- AI-assisted labeling run added: no
+- User-photo training added: no
+- Depth Anything runtime added: no
+- Florence runtime added: no
+- Core ML model inference run: no
+- Sensitive inference added: no
+- `productionReady:false` remains locked.
+
+### Xcode Verification Needed
+
+Build and run on iPhone. Confirm local guidance still shows safe lighting / filter / unavailable hints, app-authored composition / portrait-layout hints remain suppressed, only-suppressed-geometry situations fall back to the safe unavailable hint instead of an empty expanded surface, compact local guidance does not use `sparkles` when no visible hint exists, `Next hint` is disabled when only one hint is visible, and Camera capture, live filter preview, selfie mirror parity, flash, and focal crop behavior remain unchanged.
+
+### Ready for Next Phase
+
+Current recommended next step is `Phase 21-A7-VERIFY - Camera Runtime Non-composition Polish Physical-device QA`. If continuing composition intelligence, use a separate training-AI branch phase for dataset/label schema, legal/source/consent gates, human review, and typed composition outputs. Not ready for production rollout.
