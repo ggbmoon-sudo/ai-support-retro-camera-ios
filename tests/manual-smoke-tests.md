@@ -4791,6 +4791,7 @@ Physical-device verification:
 
 Physical-device verification:
 
+- [x] Operator reported MacBook/Xcode physical-device verification is temporarily OK after R5.
 - [ ] Build and run on iPhone.
 - [ ] On the front camera, enable flash and confirm shutter triggers the local screen-flash effect.
 - [ ] On the back camera, confirm flash is enabled only when the active hardware camera reports flash support.
