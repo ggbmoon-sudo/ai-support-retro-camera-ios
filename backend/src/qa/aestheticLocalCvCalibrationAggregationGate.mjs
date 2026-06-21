@@ -23,6 +23,8 @@ const ALLOWED_WARNING_BUCKETS = Object.freeze([
   "soft_edge_margin_low",
   "soft_background_density_high",
   "soft_sharpness_low_confidence",
+  "soft_low_sharpness_review",
+  "strong_horizon_tilt_review",
   "soft_spatial_balance_review",
   ...AESTHETIC_LOCAL_CV_EXTRACTOR_FEATURE_KEYS.map((key) => `soft_${key}_outside_expected_range`)
 ]);
@@ -97,9 +99,13 @@ const RAW_VALUE_PATTERNS = Object.freeze([
 
 export function aestheticLocalCvCalibrationAggregationSample() {
   return {
-    comparisons: [
-      runAestheticLocalCvExpectedRangeComparison(aestheticLocalCvExpectedRangeComparisonSample())
-    ],
+    comparisons: reviewedCalibrationFeatureVectors().map((fixture) =>
+      runAestheticLocalCvExpectedRangeComparison({
+        ...aestheticLocalCvExpectedRangeComparisonSample(),
+        fixtureToken: fixture.fixtureToken,
+        featureVector: fixture.featureVector
+      })
+    ),
     allowDuplicateFixtureTokens: false,
     imageReadsPerformed: false,
     cvInferencePerformed: false,
@@ -111,6 +117,76 @@ export function aestheticLocalCvCalibrationAggregationSample() {
     eligibleForAppRuntime: false,
     productionReady: false
   };
+}
+
+export function reviewedCalibrationFeatureVectors() {
+  return [
+    {
+      fixtureToken: "calibration_001",
+      featureVector: {
+        headroomRatio: 0.23,
+        horizonAngle: -4,
+        highlightClipRatio: 0.044,
+        edgeMargin: 0.097,
+        backgroundObjectDensity: 0.199,
+        sharpnessRatio: 0.228,
+        subjectAnchor: "left_third",
+        visualWeightMoment: "right_heavy"
+      }
+    },
+    {
+      fixtureToken: "calibration_002",
+      featureVector: {
+        headroomRatio: 0.23,
+        horizonAngle: 2,
+        highlightClipRatio: 0,
+        edgeMargin: 0.183,
+        backgroundObjectDensity: 0.012,
+        sharpnessRatio: 0.021,
+        subjectAnchor: "center",
+        visualWeightMoment: "top_heavy"
+      }
+    },
+    {
+      fixtureToken: "calibration_003",
+      featureVector: {
+        headroomRatio: 0.18,
+        horizonAngle: -2,
+        highlightClipRatio: 0,
+        edgeMargin: 0.092,
+        backgroundObjectDensity: 0.012,
+        sharpnessRatio: 0.009,
+        subjectAnchor: "left_third",
+        visualWeightMoment: "balanced"
+      }
+    },
+    {
+      fixtureToken: "calibration_004",
+      featureVector: {
+        headroomRatio: 0.3,
+        horizonAngle: 4,
+        highlightClipRatio: 0,
+        edgeMargin: 0.304,
+        backgroundObjectDensity: 0.012,
+        sharpnessRatio: 0.038,
+        subjectAnchor: "right_third",
+        visualWeightMoment: "bottom_heavy"
+      }
+    },
+    {
+      fixtureToken: "calibration_005",
+      featureVector: {
+        headroomRatio: 0.12,
+        horizonAngle: 9.5,
+        highlightClipRatio: 0,
+        edgeMargin: 0.195,
+        backgroundObjectDensity: 0.012,
+        sharpnessRatio: 1,
+        subjectAnchor: "center",
+        visualWeightMoment: "top_heavy"
+      }
+    }
+  ];
 }
 
 export function runAestheticLocalCvCalibrationAggregationGate(

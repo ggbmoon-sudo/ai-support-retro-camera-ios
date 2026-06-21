@@ -156,6 +156,43 @@ test("successful approved smoke reads one temp ignored fixture and emits sanitiz
   }
 });
 
+test("backend-relative fixtureRoot resolves from backend npm script context", () => {
+  const tempRoot = mkdtempSync(join(tmpdir(), "od-r7d-backend-cwd-"));
+  const backendDir = join(tempRoot, "backend");
+  const fixtureDir = join(backendDir, "tests", "local-cv-calibration-fixtures");
+  mkdirSync(fixtureDir, { recursive: true });
+  writeFileSync(join(fixtureDir, "calibration_001.jpg"), Buffer.from([23, 120, 120, 24]));
+
+  try {
+    const report = runAestheticLocalCvCalibrationSmoke(
+      {
+        config: approvedConfig(),
+        configPresent: true,
+        fixtureToken: "calibration_001"
+      },
+      { cwd: backendDir }
+    );
+    const serialized = JSON.stringify(report);
+
+    assert.equal(report.acceptedForCalibrationReview, true);
+    assert.equal(report.fixtureCount, 1);
+    assert.equal(report.imageReadsPerformed, true);
+    assert.equal(serialized.includes(tempRoot), false);
+    assert.equal(serialized.includes("calibration_001.jpg"), false);
+    assert.equal(/base64|exif|gps|metadata/i.test(serialized), false);
+  } finally {
+    rmSync(tempRoot, { recursive: true, force: true });
+  }
+});
+
+test("unsupported fixtureRoot path traversal is blocked before read", () => {
+  const report = reportFor({ config: approvedConfig({ fixtureRoot: "../backend/tests/local-cv-calibration-fixtures" }) });
+
+  assert.equal(report.acceptedForCalibrationReview, false);
+  assert.equal(report.imageReadsPerformed, false);
+  assert.equal(blockedFor(report, "unsupported_fixture_root"), true);
+});
+
 test("imageReadsPerformed true is allowed only for successful approved smoke result", () => {
   const blocked = reportFor({ config: approvedConfig({ allowUploads: true }) });
   const accepted = reportFor();

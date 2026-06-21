@@ -4791,6 +4791,20 @@ Backend local CV aggregation verification:
 - [ ] Confirm no Xcode runtime behavior is expected to change.
 - [ ] Confirm no Swift runtime file, model file, Core ML package, model download, Camera integration, upload path, provider/model key, API key, Xiaoyi relay call, crawler/download mode, image read by default, image upload, cloud/provider call, network call, training/fine-tuning, app runtime transfer, generated report, or production rollout was added.
 
+## Phase OD-R7F-R2 - Local CV Aggregation Review
+
+Backend local CV aggregation review verification:
+
+- [ ] From `backend/`, run `npm run qa:aesthetic-local-cv:calibration-aggregation`.
+- [ ] Confirm output has `runMode:"multi_fixture_aggregation_no_image_read"`.
+- [ ] Confirm `fixtureCount:5`, tokens `calibration_001` through `calibration_005`, `insufficientSampleSize:false`, `minimumRecommendedFixtureCount:5`, and `acceptedForCalibrationAggregationReview:true`.
+- [ ] Confirm `eligibleForParameterTuning:false`, `eligibleForAppRuntime:false`, and `productionReady:false`.
+- [ ] Confirm warning frequency buckets include horizon tilt review, low sharpness review, spatial balance review, and headroom high review signals with no blocker buckets.
+- [ ] Confirm output does not emit score/rating/aesthetic grading fields and does not create retake-first guidance.
+- [ ] From `backend/`, run `node --test tests/aesthetic-local-cv-calibration-smoke.test.mjs` to verify fixture-root path handling and default missing-config block.
+- [ ] Confirm no Xcode runtime behavior is expected to change.
+- [ ] Confirm no Swift runtime file, model file, Core ML package, model download, Camera integration, upload path, provider/model key, API key, Xiaoyi relay call, crawler/download mode, image read by default, image upload, cloud/provider call, network call, training/fine-tuning, app runtime transfer, generated report, or production rollout was added.
+
 ## Phase OD-R8A - Parameter Tuning Harness Dry-run
 
 Backend parameter tuning dry-run verification:

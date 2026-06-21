@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase OD-R7F - Local CV Calibration Multi-fixture Aggregation Gate
+Current phase: Phase OD-R7F-R2 - Multi-fixture Aggregation Review + Calibration Smoke CLI Path Regression
 Status: completed
-Latest implementation: Phase OD-R7F adds a backend/local-only Local CV calibration multi-fixture aggregation gate for sanitized OD-R7E expected-range outputs. The default CLI reads no images, aggregates the single inline `calibration_001` comparison, reports `insufficientSampleSize:true`, emits warning frequency buckets instead of score/rating/aesthetic grading, and keeps parameter tuning, app runtime transfer, provider/cloud/Xiaoyi relay calls, network/upload, generated reports, Swift/Xcode changes, model installs, and production rollout blocked. `productionReady:false` remains locked.
+Latest implementation: Phase OD-R7F-R2 updates the backend/local-only Local CV calibration aggregation gate to default to five manually reviewed sanitized OD-R7F-R1 feature vectors. The default CLI reads no images, reports `fixtureCount:5`, `insufficientSampleSize:false`, warning frequency buckets, no blocker buckets, `eligibleForParameterTuning:false`, `eligibleForAppRuntime:false`, and `productionReady:false`. It also fixes/regression-tests OD-R7D smoke CLI fixture-root path handling while keeping raw paths, reports, fixtures/configs, provider/cloud/network/upload, Swift/Xcode changes, model installs, app runtime transfer, and production rollout blocked.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -13227,6 +13227,78 @@ The current inline aggregation contains one reviewed fixture, `calibration_001`,
 ### Ready for Next Phase
 
 Ready for future OD-R7F-R1 fixture expansion or OD-R8C tuning connection work after commit/push. Not ready for production rollout.
+## Phase OD-R7F-R2 - Multi-fixture Aggregation Review + Calibration Smoke CLI Path Regression
+
+Status: completed
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase OD-R7F-R2 updates the backend/local-only calibration aggregation gate to use five manually reviewed sanitized OD-R7F-R1 local CV feature vectors by default. The sample-size gate is no longer insufficient for first aggregation review, but parameter tuning and app runtime remain blocked.
+
+This phase also fixes and regression-tests OD-R7D calibration smoke fixture-root path handling so the backend package context can resolve `backend/tests/local-cv-calibration-fixtures` safely without printing raw absolute paths.
+
+### Completed Work
+
+- Updated `backend/src/qa/aestheticLocalCvCalibrationAggregationGate.mjs` with the five sanitized reviewed fixture vectors.
+- Updated expected-range warning buckets for strong horizon review, low sharpness review, and spatial balance review without score/rating language.
+- Updated `backend/src/qa/aestheticLocalCvCalibrationSmoke.mjs` fixture-root resolution for repo-root and backend package contexts.
+- Updated aggregation and smoke regression tests.
+- Added `docs/od-r7f-r2-local-cv-aggregation-review.md`.
+- Updated README, backend/iOS README, roadmap, handoff, phase log, and manual smoke notes for OD-R7F-R2.
+
+### Changed Files
+
+- `README.md`
+- `backend/README.md`
+- `backend/src/qa/aestheticLocalCvCalibrationAggregationGate.mjs`
+- `backend/src/qa/aestheticLocalCvCalibrationSmoke.mjs`
+- `backend/src/qa/aestheticLocalCvExpectedRangeComparison.mjs`
+- `backend/tests/aesthetic-local-cv-calibration-aggregation-gate.test.mjs`
+- `backend/tests/aesthetic-local-cv-calibration-smoke.test.mjs`
+- `docs/od-r7f-r2-local-cv-aggregation-review.md`
+- `docs/on-device-live-framing-ai-roadmap.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `ios-app/README.md`
+- `tests/manual-smoke-tests.md`
+
+### Boundary Checks
+
+- Backend/local-only aggregation review: yes
+- Sanitized reviewed feature vectors only: yes
+- Image read by default in aggregation: no
+- Real CV inference performed by default: no
+- Warning frequencies rather than scores/ratings/aesthetic grades: yes
+- Retake-first guidance introduced: no
+- Provider/cloud/Xiaoyi relay call made: no
+- Network/upload/download/crawler performed: no
+- Real photos/local configs/generated reports committed: no
+- Swift/Xcode/runtime integration added: no
+- Model/Core ML/ONNX/TFLite/weight file added: no
+- Training/fine-tuning enabled: no
+- App runtime transfer enabled: no
+- Production rollout: no
+- `productionReady:false`: yes
+
+### Verification
+
+- `node --test tests/aesthetic-local-cv-calibration-aggregation-gate.test.mjs tests/aesthetic-local-cv-calibration-smoke.test.mjs tests/aesthetic-local-cv-expected-range-comparison.test.mjs` should pass.
+- `npm test` should pass.
+- `npm run qa:aesthetic-local-cv:calibration-aggregation` should report five fixtures and `insufficientSampleSize:false`.
+- `npm run qa:aesthetic-local-cv:calibration-smoke` should safely block with missing ignored config when no local config is present.
+- Diff checks and safety scans should pass before commit/push.
+
+### Known TODOs
+
+- Future OD-R8C may connect aggregation summaries into parameter tuning only through a separate gate.
+- App runtime transfer remains blocked until later app-side and safety gates.
+
+### Ready for Next Phase
+
+Ready for future OD-R8C parameter tuning connection work after commit/push. Not ready for production rollout.
 ## Phase OD-R5B - Cloud Teacher Provider Sandbox Readiness Gate
 
 Status: completed

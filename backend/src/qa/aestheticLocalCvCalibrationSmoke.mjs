@@ -1,5 +1,5 @@
 import { readdirSync, readFileSync, statSync } from "node:fs";
-import { resolve } from "node:path";
+import { basename, resolve } from "node:path";
 
 import {
   AESTHETIC_LOCAL_CV_CALIBRATION_FIXTURE_CONFIG_SCHEMA_VERSION,
@@ -144,7 +144,7 @@ export function readApprovedFixtureBytes({ fixtureToken, fixtureRoot, cwd = proc
   if (fixtureRoot !== REQUIRED_FIXTURE_ROOT) {
     throw new Error("unsupported fixture root");
   }
-  const absoluteRoot = resolve(cwd, fixtureRoot);
+  const absoluteRoot = resolveFixtureRoot({ cwd, fixtureRoot });
   const entries = readdirSync(absoluteRoot, { withFileTypes: true });
   const match = entries.find((entry) => {
     if (!entry.isFile()) return false;
@@ -161,6 +161,16 @@ export function readApprovedFixtureBytes({ fixtureToken, fixtureRoot, cwd = proc
     throw new Error("approved fixture empty");
   }
   return readFileSync(absoluteFixturePath);
+}
+
+export function resolveFixtureRoot({ cwd = process.cwd(), fixtureRoot }) {
+  if (fixtureRoot !== REQUIRED_FIXTURE_ROOT) {
+    throw new Error("unsupported fixture root");
+  }
+  if (basename(resolve(cwd)) === "backend") {
+    return resolve(cwd, "..", fixtureRoot);
+  }
+  return resolve(cwd, fixtureRoot);
 }
 
 function validateSmokeConfig(config, fixtureToken, configPresent) {

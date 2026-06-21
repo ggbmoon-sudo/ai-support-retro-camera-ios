@@ -18,8 +18,11 @@ const NUMERIC_RANGES = Object.freeze({
   horizonAngle: {
     expected: [-2, 2],
     hard: [-45, 45],
-    warning: (value) => (value >= -5 && value < -2) || (value > 2 && value <= 5),
-    warningBucket: (value) => value < -2 ? "soft_horizon_tilt_left" : "soft_horizon_tilt_right"
+    warning: (value) => value < -2 || value > 2,
+    warningBucket: (value) => {
+      if (value < -5 || value > 5) return "strong_horizon_tilt_review";
+      return value < -2 ? "soft_horizon_tilt_left" : "soft_horizon_tilt_right";
+    }
   },
   highlightClipRatio: {
     expected: [0, 0.06],
@@ -42,8 +45,8 @@ const NUMERIC_RANGES = Object.freeze({
   sharpnessRatio: {
     expected: [0.2, 1],
     hard: [0, 1],
-    warning: (value) => value >= 0.12 && value < 0.2,
-    warningBucket: () => "soft_sharpness_low_confidence"
+    warning: (value) => value < 0.2,
+    warningBucket: (value) => value < 0.12 ? "soft_low_sharpness_review" : "soft_sharpness_low_confidence"
   }
 });
 
@@ -146,7 +149,9 @@ function compareFeature(featureKey, value) {
   }
   if (featureKey === "visualWeightMoment") {
     return compareBucketFeature(featureKey, value, ALLOWED_VISUAL_WEIGHT_BUCKETS, (bucket) =>
-      ["left_heavy", "right_heavy"].includes(bucket) ? ["soft_spatial_balance_review"] : []
+      ["left_heavy", "right_heavy", "top_heavy", "bottom_heavy"].includes(bucket)
+        ? ["soft_spatial_balance_review"]
+        : []
     );
   }
   return baseComparison(featureKey, value, {

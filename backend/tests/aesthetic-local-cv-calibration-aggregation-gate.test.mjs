@@ -4,6 +4,7 @@ import test from "node:test";
 
 import {
   aestheticLocalCvCalibrationAggregationSample,
+  reviewedCalibrationFeatureVectors,
   runAestheticLocalCvCalibrationAggregationGate
 } from "../src/qa/aestheticLocalCvCalibrationAggregationGate.mjs";
 import {
@@ -37,7 +38,9 @@ function hasBlocker(report, token) {
 }
 
 test("single calibration_001 aggregates with insufficient sample size", () => {
-  const report = aggregationFor();
+  const report = aggregationFor({
+    comparisons: [runAestheticLocalCvExpectedRangeComparison(aestheticLocalCvExpectedRangeComparisonSample())]
+  });
 
   assert.equal(report.runMode, "multi_fixture_aggregation_no_image_read");
   assert.equal(report.fixtureCount, 1);
@@ -51,11 +54,56 @@ test("single calibration_001 aggregates with insufficient sample size", () => {
 });
 
 test("single fixture warning frequency counts both soft warning buckets", () => {
-  const report = aggregationFor();
+  const report = aggregationFor({
+    comparisons: [runAestheticLocalCvExpectedRangeComparison(aestheticLocalCvExpectedRangeComparisonSample())]
+  });
 
   assert.equal(report.warningFrequencyBuckets.soft_horizon_tilt_left, 1);
   assert.equal(report.warningFrequencyBuckets.soft_spatial_balance_review, 1);
   assert.deepEqual(report.blockerBuckets, []);
+});
+
+test("five reviewed sanitized fixtures aggregate by default", () => {
+  const report = aggregationFor();
+
+  assert.equal(report.runMode, "multi_fixture_aggregation_no_image_read");
+  assert.equal(report.fixtureCount, 5);
+  assert.deepEqual(report.fixtureTokens, [
+    "calibration_001",
+    "calibration_002",
+    "calibration_003",
+    "calibration_004",
+    "calibration_005"
+  ]);
+  assert.equal(reviewedCalibrationFeatureVectors().length, 5);
+  assert.equal(report.insufficientSampleSize, false);
+  assert.equal(report.minimumRecommendedFixtureCount, 5);
+  assert.equal(report.acceptedForCalibrationAggregationReview, true);
+  assert.equal(report.eligibleForParameterTuning, false);
+  assert.equal(report.eligibleForAppRuntime, false);
+  assert.equal(report.productionReady, false);
+  assert.deepEqual(report.blockerBuckets, []);
+});
+
+test("five reviewed fixtures emit non-judgmental warning frequencies", () => {
+  const report = aggregationFor();
+
+  assert.equal(report.warningFrequencyBuckets.soft_horizon_tilt_left, 1);
+  assert.equal(report.warningFrequencyBuckets.soft_horizon_tilt_right, 1);
+  assert.equal(report.warningFrequencyBuckets.strong_horizon_tilt_review, 1);
+  assert.equal(report.warningFrequencyBuckets.soft_low_sharpness_review, 3);
+  assert.equal(report.warningFrequencyBuckets.soft_spatial_balance_review, 4);
+  assert.equal(report.warningFrequencyBuckets.soft_headroom_high, 1);
+  assert.equal(report.blockerBuckets.length, 0);
+});
+
+test("calibration_005 strong horizon tilt review is not a hard blocker", () => {
+  const report = aggregationFor();
+
+  assert.equal(report.fixtureTokens.includes("calibration_005"), true);
+  assert.equal(report.warningFrequencyBuckets.strong_horizon_tilt_review, 1);
+  assert.equal(report.blockerBuckets.length, 0);
+  assert.equal(report.acceptedForCalibrationAggregationReview, true);
 });
 
 test("five clean synthetic reviewed fixtures clear insufficient sample size", () => {
@@ -157,8 +205,8 @@ test("CLI aggregates inline sanitized comparison without image read", () => {
   const report = JSON.parse(output);
 
   assert.equal(report.runMode, "multi_fixture_aggregation_no_image_read");
-  assert.equal(report.fixtureCount, 1);
-  assert.equal(report.insufficientSampleSize, true);
+  assert.equal(report.fixtureCount, 5);
+  assert.equal(report.insufficientSampleSize, false);
   assert.equal(report.acceptedForCalibrationAggregationReview, true);
   assert.equal(report.eligibleForParameterTuning, false);
   assert.equal(report.eligibleForAppRuntime, false);

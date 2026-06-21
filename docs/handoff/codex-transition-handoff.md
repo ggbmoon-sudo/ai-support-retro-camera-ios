@@ -1294,6 +1294,14 @@ Latest Phase OD-R7F Local CV Calibration Multi-fixture Aggregation Gate on 2026-
 - The default CLI aggregates the single inline `calibration_001` comparison, reports `insufficientSampleSize:true`, and keeps `eligibleForParameterTuning:false`, `eligibleForAppRuntime:false`, and `productionReady:false`.
 - The output emits warning frequency buckets, not scores/ratings/aesthetic grades, and does not introduce retake-first guidance.
 - It reads no images by default, writes no reports, commits no fixtures/local configs, touches no Swift/Xcode files, calls no provider/cloud/Xiaoyi relay code, performs no network/upload/download/crawler work, trains/fine-tunes nothing, transfers nothing to app runtime, and leaves Camera behavior unchanged.
+
+Latest Phase OD-R7F-R2 Local CV Aggregation Review on 2026-06-21:
+
+- OD-R7F-R2 updates the backend/local-only aggregation gate to default to five manually reviewed sanitized OD-R7F-R1 feature vectors.
+- The aggregation CLI now reports `fixtureCount:5`, `insufficientSampleSize:false`, no blocker buckets, `eligibleForParameterTuning:false`, `eligibleForAppRuntime:false`, and `productionReady:false`.
+- Warning frequencies remain internal review buckets, not scores/ratings/aesthetic grades or retake-first guidance.
+- The OD-R7D smoke CLI fixture-root path handling is fixed/regression-tested for backend package context while preserving path traversal rejection and no raw absolute path output.
+- It reads no images by default in aggregation, writes no reports, commits no fixtures/local configs, touches no Swift/Xcode files, calls no provider/cloud/Xiaoyi relay code, performs no network/upload/download/crawler work, trains/fine-tunes nothing, transfers nothing to app runtime, and leaves Camera behavior unchanged.
 - Added `backend/src/qa/aestheticLocalCvExpectedRangeComparison.mjs`, `backend/scripts/run-aesthetic-local-cv-expected-range-comparison.mjs`, backend tests, `npm run qa:aesthetic-local-cv:expected-range`, and `docs/od-r7e-local-cv-expected-range-comparison.md`.
 - The default CLI compares the inline sanitized OD-R7D-R1 `calibration_001` feature vector only.
 - It reads no images by default, runs no CV inference, writes no reports, and emits soft warning buckets rather than scores.
