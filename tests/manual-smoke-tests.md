@@ -4731,6 +4731,19 @@ Backend parameter tuning dry-run verification:
 - [ ] Confirm no Xcode runtime behavior is expected to change.
 - [ ] Confirm no Swift runtime file, model file, Core ML package, model download, CV inference, Camera integration, upload path, provider/model key, API key, real dataset/photo/local config/generated report, crawler/download mode, image read/upload, cloud teacher call, training/fine-tuning, app runtime transfer, or production rollout was added.
 
+## Phase OD-R8B - Parameter Pack Export Gate
+
+Backend parameter pack export gate verification:
+
+- [ ] From `backend/`, run `npm run qa:aesthetic-parameters:export-gate`.
+- [ ] From `backend/`, run `node --test tests/aesthetic-parameter-pack-export-gate.test.mjs`.
+- [ ] Confirm CLI output is sanitized and reports `runMode:"parameter_pack_export_gate"`, `exportGatePassed:true`, `eligibleForAppRuntime:false`, `appRuntimeTransferBlocked:true`, and `appRuntimeWritePerformed:false`.
+- [ ] Confirm the export summary reports no artifact write, no app runtime write, no app bundle file, no iOS project modification, no Swift file modification, no model file, and no raw data.
+- [ ] Confirm execution flags report `networkCallsMade:false`, `imageReadsPerformed:false`, `cvInferencePerformed:false`, `trainingEnabled:false`, `fineTuningEnabled:false`, `runtimeIntegrationEnabled:false`, and `productionReady:false`.
+- [ ] Confirm unknown tags, unknown feature/threshold keys, unsupported suppression/action keys, missing requirements, runtime eligibility, app write, score/rating, sensitive inference, raw teacher text, provider/debug/prompt leakage, local paths, real URLs, and base64/raw image fields fail closed.
+- [ ] Confirm no Xcode runtime behavior is expected to change.
+- [ ] Confirm no Swift runtime file, model file, Core ML package, model download, CV inference, Camera integration, upload path, provider/model key, API key, real dataset/photo/local config/generated report, crawler/download mode, image read/upload, cloud teacher call, training/fine-tuning, app runtime write, app runtime transfer, or production rollout was added.
+
 ## Phase 21-A2 - Live Framing Aesthetic Spatial Codebook
 
 Docs-only verification:

@@ -1238,3 +1238,12 @@ Latest Phase OD-R8A Parameter Tuning Harness Dry-run on 2026-06-21:
 - Rejected, blocked, unreviewed, unsupported, unsafe, or raw/leaky candidates cannot influence the parameter-pack candidate.
 - Output reports `runMode:"parameter_tuning_dry_run"`, accepted/rejected candidate counts, `eligibleForAppRuntime:false`, `appRuntimeTransferBlocked:true`, `cvInferencePerformed:false`, `trainingEnabled:false`, `fineTuningEnabled:false`, `runtimeIntegrationEnabled:false`, and `productionReady:false`.
 - No real image read, CV inference, Python/OpenCV/PyTorch dependency, provider/cloud call, network call, crawler/download, training/fine-tuning, iOS runtime integration, Swift file, model install, upload path, real dataset/photo/local config/generated report, app runtime transfer, or production rollout is added. `productionReady:false` remains locked.
+
+Latest Phase OD-R8B Parameter Pack Export Gate on 2026-06-21:
+
+- OD-R8B adds a backend-only Parameter Pack Export Gate using a safe inline synthetic OD-R8A parameter-pack candidate only.
+- Added `backend/src/qa/aestheticParameterPackExportGate.mjs`, `backend/scripts/check-aesthetic-parameter-pack-export-gate.mjs`, backend tests, `npm run qa:aesthetic-parameters:export-gate`, and `docs/od-r8b-parameter-pack-export-gate.md`.
+- The gate validates candidate versioning, registry version, tag thresholds, suppression rules, safe action mappings, fallback rules, benchmark requirements, review requirements, and safety requirements.
+- Output reports `runMode:"parameter_pack_export_gate"`, `exportGatePassed:true`, `eligibleForAppTransferCandidate:true`, `eligibleForAppRuntime:false`, `appRuntimeTransferBlocked:true`, `appRuntimeWritePerformed:false`, `cvInferencePerformed:false`, `trainingEnabled:false`, `fineTuningEnabled:false`, `runtimeIntegrationEnabled:false`, and `productionReady:false`.
+- The export candidate is structurally exportable only; it is not written to the app, not copied into the app bundle, not wired into Xcode, and not runtime-enabled.
+- No provider/cloud call, API key use, network call, image read/upload, real CV inference, Python/OpenCV/PyTorch dependency, crawler/download, training/fine-tuning, iOS runtime integration, Swift file, model install, upload path, real dataset/photo/local config/generated report, app runtime write, app transfer, or production rollout is added. `productionReady:false` remains locked.
