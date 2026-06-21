@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 21-A3-R4 - Realtime Filter Preview and Selfie Mirror Save
+Current phase: Phase 21-A3-R4-R2 - Selfie Capture Mirror Parity
 Status: implemented, pending Xcode physical-device verification
-Latest implementation: Phase 21-A3-R4 fixes Camera filter preview parity and adds a front-camera final-save mirror toggle. The live Camera view now uses local AVFoundation video frames rendered through the same Core Image filter adjustment pipeline on a Metal-backed preview layer for non-original filters, while front-camera preview remains mirrored and final captured/saved selfie mirroring is controlled by a local toggle. It adds no Depth Anything runtime, Core ML model inference, cloud AI, provider call, preview-frame upload, upload payload change, raw frame persistence beyond in-memory rendering, or production rollout. `productionReady:false` remains locked.
+Latest implementation: Phase 21-A3-R4-R2 makes selfie capture orientation match the mirror-like viewfinder by default and adds a post-capture local flip-photo action for selected camera photos. Front-camera mirror-save now defaults on, while the selected-photo action bar can horizontally flip the current captured image and its rendered filtered preview in memory. It also keeps the Phase 21-A3-R4-R1 video-output orientation stabilization. It adds no Depth Anything runtime, Core ML model inference, cloud AI, provider call, preview-frame upload, upload payload change, raw frame persistence beyond in-memory rendering, or production rollout. `productionReady:false` remains locked.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -13144,3 +13144,113 @@ Build and run on iPhone. Select `Soft Warm 400` or another non-original filter a
 ### Ready for Next Phase
 
 Current practical next step remains MacBook/Xcode physical-device verification of Phase 21-A3-R4. If filter preview performance, orientation, or selfie mirror-save behavior is still off, use a focused `Phase 21-A3-R4-R1 - Camera Filter and Selfie Mirror QA Follow-up`. Not ready for production rollout.
+
+---
+
+## Phase 21-A3-R4-R1 - Selfie Filter Preview Orientation Follow-up
+
+Status: implemented, pending Xcode physical-device verification
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase 21-A3-R4-R1 fixes the real-device selfie switch regression where the local Metal/Core Image live filtered preview could appear rotated/sideways after changing from the back camera to the front camera. The fix reapplies the `AVCaptureVideoDataOutput` portrait rotation after initial configuration and after every camera input switch, keeps video-output mirroring disabled so preview mirroring remains controlled by the filtered preview renderer, and adds a portrait-orientation fallback inside the Metal preview renderer.
+
+### Completed Work
+
+- Added `updateVideoOutputConnection()` in `CameraCaptureService`.
+- Reapplied `videoRotationAngle = 90` after `session.commitConfiguration()` on initial setup.
+- Reapplied the same video-output orientation after every lens/camera switch.
+- Forced `AVCaptureVideoDataOutput` mirroring off to avoid double-mirroring; the live filtered preview still mirrors through `RealtimeFilteredCameraPreviewView` for front camera.
+- Added a defensive `RealtimeFilteredCameraPreviewView` orientation fallback that rotates landscape buffers into the portrait preview before fitting and mirroring.
+
+### Changed Files
+
+- `ios-app/AIPhotoApp/Features/Camera/CameraCaptureService.swift`
+- `ios-app/AIPhotoApp/Features/Camera/RealtimeFilteredCameraPreviewView.swift`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-log.md`
+- `tests/manual-smoke-tests.md`
+
+### Tests and Checks
+
+- `git diff --check`
+- Focused source scan for provider keys, network calls, upload payload changes, model artifacts, raw frame persistence, and Camera cloud AI entries
+- Xcode physical-device build remains required for the selfie switch orientation regression.
+
+### Boundary Confirmations
+
+- Provider/model/cloud call: no
+- Camera live cloud AI entry: no
+- Preview-frame upload: no
+- Upload payload changed: no
+- Raw preview-frame persistence: no
+- Depth Anything runtime added: no
+- Core ML model inference run: no
+- Sensitive inference added: no
+- `productionReady:false` remains locked.
+
+### Xcode Verification Needed
+
+Build and run on iPhone. Select a non-original filter such as `Soft Warm 400`, switch from back camera to front camera, and confirm the live filtered preview remains upright, fills the same preview area as the base camera feed, and behaves like a selfie mirror. Switch back and forth several times, then confirm mirror-save still only changes the captured/saved selfie orientation and Phase 21-A3-R3-R1 focal crop still works.
+
+### Ready for Next Phase
+
+Current practical next step remains MacBook/Xcode physical-device verification of Phase 21-A3-R4-R1. If selfie orientation, preview alignment, or filter FPS is still off, continue with a focused Camera QA follow-up before returning to larger AI roadmap work. Not ready for production rollout.
+
+---
+
+## Phase 21-A3-R4-R2 - Selfie Capture Mirror Parity
+
+Status: implemented, pending Xcode physical-device verification
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase 21-A3-R4-R2 updates the selfie capture UX so front-camera output matches the mirror-like viewfinder by default, while still giving the user an after-capture correction control. The front-camera mirror-save setting now defaults on. The selected-photo screen now shows a local flip-photo action for camera captures, which horizontally mirrors the selected source image and any already-rendered filtered preview in memory.
+
+### Completed Work
+
+- Changed front-camera mirror-save default to enabled so selfies match the viewfinder unless the user toggles it off before capture.
+- Added `canFlipSelectedPhotoHorizontally` and `flipSelectedPhotoHorizontally()` to `CameraViewModel`.
+- Added a `反轉相片` / `Flip photo` selected-photo action for captured camera photos.
+- Mirrored the current filtered preview too when available, so post-capture filter preview stays visually aligned after flipping.
+- Kept imported photo behavior unchanged; the flip action is only shown for camera captures.
+
+### Changed Files
+
+- `ios-app/AIPhotoApp/Features/Camera/CameraViewModel.swift`
+- `ios-app/AIPhotoApp/Features/Camera/CameraView.swift`
+- `ios-app/AIPhotoApp/Resources/Localization/en.lproj/Localizable.strings`
+- `ios-app/AIPhotoApp/Resources/Localization/zh-Hant.lproj/Localizable.strings`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-log.md`
+- `tests/manual-smoke-tests.md`
+
+### Tests and Checks
+
+- `git diff --check`
+- Focused source scan for provider keys, network calls, upload payload changes, model artifacts, raw frame persistence, and Camera cloud AI entries
+- Xcode physical-device build remains required for selfie capture parity and post-capture flip verification.
+
+### Boundary Confirmations
+
+- Provider/model/cloud call: no
+- Camera live cloud AI entry: no
+- Preview-frame upload: no
+- Upload payload changed: no
+- Raw preview-frame persistence: no
+- Depth Anything runtime added: no
+- Core ML model inference run: no
+- Sensitive inference added: no
+- `productionReady:false` remains locked.
+
+### Xcode Verification Needed
+
+Build and run on iPhone. Switch to the front camera and capture a selfie with the default mirror-save state; confirm the selected/captured image matches the mirror-like viewfinder. Tap `反轉相片` / `Flip photo` and confirm the selected image flips horizontally. Try with Original and a non-original filter, and confirm the preview remains visually consistent. Confirm imported photos do not show this camera-capture flip action.
+
+### Ready for Next Phase
+
+Current practical next step remains MacBook/Xcode physical-device verification of Phase 21-A3-R4-R2. If selfie parity, preview alignment, or filter FPS is still off, continue with a focused Camera QA follow-up before returning to larger AI roadmap work. Not ready for production rollout.

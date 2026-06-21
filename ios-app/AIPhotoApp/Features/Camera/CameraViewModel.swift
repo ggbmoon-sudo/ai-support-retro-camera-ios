@@ -21,7 +21,7 @@ final class CameraViewModel: ObservableObject {
     @Published private(set) var lensOptions = LensOption.all
     @Published private(set) var isUsingFrontCamera = false
     @Published private(set) var isHardwareFlashAvailable = false
-    @Published private(set) var isFrontCameraCaptureMirroringEnabled = false
+    @Published private(set) var isFrontCameraCaptureMirroringEnabled = true
     @Published private(set) var isDualFocalZoomEnabled = false
     @Published private(set) var selectedDualFocalLengthMillimeters = CameraDualFocalZoomConfiguration.defaultFocalLength(
         forBaseFocalLength: LensOption.classic35.focalLengthMillimeters
@@ -129,6 +129,10 @@ final class CameraViewModel: ObservableObject {
 
     var isLiveFilterPreviewActive: Bool {
         selectedPhoto == nil && !selectedFilterPreset.isOriginal
+    }
+
+    var canFlipSelectedPhotoHorizontally: Bool {
+        selectedPhoto?.source == .camera
     }
 
     func prepareCamera() async {
@@ -374,6 +378,34 @@ final class CameraViewModel: ObservableObject {
             startCaptureSignalMonitoringIfNeeded()
         }
         refreshLiveGuidanceSuggestions(resetStability: true)
+    }
+
+    func flipSelectedPhotoHorizontally() {
+        guard let selectedPhoto,
+              canFlipSelectedPhotoHorizontally else {
+            return
+        }
+
+        let currentPreset = selectedFilterPreset
+        let mirroredPhotoImage = selectedPhoto.image.horizontallyMirroredForFrontCameraCapture()
+        let mirroredFilteredImage = filteredPreviewImage?.horizontallyMirroredForFrontCameraCapture()
+
+        self.selectedPhoto = CapturedPhoto(
+            image: mirroredPhotoImage,
+            source: selectedPhoto.source,
+            captureContext: selectedPhoto.captureContext
+        )
+        filteredPreviewImage = mirroredFilteredImage
+        filterErrorMessage = nil
+        isFiltering = false
+        activeFilterRenderID = nil
+        resetSaveState()
+        resetCloudSnapshotGuidance()
+
+        if mirroredFilteredImage == nil,
+           !currentPreset.isOriginal {
+            selectFilterPreset(currentPreset)
+        }
     }
 
     func stopCamera() {

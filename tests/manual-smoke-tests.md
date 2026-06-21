@@ -4756,6 +4756,37 @@ Physical-device verification:
 - [ ] Confirm Phase 21-A3-R3-R1 focal crop box, pinch, aspect, and capture-crop behavior still work with filtered live preview.
 - [ ] Confirm no provider/model key, direct provider/model call, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame/image/depth persistence beyond in-memory rendering, Depth Anything runtime, Core ML model inference, or production rollout appears.
 - [ ] Confirm `productionReady:false` remains unchanged.
+
+## Phase 21-A3-R4-R1 - Selfie Filter Preview Orientation Follow-up
+
+Physical-device verification:
+
+- [ ] Build and run on iPhone.
+- [ ] Select `Soft Warm 400` or another non-original filter.
+- [ ] Switch from back camera to front camera and confirm the filtered live preview remains upright, not sideways/rotated.
+- [ ] Confirm the filtered overlay fills the same preview area as the base camera feed and stays aligned with the grid.
+- [ ] Confirm the front-camera live preview behaves like a mirror, with no double-mirror or upside-down effect.
+- [ ] Switch back/front several times and confirm orientation remains stable.
+- [ ] Capture with mirror-save off and on, and confirm only final saved/selected selfie orientation changes.
+- [ ] Confirm Phase 21-A3-R3-R1 focal crop and Phase 21-A3-R4 filter preview parity still work.
+- [ ] Confirm no provider/model key, direct provider/model call, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame/image/depth persistence beyond in-memory rendering, Depth Anything runtime, Core ML model inference, or production rollout appears.
+- [ ] Confirm `productionReady:false` remains unchanged.
+
+## Phase 21-A3-R4-R2 - Selfie Capture Mirror Parity
+
+Physical-device verification:
+
+- [ ] Build and run on iPhone.
+- [ ] Switch to the front camera and confirm the mirror-save toggle is enabled by default.
+- [ ] Capture a selfie and confirm the selected/captured photo matches the mirror-like viewfinder orientation.
+- [ ] Tap `反轉相片` / `Flip photo` and confirm the selected camera photo flips horizontally.
+- [ ] Tap `反轉相片` / `Flip photo` again and confirm it flips back.
+- [ ] Repeat with a non-original filter and confirm the filtered preview flips consistently with the source image.
+- [ ] Import a photo from the library and confirm the camera-capture flip action does not appear.
+- [ ] Confirm Phase 21-A3-R4-R1 selfie preview orientation and Phase 21-A3-R3-R1 focal crop still work.
+- [ ] Confirm no provider/model key, direct provider/model call, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame/image/depth persistence beyond in-memory rendering, Depth Anything runtime, Core ML model inference, or production rollout appears.
+- [ ] Confirm `productionReady:false` remains unchanged.
+
 ## Phase 21-A2 - Live Framing Aesthetic Spatial Codebook
 
 Docs-only verification:

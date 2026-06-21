@@ -1,5 +1,6 @@
 import AVFoundation
 import CoreImage
+import ImageIO
 import MetalKit
 import SwiftUI
 
@@ -125,19 +126,19 @@ final class RealtimeFilteredCameraPreviewMetalView: MTKView {
             return
         }
 
-        var image = CIImage(cvPixelBuffer: latestPixelBuffer)
+        let drawableBounds = CGRect(origin: .zero, size: drawableSize)
+        var image = Self.previewOrientedImage(
+            CIImage(cvPixelBuffer: latestPixelBuffer),
+            for: drawableBounds
+        )
         if shouldMirrorPreview {
-            image = image.transformed(
-                by: CGAffineTransform(translationX: image.extent.width, y: 0)
-                    .scaledBy(x: -1, y: 1)
-            )
+            image = Self.horizontallyMirrored(image)
         }
 
         guard let filteredImage = try? FilterPipeline.filteredCIImage(image, preset: selectedPreset) else {
             return
         }
 
-        let drawableBounds = CGRect(origin: .zero, size: drawableSize)
         let fittedImage = Self.fittedImage(
             filteredImage,
             into: drawableBounds,
@@ -155,6 +156,27 @@ final class RealtimeFilteredCameraPreviewMetalView: MTKView {
         )
         commandBuffer.present(drawable)
         commandBuffer.commit()
+    }
+
+    private static func previewOrientedImage(_ image: CIImage, for bounds: CGRect) -> CIImage {
+        guard bounds.width > 0, bounds.height > 0 else { return image }
+
+        let imageIsLandscape = image.extent.width > image.extent.height
+        let targetIsPortrait = bounds.height >= bounds.width
+
+        guard targetIsPortrait && imageIsLandscape else {
+            return image
+        }
+
+        return image.oriented(.right)
+    }
+
+    private static func horizontallyMirrored(_ image: CIImage) -> CIImage {
+        let extent = image.extent
+        image.transformed(
+            by: CGAffineTransform(translationX: extent.minX + extent.maxX, y: 0)
+                .scaledBy(x: -1, y: 1)
+        )
     }
 
     private static func fittedImage(

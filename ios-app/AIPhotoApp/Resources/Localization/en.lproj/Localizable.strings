@@ -196,6 +196,8 @@
 "camera.action.back_to_camera" = "Back to Camera";
 "camera.action.clear" = "Clear";
 "camera.action.clear_selected_photo" = "Clear selected photo";
+"camera.action.flip_photo" = "Flip photo";
+"camera.action.flip_selected_photo" = "Flip selected photo";
 "camera.action.back_to_camera_preview" = "Back to camera preview";
 "camera.action.continue_placeholder" = "Continue in later phases";
 "camera.filter.entry" = "Filter";

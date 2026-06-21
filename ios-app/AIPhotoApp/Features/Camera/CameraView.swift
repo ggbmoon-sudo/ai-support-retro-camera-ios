@@ -1595,6 +1595,25 @@ struct CameraView: View {
             .buttonStyle(.plain)
             .accessibilityLabel("camera.action.back_to_camera_preview")
 
+            if viewModel.canFlipSelectedPhotoHorizontally {
+                Button {
+                    viewModel.flipSelectedPhotoHorizontally()
+                } label: {
+                    Label("camera.action.flip_photo", systemImage: "arrow.left.and.right")
+                        .font(.caption.weight(.semibold))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.72)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, AppSpacing.sm)
+                        .padding(.horizontal, AppSpacing.sm)
+                        .background(Color.white.opacity(0.1))
+                        .foregroundStyle(.white.opacity(0.94))
+                        .clipShape(Capsule())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("camera.action.flip_selected_photo")
+            }
+
             Button {
                 viewModel.clearSelectedPhoto()
             } label: {

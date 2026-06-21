@@ -196,6 +196,8 @@
 "camera.action.back_to_camera" = "返回相機";
 "camera.action.clear" = "清除";
 "camera.action.clear_selected_photo" = "清除已選相片";
+"camera.action.flip_photo" = "反轉相片";
+"camera.action.flip_selected_photo" = "反轉已選相片";
 "camera.action.back_to_camera_preview" = "返回相機預覽";
 "camera.action.continue_placeholder" = "後續階段才繼續";
 "camera.filter.entry" = "濾鏡";

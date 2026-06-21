@@ -83,6 +83,7 @@ final class CameraCaptureService {
 
         configureFrameSignalOutputIfPossible()
         session.commitConfiguration()
+        updateVideoOutputConnection()
         isConfigured = true
     }
 
@@ -152,6 +153,7 @@ final class CameraCaptureService {
         session.beginConfiguration()
         defer {
             session.commitConfiguration()
+            updateVideoOutputConnection()
         }
 
         if let currentVideoInput {
@@ -276,9 +278,19 @@ final class CameraCaptureService {
         ]
         videoOutput.setSampleBufferDelegate(delegate, queue: frameSignalQueue)
         session.addOutput(videoOutput)
-        if let connection = videoOutput.connection(with: .video),
-           connection.isVideoRotationAngleSupported(90) {
+        updateVideoOutputConnection()
+    }
+
+    private func updateVideoOutputConnection() {
+        guard let connection = videoOutput.connection(with: .video) else { return }
+
+        if connection.isVideoRotationAngleSupported(90) {
             connection.videoRotationAngle = 90
+        }
+
+        if connection.isVideoMirroringSupported {
+            connection.automaticallyAdjustsVideoMirroring = false
+            connection.isVideoMirrored = false
         }
     }
 }
