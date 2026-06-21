@@ -62,6 +62,7 @@
     "qa:aesthetic-local-cv:feature-benchmark": "node scripts/run-aesthetic-local-cv-feature-benchmark.mjs",
     "qa:aesthetic-local-cv:feature-extractor": "node scripts/run-aesthetic-local-cv-feature-extractor-prototype.mjs",
     "qa:aesthetic-local-cv:calibration-fixture-gate": "node scripts/check-aesthetic-local-cv-calibration-fixture-gate.mjs",
+    "qa:aesthetic-local-cv:calibration-smoke": "node scripts/run-aesthetic-local-cv-calibration-smoke.mjs",
     "qa:aesthetic-parameters:tuning-dry-run": "node scripts/run-aesthetic-parameter-tuning-dry-run.mjs",
     "qa:aesthetic-parameters:export-gate": "node scripts/check-aesthetic-parameter-pack-export-gate.mjs",
     "qa:aesthetic-parameters:app-transfer-preflight": "node scripts/check-aesthetic-app-transfer-preflight-gate.mjs",

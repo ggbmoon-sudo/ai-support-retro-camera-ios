@@ -1274,3 +1274,12 @@ Latest Phase OD-R7C Local CV Calibration Fixture Gate on 2026-06-21:
 - Default output reports `runMode:"fixture_gate_no_image_read"`, `eligibleForCalibration:false`, `fixtureRegistryConfigured:false`, `imageReadsPerformed:false`, `cvInferencePerformed:false`, `networkCallsMade:false`, `uploadPerformed:false`, `appRuntimeIntegrationEnabled:false`, and `productionReady:false`.
 - Real local config, fixture images, and calibration reports remain ignored via `.gitignore`; no real photos, local config, generated reports, model files, Swift files, Xcode changes, provider/cloud/Xiaoyi relay calls, network calls, uploads, training/fine-tuning, app runtime transfer, or production rollout are added.
 - Suggested next local-AI phase is `Phase OD-R7D - Explicit Ignored Local Fixture Calibration Smoke`, only after explicit user approval.
+
+Latest Phase OD-R7D Local CV Calibration Smoke on 2026-06-21:
+
+- OD-R7D adds a backend/local-only ignored local fixture calibration smoke for OD-R7B/OD-R7C.
+- Added `backend/src/qa/aestheticLocalCvCalibrationSmoke.mjs`, `backend/scripts/run-aesthetic-local-cv-calibration-smoke.mjs`, backend tests, `npm run qa:aesthetic-local-cv:calibration-smoke`, and `docs/od-r7d-local-cv-calibration-smoke.md`.
+- The default CLI safely blocks when ignored local config or fixture prerequisites are absent.
+- If an ignored local config and `calibration_001` fixture exist, the smoke may read exactly one ignored local fixture and emit sanitized in-memory feature buckets only.
+- No report file is written, no real photos/local configs/generated reports are committed, and no provider/cloud/Xiaoyi relay call, network call, upload, model file, Swift/Xcode runtime change, training/fine-tuning, app runtime transfer, or production rollout is added.
+- Suggested next local-AI phase is `Phase OD-R7E - Local CV Calibration Expected Range Comparison`, after manual review of sanitized calibration output.

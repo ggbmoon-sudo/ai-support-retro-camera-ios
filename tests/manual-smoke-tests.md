@@ -4745,6 +4745,20 @@ Backend local CV calibration fixture gate verification:
 - [ ] Confirm no Xcode runtime behavior is expected to change.
 - [ ] Confirm no Swift runtime file, model file, Core ML package, model download, real image read, CV inference, Camera integration, upload path, provider/model key, API key, Xiaoyi relay call, real photos, committed local config, generated reports, crawler/download mode, image upload, cloud teacher call, training/fine-tuning, app runtime transfer, or production rollout was added.
 
+## Phase OD-R7D - Explicit Ignored Local Fixture Calibration Smoke
+
+Backend local CV calibration smoke verification:
+
+- [ ] From `backend/`, run `npm run qa:aesthetic-local-cv:calibration-smoke`.
+- [ ] From `backend/`, run `node --test tests/aesthetic-local-cv-calibration-smoke.test.mjs`.
+- [ ] Confirm the default CLI output is sanitized and safely blocked when ignored local config or `calibration_001` is absent.
+- [ ] If running an explicit local smoke, confirm ignored local config uses `enabled:true`, `allowImageReads:true`, `approvedFixtureMode:true`, `approvedFixtureTokens:["calibration_001"]`, `fixtureRoot:"backend/tests/local-cv-calibration-fixtures"`, `maxFixtureCount:1`, `allowReportWrite:false`, `allowNetworkCalls:false`, `allowUploads:false`, and `productionReady:false`.
+- [ ] Confirm a successful explicit local smoke reads only the approved ignored `calibration_001` fixture, reports `imageReadsPerformed:true`, `cvInferencePerformed:false`, `networkCallsMade:false`, `uploadPerformed:false`, `providerCallAttempted:false`, `generatedReportsPersisted:false`, `appRuntimeIntegrationEnabled:false`, and `productionReady:false`.
+- [ ] Confirm output does not include raw image paths, image bytes, base64, EXIF/GPS, raw metadata, raw debug dumps, report paths, provider payloads, prompts, secrets, or user-identifying content.
+- [ ] Confirm no report file is written and no real photo, local config, or generated report is committed.
+- [ ] Confirm no Xcode runtime behavior is expected to change.
+- [ ] Confirm no Swift runtime file, model file, Core ML package, model download, Camera integration, upload path, provider/model key, API key, Xiaoyi relay call, crawler/download mode, image upload, cloud/provider call, network call, training/fine-tuning, app runtime transfer, or production rollout was added.
+
 ## Phase OD-R8A - Parameter Tuning Harness Dry-run
 
 Backend parameter tuning dry-run verification:

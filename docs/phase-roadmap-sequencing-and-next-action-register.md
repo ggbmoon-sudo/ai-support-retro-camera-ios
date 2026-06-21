@@ -16,9 +16,9 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**Phase OD-R7D: Explicit Ignored Local Fixture Calibration Smoke**
+**Phase OD-R7E: Local CV Calibration Expected Range Comparison**
 
-Reason: Phase OD-R7C adds a backend/local-only calibration fixture gate that validates ignored fixture policy and approved synthetic/ignored fixture-token shape while keeping the default path no-image-read and safely blocked. The next local-AI quality step may run an explicit ignored local fixture calibration smoke only after user approval. Do not proceed with Xiaoyi relay credential smoke, Cloud AI relay work, Camera live cloud AI, iOS provider/network code, model files, Swift runtime, or production rollout in this branch unless explicitly requested later.
+Reason: Phase OD-R7D adds a backend/local-only ignored local fixture calibration smoke that stays safely blocked by default and may read exactly one ignored `calibration_001` fixture only after local approval gates pass. The next local-AI quality step should compare sanitized calibration output against manually reviewed expected feature ranges. Do not proceed with Xiaoyi relay credential smoke, Cloud AI relay work, Camera live cloud AI, iOS provider/network code, model files, Swift runtime, committed real photos/local configs/generated reports, or production rollout in this branch unless explicitly requested later.
 
 OD-R9 should remain backend-only and gate/dry-run only unless separately approved for a specific safe artifact path. It must not add Swift runtime files, model installation, Core ML packages, crawler/download mode, product runtime transfer, Camera integration, upload paths, provider/model keys in committed files, real datasets/photos/local configs/generated reports, training, inference rollout, or production rollout. OD-03B Swift placeholder work remains paused. App/model installation belongs later to OD-P product integration after benchmark and safety gates pass. `productionReady:false` remains locked.
 
@@ -43,6 +43,8 @@ Implementation status note: `docs/od-r7a-local-cv-feature-vector-benchmark.md` r
 Implementation status note: `docs/od-r7b-local-cv-feature-extractor-prototype.md` records the backend/local-only Local CV Feature Extractor prototype. It maps safe inline synthetic local-CV observations into OD-R7A-compatible feature vectors while keeping image reads, real CV inference, provider/cloud/Xiaoyi relay calls, network, training/fine-tuning, iOS runtime integration, app transfer, and `productionReady` set to true blocked.
 
 Implementation status note: `docs/od-r7c-local-cv-calibration-fixture-gate.md` records the backend/local-only Local CV calibration fixture gate. It validates disabled ignored-local fixture config policy and approved synthetic/ignored fixture-token shape while keeping image reads, real CV inference, provider/cloud/Xiaoyi relay calls, network, uploads, generated reports, committed real photos/local configs, iOS runtime integration, app transfer, and `productionReady` set to true blocked.
+
+Implementation status note: `docs/od-r7d-local-cv-calibration-smoke.md` records the backend/local-only ignored local fixture calibration smoke. The default CLI safely blocks when ignored config/fixture prerequisites are absent; an explicitly approved local smoke may read only `calibration_001`, emit sanitized feature buckets, and write no reports while keeping provider/cloud/Xiaoyi relay calls, network, uploads, model files, committed real photos/local configs/generated reports, iOS runtime integration, app transfer, and `productionReady` set to true blocked.
 
 Implementation status note: `docs/od-r8a-parameter-tuning-harness-dry-run.md` records the backend-only Parameter Tuning Harness dry-run. It converts reviewed synthetic parameter candidates and synthetic local CV benchmark signals into a structured parameter-pack candidate while keeping rejected/blocked items out, app transfer blocked, and real image reads, CV inference, provider/cloud/network calls, training/fine-tuning, runtime integration, and production rollout disabled.
 

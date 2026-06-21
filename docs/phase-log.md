@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase OD-R7C - Local CV Calibration Fixture Gate
+Current phase: Phase OD-R7D - Explicit Ignored Local Fixture Calibration Smoke
 Status: completed
-Latest implementation: Phase OD-R7C adds a backend/local-only calibration fixture gate for the OD-R7B extractor. It validates disabled ignored-local fixture policy and approved synthetic/ignored fixture-token shape before any real image read or calibration smoke. The default CLI is `fixture_gate_no_image_read`, safely blocked, and makes no real image read, CV inference, provider/cloud/Xiaoyi relay call, network call, upload, crawler/download, training/fine-tuning, iOS runtime integration, Swift file, model install, app runtime transfer, real photo/local config/generated report commit, or production rollout. `productionReady:false` remains locked.
+Latest implementation: Phase OD-R7D adds a backend/local-only ignored local fixture calibration smoke for OD-R7B/OD-R7C. The default CLI safely blocks when ignored config or fixture prerequisites are absent. If explicitly approved locally, it may read exactly one ignored `calibration_001` fixture and emit sanitized in-memory feature buckets only. It writes no reports and makes no provider/cloud/Xiaoyi relay call, network call, upload, crawler/download, training/fine-tuning, iOS runtime integration, Swift file, model install, app runtime transfer, real photo/local config/generated report commit, or production rollout. `productionReady:false` remains locked.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -77,6 +77,73 @@ Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` befo
 
 ---
 
+## Phase OD-R7D - Explicit Ignored Local Fixture Calibration Smoke
+
+Status: completed
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase OD-R7D adds a backend/local-only ignored local fixture calibration smoke for the OD-R7B Local CV Feature Extractor prototype and OD-R7C fixture gate. The default path safely blocks when ignored local config or fixture prerequisites are absent. An explicitly approved local smoke may read exactly one ignored local fixture token, `calibration_001`, and emit sanitized in-memory feature buckets only.
+
+### Completed Work
+
+- Added `backend/src/qa/aestheticLocalCvCalibrationSmoke.mjs`.
+- Added `backend/scripts/run-aesthetic-local-cv-calibration-smoke.mjs`.
+- Added `npm run qa:aesthetic-local-cv:calibration-smoke`.
+- Added `backend/tests/aesthetic-local-cv-calibration-smoke.test.mjs`.
+- Added `docs/od-r7d-local-cv-calibration-smoke.md`.
+- Updated README, backend/iOS README, roadmap, handoff, phase log, and manual smoke notes for OD-R7D.
+
+### Changed Files
+
+- `README.md`
+- `backend/README.md`
+- `backend/package.json`
+- `backend/scripts/run-aesthetic-local-cv-calibration-smoke.mjs`
+- `backend/src/qa/aestheticLocalCvCalibrationSmoke.mjs`
+- `backend/tests/aesthetic-local-cv-calibration-smoke.test.mjs`
+- `docs/od-r7d-local-cv-calibration-smoke.md`
+- `docs/on-device-live-framing-ai-roadmap.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `ios-app/README.md`
+- `tests/manual-smoke-tests.md`
+
+### Boundary Checks
+
+- Backend/local-only calibration smoke: yes
+- Default safely blocked when ignored config/fixture missing: yes
+- Approved ignored local fixture read allowed only for `calibration_001`: yes
+- Generated report write performed: no
+- Real photo/local config/generated report committed: no
+- Provider/cloud/Xiaoyi relay call made: no
+- Network/upload/download/crawler performed: no
+- CV model inference performed: no
+- Training/fine-tuning enabled: no
+- iOS runtime integration / Swift file / Xcode project change added: no
+- Model/Core ML/ONNX/TFLite/weight file added: no
+- App runtime transfer enabled: no
+- Production rollout: no
+- `productionReady:false`: yes
+
+### Verification
+
+- `node --test tests/aesthetic-local-cv-calibration-smoke.test.mjs`: passed
+- `npm run qa:aesthetic-local-cv:calibration-smoke`: should pass as safely blocked unless ignored local config and `calibration_001` exist.
+- Full `npm test`, diff checks, and safety scans should pass before commit/push.
+
+### Known TODOs
+
+- OD-R7D does not compare calibration output against expected manual-review ranges. Future OD-R7E may add expected range comparison using sanitized fixture-token output only.
+- OD-R7D does not write reports, commit real fixtures/configs, train, fine-tune, or enable app runtime behavior.
+
+### Ready for Next Phase
+
+Recommended next local-AI phase is `Phase OD-R7E - Local CV Calibration Expected Range Comparison` after manual review of sanitized calibration output. Not ready for production rollout.
+
 ## Phase OD-R7C - Local CV Calibration Fixture Gate
 
 Status: completed
@@ -134,7 +201,7 @@ Phase OD-R7C adds a backend/local-only calibration fixture gate for the OD-R7B L
 
 ### Ready for Next Phase
 
-Recommended next local-AI phase is `Phase OD-R7D - Explicit Ignored Local Fixture Calibration Smoke`, only after explicit user approval. It should still keep real local fixtures ignored, reports sanitized, no iOS runtime integration, no cloud/provider/Xiaoyi relay work, no model files, and `productionReady:false`. Not ready for production rollout.
+Phase OD-R7D completed the explicit ignored local fixture calibration smoke. It keeps real local fixtures ignored, reports sanitized, no iOS runtime integration, no cloud/provider/Xiaoyi relay work, no model files, and `productionReady:false`. Not ready for production rollout.
 
 ## Phase OD-R7B - Local CV Feature Extractor Prototype
 
