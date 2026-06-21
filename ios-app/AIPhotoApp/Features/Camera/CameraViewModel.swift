@@ -22,10 +22,11 @@ final class CameraViewModel: ObservableObject {
     @Published private(set) var isUsingFrontCamera = false
     @Published private(set) var isHardwareFlashAvailable = false
     @Published private(set) var isDualFocalZoomEnabled = true
-    @Published private(set) var dualFocalPreviewFrameImage: UIImage?
     @Published private(set) var selectedDualFocalLengthMillimeters = CameraDualFocalZoomConfiguration.defaultFocalLength(
         forBaseFocalLength: LensOption.classic35.focalLengthMillimeters
     )
+    @Published private(set) var dualFocalFrameCenterXRatio: CGFloat = 0.5
+    @Published private(set) var dualFocalFrameCenterYRatio: CGFloat = 0.43
     @Published private(set) var isLoading = false
     @Published private(set) var isFiltering = false
     @Published var pickerItem: PhotosPickerItem?
@@ -67,9 +68,6 @@ final class CameraViewModel: ObservableObject {
         self.service.setFrameSignalHandler { [weak self] signals in
             self?.updateLiveGuidanceFrameSignals(signals)
         }
-        self.service.setPreviewFrameHandler { [weak self] snapshot in
-            self?.dualFocalPreviewFrameImage = snapshot.image
-        }
         refreshCameraControlState()
         updateFrameSignalAnalysisAvailability()
         refreshLiveGuidanceSuggestions()
@@ -93,7 +91,11 @@ final class CameraViewModel: ObservableObject {
     }
 
     var dualFocalZoomConfiguration: CameraDualFocalZoomConfiguration {
-        CameraDualFocalZoomConfiguration(focalLengthMillimeters: selectedDualFocalLengthMillimeters)
+        CameraDualFocalZoomConfiguration(
+            focalLengthMillimeters: selectedDualFocalLengthMillimeters,
+            framingBoxCenterXRatio: dualFocalFrameCenterXRatio,
+            framingBoxCenterYRatio: dualFocalFrameCenterYRatio
+        )
     }
 
     var dualFocalZoomRange: ClosedRange<Double> {
@@ -180,10 +182,11 @@ final class CameraViewModel: ObservableObject {
                     return
                 }
                 let outputImage = self.isDualFocalZoomEnabled
-                    ? CameraDualFocalPhotoRenderer.render(
+                    ? CameraDualFocalPhotoCropper.crop(
                         image: image,
                         configuration: self.dualFocalZoomConfiguration,
-                        baseFocalLengthMillimeters: self.selectedLensOption.focalLengthMillimeters
+                        baseFocalLengthMillimeters: self.selectedLensOption.focalLengthMillimeters,
+                        isPreviewMirrored: self.isUsingFrontCamera
                     )
                     : image
                 let analyzedImageSignals = LocalImageSignalAnalyzer.analyze(outputImage)
@@ -336,8 +339,6 @@ final class CameraViewModel: ObservableObject {
     func stopCamera() {
         captureSignalMonitor.stop()
         service.setFrameSignalAnalysisEnabled(false)
-        service.setDualFocalPreviewFrameStreamingEnabled(false)
-        dualFocalPreviewFrameImage = nil
         service.stopSession()
     }
 
@@ -399,12 +400,10 @@ final class CameraViewModel: ObservableObject {
             baseFocalLength: selectedLensOption.focalLengthMillimeters
         )
         isDualFocalZoomEnabled = true
-        updateDualFocalPreviewFrameStreamingAvailability()
     }
 
     func disableDualFocalZoom() {
         isDualFocalZoomEnabled = false
-        updateDualFocalPreviewFrameStreamingAvailability()
     }
 
     func updateDualFocalLength(_ focalLength: Double) {
@@ -413,7 +412,12 @@ final class CameraViewModel: ObservableObject {
             baseFocalLength: selectedLensOption.focalLengthMillimeters
         )
         isDualFocalZoomEnabled = true
-        updateDualFocalPreviewFrameStreamingAvailability()
+    }
+
+    func updateDualFocalFrameCenter(xRatio: CGFloat, yRatio: CGFloat) {
+        dualFocalFrameCenterXRatio = min(max(xRatio, 0), 1)
+        dualFocalFrameCenterYRatio = min(max(yRatio, 0), 1)
+        isDualFocalZoomEnabled = true
     }
 
     func requestCloudSnapshotGuidanceConsent() {
@@ -562,7 +566,6 @@ final class CameraViewModel: ObservableObject {
             liveGuidanceStabilityController.reset()
         }
 
-        updateDualFocalPreviewFrameStreamingAvailability()
     }
 
     private func startCaptureSignalMonitoringIfNeeded() {
@@ -597,14 +600,4 @@ final class CameraViewModel: ObservableObject {
         )
     }
 
-    private func updateDualFocalPreviewFrameStreamingAvailability() {
-        let shouldStreamPreviewFrames = permissionState == .authorized
-            && selectedPhoto == nil
-            && isDualFocalZoomEnabled
-
-        service.setDualFocalPreviewFrameStreamingEnabled(shouldStreamPreviewFrames)
-        if !shouldStreamPreviewFrames {
-            dualFocalPreviewFrameImage = nil
-        }
-    }
 }

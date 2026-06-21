@@ -4,6 +4,10 @@ Status: implemented, pending Xcode physical-device verification
 Date: 2026-06-21
 Production readiness: `productionReady:false`
 
+Superseded by: `docs/phase-21-a3-r3-focal-framing-box-crop.md`
+
+Note: Phase 21-A3-R3 replaces the live PiP / inset rendering approach with a transparent framing-box crop. Keep this file as historical context only; current implementation should follow the R3 framing-and-cropping model.
+
 ## Summary
 
 Phase 21-A3-R2 adds a Dazz-like dual focal / picture-in-picture camera mode for the local iOS Camera surface. The main preview stays full-frame on the selected physical lens while a center inset shows an adjustable tele-style crop. The PiP inset is default-on when Camera opens, uses an in-memory preview frame instead of a second `AVCaptureVideoPreviewLayer`, and keeps the surrounding view transparent. The captured photo burns the same inset into the output image.

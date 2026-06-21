@@ -346,13 +346,9 @@ struct CameraView: View {
                     .overlay {
                         if viewModel.isDualFocalZoomEnabled {
                             CameraDualFocalViewfinderOverlay(
-                                isMirrored: viewModel.isUsingFrontCamera,
                                 configuration: viewModel.dualFocalZoomConfiguration,
                                 baseFocalLengthMillimeters: viewModel.selectedLensOption.focalLengthMillimeters,
-                                focalLengthRange: viewModel.dualFocalZoomRange,
-                                previewFrameImage: viewModel.dualFocalPreviewFrameImage,
-                                selectedFilterPreset: viewModel.selectedFilterPreset,
-                                onFocalLengthChange: viewModel.updateDualFocalLength
+                                onFrameCenterChange: viewModel.updateDualFocalFrameCenter
                             )
                         }
                     }

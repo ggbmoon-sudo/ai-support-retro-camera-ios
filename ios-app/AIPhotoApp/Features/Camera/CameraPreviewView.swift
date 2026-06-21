@@ -10,7 +10,7 @@ struct CameraPreviewView: UIViewRepresentable {
     init(
         session: AVCaptureSession,
         isMirrored: Bool = false,
-        videoGravity: AVLayerVideoGravity = .resizeAspectFill
+        videoGravity: AVLayerVideoGravity = .resizeAspect
     ) {
         self.session = session
         self.isMirrored = isMirrored
@@ -33,7 +33,7 @@ struct CameraPreviewView: UIViewRepresentable {
 }
 
 final class PreviewContainerView: UIView {
-    var videoGravity: AVLayerVideoGravity = .resizeAspectFill {
+    var videoGravity: AVLayerVideoGravity = .resizeAspect {
         didSet {
             updateConnection()
         }

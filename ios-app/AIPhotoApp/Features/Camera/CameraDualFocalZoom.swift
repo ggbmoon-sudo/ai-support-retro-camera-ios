@@ -1,4 +1,3 @@
-import AVFoundation
 import SwiftUI
 import UIKit
 
@@ -6,20 +5,17 @@ nonisolated struct CameraDualFocalZoomConfiguration: Equatable, Sendable {
     static let maximumFocalLengthMillimeters = 100.0
 
     let focalLengthMillimeters: Double
-    let insetSideRatio: CGFloat
-    let insetCenterXRatio: CGFloat
-    let insetCenterYRatio: CGFloat
+    let framingBoxCenterXRatio: CGFloat
+    let framingBoxCenterYRatio: CGFloat
 
     init(
         focalLengthMillimeters: Double,
-        insetSideRatio: CGFloat = 0.38,
-        insetCenterXRatio: CGFloat = 0.5,
-        insetCenterYRatio: CGFloat = 0.43
+        framingBoxCenterXRatio: CGFloat = 0.5,
+        framingBoxCenterYRatio: CGFloat = 0.43
     ) {
         self.focalLengthMillimeters = focalLengthMillimeters
-        self.insetSideRatio = insetSideRatio
-        self.insetCenterXRatio = insetCenterXRatio
-        self.insetCenterYRatio = insetCenterYRatio
+        self.framingBoxCenterXRatio = framingBoxCenterXRatio
+        self.framingBoxCenterYRatio = framingBoxCenterYRatio
     }
 
     var focalLengthLabel: String {
@@ -33,8 +29,7 @@ nonisolated struct CameraDualFocalZoomConfiguration: Equatable, Sendable {
     }
 
     static func defaultFocalLength(forBaseFocalLength baseFocalLength: Double) -> Double {
-        let preferredFocalLength = max(baseFocalLength * 2, 71)
-        return clampedFocalLength(preferredFocalLength, baseFocalLength: baseFocalLength)
+        clampedFocalLength(55, baseFocalLength: baseFocalLength)
     }
 
     static func clampedFocalLength(
@@ -49,14 +44,13 @@ nonisolated struct CameraDualFocalZoomConfiguration: Equatable, Sendable {
         "\(Int(focalLength.rounded()))mm"
     }
 
-    func zoomFactor(relativeToBaseFocalLength baseFocalLength: Double) -> CGFloat {
+    func cropScale(relativeToBaseFocalLength baseFocalLength: Double) -> CGFloat {
         CGFloat(max(focalLengthMillimeters / Self.sanitizedFocalLength(baseFocalLength), 1))
     }
 
-    func insetSideRatio(relativeToBaseFocalLength baseFocalLength: Double) -> CGFloat {
-        let zoomFactor = Double(zoomFactor(relativeToBaseFocalLength: baseFocalLength))
-        let sideRatio = 0.58 / sqrt(max(zoomFactor, 1))
-        return min(max(CGFloat(sideRatio), 0.28), 0.58)
+    func framingBoxSideRatio(relativeToBaseFocalLength baseFocalLength: Double) -> CGFloat {
+        let ratio = Self.sanitizedFocalLength(baseFocalLength) / max(focalLengthMillimeters, 1)
+        return min(max(CGFloat(ratio), 0.18), 1)
     }
 
     func progress(in range: ClosedRange<Double>) -> Double {
@@ -69,13 +63,14 @@ nonisolated struct CameraDualFocalZoomConfiguration: Equatable, Sendable {
     }
 }
 
-enum CameraDualFocalPhotoRenderer {
-    static func render(
+enum CameraDualFocalPhotoCropper {
+    static func crop(
         image: UIImage,
         configuration: CameraDualFocalZoomConfiguration,
-        baseFocalLengthMillimeters: Double
+        baseFocalLengthMillimeters: Double,
+        isPreviewMirrored: Bool
     ) -> UIImage {
-        let normalizedImage = image.normalizedForDualFocalRendering()
+        let normalizedImage = image.normalizedForDualFocalCrop()
         let imageSize = normalizedImage.size
 
         guard imageSize.width > 0,
@@ -84,23 +79,19 @@ enum CameraDualFocalPhotoRenderer {
             return image
         }
 
-        let insetRect = insetRect(
-            for: imageSize,
-            configuration: configuration,
-            baseFocalLengthMillimeters: baseFocalLengthMillimeters
-        )
-        let sourceCropRect = cropRect(
+        let cropRect = cropRect(
             imageSize: imageSize,
-            insetRect: insetRect,
-            zoomFactor: configuration.zoomFactor(relativeToBaseFocalLength: baseFocalLengthMillimeters)
+            configuration: configuration,
+            baseFocalLengthMillimeters: baseFocalLengthMillimeters,
+            isPreviewMirrored: isPreviewMirrored
         )
         let pixelXScale = CGFloat(sourceCGImage.width) / imageSize.width
         let pixelYScale = CGFloat(sourceCGImage.height) / imageSize.height
         let proposedPixelCropRect = CGRect(
-            x: sourceCropRect.minX * pixelXScale,
-            y: sourceCropRect.minY * pixelYScale,
-            width: sourceCropRect.width * pixelXScale,
-            height: sourceCropRect.height * pixelYScale
+            x: cropRect.minX * pixelXScale,
+            y: cropRect.minY * pixelYScale,
+            width: cropRect.width * pixelXScale,
+            height: cropRect.height * pixelYScale
         ).integral
         let pixelImageBounds = CGRect(
             x: 0,
@@ -116,169 +107,158 @@ enum CameraDualFocalPhotoRenderer {
             return normalizedImage
         }
 
-        let croppedImage = UIImage(
+        return UIImage(
             cgImage: croppedCGImage,
             scale: normalizedImage.scale,
             orientation: .up
-        )
-        let format = UIGraphicsImageRendererFormat.default()
-        format.scale = normalizedImage.scale
-        format.opaque = true
-
-        return UIGraphicsImageRenderer(size: imageSize, format: format).image { rendererContext in
-            normalizedImage.draw(in: CGRect(origin: .zero, size: imageSize))
-            drawInset(
-                croppedImage: croppedImage,
-                insetRect: insetRect,
-                imageSize: imageSize,
-                label: configuration.focalLengthLabel,
-                context: rendererContext.cgContext
-            )
-        }
-    }
-
-    private static func insetRect(
-        for imageSize: CGSize,
-        configuration: CameraDualFocalZoomConfiguration,
-        baseFocalLengthMillimeters: Double
-    ) -> CGRect {
-        let side = min(imageSize.width, imageSize.height) * configuration.insetSideRatio(
-            relativeToBaseFocalLength: baseFocalLengthMillimeters
-        )
-        let center = CGPoint(
-            x: imageSize.width * configuration.insetCenterXRatio,
-            y: imageSize.height * configuration.insetCenterYRatio
-        )
-        return CGRect(
-            x: center.x - side / 2,
-            y: center.y - side / 2,
-            width: side,
-            height: side
         )
     }
 
     private static func cropRect(
         imageSize: CGSize,
-        insetRect: CGRect,
-        zoomFactor: CGFloat
+        configuration: CameraDualFocalZoomConfiguration,
+        baseFocalLengthMillimeters: Double,
+        isPreviewMirrored: Bool
     ) -> CGRect {
-        let cropSide = min(imageSize.width, imageSize.height) / max(zoomFactor, 1)
-        let center = CGPoint(x: insetRect.midX, y: insetRect.midY)
-        let proposed = CGRect(
-            x: center.x - cropSide / 2,
-            y: center.y - cropSide / 2,
-            width: cropSide,
-            height: cropSide
+        let side = min(imageSize.width, imageSize.height) * configuration.framingBoxSideRatio(
+            relativeToBaseFocalLength: baseFocalLengthMillimeters
         )
-        let maxX = max(imageSize.width - cropSide, 0)
-        let maxY = max(imageSize.height - cropSide, 0)
+        let halfSide = side / 2
+        let xRatio = isPreviewMirrored
+            ? 1 - configuration.framingBoxCenterXRatio
+            : configuration.framingBoxCenterXRatio
+        let proposedCenter = CGPoint(
+            x: imageSize.width * xRatio,
+            y: imageSize.height * configuration.framingBoxCenterYRatio
+        )
+        let center = CGPoint(
+            x: min(max(proposedCenter.x, halfSide), imageSize.width - halfSide),
+            y: min(max(proposedCenter.y, halfSide), imageSize.height - halfSide)
+        )
 
         return CGRect(
-            x: min(max(proposed.minX, 0), maxX),
-            y: min(max(proposed.minY, 0), maxY),
-            width: cropSide,
-            height: cropSide
+            x: center.x - halfSide,
+            y: center.y - halfSide,
+            width: side,
+            height: side
         )
     }
+}
 
-    private static func drawInset(
-        croppedImage: UIImage,
-        insetRect: CGRect,
-        imageSize: CGSize,
-        label: String,
-        context: CGContext
-    ) {
-        let cornerRadius = max(imageSize.width * 0.018, 16)
-        let borderWidth = max(imageSize.width * 0.004, 3)
-        let path = UIBezierPath(roundedRect: insetRect, cornerRadius: cornerRadius)
+enum CameraDualFocalPreviewGeometry {
+    static let photoAspectRatio: CGFloat = 3.0 / 4.0
 
-        context.saveGState()
-        path.addClip()
-        croppedImage.draw(in: insetRect)
-        context.restoreGState()
+    static func previewContentRect(in containerSize: CGSize) -> CGRect {
+        guard containerSize.width > 0,
+              containerSize.height > 0 else {
+            return .zero
+        }
 
-        UIColor.white.withAlphaComponent(0.96).setStroke()
-        path.lineWidth = borderWidth
-        path.stroke()
+        let containerAspectRatio = containerSize.width / containerSize.height
+        if containerAspectRatio > photoAspectRatio {
+            let height = containerSize.height
+            let width = height * photoAspectRatio
+            return CGRect(
+                x: (containerSize.width - width) / 2,
+                y: 0,
+                width: width,
+                height: height
+            )
+        } else {
+            let width = containerSize.width
+            let height = width / photoAspectRatio
+            return CGRect(
+                x: 0,
+                y: (containerSize.height - height) / 2,
+                width: width,
+                height: height
+            )
+        }
+    }
 
-        let font = UIFont.systemFont(ofSize: max(imageSize.width * 0.035, 22), weight: .bold)
-        let shadow = NSShadow()
-        shadow.shadowColor = UIColor.black.withAlphaComponent(0.46)
-        shadow.shadowBlurRadius = max(imageSize.width * 0.004, 3)
-        shadow.shadowOffset = CGSize(width: 0, height: 1)
-        let attributes: [NSAttributedString.Key: Any] = [
-            .font: font,
-            .foregroundColor: UIColor.white,
-            .shadow: shadow
-        ]
-        let labelSize = label.size(withAttributes: attributes)
-        let labelOrigin = CGPoint(
-            x: insetRect.midX - labelSize.width / 2,
-            y: max(insetRect.minY - labelSize.height - imageSize.height * 0.012, imageSize.height * 0.04)
+    static func clampedCenter(
+        _ center: CGPoint,
+        side: CGFloat,
+        in previewRect: CGRect
+    ) -> CGPoint {
+        let halfSide = side / 2
+        return CGPoint(
+            x: min(max(center.x, previewRect.minX + halfSide), previewRect.maxX - halfSide),
+            y: min(max(center.y, previewRect.minY + halfSide), previewRect.maxY - halfSide)
         )
-        label.draw(at: labelOrigin, withAttributes: attributes)
     }
 }
 
 struct CameraDualFocalViewfinderOverlay: View {
-    let isMirrored: Bool
     let configuration: CameraDualFocalZoomConfiguration
     let baseFocalLengthMillimeters: Double
-    let focalLengthRange: ClosedRange<Double>
-    let previewFrameImage: UIImage?
-    let selectedFilterPreset: FilterPreset
-    let onFocalLengthChange: (Double) -> Void
+    let onFrameCenterChange: (_ xRatio: CGFloat, _ yRatio: CGFloat) -> Void
+
+    @State private var dragStartCenter: CGPoint?
 
     var body: some View {
         GeometryReader { proxy in
-            let side = min(proxy.size.width, proxy.size.height) * configuration.insetSideRatio(
+            let previewRect = CameraDualFocalPreviewGeometry.previewContentRect(in: proxy.size)
+            let side = min(previewRect.width, previewRect.height) * configuration.framingBoxSideRatio(
                 relativeToBaseFocalLength: baseFocalLengthMillimeters
             )
-            let centerX = proxy.size.width * configuration.insetCenterXRatio
-            let centerY = proxy.size.height * configuration.insetCenterYRatio
+            let proposedCenter = CGPoint(
+                x: previewRect.minX + previewRect.width * configuration.framingBoxCenterXRatio,
+                y: previewRect.minY + previewRect.height * configuration.framingBoxCenterYRatio
+            )
+            let center = CameraDualFocalPreviewGeometry.clampedCenter(
+                proposedCenter,
+                side: side,
+                in: previewRect
+            )
+            let cornerRadius = min(max(side * 0.045, 12), 24)
 
             ZStack {
                 Text(configuration.focalLengthLabel)
                     .font(.caption.weight(.bold))
                     .foregroundStyle(.white)
-                    .shadow(color: .black.opacity(0.54), radius: 3, x: 0, y: 1)
+                    .shadow(color: .black.opacity(0.58), radius: 3, x: 0, y: 1)
                     .position(
-                        x: centerX,
-                        y: max(centerY - side / 2 - 16, 44)
+                        x: center.x,
+                        y: max(center.y - side / 2 - 16, previewRect.minY + 24)
                     )
 
-                ZStack {
-                    if let previewFrameImage {
-                        Image(uiImage: previewFrameImage)
-                            .resizable()
-                            .scaledToFill()
-                            .scaleEffect(
-                                configuration.zoomFactor(relativeToBaseFocalLength: baseFocalLengthMillimeters),
-                                anchor: .center
-                            )
-                            .scaleEffect(x: isMirrored ? -1 : 1, y: 1, anchor: .center)
-                            .liveFilterPreview(selectedFilterPreset)
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                    .fill(.clear)
+                    .frame(width: side, height: side)
+                    .overlay {
+                        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                            .stroke(.white.opacity(0.95), lineWidth: 2)
                     }
-                }
-                .frame(width: side, height: side)
-                .clipped()
-                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .stroke(.white.opacity(0.94), lineWidth: 2)
-                }
-                .shadow(color: .black.opacity(0.24), radius: 10, x: 0, y: 5)
-                .contentShape(Rectangle())
-                .gesture(
-                    DragGesture(minimumDistance: 0)
-                        .onChanged { value in
-                            let clampedX = min(max(value.location.x, 0), side)
-                            let dragProgress = Double(clampedX / max(side, 1))
-                            let span = focalLengthRange.upperBound - focalLengthRange.lowerBound
-                            onFocalLengthChange(focalLengthRange.lowerBound + span * dragProgress)
-                        }
-                )
-                .position(x: centerX, y: centerY)
+                    .shadow(color: .black.opacity(0.28), radius: 8, x: 0, y: 4)
+                    .contentShape(Rectangle())
+                    .gesture(
+                        DragGesture(minimumDistance: 0)
+                            .onChanged { value in
+                                let startCenter = dragStartCenter ?? center
+                                if dragStartCenter == nil {
+                                    dragStartCenter = center
+                                }
+
+                                let proposedDragCenter = CGPoint(
+                                    x: startCenter.x + value.translation.width,
+                                    y: startCenter.y + value.translation.height
+                                )
+                                let clampedCenter = CameraDualFocalPreviewGeometry.clampedCenter(
+                                    proposedDragCenter,
+                                    side: side,
+                                    in: previewRect
+                                )
+                                onFrameCenterChange(
+                                    (clampedCenter.x - previewRect.minX) / previewRect.width,
+                                    (clampedCenter.y - previewRect.minY) / previewRect.height
+                                )
+                            }
+                            .onEnded { _ in
+                                dragStartCenter = nil
+                            }
+                    )
+                    .position(x: center.x, y: center.y)
             }
             .frame(width: proxy.size.width, height: proxy.size.height)
         }
@@ -287,7 +267,7 @@ struct CameraDualFocalViewfinderOverlay: View {
 }
 
 private extension UIImage {
-    nonisolated func normalizedForDualFocalRendering() -> UIImage {
+    nonisolated func normalizedForDualFocalCrop() -> UIImage {
         guard imageOrientation != .up else { return self }
 
         let format = UIGraphicsImageRendererFormat.default()

@@ -1213,3 +1213,16 @@ Latest Phase 21-A3-R2-R2 Default-on Transparent Dual Focal PiP on 2026-06-21:
 - No Depth Anything runtime, Core ML inference, provider/cloud call, preview-frame upload, upload payload change, Camera live cloud AI entry, raw frame/depth/image persistence beyond normal captured photo flow, sensitive inference, secret, or production rollout was added.
 - `productionReady:false` remains locked.
 - Next practical step remains MacBook/Xcode physical-device verification of Phase 21-A3-R2 PiP behavior.
+
+Latest Phase 21-A3-R3 Focal Framing Box Crop on 2026-06-21:
+
+- User corrected the product direction: no real-time dual video rendering, no picture-in-picture live magnification, and no scaling during preview.
+- Phase 21-A3-R3 replaces the PiP-style focal preview with a transparent movable framing box.
+- The Camera preview defaults back to `resizeAspect` so it is not zoomed and should match the captured-photo aspect more closely.
+- The image inside the framing box is the same preview as outside the box; the box is only a UI guide.
+- Pressing shutter captures the full-resolution photo first, then crops the saved/selected result to the framing box area.
+- The focal slider changes the box size, while dragging the box changes crop position.
+- The removed PiP preview-frame stream means no separate real-time inset rendering remains.
+- No Depth Anything runtime, Core ML inference, provider/cloud call, preview-frame upload, upload payload change, Camera live cloud AI entry, raw frame/depth/image persistence beyond normal captured photo flow, sensitive inference, secret, or production rollout was added.
+- `productionReady:false` remains locked.
+- Next practical step is MacBook/Xcode physical-device verification of Phase 21-A3-R3 crop mapping.

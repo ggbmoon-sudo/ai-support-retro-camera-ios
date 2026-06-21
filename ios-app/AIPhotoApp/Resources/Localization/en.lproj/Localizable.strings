@@ -239,11 +239,11 @@
 "camera.lens.35mm" = "35mm classic lens";
 "camera.lens.77mm" = "77mm portrait lens";
 "camera.lens.front_selfie" = "Front selfie camera";
-"camera.dual_focal.toggle" = "Toggle dual focal PiP zoom";
-"camera.dual_focal.title" = "Dual focal";
-"camera.dual_focal.slider" = "Adjust dual focal length";
-"camera.dual_focal.drag_hint" = "Drag";
-"camera.dual_focal.off" = "Turn off dual focal zoom";
+"camera.dual_focal.toggle" = "Open focal crop controls";
+"camera.dual_focal.title" = "Focal crop";
+"camera.dual_focal.slider" = "Adjust crop focal length";
+"camera.dual_focal.drag_hint" = "Move box";
+"camera.dual_focal.off" = "Close focal crop controls";
 "camera.control.flash" = "Flash";
 "camera.control.timer" = "Timer";
 "camera.control.flip" = "Flip";
