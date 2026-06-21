@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: PT2-SF-R1 - SiliconFlow Text-only Credential Smoke Gate
-Status: implemented; text-only credential smoke accepted for Photo Advisor and Filter Lab labels
-Latest implementation: PT2-SF-R1 switches the active relay credential path from Xiaoyi to SiliconFlow using the official OpenAI-compatible `https://api.siliconflow.com/v1/chat/completions` endpoint and `deepseek-ai/DeepSeek-V4-Flash`. A backend-only text-only credential smoke gate was added for Photo Advisor and Filter Lab labels. The local ignored `.env` variable names were updated to `SILICONFLOW_*` without printing or committing the key. Photo Advisor text-only smoke returned `2xx` / accepted, and Filter Lab text-only smoke returned `2xx` / accepted after a 30s timeout window. All smokes remained text-only with `imageUploadAttempted:false`, no raw key/prompt/payload/provider output printed, and `productionReady:false`. Next recommended action is bounded image-bearing SiliconFlow Photo Advisor internal QA through backend only, then bounded Filter Lab recipe QA; no iOS integration, Camera cloud AI entry, upload payload change, provider credential commit, raw payload/provider logging, image editor provider, StoreKit/payment, or production rollout was added.
+Current phase: PT2-SF-R2 - SiliconFlow Photo Advisor Internal Image QA
+Status: implemented; image QA gate added, current DeepSeek-V4-Flash image request blocked by provider vision request rejection
+Latest implementation: PT2-SF-R2 adds a backend-only SiliconFlow Photo Advisor image QA gate and CLI for ignored synthetic / approved-real samples. The gate defaults to dry-run with no network calls and no image reads, requires explicit `--run-provider`, limits image QA to 1-3 samples, uses the official OpenAI-compatible `https://api.siliconflow.com/v1/chat/completions` endpoint, and keeps all output sanitized. A local ignored synthetic JPEG was generated under `backend/tests/local-images/` for the bounded test only. The one-call provider image QA reached SiliconFlow with the server-side key present, but the current `deepseek-ai/DeepSeek-V4-Flash` image request returned sanitized bucket `provider_vision_request_rejected` with `httpStatusBucket:4xx`, `acceptedCount:0`, and `productionReady:false`. Next recommended action is PT2-SF-R2B: select/preflight a SiliconFlow vision-capable model for Photo Advisor image QA before Filter Lab or iOS integration; no iOS integration, Camera cloud AI entry, upload payload change, provider credential commit, raw payload/provider logging, image editor provider, StoreKit/payment, or production rollout was added.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -76,6 +76,71 @@ Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-o
 Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. If continuing app-side feature development, choose a non-composition Camera feature or focused runtime/UI polish. If continuing composition intelligence, use a separate training-AI branch phase that begins with dataset/label schema, source/license/consent gates, and human review policy, not app runtime composition logic. Any model artifact handling, Core ML package use, inference execution, benchmark run, Camera runtime integration beyond explicit local scope, preview-frame upload/upload persistence, upload payload change, provider/cloud call, iOS provider/model key, raw artifact, sensitive inference, dataset crawler, user-photo training, or production rollout requires separate explicit approval before execution. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries.
 
 ---
+
+## PT2-SF-R2 - SiliconFlow Photo Advisor Internal Image QA
+
+Status: implemented; provider image path blocked for current model
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+PT2-SF-R2 adds a backend-only internal image QA gate for SiliconFlow Photo Advisor. It verifies that the image-bearing request path is safely bounded and redacted before any app runtime integration. The gate works, but the current `deepseek-ai/DeepSeek-V4-Flash` image request is rejected by the provider in sanitized bucket `provider_vision_request_rejected`, so Photo Advisor image QA is not acceptable yet.
+
+### Completed Work
+
+- Added `backend/src/qa/siliconFlowPhotoAdvisorImageQAGate.mjs`.
+- Added `backend/scripts/run-siliconflow-photo-advisor-image-qa.mjs`.
+- Added `backend/tests/siliconflow-photo-advisor-image-qa-gate.test.mjs`.
+- Added `qa:siliconflow:photo-advisor-image-qa` to `backend/package.json`.
+- Kept the default CLI mode as dry-run/no-network/no-image-read.
+- Required explicit `--run-provider` for provider execution.
+- Limited samples to ignored `backend/tests/local-images/` or `backend/tests/approved-real-samples/`.
+- Generated one local ignored synthetic JPEG for a bounded provider image QA run.
+- Added sanitized request/result buckets without raw key, prompt, request body, provider text, image data, base64, or Authorization output.
+- Classified 400/415/422 image request rejections as `provider_vision_request_rejected`.
+
+### Changed Files
+
+- `backend/package.json`
+- `backend/scripts/run-siliconflow-photo-advisor-image-qa.mjs`
+- `backend/src/qa/siliconFlowPhotoAdvisorImageQAGate.mjs`
+- `backend/tests/siliconflow-photo-advisor-image-qa-gate.test.mjs`
+- `backend/README.md`
+- `README.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-log.md`
+
+### Tests and Checks
+
+- `node --test backend/tests/siliconflow-photo-advisor-image-qa-gate.test.mjs` passed: 7/7.
+- `npm --prefix backend run qa:siliconflow:photo-advisor-image-qa` passed as dry-run: `networkCallsMade:false`, `imageReadsPerformed:false`, `imageUploadAttempted:false`.
+- `git check-ignore -v backend/tests/local-images/pt2-sf-r2-synthetic-still-life.jpg` confirmed the synthetic sample is ignored.
+- `npm --prefix backend run qa:siliconflow:photo-advisor-image-qa -- --run-provider --image-set=synthetic --limit=1 --timeout-ms=60000` made one bounded provider call and returned sanitized `provider_vision_request_rejected` / `4xx`.
+
+### Known TODOs
+
+- Select or verify a SiliconFlow vision-capable model before rerunning Photo Advisor image QA.
+- Keep Filter Lab structured recipe QA blocked until Photo Advisor image QA has an acceptable model/path or the user explicitly changes priority.
+- Keep iOS Inspiration integration blocked until backend image QA is acceptable.
+
+### Boundary Confirmations
+
+- iOS runtime changed: no
+- Swift files changed: no
+- Xcode project changed: no
+- Backend production endpoint added: no
+- Provider credential committed: no
+- Raw prompt/request/provider response/image/base64 persisted or printed: no
+- Camera cloud AI entry added: no
+- Upload payload changed: no
+- Image editor provider added: no
+- StoreKit/payment changed: no
+- `productionReady:false` remains locked.
+
+### Ready for Next Phase
+
+Current recommended next phase is `PT2-SF-R2B - SiliconFlow Vision-capable Photo Advisor Model Selection and Preflight`. Not ready for production rollout.
 
 ## PT2 - Xiaoyi DeepSeek Relay Backend Internal Photo Advisor and Filter Lab Wiring
 

@@ -149,6 +149,17 @@ npm run qa:siliconflow:credential-smoke -- --run-provider --surface=filter-lab -
 
 The PT2-SF-R1 smoke is text-only. It verifies the SiliconFlow credential/base/model path with `imageUploadAttempted:false`; image-bearing Photo Advisor and Filter Lab QA must stay in later bounded PT2-SF-R2/PT2-SF-R3 phases.
 
+PT2-SF-R2 adds the bounded backend-only Photo Advisor image QA gate:
+
+```sh
+npm run qa:siliconflow:photo-advisor-image-qa
+npm run qa:siliconflow:photo-advisor-image-qa -- --run-provider --image-set=synthetic --limit=1 --timeout-ms=60000
+```
+
+The default command is dry-run only and makes no network call or image read. The provider command requires ignored local samples under `backend/tests/local-images/` or `backend/tests/approved-real-samples/`; these samples must not be committed.
+
+Current PT2-SF-R2 result: one synthetic image call reached SiliconFlow with the server-side key present, but `deepseek-ai/DeepSeek-V4-Flash` returned sanitized `provider_vision_request_rejected` / `4xx`. Treat this as a model/request-shape image capability blocker, not a credential smoke failure. The next safe step is selecting or preflighting a SiliconFlow vision-capable model before Filter Lab structured recipe QA or iOS integration.
+
 ## Local Xiaoyi DeepSeek Relay Internal Setup (Historical Fallback)
 
 Do not commit real secrets. The Xiaoyi relay key is backend/server-side only and must never be added to iOS.
