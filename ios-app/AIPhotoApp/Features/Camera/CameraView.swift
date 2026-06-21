@@ -339,8 +339,10 @@ struct CameraView: View {
                     session: viewModel.service.session,
                     isMirrored: viewModel.isUsingFrontCamera
                 )
-                    .liveFilterPreview(viewModel.selectedFilterPreset)
                     .ignoresSafeArea()
+                    .overlay {
+                        realtimeFilteredPreviewLayer
+                    }
                     .overlay {
                         ruleOfThirdsGrid
                     }
@@ -436,6 +438,23 @@ struct CameraView: View {
             }
 
             timerTopButton
+
+            if viewModel.isUsingFrontCamera {
+                frontCameraMirrorSaveButton
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var realtimeFilteredPreviewLayer: some View {
+        if viewModel.isLiveFilterPreviewActive {
+            RealtimeFilteredCameraPreviewView(
+                service: viewModel.service,
+                preset: viewModel.selectedFilterPreset,
+                isMirrored: viewModel.isUsingFrontCamera
+            )
+            .allowsHitTesting(false)
+            .accessibilityHidden(true)
         }
     }
 
@@ -923,6 +942,19 @@ struct CameraView: View {
         }
     }
 
+    private var frontCameraMirrorSaveButton: some View {
+        nativeIconButton(
+            systemImage: viewModel.isFrontCameraCaptureMirroringEnabled ? "arrow.left.and.right.circle.fill" : "arrow.left.and.right.circle",
+            label: "camera.control.selfie_mirror_save",
+            valueKey: nil,
+            isActive: viewModel.isFrontCameraCaptureMirroringEnabled
+        ) {
+            activeCameraCallout = .none
+            isLiveGuidanceExpanded = false
+            viewModel.toggleFrontCameraCaptureMirroring()
+        }
+    }
+
     private var compactLensMenu: some View {
         Button {
             withAnimation(.snappy(duration: 0.16)) {
@@ -1069,7 +1101,9 @@ struct CameraView: View {
                     session: viewModel.service.session,
                     isMirrored: viewModel.isUsingFrontCamera
                 )
-                    .liveFilterPreview(viewModel.selectedFilterPreset)
+                    .overlay {
+                        realtimeFilteredPreviewLayer
+                    }
                     .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.md))
                     .overlay {
                         ruleOfThirdsGrid
@@ -1259,6 +1293,15 @@ struct CameraView: View {
                 label: "camera.control.flip"
             ) {
                 viewModel.toggleCameraPosition()
+            }
+
+            if viewModel.isUsingFrontCamera {
+                cameraIconButton(
+                    systemImage: viewModel.isFrontCameraCaptureMirroringEnabled ? "arrow.left.and.right.circle.fill" : "arrow.left.and.right.circle",
+                    label: "camera.control.selfie_mirror_save"
+                ) {
+                    viewModel.toggleFrontCameraCaptureMirroring()
+                }
             }
         }
         .padding(.vertical, AppSpacing.xs)

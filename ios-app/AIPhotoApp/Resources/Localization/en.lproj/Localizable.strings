@@ -248,6 +248,7 @@
 "camera.control.flash" = "Flash";
 "camera.control.timer" = "Timer";
 "camera.control.flip" = "Flip";
+"camera.control.selfie_mirror_save" = "Mirror save";
 "camera.capture.helper" = "Camera stays focused on shooting. Import photos from Inspiration to test the selected-photo, filter, mock save, mock AI, and History flow.";
 "camera.timer.dialog.title" = "Timer";
 "camera.timer.dialog.message" = "Choose a capture delay.";

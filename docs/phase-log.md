@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 21-A3-R3-R1 - Dynamic Aspect Pinch Focal Crop
-Status: completed
-Latest implementation: Phase 21-A3-R3-R1 tunes the local focal framing-box crop with dynamic aspect and pinch behavior. The Camera preview remains the standard 1x aspect-fit feed; the framing box is hidden at the selected lens/base focal length, appears automatically when pinch-out or slider focal length goes above base, clamps/hides again when pinched back to base, and follows `4:5`, `1:1`, or `3:4` crop aspect choices. It adds no Depth Anything runtime, Core ML inference, cloud AI, provider call, preview-frame upload, upload payload change, raw frame persistence beyond normal captured photo flow, or production rollout. `productionReady:false` remains locked.
+Current phase: Phase 21-A3-R4 - Realtime Filter Preview and Selfie Mirror Save
+Status: implemented, pending Xcode physical-device verification
+Latest implementation: Phase 21-A3-R4 fixes Camera filter preview parity and adds a front-camera final-save mirror toggle. The live Camera view now uses local AVFoundation video frames rendered through the same Core Image filter adjustment pipeline on a Metal-backed preview layer for non-original filters, while front-camera preview remains mirrored and final captured/saved selfie mirroring is controlled by a local toggle. It adds no Depth Anything runtime, Core ML model inference, cloud AI, provider call, preview-frame upload, upload payload change, raw frame persistence beyond in-memory rendering, or production rollout. `productionReady:false` remains locked.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -73,7 +73,7 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current practical next step remains MacBook/Xcode physical-device verification of Phase 21-A3-R3-R1 after this cleanup. Confirm the Camera preview is no longer zoomed, the focal box is hidden at base focal length, pinch-out automatically shows/resizes the transparent focal box, pinch-in clamps/hides it at base, `4:5` / `1:1` / `3:4` aspect choices reshape the box, the image inside the box is not live-magnified, the slider changes only box size/focal crop, and the captured result is only the area inside the box. Any model artifact handling, Core ML package use, inference execution, benchmark run, Camera runtime integration beyond explicit local scope, preview-frame upload, upload payload change, provider/cloud call, iOS provider/model key, raw artifact, sensitive inference, or production rollout requires separate explicit approval before execution. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution beyond an explicitly approved future scope, provider API calls, model downloads, model cache changes, Qwen inference beyond an explicitly approved benchmark, fixture inference beyond explicit approval, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, RunPod provisioning, or user-photo training / fine-tuning until explicitly requested.
+Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current practical next step remains MacBook/Xcode physical-device verification of Phase 21-A3-R4 after this cleanup. Confirm non-original filters visibly affect the live viewfinder before shutter, the live filtered preview matches the post-capture filtered result closely, Camera FPS remains acceptable, front-camera preview stays mirrored, the selfie mirror-save toggle changes only final captured/saved source orientation, and Phase 21-A3-R3-R1 focal crop behavior still works. Any model artifact handling, Core ML package use, inference execution, benchmark run, Camera runtime integration beyond explicit local scope, preview-frame upload/upload persistence, upload payload change, provider/cloud call, iOS provider/model key, raw artifact, sensitive inference, or production rollout requires separate explicit approval before execution. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution beyond an explicitly approved future scope, provider API calls, model downloads, model cache changes, Qwen inference beyond an explicitly approved benchmark, fixture inference beyond explicit approval, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, RunPod provisioning, or user-photo training / fine-tuning until explicitly requested.
 
 ---
 
@@ -13079,3 +13079,68 @@ Build and run on iPhone. Confirm the Camera preview is no longer zoomed, the foc
 ### Ready for Next Phase
 
 Current practical next step remains MacBook/Xcode physical-device verification of Phase 21-A3-R3-R1 focal crop behavior. If crop mapping or gesture feel is still off, use a focused `Phase 21-A3-R4 - Focal Crop Real-device QA Follow-up`. Not ready for production rollout.
+
+---
+
+## Phase 21-A3-R4 - Realtime Filter Preview and Selfie Mirror Save
+
+Status: implemented, pending Xcode physical-device verification
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase 21-A3-R4 fixes the live Camera filter-preview mismatch and adds a front-camera final-save mirror option. Non-original filters now render live AVFoundation video frames through the shared Core Image filter adjustment pipeline on a local Metal-backed preview layer. Front-camera preview stays mirrored for natural selfie framing, while the new mirror-save toggle controls whether the final captured/saved selfie source image is horizontally flipped.
+
+### Completed Work
+
+- Added `RealtimeFilteredCameraPreviewView`, a local `MTKView`-backed renderer that receives in-memory `AVCaptureVideoDataOutput` frames.
+- Reused `FilterPipeline.filteredCIImage` so live preview and post-capture rendering use the same Core Image adjustment definitions.
+- Replaced the Camera live-filter approximation overlay with a real filtered video-frame overlay for non-original presets.
+- Kept `AVCaptureVideoPreviewLayer` as the original/base feed and mirrored front-camera preview behavior.
+- Added `isFrontCameraCaptureMirroringEnabled` and a front-camera-only mirror-save toggle.
+- Applied a horizontal flip to the captured front-camera source image only when the mirror-save toggle is enabled.
+- Made mock save render the selected filter before saving if the filtered preview has not completed yet.
+
+### Changed Files
+
+- `ios-app/AIPhotoApp/Features/Camera/RealtimeFilteredCameraPreviewView.swift`
+- `ios-app/AIPhotoApp/Features/Camera/CameraCaptureService.swift`
+- `ios-app/AIPhotoApp/Features/Camera/CameraView.swift`
+- `ios-app/AIPhotoApp/Features/Camera/CameraViewModel.swift`
+- `ios-app/AIPhotoApp/Features/Filters/FilterPipeline.swift`
+- `ios-app/AIPhotoApp/Resources/Localization/en.lproj/Localizable.strings`
+- `ios-app/AIPhotoApp/Resources/Localization/zh-Hant.lproj/Localizable.strings`
+- `README.md`
+- `ios-app/README.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `tests/manual-smoke-tests.md`
+
+### Tests and Checks
+
+- `git status -sb --untracked-files=all`
+- `git diff --check`
+- Swift/source scan for provider keys, network calls, upload payload changes, model artifacts, raw frame persistence, and Camera cloud AI entries
+- Xcode physical-device build remains required for Metal preview performance and orientation verification.
+
+### Boundary Confirmations
+
+- Provider/model/cloud call: no
+- Camera live cloud AI entry: no
+- Preview-frame upload: no
+- Upload payload changed: no
+- Raw preview-frame persistence: no
+- Depth Anything runtime added: no
+- Core ML model inference run: no
+- Sensitive inference added: no
+- `productionReady:false` remains locked.
+
+### Xcode Verification Needed
+
+Build and run on iPhone. Select `Soft Warm 400` or another non-original filter and confirm the live viewfinder changes before shutter, the filtered live preview closely matches the post-capture filtered result, Camera FPS remains acceptable, front-camera preview remains mirrored, the mirror-save toggle appears only on the front camera, saved/captured selfie orientation changes according to that toggle, and Phase 21-A3-R3-R1 focal crop still works.
+
+### Ready for Next Phase
+
+Current practical next step remains MacBook/Xcode physical-device verification of Phase 21-A3-R4. If filter preview performance, orientation, or selfie mirror-save behavior is still off, use a focused `Phase 21-A3-R4-R1 - Camera Filter and Selfie Mirror QA Follow-up`. Not ready for production rollout.

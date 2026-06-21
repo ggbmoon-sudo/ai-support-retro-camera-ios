@@ -4738,6 +4738,24 @@ Physical-device verification:
 - [ ] Confirm the captured output does not include a PiP inset border, focal label, or the surrounding full frame.
 - [ ] Confirm no provider/model key, direct provider/model call, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame/image/depth persistence beyond normal captured photo flow, Depth Anything runtime, Core ML inference, or production rollout appears.
 - [ ] Confirm `productionReady:false` remains unchanged.
+
+## Phase 21-A3-R4 - Realtime Filter Preview and Selfie Mirror Save
+
+Physical-device verification:
+
+- [ ] Build and run on iPhone.
+- [ ] Open Camera and confirm the base/original live preview still appears before selecting a filter.
+- [ ] Select `Soft Warm 400` or another non-original filter and confirm the live viewfinder changes before pressing shutter.
+- [ ] Capture with that filter and confirm the post-capture preview closely matches the live filtered viewfinder.
+- [ ] Switch between multiple filters and confirm the live preview updates without needing to capture first.
+- [ ] Confirm Camera FPS remains acceptable; if it stutters heavily, optimize the realtime renderer further.
+- [ ] Switch to the front camera and confirm the live preview still behaves like a mirror.
+- [ ] Confirm the front-camera mirror-save toggle appears only on the front camera.
+- [ ] Capture with mirror-save off and confirm the saved/selected selfie source is unmirrored.
+- [ ] Capture with mirror-save on and confirm the saved/selected selfie source is mirrored.
+- [ ] Confirm Phase 21-A3-R3-R1 focal crop box, pinch, aspect, and capture-crop behavior still work with filtered live preview.
+- [ ] Confirm no provider/model key, direct provider/model call, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame/image/depth persistence beyond in-memory rendering, Depth Anything runtime, Core ML model inference, or production rollout appears.
+- [ ] Confirm `productionReady:false` remains unchanged.
 ## Phase 21-A2 - Live Framing Aesthetic Spatial Codebook
 
 Docs-only verification:

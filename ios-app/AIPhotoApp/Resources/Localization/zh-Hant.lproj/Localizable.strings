@@ -1193,3 +1193,4 @@
 "advisor.intent.signal.clutter.yue_troublemaker" = "背景多細節可以有街頭味；想集中啲先裁少少。";
 "advisor.intent.signal.crop_risk.yue_troublemaker" = "裁少少可以集中視線；想留隨手感就唔好急住裁。";
 "advisor.action.retake.technical_risk.yue_troublemaker" = "呢張先留 mood；真係睇唔清細節先再影多張。";
+"camera.control.selfie_mirror_save" = "鏡像保存";

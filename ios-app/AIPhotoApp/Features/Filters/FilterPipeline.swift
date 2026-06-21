@@ -33,13 +33,10 @@ nonisolated final class FilterPipeline {
 
     private static func renderSynchronously(image: UIImage, preset: FilterPreset) throws -> UIImage {
         let normalizedImage = image.normalizedForFilterRendering()
-        guard var outputImage = CIImage(image: normalizedImage) else {
+        guard let inputImage = CIImage(image: normalizedImage) else {
             throw FilterPipelineError.renderFailed
         }
-
-        for adjustment in preset.adjustments {
-            outputImage = try apply(adjustment, to: outputImage)
-        }
+        let outputImage = try filteredCIImage(inputImage, preset: preset)
 
         let extent = outputImage.extent
         guard let cgImage = context.createCGImage(outputImage, from: extent) else {
@@ -47,6 +44,17 @@ nonisolated final class FilterPipeline {
         }
 
         return UIImage(cgImage: cgImage, scale: normalizedImage.scale, orientation: .up)
+    }
+
+    static func filteredCIImage(_ inputImage: CIImage, preset: FilterPreset) throws -> CIImage {
+        guard !preset.isOriginal else { return inputImage }
+
+        var outputImage = inputImage
+        for adjustment in preset.adjustments {
+            outputImage = try apply(adjustment, to: outputImage)
+        }
+
+        return outputImage
     }
 
     private static func apply(_ adjustment: FilterAdjustment, to image: CIImage) throws -> CIImage {

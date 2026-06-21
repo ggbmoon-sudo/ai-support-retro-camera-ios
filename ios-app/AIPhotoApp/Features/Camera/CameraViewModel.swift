@@ -21,6 +21,7 @@ final class CameraViewModel: ObservableObject {
     @Published private(set) var lensOptions = LensOption.all
     @Published private(set) var isUsingFrontCamera = false
     @Published private(set) var isHardwareFlashAvailable = false
+    @Published private(set) var isFrontCameraCaptureMirroringEnabled = false
     @Published private(set) var isDualFocalZoomEnabled = false
     @Published private(set) var selectedDualFocalLengthMillimeters = CameraDualFocalZoomConfiguration.defaultFocalLength(
         forBaseFocalLength: LensOption.classic35.focalLengthMillimeters
@@ -126,6 +127,10 @@ final class CameraViewModel: ObservableObject {
         selectedDualFocalAspectRatio.label
     }
 
+    var isLiveFilterPreviewActive: Bool {
+        selectedPhoto == nil && !selectedFilterPreset.isOriginal
+    }
+
     func prepareCamera() async {
         errorMessage = nil
 
@@ -191,7 +196,7 @@ final class CameraViewModel: ObservableObject {
                     self.errorMessage = CameraCaptureError.imageDataUnavailable.localizedDescription
                     return
                 }
-                let outputImage = self.isDualFocalZoomEnabled
+                let croppedImage = self.isDualFocalZoomEnabled
                     ? CameraDualFocalPhotoCropper.crop(
                         image: image,
                         configuration: self.dualFocalZoomConfiguration,
@@ -199,6 +204,9 @@ final class CameraViewModel: ObservableObject {
                         isPreviewMirrored: self.isUsingFrontCamera
                     )
                     : image
+                let outputImage = self.isUsingFrontCamera && self.isFrontCameraCaptureMirroringEnabled
+                    ? croppedImage.horizontallyMirroredForFrontCameraCapture()
+                    : croppedImage
                 let analyzedImageSignals = LocalImageSignalAnalyzer.analyze(outputImage)
                 let captureContext = CameraCaptureContextSnapshotter.snapshot(
                     source: .captured,
@@ -303,11 +311,33 @@ final class CameraViewModel: ObservableObject {
         guard let selectedPhoto else { return }
 
         photoSaveState = .saving
+        var resolvedFilteredPreviewImage = filteredPreviewImage
+        if resolvedFilteredPreviewImage == nil,
+           !selectedFilterPreset.isOriginal {
+            isFiltering = true
+            do {
+                let image = try await filterPipeline.render(image: selectedPhoto.image, preset: selectedFilterPreset)
+                guard self.selectedPhoto?.id == selectedPhoto.id else {
+                    isFiltering = false
+                    photoSaveState = .idle
+                    return
+                }
+                resolvedFilteredPreviewImage = image
+                filteredPreviewImage = image
+                isFiltering = false
+            } catch {
+                filterErrorMessage = error.localizedDescription
+                photoSaveState = .failed(error.localizedDescription)
+                isFiltering = false
+                return
+            }
+        }
+
         let request = PhotoSaveRequest(
             ownerId: "mock-user",
             source: selectedPhoto.source,
             sourceImage: selectedPhoto.image,
-            filteredPreviewImage: filteredPreviewImage,
+            filteredPreviewImage: resolvedFilteredPreviewImage,
             filterPresetId: selectedFilterPreset.id,
             createdAt: Date()
         )
@@ -402,6 +432,10 @@ final class CameraViewModel: ObservableObject {
         } catch {
             errorMessage = error.localizedDescription
         }
+    }
+
+    func toggleFrontCameraCaptureMirroring() {
+        isFrontCameraCaptureMirroringEnabled.toggle()
     }
 
     func enableDualFocalZoom() {
@@ -633,4 +667,18 @@ final class CameraViewModel: ObservableObject {
         )
     }
 
+}
+
+private extension UIImage {
+    func horizontallyMirroredForFrontCameraCapture() -> UIImage {
+        let format = UIGraphicsImageRendererFormat.default()
+        format.scale = scale
+        format.opaque = false
+
+        return UIGraphicsImageRenderer(size: size, format: format).image { context in
+            context.cgContext.translateBy(x: size.width, y: 0)
+            context.cgContext.scaleBy(x: -1, y: 1)
+            draw(in: CGRect(origin: .zero, size: size))
+        }
+    }
 }

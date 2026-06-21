@@ -728,3 +728,8 @@ functions/src/
 - 最後補測試：權限、壓縮、上傳失敗、照片限制、VIP 原圖保存。
 
 這份順序的核心原則只有一個：**先完成單張主路徑，再做風格，再做保存，再做歷史，最後才做半格機與雙重曝光**。這樣 Codex 每一步都能有可運行輸出，不容易在一次產生過多檔案時失敗。
+## Phase 21-A3-R4 Runtime Status - Live Filter Preview
+
+The current Camera runtime uses a local-only AVFoundation + Core Image path for live filter parity. `CameraPreviewView` still owns the base `AVCaptureVideoPreviewLayer`, but non-original filters are rendered through `RealtimeFilteredCameraPreviewView`, which receives in-memory `AVCaptureVideoDataOutput` frames and draws the shared `FilterPipeline.filteredCIImage` result into a Metal-backed `MTKView`. This keeps the live viewfinder aligned with the post-capture filter definitions without uploading frames, persisting raw frames, adding provider calls, or changing backend/iOS upload payloads.
+
+Front-camera preview remains mirrored for natural selfie framing. The final captured/saved front-camera source image is controlled separately by the local mirror-save toggle, which applies a horizontal image transform only when enabled.

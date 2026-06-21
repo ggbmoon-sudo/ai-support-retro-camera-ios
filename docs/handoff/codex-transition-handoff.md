@@ -1238,3 +1238,15 @@ Latest Phase 21-A3-R3-R1 Dynamic Aspect Pinch Focal Crop on 2026-06-21:
 - No Depth Anything runtime, Core ML inference, provider/cloud call, preview-frame upload, upload payload change, Camera live cloud AI entry, raw frame/depth/image persistence beyond normal captured photo flow, sensitive inference, secret, or production rollout was added.
 - `productionReady:false` remains locked.
 - Next practical step is MacBook/Xcode physical-device verification of Phase 21-A3-R3-R1 dynamic aspect + pinch focal crop behavior.
+
+Latest Phase 21-A3-R4 Realtime Filter Preview and Selfie Mirror Save on 2026-06-21:
+
+- User reported that selected filters must be visible in the live Camera preview before shutter, not only after capture.
+- Phase 21-A3-R4 adds a local Metal-backed `RealtimeFilteredCameraPreviewView` that receives in-memory `AVCaptureVideoDataOutput` frames and applies the shared Core Image `FilterPipeline` adjustment definitions.
+- The old lightweight SwiftUI live-filter approximation is no longer used for Camera live preview.
+- Front-camera preview remains mirrored for selfie framing.
+- A front-camera-only mirror-save toggle controls whether the final captured/saved selfie source image is horizontally flipped.
+- Mock save now renders the selected filter before saving if the filtered preview has not completed yet.
+- No provider/cloud call, provider key, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame persistence beyond in-memory rendering, Depth Anything runtime, Core ML model inference, sensitive inference, secret, or production rollout was added.
+- `productionReady:false` remains locked.
+- Next practical step is MacBook/Xcode physical-device verification of Phase 21-A3-R4 filter preview parity, Metal preview performance, and selfie mirror-save behavior.
