@@ -61,7 +61,8 @@
     "qa:siliconflow:credential-smoke": "node scripts/run-siliconflow-credential-smoke.mjs",
     "qa:siliconflow:smoke": "node scripts/run-siliconflow-credential-smoke.mjs",
     "qa:siliconflow:photo-advisor-image-qa": "node scripts/run-siliconflow-photo-advisor-image-qa.mjs",
-    "qa:siliconflow:vision-model-preflight": "node scripts/check-siliconflow-vision-model-preflight.mjs"
+    "qa:siliconflow:vision-model-preflight": "node scripts/check-siliconflow-vision-model-preflight.mjs",
+    "qa:siliconflow:filter-lab-recipe-qa": "node scripts/run-siliconflow-filter-lab-recipe-qa.mjs"
   },
   "dependencies": {},
   "devDependencies": {}

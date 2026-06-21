@@ -123,7 +123,7 @@ SILICONFLOW_API_KEY=replace_me
 SILICONFLOW_BASE_URL=https://api.siliconflow.com
 SILICONFLOW_CHAT_COMPLETIONS_PATH=/v1/chat/completions
 SILICONFLOW_PHOTO_ADVISOR_MODEL=deepseek-ai/DeepSeek-V4-Flash
-SILICONFLOW_FILTER_LAB_MODEL=deepseek-ai/DeepSeek-V4-Flash
+SILICONFLOW_FILTER_LAB_MODEL=Qwen/Qwen3-VL-32B-Instruct
 ```
 
 The active endpoint is `https://api.siliconflow.com/v1/chat/completions` with OpenAI-compatible JSON chat completions.
@@ -176,7 +176,18 @@ npm run qa:siliconflow:photo-advisor-image-qa -- --run-provider --image-set=synt
 
 Current PT2-SF-R2C result: the explicitly approved one-image synthetic provider QA made exactly one backend-only provider/model call with `qwen3_vl_32b_instruct`, read exactly one ignored synthetic image, attempted exactly one image upload, and returned sanitized `acceptedCount:1`, `httpStatusBucket:2xx`, and latency bucket `5s_to_15s`. The run printed no API key, raw prompt, raw request body, raw provider response, raw image/base64, or Authorization header, and `productionReady:false` remains locked.
 
-Next recommended backend step: PT2-SF-R3 Filter Lab structured recipe QA. Keep it backend-only, bounded, sanitized, and recipe-JSON-only; do not produce generated bitmaps, shader/code, LUT URLs, rendering instructions, iOS integration, Camera AI, or production rollout.
+PT2-SF-R3 adds the bounded backend-only Filter Lab structured recipe QA gate:
+
+```sh
+npm run qa:siliconflow:filter-lab-recipe-qa
+npm run qa:siliconflow:filter-lab-recipe-qa -- --run-provider --image-set=synthetic --limit=1 --timeout-ms=60000 --model-candidate=qwen3_vl_32b_instruct
+```
+
+The default command is dry-run only and makes no network call or image read. The provider command requires ignored local samples under `backend/tests/local-images/` or `backend/tests/approved-real-samples/`; these samples must not be committed.
+
+Current PT2-SF-R3 result: the explicitly approved one-image synthetic Filter Lab recipe QA made exactly one backend-only provider/model call with `qwen3_vl_32b_instruct`, read exactly one ignored synthetic image, attempted exactly one image upload, and returned sanitized `acceptedCount:1`, `httpStatusBucket:2xx`, and latency bucket `gt_15s`. The gate validates generated filter recipe JSON only and blocks generated bitmaps, shader/code, LUT URLs, rendering instructions, final localized UI copy, raw recipe/provider text, iOS integration, Camera AI, image editor provider behavior, and production rollout. `productionReady:false` remains locked.
+
+Next recommended backend step: PT2-SF-R4 debug-only iOS Inspiration backend integration plan. Keep it planning-only first; no iOS provider key, no direct SiliconFlow URL in iOS, no Camera AI, no production/default cloud rollout.
 
 ## Local Xiaoyi DeepSeek Relay Internal Setup (Historical Fallback)
 

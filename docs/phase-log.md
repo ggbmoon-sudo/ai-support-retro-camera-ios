@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: PT2-SF-R2C - SiliconFlow Qwen3-VL-32B One-image Photo Advisor QA
-Status: implemented; approved one-image provider QA accepted
-Latest implementation: PT2-SF-R2C ran the explicitly approved backend-only SiliconFlow one-image Photo Advisor QA with `Qwen/Qwen3-VL-32B-Instruct` (`qwen3_vl_32b_instruct`). The sanitized synthetic run made exactly one provider/model call, read exactly one ignored synthetic image, attempted exactly one image upload, returned `acceptedCount:1`, `httpStatusBucket:2xx`, and latency bucket `5s_to_15s`. It printed/persisted no API key, Authorization header, raw prompt, raw request payload, raw provider response, raw image/base64, or raw report; adds no iOS runtime, Camera cloud AI entry, upload payload change, image editor provider, StoreKit/payment, or production rollout. `productionReady:false` remains locked.
+Current phase: PT2-SF-R3 - SiliconFlow Filter Lab Structured Recipe QA
+Status: implemented; approved one-image Filter Lab recipe provider QA accepted
+Latest implementation: PT2-SF-R3 added the backend-only SiliconFlow Filter Lab structured recipe QA gate and ran the explicitly approved one-image synthetic provider QA with `Qwen/Qwen3-VL-32B-Instruct` (`qwen3_vl_32b_instruct`). The sanitized run made exactly one provider/model call, read exactly one ignored synthetic image, attempted exactly one image upload, returned `acceptedCount:1`, `httpStatusBucket:2xx`, and latency bucket `gt_15s`. It validates generated filter recipe JSON only and printed/persisted no API key, Authorization header, raw prompt, raw request payload, raw provider response, raw image/base64, raw recipe, or raw report; adds no iOS runtime, Camera cloud AI entry, upload payload change, image editor provider, StoreKit/payment, or production rollout. `productionReady:false` remains locked.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -76,6 +76,86 @@ Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-o
 Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. If continuing app-side feature development, choose a non-composition Camera feature or focused runtime/UI polish. If continuing composition intelligence, use a separate training-AI branch phase that begins with dataset/label schema, source/license/consent gates, and human review policy, not app runtime composition logic. Any model artifact handling, Core ML package use, inference execution, benchmark run, Camera runtime integration beyond explicit local scope, preview-frame upload/upload persistence, upload payload change, provider/cloud call, iOS provider/model key, raw artifact, sensitive inference, dataset crawler, user-photo training, or production rollout requires separate explicit approval before execution. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries.
 
 ---
+
+## PT2-SF-R3 - SiliconFlow Filter Lab Structured Recipe QA
+
+Status: implemented; approved one-image provider QA accepted
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+PT2-SF-R3 adds a bounded backend-only SiliconFlow QA gate for Filter Lab generated filter recipes. The gate verifies that a vision-capable SiliconFlow model can return the app's generated filter recipe JSON contract from one reference image without returning generated bitmaps, shader/code, LUT URLs, rendering instructions, final localized UI copy, raw recipe text, or app-facing provider output.
+
+### Completed Work
+
+- Added `backend/src/qa/siliconFlowFilterLabRecipeQAGate.mjs`.
+- Added `backend/scripts/run-siliconflow-filter-lab-recipe-qa.mjs`.
+- Added `backend/tests/siliconflow-filter-lab-recipe-qa-gate.test.mjs`.
+- Added `npm run qa:siliconflow:filter-lab-recipe-qa`.
+- Defaulted the gate to dry-run/no-network/no-image-read unless `--run-provider` is explicit.
+- Limited provider runs to ignored synthetic or approved-real local samples with bounded `--limit` and timeout.
+- Used `Qwen/Qwen3-VL-32B-Instruct` via `--model-candidate=qwen3_vl_32b_instruct`.
+- Added JSON-object request shaping and schema-contract prompt constraints for generated filter recipes.
+- Validated provider output with `validateGeneratedFilterRecipeCandidate`.
+- Kept reports sanitized to buckets/counts only.
+
+### Provider QA Result
+
+- Provider run: approved one-image synthetic run.
+- Planned calls: `1`.
+- Actual calls: `1`.
+- Retry count: `0`.
+- Image reads: `1` ignored synthetic sample.
+- Image upload attempts: `1`.
+- Accepted count: `1`.
+- Rejected count: `0`.
+- HTTP status bucket: `2xx`.
+- Latency bucket: `gt_15s`.
+- Schema diagnostic buckets: none.
+- `productionReady:false`.
+
+### Changed Files
+
+- `backend/package.json`
+- `backend/scripts/run-siliconflow-filter-lab-recipe-qa.mjs`
+- `backend/src/qa/siliconFlowFilterLabRecipeQAGate.mjs`
+- `backend/tests/siliconflow-filter-lab-recipe-qa-gate.test.mjs`
+- `README.md`
+- `backend/README.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-log.md`
+
+### Tests and Checks
+
+- `node --test backend/tests/siliconflow-filter-lab-recipe-qa-gate.test.mjs`
+- `npm --prefix backend run qa:siliconflow:filter-lab-recipe-qa`
+- `npm --prefix backend run qa:siliconflow:filter-lab-recipe-qa -- --run-provider --image-set=synthetic --limit=1 --timeout-ms=60000 --model-candidate=qwen3_vl_32b_instruct`
+
+### Boundary Confirmations
+
+- Provider/model call: yes, exactly one approved backend-only Filter Lab QA call.
+- Image read/upload attempt: yes, exactly one ignored synthetic QA image read and one provider image upload attempt for the approved QA run.
+- Generated bitmap output: no.
+- Shader/code output: no.
+- LUT URL output: no.
+- Rendering instruction output: no.
+- Raw recipe/provider text persisted or printed: no.
+- API key / Authorization header printed or committed: no.
+- iOS runtime changed: no.
+- Swift files changed: no.
+- Xcode project files changed: no.
+- Camera cloud AI entry: no.
+- Upload payload changed: no.
+- Backend app-facing endpoint added: no.
+- Image editor provider behavior added: no.
+- StoreKit/payment changed: no.
+- Sensitive inference added: no.
+- `productionReady:false` remains locked.
+
+### Ready for Next Phase
+
+Ready for `PT2-SF-R4 - Debug-only iOS Inspiration Backend Integration Plan`. Keep the next step planning-only first: map selected-photo Photo Advisor and Filter Lab backend integration boundaries, debug gates, consent/quota requirements, and iOS no-key/no-direct-provider rules before any runtime integration. Not ready for production rollout.
 
 ## PT2-SF-R2C - SiliconFlow Qwen3-VL-32B One-image Photo Advisor QA
 
