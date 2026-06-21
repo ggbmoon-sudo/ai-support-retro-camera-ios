@@ -694,6 +694,8 @@
 "photo_advisor.fixture.chrome_mood.crop" = "Try a 4:5 crop if you want the lines to feel tighter.";
 "photo_advisor.cloud_debug.action" = "Debug: Test Cloud Boundary";
 "photo_advisor.cloud_debug.fallback" = "Cloud analysis is unavailable right now. Showing local advice instead.";
+"filter_lab.cloud_debug.action" = "Debug: Test Filter Lab Backend";
+"filter_lab.cloud_debug.fallback" = "Cloud Filter Lab is unavailable right now. Showing a local recipe instead.";
 "photo_advisor.intent.en.neutral.low_light" = "Low light can carry the retro mood. If you want a cleaner look, lift brightness slightly without flattening the shadows.";
 "photo_advisor.intent.en.neutral.motion" = "For a cleaner look, wait half a second before tapping the shutter; for a dreamy retro look, the slight motion can work.";
 "photo_advisor.intent.en.neutral.tilt" = "A little tilt can feel like street photography. If you want a cleaner look, straighten it slightly in crop.";

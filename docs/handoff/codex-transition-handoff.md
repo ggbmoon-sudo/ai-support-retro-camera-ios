@@ -1325,3 +1325,14 @@ Latest PT2-SF-R4 Debug-only iOS Inspiration Backend Integration Plan on 2026-06-
 - No Swift runtime, Xcode project setting, backend runtime, provider/cloud call, API key read/print/commit, image upload, upload payload change, Camera cloud entry, image editor provider behavior, StoreKit/quota runtime, or production rollout was added.
 - `productionReady:false` remains locked.
 - Next recommended step is `PT2-SF-R5 - Debug-only iOS Inspiration Backend Integration Scaffold`.
+
+Latest PT2-SF-R5 Debug-only iOS Inspiration Backend Integration Scaffold on 2026-06-21:
+
+- PT2-SF-R5 adds a debug-only selected-photo Filter Lab backend scaffold beside the existing Photo Advisor debug cloud boundary.
+- Added iOS `CloudAIFilterLabInput`, `CloudAIFilterLabRequest`, `CloudAIEndpointClient.postFilterLab(...)`, `CloudAIService.generateFilterLab(...)`, generated filter recipe response mapping, validation, and `FilterLabViewModel.generateCloudDebug(consent:)`.
+- Filter Lab DEBUG UI now shows a backend test action only after a reference image exists and reuses `CloudAIConsentView` before any debug backend request.
+- Default behavior remains mock/local; production builds cannot use the new endpoint client path.
+- No Xcode project file, backend runtime, provider credential, direct provider URL/key in iOS, provider SDK, Camera cloud AI entry, image editor provider behavior, StoreKit/quota runtime, or production rollout was added.
+- No provider/model call, credential read, or image upload was run during this phase.
+- `productionReady:false` remains locked.
+- Next recommended step is `PT2-SF-R5-VERIFY - MacBook/Xcode Debug Inspiration Backend Smoke`, starting with backend disabled/fallback behavior only.

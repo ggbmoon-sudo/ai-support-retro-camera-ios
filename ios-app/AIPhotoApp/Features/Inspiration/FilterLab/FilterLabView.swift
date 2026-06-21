@@ -5,6 +5,9 @@ struct FilterLabView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = FilterLabViewModel()
     @State private var pickerItem: PhotosPickerItem?
+    #if DEBUG
+    @State private var showsCloudDebugConsent = false
+    #endif
 
     var body: some View {
         NavigationStack {
@@ -46,6 +49,24 @@ struct FilterLabView: View {
                     pickerItem = nil
                 }
             }
+            #if DEBUG
+            .sheet(isPresented: $showsCloudDebugConsent) {
+                CloudAIConsentView(
+                    onAccept: { consent in
+                        showsCloudDebugConsent = false
+                        Task {
+                            await viewModel.generateCloudDebug(consent: consent)
+                        }
+                    },
+                    onCancel: {
+                        showsCloudDebugConsent = false
+                    }
+                )
+                .presentationDetents([.medium])
+                .presentationDragIndicator(.visible)
+                .padding()
+            }
+            #endif
         }
     }
 
@@ -73,6 +94,28 @@ struct FilterLabView: View {
                 .font(AppTypography.caption)
                 .foregroundStyle(AppColors.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)
+
+            #if DEBUG
+            if viewModel.referenceImage != nil {
+                Button {
+                    showsCloudDebugConsent = true
+                } label: {
+                    Label("filter_lab.cloud_debug.action", systemImage: "network")
+                        .font(AppTypography.micro.weight(.semibold))
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(AppColors.accent)
+                .disabled(viewModel.state == .analyzing)
+                .padding(.top, AppSpacing.xs)
+            }
+
+            if let fallbackMessageKey = viewModel.cloudDebugFallbackMessageKey {
+                Text(LocalizedStringKey(fallbackMessageKey))
+                    .font(AppTypography.micro)
+                    .foregroundStyle(AppColors.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            #endif
         }
     }
 

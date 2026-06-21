@@ -14155,3 +14155,77 @@ None for this docs-only phase. Xcode runtime behavior should be unchanged; no Sw
 ### Ready for Next Phase
 
 Recommended next step is `PT2-SF-R5 - Debug-only iOS Inspiration Backend Integration Scaffold`. Keep it small, debug/internal only, selected-photo Inspiration only, backend-mediated only, production/default mock/local, and Camera local-only. Do not run provider calls unless separately approved.
+
+## PT2-SF-R5 - Debug-only iOS Inspiration Backend Integration Scaffold
+
+Status: implemented, pending MacBook/Xcode debug verification
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+PT2-SF-R5 adds a debug-only selected-photo Filter Lab backend scaffold beside the existing Photo Advisor debug cloud boundary. Filter Lab can now build a compressed metadata-stripped selected-image request for `/v1/ai/filter-lab`, decode the backend generated recipe contract, validate/map it into `GeneratedFilterRecipe`, and fall back to local mock recipes when the backend is unavailable, disabled, or invalid.
+
+### Completed Work
+
+- Added `CloudAIFilterLabInput` and `CloudAIFilterLabRequest`.
+- Added `CloudAIEndpointClient.postFilterLab(...)` for the existing project backend path `v1/ai/filter-lab`.
+- Added `CloudAIService.generateFilterLab(...)` to keep mock and remote services aligned.
+- Expanded `CloudAIGeneratedFilter` to match the backend generated recipe contract.
+- Added generated recipe validation and `CloudAIFilterLabMapper`.
+- Added `FilterLabViewModel.generateCloudDebug(consent:)` behind `#if DEBUG`.
+- Added a DEBUG-only Filter Lab backend test button that appears only after a reference image exists and reuses `CloudAIConsentView`.
+- Added fallback handling and localization for Filter Lab debug backend unavailable state.
+- Added `docs/pt2-sf-r5-debug-ios-inspiration-backend-integration-scaffold.md`.
+
+### Changed Files
+
+- `ios-app/AIPhotoApp/Services/CloudAI/CloudAIModels.swift`
+- `ios-app/AIPhotoApp/Services/CloudAI/CloudAIEndpointClient.swift`
+- `ios-app/AIPhotoApp/Services/CloudAI/CloudAIService.swift`
+- `ios-app/AIPhotoApp/Services/CloudAI/MockCloudAIService.swift`
+- `ios-app/AIPhotoApp/Services/CloudAI/RemoteCloudAIService.swift`
+- `ios-app/AIPhotoApp/Services/CloudAI/CloudAIResponseValidator.swift`
+- `ios-app/AIPhotoApp/Services/CloudAI/CloudAIPhotoAdvisorMapper.swift`
+- `ios-app/AIPhotoApp/Features/Inspiration/FilterLab/FilterLabViewModel.swift`
+- `ios-app/AIPhotoApp/Features/Inspiration/FilterLab/FilterLabView.swift`
+- `ios-app/AIPhotoApp/Resources/Localization/en.lproj/Localizable.strings`
+- `ios-app/AIPhotoApp/Resources/Localization/zh-Hant.lproj/Localizable.strings`
+- `ios-app/README.md`
+- `docs/pt2-sf-r5-debug-ios-inspiration-backend-integration-scaffold.md`
+- `docs/phase-log.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `backend/README.md`
+
+### Tests and Checks
+
+- `git diff --check`
+- Focused iOS scans for SiliconFlow URL, provider API key names, bearer/provider authorization strings, and provider SDK usage
+- Backend test suite to confirm backend runtime stayed stable
+- Xcode build/runtime verification was not run in this Windows environment.
+
+### Boundary Confirmations
+
+- Swift runtime changed: yes, debug-only selected-photo Filter Lab scaffold
+- Xcode project changed: no
+- Backend runtime changed: no
+- Provider/model call run: no
+- API key read/printed/committed: no
+- Direct provider URL/key in iOS: no
+- Provider SDK in iOS: no
+- Image upload run during this phase: no
+- Upload payload changed for production/default: no
+- Camera cloud AI entry: no
+- Image editor provider behavior: no
+- StoreKit/quota runtime: no
+- Production rollout: no
+- `productionReady:false` remains locked.
+
+### Xcode Verification Needed
+
+Build and run a DEBUG build on MacBook/Xcode. Select a reference image in Filter Lab, confirm the debug backend button appears only after a reference image exists, confirm consent appears before any debug backend request, verify disabled/unavailable backend fallback to local recipe, confirm no provider key/URL appears in app logs/UI, and confirm Camera runtime remains unchanged.
+
+### Ready for Next Phase
+
+Recommended next step is `PT2-SF-R5-VERIFY - MacBook/Xcode Debug Inspiration Backend Smoke`. Start with backend disabled/fallback verification only. A provider-backed debug smoke still requires separate explicit approval and should be one selected image only.

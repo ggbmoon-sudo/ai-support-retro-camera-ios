@@ -107,3 +107,47 @@ enum CloudAIPhotoAdvisorMapper {
         }
     }
 }
+
+enum CloudAIFilterLabMapper {
+    static func map(_ response: CloudAIResponse) throws -> GeneratedFilterRecipe {
+        guard response.mode == .filterGeneration,
+              response.safety.containsSensitiveInference == false,
+              let generatedFilter = response.generatedFilter else {
+            throw CloudAIServiceError.invalidResponse(["missing_generated_filter"])
+        }
+
+        let recipe = GeneratedFilterRecipe(
+            id: generatedFilter.id,
+            nameKey: generatedFilter.nameKey,
+            descriptionKey: generatedFilter.descriptionKey,
+            source: mapSource(generatedFilter.source),
+            confidence: generatedFilter.confidence,
+            recommendedUseKeys: generatedFilter.recommendedUseKeys,
+            parameters: GeneratedFilterParameterSet(
+                exposure: generatedFilter.parameters.exposure,
+                contrast: generatedFilter.parameters.contrast,
+                saturation: generatedFilter.parameters.saturation,
+                temperature: generatedFilter.parameters.temperature,
+                tint: generatedFilter.parameters.tint,
+                fade: generatedFilter.parameters.fade,
+                grain: generatedFilter.parameters.grain,
+                vignette: generatedFilter.parameters.vignette
+            ),
+            warningsKeys: generatedFilter.warningsKeys,
+            recipeVersion: generatedFilter.recipeVersion
+        )
+
+        return FilterRecipeValidator.validated(recipe)
+    }
+
+    private static func mapSource(_ source: CloudAIGeneratedFilterSource) -> GeneratedFilterSource {
+        switch source {
+        case .mock:
+            return .mock
+        case .local:
+            return .local
+        case .cloud:
+            return .cloud
+        }
+    }
+}

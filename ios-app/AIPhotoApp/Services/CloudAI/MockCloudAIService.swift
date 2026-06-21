@@ -61,4 +61,67 @@ struct MockCloudAIService: CloudAIService {
             throw CloudAIServiceError.invalidResponse(issues.map(\.description))
         }
     }
+
+    func generateFilterLab(_ input: CloudAIFilterLabInput) async throws -> CloudAIResponse {
+        guard input.consent.imageUploadAccepted else {
+            throw CloudAIServiceError.consentRequired
+        }
+
+        try? await Task.sleep(nanoseconds: 250_000_000)
+
+        let response = CloudAIResponse(
+            schemaVersion: "1.0",
+            mode: .filterGeneration,
+            summary: "",
+            suggestions: [],
+            recommendedFilters: [],
+            generatedFilter: CloudAIGeneratedFilter(recipe: .mockFallback, source: .mock),
+            poseGuide: nil,
+            retakeAdvice: nil,
+            cropAdvice: nil,
+            confidence: .medium,
+            source: .mock,
+            locale: input.locale,
+            safety: CloudAISafety(
+                containsSensitiveInference: false,
+                requiresUserConsent: true,
+                blockedReason: nil
+            ),
+            error: nil
+        )
+
+        switch validator.validate(response) {
+        case .valid(let validResponse):
+            return validResponse
+        case .invalid(let issues, _):
+            throw CloudAIServiceError.invalidResponse(issues.map(\.description))
+        }
+    }
+}
+
+private extension CloudAIGeneratedFilter {
+    init(recipe: GeneratedFilterRecipe, source: CloudAIGeneratedFilterSource) {
+        id = recipe.id
+        nameKey = recipe.nameKey
+        descriptionKey = recipe.descriptionKey
+        self.source = source
+        confidence = recipe.confidence
+        recommendedUseKeys = recipe.recommendedUseKeys
+        parameters = CloudAIGeneratedFilterParameters(parameters: recipe.parameters)
+        warningsKeys = recipe.warningsKeys
+        recipeVersion = recipe.recipeVersion
+    }
+}
+
+private extension CloudAIGeneratedFilterParameters {
+    init(parameters: GeneratedFilterParameterSet) {
+        exposure = parameters.exposure
+        contrast = parameters.contrast
+        saturation = parameters.saturation
+        temperature = parameters.temperature
+        tint = parameters.tint
+        fade = parameters.fade
+        grain = parameters.grain
+        vignette = parameters.vignette
+    }
 }

@@ -143,8 +143,25 @@ enum CloudAIValidationIssue: Equatable, CustomStringConvertible {
 
 private extension CloudAIGeneratedFilter {
     var parametersAreSafe: Bool {
-        [exposure, contrast, saturation, warmth]
-            .compactMap { $0 }
-            .allSatisfy { (-2.0...2.0).contains($0) }
+        guard recipeVersion == "1.0",
+              id.hasPrefix("ai_"),
+              source == .cloud || source == .mock || source == .local,
+              (0.0...1.0).contains(confidence),
+              !nameKey.isEmpty,
+              !descriptionKey.isEmpty,
+              !recommendedUseKeys.isEmpty,
+              !warningsKeys.isEmpty else {
+            return false
+        }
+
+        let params = parameters
+        return (-0.35...0.35).contains(params.exposure)
+            && (-0.35...0.35).contains(params.contrast)
+            && (-0.35...0.45).contains(params.saturation)
+            && (-0.45...0.45).contains(params.temperature)
+            && (-0.25...0.25).contains(params.tint)
+            && (0.0...0.5).contains(params.fade)
+            && (0.0...0.35).contains(params.grain)
+            && (0.0...0.35).contains(params.vignette)
     }
 }

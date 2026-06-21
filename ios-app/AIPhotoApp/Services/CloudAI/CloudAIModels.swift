@@ -11,6 +11,16 @@ struct CloudAIPhotoAdvisorInput {
     let selectedFilterId: String?
 }
 
+struct CloudAIFilterLabInput {
+    let imageData: Data
+    let contentType: String
+    let width: Int
+    let height: Int
+    let metadataStripped: Bool
+    let locale: String
+    let consent: CloudAIConsent
+}
+
 struct CloudAIPhotoAdvisorRequest: Codable, Hashable, Sendable {
     let schemaVersion: String
     let feature: String
@@ -33,6 +43,26 @@ struct CloudAIPhotoAdvisorRequest: Codable, Hashable, Sendable {
     }
 }
 
+struct CloudAIFilterLabRequest: Codable, Hashable, Sendable {
+    let schemaVersion: String
+    let feature: String
+    let mode: String
+    let locale: String
+    let consent: CloudAIConsent
+    let image: CloudAIRequestImage
+    let client: CloudAIRequestClient
+
+    init(input: CloudAIFilterLabInput) {
+        schemaVersion = "1.0"
+        feature = "filter_lab"
+        mode = "reference_image"
+        locale = input.locale
+        consent = input.consent
+        image = CloudAIRequestImage(input: input)
+        client = CloudAIRequestClient(platform: "iOS", appVersion: Bundle.main.appVersionString)
+    }
+}
+
 struct CloudAIRequestImage: Codable, Hashable, Sendable {
     let contentType: String
     let width: Int
@@ -41,6 +71,14 @@ struct CloudAIRequestImage: Codable, Hashable, Sendable {
     let dataBase64: String
 
     init(input: CloudAIPhotoAdvisorInput) {
+        contentType = input.contentType
+        width = input.width
+        height = input.height
+        metadataStripped = input.metadataStripped
+        dataBase64 = input.imageData.base64EncodedString()
+    }
+
+    init(input: CloudAIFilterLabInput) {
         contentType = input.contentType
         width = input.width
         height = input.height
@@ -127,11 +165,32 @@ struct CloudAIRecommendedFilter: Codable, Hashable, Sendable {
 }
 
 struct CloudAIGeneratedFilter: Codable, Hashable, Sendable {
-    let filterId: String?
-    let exposure: Double?
-    let contrast: Double?
-    let saturation: Double?
-    let warmth: Double?
+    let id: String
+    let nameKey: String
+    let descriptionKey: String
+    let source: CloudAIGeneratedFilterSource
+    let confidence: Double
+    let recommendedUseKeys: [String]
+    let parameters: CloudAIGeneratedFilterParameters
+    let warningsKeys: [String]
+    let recipeVersion: String
+}
+
+enum CloudAIGeneratedFilterSource: String, Codable, Hashable, Sendable {
+    case mock
+    case local
+    case cloud
+}
+
+struct CloudAIGeneratedFilterParameters: Codable, Hashable, Sendable {
+    let exposure: Double
+    let contrast: Double
+    let saturation: Double
+    let temperature: Double
+    let tint: Double
+    let fade: Double
+    let grain: Double
+    let vignette: Double
 }
 
 struct CloudAIPoseGuide: Codable, Hashable, Sendable {

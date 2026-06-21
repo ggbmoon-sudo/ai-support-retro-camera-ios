@@ -14,7 +14,23 @@ struct CloudAIEndpointClient: Sendable {
 
     func postPhotoAdvisor(_ request: CloudAIPhotoAdvisorRequest) async throws -> CloudAIResponse {
         #if DEBUG
-        var urlRequest = Foundation.URLRequest(url: baseURL.appending(path: "v1/ai/photo-advisor"))
+        return try await post(request, path: "v1/ai/photo-advisor")
+        #else
+        throw CloudAIServiceError.remoteDisabled
+        #endif
+    }
+
+    func postFilterLab(_ request: CloudAIFilterLabRequest) async throws -> CloudAIResponse {
+        #if DEBUG
+        return try await post(request, path: "v1/ai/filter-lab")
+        #else
+        throw CloudAIServiceError.remoteDisabled
+        #endif
+    }
+
+    #if DEBUG
+    private func post<Request: Encodable & Sendable>(_ request: Request, path: String) async throws -> CloudAIResponse {
+        var urlRequest = Foundation.URLRequest(url: baseURL.appending(path: path))
         urlRequest.httpMethod = "POST"
         urlRequest.timeoutInterval = timeoutSeconds
         urlRequest.setValue("application/json", forHTTPHeaderField: "content-type")
@@ -32,8 +48,6 @@ struct CloudAIEndpointClient: Sendable {
         }
 
         return try JSONDecoder().decode(CloudAIResponse.self, from: data)
-        #else
-        throw CloudAIServiceError.remoteDisabled
-        #endif
     }
+    #endif
 }

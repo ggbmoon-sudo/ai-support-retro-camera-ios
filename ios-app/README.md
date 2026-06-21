@@ -46,6 +46,8 @@ Phase 21-A7-VERIFY adds a docs-only physical-device QA handoff and inventory of 
 
 Product correction: Camera-page Live Cloud AI / Live Advisor is no longer needed because local on-device guidance is the Camera path. Future Cloud AI remains for Inspiration / post-capture photo analysis, generated filters, and image editing through backend-mediated mainland relay providers; provider keys must stay server-side and must not enter iOS.
 
+PT2-SF-R5 adds a DEBUG-only selected-photo Filter Lab backend scaffold. After a Filter Lab reference image exists, DEBUG builds can show a backend test action, ask for `CloudAIConsentView` consent, compress/metadata-strip the selected image, call only the project backend boundary at `v1/ai/filter-lab`, decode a validated generated recipe, and fall back to local mock recipes if the backend is disabled or invalid. Production/default behavior remains mock/local. iOS still has no SiliconFlow URL, provider API key, provider SDK, direct provider call, Camera cloud AI entry, image editor provider behavior, or production rollout. MacBook/Xcode debug verification is still required.
+
 The research index for this direction is `../docs/research/on-device-ai-research-index.md`. Later Depth Anything / Florence work remains blocked until separately approved and benchmarked. If continuing app-side development, choose a non-composition Camera feature or focused runtime/UI polish.
 
 ## Phase 21-M / 21-N / 21-N-R0 / 21-N-R0B / 21-N-R0C / 21-N-R1B / 21-N-R1C / 21-N-R1D Xcode Boundary

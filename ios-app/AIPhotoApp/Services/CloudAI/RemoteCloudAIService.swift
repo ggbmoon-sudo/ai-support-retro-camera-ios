@@ -44,4 +44,31 @@ struct RemoteCloudAIService: CloudAIService {
             }
         }
     }
+
+    func generateFilterLab(_ input: CloudAIFilterLabInput) async throws -> CloudAIResponse {
+        guard input.consent.imageUploadAccepted else {
+            throw CloudAIServiceError.consentRequired
+        }
+
+        switch mode {
+        case .mockOnly, .remoteWithMockFallback:
+            return try await mockFallback.generateFilterLab(input)
+        case .remoteDisabled:
+            throw CloudAIServiceError.remoteDisabled
+        case .debugRemoteMock:
+            guard mode.allowsNetworkRequests else {
+                throw CloudAIServiceError.remoteDisabled
+            }
+
+            let request = CloudAIFilterLabRequest(input: input)
+            let response = try await endpointClient.postFilterLab(request)
+
+            switch validator.validate(response) {
+            case .valid(let validResponse):
+                return validResponse
+            case .invalid(let issues, _):
+                throw CloudAIServiceError.invalidResponse(issues.map(\.description))
+            }
+        }
+    }
 }

@@ -20,13 +20,21 @@ final class FilterLabViewModel: ObservableObject {
     @Published var intensity: Double = 0.72
     @Published private(set) var isRenderingPreview = false
     @Published private(set) var applyMessageKey: String?
+    #if DEBUG
+    @Published private(set) var cloudDebugFallbackMessageKey: String?
+    #endif
 
     private let generationService: FilterGenerationService
+    private let fallbackGenerationService: FilterGenerationService
     private let previewRenderer = GeneratedFilterPreviewRenderer()
     private var renderTask: Task<Void, Never>?
 
-    init(generationService: FilterGenerationService? = nil) {
+    init(
+        generationService: FilterGenerationService? = nil,
+        fallbackGenerationService: FilterGenerationService? = nil
+    ) {
         self.generationService = generationService ?? MockFilterGenerationService()
+        self.fallbackGenerationService = fallbackGenerationService ?? MockFilterGenerationService()
     }
 
     deinit {
@@ -69,6 +77,9 @@ final class FilterLabViewModel: ObservableObject {
         recipe = nil
         intensity = 0.72
         applyMessageKey = nil
+        #if DEBUG
+        cloudDebugFallbackMessageKey = nil
+        #endif
     }
 
     func showUnavailableState() {
@@ -95,6 +106,9 @@ final class FilterLabViewModel: ObservableObject {
         previewImage = nil
         recipe = nil
         applyMessageKey = nil
+        #if DEBUG
+        cloudDebugFallbackMessageKey = nil
+        #endif
         state = .analyzing
 
         do {
@@ -106,6 +120,52 @@ final class FilterLabViewModel: ObservableObject {
             state = .failed(error.localizedDescription)
         }
     }
+
+    #if DEBUG
+    func generateCloudDebug(consent: CloudAIConsent) async {
+        guard let referenceImage else {
+            await useSampleReferenceImage()
+            return
+        }
+
+        renderTask?.cancel()
+        previewImage = nil
+        recipe = nil
+        applyMessageKey = nil
+        cloudDebugFallbackMessageKey = nil
+        state = .analyzing
+
+        do {
+            let compressedImage = try CloudAIImageCompressor().compress(referenceImage)
+            let cloudInput = CloudAIFilterLabInput(
+                imageData: compressedImage.data,
+                contentType: compressedImage.contentType,
+                width: compressedImage.width,
+                height: compressedImage.height,
+                metadataStripped: compressedImage.metadataStripped,
+                locale: Locale.current.identifier,
+                consent: consent
+            )
+            let cloudResponse = try await RemoteCloudAIService(mode: .debugRemoteMock)
+                .generateFilterLab(cloudInput)
+            recipe = try CloudAIFilterLabMapper.map(cloudResponse)
+            state = .result
+            renderPreview()
+        } catch {
+            cloudDebugFallbackMessageKey = "filter_lab.cloud_debug.fallback"
+
+            do {
+                let fallback = try await fallbackGenerationService.generateFilter(from: referenceImage)
+                recipe = FilterRecipeValidator.validated(fallback)
+                applyMessageKey = "filter_lab.cloud_debug.fallback"
+                state = .result
+                renderPreview()
+            } catch {
+                state = .unavailable(NSLocalizedString("filter_lab.cloud_debug.fallback", comment: ""))
+            }
+        }
+    }
+    #endif
 
     private func renderPreview() {
         guard let referenceImage, let recipe else { return }
