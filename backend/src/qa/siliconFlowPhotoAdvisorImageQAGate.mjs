@@ -9,6 +9,10 @@ import {
   siliconFlowCredentialSmokeConfig
 } from "./siliconFlowCredentialSmokeGate.mjs";
 import {
+  PHOTO_ADVISOR_MODEL_IDS,
+  PhotoAdvisorModelCandidate
+} from "../providers/photoAdvisorProviderTypes.mjs";
+import {
   buildSiliconFlowPhotoAdvisorCompactSystemPrompt,
   buildSiliconFlowPhotoAdvisorCompactUserPrompt
 } from "../providers/siliconflowPhotoAdvisorPromptContract.mjs";
@@ -19,6 +23,12 @@ const APPROVED_REAL_SAMPLE_DIR = new URL("../../tests/approved-real-samples/", i
 const DEFAULT_TIMEOUT_MS = 30000;
 const DEFAULT_LIMIT = 1;
 const DEFAULT_LOCALE = "zh-Hant";
+const IMAGE_QA_MODEL_CANDIDATES = Object.freeze([
+  PhotoAdvisorModelCandidate.deepseekV4Flash,
+  PhotoAdvisorModelCandidate.qwen3Vl32BInstruct,
+  PhotoAdvisorModelCandidate.qwen3Vl30BA3BInstruct,
+  PhotoAdvisorModelCandidate.qwen3Vl8BInstruct
+]);
 
 export function parseSiliconFlowPhotoAdvisorImageQAArgs(args = []) {
   const options = {
@@ -27,7 +37,8 @@ export function parseSiliconFlowPhotoAdvisorImageQAArgs(args = []) {
     imageSet: "synthetic",
     limit: DEFAULT_LIMIT,
     timeoutMs: DEFAULT_TIMEOUT_MS,
-    locale: DEFAULT_LOCALE
+    locale: DEFAULT_LOCALE,
+    modelCandidate: null
   };
 
   for (let index = 0; index < args.length; index += 1) {
@@ -74,6 +85,15 @@ export function parseSiliconFlowPhotoAdvisorImageQAArgs(args = []) {
     }
     if (arg.startsWith("--locale=")) {
       options.locale = normalizeLocale(arg.slice("--locale=".length));
+      continue;
+    }
+    if (arg === "--model-candidate") {
+      options.modelCandidate = normalizeImageQAModelCandidate(args[index + 1]);
+      index += 1;
+      continue;
+    }
+    if (arg.startsWith("--model-candidate=")) {
+      options.modelCandidate = normalizeImageQAModelCandidate(arg.slice("--model-candidate=".length));
     }
   }
 
@@ -89,7 +109,7 @@ export async function runSiliconFlowPhotoAdvisorImageQA({
   readFileImpl = readFile
 } = {}) {
   const options = parseSiliconFlowPhotoAdvisorImageQAArgs(args);
-  const config = siliconFlowCredentialSmokeConfig(env, {});
+  const config = siliconFlowPhotoAdvisorImageQAConfig(env, options);
   const configured = siliconFlowImageQAConfigured(config);
 
   const sampleEntries = await listSamplesImpl(options.imageSet);
@@ -278,6 +298,7 @@ async function runImageQACall({ sample, options, config, fetchImpl, readFileImpl
     if (!response.ok) {
       return caseResult({
         sample,
+        model: config.model,
         accepted: false,
         latencyMs,
         httpStatusBucket: httpStatusBucket(response.status),
@@ -290,6 +311,7 @@ async function runImageQACall({ sample, options, config, fetchImpl, readFileImpl
     const parsed = parseSiliconFlowPhotoAdvisorResponse(payload);
     return caseResult({
       sample,
+      model: config.model,
       accepted: parsed.ok,
       latencyMs,
       httpStatusBucket: "2xx",
@@ -299,6 +321,7 @@ async function runImageQACall({ sample, options, config, fetchImpl, readFileImpl
   } catch (error) {
     return caseResult({
       sample,
+      model: config.model,
       accepted: false,
       latencyMs: Math.max(0, now() - started),
       httpStatusBucket: "not_available",
@@ -316,6 +339,7 @@ function baseReport({ options, config, configured, sampleEntries, selectedSample
     endpointBucket: SILICONFLOW_ENDPOINT_BUCKET,
     apiStyle: "openai_compatible_chat_completions",
     modelNameBucket: modelNameBucket(config.model),
+    selectedModelCandidate: modelCandidateBucket(config.model),
     selectedImageSet: options.imageSet,
     selectedLocale: options.locale,
     sampleCount: sampleEntries.length,
@@ -365,6 +389,7 @@ function blockedReport(base, hardBlockers) {
 
 function caseResult({
   sample,
+  model,
   accepted,
   latencyMs,
   httpStatusBucket,
@@ -376,7 +401,7 @@ function caseResult({
     sampleType: sample.sampleType,
     accepted,
     endpointBucket: SILICONFLOW_ENDPOINT_BUCKET,
-    modelNameBucket: "deepseek_ai_deepseek_v4_flash",
+    modelNameBucket: modelNameBucket(model),
     latencyBucket: latencyBucket(latencyMs),
     httpStatusBucket,
     errorBucket,
@@ -412,6 +437,18 @@ async function listImageEntries(imageSet) {
     }));
 }
 
+function siliconFlowPhotoAdvisorImageQAConfig(env, options) {
+  const base = siliconFlowCredentialSmokeConfig(env, {});
+  const candidate = options.modelCandidate ||
+    normalizeImageQAModelCandidate(env.SILICONFLOW_PHOTO_ADVISOR_VISION_MODEL_CANDIDATE);
+  const model = candidate ? PHOTO_ADVISOR_MODEL_IDS[candidate] : base.model;
+  return {
+    ...base,
+    model,
+    modelCandidate: candidate || modelCandidateForModel(model)
+  };
+}
+
 function siliconFlowImageQAConfigured(config) {
   const blockers = [];
   if (!config.apiKey) {
@@ -423,7 +460,7 @@ function siliconFlowImageQAConfigured(config) {
   if (config.path !== SILICONFLOW_CHAT_COMPLETIONS_PATH) {
     blockers.push("provider_path_not_configured");
   }
-  if (config.model !== SILICONFLOW_DEEPSEEK_V4_FLASH_MODEL) {
+  if (!modelCandidateForModel(config.model)) {
     blockers.push("provider_model_unavailable");
   }
   return { ok: blockers.length === 0, blockers: unique(blockers) };
@@ -475,8 +512,41 @@ function normalizeLocale(value) {
   return ["en", "zh-Hant", "zh-Hans", "yue-Hant-HK"].includes(text) ? text : DEFAULT_LOCALE;
 }
 
+function normalizeImageQAModelCandidate(value) {
+  const text = String(value ?? "").trim();
+  const normalized = text
+    .replace(/^--?/, "")
+    .replace(/-/g, "_");
+  if (IMAGE_QA_MODEL_CANDIDATES.includes(normalized)) {
+    return normalized;
+  }
+  if (Object.values(PHOTO_ADVISOR_MODEL_IDS).includes(text)) {
+    return modelCandidateForModel(text);
+  }
+  return null;
+}
+
 function modelNameBucket(model) {
-  return model === SILICONFLOW_DEEPSEEK_V4_FLASH_MODEL ? "deepseek_ai_deepseek_v4_flash" : "missing";
+  switch (model) {
+  case SILICONFLOW_DEEPSEEK_V4_FLASH_MODEL:
+    return "deepseek_ai_deepseek_v4_flash";
+  case PHOTO_ADVISOR_MODEL_IDS[PhotoAdvisorModelCandidate.qwen3Vl32BInstruct]:
+    return "qwen3_vl_32b_instruct";
+  case PHOTO_ADVISOR_MODEL_IDS[PhotoAdvisorModelCandidate.qwen3Vl30BA3BInstruct]:
+    return "qwen3_vl_30b_a3b_instruct";
+  case PHOTO_ADVISOR_MODEL_IDS[PhotoAdvisorModelCandidate.qwen3Vl8BInstruct]:
+    return "qwen3_vl_8b_instruct";
+  default:
+    return "missing";
+  }
+}
+
+function modelCandidateBucket(model) {
+  return modelCandidateForModel(model) || "missing";
+}
+
+function modelCandidateForModel(model) {
+  return IMAGE_QA_MODEL_CANDIDATES.find((candidate) => PHOTO_ADVISOR_MODEL_IDS[candidate] === model) || null;
 }
 
 function httpStatusBucket(status) {

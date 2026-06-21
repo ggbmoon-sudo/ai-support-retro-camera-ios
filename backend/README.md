@@ -160,6 +160,24 @@ The default command is dry-run only and makes no network call or image read. The
 
 Current PT2-SF-R2 result: one synthetic image call reached SiliconFlow with the server-side key present, but `deepseek-ai/DeepSeek-V4-Flash` returned sanitized `provider_vision_request_rejected` / `4xx`. Treat this as a model/request-shape image capability blocker, not a credential smoke failure. The next safe step is selecting or preflighting a SiliconFlow vision-capable model before Filter Lab structured recipe QA or iOS integration.
 
+PT2-SF-R2B adds a no-network vision model preflight gate:
+
+```sh
+npm run qa:siliconflow:vision-model-preflight
+```
+
+The current recommended candidate for the next bounded one-image Photo Advisor QA is `Qwen/Qwen3-VL-32B-Instruct`, reported as `qwen3_vl_32b_instruct`. `deepseek-ai/DeepSeek-V4-Flash` remains valid for text-only credential smoke but is blocked for image QA by the R2 `provider_vision_request_rejected` evidence. The preflight command reads no API key, opens no image, makes no network/model call, and does not approve a provider run by itself.
+
+After explicit approval for a bounded one-image provider QA, use the selected candidate explicitly:
+
+```sh
+npm run qa:siliconflow:photo-advisor-image-qa -- --run-provider --image-set=synthetic --limit=1 --timeout-ms=60000 --model-candidate=qwen3_vl_32b_instruct
+```
+
+Current PT2-SF-R2C result: the explicitly approved one-image synthetic provider QA made exactly one backend-only provider/model call with `qwen3_vl_32b_instruct`, read exactly one ignored synthetic image, attempted exactly one image upload, and returned sanitized `acceptedCount:1`, `httpStatusBucket:2xx`, and latency bucket `5s_to_15s`. The run printed no API key, raw prompt, raw request body, raw provider response, raw image/base64, or Authorization header, and `productionReady:false` remains locked.
+
+Next recommended backend step: PT2-SF-R3 Filter Lab structured recipe QA. Keep it backend-only, bounded, sanitized, and recipe-JSON-only; do not produce generated bitmaps, shader/code, LUT URLs, rendering instructions, iOS integration, Camera AI, or production rollout.
+
 ## Local Xiaoyi DeepSeek Relay Internal Setup (Historical Fallback)
 
 Do not commit real secrets. The Xiaoyi relay key is backend/server-side only and must never be added to iOS.

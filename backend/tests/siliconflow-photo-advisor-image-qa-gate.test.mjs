@@ -149,7 +149,8 @@ test("siliconflow image QA args and request builder are bounded", () => {
     "--image-set=approved-real",
     "--limit=99",
     "--timeout-ms=999999",
-    "--locale=yue-Hant-HK"
+    "--locale=yue-Hant-HK",
+    "--model-candidate=qwen3_vl_32b_instruct"
   ]);
   const request = buildSiliconFlowPhotoAdvisorImageQARequest({
     imageDataURL: "data:image/jpeg;base64,abc",
@@ -161,8 +162,38 @@ test("siliconflow image QA args and request builder are bounded", () => {
   assert.equal(args.limit, 3);
   assert.equal(args.timeoutMs, 60000);
   assert.equal(args.locale, "yue-Hant-HK");
+  assert.equal(args.modelCandidate, "qwen3_vl_32b_instruct");
   assert.equal(request.model, "deepseek-ai/DeepSeek-V4-Flash");
   assert.equal(request.messages[1].content[0].image_url.detail, "low");
+});
+
+test("siliconflow image QA can use an explicit vision model candidate", async () => {
+  let capturedRequest;
+  const report = await runSiliconFlowPhotoAdvisorImageQA({
+    args: ["--run-provider", "--model-candidate=qwen3_vl_32b_instruct"],
+    env: configuredEnv(),
+    listSamplesImpl: async () => [sample()],
+    readFileImpl: async () => Buffer.from([0xff, 0xd8, 0xff, 0xd9]),
+    fetchImpl: async (_url, request) => {
+      capturedRequest = JSON.parse(request.body);
+      return okJSON({
+        choices: [
+          {
+            message: {
+              content: JSON.stringify(validSyntheticPhotoAdvisorCandidate())
+            }
+          }
+        ]
+      });
+    }
+  });
+
+  assert.equal(capturedRequest.model, "Qwen/Qwen3-VL-32B-Instruct");
+  assert.equal(report.ok, true);
+  assert.equal(report.selectedModelCandidate, "qwen3_vl_32b_instruct");
+  assert.equal(report.modelNameBucket, "qwen3_vl_32b_instruct");
+  assert.equal(report.results[0].modelNameBucket, "qwen3_vl_32b_instruct");
+  assert.doesNotMatch(JSON.stringify(report), /Qwen\/Qwen3-VL-32B-Instruct|data:image|base64|local-test-key|Bearer/i);
 });
 
 test("siliconflow image QA CLI dry-run is sanitized", () => {

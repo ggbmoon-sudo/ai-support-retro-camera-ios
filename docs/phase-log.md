@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: PT2-SF-R2 - SiliconFlow Photo Advisor Internal Image QA
-Status: implemented; image QA gate added, current DeepSeek-V4-Flash image request blocked by provider vision request rejection
-Latest implementation: PT2-SF-R2 adds a backend-only SiliconFlow Photo Advisor image QA gate and CLI for ignored synthetic / approved-real samples. The gate defaults to dry-run with no network calls and no image reads, requires explicit `--run-provider`, limits image QA to 1-3 samples, uses the official OpenAI-compatible `https://api.siliconflow.com/v1/chat/completions` endpoint, and keeps all output sanitized. A local ignored synthetic JPEG was generated under `backend/tests/local-images/` for the bounded test only. The one-call provider image QA reached SiliconFlow with the server-side key present, but the current `deepseek-ai/DeepSeek-V4-Flash` image request returned sanitized bucket `provider_vision_request_rejected` with `httpStatusBucket:4xx`, `acceptedCount:0`, and `productionReady:false`. Next recommended action is PT2-SF-R2B: select/preflight a SiliconFlow vision-capable model for Photo Advisor image QA before Filter Lab or iOS integration; no iOS integration, Camera cloud AI entry, upload payload change, provider credential commit, raw payload/provider logging, image editor provider, StoreKit/payment, or production rollout was added.
+Current phase: PT2-SF-R2C - SiliconFlow Qwen3-VL-32B One-image Photo Advisor QA
+Status: implemented; approved one-image provider QA accepted
+Latest implementation: PT2-SF-R2C ran the explicitly approved backend-only SiliconFlow one-image Photo Advisor QA with `Qwen/Qwen3-VL-32B-Instruct` (`qwen3_vl_32b_instruct`). The sanitized synthetic run made exactly one provider/model call, read exactly one ignored synthetic image, attempted exactly one image upload, returned `acceptedCount:1`, `httpStatusBucket:2xx`, and latency bucket `5s_to_15s`. It printed/persisted no API key, Authorization header, raw prompt, raw request payload, raw provider response, raw image/base64, or raw report; adds no iOS runtime, Camera cloud AI entry, upload payload change, image editor provider, StoreKit/payment, or production rollout. `productionReady:false` remains locked.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -76,6 +76,143 @@ Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-o
 Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. If continuing app-side feature development, choose a non-composition Camera feature or focused runtime/UI polish. If continuing composition intelligence, use a separate training-AI branch phase that begins with dataset/label schema, source/license/consent gates, and human review policy, not app runtime composition logic. Any model artifact handling, Core ML package use, inference execution, benchmark run, Camera runtime integration beyond explicit local scope, preview-frame upload/upload persistence, upload payload change, provider/cloud call, iOS provider/model key, raw artifact, sensitive inference, dataset crawler, user-photo training, or production rollout requires separate explicit approval before execution. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries.
 
 ---
+
+## PT2-SF-R2C - SiliconFlow Qwen3-VL-32B One-image Photo Advisor QA
+
+Status: implemented; approved one-image provider QA accepted
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+PT2-SF-R2C runs the explicitly approved backend-only SiliconFlow one-image Photo Advisor QA using the R2B-selected `Qwen/Qwen3-VL-32B-Instruct` candidate. The provider image path is now accepted for one ignored synthetic sample, so the next backend-only gate can move to Filter Lab structured recipe QA.
+
+### Completed Work
+
+- Confirmed the local ignored synthetic sample exists and remains ignored.
+- Confirmed `SILICONFLOW_API_KEY` is present in the local ignored backend env without printing the key.
+- Ran exactly one approved synthetic Photo Advisor image QA command with `--model-candidate=qwen3_vl_32b_instruct`.
+- Recorded sanitized success buckets only: `acceptedCount:1`, `rejectedCount:0`, `httpStatusBucket:2xx`, and latency bucket `5s_to_15s`.
+- Kept output free of raw key, Authorization header, raw prompt, raw request payload, raw provider response, raw image/base64, and raw report content.
+
+### Changed Files
+
+- `README.md`
+- `backend/README.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-log.md`
+
+### Tests and Checks
+
+- `git check-ignore -v backend/tests/local-images/pt2-sf-r2-synthetic-still-life.jpg` confirmed the synthetic sample is ignored.
+- Local env presence check returned `SILICONFLOW_API_KEY_PRESENT` without printing the key.
+- `npm --prefix backend run qa:siliconflow:photo-advisor-image-qa -- --run-provider --image-set=synthetic --limit=1 --timeout-ms=60000 --model-candidate=qwen3_vl_32b_instruct` passed with one accepted sanitized result.
+
+### Provider QA Result
+
+- Planned calls: 1
+- Actual calls: 1
+- Model candidate: `qwen3_vl_32b_instruct`
+- Image set: synthetic
+- Accepted count: 1
+- Rejected count: 0
+- HTTP status bucket: `2xx`
+- Latency bucket: `5s_to_15s`
+- Network call made: yes, explicitly approved
+- Image read performed: yes, ignored synthetic sample only
+- Image upload attempted: yes, one synthetic QA image only
+- Model calls made: 1
+- `productionReady:false`
+
+### Known TODOs
+
+- Run PT2-SF-R3 Filter Lab structured recipe QA only after explicit approval because it will involve provider/model calls and image upload attempts.
+- Keep Filter Lab output limited to validated structured recipe JSON, numeric clamps, allowed localization keys, and no generated bitmaps, shader/code, LUT URLs, or rendering instructions.
+- Keep iOS Inspiration integration blocked until Filter Lab structured QA is acceptable and a separate debug-only app integration plan is approved.
+
+### Boundary Confirmations
+
+- iOS runtime changed: no
+- Swift files changed: no
+- Xcode project changed: no
+- Backend production endpoint added: no
+- Provider credential committed/printed: no
+- Raw prompt/request/provider response/image/base64 persisted or printed: no
+- Camera cloud AI entry added: no
+- Upload payload changed: no
+- Image editor provider added: no
+- StoreKit/payment changed: no
+- `productionReady:false` remains locked.
+
+### Ready for Next Phase
+
+Current recommended next phase is `PT2-SF-R3 - SiliconFlow Filter Lab Structured Recipe QA`, which requires explicit approval because it will make provider/model calls and attempt image uploads. Not ready for production rollout.
+
+## PT2-SF-R2B - SiliconFlow Vision-capable Photo Advisor Model Selection and Preflight
+
+Status: implemented; no provider call run
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+PT2-SF-R2B adds a no-network backend preflight gate to choose a vision-capable SiliconFlow model before rerunning Photo Advisor image QA. It selects `Qwen/Qwen3-VL-32B-Instruct` as the current bounded one-image QA candidate and keeps the next provider run blocked until explicit approval.
+
+### Completed Work
+
+- Added `backend/src/qa/siliconFlowVisionModelPreflightGate.mjs`.
+- Added `backend/scripts/check-siliconflow-vision-model-preflight.mjs`.
+- Added `backend/tests/siliconflow-vision-model-preflight-gate.test.mjs`.
+- Added `qa:siliconflow:vision-model-preflight` to `backend/package.json`.
+- Updated the existing SiliconFlow Photo Advisor image QA gate to accept explicit `--model-candidate=qwen3_vl_32b_instruct`.
+- Kept `deepseek-ai/DeepSeek-V4-Flash` valid for text-only credential smoke but blocked for image QA based on PT2-SF-R2 evidence.
+- Recorded `Qwen/Qwen3-VL-8B-Instruct` as a fallback canary and `Qwen/Qwen3-VL-30B-A3B-Instruct` as a historical candidate requiring listing recheck.
+- Kept the preflight command no-network/no-image-read/no-key-read with sanitized output only.
+
+### Changed Files
+
+- `backend/package.json`
+- `backend/scripts/check-siliconflow-vision-model-preflight.mjs`
+- `backend/src/qa/siliconFlowPhotoAdvisorImageQAGate.mjs`
+- `backend/src/qa/siliconFlowVisionModelPreflightGate.mjs`
+- `backend/tests/siliconflow-photo-advisor-image-qa-gate.test.mjs`
+- `backend/tests/siliconflow-vision-model-preflight-gate.test.mjs`
+- `backend/README.md`
+- `README.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-log.md`
+
+### Tests and Checks
+
+- `node --test backend/tests/siliconflow-photo-advisor-image-qa-gate.test.mjs` passed: 8/8.
+- `node --test backend/tests/siliconflow-vision-model-preflight-gate.test.mjs` passed: 4/4.
+- `npm --prefix backend run qa:siliconflow:vision-model-preflight` passed with `networkCallsMade:false`, `imageReadsPerformed:false`, `imageUploadAttempted:false`, `modelCallsMade:false`, and `productionReady:false`.
+
+### Known TODOs
+
+- After explicit approval, run exactly one synthetic Photo Advisor provider image QA with `--model-candidate=qwen3_vl_32b_instruct`, retry 0, and sanitized output only.
+- Keep Filter Lab structured recipe QA blocked until Photo Advisor image QA has an acceptable vision-capable path.
+- Keep iOS Inspiration integration blocked until backend image QA is acceptable.
+
+### Boundary Confirmations
+
+- iOS runtime changed: no
+- Swift files changed: no
+- Xcode project changed: no
+- Backend production endpoint added: no
+- Provider credential committed/read/printed: no
+- Network/model/provider call made: no
+- Image read/upload attempted: no
+- Raw prompt/request/provider response/image/base64 persisted or printed: no
+- Camera cloud AI entry added: no
+- Upload payload changed: no
+- Image editor provider added: no
+- StoreKit/payment changed: no
+- `productionReady:false` remains locked.
+
+### Ready for Next Phase
+
+Current recommended next phase is `PT2-SF-R2C - SiliconFlow Qwen3-VL-32B One-image Photo Advisor QA`, which requires explicit approval because it will make a provider/model call and attempt one image upload. Not ready for production rollout.
 
 ## PT2-SF-R2 - SiliconFlow Photo Advisor Internal Image QA
 

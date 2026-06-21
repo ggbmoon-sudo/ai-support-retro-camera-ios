@@ -60,7 +60,8 @@
     "qa:siliconflow:prompt-schema": "node --test tests/siliconflow-photo-advisor-prompt-schema-alignment.test.mjs",
     "qa:siliconflow:credential-smoke": "node scripts/run-siliconflow-credential-smoke.mjs",
     "qa:siliconflow:smoke": "node scripts/run-siliconflow-credential-smoke.mjs",
-    "qa:siliconflow:photo-advisor-image-qa": "node scripts/run-siliconflow-photo-advisor-image-qa.mjs"
+    "qa:siliconflow:photo-advisor-image-qa": "node scripts/run-siliconflow-photo-advisor-image-qa.mjs",
+    "qa:siliconflow:vision-model-preflight": "node scripts/check-siliconflow-vision-model-preflight.mjs"
   },
   "dependencies": {},
   "devDependencies": {}
