@@ -741,3 +741,7 @@ Phase 21-A3-R5 keeps the same local-only AVFoundation + Core Image preview/captu
 ## Phase 21-A4 Runtime Status - Live Framing Hint UX
 
 Phase 21-A4 keeps the existing local-only Apple Vision / AVFoundation signal path and improves how hints are presented in Camera. The expanded local guidance panel now exposes a user-facing `Next hint` action instead of cycling debug states, visible local hints can be manually rotated, and compact/expanded hint UI uses category-specific icons. This does not add cloud guidance, provider/model calls, model files, frame upload, upload payload changes, raw frame persistence, or production readiness.
+
+## Phase 21-A6 Runtime Status - Composition Hint Boundary
+
+Phase 21-A6 keeps the local Vision / AVFoundation signal path available for safe in-memory geometry/depth/lighting signals, but suppresses app-authored composition and portrait-layout hint copy in the live Camera runtime. Subject centering, edge margin, headroom, face distance, subject size, portrait-ready, rule-of-thirds, and vertical-balance signals no longer become visible app-side copy. Lighting, filter, and local-unavailable hints remain available. Richer composition guidance belongs to the training-AI branch after label schema, human review, and typed-output gates. This does not add cloud guidance, provider/model calls, model files, frame upload, upload payload changes, raw frame/depth/image persistence, dataset crawler, AI-assisted labeling, user-photo training, or production readiness.

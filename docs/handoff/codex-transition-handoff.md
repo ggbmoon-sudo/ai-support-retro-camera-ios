@@ -1280,3 +1280,14 @@ Latest Phase 21-A5 Composition Guidance Ownership Boundary on 2026-06-21:
 - Added `docs/phase-21-a5-composition-guidance-ownership-boundary.md`.
 - No Swift runtime, provider/cloud call, provider key, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame persistence, dataset crawler, AI-assisted labeling run, user-photo training, Depth Anything runtime, Florence runtime, Core ML model inference, sensitive inference, secret, or production rollout was added.
 - `productionReady:false` remains locked.
+
+Latest Phase 21-A6 App-side Composition Hint Suppression on 2026-06-21:
+
+- Phase 21-A6 applies the A5 ownership boundary in iOS runtime.
+- `LiveGuidanceSuggestionComposer` now suppresses visible app-authored suggestions for subject centering, edge margin, headroom, face distance, subject size, portrait-ready, rule-of-thirds, and vertical-balance signals.
+- Mock guidance sample suggestions and SwiftUI preview data were also moved away from composition / portrait-layout sample copy.
+- Safe local lighting, filter, and local-unavailable hints remain available.
+- Local Vision / AVFoundation geometry signals remain in memory for safe typed signal use; richer composition copy remains owned by the training-AI branch.
+- Added `docs/phase-21-a6-app-side-composition-hint-suppression-summary.md`.
+- No provider/cloud call, provider key, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame/depth/image persistence, dataset crawler, AI-assisted labeling run, user-photo training, Depth Anything runtime, Florence runtime, Core ML model inference, sensitive inference, secret, or production rollout was added.
+- `productionReady:false` remains locked.

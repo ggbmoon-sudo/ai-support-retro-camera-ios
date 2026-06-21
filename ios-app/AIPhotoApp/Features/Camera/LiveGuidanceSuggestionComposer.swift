@@ -98,66 +98,17 @@ nonisolated struct LiveGuidanceSuggestionComposer: Sendable {
                 ),
                 category: .lighting
             )
-        case .subjectOffCenter:
-            return LiveGuidanceSuggestion(
-                id: "center_subject",
-                messageKey: copyResolver.messageKey(
-                    for: .framing,
-                    language: languageMode,
-                    requestedTone: toneMode
-                ),
-                category: .composition
-            )
-        case .subjectNearEdge:
-            return LiveGuidanceSuggestion(
-                id: "leave_edge_air",
-                messageKey: copyResolver.messageKey(
-                    for: .framing,
-                    language: languageMode,
-                    requestedTone: toneMode
-                ),
-                category: .composition
-            )
-        case .lowHeadroom:
-            return LiveGuidanceSuggestion(
-                id: "more_headroom",
-                messageKey: copyResolver.messageKey(
-                    for: .headroom,
-                    language: languageMode,
-                    requestedTone: toneMode
-                ),
-                category: .portrait
-            )
-        case .faceTooClose, .subjectTooLarge:
-            return LiveGuidanceSuggestion(
-                id: "step_back_portrait",
-                messageKey: copyResolver.messageKey(
-                    for: .portraitDistance,
-                    language: languageMode,
-                    requestedTone: toneMode
-                ),
-                category: .portrait
-            )
-        case .faceTooFar, .subjectTooSmall:
-            return LiveGuidanceSuggestion(
-                id: "move_closer_portrait",
-                messageKey: copyResolver.messageKey(
-                    for: .portraitDistance,
-                    language: languageMode,
-                    requestedTone: toneMode
-                ),
-                category: .portrait
-            )
-        case .portraitLikely, .ruleOfThirdsAligned, .verticalBalanceReady:
-            return LiveGuidanceSuggestion(
-                id: "portrait_framing_ready",
-                messageKey: copyResolver.messageKey(
-                    for: .successPraise,
-                    language: languageMode,
-                    requestedTone: toneMode
-                ),
-                category: .portrait
-            )
+        case .subjectOffCenter,
+             .subjectNearEdge,
+             .lowHeadroom,
+             .faceTooClose,
+             .subjectTooLarge,
+             .faceTooFar,
+             .subjectTooSmall,
+             .portraitLikely,
+             .ruleOfThirdsAligned,
+             .verticalBalanceReady:
+            return nil
         case .warmFilterHelpful:
             guard !selectedPreset.id.contains("warm"),
                   !selectedPreset.id.contains("gold"),

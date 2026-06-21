@@ -100,9 +100,9 @@ struct LiveGuidanceOverlayView: View {
         stateTitleKey: LiveGuidanceMockState.suggestionAvailable.titleKey,
         suggestions: [
             LiveGuidanceSuggestion(
-                id: "center_subject",
-                messageKey: "camera.guidance.suggestion.center_subject",
-                category: .composition
+                id: "move_closer_to_light",
+                messageKey: "camera.guidance.suggestion.move_closer_to_light",
+                category: .lighting
             )
         ],
         actionTitleKey: "camera.guidance.action.next_hint",

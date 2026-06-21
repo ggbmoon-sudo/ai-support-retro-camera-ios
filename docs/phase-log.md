@@ -13428,3 +13428,67 @@ Phase 21-A5 records the product clarification that richer composition guidance s
 ### Ready for Next Phase
 
 If continuing app-side feature development, choose a non-composition Camera feature or focused UI/runtime polish. If continuing composition intelligence, use a separate training-AI branch phase that starts with dataset/label schema and legal/source/consent gates. Not ready for production rollout.
+
+## Phase 21-A6 - App-side Composition Hint Suppression
+
+Status: implemented, pending MacBook/Xcode physical-device verification
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase 21-A6 aligns the iOS Camera runtime with the Phase 21-A5 ownership boundary. Local Vision / AVFoundation geometry signals may still be collected in memory, but app-authored composition and portrait-layout hint copy is suppressed so richer composition guidance remains owned by the training-AI branch.
+
+### Completed Work
+
+- Updated `LiveGuidanceSuggestionComposer` so composition / portrait-layout signals return no visible suggestion.
+- Updated Mock guidance sample suggestions and SwiftUI preview data so app-side demo/runtime surfaces no longer show composition / portrait-layout sample copy.
+- Suppressed app-authored copy for subject centering, edge margin, headroom, face distance, subject size, portrait-ready, rule-of-thirds, and vertical-balance signals.
+- Kept safe local lighting, filter, and local-unavailable hints available.
+- Kept the Phase 21-A4 `Next hint` UX shell intact for remaining visible local hints.
+- Added `docs/phase-21-a6-app-side-composition-hint-suppression-summary.md`.
+
+### Changed Files
+
+- `ios-app/AIPhotoApp/Features/Camera/LiveGuidanceSuggestionComposer.swift`
+- `ios-app/AIPhotoApp/Features/Camera/LiveGuidanceMockState.swift`
+- `ios-app/AIPhotoApp/Features/Camera/LiveGuidanceOverlayView.swift`
+- `docs/phase-21-a6-app-side-composition-hint-suppression-summary.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-log.md`
+- `docs/03-camera-filter-image-pipeline.md`
+- `docs/on-device-live-framing-ai-roadmap.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `README.md`
+- `ios-app/README.md`
+- `tests/manual-smoke-tests.md`
+
+### Tests and Checks
+
+- `git diff --check`
+- Focused source scan for provider keys, network/provider calls, upload payload changes, model artifacts, raw frame persistence, Camera cloud AI entries, dataset crawler, AI labeling runtime, and production readiness changes
+- Xcode physical-device build remains required for runtime verification.
+
+### Boundary Confirmations
+
+- Provider/model/cloud call: no
+- Camera live cloud AI entry: no
+- Preview-frame upload: no
+- Upload payload changed: no
+- Raw frame/depth/image persistence: no
+- Dataset crawler added: no
+- AI-assisted labeling run added: no
+- User-photo training added: no
+- Depth Anything runtime added: no
+- Florence runtime added: no
+- Core ML model inference run: no
+- Sensitive inference added: no
+- `productionReady:false` remains locked.
+
+### Xcode Verification Needed
+
+Build and run on iPhone. Confirm lighting/filter/unavailable local hints can still appear, app-authored composition and portrait-layout hints no longer appear, `Next hint` still works for remaining visible hints, and Camera capture, live filter preview, selfie mirror parity, flash, and focal crop behavior remain unchanged.
+
+### Ready for Next Phase
+
+Current recommended app-side next step is `Phase 21-A7 - Camera Runtime Non-composition Polish`. If continuing composition intelligence, use a separate training-AI branch phase for dataset/label schema, legal/source/consent gates, human review, and typed composition outputs. Not ready for production rollout.

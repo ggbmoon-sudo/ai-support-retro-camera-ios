@@ -16,17 +16,19 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**Phase 21-A5 - Composition Guidance Ownership Boundary**
+**Phase 21-A7 - Camera Runtime Non-composition Polish**
 
-Reason: Phase 21-A4 physical-device verification is accepted by the operator, and the product direction is clarified: richer composition guidance should be owned by the training-AI branch, not expanded inside the on-device Camera runtime. The next safe step is a boundary update that keeps the app-side live Camera layer focused on local signals, coordinates, depth capability, lightweight UX shell, and safe fallback copy, while future training-AI / labeling / distillation work owns deeper composition advice. Phase 21-C-R3-RUN remains available only if local ignored artifact prerequisites and the exact approval phrase are present.
+Reason: Phase 21-A5 recorded that richer composition guidance belongs to the training-AI branch, and Phase 21-A6 applies that boundary in iOS by suppressing app-authored composition / portrait-layout hint copy while keeping safe local lighting/filter/unavailable hints. The next app-side step should therefore be non-composition Camera polish only: runtime stability, performance, filter UX, focal crop UX, capture/export polish, or physical-device QA. If the goal is richer composition intelligence, use a separate training-AI branch phase for dataset/label schema, legal/source/consent gates, human review, and typed composition outputs before any iOS runtime integration. Phase 21-C-R3-RUN remains available only if local ignored artifact prerequisites and the exact approval phrase are present.
 
-If Phase 21-A4 hint UX behavior or Camera runtime stability regresses, use a focused Camera QA follow-up before continuing larger AI roadmap work. Do not add more app-authored composition advice, scoring, retake-first language, cloud calls, frame uploads, upload payload changes, provider keys, sensitive inference, raw frame/depth/image persistence, model artifacts, training data collection, or production rollout in this boundary step. `productionReady:false` remains locked.
+If Phase 21-A4/A6 hint UX behavior or Camera runtime stability regresses, use a focused Camera QA follow-up before continuing larger AI roadmap work. Do not add more app-authored composition advice, scoring, retake-first language, cloud calls, frame uploads, upload payload changes, provider keys, sensitive inference, raw frame/depth/image persistence, model artifacts, training data collection, or production rollout in the next app-side step. `productionReady:false` remains locked.
 
 Naming note: older committed Phase 21-A backend-internal VLM records remain historical evidence. The completed on-device geometry phase should be referenced by its full title: `Phase 21-A - On-device Vision Geometry Spike`.
 
 Implementation status note: `docs/phase-21-a-on-device-vision-geometry-spike-summary.md` records the current Phase 21-A implementation boundary and Xcode verification checklist.
 
 Live hint UX status note: `docs/phase-21-a4-on-device-live-framing-hint-ux-pass-summary.md` records the Phase 21-A4 local-only hint UX pass and physical-device verification checklist.
+
+Composition hint boundary note: `docs/phase-21-a6-app-side-composition-hint-suppression-summary.md` records the Phase 21-A6 runtime suppression of app-authored composition / portrait-layout hint copy.
 
 Camera focal crop status note: `docs/phase-21-a3-r3-focal-framing-box-crop.md` records the current focal framing-box crop implementation boundary and Xcode verification checklist.
 

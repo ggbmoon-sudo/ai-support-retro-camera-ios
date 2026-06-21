@@ -38,6 +38,8 @@ Phase 21-A4 improves local-only live framing hint UX using the existing Apple Vi
 
 Phase 21-A5 records the composition guidance ownership boundary. Richer composition advice should live in the separate training-AI branch; the iOS Camera runtime should remain a lightweight local signal / hint-shell layer with no new model runtime, cloud call, frame upload, dataset crawler, AI-assisted labeling run, user-photo training, or production rollout.
 
+Phase 21-A6 applies that boundary to the iOS Camera runtime. Local geometry/depth/lighting signals can still be collected in memory, but app-authored composition and portrait-layout hint copy is suppressed; richer composition guidance remains for the training-AI branch. Lighting, filter, and local-unavailable hints remain available. It adds no provider/model call, provider key, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame/depth/image persistence, model package, dataset crawler, AI labeling run, user-photo training, or production rollout.
+
 The research index for this direction is `../docs/research/on-device-ai-research-index.md`. Later Depth Anything / Florence work remains blocked until separately approved and benchmarked. If continuing app-side development, choose a non-composition Camera feature or focused runtime/UI polish.
 
 ## Phase 21-M / 21-N / 21-N-R0 / 21-N-R0B / 21-N-R0C / 21-N-R1B / 21-N-R1C / 21-N-R1D Xcode Boundary

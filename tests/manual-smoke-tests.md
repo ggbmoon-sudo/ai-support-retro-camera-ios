@@ -4830,6 +4830,25 @@ Docs-only verification:
 - [ ] Confirm no Swift runtime, provider/model key, direct provider/model call, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame/image/depth persistence, dataset crawler, AI-assisted labeling run, user-photo training, Depth Anything runtime, Core ML model inference, Florence runtime, or production rollout appears.
 - [ ] Confirm `productionReady:false` remains unchanged.
 
+## Phase 21-A6 - App-side Composition Hint Suppression
+
+Physical-device verification:
+
+- [ ] Build and run on iPhone.
+- [ ] Open Camera with local guidance enabled.
+- [ ] Confirm very dark / very bright scenes can still produce safe local lighting hints.
+- [ ] Confirm eligible filter guidance can still appear when the selected preset does not already match the warm-filter rule.
+- [ ] Confirm local unavailable fallback can still appear when no safe local signal exists.
+- [ ] Move a face/person near frame edges and confirm app-authored subject-centering / edge-margin hints do not appear.
+- [ ] Move a face/person near the top edge and confirm app-authored headroom hints do not appear.
+- [ ] Move closer/farther from the camera and confirm app-authored face-distance / subject-size hints do not appear.
+- [ ] Confirm portrait-ready, rule-of-thirds, and vertical-balance hints do not appear as app-authored runtime copy.
+- [ ] Switch to Mock guidance, if available in the build, and confirm mock/sample suggestions no longer include subject-centering or headroom composition copy.
+- [ ] Confirm `Next hint` still rotates remaining visible local hints when more than one remains.
+- [ ] Confirm Camera capture, live filter preview, selfie mirror parity, flash, and focal crop behavior remain unchanged.
+- [ ] Confirm no provider/model key, direct provider/model call, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame/image/depth persistence, dataset crawler, AI-assisted labeling run, user-photo training, Depth Anything runtime, Core ML model inference, Florence runtime, or production rollout appears.
+- [ ] Confirm `productionReady:false` remains unchanged.
+
 ## Phase 21-A2 - Live Framing Aesthetic Spatial Codebook
 
 Docs-only verification:

@@ -96,19 +96,19 @@ struct MockLiveGuidanceProvider: LiveGuidanceProvider {
             category: .lighting
         ),
         LiveGuidanceSuggestion(
-            id: "center_subject",
-            messageKey: "camera.guidance.suggestion.center_subject",
+            id: "avoid_direct_light",
+            messageKey: "camera.guidance.suggestion.avoid_direct_light",
+            category: .lighting
+        ),
+        LiveGuidanceSuggestion(
+            id: "lighting_balanced",
+            messageKey: "camera.guidance.suggestion.lighting_balanced",
+            category: .lighting
+        ),
+        LiveGuidanceSuggestion(
+            id: "local_signal_unavailable",
+            messageKey: "camera.guidance.suggestion.local_signal_unavailable",
             category: .composition
-        ),
-        LiveGuidanceSuggestion(
-            id: "change_angle",
-            messageKey: "camera.guidance.suggestion.change_angle",
-            category: .background
-        ),
-        LiveGuidanceSuggestion(
-            id: "more_headroom",
-            messageKey: "camera.guidance.suggestion.more_headroom",
-            category: .portrait
         ),
         LiveGuidanceSuggestion(
             id: "try_warm_filter",
