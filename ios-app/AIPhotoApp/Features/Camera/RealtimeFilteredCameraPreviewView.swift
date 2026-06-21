@@ -173,7 +173,7 @@ final class RealtimeFilteredCameraPreviewMetalView: MTKView {
 
     private static func horizontallyMirrored(_ image: CIImage) -> CIImage {
         let extent = image.extent
-        image.transformed(
+        return image.transformed(
             by: CGAffineTransform(translationX: extent.minX + extent.maxX, y: 0)
                 .scaledBy(x: -1, y: 1)
         )
