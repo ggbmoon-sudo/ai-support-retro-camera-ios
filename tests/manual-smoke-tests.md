@@ -4676,6 +4676,16 @@ Backend parameter candidate verification:
 - [ ] Confirm CLI output is sanitized and reports nonzero `parameterCandidateCount`, populated `categoryCounts`, `tagCounts`, `featureKeyCounts`, `thresholdKeyCounts`, `suppressionCandidateCounts`, and `safeActionCounts`.
 - [ ] Confirm app-transfer-readiness output reports `eligibleForAppRuntime:false`, `appRuntimeTransferBlocked:true`, and `productionReady:false`.
 - [ ] Confirm no Swift runtime file, model file, Core ML package, model download, inference, Camera integration, upload path, provider/model key, API key, real dataset/photo/local config/generated report, crawler/download mode, image read/upload, cloud teacher call, training, app runtime transfer, or production rollout was added.
+## Phase OD-R6B - Human Review Queue Schema
+
+Backend human review queue verification:
+
+- [ ] From `backend/`, run `npm run qa:aesthetic-review:queue`.
+- [ ] From `backend/`, run `node --test tests/aesthetic-human-review-queue.test.mjs`.
+- [ ] Confirm CLI output is sanitized and reports `reviewItemCount`, `acceptedForCalibrationCount`, `acceptedForEvalOnlyCount`, `rejectedCount`, `blockedCount`, and `tuningCandidateCount`.
+- [ ] Confirm app-transfer output reports `appRuntimeEligibleCount:0`, `eligibleForAppRuntime:false`, `appRuntimeTransferBlocked:true`, and `productionReady:false`.
+- [ ] Confirm no Xcode runtime behavior is expected to change.
+- [ ] Confirm no Swift runtime file, model file, Core ML package, model download, inference, Camera integration, upload path, provider/model key, API key, real dataset/photo/local config/generated report, crawler/download mode, image read/upload, cloud teacher call, training, app runtime transfer, or production rollout was added.
 ## Phase 21-A2 - Live Framing Aesthetic Spatial Codebook
 
 Docs-only verification:

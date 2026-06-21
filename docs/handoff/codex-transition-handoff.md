@@ -1195,3 +1195,11 @@ Latest Phase OD-R6A Parameter Candidate Runner Dry-run on 2026-06-21:
 - Dry-run output includes `parameterCandidateCount`, category/tag/feature/threshold/suppression/safe-action counts, and app-transfer-readiness gates.
 - App-transfer-readiness remains blocked with `eligibleForAppRuntime:false` and `appRuntimeTransferBlocked:true`; future app transfer must use reviewed parameter packs, threshold maps, suppression maps, and safe action maps rather than raw teacher text.
 - No Swift runtime file, OD-03B placeholder, model install, Core ML package, crawler/download mode, image read/upload, real cloud teacher call, provider/model key, training/fine-tuning, inference, Camera integration, upload path, real dataset/photo/local config/generated report, raw prompt/provider payload, app runtime transfer, or production rollout is added. `productionReady:false` remains locked.
+
+Latest Phase OD-R6B Human Review Queue Schema on 2026-06-21:
+
+- OD-R6B adds a backend-only Human Review Queue schema for teacher label candidates, parameter candidates, manifest issues, and safety issues.
+- Added `backend/src/qa/aestheticHumanReviewQueue.mjs`, `backend/scripts/check-aesthetic-human-review-queue.mjs`, backend tests, `npm run qa:aesthetic-review:queue`, and `docs/od-r6b-human-review-queue-schema.md`.
+- The schema validates review items, review decisions, accepted-use flags, registry tags, feature keys, threshold keys, suppression candidates, and safe action keys before candidates can become calibration, evaluation, or tuning candidates.
+- App runtime transfer remains blocked with `eligibleForAppRuntime:false`, `appRuntimeEligibleCount:0`, and `appRuntimeTransferBlocked:true`; human review is required before later benchmark/tuning use.
+- No Swift runtime file, OD-03B placeholder, model install, Core ML package, crawler/download mode, image read/upload, real cloud teacher call, provider/model key, training/fine-tuning, inference, Camera integration, upload path, real dataset/photo/local config/generated report, raw prompt/provider payload, app runtime transfer, or production rollout is added. `productionReady:false` remains locked.

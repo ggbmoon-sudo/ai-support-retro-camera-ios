@@ -50,6 +50,8 @@ OD-R5A implementation note: `docs/od-r5a-cloud-ai-teacher-sandbox-preflight.md` 
 
 OD-R6A implementation note: `docs/od-r6a-parameter-candidate-runner-dry-run.md` adds a backend-only Parameter Candidate Runner dry-run. It converts validated teacher stub labels into structured parameter candidates and aggregate counts while keeping provider/cloud/network/image/training/runtime/app-transfer flags disabled.
 
+OD-R6B implementation note: `docs/od-r6b-human-review-queue-schema.md` adds a backend-only Human Review Queue schema. It validates review items and decisions before label/parameter candidates can become calibration, evaluation, or tuning candidates while keeping provider/cloud/network/image/training/runtime/app-transfer flags disabled.
+
 ## Product Language Rule
 
 Live hints must keep the Photo Advisor style:

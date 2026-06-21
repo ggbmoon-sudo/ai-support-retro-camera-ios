@@ -12849,3 +12849,65 @@ Phase OD-R6A adds a backend-only Parameter Candidate Runner dry-run. It converts
 ### Next Phase
 
 Recommended next OD-R phase: `Phase OD-R6B - Human Review Queue Schema`, backend-only/schema-dry-run only. Not ready for production rollout.
+## Phase OD-R6B - Human Review Queue Schema
+
+Status: completed
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase OD-R6B adds a backend-only Human Review Queue schema for reviewing teacher label candidates, parameter candidates, manifest issues, and safety issues before anything becomes calibration-ready, eval-ready, tuning-candidate-ready, or app-transfer-ready.
+
+### Completed Work
+
+- Added `backend/src/qa/aestheticHumanReviewQueue.mjs`.
+- Added `backend/scripts/check-aesthetic-human-review-queue.mjs`.
+- Added `backend/tests/aesthetic-human-review-queue.test.mjs`.
+- Added `npm run qa:aesthetic-review:queue`.
+- Added `docs/od-r6b-human-review-queue-schema.md`.
+- Updated roadmap, README, backend/iOS README, handoff, and manual smoke notes for OD-R6B.
+
+### Changed Files
+
+- `backend/package.json`
+- `backend/src/qa/aestheticHumanReviewQueue.mjs`
+- `backend/scripts/check-aesthetic-human-review-queue.mjs`
+- `backend/tests/aesthetic-human-review-queue.test.mjs`
+- `docs/od-r6b-human-review-queue-schema.md`
+- `docs/on-device-live-framing-ai-roadmap.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `README.md`
+- `backend/README.md`
+- `ios-app/README.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `tests/manual-smoke-tests.md`
+
+### Boundary Checks
+
+- Backend review schema/validator only: yes
+- Human review required before tuning candidacy: yes
+- App runtime transfer blocked: yes
+- Swift runtime file added: no
+- OD-03B Swift placeholder brought back: no
+- Model file / Core ML package / model download added: no
+- Runtime inference / Camera integration / live frame processing added: no
+- Image reads performed: no
+- Network calls made: no
+- Crawler/download mode added: no
+- Real cloud teacher call added: no
+- Training/fine-tuning/distillation run added: no
+- Upload path / provider call / API key added: no
+- Dataset, fixture, photo, local config, generated report, raw prompt, or raw provider output added: no
+- Production rollout: no
+
+### Verification
+
+- `git diff --check` should pass before commit.
+- `cd backend && npm test` should pass before commit.
+- `cd backend && npm run qa:aesthetic-review:queue` should pass before commit.
+
+### Next Phase
+
+Recommended next OD-R phase: `Phase OD-R7 - Local CV Feature Extractor Benchmark`, backend-only/dry-run or approved synthetic benchmark planning only. Not ready for production rollout.

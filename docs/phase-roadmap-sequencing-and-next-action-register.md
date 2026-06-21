@@ -16,11 +16,11 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**Phase OD-R6B: Human Review Queue Schema**
+**Phase OD-R7: Local CV Feature Extractor Benchmark**
 
-Reason: Phase OD-R6A now adds the backend-only Parameter Candidate Runner dry-run. It converts validated teacher stub labels into structured parameter candidates and aggregate count buckets while keeping provider/cloud/network/image/training/runtime/app-transfer flags disabled. The next OD-R layer should define how candidate labels and parameter candidates enter human review before tuning, benchmarks, training candidates, or product-transfer artifacts.
+Reason: Phase OD-R6B now adds the backend-only Human Review Queue schema. It validates review items and decisions before teacher labels or parameter candidates can become calibration, evaluation, or tuning candidates while keeping provider/cloud/network/image/training/runtime/app-transfer flags disabled. The next OD-R layer should benchmark local CV feature extraction against reviewed synthetic/approved candidate shapes before tuning or product-transfer artifacts.
 
-OD-R6B should remain backend-only and schema/dry-run only. It must not add Swift runtime files, model installation, Core ML packages, crawler/download mode, product runtime transfer, Camera integration, upload paths, provider/model keys in committed files, real datasets/photos/local configs/generated reports, training, inference rollout, or production rollout. OD-03B Swift placeholder work remains paused. App/model installation belongs later to OD-P product integration after benchmark and safety gates pass. `productionReady:false` remains locked.
+OD-R7 should remain backend-only and benchmark-planning/dry-run only unless separately approved for approved synthetic samples. It must not add Swift runtime files, model installation, Core ML packages, crawler/download mode, product runtime transfer, Camera integration, upload paths, provider/model keys in committed files, real datasets/photos/local configs/generated reports, training, inference rollout, or production rollout. OD-03B Swift placeholder work remains paused. App/model installation belongs later to OD-P product integration after benchmark and safety gates pass. `productionReady:false` remains locked.
 
 Planned OD-R sequence: `OD-R1` Aesthetic Parameter Registry, `OD-R2` Dataset / Source Manifest Schema, `OD-R3` Parameter Mining Bot Dry-run, `OD-R4` Cloud AI Teacher Contract, `OD-R5` Cloud AI Teacher Labeling Stub / Sandbox, `OD-R6` Human Review Queue Schema, `OD-R7` Local CV Feature Extractor Benchmark, `OD-R8` Parameter Tuning Harness, `OD-R9` Fine-tune / Distillation Readiness Gate, then `OD-P1` Product Integration Candidate. Parameter Mining Bot is not a public web crawler. Cloud AI is a future offline structured-labeling teacher, not live app runtime. Local CV / local AI is the future runtime student.
 
@@ -31,6 +31,8 @@ Implementation status note: `docs/od-r4-cloud-ai-teacher-contract.md` records th
 Implementation status note: `docs/od-r5a-cloud-ai-teacher-sandbox-preflight.md` records the backend-only Cloud AI Teacher sandbox preflight and stub adapter. It emits local stub responses only, validates them against the OD-R4 contract, and keeps app runtime transfer blocked.
 
 Implementation status note: `docs/od-r6a-parameter-candidate-runner-dry-run.md` records the backend-only Parameter Candidate Runner dry-run. It converts safe teacher stub labels into structured parameter candidates and aggregate counts while keeping app runtime transfer blocked.
+
+Implementation status note: `docs/od-r6b-human-review-queue-schema.md` records the backend-only Human Review Queue schema. It validates review items and decisions before labels/candidates can become calibration, evaluation, or tuning candidates while keeping app runtime transfer blocked.
 
 Naming note: older committed Phase 21-A backend-internal VLM records remain historical evidence. The completed on-device geometry phase should be referenced by its full title: `Phase 21-A - On-device Vision Geometry Spike`.
 
