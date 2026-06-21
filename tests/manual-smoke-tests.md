@@ -4820,6 +4820,16 @@ Physical-device verification:
 - [ ] Confirm no provider/model key, direct provider/model call, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame/image/depth persistence beyond in-memory rendering, Depth Anything runtime, Core ML model inference, Florence runtime, or production rollout appears.
 - [ ] Confirm `productionReady:false` remains unchanged.
 
+## Phase 21-A5 - Composition Guidance Ownership Boundary
+
+Docs-only verification:
+
+- [ ] Confirm `docs/phase-21-a5-composition-guidance-ownership-boundary.md` exists.
+- [ ] Confirm docs state richer composition guidance belongs to the training-AI branch, not expanded app-side Camera runtime logic.
+- [ ] Confirm iOS Camera remains limited to safe local geometry/depth signals, lightweight hint shell UX, and conservative fallback copy.
+- [ ] Confirm no Swift runtime, provider/model key, direct provider/model call, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame/image/depth persistence, dataset crawler, AI-assisted labeling run, user-photo training, Depth Anything runtime, Core ML model inference, Florence runtime, or production rollout appears.
+- [ ] Confirm `productionReady:false` remains unchanged.
+
 ## Phase 21-A2 - Live Framing Aesthetic Spatial Codebook
 
 Docs-only verification:

@@ -36,7 +36,9 @@ Phase 21-A3-R5 polishes Camera flash availability, session-threading, and live f
 
 Phase 21-A4 improves local-only live framing hint UX using the existing Apple Vision / AVFoundation signal path. Expanded local guidance now uses `Next hint` for manual visible-hint cycling, compact and expanded hints use category-specific icons, and the path remains on-device/free with no cloud/provider call, frame upload, model runtime, upload payload change, or production rollout.
 
-The research index for this direction is `../docs/research/on-device-ai-research-index.md`. Later Depth Anything / Florence work remains blocked until separately approved and benchmarked. The next practical step is MacBook/Xcode physical-device verification of Phase 21-A4.
+Phase 21-A5 records the composition guidance ownership boundary. Richer composition advice should live in the separate training-AI branch; the iOS Camera runtime should remain a lightweight local signal / hint-shell layer with no new model runtime, cloud call, frame upload, dataset crawler, AI-assisted labeling run, user-photo training, or production rollout.
+
+The research index for this direction is `../docs/research/on-device-ai-research-index.md`. Later Depth Anything / Florence work remains blocked until separately approved and benchmarked. If continuing app-side development, choose a non-composition Camera feature or focused runtime/UI polish.
 
 ## Phase 21-M / 21-N / 21-N-R0 / 21-N-R0B / 21-N-R0C / 21-N-R1B / 21-N-R1C / 21-N-R1D Xcode Boundary
 

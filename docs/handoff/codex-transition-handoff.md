@@ -1270,3 +1270,13 @@ Latest Phase 21-A4 On-device Live Framing Hint UX Pass on 2026-06-21:
 - No provider/cloud call, provider key, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame persistence beyond in-memory rendering, Depth Anything runtime, Florence runtime, Core ML model inference, sensitive inference, secret, or production rollout was added.
 - `productionReady:false` remains locked.
 - Next practical step is MacBook/Xcode physical-device verification of Phase 21-A4 hint icons, `Next hint` cycling, disabled single-hint action state, and Camera runtime regressions.
+
+Latest Phase 21-A5 Composition Guidance Ownership Boundary on 2026-06-21:
+
+- User clarified that richer composition guidance should be handled by the training-AI branch.
+- Phase 21-A5 records that iOS Camera should stay a lightweight local signal / hint-shell layer.
+- App-side Camera may keep safe local geometry/depth signals and conservative fallback copy, but should not expand deeper app-authored composition advice.
+- Training-AI branch should own richer composition hint generation, label schema, AI-assisted labeling, distillation/fine-tune planning, and future typed composition outputs.
+- Added `docs/phase-21-a5-composition-guidance-ownership-boundary.md`.
+- No Swift runtime, provider/cloud call, provider key, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame persistence, dataset crawler, AI-assisted labeling run, user-photo training, Depth Anything runtime, Florence runtime, Core ML model inference, sensitive inference, secret, or production rollout was added.
+- `productionReady:false` remains locked.

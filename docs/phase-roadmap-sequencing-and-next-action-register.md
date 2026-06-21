@@ -16,11 +16,11 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**MacBook/Xcode physical-device verification for Phase 21-A4**
+**Phase 21-A5 - Composition Guidance Ownership Boundary**
 
-Reason: Phase 21-A4 implements a local-only live-framing hint UX pass on top of the existing Apple Vision / AVFoundation geometry and depth signal path. It replaces local guidance debug-style state cycling with a `Next hint` action, adds manual visible-hint cycling, and adds category-specific icons for lighting, composition, background, portrait, and filter hints. The next practical step is MacBook/Xcode physical-device verification that compact hint icons are readable, expanded `Next hint` cycles visible local hints, the action is dimmed/disabled when only one hint exists, and Camera filter preview, selfie mirror parity, flash behavior, and focal crop still work. Phase 21-C-R3-RUN remains available only if local ignored artifact prerequisites and the exact approval phrase are present.
+Reason: Phase 21-A4 physical-device verification is accepted by the operator, and the product direction is clarified: richer composition guidance should be owned by the training-AI branch, not expanded inside the on-device Camera runtime. The next safe step is a boundary update that keeps the app-side live Camera layer focused on local signals, coordinates, depth capability, lightweight UX shell, and safe fallback copy, while future training-AI / labeling / distillation work owns deeper composition advice. Phase 21-C-R3-RUN remains available only if local ignored artifact prerequisites and the exact approval phrase are present.
 
-If Phase 21-A4 hint UX behavior or Camera runtime stability regresses, use a focused Camera QA follow-up before continuing larger AI roadmap work. This path should remain free/on-device/local-only unless separately expanded. Do not add Depth Anything runtime, Core ML inference, Florence-2, cloud calls, frame uploads, upload payload changes, Camera live cloud AI, provider keys, sensitive inference, raw frame/depth/image persistence beyond in-memory rendering, or production rollout. `productionReady:false` remains locked.
+If Phase 21-A4 hint UX behavior or Camera runtime stability regresses, use a focused Camera QA follow-up before continuing larger AI roadmap work. Do not add more app-authored composition advice, scoring, retake-first language, cloud calls, frame uploads, upload payload changes, provider keys, sensitive inference, raw frame/depth/image persistence, model artifacts, training data collection, or production rollout in this boundary step. `productionReady:false` remains locked.
 
 Naming note: older committed Phase 21-A backend-internal VLM records remain historical evidence. The completed on-device geometry phase should be referenced by its full title: `Phase 21-A - On-device Vision Geometry Spike`.
 
