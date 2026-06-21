@@ -62,6 +62,8 @@ struct RealtimeFilteredCameraPreviewView: UIViewRepresentable {
 }
 
 final class RealtimeFilteredCameraPreviewMetalView: MTKView {
+    private static let minimumRenderInterval: TimeInterval = 1.0 / 15.0
+
     private var selectedPreset = FilterPresetCatalog.original
     private var shouldMirrorPreview = false
     private var previewGravity = AVLayerVideoGravity.resizeAspect
@@ -69,16 +71,22 @@ final class RealtimeFilteredCameraPreviewMetalView: MTKView {
     private let ciContext: CIContext?
     private let metalCommandQueue: MTLCommandQueue?
     private let outputColorSpace = CGColorSpaceCreateDeviceRGB()
+    private let renderLock = NSLock()
+    private var lastRenderEnqueueTime = Date.distantPast
+    private var isRenderDispatchPending = false
 
     init() {
         let metalDevice = MTLCreateSystemDefaultDevice()
-        ciContext = metalDevice.map { CIContext(mtlDevice: $0) }
+        ciContext = metalDevice.map {
+            CIContext(mtlDevice: $0, options: [.cacheIntermediates: false])
+        }
         metalCommandQueue = metalDevice?.makeCommandQueue()
         super.init(frame: .zero, device: metalDevice)
         framebufferOnly = false
         isPaused = true
         enableSetNeedsDisplay = false
         autoResizeDrawable = true
+        preferredFramesPerSecond = 15
         backgroundColor = .black
         isOpaque = true
         contentMode = .scaleAspectFit
@@ -101,13 +109,32 @@ final class RealtimeFilteredCameraPreviewMetalView: MTKView {
     }
 
     func enqueue(pixelBuffer: CVPixelBuffer) {
+        let now = Date()
+        renderLock.lock()
+        guard !isRenderDispatchPending,
+              now.timeIntervalSince(lastRenderEnqueueTime) >= Self.minimumRenderInterval else {
+            renderLock.unlock()
+            return
+        }
+
+        isRenderDispatchPending = true
+        lastRenderEnqueueTime = now
+        renderLock.unlock()
+
         DispatchQueue.main.async { [weak self] in
-            self?.latestPixelBuffer = pixelBuffer
-            self?.draw()
+            autoreleasepool {
+                self?.latestPixelBuffer = pixelBuffer
+                self?.draw()
+            }
+            self?.markRenderDispatchComplete()
         }
     }
 
     func clear() {
+        renderLock.lock()
+        isRenderDispatchPending = false
+        lastRenderEnqueueTime = .distantPast
+        renderLock.unlock()
         latestPixelBuffer = nil
         draw()
     }
@@ -118,6 +145,18 @@ final class RealtimeFilteredCameraPreviewMetalView: MTKView {
     }
 
     override func draw(_ rect: CGRect) {
+        autoreleasepool {
+            drawLatestFrame()
+        }
+    }
+
+    private func markRenderDispatchComplete() {
+        renderLock.lock()
+        isRenderDispatchPending = false
+        renderLock.unlock()
+    }
+
+    private func drawLatestFrame() {
         guard let latestPixelBuffer,
               let ciContext,
               let metalCommandQueue,

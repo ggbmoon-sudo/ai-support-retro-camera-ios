@@ -20,14 +20,15 @@ enum CameraCaptureError: LocalizedError {
 
 @MainActor
 final class CameraCaptureService {
-    let session = AVCaptureSession()
+    nonisolated(unsafe) let session = AVCaptureSession()
 
     private let photoOutput = AVCapturePhotoOutput()
     private let videoOutput = AVCaptureVideoDataOutput()
     private let depthCapabilityProbe = CameraDepthCapabilityProbe()
+    private let sessionQueue = DispatchQueue(label: "ai.photo.camera.capture-session", qos: .userInitiated)
     private let frameSignalQueue = DispatchQueue(label: "ai.photo.camera.frame-signal", qos: .utility)
     private let frameSignalState = FrameSignalState()
-    nonisolated(unsafe) private let filteredPreviewState = FilteredPreviewFrameState()
+    private let filteredPreviewState = FilteredPreviewFrameState()
     private var frameSignalDelegate: FrameSignalDelegate?
     private var frameSignalHandler: (@MainActor @Sendable ([LiveGuidanceSignal]) -> Void)?
     private var currentVideoInput: AVCaptureDeviceInput?
@@ -106,13 +107,18 @@ final class CameraCaptureService {
     }
 
     func startSession() {
-        guard isConfigured, !session.isRunning else { return }
-        session.startRunning()
+        guard isConfigured else { return }
+        sessionQueue.async { [session] in
+            guard !session.isRunning else { return }
+            session.startRunning()
+        }
     }
 
     func stopSession() {
-        guard session.isRunning else { return }
-        session.stopRunning()
+        sessionQueue.async { [session] in
+            guard session.isRunning else { return }
+            session.stopRunning()
+        }
     }
 
     func capturePhoto(

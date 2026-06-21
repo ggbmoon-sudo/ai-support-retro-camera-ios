@@ -137,6 +137,12 @@ struct CameraView: View {
                 activeSelectedPhotoPanel = nil
             }
         }
+        .onChange(of: viewModel.isUsingFrontCamera) { _, _ in
+            reconcileFlashAvailability()
+        }
+        .onChange(of: viewModel.isHardwareFlashAvailable) { _, _ in
+            reconcileFlashAvailability()
+        }
         .onChange(of: toneSettings.languageMode) { _, _ in
             viewModel.refreshLiveGuidanceCopyForCurrentTone()
         }
@@ -160,6 +166,22 @@ struct CameraView: View {
         @unknown default:
             viewModel.stopCamera()
         }
+    }
+
+    private var isFlashControlAvailable: Bool {
+        viewModel.isUsingFrontCamera || viewModel.isHardwareFlashAvailable
+    }
+
+    private var isEffectiveFlashEnabled: Bool {
+        isFlashEnabled && isFlashControlAvailable
+    }
+
+    private var flashSystemImage: String {
+        isEffectiveFlashEnabled ? "bolt.fill" : "bolt.slash"
+    }
+
+    private var flashControlOpacity: Double {
+        isFlashControlAvailable ? 1 : 0.38
     }
 
     private var cameraRootContent: some View {
@@ -427,15 +449,17 @@ struct CameraView: View {
             Spacer(minLength: AppSpacing.xs)
 
             nativeIconButton(
-                systemImage: isFlashEnabled ? "bolt.fill" : "bolt.slash",
+                systemImage: flashSystemImage,
                 label: "camera.control.flash",
                 valueKey: nil,
-                isActive: isFlashEnabled
+                isActive: isEffectiveFlashEnabled
             ) {
                 activeCameraCallout = .none
                 isLiveGuidanceExpanded = false
-                isFlashEnabled.toggle()
+                toggleFlashIfAvailable()
             }
+            .disabled(!isFlashControlAvailable)
+            .opacity(flashControlOpacity)
 
             timerTopButton
 
@@ -1268,11 +1292,13 @@ struct CameraView: View {
     private var cameraControls: some View {
         HStack(spacing: AppSpacing.sm) {
             cameraIconButton(
-                systemImage: isFlashEnabled ? "bolt.fill" : "bolt.slash",
+                systemImage: flashSystemImage,
                 label: "camera.control.flash"
             ) {
-                isFlashEnabled.toggle()
+                toggleFlashIfAvailable()
             }
+            .disabled(!isFlashControlAvailable)
+            .opacity(flashControlOpacity)
 
             cameraIconButton(
                 systemImage: selectedTimerOption.systemImage,
@@ -1701,11 +1727,11 @@ struct CameraView: View {
 
     private func performCaptureNow() {
         triggerScreenFlashIfNeeded()
-        viewModel.capturePhoto(isFlashEnabled: isFlashEnabled)
+        viewModel.capturePhoto(isFlashEnabled: isEffectiveFlashEnabled)
     }
 
     private func triggerScreenFlashIfNeeded() {
-        guard viewModel.isUsingFrontCamera, isFlashEnabled else { return }
+        guard viewModel.isUsingFrontCamera, isEffectiveFlashEnabled else { return }
 
         withAnimation(.easeOut(duration: 0.04)) {
             isScreenFlashVisible = true
@@ -1717,6 +1743,20 @@ struct CameraView: View {
                 isScreenFlashVisible = false
             }
         }
+    }
+
+    private func toggleFlashIfAvailable() {
+        guard isFlashControlAvailable else {
+            isFlashEnabled = false
+            return
+        }
+
+        isFlashEnabled.toggle()
+    }
+
+    private func reconcileFlashAvailability() {
+        guard !isFlashControlAvailable else { return }
+        isFlashEnabled = false
     }
 
     @ViewBuilder

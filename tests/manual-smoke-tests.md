@@ -4787,6 +4787,23 @@ Physical-device verification:
 - [ ] Confirm no provider/model key, direct provider/model call, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame/image/depth persistence beyond in-memory rendering, Depth Anything runtime, Core ML model inference, or production rollout appears.
 - [ ] Confirm `productionReady:false` remains unchanged.
 
+## Phase 21-A3-R5 - Camera Runtime Polish and Stability Pass
+
+Physical-device verification:
+
+- [ ] Build and run on iPhone.
+- [ ] On the front camera, enable flash and confirm shutter triggers the local screen-flash effect.
+- [ ] On the back camera, confirm flash is enabled only when the active hardware camera reports flash support.
+- [ ] On any camera/lens without flash support, confirm the flash button is dimmed/disabled and does not stay visually active.
+- [ ] Switch between front/back cameras and available lens options; confirm unavailable flash state resets safely.
+- [ ] Confirm Xcode no longer reports `AVCaptureSession startRunning` main-thread hang-risk warning during Camera startup/resume.
+- [ ] Leave Camera open with a non-original live filter for at least 10 minutes and confirm the app is not killed for memory pressure.
+- [ ] Capture with Original and a non-original filter; confirm live filter preview and captured result still align.
+- [ ] Confirm selfie mirror-save default and post-capture `Flip photo` behavior still work.
+- [ ] Confirm Phase 21-A3-R3-R1 focal box pinch/aspect/capture-crop behavior still works.
+- [ ] Confirm no provider/model key, direct provider/model call, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame/image/depth persistence beyond in-memory rendering, Depth Anything runtime, Core ML model inference, or production rollout appears.
+- [ ] Confirm `productionReady:false` remains unchanged.
+
 ## Phase 21-A2 - Live Framing Aesthetic Spatial Codebook
 
 Docs-only verification:
