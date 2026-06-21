@@ -14229,3 +14229,58 @@ Build and run a DEBUG build on MacBook/Xcode. Select a reference image in Filter
 ### Ready for Next Phase
 
 Recommended next step is `PT2-SF-R5-VERIFY - MacBook/Xcode Debug Inspiration Backend Smoke`. Start with backend disabled/fallback verification only. A provider-backed debug smoke still requires separate explicit approval and should be one selected image only.
+
+## PT2-SF-R5-R1 - Xcode Swift Concurrency Hotfix
+
+Status: implemented, pending MacBook/Xcode build verification
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+PT2-SF-R5-R1 fixes the Xcode Swift concurrency build issue reported after PT2-SF-R5 where `CloudAIPhotoAdvisorRequest` and `CloudAIFilterLabRequest` had MainActor-isolated `Encodable` conformances that could not satisfy a generic `Sendable` type parameter.
+
+### Completed Work
+
+- Removed the unnecessary `Sendable` generic constraint from the debug-only `CloudAIEndpointClient.post(...)` encoder helper.
+- Marked CloudAI request/response DTOs and related enums as `nonisolated` so their Codable/Hashable/Sendable conformances stay usable outside the target default MainActor isolation.
+- Kept the backend URL boundary as the existing local app backend path and did not add provider URLs or provider credentials to iOS.
+
+### Changed Files
+
+- `ios-app/AIPhotoApp/Services/CloudAI/CloudAIEndpointClient.swift`
+- `ios-app/AIPhotoApp/Services/CloudAI/CloudAIModels.swift`
+- `docs/phase-log.md`
+
+### Tests and Checks
+
+- `git diff --check`
+- Focused iOS scans for direct SiliconFlow URL, provider API key names, bearer/provider authorization strings, and provider SDK usage
+- Artifact boundary scan for Xcode project/model/binary changes
+- Backend test suite, if rerun, should remain unchanged by this Swift-only hotfix
+- Xcode build/runtime verification was not run in this Windows environment.
+
+### Boundary Confirmations
+
+- Swift runtime changed: yes, narrow compile hotfix only
+- Xcode project changed: no
+- Backend runtime changed: no
+- Provider/model call run: no
+- API key read/printed/committed: no
+- Direct provider URL/key in iOS: no
+- Provider SDK in iOS: no
+- Image upload run during this hotfix: no
+- Upload payload changed: no
+- Camera cloud AI entry: no
+- Image editor provider behavior: no
+- StoreKit/quota runtime: no
+- Production rollout: no
+- `productionReady:false` remains locked.
+
+### Xcode Verification Needed
+
+Build the app again on MacBook/Xcode and confirm the two `CloudAIEndpointClient` concurrency errors are gone. If a new concurrency diagnostic appears, keep the follow-up scoped to CloudAI DTO/client isolation only.
+
+### Ready for Next Phase
+
+Recommended next step remains `PT2-SF-R5-VERIFY - MacBook/Xcode Debug Inspiration Backend Smoke`. Start with backend disabled/fallback verification only. A provider-backed debug smoke still requires separate explicit approval and should be one selected image only.

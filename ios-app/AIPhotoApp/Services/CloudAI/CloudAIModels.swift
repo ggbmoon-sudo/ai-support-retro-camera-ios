@@ -1,6 +1,6 @@
 import Foundation
 
-struct CloudAIPhotoAdvisorInput {
+nonisolated struct CloudAIPhotoAdvisorInput {
     let imageData: Data
     let contentType: String
     let width: Int
@@ -11,7 +11,7 @@ struct CloudAIPhotoAdvisorInput {
     let selectedFilterId: String?
 }
 
-struct CloudAIFilterLabInput {
+nonisolated struct CloudAIFilterLabInput {
     let imageData: Data
     let contentType: String
     let width: Int
@@ -21,7 +21,7 @@ struct CloudAIFilterLabInput {
     let consent: CloudAIConsent
 }
 
-struct CloudAIPhotoAdvisorRequest: Codable, Hashable, Sendable {
+nonisolated struct CloudAIPhotoAdvisorRequest: Codable, Hashable, Sendable {
     let schemaVersion: String
     let feature: String
     let mode: CloudAIMode
@@ -43,7 +43,7 @@ struct CloudAIPhotoAdvisorRequest: Codable, Hashable, Sendable {
     }
 }
 
-struct CloudAIFilterLabRequest: Codable, Hashable, Sendable {
+nonisolated struct CloudAIFilterLabRequest: Codable, Hashable, Sendable {
     let schemaVersion: String
     let feature: String
     let mode: String
@@ -63,7 +63,7 @@ struct CloudAIFilterLabRequest: Codable, Hashable, Sendable {
     }
 }
 
-struct CloudAIRequestImage: Codable, Hashable, Sendable {
+nonisolated struct CloudAIRequestImage: Codable, Hashable, Sendable {
     let contentType: String
     let width: Int
     let height: Int
@@ -87,12 +87,12 @@ struct CloudAIRequestImage: Codable, Hashable, Sendable {
     }
 }
 
-struct CloudAIRequestClient: Codable, Hashable, Sendable {
+nonisolated struct CloudAIRequestClient: Codable, Hashable, Sendable {
     let platform: String
     let appVersion: String
 }
 
-struct CloudAIConsent: Codable, Hashable, Sendable {
+nonisolated struct CloudAIConsent: Codable, Hashable, Sendable {
     static let currentVersion = "2026-06-12.phase17a.v1"
 
     let imageUploadAccepted: Bool
@@ -106,7 +106,7 @@ struct CloudAIConsent: Codable, Hashable, Sendable {
     }
 }
 
-enum CloudAIMode: String, Codable, CaseIterable, Hashable, Sendable {
+nonisolated enum CloudAIMode: String, Codable, CaseIterable, Hashable, Sendable {
     case postCapture = "post_capture"
     case preCapture = "pre_capture"
     case filterRecommendation = "filter_recommendation"
@@ -117,20 +117,20 @@ enum CloudAIMode: String, Codable, CaseIterable, Hashable, Sendable {
     case error
 }
 
-enum CloudAIResponseSource: String, Codable, CaseIterable, Hashable, Sendable {
+nonisolated enum CloudAIResponseSource: String, Codable, CaseIterable, Hashable, Sendable {
     case mock
     case local
     case cloud
     case fallback
 }
 
-enum CloudAIConfidence: String, Codable, CaseIterable, Hashable, Sendable {
+nonisolated enum CloudAIConfidence: String, Codable, CaseIterable, Hashable, Sendable {
     case low
     case medium
     case high
 }
 
-enum CloudAISuggestionType: String, Codable, Hashable, Sendable {
+nonisolated enum CloudAISuggestionType: String, Codable, Hashable, Sendable {
     case filter
     case crop
     case lighting
@@ -138,33 +138,33 @@ enum CloudAISuggestionType: String, Codable, Hashable, Sendable {
     case composition
 }
 
-enum CloudAISuggestionPriority: String, Codable, Hashable, Sendable {
+nonisolated enum CloudAISuggestionPriority: String, Codable, Hashable, Sendable {
     case low
     case medium
     case high
 }
 
-enum CloudAISuggestionAction: String, Codable, Hashable, Sendable {
+nonisolated enum CloudAISuggestionAction: String, Codable, Hashable, Sendable {
     case applyFilter = "apply_filter"
     case adjustCrop = "adjust_crop"
     case retake
     case none
 }
 
-struct CloudAISuggestion: Codable, Hashable, Sendable {
+nonisolated struct CloudAISuggestion: Codable, Hashable, Sendable {
     let type: CloudAISuggestionType
     let text: String
     let priority: CloudAISuggestionPriority
     let action: CloudAISuggestionAction
 }
 
-struct CloudAIRecommendedFilter: Codable, Hashable, Sendable {
+nonisolated struct CloudAIRecommendedFilter: Codable, Hashable, Sendable {
     let filterId: String
     let reason: String
     let confidence: CloudAIConfidence
 }
 
-struct CloudAIGeneratedFilter: Codable, Hashable, Sendable {
+nonisolated struct CloudAIGeneratedFilter: Codable, Hashable, Sendable {
     let id: String
     let nameKey: String
     let descriptionKey: String
@@ -176,13 +176,13 @@ struct CloudAIGeneratedFilter: Codable, Hashable, Sendable {
     let recipeVersion: String
 }
 
-enum CloudAIGeneratedFilterSource: String, Codable, Hashable, Sendable {
+nonisolated enum CloudAIGeneratedFilterSource: String, Codable, Hashable, Sendable {
     case mock
     case local
     case cloud
 }
 
-struct CloudAIGeneratedFilterParameters: Codable, Hashable, Sendable {
+nonisolated struct CloudAIGeneratedFilterParameters: Codable, Hashable, Sendable {
     let exposure: Double
     let contrast: Double
     let saturation: Double
@@ -193,33 +193,33 @@ struct CloudAIGeneratedFilterParameters: Codable, Hashable, Sendable {
     let vignette: Double
 }
 
-struct CloudAIPoseGuide: Codable, Hashable, Sendable {
+nonisolated struct CloudAIPoseGuide: Codable, Hashable, Sendable {
     let guideId: String
     let text: String
 }
 
-struct CloudAIRetakeAdvice: Codable, Hashable, Sendable {
+nonisolated struct CloudAIRetakeAdvice: Codable, Hashable, Sendable {
     let shouldRetake: Bool
     let reason: String
 }
 
-struct CloudAICropAdvice: Codable, Hashable, Sendable {
+nonisolated struct CloudAICropAdvice: Codable, Hashable, Sendable {
     let recommended: Bool
     let text: String
 }
 
-struct CloudAISafety: Codable, Hashable, Sendable {
+nonisolated struct CloudAISafety: Codable, Hashable, Sendable {
     let containsSensitiveInference: Bool
     let requiresUserConsent: Bool
     let blockedReason: String?
 }
 
-struct CloudAIError: Codable, Hashable, Sendable {
+nonisolated struct CloudAIError: Codable, Hashable, Sendable {
     let code: String
     let message: String
 }
 
-struct CloudAIResponse: Codable, Hashable, Sendable {
+nonisolated struct CloudAIResponse: Codable, Hashable, Sendable {
     let schemaVersion: String
     let mode: CloudAIMode
     let summary: String
@@ -236,7 +236,7 @@ struct CloudAIResponse: Codable, Hashable, Sendable {
     let error: CloudAIError?
 }
 
-enum CloudAIServiceError: LocalizedError, Equatable {
+nonisolated enum CloudAIServiceError: LocalizedError, Equatable {
     case consentRequired
     case remoteDisabled
     case remoteUnavailable
@@ -263,7 +263,7 @@ enum CloudAIServiceError: LocalizedError, Equatable {
 }
 
 private extension Bundle {
-    var appVersionString: String {
+    nonisolated var appVersionString: String {
         let version = object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
         let build = object(forInfoDictionaryKey: "CFBundleVersion") as? String
 

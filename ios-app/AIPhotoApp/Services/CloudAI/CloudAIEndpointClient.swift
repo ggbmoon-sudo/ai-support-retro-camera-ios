@@ -29,7 +29,7 @@ struct CloudAIEndpointClient: Sendable {
     }
 
     #if DEBUG
-    private func post<Request: Encodable & Sendable>(_ request: Request, path: String) async throws -> CloudAIResponse {
+    private func post<Request: Encodable>(_ request: Request, path: String) async throws -> CloudAIResponse {
         var urlRequest = Foundation.URLRequest(url: baseURL.appending(path: path))
         urlRequest.httpMethod = "POST"
         urlRequest.timeoutInterval = timeoutSeconds
