@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: PT2-SF-R3 - SiliconFlow Filter Lab Structured Recipe QA
-Status: implemented; approved one-image Filter Lab recipe provider QA accepted
-Latest implementation: PT2-SF-R3 added the backend-only SiliconFlow Filter Lab structured recipe QA gate and ran the explicitly approved one-image synthetic provider QA with `Qwen/Qwen3-VL-32B-Instruct` (`qwen3_vl_32b_instruct`). The sanitized run made exactly one provider/model call, read exactly one ignored synthetic image, attempted exactly one image upload, returned `acceptedCount:1`, `httpStatusBucket:2xx`, and latency bucket `gt_15s`. It validates generated filter recipe JSON only and printed/persisted no API key, Authorization header, raw prompt, raw request payload, raw provider response, raw image/base64, raw recipe, or raw report; adds no iOS runtime, Camera cloud AI entry, upload payload change, image editor provider, StoreKit/payment, or production rollout. `productionReady:false` remains locked.
+Current phase: PT2-SF-R8-RUN - Approved Debug Filter Lab Provider-backed One-reference Smoke
+Status: completed with sanitized fallback before provider execution
+Latest implementation: PT2-SF-R8-RUN ran the explicitly approved DEBUG Filter Lab backend smoke exactly once through `/v1/ai/filter-lab`. The request sent one in-memory style reference JPEG only, sent no apply/original image, printed no raw payload/base64/provider response/key/header, and returned `httpStatusBucket:2xx`, `source:fallback`, `fallbackErrorCode:internal_cloud_disabled`, and latency bucket `lt_1s`. A no-network config bucket check showed SiliconFlow credential/model/base URL/path buckets present, but the debug provider gate was closed because `CLOUD_AI_PROVIDER_MODE` resolved to `mock` and `ALLOW_INTERNAL_CLOUD_AI` resolved to `false`; no provider/model call or provider image upload was reached. `productionReady:false` remains locked.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -14138,7 +14138,7 @@ PT2-SF-R4 records the selected-photo Inspiration backend integration plan after 
 - Xcode project changed: no
 - Backend runtime changed: no
 - Provider/model/cloud call: no
-- API key read/printed/committed: no
+- API key value printed/saved/committed: no
 - Image upload: no
 - Upload payload changed: no
 - Camera cloud AI entry: no
@@ -14484,3 +14484,90 @@ None for this docs-only approval gate. Xcode runtime behavior should remain unch
 ### Ready for Next Phase
 
 Recommended next step is `PT2-SF-R8-RUN - Approved Debug Filter Lab Provider-backed One-reference Smoke` only if the operator gives the exact approval phrase recorded in the R8 gate document. Do not run a provider smoke, read provider credentials, start image editor provider work, Camera AI work, direct iOS provider calls, live provider smoke outside the gate, or production rollout without that separate explicit approval.
+
+## PT2-SF-R8-RUN - Approved Debug Filter Lab Provider-backed One-reference Smoke
+
+Status: completed with sanitized fallback before provider execution
+Date: 2026-06-22
+Production readiness: `productionReady:false`
+
+### Summary
+
+PT2-SF-R8-RUN ran the explicitly approved DEBUG Filter Lab backend smoke exactly once through the app backend boundary. The request used one in-memory style reference JPEG only, kept the apply/original image local-only, and returned a sanitized `2xx` fallback before any provider/model call.
+
+### Completed Work
+
+- Confirmed branch `feat/phase-02-auth`, clean worktree, and upstream count `0 0` before the run.
+- Confirmed `backend/.env.local` exists by filename only without reading or printing secrets.
+- Started the existing backend app boundary on `127.0.0.1:8789` using ignored server-side env.
+- Sent exactly one DEBUG Filter Lab backend request to `/v1/ai/filter-lab`.
+- Generated the style reference JPEG in memory only.
+- Sent no apply/original image to the backend.
+- Printed only sanitized bucketed output.
+- Ran a no-network config bucket diagnosis after the one allowed endpoint request.
+- Stopped the temporary backend listener.
+- Added `docs/pt2-sf-r8-run-debug-filter-lab-provider-backed-one-reference-smoke.md`.
+
+### Sanitized Result
+
+- App endpoint requests: `1`
+- Style reference images sent: `1`
+- Apply/original images sent: `0`
+- HTTP status bucket: `2xx`
+- Response source: `fallback`
+- Generated filter present: `false`
+- Fallback error code: `internal_cloud_disabled`
+- Latency bucket: `lt_1s`
+- Provider/model call reached: no
+- Provider image upload attempted: no
+
+### Diagnosis
+
+The backend fail-closed because the debug provider env gate was not open. A no-network bucket check showed SiliconFlow API key/base URL/path/model buckets present, but `CLOUD_AI_PROVIDER_MODE` resolved to `mock` and `ALLOW_INTERNAL_CLOUD_AI` resolved to `false`.
+
+### Changed Files
+
+- `README.md`
+- `ios-app/README.md`
+- `docs/pt2-sf-r8-run-debug-filter-lab-provider-backed-one-reference-smoke.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-log.md`
+
+### Tests and Checks
+
+- `git diff --check`
+- Preflight: branch/status/upstream clean before run
+- One app endpoint smoke request only
+- No-network config bucket diagnosis
+- Safety scans for Swift/Xcode/backend runtime drift, provider credential leakage, raw request/provider/image/base64 leakage, direct iOS provider calls, upload payload expansion, and `productionReady:true`
+
+### Boundary Confirmations
+
+- Swift runtime changed: no
+- Xcode project changed: no
+- Backend runtime changed: no
+- Backend payload expanded: no
+- App endpoint request count: one
+- Provider/model call run: no
+- API key read/printed/committed: no
+- Authorization header printed/committed: no
+- Raw request payload printed/committed: no
+- Raw provider response printed/committed: no
+- Raw image/base64 printed/committed: no
+- Direct iOS provider call: no
+- Direct provider URL/key in iOS: no
+- Provider SDK in iOS: no
+- Apply/original image uploaded: no
+- Camera cloud AI entry: no
+- Image editor provider behavior: no
+- StoreKit/quota runtime: no
+- Production rollout: no
+- `productionReady:false` remains locked.
+
+### Xcode Verification Needed
+
+None for this docs-only closeout. Xcode runtime behavior should remain unchanged from PT2-SF-R7. Filter Lab app UI remains the accepted two-image local/app flow; the provider-backed debug route did not reach the provider because the backend debug env gate was closed.
+
+### Ready for Next Phase
+
+Recommended next step is `PT2-SF-R8-R1 - Server-side Debug Env Gate Correction and One-reference Smoke Retry Approval`. First correct only the ignored server-side env gate outside git (`CLOUD_AI_PROVIDER_MODE=siliconflowInternal`, `ALLOW_INTERNAL_CLOUD_AI=true`). Then require a fresh explicit approval before any second provider-backed smoke because the approved R8-RUN endpoint request has already been consumed.
