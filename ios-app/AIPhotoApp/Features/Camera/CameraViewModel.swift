@@ -21,10 +21,11 @@ final class CameraViewModel: ObservableObject {
     @Published private(set) var lensOptions = LensOption.all
     @Published private(set) var isUsingFrontCamera = false
     @Published private(set) var isHardwareFlashAvailable = false
-    @Published private(set) var isDualFocalZoomEnabled = true
+    @Published private(set) var isDualFocalZoomEnabled = false
     @Published private(set) var selectedDualFocalLengthMillimeters = CameraDualFocalZoomConfiguration.defaultFocalLength(
         forBaseFocalLength: LensOption.classic35.focalLengthMillimeters
     )
+    @Published private(set) var selectedDualFocalAspectRatio = CameraFocalCropAspectRatio.fourByFive
     @Published private(set) var dualFocalFrameCenterXRatio: CGFloat = 0.5
     @Published private(set) var dualFocalFrameCenterYRatio: CGFloat = 0.43
     @Published private(set) var isLoading = false
@@ -93,6 +94,7 @@ final class CameraViewModel: ObservableObject {
     var dualFocalZoomConfiguration: CameraDualFocalZoomConfiguration {
         CameraDualFocalZoomConfiguration(
             focalLengthMillimeters: selectedDualFocalLengthMillimeters,
+            aspectRatio: selectedDualFocalAspectRatio,
             framingBoxCenterXRatio: dualFocalFrameCenterXRatio,
             framingBoxCenterYRatio: dualFocalFrameCenterYRatio
         )
@@ -114,6 +116,14 @@ final class CameraViewModel: ObservableObject {
 
     var dualFocalMaximumLengthLabel: String {
         CameraDualFocalZoomConfiguration.focalLengthLabel(for: dualFocalZoomRange.upperBound)
+    }
+
+    var dualFocalAspectRatioOptions: [CameraFocalCropAspectRatio] {
+        CameraFocalCropAspectRatio.allCases
+    }
+
+    var selectedDualFocalAspectRatioLabel: String {
+        selectedDualFocalAspectRatio.label
     }
 
     func prepareCamera() async {
@@ -395,29 +405,47 @@ final class CameraViewModel: ObservableObject {
     }
 
     func enableDualFocalZoom() {
-        selectedDualFocalLengthMillimeters = CameraDualFocalZoomConfiguration.clampedFocalLength(
+        let baseFocalLength = selectedLensOption.focalLengthMillimeters
+        let nextFocalLength = CameraDualFocalZoomConfiguration.isBaseFocalLength(
             selectedDualFocalLengthMillimeters,
-            baseFocalLength: selectedLensOption.focalLengthMillimeters
+            baseFocalLength: baseFocalLength
         )
-        isDualFocalZoomEnabled = true
+            ? baseFocalLength * 1.15
+            : selectedDualFocalLengthMillimeters
+        updateDualFocalLength(nextFocalLength)
     }
 
     func disableDualFocalZoom() {
+        selectedDualFocalLengthMillimeters = CameraDualFocalZoomConfiguration.defaultFocalLength(
+            forBaseFocalLength: selectedLensOption.focalLengthMillimeters
+        )
         isDualFocalZoomEnabled = false
     }
 
     func updateDualFocalLength(_ focalLength: Double) {
-        selectedDualFocalLengthMillimeters = CameraDualFocalZoomConfiguration.clampedFocalLength(
+        let baseFocalLength = selectedLensOption.focalLengthMillimeters
+        let clampedFocalLength = CameraDualFocalZoomConfiguration.clampedFocalLength(
             focalLength,
-            baseFocalLength: selectedLensOption.focalLengthMillimeters
+            baseFocalLength: baseFocalLength
         )
-        isDualFocalZoomEnabled = true
+        selectedDualFocalLengthMillimeters = clampedFocalLength
+        isDualFocalZoomEnabled = !CameraDualFocalZoomConfiguration.isBaseFocalLength(
+            clampedFocalLength,
+            baseFocalLength: baseFocalLength
+        )
+    }
+
+    func updateDualFocalAspectRatio(_ aspectRatio: CameraFocalCropAspectRatio) {
+        selectedDualFocalAspectRatio = aspectRatio
     }
 
     func updateDualFocalFrameCenter(xRatio: CGFloat, yRatio: CGFloat) {
         dualFocalFrameCenterXRatio = min(max(xRatio, 0), 1)
         dualFocalFrameCenterYRatio = min(max(yRatio, 0), 1)
-        isDualFocalZoomEnabled = true
+        isDualFocalZoomEnabled = !CameraDualFocalZoomConfiguration.isBaseFocalLength(
+            selectedDualFocalLengthMillimeters,
+            baseFocalLength: selectedLensOption.focalLengthMillimeters
+        )
     }
 
     func requestCloudSnapshotGuidanceConsent() {
@@ -594,8 +622,13 @@ final class CameraViewModel: ObservableObject {
         let currentFocalLength = isDualFocalZoomEnabled
             ? selectedDualFocalLengthMillimeters
             : CameraDualFocalZoomConfiguration.defaultFocalLength(forBaseFocalLength: baseFocalLength)
-        selectedDualFocalLengthMillimeters = CameraDualFocalZoomConfiguration.clampedFocalLength(
+        let clampedFocalLength = CameraDualFocalZoomConfiguration.clampedFocalLength(
             currentFocalLength,
+            baseFocalLength: baseFocalLength
+        )
+        selectedDualFocalLengthMillimeters = clampedFocalLength
+        isDualFocalZoomEnabled = !CameraDualFocalZoomConfiguration.isBaseFocalLength(
+            clampedFocalLength,
             baseFocalLength: baseFocalLength
         )
     }

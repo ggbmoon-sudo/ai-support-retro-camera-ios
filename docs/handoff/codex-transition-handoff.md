@@ -1226,3 +1226,15 @@ Latest Phase 21-A3-R3 Focal Framing Box Crop on 2026-06-21:
 - No Depth Anything runtime, Core ML inference, provider/cloud call, preview-frame upload, upload payload change, Camera live cloud AI entry, raw frame/depth/image persistence beyond normal captured photo flow, sensitive inference, secret, or production rollout was added.
 - `productionReady:false` remains locked.
 - Next practical step is MacBook/Xcode physical-device verification of Phase 21-A3-R3 crop mapping.
+
+Latest Phase 21-A3-R3-R1 Dynamic Aspect Pinch Focal Crop on 2026-06-21:
+
+- User clarified that the crop box must match a selected photo/crop aspect ratio instead of staying locked to `1:1`.
+- Phase 21-A3-R3-R1 adds `4:5`, `1:1`, and `3:4` aspect choices for the focal framing box and captured crop.
+- The focal box is hidden at the selected lens/base focal length when Camera opens.
+- Pinch-out on the Camera preview increases focal crop, auto-shows the transparent box, and resizes it continuously.
+- Pinch-in clamps at the selected lens/base focal length and hides the box again at base.
+- The slider and pinch gesture now share the same base-to-`100mm` focal range.
+- No Depth Anything runtime, Core ML inference, provider/cloud call, preview-frame upload, upload payload change, Camera live cloud AI entry, raw frame/depth/image persistence beyond normal captured photo flow, sensitive inference, secret, or production rollout was added.
+- `productionReady:false` remains locked.
+- Next practical step is MacBook/Xcode physical-device verification of Phase 21-A3-R3-R1 dynamic aspect + pinch focal crop behavior.

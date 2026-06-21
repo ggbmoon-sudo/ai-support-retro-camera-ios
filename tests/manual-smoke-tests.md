@@ -4704,7 +4704,7 @@ Physical-device verification:
 - [ ] Build and run on iPhone.
 - [ ] Open Camera and confirm normal preview, lens switching, live filter preview, and flash behavior from Phase 21-A3-R1 still work.
 - [ ] Open Camera and confirm the preview is no longer zoomed/cropped compared with the captured-photo aspect.
-- [ ] Confirm the focal framing box appears by default as a transparent UI guide.
+- [ ] Confirm the focal framing box is hidden at base focal length until focal crop moves above base.
 - [ ] Confirm the image inside the box is not magnified and looks exactly like the area outside the box.
 - [ ] Drag the framing box around and confirm it moves freely while staying inside the visible photo preview area.
 - [ ] Open the focal crop slider callout and confirm the slider changes box size continuously from the selected lens focal length to `100mm`.
@@ -4714,6 +4714,28 @@ Physical-device verification:
 - [ ] Capture a photo and confirm the saved/selected result is only the area that was inside the framing box.
 - [ ] Confirm the captured output does not include a PiP inset border, focal label, or the surrounding full frame.
 - [ ] Tap the focal chip and confirm it opens focal crop controls only; it should not be required to turn the feature on.
+- [ ] Confirm no provider/model key, direct provider/model call, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame/image/depth persistence beyond normal captured photo flow, Depth Anything runtime, Core ML inference, or production rollout appears.
+- [ ] Confirm `productionReady:false` remains unchanged.
+
+## Phase 21-A3-R3-R1 - Dynamic Aspect Pinch Focal Crop
+
+Physical-device verification:
+
+- [ ] Build and run on iPhone.
+- [ ] Open Camera and confirm normal preview, lens switching, live filter preview, and flash behavior from Phase 21-A3-R1 still work.
+- [ ] Confirm the preview remains the normal 1x camera feed and is not zoomed by the focal crop feature.
+- [ ] Confirm the focal framing box is hidden at the selected lens/base focal length when Camera opens.
+- [ ] Pinch out on the preview and confirm the transparent framing box automatically appears and resizes continuously.
+- [ ] Pinch in and confirm the focal value clamps at the selected lens/base focal length and the box disappears completely at base.
+- [ ] Confirm pinch cannot zoom out below the active lens/base focal length.
+- [ ] Open focal crop controls and confirm `4:5`, `1:1`, and `3:4` aspect choices are available.
+- [ ] Select each aspect and confirm the framing box dimensions reshape to that ratio instead of staying locked to `1:1`.
+- [ ] Confirm the image inside the box is not magnified and looks exactly like the area outside the box.
+- [ ] Drag the visible framing box and confirm it moves freely while staying inside the visible photo preview area.
+- [ ] Move the slider above base and confirm it shows/resizes the box using the same limits as pinch.
+- [ ] Move the slider back to base and confirm the box hides again.
+- [ ] Capture with a visible box and confirm the saved/selected result is only the area inside the box.
+- [ ] Confirm the captured output does not include a PiP inset border, focal label, or the surrounding full frame.
 - [ ] Confirm no provider/model key, direct provider/model call, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame/image/depth persistence beyond normal captured photo flow, Depth Anything runtime, Core ML inference, or production rollout appears.
 - [ ] Confirm `productionReady:false` remains unchanged.
 ## Phase 21-A2 - Live Framing Aesthetic Spatial Codebook

@@ -35,6 +35,7 @@ struct CameraView: View {
     @State private var activeCameraCallout: CameraCallout = .none
     @State private var activeSelectedPhotoPanel: FloatingPhotoActionPanel?
     @State private var isCameraViewVisible = false
+    @State private var focalPinchStartMillimeters: Double?
 
     init(
         showsCloseButton: Bool = true,
@@ -371,6 +372,22 @@ struct CameraView: View {
                 .allowsHitTesting(false)
             }
         }
+        .simultaneousGesture(focalCropPinchGesture)
+    }
+
+    private var focalCropPinchGesture: some Gesture {
+        MagnificationGesture()
+            .onChanged { scale in
+                let startFocalLength = focalPinchStartMillimeters ?? viewModel.selectedDualFocalLengthMillimeters
+                if focalPinchStartMillimeters == nil {
+                    focalPinchStartMillimeters = startFocalLength
+                }
+
+                viewModel.updateDualFocalLength(startFocalLength * Double(scale))
+            }
+            .onEnded { _ in
+                focalPinchStartMillimeters = nil
+            }
     }
 
     private var cameraChromeGradient: some View {
@@ -682,7 +699,7 @@ struct CameraView: View {
                 Image(systemName: "rectangle.inset.filled")
                     .font(.system(size: 13, weight: .bold))
 
-                Text(viewModel.selectedDualFocalLengthLabel)
+                Text("\(viewModel.selectedDualFocalLengthLabel) \(viewModel.selectedDualFocalAspectRatioLabel)")
                     .font(.caption2.weight(.semibold))
                     .lineLimit(1)
                     .minimumScaleFactor(0.72)
@@ -751,8 +768,39 @@ struct CameraView: View {
             }
             .font(.caption2.weight(.medium))
             .foregroundStyle(.white.opacity(0.66))
+
+            HStack(spacing: AppSpacing.xs) {
+                Text("camera.dual_focal.aspect")
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(.white.opacity(0.66))
+
+                Spacer(minLength: AppSpacing.xs)
+
+                ForEach(viewModel.dualFocalAspectRatioOptions) { option in
+                    Button {
+                        viewModel.updateDualFocalAspectRatio(option)
+                    } label: {
+                        Text(option.label)
+                            .font(.caption2.weight(.bold))
+                            .padding(.vertical, 5)
+                            .padding(.horizontal, 8)
+                            .background(
+                                option == viewModel.selectedDualFocalAspectRatio
+                                    ? AppColors.accent.opacity(0.28)
+                                    : Color.white.opacity(0.08)
+                            )
+                            .foregroundStyle(
+                                option == viewModel.selectedDualFocalAspectRatio
+                                    ? AppColors.accent
+                                    : .white.opacity(0.82)
+                            )
+                            .clipShape(Capsule())
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
         }
-        .frame(width: 234)
+        .frame(width: 268)
         .padding(AppSpacing.sm)
         .background(Color.black.opacity(0.58))
         .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))

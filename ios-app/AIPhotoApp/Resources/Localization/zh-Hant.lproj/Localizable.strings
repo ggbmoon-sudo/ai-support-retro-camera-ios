@@ -244,6 +244,7 @@
 "camera.dual_focal.slider" = "調整裁切焦距";
 "camera.dual_focal.drag_hint" = "移動框";
 "camera.dual_focal.off" = "關閉焦距裁切控制";
+"camera.dual_focal.aspect" = "比例";
 "camera.control.flash" = "閃光";
 "camera.control.timer" = "計時";
 "camera.control.flip" = "翻轉";

@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase 21-A3-R3 - Focal Framing Box Crop
+Current phase: Phase 21-A3-R3-R1 - Dynamic Aspect Pinch Focal Crop
 Status: completed
-Latest implementation: Phase 21-A3-R3 replaces the earlier dual-video / PiP-style focal preview with a simple transparent framing-box crop. The Camera preview defaults back to `resizeAspect` so the viewfinder is not zoom-cropped; the box is only a movable UI guide with no live magnification inside it; on shutter, the app captures the full-resolution photo and crops the saved/selected result to the box area. It adds no Depth Anything runtime, Core ML inference, cloud AI, provider call, preview-frame upload, upload payload change, raw frame persistence beyond normal captured photo flow, or production rollout. `productionReady:false` remains locked.
+Latest implementation: Phase 21-A3-R3-R1 tunes the local focal framing-box crop with dynamic aspect and pinch behavior. The Camera preview remains the standard 1x aspect-fit feed; the framing box is hidden at the selected lens/base focal length, appears automatically when pinch-out or slider focal length goes above base, clamps/hides again when pinched back to base, and follows `4:5`, `1:1`, or `3:4` crop aspect choices. It adds no Depth Anything runtime, Core ML inference, cloud AI, provider call, preview-frame upload, upload payload change, raw frame persistence beyond normal captured photo flow, or production rollout. `productionReady:false` remains locked.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -73,7 +73,7 @@ Phase 17C-R2 verification: provider QA batch workflow added; local QA images and
 Phase 17C-R3 verification: generated five ignored synthetic local QA images and ran 20 real-provider QA cases across `en`, `zh-Hant`, `zh-Hans`, and `yue-Hant-HK`; final QA report showed 17 cloud successes, 3 fallbacks, average latency 9963 ms, p50 4657 ms, p95 35803 ms, max 44980 ms, 0 schema failures, 0 safety metadata failures, 0 invalid filter IDs, fallback reasons 2 `unsafe_response` and 1 `provider_timeout`; prompt wording was further tightened to avoid attractiveness / face / skin / age / gender / emotion / health / identity wording; p95 latency and unsafe fallbacks remain production rollout blockers; generated images and report remain ignored.
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
-Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current practical next step remains MacBook/Xcode physical-device verification of Phase 21-A3-R3 after this cleanup. Confirm the Camera preview is no longer zoomed, the transparent focal box can be moved freely, the image inside the box is not live-magnified, the slider changes only box size/focal crop, and the captured result is only the area inside the box. Any model artifact handling, Core ML package use, inference execution, benchmark run, Camera runtime integration beyond explicit local scope, preview-frame upload, upload payload change, provider/cloud call, iOS provider/model key, raw artifact, sensitive inference, or production rollout requires separate explicit approval before execution. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution beyond an explicitly approved future scope, provider API calls, model downloads, model cache changes, Qwen inference beyond an explicitly approved benchmark, fixture inference beyond explicit approval, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, RunPod provisioning, or user-photo training / fine-tuning until explicitly requested.
+Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current practical next step remains MacBook/Xcode physical-device verification of Phase 21-A3-R3-R1 after this cleanup. Confirm the Camera preview is no longer zoomed, the focal box is hidden at base focal length, pinch-out automatically shows/resizes the transparent focal box, pinch-in clamps/hides it at base, `4:5` / `1:1` / `3:4` aspect choices reshape the box, the image inside the box is not live-magnified, the slider changes only box size/focal crop, and the captured result is only the area inside the box. Any model artifact handling, Core ML package use, inference execution, benchmark run, Camera runtime integration beyond explicit local scope, preview-frame upload, upload payload change, provider/cloud call, iOS provider/model key, raw artifact, sensitive inference, or production rollout requires separate explicit approval before execution. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution beyond an explicitly approved future scope, provider API calls, model downloads, model cache changes, Qwen inference beyond an explicitly approved benchmark, fixture inference beyond explicit approval, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, RunPod provisioning, or user-photo training / fine-tuning until explicitly requested.
 
 ---
 
@@ -13014,3 +13014,68 @@ Build and run on iPhone. Confirm the Camera preview is no longer zoomed, the tra
 ### Ready for Next Phase
 
 Current practical next step remains MacBook/Xcode physical-device verification of Phase 21-A3-R3 focal crop behavior. If crop mapping is still off, use a focused `Phase 21-A3-R4 - Focal Crop Real-device QA Follow-up`. Not ready for production rollout.
+
+---
+
+## Phase 21-A3-R3-R1 - Dynamic Aspect Pinch Focal Crop
+
+Status: implemented, pending Xcode physical-device verification
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase 21-A3-R3-R1 tunes the focal framing-box crop after real-device feedback that the crop box needed dynamic aspect ratio and state-driven pinch behavior. The box is hidden at the selected lens/base focal length, auto-shows when pinch-out or slider focal length moves above base, clamps so pinch-in cannot go below base, hides again at base, and can be reshaped to `4:5`, `1:1`, or `3:4`.
+
+### Completed Work
+
+- Added a local `CameraFocalCropAspectRatio` enum for `4:5`, `1:1`, and `3:4`.
+- Passed the selected aspect ratio into the focal crop configuration, overlay sizing, and captured-photo crop calculation.
+- Changed focal crop default state so the framing box is hidden when the selected focal length equals the active lens/base focal length.
+- Added pinch gesture handling on the Camera preview so pinch-out increases focal crop and auto-shows the box.
+- Added clamp/hide behavior so pinch-in cannot go below the selected lens/base focal length and hides at base.
+- Added aspect-ratio chips to the focal crop callout and localized the label in English and Traditional Chinese.
+
+### Changed Files
+
+- `ios-app/AIPhotoApp/Features/Camera/CameraDualFocalZoom.swift`
+- `ios-app/AIPhotoApp/Features/Camera/CameraView.swift`
+- `ios-app/AIPhotoApp/Features/Camera/CameraViewModel.swift`
+- `ios-app/AIPhotoApp/Resources/Localization/en.lproj/Localizable.strings`
+- `ios-app/AIPhotoApp/Resources/Localization/zh-Hant.lproj/Localizable.strings`
+- `README.md`
+- `ios-app/README.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-21-a3-r3-focal-framing-box-crop.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `tests/manual-smoke-tests.md`
+
+### Tests and Checks
+
+- `git status -sb --untracked-files=all`
+- `git diff --check`
+- Removed-symbol scan for the old PiP preview-frame path
+- Boundary scan for model files, provider/API keys, cloud calls, preview-frame upload, payload changes, and raw artifacts
+
+### Boundary Confirmations
+
+- Real-time dual video rendering: removed
+- PiP live magnification: removed
+- Provider/model/cloud call: no
+- Camera live cloud AI entry: no
+- Preview-frame upload: no
+- Upload payload changed: no
+- Depth Anything runtime added: no
+- Core ML inference run: no
+- Raw frame/depth/image persistence beyond normal captured photo flow: no
+- Sensitive inference added: no
+- `productionReady:false` remains locked.
+
+### Xcode Verification Needed
+
+Build and run on iPhone. Confirm the Camera preview is no longer zoomed, the focal box is hidden at base focal length, pinch-out automatically shows/resizes the transparent box, pinch-in clamps/hides it at base, `4:5` / `1:1` / `3:4` aspect choices reshape the box correctly, there is no live magnification inside the box, the slider uses the same base-to-`100mm` limits, and the captured result is only the box area.
+
+### Ready for Next Phase
+
+Current practical next step remains MacBook/Xcode physical-device verification of Phase 21-A3-R3-R1 focal crop behavior. If crop mapping or gesture feel is still off, use a focused `Phase 21-A3-R4 - Focal Crop Real-device QA Follow-up`. Not ready for production rollout.
