@@ -56,6 +56,7 @@
     "qa:aesthetic-teacher:contract": "node scripts/check-aesthetic-cloud-teacher-contract.mjs",
     "qa:aesthetic-teacher:sandbox-preflight": "node scripts/run-aesthetic-cloud-teacher-sandbox-preflight.mjs",
     "qa:aesthetic-teacher:provider-gate": "node scripts/check-aesthetic-cloud-teacher-provider-gate.mjs",
+    "qa:aesthetic-teacher:provider-smoke-harness": "node scripts/run-aesthetic-cloud-teacher-provider-smoke-harness.mjs",
     "qa:aesthetic-parameters:candidate-dry-run": "node scripts/run-aesthetic-parameter-candidate-dry-run.mjs",
     "qa:aesthetic-review:queue": "node scripts/check-aesthetic-human-review-queue.mjs",
     "qa:open-weight-vlm:local": "node scripts/run-open-weight-vlm-local-sandbox-smoke.mjs --run-local-model",

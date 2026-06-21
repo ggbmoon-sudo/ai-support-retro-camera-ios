@@ -54,6 +54,8 @@ OD-R6B implementation note: `docs/od-r6b-human-review-queue-schema.md` adds a ba
 
 OD-R5B implementation note: `docs/od-r5b-cloud-teacher-provider-sandbox-readiness-gate.md` adds a backend-only Cloud Teacher provider sandbox readiness gate and redacted request-envelope builder. It prepares for a future explicitly approved OD-R5C provider smoke while keeping provider/cloud/network/image/training/runtime/app-transfer behavior disabled by default.
 
+OD-R5C implementation note: `docs/od-r5c-cloud-teacher-provider-smoke-harness.md` adds a backend-only opt-in Cloud Teacher provider smoke harness. The default path is `blocked_no_network`, uses the OD-R5B gate and redacted envelope, validates represented outputs through the OD-R4 contract and OD-R6B review queue, and adds no real provider adapter, provider SDK, cloud call, network call, image read/upload, training, runtime integration, app transfer, or production rollout.
+
 ## Product Language Rule
 
 Live hints must keep the Photo Advisor style:

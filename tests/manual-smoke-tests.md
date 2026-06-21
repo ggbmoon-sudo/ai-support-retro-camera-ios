@@ -4677,6 +4677,16 @@ Backend provider gate verification:
 - [ ] Confirm the redacted request envelope contains only opaque IDs, registry version, allowed tag subset, asset reference type/bucket, source type, `teacherMode:"provider_sandbox_pending"`, human-review/review-queue requirements, and redaction policy.
 - [ ] Confirm no Xcode runtime behavior is expected to change.
 - [ ] Confirm no Swift runtime file, model file, Core ML package, model download, inference, Camera integration, upload path, provider/model key, API key, real dataset/photo/local config/generated report, crawler/download mode, network call, image read/upload, cloud teacher call, training, app runtime transfer, or production rollout was added.
+## Phase OD-R5C - Cloud Teacher Provider Smoke Harness
+
+Backend provider smoke harness verification:
+
+- [ ] From `backend/`, run `npm run qa:aesthetic-teacher:provider-smoke-harness`.
+- [ ] From `backend/`, run `node --test tests/aesthetic-cloud-teacher-provider-smoke-harness.test.mjs`.
+- [ ] Confirm CLI output is sanitized and reports `runMode:"blocked_no_network"`, `eligibleForProviderSmoke:false`, `providerSmokeAttempted:false`, `providerResponseReceived:false`, `networkCallsMade:false`, `imageReadsPerformed:false`, `rawPromptPersisted:false`, `rawProviderResponsePersisted:false`, `rawRequestPayloadPersisted:false`, `trainingEnabled:false`, `runtimeIntegrationEnabled:false`, and `productionReady:false`.
+- [ ] Confirm the harness uses only the disabled/default path unless a future separately approved run provides `--run-provider-smoke`, ignored local config, approved local/consented sample mode, OD-R5B gate pass, OD-R4 contract validation, and OD-R6B review queue routing.
+- [ ] Confirm no Xcode runtime behavior is expected to change.
+- [ ] Confirm no Swift runtime file, model file, Core ML package, model download, inference, Camera integration, upload path, provider/model key, API key, provider SDK, real dataset/photo/local config/generated report, crawler/download mode, network call, image read/upload, cloud teacher call, training, app runtime transfer, or production rollout was added.
 ## Phase OD-R6A - Parameter Candidate Runner Dry-run
 
 Backend parameter candidate verification:

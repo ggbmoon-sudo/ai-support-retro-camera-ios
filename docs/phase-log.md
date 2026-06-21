@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase OD-R5B - Cloud Teacher Provider Sandbox Readiness Gate
+Current phase: Phase OD-R5C - Cloud Teacher Provider Smoke Harness
 Status: completed
-Latest implementation: Phase OD-R5B adds a backend-only, fail-closed Cloud Teacher provider sandbox readiness gate and redacted request-envelope builder. It prepares for a future explicitly approved OD-R5C provider smoke, but makes no real provider/cloud AI call, network call, image read/upload, crawler/download, training/fine-tuning, iOS runtime integration, Swift file, model install, upload path, app runtime transfer, real dataset/photo/local config/generated report, or production rollout. `productionReady:false` remains locked.
+Latest implementation: Phase OD-R5C adds a backend-only opt-in Cloud Teacher provider smoke harness. The default path is no-network/fail-closed and makes no real provider/cloud AI call, network call, image read/upload, crawler/download, training/fine-tuning, iOS runtime integration, Swift file, model install, upload path, app runtime transfer, real dataset/photo/local config/generated report, provider SDK/package, or production rollout. `productionReady:false` remains locked.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -12980,6 +12980,77 @@ Phase OD-R5B adds a backend-only, fail-closed Cloud Teacher provider sandbox rea
 
 - OD-R5C real provider smoke remains deferred and requires explicit approval, ignored local config, approved sample mode, redacted logging, and no app transfer.
 - OD-R7 remains the next OD-R research step after this readiness gate is committed and pushed.
+
+### Ready for Next Phase
+
+Ready for `Phase OD-R7 - Local CV Feature Extractor Benchmark` after commit/push. Not ready for production rollout.
+
+## Phase OD-R5C - Cloud Teacher Provider Smoke Harness
+
+Status: completed
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase OD-R5C adds a backend-only opt-in Cloud Teacher provider smoke harness. The default CLI path is `blocked_no_network` and exits successfully when safely blocked. It prepares the future provider-smoke control path without making any real provider/cloud AI call, network call, image read/upload, crawler/download, training/fine-tuning, iOS runtime integration, Swift file, model install, upload path, app runtime transfer, real dataset/photo/local config/generated report, provider SDK/package, or production rollout.
+
+### Completed Work
+
+- Added `backend/src/qa/aestheticCloudTeacherProviderSmokeHarness.mjs`.
+- Added `backend/src/qa/aestheticCloudTeacherProviderAdapter.mjs` with disabled and test-only stub adapters.
+- Added `backend/scripts/run-aesthetic-cloud-teacher-provider-smoke-harness.mjs`.
+- Added `npm run qa:aesthetic-teacher:provider-smoke-harness`.
+- Added `backend/tests/aesthetic-cloud-teacher-provider-smoke-harness.test.mjs`.
+- Added `docs/od-r5c-cloud-teacher-provider-smoke-harness.md`.
+- Updated README, backend/iOS README, roadmap, handoff, phase log, and manual smoke notes for OD-R5C.
+
+### Changed Files
+
+- `README.md`
+- `backend/README.md`
+- `backend/package.json`
+- `backend/scripts/run-aesthetic-cloud-teacher-provider-smoke-harness.mjs`
+- `backend/src/qa/aestheticCloudTeacherProviderAdapter.mjs`
+- `backend/src/qa/aestheticCloudTeacherProviderSmokeHarness.mjs`
+- `backend/tests/aesthetic-cloud-teacher-provider-smoke-harness.test.mjs`
+- `docs/od-r5c-cloud-teacher-provider-smoke-harness.md`
+- `docs/on-device-live-framing-ai-roadmap.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `ios-app/README.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `tests/manual-smoke-tests.md`
+
+### Boundary Checks
+
+- Backend-only provider smoke harness: yes
+- Default path no-network/fail-closed: yes
+- Real provider/cloud AI call made: no
+- Network call made: no
+- Image read/upload performed: no
+- Provider SDK/package added: no
+- Crawler/download mode added: no
+- Training/fine-tuning/distillation run: no
+- iOS runtime integration / Swift file added: no
+- OD-03B Swift placeholder brought back: no
+- Model file / Core ML package / model download added: no
+- Upload path or app payload changed: no
+- Real dataset/photo/local config/generated report committed: no
+- Raw prompt/provider response/request payload logging added: no
+- App runtime transfer enabled: no
+- Production rollout: no
+
+### Verification
+
+- `cd backend && node --test tests/aesthetic-cloud-teacher-provider-smoke-harness.test.mjs` passes.
+- `cd backend && npm run qa:aesthetic-teacher:provider-smoke-harness` passes and prints sanitized JSON only.
+- Full `npm test`, `git diff --check`, and safety scans should pass before commit.
+
+### Known TODOs
+
+- Real provider smoke remains deferred and requires separate explicit approval, ignored local config, approved local/consented sample mode, redacted request envelope, no raw logging, OD-R5B gate pass, OD-R4 contract validation, and OD-R6B review queue routing.
+- OD-R7 remains the next OD-R research step after this harness is committed and pushed.
 
 ### Ready for Next Phase
 
