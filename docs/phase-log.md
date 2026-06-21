@@ -13266,3 +13266,76 @@ Phase OD-R8B adds a backend-only Parameter Pack Export Gate. It validates a safe
 ### Ready for Next Phase
 
 Ready for a future `Phase OD-R9 - Fine-tune / Distillation Readiness Gate` or explicit OD-P product integration review after commit/push. Not ready for production rollout.
+## Phase OD-P1A - App Transfer Preflight Gate
+
+Status: completed
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase OD-P1A adds a backend-only App Transfer Preflight Gate. It validates a safe inline synthetic OD-R8B export candidate against app contract requirements while keeping app runtime transfer blocked.
+
+### Completed Work
+
+- Added `backend/src/qa/aestheticAppTransferPreflightGate.mjs`.
+- Added `backend/scripts/check-aesthetic-app-transfer-preflight-gate.mjs`.
+- Added `backend/tests/aesthetic-app-transfer-preflight-gate.test.mjs`.
+- Added `npm run qa:aesthetic-parameters:app-transfer-preflight`.
+- Added `docs/od-p1a-app-transfer-preflight-gate.md`.
+- Updated README, backend/iOS README, roadmap, handoff, phase log, and manual smoke notes for OD-P1A.
+
+### Changed Files
+
+- `README.md`
+- `backend/README.md`
+- `backend/package.json`
+- `backend/scripts/check-aesthetic-app-transfer-preflight-gate.mjs`
+- `backend/src/qa/aestheticAppTransferPreflightGate.mjs`
+- `backend/tests/aesthetic-app-transfer-preflight-gate.test.mjs`
+- `docs/od-p1a-app-transfer-preflight-gate.md`
+- `docs/on-device-live-framing-ai-roadmap.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `ios-app/README.md`
+- `tests/manual-smoke-tests.md`
+
+### Boundary Checks
+
+- Backend-only app transfer preflight gate: yes
+- Safe inline synthetic OD-R8B export candidate and app contract only: yes
+- Transfer candidate structurally validated: yes
+- App runtime write performed: no
+- Xcode project modified: no
+- App bundle artifact written: no
+- App runtime transfer enabled: no
+- Real image read/upload performed: no
+- Real CV inference performed: no
+- Python/OpenCV/PyTorch dependency added: no
+- Provider/cloud AI call made: no
+- Network call made: no
+- Crawler/download mode added: no
+- Training/fine-tuning enabled: no
+- iOS runtime integration added: no
+- Swift runtime file added: no
+- Model/Core ML/ONNX/TFLite/weight file added: no
+- Upload path or app payload changed: no
+- Real dataset/photo/local config/generated report committed: no
+- Production rollout: no
+- `productionReady:false`: yes
+
+### Tests / Manual Checks
+
+- `node --test tests/aesthetic-app-transfer-preflight-gate.test.mjs`: passed
+- `npm run qa:aesthetic-parameters:app-transfer-preflight`: passed
+- Full `npm test`, diff checks, and safety scans should pass before commit/push.
+
+### Known TODOs
+
+- OD-P1A does not write the parameter pack into app resources and does not perform app-side wiring. Future OD-P1B or another explicit app integration phase must review Xcode runtime behavior, packaging, fallback behavior, kill switch behavior, benchmark pass criteria, privacy/safety, rollback, and production readiness.
+- OD-P1A does not train, fine-tune, run real CV inference, or enable app runtime behavior.
+
+### Ready for Next Phase
+
+Ready for a future `Phase OD-P1B - Explicit App Integration Review` or `Phase OD-R9 - Fine-tune / Distillation Readiness Gate` after commit/push. Not ready for production rollout.

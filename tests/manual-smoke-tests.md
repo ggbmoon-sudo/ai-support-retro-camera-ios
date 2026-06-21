@@ -4744,6 +4744,19 @@ Backend parameter pack export gate verification:
 - [ ] Confirm no Xcode runtime behavior is expected to change.
 - [ ] Confirm no Swift runtime file, model file, Core ML package, model download, CV inference, Camera integration, upload path, provider/model key, API key, real dataset/photo/local config/generated report, crawler/download mode, image read/upload, cloud teacher call, training/fine-tuning, app runtime write, app runtime transfer, or production rollout was added.
 
+## Phase OD-P1A - App Transfer Preflight Gate
+
+Backend app transfer preflight verification:
+
+- [ ] From `backend/`, run `npm run qa:aesthetic-parameters:app-transfer-preflight`.
+- [ ] From `backend/`, run `node --test tests/aesthetic-app-transfer-preflight-gate.test.mjs`.
+- [ ] Confirm CLI output is sanitized and reports `runMode:"app_transfer_preflight"`, `preflightPassed:true`, `eligibleForAppRuntime:false`, `appRuntimeTransferBlocked:true`, `appRuntimeWritePerformed:false`, `xcodeProjectModified:false`, `appBundleArtifactWritten:false`, and `productionReady:false`.
+- [ ] Confirm contract compatibility reports language-pack-only UI copy, CreativeIntentGuard required, offline fallback required, and kill switch required.
+- [ ] Confirm execution flags report `networkCallsMade:false`, `imageReadsPerformed:false`, `cvInferencePerformed:false`, `trainingEnabled:false`, `fineTuningEnabled:false`, `runtimeIntegrationEnabled:false`, and `productionReady:false`.
+- [ ] Confirm unknown tags, unknown feature/threshold keys, unsupported suppression/action keys, missing requirements, runtime eligibility, app write, Xcode modification, app bundle artifact, score/rating, sensitive inference, raw teacher text, provider/debug/prompt leakage, local paths, real URLs, base64/raw image, GPS/EXIF, and raw metadata fields fail closed.
+- [ ] Confirm no Xcode runtime behavior is expected to change.
+- [ ] Confirm no Swift runtime file, model file, Core ML package, model download, CV inference, Camera integration, upload path, provider/model key, API key, real dataset/photo/local config/generated report, crawler/download mode, image read/upload, cloud teacher call, training/fine-tuning, Xcode project modification, app bundle write, app runtime write, app runtime transfer, or production rollout was added.
+
 ## Phase 21-A2 - Live Framing Aesthetic Spatial Codebook
 
 Docs-only verification:

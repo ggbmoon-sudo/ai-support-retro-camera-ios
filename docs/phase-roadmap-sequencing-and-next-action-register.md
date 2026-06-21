@@ -16,9 +16,9 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**Phase OD-R9: Fine-tune / Distillation Readiness Gate**
+**Phase OD-P1B: Explicit App Integration Review** or **Phase OD-R9: Fine-tune / Distillation Readiness Gate**
 
-Reason: Phase OD-R8B adds a backend-only Parameter Pack Export Gate that validates a safe inline synthetic OD-R8A parameter-pack candidate as structurally exportable while still blocking app runtime transfer. The candidate is an export candidate only, not an app runtime artifact. The next OD-R layer should add fine-tune/distillation readiness checks, or explicitly defer to OD-P product integration review, without real image reads, CV inference, provider/cloud/network calls, training/fine-tuning execution, runtime integration, app transfer, or production rollout.
+Reason: Phase OD-P1A adds a backend-only App Transfer Preflight Gate that validates a safe inline synthetic OD-R8B export candidate against app contract requirements while still blocking app runtime transfer. The candidate is a transfer candidate only, not an app runtime artifact. The next step can be an explicit OD-P1B app integration review or a separate OD-R9 fine-tune/distillation readiness gate, without real image reads, CV inference, provider/cloud/network calls, training/fine-tuning execution, runtime integration, app transfer, Xcode modification, app bundle write, or production rollout.
 
 OD-R9 should remain backend-only and gate/dry-run only unless separately approved for a specific safe artifact path. It must not add Swift runtime files, model installation, Core ML packages, crawler/download mode, product runtime transfer, Camera integration, upload paths, provider/model keys in committed files, real datasets/photos/local configs/generated reports, training, inference rollout, or production rollout. OD-03B Swift placeholder work remains paused. App/model installation belongs later to OD-P product integration after benchmark and safety gates pass. `productionReady:false` remains locked.
 
@@ -43,6 +43,8 @@ Implementation status note: `docs/od-r7a-local-cv-feature-vector-benchmark.md` r
 Implementation status note: `docs/od-r8a-parameter-tuning-harness-dry-run.md` records the backend-only Parameter Tuning Harness dry-run. It converts reviewed synthetic parameter candidates and synthetic local CV benchmark signals into a structured parameter-pack candidate while keeping rejected/blocked items out, app transfer blocked, and real image reads, CV inference, provider/cloud/network calls, training/fine-tuning, runtime integration, and production rollout disabled.
 
 Implementation status note: `docs/od-r8b-parameter-pack-export-gate.md` records the backend-only Parameter Pack Export Gate. It validates a safe inline synthetic OD-R8A parameter-pack candidate as structurally exportable while keeping no app runtime write, no iOS project modification, no app bundle artifact, no model file, no app transfer, and `productionReady:false`.
+
+Implementation status note: `docs/od-p1a-app-transfer-preflight-gate.md` records the backend-only App Transfer Preflight Gate. It validates a safe inline synthetic OD-R8B export candidate against app contract requirements while keeping no app runtime write, no Xcode project modification, no app bundle artifact, no model file, no app transfer, and `productionReady:false`.
 
 Naming note: older committed Phase 21-A backend-internal VLM records remain historical evidence. The completed on-device geometry phase should be referenced by its full title: `Phase 21-A - On-device Vision Geometry Spike`.
 

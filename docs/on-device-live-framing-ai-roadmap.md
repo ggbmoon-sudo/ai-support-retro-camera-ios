@@ -36,6 +36,7 @@ Planned OD-R sequence:
 - `OD-R7`: Local CV Feature Extractor Benchmark.
 - `OD-R8`: Parameter Tuning Harness.
 - `OD-R8B`: Parameter Pack Export Gate.
+- `OD-P1A`: App Transfer Preflight Gate.
 - `OD-R9`: Fine-tune / Distillation Readiness Gate.
 - `OD-P1`: Product Integration Candidate, only after benchmark and safety gates pass.
 
@@ -62,6 +63,8 @@ OD-R7A implementation note: `docs/od-r7a-local-cv-feature-vector-benchmark.md` a
 OD-R8A implementation note: `docs/od-r8a-parameter-tuning-harness-dry-run.md` adds a backend-only Parameter Tuning Harness dry-run. It converts reviewed synthetic parameter candidates and synthetic local CV benchmark signals into a structured parameter-pack candidate while keeping real image reads, CV inference, provider/cloud/network calls, training/fine-tuning, runtime integration, app transfer, and production rollout disabled.
 
 OD-R8B implementation note: `docs/od-r8b-parameter-pack-export-gate.md` adds a backend-only Parameter Pack Export Gate. It validates a safe inline synthetic OD-R8A parameter-pack candidate as structurally exportable while keeping app runtime eligibility false, app runtime transfer blocked, no app runtime write, no iOS project modification, no real report output, and `productionReady:false`.
+
+OD-P1A implementation note: `docs/od-p1a-app-transfer-preflight-gate.md` adds a backend-only App Transfer Preflight Gate. It validates a safe inline synthetic OD-R8B export candidate against app contract requirements while keeping app runtime eligibility false, app runtime transfer blocked, no app runtime write, no Xcode project modification, no app bundle artifact, and `productionReady:false`.
 
 ## Product Language Rule
 
