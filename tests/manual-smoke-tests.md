@@ -4731,6 +4731,20 @@ Backend local CV extractor prototype verification:
 - [ ] Confirm no Xcode runtime behavior is expected to change.
 - [ ] Confirm no Swift runtime file, model file, Core ML package, model download, real image read, CV inference, Camera integration, upload path, provider/model key, API key, Xiaoyi relay call, real dataset/photo/local config/generated report, crawler/download mode, image upload, cloud teacher call, training/fine-tuning, app runtime transfer, or production rollout was added.
 
+## Phase OD-R7C - Local CV Calibration Fixture Gate
+
+Backend local CV calibration fixture gate verification:
+
+- [ ] From `backend/`, run `npm run qa:aesthetic-local-cv:calibration-fixture-gate`.
+- [ ] From `backend/`, run `node --test tests/aesthetic-local-cv-calibration-fixture-gate.test.mjs`.
+- [ ] Confirm default CLI output is sanitized and reports `runMode:"fixture_gate_no_image_read"`, `eligibleForCalibration:false`, `fixtureRegistryConfigured:false`, and missing ignored fixture requirements.
+- [ ] Confirm execution flags report `imageReadsPerformed:false`, `cvInferencePerformed:false`, `networkCallsMade:false`, `uploadPerformed:false`, `generatedReportsPersisted:false`, `realUserPhotosCommitted:false`, `localConfigCommitted:false`, `appRuntimeIntegrationEnabled:false`, and `productionReady:false`.
+- [ ] Confirm disabled example config is safely blocked and approved synthetic/ignored fixture-token structure validates without runtime eligibility.
+- [ ] Confirm `allowImageReads:true`, execution flags, unknown feature keys, invalid token/path/URL/base64 fields, app runtime flags, and `productionReady:true` fail closed.
+- [ ] Confirm `.gitignore` keeps real local fixture config, fixture images, and calibration reports untracked.
+- [ ] Confirm no Xcode runtime behavior is expected to change.
+- [ ] Confirm no Swift runtime file, model file, Core ML package, model download, real image read, CV inference, Camera integration, upload path, provider/model key, API key, Xiaoyi relay call, real photos, committed local config, generated reports, crawler/download mode, image upload, cloud teacher call, training/fine-tuning, app runtime transfer, or production rollout was added.
+
 ## Phase OD-R8A - Parameter Tuning Harness Dry-run
 
 Backend parameter tuning dry-run verification:

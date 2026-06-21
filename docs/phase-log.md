@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase OD-R7B - Local CV Feature Extractor Prototype
+Current phase: Phase OD-R7C - Local CV Calibration Fixture Gate
 Status: completed
-Latest implementation: Phase OD-R7B adds a backend/local-only Local CV Feature Extractor prototype. It maps safe inline synthetic local-CV observations into OD-R7A-compatible feature vectors for the local AI parameter-pack pipeline. It makes no real image read, CV inference, provider/cloud/Xiaoyi relay call, network call, crawler/download, training/fine-tuning, iOS runtime integration, Swift file, model install, upload path, app runtime transfer, real dataset/photo/local config/generated report, or production rollout. `productionReady:false` remains locked.
+Latest implementation: Phase OD-R7C adds a backend/local-only calibration fixture gate for the OD-R7B extractor. It validates disabled ignored-local fixture policy and approved synthetic/ignored fixture-token shape before any real image read or calibration smoke. The default CLI is `fixture_gate_no_image_read`, safely blocked, and makes no real image read, CV inference, provider/cloud/Xiaoyi relay call, network call, upload, crawler/download, training/fine-tuning, iOS runtime integration, Swift file, model install, app runtime transfer, real photo/local config/generated report commit, or production rollout. `productionReady:false` remains locked.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -76,6 +76,65 @@ Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-o
 Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. Current next recommended phase is Phase 21-Z2H-SF: SiliconFlow Latency Architecture Decision Gate. Any further provider API calls, API key use beyond local ignored context, provider diagnosis, alternative model benchmark, image upload, model call, benchmark, RunPod provisioning, Qwen3 install/download/load/call, inference endpoint call, iOS integration, upload payload change, app-facing endpoint, production endpoint, or production rollout requires separate explicit approval before execution. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries. Do not start production rollout, Camera cloud AI, Gemini Live, StoreKit, payment, export, backend capture-context upload, iOS upload payload changes, app integration, app-facing/public/production work, real user-photo upload, auth/billing/quota runtime, serving-stack benchmark execution beyond an explicitly approved future scope, provider API calls, model downloads, model cache changes, Qwen inference beyond an explicitly approved benchmark, fixture inference beyond explicit approval, local CV runtime, Auto-Trigger runtime, WSS runtime, image upload/compression runtime, RunPod provisioning, or user-photo training / fine-tuning until explicitly requested.
 
 ---
+
+## Phase OD-R7C - Local CV Calibration Fixture Gate
+
+Status: completed
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase OD-R7C adds a backend/local-only calibration fixture gate for the OD-R7B Local CV Feature Extractor prototype. It prepares ignored local fixture registry policy and fixture-token validation before any real image read, real CV inference, or app runtime integration.
+
+### Completed Work
+
+- Added `backend/src/qa/aestheticLocalCvCalibrationFixtureGate.mjs`.
+- Added `backend/scripts/check-aesthetic-local-cv-calibration-fixture-gate.mjs` and package script `qa:aesthetic-local-cv:calibration-fixture-gate`.
+- Added disabled example config `backend/config/aesthetic-local-cv-calibration-fixtures.local.example.json`.
+- Updated `.gitignore` for ignored real local fixture config, fixture images, and calibration reports.
+- Added backend tests for default safe block, disabled example config, approved synthetic/ignored token shape, unsafe flags, unknown feature keys, raw path/URL/base64 leakage, app runtime blockers, and production readiness.
+- Added `docs/od-r7c-local-cv-calibration-fixture-gate.md`.
+
+### Changed Files
+
+- `.gitignore`
+- `backend/config/aesthetic-local-cv-calibration-fixtures.local.example.json`
+- `backend/package.json`
+- `backend/scripts/check-aesthetic-local-cv-calibration-fixture-gate.mjs`
+- `backend/src/qa/aestheticLocalCvCalibrationFixtureGate.mjs`
+- `backend/src/qa/aestheticLocalCvFeatureExtractorPrototype.mjs`
+- `backend/tests/aesthetic-local-cv-calibration-fixture-gate.test.mjs`
+- `docs/od-r7c-local-cv-calibration-fixture-gate.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/on-device-live-framing-ai-roadmap.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `docs/phase-log.md`
+- `README.md`
+- `backend/README.md`
+- `ios-app/README.md`
+- `tests/manual-smoke-tests.md`
+
+### Tests and Checks
+
+- `cd backend && npm test`
+- `cd backend && npm run qa:aesthetic-local-cv:calibration-fixture-gate`
+
+### Boundary Confirmations
+
+- Swift runtime changed: no
+- Xcode project changed: no
+- Real image read/CV inference: no
+- Provider/cloud/Xiaoyi relay call: no
+- Network/upload: no
+- Real photos/local configs/generated reports committed: no
+- Model file / Core ML package added: no
+- App runtime transfer: no
+- `productionReady:false` remains locked.
+
+### Ready for Next Phase
+
+Recommended next local-AI phase is `Phase OD-R7D - Explicit Ignored Local Fixture Calibration Smoke`, only after explicit user approval. It should still keep real local fixtures ignored, reports sanitized, no iOS runtime integration, no cloud/provider/Xiaoyi relay work, no model files, and `productionReady:false`. Not ready for production rollout.
 
 ## Phase OD-R7B - Local CV Feature Extractor Prototype
 

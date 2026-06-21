@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "aesthetic_local_cv_calibration_fixture_config.v1",
+  "enabled": false,
+  "allowImageReads": false,
+  "approvedFixtureMode": false,
+  "fixtureRegistryConfigured": false,
+  "fixtures": [],
+  "reviewedFixturePolicies": {
+    "requiresIgnoredLocalRegistry": true,
+    "requiresApprovedFixtureMode": true,
+    "requiresNoImageReadDefault": true,
+    "requiresSyntheticOrIgnoredTokensOnly": true,
+    "requiresHumanReview": true,
+    "requiresNoRuntimeEligibility": true
+  },
+  "imageReadsPerformed": false,
+  "cvInferencePerformed": false,
+  "networkCallsMade": false,
+  "uploadPerformed": false,
+  "generatedReportsPersisted": false,
+  "realUserPhotosCommitted": false,
+  "localConfigCommitted": false,
+  "appRuntimeIntegrationEnabled": false,
+  "trainingEnabled": false,
+  "fineTuningEnabled": false,
+  "eligibleForAppRuntime": false,
+  "appRuntimeTransferBlocked": true,
+  "productionReady": false
+}

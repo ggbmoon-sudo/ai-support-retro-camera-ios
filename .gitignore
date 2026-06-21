@@ -53,10 +53,12 @@ backend/reports/aesthetic-cloud-teacher-provider-sandbox/
 backend/reports/open-weight-vlm-local-*.json
 backend/reports/local-vlm-*.json
 backend/config/aesthetic-cloud-teacher.local.json
+backend/config/aesthetic-local-cv-calibration-fixtures.local.json
 backend/config/open-weight-vlm.local.json
 backend/config/open-weight-vlm.local.*.json
 backend/config/open-weight-vlm.fixtures.local.json
 !backend/config/aesthetic-cloud-teacher.local.example.json
+!backend/config/aesthetic-local-cv-calibration-fixtures.local.example.json
 !backend/config/open-weight-vlm.local.example.json
 backend/tests/local-images/*
 !backend/tests/local-images/README.md
@@ -64,5 +66,7 @@ backend/tests/local-images/*
 backend/tests/approved-real-samples/*
 !backend/tests/approved-real-samples/README.md
 backend/tests/aesthetic-cloud-teacher-local-samples/
+backend/tests/local-cv-calibration-fixtures/
 backend/tests/generated-images/
 backend/tests/vlm-local-samples/
+backend/reports/local-cv-calibration/

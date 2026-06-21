@@ -1265,3 +1265,12 @@ Latest Phase OD-R7B Local CV Feature Extractor Prototype on 2026-06-21:
 - Output reports `runMode:"local_cv_feature_extractor_prototype"`, `extractorPrototypeValid:true`, OD-R7A benchmark compatibility, `imageReadsPerformed:false`, `cvInferencePerformed:false`, `networkCallsMade:false`, `trainingEnabled:false`, `fineTuningEnabled:false`, `runtimeIntegrationEnabled:false`, and `productionReady:false`.
 - No real image read, real CV inference, Python/OpenCV/PyTorch dependency, provider/cloud/Xiaoyi relay call, network call, crawler/download, training/fine-tuning, iOS runtime integration, Swift file, model install, upload path, real dataset/photo/local config/generated report, app runtime transfer, or production rollout is added. `productionReady:false` remains locked.
 - Suggested next local-AI phase is `Phase OD-R7C - Local CV Feature Extractor Calibration Fixture Gate`, not Xiaoyi relay credential smoke or Cloud AI relay work.
+
+Latest Phase OD-R7C Local CV Calibration Fixture Gate on 2026-06-21:
+
+- OD-R7C adds a backend/local-only calibration fixture gate for the OD-R7B Local CV Feature Extractor prototype.
+- Added `backend/src/qa/aestheticLocalCvCalibrationFixtureGate.mjs`, `backend/scripts/check-aesthetic-local-cv-calibration-fixture-gate.mjs`, disabled example config, backend tests, `npm run qa:aesthetic-local-cv:calibration-fixture-gate`, and `docs/od-r7c-local-cv-calibration-fixture-gate.md`.
+- The gate validates ignored local fixture registry policy and approved synthetic/ignored fixture-token shape before any real image read, real CV inference, or runtime integration.
+- Default output reports `runMode:"fixture_gate_no_image_read"`, `eligibleForCalibration:false`, `fixtureRegistryConfigured:false`, `imageReadsPerformed:false`, `cvInferencePerformed:false`, `networkCallsMade:false`, `uploadPerformed:false`, `appRuntimeIntegrationEnabled:false`, and `productionReady:false`.
+- Real local config, fixture images, and calibration reports remain ignored via `.gitignore`; no real photos, local config, generated reports, model files, Swift files, Xcode changes, provider/cloud/Xiaoyi relay calls, network calls, uploads, training/fine-tuning, app runtime transfer, or production rollout are added.
+- Suggested next local-AI phase is `Phase OD-R7D - Explicit Ignored Local Fixture Calibration Smoke`, only after explicit user approval.

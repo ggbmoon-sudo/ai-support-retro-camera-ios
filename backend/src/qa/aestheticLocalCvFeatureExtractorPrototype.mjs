@@ -27,7 +27,7 @@ const DISABLED_FLAGS = Object.freeze([
 
 const ALLOWED_OBSERVATION_SOURCE_TYPE = "synthetic_inline_local_cv_observation";
 
-const ALLOWED_MEASUREMENT_KEYS = Object.freeze([
+export const AESTHETIC_LOCAL_CV_EXTRACTOR_FEATURE_KEYS = Object.freeze([
   "headroomRatio",
   "horizonAngle",
   "highlightClipRatio",
@@ -439,7 +439,7 @@ function observationBlockers(observation) {
     return blockers;
   }
   for (const [key, value] of Object.entries(observation.measurements)) {
-    if (!ALLOWED_MEASUREMENT_KEYS.includes(key) || !ALLOWED_FEATURE_KEYS.includes(key)) {
+    if (!AESTHETIC_LOCAL_CV_EXTRACTOR_FEATURE_KEYS.includes(key) || !ALLOWED_FEATURE_KEYS.includes(key)) {
       blockers.push(`blocked_for_unknown_measurement_key_${sanitizeToken(key)}`);
     }
     if (typeof value !== "number" || !Number.isFinite(value)) {
@@ -462,7 +462,7 @@ function forbiddenShapeBlockers(value, path = "local_cv_feature_extractor") {
     const keyPath = `${path}.${key}`;
     const normalizedKey = normalizeFieldName(key);
     const allowedSchemaKey = ALLOWED_SCHEMA_FIELD_NAMES.has(normalizedKey) ||
-      ALLOWED_MEASUREMENT_KEYS.map(normalizeFieldName).includes(normalizedKey);
+      AESTHETIC_LOCAL_CV_EXTRACTOR_FEATURE_KEYS.map(normalizeFieldName).includes(normalizedKey);
     if (!allowedSchemaKey && (
       FORBIDDEN_EXACT_FIELDS.includes(normalizedKey) ||
       FORBIDDEN_FIELD_FRAGMENTS.some((fragment) => normalizedKey.includes(fragment))
