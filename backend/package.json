@@ -67,6 +67,7 @@
     "qa:aesthetic-local-cv:calibration-aggregation": "node scripts/run-aesthetic-local-cv-calibration-aggregation-gate.mjs",
     "qa:aesthetic-parameters:tuning-dry-run": "node scripts/run-aesthetic-parameter-tuning-dry-run.mjs",
     "qa:aesthetic-parameters:tuning-aggregation-bridge": "node scripts/run-aesthetic-parameter-tuning-aggregation-bridge.mjs",
+    "qa:aesthetic-parameters:tuning-dry-run-from-bridge": "node scripts/run-aesthetic-parameter-tuning-dry-run-from-bridge.mjs",
     "qa:aesthetic-parameters:export-gate": "node scripts/check-aesthetic-parameter-pack-export-gate.mjs",
     "qa:aesthetic-parameters:app-transfer-preflight": "node scripts/check-aesthetic-app-transfer-preflight-gate.mjs",
     "qa:open-weight-vlm:local": "node scripts/run-open-weight-vlm-local-sandbox-smoke.mjs --run-local-model",

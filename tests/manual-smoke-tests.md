@@ -4845,6 +4845,20 @@ Backend parameter tuning bridge verification:
 - [ ] Confirm no Xcode runtime behavior is expected to change.
 - [ ] Confirm no Swift runtime file, Xcode project change, model file, Core ML package, model download, CV inference, Camera integration, upload path, provider/model key, API key, real dataset/photo/local config/generated report, crawler/download mode, image read/upload, cloud/provider call, training/fine-tuning, app runtime write, app runtime transfer, or production rollout was added.
 
+## Phase OD-R8D - Parameter Tuning Dry-run From Bridge
+
+Backend parameter tuning dry-run verification:
+
+- [ ] From `backend/`, run `npm run qa:aesthetic-parameters:tuning-dry-run-from-bridge`.
+- [ ] From `backend/`, run `node --test tests/aesthetic-parameter-tuning-dry-run-from-bridge.test.mjs`.
+- [ ] Confirm CLI output is sanitized and reports `runMode:"parameter_tuning_dry_run_from_bridge_no_export"` and `acceptedForTuningDryRunReview:true`.
+- [ ] Confirm proposed parameter adjustments are review-only and each reports `candidateOnly:true`, `automaticMutationApplied:false`, `productionMutationAllowed:false`, `internalOnly:true`, and `userFacing:false`.
+- [ ] Confirm `eligibleForParameterPackExport:false`, `eligibleForAppRuntime:false`, `parameterPackExported:false`, `appRuntimeWritePerformed:false`, and `productionReady:false`.
+- [ ] Confirm execution flags report `imageReadsPerformed:false`, `cvInferencePerformed:false`, `networkCallsMade:false`, `uploadPerformed:false`, `providerCallAttempted:false`, `generatedReportsPersisted:false`, and `appRuntimeIntegrationEnabled:false`.
+- [ ] Confirm output does not emit score/rating/aesthetic grading fields, user-facing guidance copy, or retake-first guidance.
+- [ ] Confirm no Xcode runtime behavior is expected to change.
+- [ ] Confirm no Swift runtime file, Xcode project change, model file, Core ML package, model download, CV inference, Camera integration, upload path, provider/model key, API key, real dataset/photo/local config/generated report, crawler/download mode, image read/upload, cloud/provider call, training/fine-tuning, parameter pack export, app runtime write, app runtime transfer, or production rollout was added.
+
 ## Phase OD-P1A - App Transfer Preflight Gate
 
 Backend app transfer preflight verification:

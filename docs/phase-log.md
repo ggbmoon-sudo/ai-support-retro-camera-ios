@@ -13799,3 +13799,75 @@ Phase OD-R8C adds a backend/local-only Parameter Tuning Aggregation Bridge. It c
 ### Ready for Next Phase
 
 Ready for a future `Phase OD-R8D - Parameter Tuning Dry-run From Aggregation Bridge` after commit/push. Not ready for production rollout.
+## Phase OD-R8D - Parameter Tuning Dry-run From Bridge
+
+Status: completed
+Date: 2026-06-22
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase OD-R8D adds a backend/local-only Parameter Tuning Dry-run From Bridge. It consumes the sanitized OD-R8C bridge output and produces review-only parameter adjustment candidates while keeping parameter-pack export, app runtime writes, and production rollout blocked.
+
+### Completed Work
+
+- Added `backend/src/qa/aestheticParameterTuningDryRunFromBridge.mjs`.
+- Added `backend/scripts/run-aesthetic-parameter-tuning-dry-run-from-bridge.mjs`.
+- Added `backend/tests/aesthetic-parameter-tuning-dry-run-from-bridge.test.mjs`.
+- Added `npm run qa:aesthetic-parameters:tuning-dry-run-from-bridge`.
+- Added `docs/od-r8d-parameter-tuning-dry-run-from-bridge.md`.
+- Updated README, backend/iOS README, roadmap, handoff, phase log, sequencing register, and manual smoke notes for OD-R8D.
+
+### Changed Files
+
+- `README.md`
+- `backend/README.md`
+- `backend/package.json`
+- `backend/scripts/run-aesthetic-parameter-tuning-dry-run-from-bridge.mjs`
+- `backend/src/qa/aestheticParameterTuningDryRunFromBridge.mjs`
+- `backend/tests/aesthetic-parameter-tuning-dry-run-from-bridge.test.mjs`
+- `docs/od-r8d-parameter-tuning-dry-run-from-bridge.md`
+- `docs/on-device-live-framing-ai-roadmap.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `ios-app/README.md`
+- `tests/manual-smoke-tests.md`
+
+### Boundary Checks
+
+- Backend/local-only tuning dry-run from OD-R8C bridge: yes
+- Review-only parameter adjustment candidates emitted: yes
+- Candidate-only flags enforced: yes
+- Final tuned values emitted: no
+- Production threshold mutation applied: no
+- Parameter-pack export enabled: no
+- App runtime eligibility enabled: no
+- Parameter pack exported: no
+- App runtime write performed: no
+- Real image read/upload performed: no
+- Real CV inference performed: no
+- Provider/cloud/Xiaoyi relay call made: no
+- Network/upload/download/crawler mode added: no
+- Training/fine-tuning enabled: no
+- iOS runtime integration added: no
+- Swift/Xcode file changed: no
+- Model/Core ML/ONNX/TFLite/weight file added: no
+- Real dataset/photo/local config/generated report committed: no
+- Production rollout: no
+- `productionReady:false`: yes
+
+### Tests / Manual Checks
+
+- `node --test tests/aesthetic-parameter-tuning-dry-run-from-bridge.test.mjs`: passed
+- `npm run qa:aesthetic-parameters:tuning-dry-run-from-bridge`: passed
+- Full `npm test`, diff checks, and safety scans should pass before commit/push.
+
+### Known TODOs
+
+- OD-R8D does not accept candidates into a parameter pack. Future OD-R8E may add a reviewed candidate acceptance gate.
+- OD-R8D does not export a parameter pack, write an export artifact, write to iOS, or enable app runtime behavior.
+
+### Ready for Next Phase
+
+Ready for a future `Phase OD-R8E - Reviewed Candidate Acceptance Gate` after commit/push. Not ready for production rollout.

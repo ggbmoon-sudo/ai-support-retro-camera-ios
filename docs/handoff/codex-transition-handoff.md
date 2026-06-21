@@ -1265,6 +1265,13 @@ Latest Phase OD-R8C Parameter Tuning Aggregation Bridge on 2026-06-22:
 - Proposed tuning signals remain internal-only and non-user-facing; they are not scores, ratings, aesthetic grades, or retake-first advice.
 - No image read, CV inference, provider/cloud/Xiaoyi relay call, network/upload/download/crawler, report write, real fixture/config/report commit, Swift/Xcode change, model file, training/fine-tuning, app runtime transfer, Camera behavior change, or production rollout is added.
 
+Latest Phase OD-R8D Parameter Tuning Dry-run From Bridge on 2026-06-22:
+
+- OD-R8D consumes OD-R8C bridge output and emits review-only parameter adjustment candidates.
+- Added `backend/src/qa/aestheticParameterTuningDryRunFromBridge.mjs`, `backend/scripts/run-aesthetic-parameter-tuning-dry-run-from-bridge.mjs`, backend tests, `npm run qa:aesthetic-parameters:tuning-dry-run-from-bridge`, and `docs/od-r8d-parameter-tuning-dry-run-from-bridge.md`.
+- Output reports `runMode:"parameter_tuning_dry_run_from_bridge_no_export"`, `acceptedForTuningDryRunReview:true`, four `candidateOnly:true` adjustment candidates, `eligibleForParameterPackExport:false`, `eligibleForAppRuntime:false`, `parameterPackExported:false`, `appRuntimeWritePerformed:false`, and `productionReady:false`.
+- No final tuned values, production threshold mutation, user-facing advice, parameter pack export, app runtime write, image read, CV inference, provider/cloud/Xiaoyi relay call, network/upload/download/crawler, report write, real fixture/config/report commit, Swift/Xcode change, model file, training/fine-tuning, Camera behavior change, or production rollout is added.
+
 Latest Phase OD-R7B Local CV Feature Extractor Prototype on 2026-06-21:
 
 - OD-R7B adds a backend/local-only Local CV Feature Extractor prototype using safe inline synthetic local-CV observations only.
