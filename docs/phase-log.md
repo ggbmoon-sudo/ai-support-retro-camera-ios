@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase OD-R5C - Cloud Teacher Provider Smoke Harness
+Current phase: Phase OD-R7A - Local CV Feature Vector Benchmark Dry-run
 Status: completed
-Latest implementation: Phase OD-R5C adds a backend-only opt-in Cloud Teacher provider smoke harness. The default path is no-network/fail-closed and makes no real provider/cloud AI call, network call, image read/upload, crawler/download, training/fine-tuning, iOS runtime integration, Swift file, model install, upload path, app runtime transfer, real dataset/photo/local config/generated report, provider SDK/package, or production rollout. `productionReady:false` remains locked.
+Latest implementation: Phase OD-R7A adds a backend-only Local CV Feature Vector Benchmark dry-run. It evaluates safe inline synthetic numeric feature vectors against OD-R1 registry tags, OD-R6A parameter candidates, and OD-R6B review decisions. It makes no real image read, CV inference, provider/cloud AI call, network call, crawler/download, training/fine-tuning, iOS runtime integration, Swift file, model install, upload path, app runtime transfer, real dataset/photo/local config/generated report, or production rollout. `productionReady:false` remains locked.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -13055,3 +13055,72 @@ Phase OD-R5C adds a backend-only opt-in Cloud Teacher provider smoke harness. Th
 ### Ready for Next Phase
 
 Ready for `Phase OD-R7 - Local CV Feature Extractor Benchmark` after commit/push. Not ready for production rollout.
+## Phase OD-R7A - Local CV Feature Vector Benchmark Dry-run
+
+Status: completed
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase OD-R7A adds a backend-only Local CV Feature Vector Benchmark dry-run. It evaluates safe inline synthetic numeric feature vectors against OD-R1 registry tags, OD-R6A parameter candidates, and OD-R6B review decisions while keeping app runtime transfer blocked.
+
+### Completed Work
+
+- Added `backend/src/qa/aestheticLocalCvFeatureBenchmark.mjs`.
+- Added `backend/scripts/run-aesthetic-local-cv-feature-benchmark.mjs`.
+- Added `backend/tests/aesthetic-local-cv-feature-benchmark.test.mjs`.
+- Added `npm run qa:aesthetic-local-cv:feature-benchmark`.
+- Added `docs/od-r7a-local-cv-feature-vector-benchmark.md`.
+- Updated README, backend/iOS README, roadmap, handoff, phase log, and manual smoke notes for OD-R7A.
+
+### Changed Files
+
+- `README.md`
+- `backend/README.md`
+- `backend/package.json`
+- `backend/scripts/run-aesthetic-local-cv-feature-benchmark.mjs`
+- `backend/src/qa/aestheticLocalCvFeatureBenchmark.mjs`
+- `backend/tests/aesthetic-local-cv-feature-benchmark.test.mjs`
+- `docs/od-r7a-local-cv-feature-vector-benchmark.md`
+- `docs/on-device-live-framing-ai-roadmap.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `ios-app/README.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `tests/manual-smoke-tests.md`
+
+### Boundary Checks
+
+- Backend-only local CV feature benchmark dry-run: yes
+- Safe inline synthetic numeric feature vectors only: yes
+- Real image read/upload performed: no
+- Real CV inference performed: no
+- Python/OpenCV/PyTorch dependency added: no
+- Provider/cloud AI call made: no
+- Network call made: no
+- Crawler/download mode added: no
+- Training/fine-tuning enabled: no
+- iOS runtime integration added: no
+- Swift runtime file added: no
+- Model/Core ML/ONNX/TFLite/weight file added: no
+- Upload path or app payload changed: no
+- Real dataset/photo/local config/generated report committed: no
+- App runtime transfer enabled: no
+- Production rollout: no
+- `productionReady:false`: yes
+
+### Tests / Manual Checks
+
+- `node --test tests/aesthetic-local-cv-feature-benchmark.test.mjs`: passed
+- `npm run qa:aesthetic-local-cv:feature-benchmark`: passed
+- Full `npm test`, diff checks, and safety scans should pass before commit/push.
+
+### Known TODOs
+
+- OD-R7A does not extract features from images. Real local CV extraction remains future work and must require a separate approved phase.
+- App/model transfer remains blocked until later review, benchmark, safety, performance, and product integration gates pass.
+
+### Ready for Next Phase
+
+Ready for `Phase OD-R8 - Parameter Tuning Harness` after commit/push. Not ready for production rollout.

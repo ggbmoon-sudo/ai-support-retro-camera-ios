@@ -36,6 +36,8 @@ Phase OD-R5B is backend-only Cloud Teacher provider sandbox readiness gate work.
 
 Phase OD-R5C is backend-only Cloud Teacher provider smoke harness work. Xcode behavior should remain unchanged: no Swift file, model file, Core ML package, model install, inference, Camera integration, live frame processing, upload path, provider/model key, direct provider/model call, provider SDK, crawler/download mode, image read/upload, cloud teacher runtime call, network call, training, app runtime transfer, real dataset/photo/local config/generated report, or production rollout is added.
 
+Phase OD-R7A is backend-only Local CV Feature Vector Benchmark dry-run work. Xcode behavior should remain unchanged: no Swift file, model file, Core ML package, model install, CV inference, Camera integration, live frame processing, upload path, provider/model key, direct provider/model call, provider SDK, crawler/download mode, image read/upload, cloud teacher runtime call, network call, training, app runtime transfer, real dataset/photo/local config/generated report, or production rollout is added.
+
 The research index for this direction is `../docs/research/on-device-ai-research-index.md`. Later Depth Anything / Florence work remains blocked until separately approved and benchmarked. The next recommended phase after Phase 21-B commit/push is `Phase 21-C - Depth Anything V2 Small Core ML Sandbox`.
 
 ## Phase 21-M / 21-N / 21-N-R0 / 21-N-R0B / 21-N-R0C / 21-N-R1B / 21-N-R1C / 21-N-R1D Xcode Boundary

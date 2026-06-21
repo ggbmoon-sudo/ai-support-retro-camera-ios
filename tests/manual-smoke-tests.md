@@ -4706,6 +4706,17 @@ Backend human review queue verification:
 - [ ] Confirm app-transfer output reports `appRuntimeEligibleCount:0`, `eligibleForAppRuntime:false`, `appRuntimeTransferBlocked:true`, and `productionReady:false`.
 - [ ] Confirm no Xcode runtime behavior is expected to change.
 - [ ] Confirm no Swift runtime file, model file, Core ML package, model download, inference, Camera integration, upload path, provider/model key, API key, real dataset/photo/local config/generated report, crawler/download mode, image read/upload, cloud teacher call, training, app runtime transfer, or production rollout was added.
+## Phase OD-R7A - Local CV Feature Vector Benchmark Dry-run
+
+Backend local CV feature benchmark verification:
+
+- [ ] From `backend/`, run `npm run qa:aesthetic-local-cv:feature-benchmark`.
+- [ ] From `backend/`, run `node --test tests/aesthetic-local-cv-feature-benchmark.test.mjs`.
+- [ ] Confirm CLI output is sanitized and reports `runMode:"local_cv_feature_benchmark_dry_run"`, `featureVectorCount`, `acceptedVectorCount`, `rejectedVectorCount`, `tagBenchmarkCounts`, `featureKeyCounts`, `thresholdSignalCounts`, and `suppressionSignalCounts`.
+- [ ] Confirm app-transfer output reports `eligibleForAppRuntime:false`, `appRuntimeTransferBlocked:true`, and `productionReady:false`.
+- [ ] Confirm execution flags report `imageReadsPerformed:false`, `networkCallsMade:false`, `providerConfigured:false`, `cloudTeacherEnabled:false`, `crawlerEnabled:false`, `downloadEnabled:false`, `trainingEnabled:false`, and `runtimeIntegrationEnabled:false`.
+- [ ] Confirm no Xcode runtime behavior is expected to change.
+- [ ] Confirm no Swift runtime file, model file, Core ML package, model download, CV inference, Camera integration, upload path, provider/model key, API key, real dataset/photo/local config/generated report, crawler/download mode, image read/upload, cloud teacher call, training, app runtime transfer, or production rollout was added.
 ## Phase 21-A2 - Live Framing Aesthetic Spatial Codebook
 
 Docs-only verification:

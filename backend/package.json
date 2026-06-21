@@ -59,6 +59,7 @@
     "qa:aesthetic-teacher:provider-smoke-harness": "node scripts/run-aesthetic-cloud-teacher-provider-smoke-harness.mjs",
     "qa:aesthetic-parameters:candidate-dry-run": "node scripts/run-aesthetic-parameter-candidate-dry-run.mjs",
     "qa:aesthetic-review:queue": "node scripts/check-aesthetic-human-review-queue.mjs",
+    "qa:aesthetic-local-cv:feature-benchmark": "node scripts/run-aesthetic-local-cv-feature-benchmark.mjs",
     "qa:open-weight-vlm:local": "node scripts/run-open-weight-vlm-local-sandbox-smoke.mjs --run-local-model",
     "qa:open-weight-vlm:approved-one-fixture-local-model-smoke-retry": "node scripts/run-open-weight-vlm-approved-one-fixture-local-model-smoke-retry.mjs",
     "qa:siliconflow:readiness": "node scripts/check-siliconflow-photo-advisor-provider-readiness.mjs",

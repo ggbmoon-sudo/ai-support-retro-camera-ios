@@ -1,4 +1,4 @@
-# Phase Roadmap Sequencing and Next Action Register
+﻿# Phase Roadmap Sequencing and Next Action Register
 
 Status: Phase 21-G3 docs-only roadmap sequencing register  
 Date: 2026-06-17  
@@ -16,11 +16,11 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**Phase OD-R7: Local CV Feature Extractor Benchmark**
+**Phase OD-R8: Parameter Tuning Harness**
 
-Reason: Phase OD-R6B adds the backend-only Human Review Queue schema, Phase OD-R5B adds the backend-only Cloud Teacher provider sandbox readiness gate plus redacted request-envelope builder, and Phase OD-R5C adds the backend-only opt-in provider smoke harness while keeping the default path no-network/fail-closed. A real provider smoke remains deferred and requires separate explicit approval. The next OD-R layer should benchmark local CV feature extraction against reviewed synthetic/approved candidate shapes before tuning or product-transfer artifacts.
+Reason: Phase OD-R7A adds a backend-only Local CV Feature Vector Benchmark dry-run over safe inline synthetic numeric feature vectors. It validates OD-R1 registry keys against OD-R6A parameter candidates and OD-R6B review decisions while keeping real image reads, CV inference, provider/cloud/network calls, training, runtime integration, app transfer, and production rollout disabled. The next OD-R layer can prepare a backend-only parameter tuning harness, still without app/runtime transfer.
 
-OD-R7 should remain backend-only and benchmark-planning/dry-run only unless separately approved for approved synthetic samples. It must not add Swift runtime files, model installation, Core ML packages, crawler/download mode, product runtime transfer, Camera integration, upload paths, provider/model keys in committed files, real datasets/photos/local configs/generated reports, training, inference rollout, or production rollout. OD-03B Swift placeholder work remains paused. App/model installation belongs later to OD-P product integration after benchmark and safety gates pass. `productionReady:false` remains locked.
+OD-R8 should remain backend-only and tuning-planning/dry-run only unless separately approved for a specific safe artifact path. It must not add Swift runtime files, model installation, Core ML packages, crawler/download mode, product runtime transfer, Camera integration, upload paths, provider/model keys in committed files, real datasets/photos/local configs/generated reports, training, inference rollout, or production rollout. OD-03B Swift placeholder work remains paused. App/model installation belongs later to OD-P product integration after benchmark and safety gates pass. `productionReady:false` remains locked.
 
 Planned OD-R sequence: `OD-R1` Aesthetic Parameter Registry, `OD-R2` Dataset / Source Manifest Schema, `OD-R3` Parameter Mining Bot Dry-run, `OD-R4` Cloud AI Teacher Contract, `OD-R5` Cloud AI Teacher Labeling Stub / Sandbox, `OD-R6` Human Review Queue Schema, `OD-R7` Local CV Feature Extractor Benchmark, `OD-R8` Parameter Tuning Harness, `OD-R9` Fine-tune / Distillation Readiness Gate, then `OD-P1` Product Integration Candidate. Parameter Mining Bot is not a public web crawler. Cloud AI is a future offline structured-labeling teacher, not live app runtime. Local CV / local AI is the future runtime student.
 
@@ -37,6 +37,8 @@ Implementation status note: `docs/od-r6b-human-review-queue-schema.md` records t
 Implementation status note: `docs/od-r5b-cloud-teacher-provider-sandbox-readiness-gate.md` records the backend-only Cloud Teacher provider sandbox readiness gate. It validates disabled local config shape, redacted request-envelope output, ignored config/sample/report boundaries, no-call provider readiness, and app-transfer blocks while keeping `productionReady:false`.
 
 Implementation status note: `docs/od-r5c-cloud-teacher-provider-smoke-harness.md` records the backend-only opt-in Cloud Teacher provider smoke harness. It defaults to `blocked_no_network`, uses the OD-R5B gate and redacted envelope, validates represented output through OD-R4 and OD-R6B, and adds no real provider adapter, provider SDK/package, cloud call, network call, image read/upload, training, runtime integration, app transfer, or production rollout.
+
+Implementation status note: `docs/od-r7a-local-cv-feature-vector-benchmark.md` records the backend-only Local CV Feature Vector Benchmark dry-run. It uses safe inline synthetic numeric feature vectors only, checks OD-R1 feature/threshold/suppression/action keys against OD-R6A candidates and OD-R6B review decisions, and keeps image reads, real CV inference, provider/cloud/network calls, training, runtime integration, app transfer, and `productionReady` set to true blocked.
 
 Naming note: older committed Phase 21-A backend-internal VLM records remain historical evidence. The completed on-device geometry phase should be referenced by its full title: `Phase 21-A - On-device Vision Geometry Spike`.
 

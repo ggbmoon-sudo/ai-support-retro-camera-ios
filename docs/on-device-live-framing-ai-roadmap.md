@@ -56,6 +56,8 @@ OD-R5B implementation note: `docs/od-r5b-cloud-teacher-provider-sandbox-readines
 
 OD-R5C implementation note: `docs/od-r5c-cloud-teacher-provider-smoke-harness.md` adds a backend-only opt-in Cloud Teacher provider smoke harness. The default path is `blocked_no_network`, uses the OD-R5B gate and redacted envelope, validates represented outputs through the OD-R4 contract and OD-R6B review queue, and adds no real provider adapter, provider SDK, cloud call, network call, image read/upload, training, runtime integration, app transfer, or production rollout.
 
+OD-R7A implementation note: `docs/od-r7a-local-cv-feature-vector-benchmark.md` adds a backend-only Local CV Feature Vector Benchmark dry-run. It evaluates safe inline synthetic numeric feature vectors against OD-R1 registry keys, OD-R6A parameter candidates, and OD-R6B review decisions while keeping image reads, CV inference, provider/cloud/network calls, training, runtime integration, app transfer, and production rollout disabled.
+
 ## Product Language Rule
 
 Live hints must keep the Photo Advisor style:
