@@ -1,29 +1,44 @@
 import PhotosUI
 import SwiftUI
+import UIKit
 
 struct ReferenceImagePickerView: View {
     @Binding var selection: PhotosPickerItem?
+    let selectedImage: UIImage?
+    let titleKey: LocalizedStringKey
+    let noteKey: LocalizedStringKey
+    let actionKey: LocalizedStringKey
     let isDisabled: Bool
     let onUseSample: () -> Void
     let onShowUnavailable: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: AppSpacing.md) {
-            Text("filter_lab.reference.title")
+            Text(titleKey)
                 .font(AppTypography.bodyEmphasis)
                 .foregroundStyle(AppColors.textPrimary)
 
-            Text("filter_lab.reference.note")
+            Text(noteKey)
                 .font(AppTypography.caption)
                 .foregroundStyle(AppColors.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)
+
+            if let selectedImage {
+                Image(uiImage: selectedImage)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(maxWidth: .infinity, minHeight: 160, maxHeight: 180)
+                    .clipped()
+                    .background(Color.black)
+                    .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.md))
+            }
 
             PhotosPicker(
                 selection: $selection,
                 matching: .images,
                 photoLibrary: .shared()
             ) {
-                Label("filter_lab.action.choose_reference", systemImage: "photo.on.rectangle")
+                Label(actionKey, systemImage: "photo.on.rectangle")
                     .font(AppTypography.bodyEmphasis)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, AppSpacing.md)
@@ -32,7 +47,7 @@ struct ReferenceImagePickerView: View {
                     .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.md))
             }
             .disabled(isDisabled)
-            .accessibilityLabel("filter_lab.action.choose_reference")
+            .accessibilityLabel(actionKey)
 
             HStack(spacing: AppSpacing.sm) {
                 Button {

@@ -4,7 +4,8 @@ import SwiftUI
 struct FilterLabView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = FilterLabViewModel()
-    @State private var pickerItem: PhotosPickerItem?
+    @State private var styleReferencePickerItem: PhotosPickerItem?
+    @State private var applyTargetPickerItem: PhotosPickerItem?
     #if DEBUG
     @State private var showsCloudDebugConsent = false
     #endif
@@ -16,11 +17,32 @@ struct FilterLabView: View {
                     header
 
                     ReferenceImagePickerView(
-                        selection: $pickerItem,
+                        selection: $styleReferencePickerItem,
+                        selectedImage: viewModel.styleReferenceImage,
+                        titleKey: "filter_lab.style_reference.title",
+                        noteKey: "filter_lab.style_reference.note",
+                        actionKey: "filter_lab.action.choose_style_reference",
                         isDisabled: viewModel.state == .analyzing,
                         onUseSample: {
                             Task {
-                                await viewModel.useSampleReferenceImage()
+                                await viewModel.useSampleStyleReferenceImage()
+                            }
+                        },
+                        onShowUnavailable: {
+                            viewModel.showUnavailableState()
+                        }
+                    )
+
+                    ReferenceImagePickerView(
+                        selection: $applyTargetPickerItem,
+                        selectedImage: viewModel.applyTargetImage,
+                        titleKey: "filter_lab.apply_target.title",
+                        noteKey: "filter_lab.apply_target.note",
+                        actionKey: "filter_lab.action.choose_apply_target",
+                        isDisabled: viewModel.state == .analyzing,
+                        onUseSample: {
+                            Task {
+                                await viewModel.useSampleApplyTargetImage()
                             }
                         },
                         onShowUnavailable: {
@@ -43,10 +65,16 @@ struct FilterLabView: View {
                     }
                 }
             }
-            .onChange(of: pickerItem) { _, newValue in
+            .onChange(of: styleReferencePickerItem) { _, newValue in
                 Task {
-                    await viewModel.importReferenceImage(from: newValue)
-                    pickerItem = nil
+                    await viewModel.importStyleReferenceImage(from: newValue)
+                    styleReferencePickerItem = nil
+                }
+            }
+            .onChange(of: applyTargetPickerItem) { _, newValue in
+                Task {
+                    await viewModel.importApplyTargetImage(from: newValue)
+                    applyTargetPickerItem = nil
                 }
             }
             #if DEBUG
@@ -96,7 +124,7 @@ struct FilterLabView: View {
                 .fixedSize(horizontal: false, vertical: true)
 
             #if DEBUG
-            if viewModel.referenceImage != nil {
+            if viewModel.canGenerate {
                 Button {
                     showsCloudDebugConsent = true
                 } label: {
@@ -132,10 +160,12 @@ struct FilterLabView: View {
             analyzingView
         case .result:
             if let recipe = viewModel.recipe,
-               let referenceImage = viewModel.referenceImage {
+               let styleReferenceImage = viewModel.styleReferenceImage,
+               let applyTargetImage = viewModel.applyTargetImage {
                 GeneratedFilterResultView(
                     recipe: recipe,
-                    referenceImage: referenceImage,
+                    styleReferenceImage: styleReferenceImage,
+                    applyTargetImage: applyTargetImage,
                     previewImage: viewModel.previewImage,
                     intensity: viewModel.intensity,
                     isRenderingPreview: viewModel.isRenderingPreview,
@@ -170,7 +200,7 @@ struct FilterLabView: View {
                 actionKey: "filter_lab.action.use_sample"
             ) {
                 Task {
-                    await viewModel.useSampleReferenceImage()
+                    await viewModel.retry()
                 }
             }
         }

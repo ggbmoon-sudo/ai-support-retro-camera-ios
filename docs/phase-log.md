@@ -14355,3 +14355,71 @@ Run `PT2-SF-R6-VERIFY - MacBook/Xcode Debug SiliconFlow App Endpoint Routing Ver
 ### Ready for Next Phase
 
 Recommended next step is `PT2-SF-R6-VERIFY - MacBook/Xcode Debug SiliconFlow App Endpoint Routing Verification`. Keep selected-photo Inspiration only, debug/internal only, backend-mediated only, production/default mock/local, and Camera local-only. Do not start image editor provider work, Camera AI work, direct iOS provider calls, live provider smoke, or production rollout without separate explicit approval.
+
+## PT2-SF-R7 - Filter Lab Two-image Apply Preview UX
+
+Status: implemented, pending MacBook/Xcode verification
+Date: 2026-06-22
+Production readiness: `productionReady:false`
+
+### Summary
+
+PT2-SF-R7 updates Filter Lab so generated filters use two distinct images: a target filter reference image for recipe generation, and a separate original/apply image for the local before/after preview. The backend Filter Lab contract remains one reference image only; the apply image stays local and is rendered through the existing local preview renderer.
+
+### Completed Work
+
+- Split Filter Lab image state into `styleReferenceImage` and `applyTargetImage`.
+- Added two PhotosPicker slots in Filter Lab, each with selected-image thumbnail feedback and sample fallback.
+- Changed recipe generation to use only the style reference image.
+- Changed preview rendering to apply the generated recipe to the separate original/apply image.
+- Updated the result card to show the target filter image plus original/effect preview.
+- Kept DEBUG backend generation behind consent and one-reference-image payload only.
+- Updated English and Traditional Chinese Filter Lab copy.
+- Added `docs/pt2-sf-r7-filter-lab-two-image-apply-preview-ux.md`.
+- Updated README and roadmap next action notes.
+
+### Changed Files
+
+- `README.md`
+- `ios-app/README.md`
+- `ios-app/AIPhotoApp/Features/Inspiration/FilterLab/FilterLabView.swift`
+- `ios-app/AIPhotoApp/Features/Inspiration/FilterLab/FilterLabViewModel.swift`
+- `ios-app/AIPhotoApp/Features/Inspiration/FilterLab/ReferenceImagePickerView.swift`
+- `ios-app/AIPhotoApp/Features/Inspiration/FilterLab/GeneratedFilterResultView.swift`
+- `ios-app/AIPhotoApp/Resources/Localization/en.lproj/Localizable.strings`
+- `ios-app/AIPhotoApp/Resources/Localization/zh-Hant.lproj/Localizable.strings`
+- `docs/pt2-sf-r7-filter-lab-two-image-apply-preview-ux.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-log.md`
+
+### Tests and Checks
+
+- `git diff --check`
+- Focused scans for leftover single-image Filter Lab call sites and missing two-image localization keys
+- Safety scans for direct provider URL/key in iOS, provider SDK usage, backend/runtime payload changes, Swift/Xcode project/model artifacts, and `productionReady:true`
+- Xcode build/runtime verification was not run in this Windows environment.
+
+### Boundary Confirmations
+
+- Swift runtime changed: yes, Filter Lab app-side UX/runtime only
+- Xcode project changed: no
+- Backend runtime changed: no
+- Backend payload expanded: no
+- Provider/model call run: no
+- API key read/printed/committed: no
+- Direct provider URL/key in iOS: no
+- Provider SDK in iOS: no
+- Image upload run during this phase: no
+- Camera cloud AI entry: no
+- Image editor provider behavior: no
+- StoreKit/quota runtime: no
+- Production rollout: no
+- `productionReady:false` remains locked.
+
+### Xcode Verification Needed
+
+Build and run on MacBook/Xcode. Open Filter Lab, choose a target filter image, then choose a different original/apply image. Confirm generation starts only after both images exist, the result shows the target filter image plus original/effect preview, intensity changes re-render the effect image, and `Choose other images` clears both images. In DEBUG, confirm the backend test action appears only after both images exist and, if a separately approved smoke is run, sends only the style reference image through the backend while the original/apply image stays local.
+
+### Ready for Next Phase
+
+Recommended next step is `PT2-SF-R7-VERIFY - MacBook/Xcode Filter Lab Two-image Apply Preview Verification`. Start with local/sample/fallback verification. Any provider-backed debug smoke still requires separate explicit approval and must remain backend-mediated with server-side credentials only. Do not start image editor provider work, Camera AI work, direct iOS provider calls, live provider smoke, or production rollout without separate explicit approval.

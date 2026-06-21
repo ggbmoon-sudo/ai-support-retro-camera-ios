@@ -14,7 +14,8 @@ final class FilterLabViewModel: ObservableObject {
     }
 
     @Published private(set) var state: State = .idle
-    @Published private(set) var referenceImage: UIImage?
+    @Published private(set) var styleReferenceImage: UIImage?
+    @Published private(set) var applyTargetImage: UIImage?
     @Published private(set) var previewImage: UIImage?
     @Published private(set) var recipe: GeneratedFilterRecipe?
     @Published var intensity: Double = 0.72
@@ -41,41 +42,61 @@ final class FilterLabViewModel: ObservableObject {
         renderTask?.cancel()
     }
 
-    func importReferenceImage(from pickerItem: PhotosPickerItem?) async {
+    var canGenerate: Bool {
+        styleReferenceImage != nil && applyTargetImage != nil
+    }
+
+    func importStyleReferenceImage(from pickerItem: PhotosPickerItem?) async {
         guard let pickerItem else { return }
 
         do {
-            guard let data = try await pickerItem.loadTransferable(type: Data.self),
-                  let image = UIImage(data: data) else {
-                throw FilterGenerationError.failed
-            }
-
-            await generate(from: image)
+            let image = try await loadImage(from: pickerItem)
+            await updateStyleReferenceImage(image)
         } catch {
             state = .failed(error.localizedDescription)
         }
     }
 
-    func useSampleReferenceImage() async {
-        await generate(from: Self.sampleReferenceImage())
+    func importApplyTargetImage(from pickerItem: PhotosPickerItem?) async {
+        guard let pickerItem else { return }
+
+        do {
+            let image = try await loadImage(from: pickerItem)
+            await updateApplyTargetImage(image)
+        } catch {
+            state = .failed(error.localizedDescription)
+        }
+    }
+
+    func useSampleStyleReferenceImage() async {
+        await updateStyleReferenceImage(Self.sampleStyleReferenceImage())
+    }
+
+    func useSampleApplyTargetImage() async {
+        await updateApplyTargetImage(Self.sampleApplyTargetImage())
     }
 
     func retry() async {
-        guard let referenceImage else {
-            await useSampleReferenceImage()
-            return
+        if styleReferenceImage == nil {
+            styleReferenceImage = Self.sampleStyleReferenceImage()
         }
 
-        await generate(from: referenceImage)
+        if applyTargetImage == nil {
+            applyTargetImage = Self.sampleApplyTargetImage()
+        }
+
+        await generateFromCurrentImages()
     }
 
     func tryAnotherImage() {
         renderTask?.cancel()
         state = .idle
-        referenceImage = nil
+        styleReferenceImage = nil
+        applyTargetImage = nil
         previewImage = nil
         recipe = nil
         intensity = 0.72
+        isRenderingPreview = false
         applyMessageKey = nil
         #if DEBUG
         cloudDebugFallbackMessageKey = nil
@@ -92,7 +113,7 @@ final class FilterLabViewModel: ObservableObject {
     }
 
     func applyMockFilter() {
-        guard recipe != nil, referenceImage != nil else {
+        guard recipe != nil, applyTargetImage != nil else {
             applyMessageKey = "filter_lab.apply.no_photo"
             return
         }
@@ -100,11 +121,35 @@ final class FilterLabViewModel: ObservableObject {
         applyMessageKey = "filter_lab.apply.applied_mock"
     }
 
-    private func generate(from image: UIImage) async {
+    private func updateStyleReferenceImage(_ image: UIImage) async {
+        styleReferenceImage = image
+        await generateIfReady()
+    }
+
+    private func updateApplyTargetImage(_ image: UIImage) async {
+        applyTargetImage = image
+        await generateIfReady()
+    }
+
+    private func generateIfReady() async {
+        guard canGenerate else {
+            resetGeneratedState()
+            return
+        }
+
+        await generateFromCurrentImages()
+    }
+
+    private func generateFromCurrentImages() async {
+        guard let styleReferenceImage, applyTargetImage != nil else {
+            resetGeneratedState()
+            return
+        }
+
         renderTask?.cancel()
-        referenceImage = image
         previewImage = nil
         recipe = nil
+        isRenderingPreview = false
         applyMessageKey = nil
         #if DEBUG
         cloudDebugFallbackMessageKey = nil
@@ -112,7 +157,7 @@ final class FilterLabViewModel: ObservableObject {
         state = .analyzing
 
         do {
-            let generatedRecipe = try await generationService.generateFilter(from: image)
+            let generatedRecipe = try await generationService.generateFilter(from: styleReferenceImage)
             recipe = FilterRecipeValidator.validated(generatedRecipe)
             state = .result
             renderPreview()
@@ -121,22 +166,35 @@ final class FilterLabViewModel: ObservableObject {
         }
     }
 
+    private func resetGeneratedState() {
+        renderTask?.cancel()
+        previewImage = nil
+        recipe = nil
+        isRenderingPreview = false
+        applyMessageKey = nil
+        state = .idle
+        #if DEBUG
+        cloudDebugFallbackMessageKey = nil
+        #endif
+    }
+
     #if DEBUG
     func generateCloudDebug(consent: CloudAIConsent) async {
-        guard let referenceImage else {
-            await useSampleReferenceImage()
+        guard let styleReferenceImage, applyTargetImage != nil else {
+            await retry()
             return
         }
 
         renderTask?.cancel()
         previewImage = nil
         recipe = nil
+        isRenderingPreview = false
         applyMessageKey = nil
         cloudDebugFallbackMessageKey = nil
         state = .analyzing
 
         do {
-            let compressedImage = try CloudAIImageCompressor().compress(referenceImage)
+            let compressedImage = try CloudAIImageCompressor().compress(styleReferenceImage)
             let cloudInput = CloudAIFilterLabInput(
                 imageData: compressedImage.data,
                 contentType: compressedImage.contentType,
@@ -155,7 +213,7 @@ final class FilterLabViewModel: ObservableObject {
             cloudDebugFallbackMessageKey = "filter_lab.cloud_debug.fallback"
 
             do {
-                let fallback = try await fallbackGenerationService.generateFilter(from: referenceImage)
+                let fallback = try await fallbackGenerationService.generateFilter(from: styleReferenceImage)
                 recipe = FilterRecipeValidator.validated(fallback)
                 applyMessageKey = "filter_lab.cloud_debug.fallback"
                 state = .result
@@ -168,7 +226,7 @@ final class FilterLabViewModel: ObservableObject {
     #endif
 
     private func renderPreview() {
-        guard let referenceImage, let recipe else { return }
+        guard let applyTargetImage, let recipe else { return }
 
         renderTask?.cancel()
         isRenderingPreview = true
@@ -178,7 +236,7 @@ final class FilterLabViewModel: ObservableObject {
         renderTask = Task { [weak self] in
             do {
                 let renderedImage = try await renderer.render(
-                    image: referenceImage,
+                    image: applyTargetImage,
                     recipe: recipe,
                     intensity: currentIntensity
                 )
@@ -191,7 +249,7 @@ final class FilterLabViewModel: ObservableObject {
             } catch {
                 guard !Task.isCancelled else { return }
                 await MainActor.run {
-                    self?.previewImage = referenceImage
+                    self?.previewImage = applyTargetImage
                     self?.isRenderingPreview = false
                     self?.state = .failed(error.localizedDescription)
                 }
@@ -199,7 +257,16 @@ final class FilterLabViewModel: ObservableObject {
         }
     }
 
-    private static func sampleReferenceImage() -> UIImage {
+    private func loadImage(from pickerItem: PhotosPickerItem) async throws -> UIImage {
+        guard let data = try await pickerItem.loadTransferable(type: Data.self),
+              let image = UIImage(data: data) else {
+            throw FilterGenerationError.failed
+        }
+
+        return image
+    }
+
+    private static func sampleStyleReferenceImage() -> UIImage {
         let size = CGSize(width: 900, height: 1200)
         let renderer = UIGraphicsImageRenderer(size: size)
 
@@ -230,6 +297,43 @@ final class FilterLabViewModel: ObservableObject {
             context.cgContext.addLine(to: CGPoint(x: 450, y: 760))
             context.cgContext.move(to: CGPoint(x: 340, y: 600))
             context.cgContext.addLine(to: CGPoint(x: 560, y: 600))
+            context.cgContext.strokePath()
+        }
+    }
+
+    private static func sampleApplyTargetImage() -> UIImage {
+        let size = CGSize(width: 900, height: 1200)
+        let renderer = UIGraphicsImageRenderer(size: size)
+
+        return renderer.image { context in
+            let colors = [
+                UIColor(red: 0.18, green: 0.31, blue: 0.42, alpha: 1).cgColor,
+                UIColor(red: 0.80, green: 0.86, blue: 0.72, alpha: 1).cgColor
+            ] as CFArray
+            let colorSpace = CGColorSpaceCreateDeviceRGB()
+            let gradient = CGGradient(colorsSpace: colorSpace, colors: colors, locations: [0, 1])
+
+            if let gradient {
+                context.cgContext.drawLinearGradient(
+                    gradient,
+                    start: CGPoint(x: 0, y: 0),
+                    end: CGPoint(x: size.width, y: size.height),
+                    options: []
+                )
+            }
+
+            UIColor.black.withAlphaComponent(0.22).setFill()
+            context.cgContext.fill(CGRect(x: 110, y: 720, width: 680, height: 180))
+
+            UIColor.white.withAlphaComponent(0.28).setFill()
+            context.cgContext.fill(CGRect(x: 160, y: 400, width: 180, height: 320))
+            context.cgContext.fill(CGRect(x: 390, y: 320, width: 160, height: 400))
+            context.cgContext.fill(CGRect(x: 600, y: 470, width: 120, height: 250))
+
+            UIColor.white.withAlphaComponent(0.55).setStroke()
+            context.cgContext.setLineWidth(6)
+            context.cgContext.move(to: CGPoint(x: 130, y: 700))
+            context.cgContext.addLine(to: CGPoint(x: 770, y: 700))
             context.cgContext.strokePath()
         }
     }

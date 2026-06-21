@@ -48,6 +48,8 @@ Product correction: Camera-page Live Cloud AI / Live Advisor is no longer needed
 
 PT2-SF-R5 adds a DEBUG-only selected-photo Filter Lab backend scaffold. After a Filter Lab reference image exists, DEBUG builds can show a backend test action, ask for `CloudAIConsentView` consent, compress/metadata-strip the selected image, call only the project backend boundary at `v1/ai/filter-lab`, decode a validated generated recipe, and fall back to local mock recipes if the backend is disabled or invalid. Production/default behavior remains mock/local. iOS still has no SiliconFlow URL, provider API key, provider SDK, direct provider call, Camera cloud AI entry, image editor provider behavior, or production rollout. MacBook/Xcode debug verification is still required.
 
+PT2-SF-R7 updates Filter Lab to use two app-side image slots: a target filter reference image for recipe generation and a separate original/apply image for the local before/after preview. The backend Filter Lab payload remains one reference image only; the apply image stays local and is rendered through the existing local preview renderer. No provider key/direct provider call, backend route change, upload payload expansion, Camera cloud AI entry, image editor provider behavior, or production rollout is added.
+
 The research index for this direction is `../docs/research/on-device-ai-research-index.md`. Later Depth Anything / Florence work remains blocked until separately approved and benchmarked. If continuing app-side development, choose a non-composition Camera feature or focused runtime/UI polish.
 
 ## Phase 21-M / 21-N / 21-N-R0 / 21-N-R0B / 21-N-R0C / 21-N-R1B / 21-N-R1C / 21-N-R1D Xcode Boundary
@@ -689,9 +691,9 @@ User Xcode / Simulator verification was temporarily accepted on 2026-06-11.
 
 Implementation notes:
 
-- `Features/Inspiration/FilterLab/` contains the structured mock recipe model, parameter set, mock service, validator / clamp helper, view model, reference picker, generated result card, before / after preview, and local preview renderer.
+- `Features/Inspiration/FilterLab/` contains the structured mock recipe model, parameter set, mock service, validator / clamp helper, view model, two-image picker flow, generated result card, before / after preview, and local preview renderer.
 - `HomeView` adds a visible Filter Lab / Generate My Filter entry while preserving the existing Inspiration import-photo flow.
-- PhotosPicker selects a single reference image for in-memory mock preview only.
+- PhotosPicker now uses a target filter reference image plus a separate original/apply image; generated recipes use the reference image, while preview rendering applies the recipe locally to the original image.
 - A sample fallback keeps the flow testable when Simulator photo picking is inconvenient.
 - Mock generated filters are session-only and are not added to the permanent filter catalog.
 - The intensity slider affects only the current Filter Lab preview.

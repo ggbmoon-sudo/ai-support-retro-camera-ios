@@ -3,7 +3,8 @@ import UIKit
 
 struct GeneratedFilterResultView: View {
     let recipe: GeneratedFilterRecipe
-    let referenceImage: UIImage
+    let styleReferenceImage: UIImage
+    let applyTargetImage: UIImage
     let previewImage: UIImage?
     let intensity: Double
     let isRenderingPreview: Bool
@@ -49,8 +50,10 @@ struct GeneratedFilterResultView: View {
                 .foregroundStyle(AppColors.accent)
                 .clipShape(Capsule())
 
+            styleReferencePreview
+
             GeneratedFilterPreviewView(
-                beforeImage: referenceImage,
+                beforeImage: applyTargetImage,
                 afterImage: previewImage,
                 isRendering: isRenderingPreview
             )
@@ -113,6 +116,23 @@ struct GeneratedFilterResultView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(AppColors.surface)
         .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.lg))
+    }
+
+    private var styleReferencePreview: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.xs) {
+            Text("filter_lab.preview.style_reference")
+                .font(AppTypography.micro)
+                .foregroundStyle(AppColors.textSecondary)
+
+            Image(uiImage: styleReferenceImage)
+                .resizable()
+                .scaledToFit()
+                .frame(maxWidth: .infinity, maxHeight: 220)
+                .clipped()
+                .background(Color.black)
+                .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.md))
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private var recommendedUses: some View {
