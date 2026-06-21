@@ -1287,6 +1287,13 @@ Latest Phase OD-R7D Local CV Calibration Smoke on 2026-06-21:
 Latest Phase OD-R7E Local CV Expected Range Comparison on 2026-06-21:
 
 - OD-R7E adds backend/local-only expected range comparison for sanitized OD-R7D calibration output.
+
+Latest Phase OD-R7F Local CV Calibration Multi-fixture Aggregation Gate on 2026-06-21:
+
+- OD-R7F adds backend/local-only aggregation for sanitized OD-R7E expected-range outputs.
+- The default CLI aggregates the single inline `calibration_001` comparison, reports `insufficientSampleSize:true`, and keeps `eligibleForParameterTuning:false`, `eligibleForAppRuntime:false`, and `productionReady:false`.
+- The output emits warning frequency buckets, not scores/ratings/aesthetic grades, and does not introduce retake-first guidance.
+- It reads no images by default, writes no reports, commits no fixtures/local configs, touches no Swift/Xcode files, calls no provider/cloud/Xiaoyi relay code, performs no network/upload/download/crawler work, trains/fine-tunes nothing, transfers nothing to app runtime, and leaves Camera behavior unchanged.
 - Added `backend/src/qa/aestheticLocalCvExpectedRangeComparison.mjs`, `backend/scripts/run-aesthetic-local-cv-expected-range-comparison.mjs`, backend tests, `npm run qa:aesthetic-local-cv:expected-range`, and `docs/od-r7e-local-cv-expected-range-comparison.md`.
 - The default CLI compares the inline sanitized OD-R7D-R1 `calibration_001` feature vector only.
 - It reads no images by default, runs no CV inference, writes no reports, and emits soft warning buckets rather than scores.

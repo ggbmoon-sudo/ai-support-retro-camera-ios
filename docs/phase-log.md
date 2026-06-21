@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Phase OD-R7E - Local CV Calibration Expected Range Comparison
+Current phase: Phase OD-R7F - Local CV Calibration Multi-fixture Aggregation Gate
 Status: completed
-Latest implementation: Phase OD-R7D adds a backend/local-only ignored local fixture calibration smoke for OD-R7B/OD-R7C. The default CLI safely blocks when ignored config or fixture prerequisites are absent. If explicitly approved locally, it may read exactly one ignored `calibration_001` fixture and emit sanitized in-memory feature buckets only. It writes no reports and makes no provider/cloud/Xiaoyi relay call, network call, upload, crawler/download, training/fine-tuning, iOS runtime integration, Swift file, model install, app runtime transfer, real photo/local config/generated report commit, or production rollout. `productionReady:false` remains locked.
+Latest implementation: Phase OD-R7F adds a backend/local-only Local CV calibration multi-fixture aggregation gate for sanitized OD-R7E expected-range outputs. The default CLI reads no images, aggregates the single inline `calibration_001` comparison, reports `insufficientSampleSize:true`, emits warning frequency buckets instead of score/rating/aesthetic grading, and keeps parameter tuning, app runtime transfer, provider/cloud/Xiaoyi relay calls, network/upload, generated reports, Swift/Xcode changes, model installs, and production rollout blocked. `productionReady:false` remains locked.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -13158,6 +13158,75 @@ Phase OD-R7E adds backend/local-only expected range comparison for sanitized OD-
 ### Ready for Next Phase
 
 Ready for a future `Phase OD-R7F - Local CV Calibration Multi-fixture Aggregation Gate` after commit/push. Not ready for production rollout.
+## Phase OD-R7F - Local CV Calibration Multi-fixture Aggregation Gate
+
+Status: completed
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase OD-R7F adds backend/local-only aggregation for sanitized OD-R7E expected-range outputs. It aggregates fixture tokens, feature comparison status buckets, and warning frequency buckets without reading images by default.
+
+The current inline aggregation contains one reviewed fixture, `calibration_001`, so `insufficientSampleSize:true` remains expected and `eligibleForParameterTuning:false` stays locked.
+
+### Completed Work
+
+- Added `backend/src/qa/aestheticLocalCvCalibrationAggregationGate.mjs`.
+- Added `backend/scripts/run-aesthetic-local-cv-calibration-aggregation-gate.mjs`.
+- Added `backend/tests/aesthetic-local-cv-calibration-aggregation-gate.test.mjs`.
+- Added `npm run qa:aesthetic-local-cv:calibration-aggregation`.
+- Added `docs/od-r7f-local-cv-calibration-aggregation-gate.md`.
+- Updated README, backend/iOS README, roadmap, handoff, phase log, and manual smoke notes for OD-R7F.
+
+### Changed Files
+
+- `README.md`
+- `backend/README.md`
+- `backend/package.json`
+- `backend/scripts/run-aesthetic-local-cv-calibration-aggregation-gate.mjs`
+- `backend/src/qa/aestheticLocalCvCalibrationAggregationGate.mjs`
+- `backend/tests/aesthetic-local-cv-calibration-aggregation-gate.test.mjs`
+- `docs/od-r7f-local-cv-calibration-aggregation-gate.md`
+- `docs/on-device-live-framing-ai-roadmap.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `ios-app/README.md`
+- `tests/manual-smoke-tests.md`
+
+### Boundary Checks
+
+- Backend/local-only aggregation: yes
+- Sanitized OD-R7E outputs only: yes
+- Image read by default: no
+- Real CV inference performed: no
+- Warning frequencies rather than scores/ratings/aesthetic grades: yes
+- Retake-first guidance introduced: no
+- Provider/cloud/Xiaoyi relay call made: no
+- Network/upload/download/crawler performed: no
+- Real photos/local configs/generated reports committed: no
+- Swift/Xcode/runtime integration added: no
+- Model/Core ML/ONNX/TFLite/weight file added: no
+- Training/fine-tuning enabled: no
+- App runtime transfer enabled: no
+- Production rollout: no
+- `productionReady:false`: yes
+
+### Verification
+
+- `node --test tests/aesthetic-local-cv-calibration-aggregation-gate.test.mjs` should pass.
+- `npm run qa:aesthetic-local-cv:calibration-aggregation` should pass.
+- Full `npm test`, diff checks, and safety scans should pass before commit/push.
+
+### Known TODOs
+
+- OD-R7F-R1 may run more approved ignored local fixture smokes and manually append sanitized OD-R7E outputs for aggregation.
+- OD-R8C may connect aggregation summaries to tuning only after sample-size and review gates pass.
+
+### Ready for Next Phase
+
+Ready for future OD-R7F-R1 fixture expansion or OD-R8C tuning connection work after commit/push. Not ready for production rollout.
 ## Phase OD-R5B - Cloud Teacher Provider Sandbox Readiness Gate
 
 Status: completed

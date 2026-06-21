@@ -4776,6 +4776,21 @@ Backend local CV expected range verification:
 - [ ] Confirm no Xcode runtime behavior is expected to change.
 - [ ] Confirm no Swift runtime file, model file, Core ML package, model download, Camera integration, upload path, provider/model key, API key, Xiaoyi relay call, crawler/download mode, image read by default, image upload, cloud/provider call, network call, training/fine-tuning, app runtime transfer, or production rollout was added.
 
+## Phase OD-R7F - Local CV Calibration Multi-fixture Aggregation Gate
+
+Backend local CV aggregation verification:
+
+- [ ] From `backend/`, run `npm run qa:aesthetic-local-cv:calibration-aggregation`.
+- [ ] From `backend/`, run `node --test tests/aesthetic-local-cv-calibration-aggregation-gate.test.mjs`.
+- [ ] Confirm output has `runMode:"multi_fixture_aggregation_no_image_read"`.
+- [ ] Confirm `fixtureCount:1`, `insufficientSampleSize:true`, `minimumRecommendedFixtureCount:5`, and `acceptedForCalibrationAggregationReview:true`.
+- [ ] Confirm warning frequency buckets include `soft_horizon_tilt_left:1` and `soft_spatial_balance_review:1`, with no blocker buckets.
+- [ ] Confirm `eligibleForParameterTuning:false`, `eligibleForAppRuntime:false`, and `productionReady:false`.
+- [ ] Confirm execution flags report `imageReadsPerformed:false`, `cvInferencePerformed:false`, `networkCallsMade:false`, `uploadPerformed:false`, `providerCallAttempted:false`, `generatedReportsPersisted:false`, and `appRuntimeIntegrationEnabled:false`.
+- [ ] Confirm output does not emit score/rating/aesthetic grading fields and does not create retake-first guidance.
+- [ ] Confirm no Xcode runtime behavior is expected to change.
+- [ ] Confirm no Swift runtime file, model file, Core ML package, model download, Camera integration, upload path, provider/model key, API key, Xiaoyi relay call, crawler/download mode, image read by default, image upload, cloud/provider call, network call, training/fine-tuning, app runtime transfer, generated report, or production rollout was added.
+
 ## Phase OD-R8A - Parameter Tuning Harness Dry-run
 
 Backend parameter tuning dry-run verification:
