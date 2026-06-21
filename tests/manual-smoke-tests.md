@@ -4864,6 +4864,18 @@ Physical-device verification:
 - [ ] Confirm no provider/model key, direct provider/model call, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame/image/depth persistence, dataset crawler, AI-assisted labeling run, user-photo training, Depth Anything runtime, Core ML model inference, Florence runtime, or production rollout appears.
 - [ ] Confirm `productionReady:false` remains unchanged.
 
+## Phase 21-A7-VERIFY - QA Handoff and Uninstalled App Feature Inventory
+
+Docs-only verification:
+
+- [ ] Confirm `docs/phase-21-a7-verify-camera-runtime-qa-and-uninstalled-app-feature-inventory.md` exists.
+- [ ] Confirm the doc does not claim physical-device QA was run from Windows.
+- [ ] Confirm the next recommended step remains operator MacBook/Xcode physical-device QA.
+- [ ] Confirm the uninstalled app feature inventory clearly marks live cloud AI, Auto-Trigger, WSS, upload payload runtime, direct iOS provider/model calls, Depth Anything runtime, Florence runtime, dataset/labeling/fine-tuning runtime, and production rollout as not installed / blocked / separate future work.
+- [ ] Confirm Camera-page Live Cloud AI / Live Advisor is marked no longer needed, while Inspiration / post-capture photo analysis, generated filters, and image editing remain future backend-mediated Cloud AI scope with no iOS provider keys.
+- [ ] Confirm no Swift runtime, iOS project setting, provider/model key, direct provider/model call, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame/image/depth persistence, dataset crawler, AI-assisted labeling run, user-photo training, Depth Anything runtime, Core ML model inference, Florence runtime, or production rollout appears.
+- [ ] Confirm `productionReady:false` remains unchanged.
+
 ## Phase 21-A2 - Live Framing Aesthetic Spatial Codebook
 
 Docs-only verification:

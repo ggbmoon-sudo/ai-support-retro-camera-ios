@@ -6,6 +6,10 @@ Production readiness: `productionReady:false`
 
 Today direction update: live camera guidance should now prioritize on-device Vision / AVFoundation geometry, hardware depth when available, and app-side retro-aware rules instead of cloud live VLM. SiliconFlow / RunPod / open-weight VLM work remains valid for post-capture Photo Advisor, offline benchmark, internal evaluation, schema validation, and future model-assisted labeling, but Phase 21 should become the on-device live framing intelligence track. See `docs/on-device-live-framing-ai-roadmap.md`.
 
+Phase 21-A7-VERIFY adds a focused app-runtime inventory at `docs/phase-21-a7-verify-camera-runtime-qa-and-uninstalled-app-feature-inventory.md`. It separates currently installed Camera/runtime features from roadmap items that remain not installed, blocked, scaffold-only, research-only, backend-only, or separate training-AI branch work.
+
+Latest product correction: Camera-page Live Cloud AI / Live Advisor is no longer needed because local on-device Camera guidance replaces that path. Cloud AI is still needed for Inspiration / post-capture product surfaces: Qwen3-family photo analysis, Qwen3-family generated filter / Filter Lab, and GPT Image 2.0-style image editing / 改圖師 through a mainland relay provider. Those API keys must remain backend-only/local-ignored/server-side and must never be placed in iOS.
+
 ## Executive Summary
 
 This register records planned, missing, deferred, blocked, partially built, or not-yet-integrated app/backend/VLM features so future ChatGPT/Codex sessions do not rely only on chat memory.
@@ -51,6 +55,8 @@ The following foundation appears present or planned through committed docs/sourc
 - `productionReady:false` remains the required default across backend QA, local VLM, gateway, and production-boundary docs.
 
 ## Missing / Deferred Feature Register
+
+Camera Live Advisor note: rows below that reference camera-view Live Advisor / Auto-Trigger / WSS are retained as historical policy gates, not current product direction. The active direction is no Camera-page live cloud AI unless explicitly reversed. Future Cloud AI should be scoped to Inspiration / post-capture analysis, generated filters, and image editing through backend-mediated mainland relay providers.
 
 | Area | Feature | Current status | Why it matters | Blocking dependencies | Suggested future phase | Safety/privacy notes |
 | --- | --- | --- | --- | --- | --- | --- |

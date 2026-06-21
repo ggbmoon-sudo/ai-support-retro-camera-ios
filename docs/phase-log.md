@@ -13557,3 +13557,65 @@ Build and run on iPhone. Confirm local guidance still shows safe lighting / filt
 ### Ready for Next Phase
 
 Current recommended next step is `Phase 21-A7-VERIFY - Camera Runtime Non-composition Polish Physical-device QA`. If continuing composition intelligence, use a separate training-AI branch phase for dataset/label schema, legal/source/consent gates, human review, and typed composition outputs. Not ready for production rollout.
+
+## Phase 21-A7-VERIFY - Camera Runtime Non-composition Polish Physical-device QA and Uninstalled App Feature Inventory
+
+Status: docs-only verification handoff; physical-device QA pending
+Date: 2026-06-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase 21-A7-VERIFY records the A7 physical-device QA checklist and organizes roadmap features that are not yet installed in the app runtime. It does not claim MacBook/Xcode/iPhone verification because this Windows environment cannot run physical-device Xcode QA.
+
+### Completed Work
+
+- Added `docs/phase-21-a7-verify-camera-runtime-qa-and-uninstalled-app-feature-inventory.md`.
+- Documented the A7 physical-device QA checklist for local guidance fallback, compact icon behavior, and Camera regression checks.
+- Organized installed app runtime features versus not-yet-installed roadmap features.
+- Marked live cloud AI, Auto-Trigger, WSS, upload payload runtime, direct iOS provider/model calls, Depth Anything runtime, Florence runtime, dataset/labeling/fine-tuning runtime, and production rollout as not installed / blocked / separate future work.
+- Recorded the product correction that Camera-page Live Cloud AI / Live Advisor is no longer needed; future Cloud AI remains scoped to Inspiration / post-capture photo analysis, generated filters, and image editing through backend-mediated mainland relay providers with server-side-only keys.
+- Kept the next recommended step as operator MacBook/Xcode physical-device QA.
+
+### Changed Files
+
+- `docs/phase-21-a7-verify-camera-runtime-qa-and-uninstalled-app-feature-inventory.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-log.md`
+- `docs/on-device-live-framing-ai-roadmap.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `README.md`
+- `ios-app/README.md`
+- `tests/manual-smoke-tests.md`
+
+### Tests and Checks
+
+- `git diff --check`
+- Docs/artifact scan for model files, provider keys, preview-frame upload, upload payload changes, raw frame persistence, dataset crawler, AI-assisted labeling runtime, and production readiness changes
+- Xcode physical-device QA was not run in this environment.
+
+### Boundary Confirmations
+
+- Swift runtime changed: no
+- iOS project settings changed: no
+- Provider/model/cloud call: no
+- Camera live cloud AI entry: no
+- Preview-frame upload: no
+- Upload payload changed: no
+- Raw frame/depth/image persistence: no
+- Dataset crawler added: no
+- AI-assisted labeling run added: no
+- User-photo training added: no
+- Model file / Core ML package added: no
+- Depth Anything runtime added: no
+- Florence runtime added: no
+- Sensitive inference added: no
+- `productionReady:false` remains locked.
+
+### Xcode Verification Needed
+
+Run `Phase 21-A7-VERIFY-RUN - Operator MacBook/Xcode Physical-device QA` on iPhone. Confirm A7 local guidance fallback, compact icon behavior, suppressed app-authored composition hints, `Next hint` single-hint disabled state, Camera capture, live filter preview, selfie mirror parity, flash, and focal crop behavior.
+
+### Ready for Next Phase
+
+Current recommended next step is `Phase 21-A7-VERIFY-RUN - Operator MacBook/Xcode Physical-device QA`. Not ready for production rollout.

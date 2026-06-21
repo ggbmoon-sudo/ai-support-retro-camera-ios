@@ -1302,3 +1302,14 @@ Latest Phase 21-A7 Camera Runtime Non-composition Polish on 2026-06-21:
 - Added `docs/phase-21-a7-camera-runtime-non-composition-polish-summary.md`.
 - No provider/cloud call, provider key, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame/depth/image persistence, dataset crawler, AI-assisted labeling run, user-photo training, Depth Anything runtime, Florence runtime, Core ML model inference, sensitive inference, secret, or production rollout was added.
 - `productionReady:false` remains locked.
+
+Latest Phase 21-A7-VERIFY QA Handoff and Uninstalled App Feature Inventory on 2026-06-21:
+
+- Phase 21-A7-VERIFY is docs-only and does not claim physical-device QA from Windows.
+- Added `docs/phase-21-a7-verify-camera-runtime-qa-and-uninstalled-app-feature-inventory.md`.
+- The doc records the pending MacBook/Xcode iPhone checklist for A7 local guidance fallback, compact icon behavior, suppressed composition hints, and Camera regression checks.
+- It also organizes roadmap features not yet installed in app runtime, including live cloud AI, Auto-Trigger, WSS, upload payload runtime, direct iOS provider/model calls, Depth Anything runtime, Florence runtime, dataset/labeling/fine-tuning runtime, production endpoint integration, StoreKit/quota production runtime, and production rollout controls.
+- Product correction after the inventory: Camera-page Live Cloud AI / Live Advisor is no longer needed because local on-device guidance owns Camera. Cloud AI remains needed for Inspiration / post-capture Qwen3-family photo analysis, Qwen3-family generated filters, and GPT Image 2.0-style image editing / 改圖師 through backend-mediated mainland relay providers with server-side-only keys.
+- Next recommended step remains operator-run `Phase 21-A7-VERIFY-RUN - Operator MacBook/Xcode Physical-device QA`.
+- No Swift runtime, iOS project setting, provider/cloud call, provider key, Camera live cloud AI entry, preview-frame upload, upload payload change, raw frame/depth/image persistence, model file, dataset crawler, AI-assisted labeling run, user-photo training, Depth Anything runtime, Florence runtime, sensitive inference, secret, or production rollout was added.
+- `productionReady:false` remains locked.

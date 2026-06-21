@@ -8,6 +8,8 @@ Production readiness: `productionReady:false`
 
 Real-time / live camera guidance should move away from cloud live VLM as the primary path. The current SiliconFlow, RunPod, and open-weight/self-hosted VLM work remains valuable for post-capture Photo Advisor, offline benchmark, internal evaluation, schema validation, and possible future model-assisted labeling or distillation, but it is no longer the default answer for live camera guidance.
 
+Latest correction: Camera-page Live Cloud AI / Live Advisor is no longer needed because the Camera direction is local on-device guidance. Cloud AI remains needed for Inspiration / post-capture product surfaces: Qwen3-family photo analysis, Qwen3-family generated filter / Filter Lab, and GPT Image 2.0-style image editing / 改圖師 through a backend-mediated mainland relay provider. Relay API keys must stay server-side/local-ignored and never enter the iOS app.
+
 The live guidance direction is now on-device geometry / depth / rules first:
 
 - Apple Vision and AVFoundation are the first production-leaning path for geometry, subject boxes, face/body regions, pose regions, margins, and composition rules.
@@ -99,6 +101,7 @@ Implementation note:
 - Phase 21-A5 now records the composition guidance ownership boundary at `docs/phase-21-a5-composition-guidance-ownership-boundary.md`: richer composition advice belongs to the training-AI branch, while iOS Camera remains a local signal / hint-shell layer.
 - Phase 21-A6 now applies that ownership boundary in runtime at `docs/phase-21-a6-app-side-composition-hint-suppression-summary.md`: app-authored composition / portrait-layout hint copy is suppressed, while safe local signals and conservative lighting/filter/unavailable hints remain.
 - Phase 21-A7 now records non-composition Camera guidance polish at `docs/phase-21-a7-camera-runtime-non-composition-polish-summary.md`: empty post-A6 local hint surfaces fall back to a safe unavailable hint, and compact local guidance avoids a suggestion-like sparkle icon when no visible hint exists.
+- Phase 21-A7-VERIFY now records the pending physical-device QA handoff and roadmap-based inventory of features not yet installed in the app runtime at `docs/phase-21-a7-verify-camera-runtime-qa-and-uninstalled-app-feature-inventory.md`.
 
 ### Phase 21-B - AVFoundation Depth Capability Probe
 

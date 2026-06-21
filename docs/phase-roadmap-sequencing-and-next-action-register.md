@@ -16,9 +16,11 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**Phase 21-A7-VERIFY - Camera Runtime Non-composition Polish Physical-device QA**
+**Phase 21-A7-VERIFY-RUN - Operator MacBook/Xcode Physical-device QA**
 
-Reason: Phase 21-A7 completed a small non-composition Camera guidance polish after A6: local guidance falls back to the safe unavailable hint when post-A6 filtering leaves no visible suggestion, and compact local guidance no longer uses a suggestion-like sparkle icon when no hint is visible. The next safe step is MacBook/Xcode physical-device QA, not another app-side composition rules phase. If the goal is richer composition intelligence, use a separate training-AI branch phase for dataset/label schema, legal/source/consent gates, human review, and typed composition outputs before any iOS runtime integration. Phase 21-C-R3-RUN remains available only if local ignored artifact prerequisites and the exact approval phrase are present.
+Reason: Phase 21-A7-VERIFY created a docs-only QA handoff and roadmap-based inventory of features not yet installed in the app runtime. It did not run Xcode/iPhone verification from this Windows environment. The next safe step is operator MacBook/Xcode physical-device QA for Phase 21-A7 behavior, not another app-side composition rules phase. If the goal is richer composition intelligence, use a separate training-AI branch phase for dataset/label schema, legal/source/consent gates, human review, and typed composition outputs before any iOS runtime integration. Phase 21-C-R3-RUN remains available only if local ignored artifact prerequisites and the exact approval phrase are present.
+
+Product correction: Camera-page Live Cloud AI / Live Advisor is no longer needed under the current direction because local on-device guidance replaces it. Cloud AI remains needed for Inspiration / post-capture photo analysis, generated filters, and image editing through backend-mediated mainland relay providers; direct iOS provider calls and iOS provider keys remain blocked.
 
 If Phase 21-A4/A6/A7 hint UX behavior or Camera runtime stability regresses, use a focused Camera QA follow-up before continuing larger AI roadmap work. Do not add more app-authored composition advice, scoring, retake-first language, cloud calls, frame uploads, upload payload changes, provider keys, sensitive inference, raw frame/depth/image persistence, model artifacts, training data collection, or production rollout in the verification step. `productionReady:false` remains locked.
 
@@ -31,6 +33,8 @@ Live hint UX status note: `docs/phase-21-a4-on-device-live-framing-hint-ux-pass-
 Composition hint boundary note: `docs/phase-21-a6-app-side-composition-hint-suppression-summary.md` records the Phase 21-A6 runtime suppression of app-authored composition / portrait-layout hint copy.
 
 Non-composition polish note: `docs/phase-21-a7-camera-runtime-non-composition-polish-summary.md` records the Phase 21-A7 local guidance fallback and compact icon polish.
+
+A7 verification inventory note: `docs/phase-21-a7-verify-camera-runtime-qa-and-uninstalled-app-feature-inventory.md` records the pending physical-device QA checklist and roadmap-based list of features not yet installed in the app runtime.
 
 Camera focal crop status note: `docs/phase-21-a3-r3-focal-framing-box-crop.md` records the current focal framing-box crop implementation boundary and Xcode verification checklist.
 
