@@ -55,7 +55,7 @@ struct CloudAIEndpointClient: Sendable {
 private extension CloudAIEndpointClient {
     static var defaultBaseURL: URL {
         #if DEBUG
-        if let configuredURL = ProcessInfo.processInfo.environment["AI_PHOTO_CLOUD_AI_BASE_URL"],
+        if let configuredURL = UserDefaults.standard.string(forKey: "AIPhotoCloudAIBaseURL"),
            let url = URL(string: configuredURL),
            url.scheme == "http" || url.scheme == "https",
            url.host != nil {

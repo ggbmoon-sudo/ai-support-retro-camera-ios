@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: PT2-SF-R9-R1 - Physical-device Local Network Launch Hotfix
+Current phase: PT2-SF-R9-R4 - DEBUG Safe Boot Isolation
 Status: implemented; awaiting Xcode physical-device retry
-Latest implementation: PT2-SF-R9-R1 added generated Info.plist local network usage text and DEBUG local networking allowance for the phone-to-computer backend path after an early physical-device `abort_with_payload` launch crash. No provider smoke was run, no provider key or direct provider URL was added to iOS, no backend runtime code changed, and `productionReady:false` remains locked.
+Latest implementation: PT2-SF-R9-R4 adds a temporary DEBUG-only safe boot root that bypasses `AppRootView`, `MainTabShellView`, and Camera initialization. It shows only a small DEBUG landing surface with a Filter Lab entry to isolate whether the launch black-screen crash is in the normal root/Camera path or outside those views. No provider smoke was run, no provider key or direct provider URL was added to iOS, no backend runtime code changed, and `productionReady:false` remains locked.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -14831,6 +14831,125 @@ Physical-device Xcode run is still operator-side because this Windows Codex envi
 - Camera cloud AI entry: no.
 - Image editor provider behavior: no.
 - StoreKit/quota runtime: no.
+- Production rollout: no.
+- `productionReady:false` remains locked.
+
+## PT2-SF-R9-R4 - DEBUG Safe Boot Isolation
+
+Status: implemented; awaiting Xcode physical-device retry
+Date: 2026-06-23
+Production readiness: `productionReady:false`
+
+### Summary
+
+PT2-SF-R9-R4 adds a temporary DEBUG-only safe boot root that bypasses `AppRootView`, `MainTabShellView`, and Camera initialization. It shows only a small DEBUG landing surface with a Filter Lab entry.
+
+If safe boot opens, the launch black-screen crash is in the normal app root or Camera launch path. If safe boot still black-screens, the issue is likely outside those views, such as Xcode scheme/project/cache/install state.
+
+### Changed Files
+
+- `ios-app/AIPhotoApp/AIPhotoApp.swift`
+- `docs/pt2-sf-r9-r4-debug-safe-boot.md`
+- `docs/phase-log.md`
+
+### Xcode Retry Needed
+
+- Remove `AI_PHOTO_CLOUD_AI_BASE_URL` from Xcode Scheme environment variables.
+- Clean Build Folder.
+- Delete the app from the iPhone.
+- Build and run.
+- Expected DEBUG launch: simple `AIPhotoApp` / `DEBUG safe boot` screen with Filter Lab button.
+
+### Boundary Confirmations
+
+- DEBUG launch root changed: yes, temporary safe boot only.
+- Release launch root changed: no.
+- Camera runtime initialized on launch: no.
+- Backend runtime code changed: no.
+- Provider/model call run in this phase: no.
+- API key value printed/saved/committed: no.
+- Direct iOS provider call: no.
+- Direct provider URL/key in iOS: no.
+- Backend payload expanded: no.
+- Production rollout: no.
+- `productionReady:false` remains locked.
+
+## PT2-SF-R9-R3 - Stop Reading Xcode Scheme Environment URL
+
+Status: implemented; awaiting Xcode physical-device retry
+Date: 2026-06-23
+Production readiness: `productionReady:false`
+
+### Summary
+
+PT2-SF-R9-R3 stops reading `AI_PHOTO_CLOUD_AI_BASE_URL` from Xcode Scheme environment variables after physical-device testing showed a launch-time black screen immediately after the scheme value was added. The DEBUG backend URL resolver now reads only `UserDefaults.standard.string(forKey: "AIPhotoCloudAIBaseURL")`, falling back to `http://127.0.0.1:8787`.
+
+For the immediate retry, remove the Xcode Scheme environment variable and confirm the app opens. A safer in-app DEBUG backend URL control can be added next if the launch is stable.
+
+### Changed Files
+
+- `ios-app/AIPhotoApp/Services/CloudAI/CloudAIEndpointClient.swift`
+- `docs/pt2-sf-r9-r3-stop-scheme-env-read.md`
+- `docs/phase-log.md`
+
+### Xcode Retry Needed
+
+- Remove `AI_PHOTO_CLOUD_AI_BASE_URL` from the Xcode Scheme environment variables.
+- Clean Build Folder.
+- Delete the app from the iPhone.
+- Build and run again.
+- Confirm the app opens to Home in DEBUG.
+
+### Boundary Confirmations
+
+- Xcode Scheme env URL read disabled: yes.
+- Backend runtime code changed: no.
+- Provider/model call run in this phase: no.
+- API key value printed/saved/committed: no.
+- Direct iOS provider call: no.
+- Direct provider URL/key in iOS: no.
+- Backend payload expanded: no.
+- Apply/original image uploaded: no.
+- Production rollout: no.
+- `productionReady:false` remains locked.
+
+## PT2-SF-R9-R2 - DEBUG Home Launch Workaround
+
+Status: implemented; awaiting Xcode physical-device retry
+Date: 2026-06-23
+Production readiness: `productionReady:false`
+
+### Summary
+
+PT2-SF-R9-R2 changes DEBUG app launch to Home instead of Camera after physical-device testing showed a launch-time black screen / `abort_with_payload` crash. Since the app's main tab shell previously selected Camera immediately, Camera runtime initialized before the user could reach Filter Lab.
+
+This is a temporary DEBUG-only workaround to unblock Filter Lab LAN backend testing and isolate the crash to the Camera launch path. Release launch still starts on Camera.
+
+### Changed Files
+
+- `ios-app/AIPhotoApp/App/MainTabShellView.swift`
+- `docs/pt2-sf-r9-r2-debug-home-launch-workaround.md`
+- `docs/phase-log.md`
+
+### Xcode Retry Needed
+
+- Clean Build Folder.
+- Delete the app from the iPhone.
+- Reinstall/run from Xcode.
+- Confirm DEBUG opens to Home instead of a black Camera screen.
+- Open Filter Lab from Home and continue the LAN backend test.
+
+### Boundary Confirmations
+
+- DEBUG launch tab changed: yes, Home first.
+- Release launch tab changed: no.
+- Backend runtime code changed: no.
+- Provider/model call run in this phase: no.
+- API key value printed/saved/committed: no.
+- Direct iOS provider call: no.
+- Direct provider URL/key in iOS: no.
+- Backend payload expanded: no.
+- Apply/original image uploaded: no.
 - Production rollout: no.
 - `productionReady:false` remains locked.
 
