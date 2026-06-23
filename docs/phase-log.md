@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: PT2-SF-R9 - Physical-device DEBUG Filter Lab Backend E2E Smoke
-Status: implemented; awaiting operator physical-device run
-Latest implementation: PT2-SF-R9 added a DEBUG-only iOS backend base URL override through `AI_PHOTO_CLOUD_AI_BASE_URL` so a physical iPhone can reach a computer-hosted local/LAN backend for Filter Lab testing. No provider smoke was run, no provider key or direct provider URL was added to iOS, no Xcode project or backend runtime code changed, and `productionReady:false` remains locked.
+Current phase: PT2-SF-R9-R1 - Physical-device Local Network Launch Hotfix
+Status: implemented; awaiting Xcode physical-device retry
+Latest implementation: PT2-SF-R9-R1 added generated Info.plist local network usage text and DEBUG local networking allowance for the phone-to-computer backend path after an early physical-device `abort_with_payload` launch crash. No provider smoke was run, no provider key or direct provider URL was added to iOS, no backend runtime code changed, and `productionReady:false` remains locked.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -14849,3 +14849,47 @@ Set `AI_PHOTO_CLOUD_AI_BASE_URL=http://<computer-lan-ip>:8787` in the Xcode DEBU
 Recommended next step is `PT2-SF-R9-RUN - Operator Physical-device Filter Lab LAN Backend Verification`.
 
 Keep it one physical-device E2E verification, backend-mediated only, one style reference upload only, apply/original image local-only, no direct iOS provider call, no raw logging, and `productionReady:false`.
+
+## PT2-SF-R9-R1 - Physical-device Local Network Launch Hotfix
+
+Status: implemented; awaiting Xcode physical-device retry
+Date: 2026-06-23
+Production readiness: `productionReady:false`
+
+### Summary
+
+PT2-SF-R9-R1 fixes the physical-device LAN debug setup after Xcode showed an early `abort_with_payload` launch crash. The hotfix adds generated Info.plist local network usage text and a DEBUG local networking allowance for the phone-to-computer backend path.
+
+No provider smoke was run. No provider key or direct provider URL was added to iOS. No backend runtime code, backend payload, Camera cloud AI entry, image editor provider behavior, or production rollout was added.
+
+### Changed Files
+
+- `README.md`
+- `docs/pt2-sf-r9-r1-local-network-launch-hotfix.md`
+- `docs/phase-log.md`
+- `ios-app/AIPhotoApp.xcodeproj/project.pbxproj`
+
+### Xcode Retry Needed
+
+- Keep `AI_PHOTO_CLOUD_AI_BASE_URL=http://192.168.68.60:8787` in the DEBUG run scheme.
+- Product > Clean Build Folder.
+- Delete the app from the iPhone.
+- Build and run again from Xcode.
+- If iOS asks for Local Network permission, allow it.
+
+### Boundary Confirmations
+
+- Xcode project changed: yes, generated Info.plist local-network keys only.
+- Backend runtime code changed: no.
+- Provider/model call run in this phase: no.
+- API key value printed/saved/committed: no.
+- Authorization header printed/committed: no.
+- Raw request/provider/image/base64 printed/committed: no.
+- Direct iOS provider call: no.
+- Direct provider URL/key in iOS: no.
+- Provider SDK in iOS: no.
+- Backend payload expanded: no.
+- Apply/original image uploaded: no.
+- Camera cloud AI entry: no.
+- Production rollout: no.
+- `productionReady:false` remains locked.
