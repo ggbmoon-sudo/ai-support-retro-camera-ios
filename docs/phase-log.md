@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: PT2-SF-R9-R6 - Xcode Backtrace Recording Workaround
+Current phase: PT2-SF-R9-R7 - Filter Lab Cloud Debug Primary Flow
 Status: implemented; awaiting Xcode physical-device retry
-Latest implementation: PT2-SF-R9-R6 identifies the physical-device launch crash as the known Xcode/iOS debugger `OS_dispatch_mach_msg _setContext:` issue caused by scheme backtrace recording. Temporary DEBUG safe boot changes were restored and the app launches through the normal root again. Disable `Enable backtrace recording` in `Edit Scheme > Run > Options` before retrying. No provider smoke was run, no provider key or direct provider URL was added to iOS, no backend runtime code changed, and `productionReady:false` remains locked.
+Latest implementation: PT2-SF-R9-R7 changes DEBUG Filter Lab so selecting the style reference image and apply/original image no longer auto-generates a mock recipe. DEBUG now shows a clear Cloud AI ready state and requires the backend test action plus consent before upload. Successful backend results show `Cloud result` / `雲端結果`; fallback results remain mock/local. No provider key or direct provider URL was added to iOS, no backend runtime code changed, and `productionReady:false` remains locked.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -14831,6 +14831,52 @@ Physical-device Xcode run is still operator-side because this Windows Codex envi
 - Camera cloud AI entry: no.
 - Image editor provider behavior: no.
 - StoreKit/quota runtime: no.
+- Production rollout: no.
+- `productionReady:false` remains locked.
+
+## PT2-SF-R9-R7 - Filter Lab Cloud Debug Primary Flow
+
+Status: implemented; awaiting Xcode physical-device retry
+Date: 2026-06-24
+Production readiness: `productionReady:false`
+
+### Summary
+
+PT2-SF-R9-R7 changes DEBUG Filter Lab behavior so selecting the style reference image and apply/original image no longer auto-generates a mock recipe. Instead, DEBUG builds show a clear "Ready for Cloud AI" state and require the operator to tap the backend test action and accept consent before the style reference image is sent to the backend.
+
+When the backend returns a cloud generated recipe, the result card source label shows `Cloud result` / `雲端結果`. If the cloud call fails and the fallback path is used, the result remains a mock/local recipe and the fallback message is shown.
+
+### Changed Files
+
+- `ios-app/AIPhotoApp/Features/Inspiration/FilterLab/FilterLabViewModel.swift`
+- `ios-app/AIPhotoApp/Features/Inspiration/FilterLab/FilterLabView.swift`
+- `ios-app/AIPhotoApp/Resources/Localization/en.lproj/Localizable.strings`
+- `ios-app/AIPhotoApp/Resources/Localization/zh-Hant.lproj/Localizable.strings`
+- `docs/pt2-sf-r9-r7-filter-lab-cloud-debug-primary-flow.md`
+- `docs/phase-log.md`
+
+### Xcode Verification Needed
+
+- Open Filter Lab in DEBUG.
+- Choose one target filter/style reference image.
+- Choose one separate original/apply image.
+- Confirm no mock result is auto-generated.
+- Tap `Debug: Test Filter Lab Backend` / `Debug：測試 Filter Lab 後端`.
+- Accept the cloud consent sheet.
+- Confirm successful backend result shows `Cloud result` / `雲端結果`.
+
+### Boundary Confirmations
+
+- DEBUG Filter Lab cloud test made primary operator flow: yes.
+- Consent remains required before upload: yes.
+- Backend receives only the style reference image: yes.
+- Apply/original image remains local-only: yes.
+- Backend runtime code changed: no.
+- Provider/model call run in this phase: no.
+- API key value printed/saved/committed: no.
+- Direct iOS provider call: no.
+- Direct provider URL/key in iOS: no.
+- Production/default behavior changed: no.
 - Production rollout: no.
 - `productionReady:false` remains locked.
 

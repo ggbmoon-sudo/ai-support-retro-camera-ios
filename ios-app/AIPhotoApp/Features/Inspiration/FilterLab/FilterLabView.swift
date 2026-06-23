@@ -126,7 +126,7 @@ struct FilterLabView: View {
             #if DEBUG
             if viewModel.canGenerate {
                 Button {
-                    showsCloudDebugConsent = true
+                    showCloudDebugConsent()
                 } label: {
                     Label("filter_lab.cloud_debug.action", systemImage: "network")
                         .font(AppTypography.micro.weight(.semibold))
@@ -151,11 +151,23 @@ struct FilterLabView: View {
     private var stateContent: some View {
         switch viewModel.state {
         case .idle:
+            #if DEBUG
+            if viewModel.canGenerate {
+                cloudDebugReadyView
+            } else {
+                EmptyStateView(
+                    systemImage: "camera.filters",
+                    title: "filter_lab.empty.title",
+                    message: "filter_lab.empty.message"
+                )
+            }
+            #else
             EmptyStateView(
                 systemImage: "camera.filters",
                 title: "filter_lab.empty.title",
                 message: "filter_lab.empty.message"
             )
+            #endif
         case .analyzing:
             analyzingView
         case .result:
@@ -205,6 +217,38 @@ struct FilterLabView: View {
             }
         }
     }
+
+    #if DEBUG
+    private var cloudDebugReadyView: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.md) {
+            Image(systemName: "network")
+                .font(.system(size: 24, weight: .semibold))
+                .foregroundStyle(AppColors.accent)
+
+            Text("filter_lab.cloud_debug.ready.title")
+                .font(AppTypography.title2)
+                .foregroundStyle(AppColors.textPrimary)
+
+            Text("filter_lab.cloud_debug.ready.message")
+                .font(AppTypography.caption)
+                .foregroundStyle(AppColors.textSecondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            PrimaryButton("filter_lab.cloud_debug.action", systemImage: "network") {
+                showCloudDebugConsent()
+            }
+            .disabled(viewModel.state == .analyzing)
+        }
+        .padding(AppSpacing.md)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(AppColors.surface)
+        .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.lg))
+    }
+
+    private func showCloudDebugConsent() {
+        showsCloudDebugConsent = true
+    }
+    #endif
 
     private var analyzingView: some View {
         VStack(alignment: .leading, spacing: AppSpacing.md) {

@@ -137,8 +137,24 @@ final class FilterLabViewModel: ObservableObject {
             return
         }
 
+        #if DEBUG
+        prepareCloudDebugReadyState()
+        #else
         await generateFromCurrentImages()
+        #endif
     }
+
+    #if DEBUG
+    private func prepareCloudDebugReadyState() {
+        renderTask?.cancel()
+        previewImage = nil
+        recipe = nil
+        isRenderingPreview = false
+        applyMessageKey = nil
+        cloudDebugFallbackMessageKey = nil
+        state = .idle
+    }
+    #endif
 
     private func generateFromCurrentImages() async {
         guard let styleReferenceImage, applyTargetImage != nil else {
