@@ -1,4 +1,7 @@
+import { existsSync, readFileSync } from "node:fs";
 import http from "node:http";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { healthResponse } from "./routes/health.mjs";
 import { handlePhotoAdvisorRequest } from "./routes/photoAdvisor.mjs";
 import { handleFilterLabRequest } from "./routes/filterLab.mjs";
@@ -100,9 +103,68 @@ function readJsonBody(request) {
   });
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
-  const port = Number(process.env.PORT ?? 8787);
-  createServer().listen(port, () => {
-    console.log(`Cloud AI boundary mock server listening on ${port}`);
+export function isDirectServerRun(moduleURL = import.meta.url, argvPath = process.argv[1]) {
+  if (!argvPath) {
+    return false;
+  }
+
+  return path.resolve(fileURLToPath(moduleURL)) === path.resolve(argvPath);
+}
+
+export function loadDotEnvFileIfPresent(filePath, env = process.env) {
+  if (!existsSync(filePath)) {
+    return { loaded: false, setCount: 0 };
+  }
+
+  let setCount = 0;
+  const lines = readFileSync(filePath, "utf8").split(/\r?\n/);
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
+    if (!line || line.startsWith("#")) {
+      continue;
+    }
+
+    const separatorIndex = line.indexOf("=");
+    if (separatorIndex <= 0) {
+      continue;
+    }
+
+    const name = line.slice(0, separatorIndex).trim();
+    const parsedValue = parseDotEnvValue(line.slice(separatorIndex + 1).trim());
+    if (env[name] === undefined) {
+      env[name] = parsedValue;
+      setCount += 1;
+    }
+  }
+
+  return { loaded: true, setCount };
+}
+
+export function startServerFromEnv({
+  env = process.env,
+  cwd = process.cwd(),
+  log = console.log
+} = {}) {
+  loadDotEnvFileIfPresent(path.join(cwd, ".env.local"), env);
+  loadDotEnvFileIfPresent(path.join(cwd, ".env"), env);
+
+  const port = Number(env.PORT ?? 8787);
+  const server = createServer().listen(port, () => {
+    log(`Cloud AI boundary server listening on ${port}`);
   });
+  return server;
+}
+
+function parseDotEnvValue(value) {
+  if (
+    (value.startsWith("\"") && value.endsWith("\"")) ||
+    (value.startsWith("'") && value.endsWith("'"))
+  ) {
+    return value.slice(1, -1);
+  }
+  return value;
+}
+
+if (isDirectServerRun()) {
+  startServerFromEnv();
 }

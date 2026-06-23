@@ -222,12 +222,42 @@ final class FilterLabViewModel: ObservableObject {
             )
             let cloudResponse = try await RemoteCloudAIService(mode: .debugRemoteMock)
                 .generateFilterLab(cloudInput)
-            recipe = try CloudAIFilterLabMapper.map(cloudResponse)
+            let cloudRecipe = try CloudAIFilterLabMapper.map(cloudResponse)
+            guard cloudResponse.source == .cloud, cloudRecipe.source == .cloud else {
+                throw CloudAIServiceError.invalidResponse(["non_cloud_filter_lab_result"])
+            }
+
+            recipe = cloudRecipe
             state = .result
             renderPreview()
         } catch {
+            let message = Self.cloudDebugFailureMessage(for: error)
             cloudDebugFallbackMessageKey = "filter_lab.cloud_debug.failed"
-            state = .unavailable(NSLocalizedString("filter_lab.cloud_debug.failed", comment: ""))
+            state = .unavailable(message)
+        }
+    }
+
+    private static func cloudDebugFailureMessage(for error: Error) -> String {
+        guard let cloudError = error as? CloudAIServiceError else {
+            return NSLocalizedString("filter_lab.cloud_debug.failed.network", comment: "")
+        }
+
+        switch cloudError {
+        case .remoteHTTPStatus(let statusCode):
+            return String(
+                format: NSLocalizedString("filter_lab.cloud_debug.failed.http", comment: ""),
+                statusCode
+            )
+        case .invalidResponse:
+            return NSLocalizedString("filter_lab.cloud_debug.failed.invalid_response", comment: "")
+        case .imageCompressionFailed:
+            return NSLocalizedString("filter_lab.cloud_debug.failed.compression", comment: "")
+        case .consentRequired:
+            return NSLocalizedString("filter_lab.cloud_debug.failed.consent", comment: "")
+        case .remoteDisabled:
+            return NSLocalizedString("filter_lab.cloud_debug.failed.disabled", comment: "")
+        case .remoteUnavailable:
+            return NSLocalizedString("filter_lab.cloud_debug.failed.network", comment: "")
         }
     }
     #endif

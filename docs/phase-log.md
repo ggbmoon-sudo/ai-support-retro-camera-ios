@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: PT2-SF-R9-R8 - Filter Lab Cloud Fail-closed and Parameter Panel Prompt
+Current phase: PT2-SF-R9-R11 - Filter Lab Cloud Readiness Diagnostics
 Status: implemented; awaiting Xcode physical-device retry
-Latest implementation: PT2-SF-R9-R8 disables mock fallback for DEBUG Filter Lab cloud tests and strengthens the SiliconFlow Filter Lab prompt for reference images that contain visible parameter panels. Cloud debug now shows a failure state instead of a mock result if the backend does not return a cloud recipe, and provider requests use high image detail with visible-parameter extraction guidance. No provider key or direct provider URL was added to iOS, no backend route/payload expansion was added, and `productionReady:false` remains locked.
+Latest implementation: PT2-SF-R9-R11 fixes the misleading Filter Lab Cloud diagnostics after physical-device testing showed the app could open and generate, but the operator still could not reliably tell whether the result was truly Cloud AI. Backend `/health` now returns safe provider readiness buckets instead of hardcoded `mock-only`, and the DEBUG Filter Lab endpoint panel decodes `filterLabReady` to show whether the backend is reachable and ready for Filter Lab Cloud. No provider call/smoke was run, no iOS provider key/direct provider URL was added, no backend payload expansion occurred, no apply/original image is uploaded, no Camera cloud AI entry was added, and `productionReady:false` remains locked.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -76,6 +76,68 @@ Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-o
 Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. If continuing app-side feature development, choose a non-composition Camera feature or focused runtime/UI polish. If continuing composition intelligence, use a separate training-AI branch phase that begins with dataset/label schema, source/license/consent gates, and human review policy, not app runtime composition logic. Any model artifact handling, Core ML package use, inference execution, benchmark run, Camera runtime integration beyond explicit local scope, preview-frame upload/upload persistence, upload payload change, provider/cloud call, iOS provider/model key, raw artifact, sensitive inference, dataset crawler, user-photo training, or production rollout requires separate explicit approval before execution. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries.
 
 ---
+
+## PT2-SF-R9-R11 - Filter Lab Cloud Readiness Diagnostics
+
+Status: implemented; awaiting Xcode physical-device retry
+Date: 2026-06-24
+Production readiness: `productionReady:false`
+
+### Summary
+
+PT2-SF-R9-R11 fixes the remaining misleading debug signal in the physical-device Filter Lab Cloud path. Backend `/health` previously always returned `mode:"mock-only"`, so the iPhone endpoint Test could prove LAN reachability but could not prove that server-side SiliconFlow Filter Lab config was ready.
+
+The backend health response now returns only safe readiness buckets: provider mode, whether internal cloud AI is allowed, Photo Advisor readiness, Filter Lab readiness, and `productionReady:false`. The DEBUG iOS endpoint Test decodes those buckets and tells the operator whether Filter Lab Cloud is ready, reachable-but-not-ready, invalid, unreachable, or returning a non-2xx status.
+
+### Completed Work
+
+- Replaced hardcoded backend `/health` mock-only status with safe provider readiness buckets.
+- Added backend tests for default mock readiness and fully configured SiliconFlow readiness.
+- Updated DEBUG iOS health decoding to require `filterLabReady:true` and `productionReady:false` before showing ready.
+- Updated DEBUG Filter Lab endpoint status copy in English and Traditional Chinese.
+- Kept Filter Lab backend payload to one style/reference image only; apply/original image remains local-only.
+
+### Changed Files
+
+- `backend/src/routes/health.mjs`
+- `backend/tests/cloud-ai-boundary.test.mjs`
+- `ios-app/AIPhotoApp/Services/CloudAI/CloudAIEndpointClient.swift`
+- `ios-app/AIPhotoApp/Features/Inspiration/FilterLab/FilterLabView.swift`
+- `ios-app/AIPhotoApp/Resources/Localization/en.lproj/Localizable.strings`
+- `ios-app/AIPhotoApp/Resources/Localization/zh-Hant.lproj/Localizable.strings`
+- `README.md`
+- `backend/README.md`
+- `docs/phase-log.md`
+
+### Verification
+
+- `node --test backend/tests/cloud-ai-boundary.test.mjs` passed: 70 tests.
+- `git diff --check` reported only existing CRLF conversion warnings.
+
+### Xcode Physical-device Retry
+
+- Keep the DEBUG Filter Lab backend URL as `http://192.168.68.60:8787`.
+- Tap Save, then Test.
+- Expected ready status: `Backend ready for Filter Lab Cloud (siliconflowInternal).` / `後端已準備好 Filter Lab Cloud（siliconflowInternal）。`
+- If Test says reachable but not ready, the iPhone can reach the backend but server-side env is not ready.
+- After Test is ready, choose one style/reference image and one apply/original image, then run the DEBUG Cloud AI action with consent.
+
+### Boundary Confirmations
+
+- Provider credentials added to repo: no.
+- API key / Authorization header / raw request / raw provider response / raw image / base64 printed or saved: no.
+- Direct iOS provider call or provider URL/key: no.
+- Backend-mediated provider boundary only: yes.
+- Filter Lab backend receives only one style/reference image: yes.
+- Apply/original image stays local-only: yes.
+- Camera cloud AI entry: no.
+- Backend provider smoke run in this phase: no.
+- Production rollout: no.
+- `productionReady:false` remains locked.
+
+### Ready for Next Phase
+
+Recommended next step is the operator physical-device retry against the restarted LAN backend. If endpoint Test is ready but generated Filter Lab still falls back, the next safe phase is one approved DEBUG provider-backed Filter Lab app-endpoint smoke with one style/reference image only, no apply/original upload, no raw logging, and `productionReady:false`.
 
 ## PT2-SF-R3 - SiliconFlow Filter Lab Structured Recipe QA
 
@@ -14828,6 +14890,139 @@ Physical-device Xcode run is still operator-side because this Windows Codex envi
 - Direct iOS provider call: no.
 - Direct provider URL/key in iOS: no.
 - Provider SDK in iOS: no.
+- Camera cloud AI entry: no.
+- Image editor provider behavior: no.
+- StoreKit/quota runtime: no.
+- Production rollout: no.
+- `productionReady:false` remains locked.
+
+## PT2-SF-R9-R10 - Filter Lab LAN Cloud Diagnostics and ATS Fix
+
+Status: implemented; awaiting Xcode physical-device retry
+Date: 2026-06-24
+Production readiness: `productionReady:false`
+
+### Summary
+
+PT2-SF-R9-R10 fixes the app-side Filter Lab Cloud connection path after backend LAN health and the backend `/v1/ai/filter-lab` cloud smoke had already passed. The likely remaining blockers were the physical iPhone using LAN HTTP without an explicit ATS local-network allowance and the app route URL construction using a multi-segment path through a helper that could be ambiguous for backend routes.
+
+DEBUG Filter Lab now includes an in-app backend URL panel so the operator can enter `http://192.168.68.60:8787`, save it, and run a sanitized `/health` probe before sending the style reference image. The URL resolver accepts only localhost/private LAN backend origins and strips path/query/fragment/userinfo so iOS cannot be pointed at a provider gateway. DEBUG Filter Lab also requires both the backend response and generated recipe source to be `cloud` before showing a result.
+
+### Changed Files
+
+- `ios-app/AIPhotoApp.xcodeproj/project.pbxproj`
+- `ios-app/AIPhotoApp/Services/CloudAI/CloudAIEndpointClient.swift`
+- `ios-app/AIPhotoApp/Features/Inspiration/FilterLab/FilterLabView.swift`
+- `ios-app/AIPhotoApp/Features/Inspiration/FilterLab/FilterLabViewModel.swift`
+- `ios-app/AIPhotoApp/Resources/Localization/en.lproj/Localizable.strings`
+- `ios-app/AIPhotoApp/Resources/Localization/zh-Hant.lproj/Localizable.strings`
+- `README.md`
+- `docs/phase-log.md`
+
+### Tests and Checks
+
+- Static source inspection of the DEBUG Filter Lab cloud path.
+- Pending in this Windows environment: Xcode physical-device runtime verification.
+
+### Xcode Verification Needed
+
+1. Clean Build Folder.
+2. Delete the app from the iPhone.
+3. Build and run a DEBUG build.
+4. Open Filter Lab.
+5. In the DEBUG backend endpoint panel, enter `http://192.168.68.60:8787`.
+6. Tap Save.
+7. Tap Test.
+8. Expected health result: backend health check passed.
+9. Choose one target filter/style reference image.
+10. Choose one separate original/apply image.
+11. Tap `Debug: Test Filter Lab Backend` / `Debug：測試 Filter Lab 後端`.
+12. Accept consent.
+13. Expected result source: `Cloud result` / `雲端結果`.
+
+If health fails, do not send a style image yet; first confirm the backend is still running, the phone and computer are on the same Wi-Fi, and Windows Firewall allows port `8787`.
+
+### Recommended Next Step
+
+Next recommended step is the operator physical-device retry using the new DEBUG endpoint panel. If health passes but Filter Lab still fails, collect only the sanitized on-screen failure bucket / HTTP code and Xcode console networking bucket; do not paste API keys, Authorization headers, raw requests, raw provider responses, raw image data, or base64.
+
+### Boundary Confirmations
+
+- DEBUG in-app backend URL panel added: yes.
+- DEBUG local-network HTTP allowance added: yes, app-to-local-backend only.
+- Backend base URL accepts provider/public URLs: no.
+- iOS provider key/direct provider URL added: no.
+- Provider SDK in iOS: no.
+- Direct iOS provider call: no.
+- Backend runtime code changed in this phase: no.
+- Backend route/payload expanded: no.
+- Backend receives apply/original image: no.
+- Style/reference image upload remains explicit consent + DEBUG backend only: yes.
+- Cloud debug mock result shown as success: no.
+- Camera cloud AI entry: no.
+- Image editor provider behavior: no.
+- StoreKit/quota runtime: no.
+- Production rollout: no.
+- `productionReady:false` remains locked.
+
+## PT2-SF-R9-R9 - Windows Backend Startup and LAN Health Fix
+
+Status: implemented; local LAN backend started for physical-device retry
+Date: 2026-06-24
+Production readiness: `productionReady:false`
+
+### Summary
+
+PT2-SF-R9-R9 fixes the local backend startup blocker found after physical-device QA still could not use Cloud Filter Lab. The backend server was not listening on `8787` because the CLI direct-run check compared a file URL to a Windows path string, so `node src/server.mjs` exited without starting the HTTP listener.
+
+The server now uses file URL path normalization for direct-run detection and loads ignored local backend env files (`.env.local`, then `.env`) during local startup without printing secrets. The local backend is currently running on `8787`, and both loopback and LAN health checks pass for the operator's machine IP.
+
+### Changed Files
+
+- `backend/src/server.mjs`
+- `backend/tests/cloud-ai-boundary.test.mjs`
+- `backend/README.md`
+- `README.md`
+- `docs/phase-log.md`
+
+### Tests and Checks
+
+- `node --test backend/tests/cloud-ai-boundary.test.mjs backend/tests/siliconflow-filter-lab-recipe-qa-gate.test.mjs` passed: 78 tests.
+- Local backend started with `npm start`.
+- `GET http://127.0.0.1:8787/health` returned 200.
+- `GET http://192.168.68.60:8787/health` returned 200.
+- Safe no-image/no-provider routeability check against `/v1/ai/filter-lab` returned `400` with `errorCode:invalid_request`, confirming the route exists without making a provider call.
+
+### Xcode Verification Needed
+
+- Keep Xcode DEBUG scheme base URL as `AI_PHOTO_CLOUD_AI_BASE_URL=http://192.168.68.60:8787`.
+- Run Filter Lab on the physical iPhone.
+- Choose one target filter/style reference image.
+- Choose one separate apply/original image.
+- Tap `Debug: Test Filter Lab Backend` / `Debug：測試 Filter Lab 後端`.
+- Confirm success shows `Cloud result` / `雲端結果`.
+- If it still fails, capture only the Xcode console error bucket/message; do not paste API keys, Authorization headers, raw request bodies, raw provider responses, or base64.
+
+### Recommended Next Step
+
+Next recommended step is operator physical-device retry against the currently running LAN backend. If the phone can reach `/health` but Filter Lab still fails, request one fresh approval for a single provider-backed Filter Lab smoke through the backend only, with one style reference image, apply/original image local-only, no raw logging, and `productionReady:false`.
+
+### Boundary Confirmations
+
+- Backend startup/runtime changed: yes, local server startup path only.
+- Backend route/payload expanded: no.
+- Backend receives apply/original image: no.
+- Provider/model call run in this phase: no.
+- API key value printed/saved/committed: no.
+- Authorization header printed/committed: no.
+- Raw request payload printed/committed: no.
+- Raw provider response printed/committed: no.
+- Raw image/base64 printed/committed: no.
+- Direct iOS provider call: no.
+- Direct provider URL/key in iOS: no.
+- Provider SDK in iOS: no.
+- Swift runtime changed: no.
+- Xcode project changed: no.
 - Camera cloud AI entry: no.
 - Image editor provider behavior: no.
 - StoreKit/quota runtime: no.

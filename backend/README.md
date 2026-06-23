@@ -65,10 +65,27 @@ npm start
 
 The server listens on `PORT` or `8787`.
 
+`GET /health` returns safe readiness buckets only. It can report whether internal Cloud AI is allowed and whether Photo Advisor / Filter Lab are ready for the configured backend provider, but it never prints provider credentials, Authorization headers, raw requests, raw provider responses, raw prompts, or image/base64 data. `productionReady:false` remains locked.
+
+Local startup reads ignored backend env files from the backend working directory in this order:
+
+```text
+.env.local
+.env
+```
+
+Existing process env values are not overwritten, and env values are not printed. This keeps provider credentials server-side only while allowing `npm start` to run the DEBUG local/LAN backend on Windows, macOS, or Linux.
+
 Phase 17B iOS DEBUG builds expect the local mock server at:
 
 ```text
 http://127.0.0.1:8787
+```
+
+For a physical iPhone on the same LAN, set the DEBUG app backend base URL to the computer LAN IP, for example:
+
+```text
+AI_PHOTO_CLOUD_AI_BASE_URL=http://192.168.68.60:8787
 ```
 
 This is for internal boundary testing only. It is not a production provider URL.

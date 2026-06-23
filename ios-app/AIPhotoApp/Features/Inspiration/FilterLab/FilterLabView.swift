@@ -8,6 +8,9 @@ struct FilterLabView: View {
     @State private var applyTargetPickerItem: PhotosPickerItem?
     #if DEBUG
     @State private var showsCloudDebugConsent = false
+    @State private var cloudDebugBaseURLText = CloudAIEndpointClient.debugBaseURLString
+    @State private var cloudDebugEndpointMessage: String?
+    @State private var isTestingCloudDebugEndpoint = false
     #endif
 
     var body: some View {
@@ -124,6 +127,8 @@ struct FilterLabView: View {
                 .fixedSize(horizontal: false, vertical: true)
 
             #if DEBUG
+            cloudDebugEndpointPanel
+
             if viewModel.canGenerate {
                 Button {
                     showCloudDebugConsent()
@@ -219,6 +224,81 @@ struct FilterLabView: View {
     }
 
     #if DEBUG
+    private var cloudDebugEndpointPanel: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.sm) {
+            Label("filter_lab.cloud_debug.endpoint.title", systemImage: "link")
+                .font(AppTypography.micro.weight(.semibold))
+                .foregroundStyle(AppColors.accent)
+
+            VStack(alignment: .leading, spacing: AppSpacing.xs) {
+                Text("filter_lab.cloud_debug.endpoint.current")
+                    .font(AppTypography.micro)
+                    .foregroundStyle(AppColors.textSecondary)
+
+                Text(CloudAIEndpointClient.debugBaseURLString)
+                    .font(AppTypography.micro.monospaced())
+                    .foregroundStyle(AppColors.textPrimary)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.75)
+            }
+
+            TextField("filter_lab.cloud_debug.endpoint.placeholder", text: $cloudDebugBaseURLText)
+                .font(AppTypography.caption.monospaced())
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+                .keyboardType(.URL)
+                .padding(.vertical, AppSpacing.sm)
+                .padding(.horizontal, AppSpacing.md)
+                .background(AppColors.background)
+                .foregroundStyle(AppColors.textPrimary)
+                .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.md))
+                .overlay(
+                    RoundedRectangle(cornerRadius: AppCornerRadius.md)
+                        .stroke(AppColors.elevatedSurface, lineWidth: 1)
+                )
+
+            HStack(spacing: AppSpacing.sm) {
+                Button {
+                    saveCloudDebugBaseURL()
+                } label: {
+                    Label("filter_lab.cloud_debug.endpoint.save", systemImage: "square.and.arrow.down")
+                }
+
+                Button {
+                    Task {
+                        await testCloudDebugEndpoint()
+                    }
+                } label: {
+                    Label(
+                        "filter_lab.cloud_debug.endpoint.test",
+                        systemImage: isTestingCloudDebugEndpoint ? "hourglass" : "waveform.path.ecg"
+                    )
+                }
+                .disabled(isTestingCloudDebugEndpoint)
+            }
+            .font(AppTypography.micro.weight(.semibold))
+            .buttonStyle(.plain)
+            .foregroundStyle(AppColors.accent)
+
+            if isTestingCloudDebugEndpoint {
+                Text("filter_lab.cloud_debug.endpoint.testing")
+                    .font(AppTypography.micro)
+                    .foregroundStyle(AppColors.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            } else if let cloudDebugEndpointMessage {
+                Text(cloudDebugEndpointMessage)
+                    .font(AppTypography.micro)
+                    .foregroundStyle(AppColors.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .padding(AppSpacing.md)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(AppColors.surface)
+        .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.lg))
+        .padding(.top, AppSpacing.sm)
+    }
+
     private var cloudDebugReadyView: some View {
         VStack(alignment: .leading, spacing: AppSpacing.md) {
             Image(systemName: "network")
@@ -247,6 +327,75 @@ struct FilterLabView: View {
 
     private func showCloudDebugConsent() {
         showsCloudDebugConsent = true
+    }
+
+    private func saveCloudDebugBaseURL() {
+        guard CloudAIEndpointClient.debugSaveBaseURLOverride(cloudDebugBaseURLText) else {
+            cloudDebugEndpointMessage = NSLocalizedString(
+                "filter_lab.cloud_debug.endpoint.invalid",
+                comment: ""
+            )
+            return
+        }
+
+        cloudDebugBaseURLText = CloudAIEndpointClient.debugBaseURLString
+        cloudDebugEndpointMessage = NSLocalizedString(
+            "filter_lab.cloud_debug.endpoint.saved",
+            comment: ""
+        )
+    }
+
+    private func testCloudDebugEndpoint() async {
+        guard CloudAIEndpointClient.debugSaveBaseURLOverride(cloudDebugBaseURLText) else {
+            cloudDebugEndpointMessage = NSLocalizedString(
+                "filter_lab.cloud_debug.endpoint.invalid",
+                comment: ""
+            )
+            return
+        }
+
+        cloudDebugBaseURLText = CloudAIEndpointClient.debugBaseURLString
+        isTestingCloudDebugEndpoint = true
+        cloudDebugEndpointMessage = nil
+        let result = await CloudAIEndpointClient(timeoutSeconds: 8).debugHealthCheck()
+        isTestingCloudDebugEndpoint = false
+
+        switch result {
+        case .ready(let providerMode):
+            cloudDebugEndpointMessage = String(
+                format: NSLocalizedString(
+                    "filter_lab.cloud_debug.endpoint.health_ready",
+                    comment: ""
+                ),
+                providerMode
+            )
+        case .backendReachableButFilterLabNotReady(let providerMode):
+            cloudDebugEndpointMessage = String(
+                format: NSLocalizedString(
+                    "filter_lab.cloud_debug.endpoint.health_not_ready",
+                    comment: ""
+                ),
+                providerMode
+            )
+        case .invalidHealthResponse:
+            cloudDebugEndpointMessage = NSLocalizedString(
+                "filter_lab.cloud_debug.endpoint.health_invalid",
+                comment: ""
+            )
+        case .httpStatus(let statusCode):
+            cloudDebugEndpointMessage = String(
+                format: NSLocalizedString(
+                    "filter_lab.cloud_debug.endpoint.health_http",
+                    comment: ""
+                ),
+                statusCode
+            )
+        case .unreachable:
+            cloudDebugEndpointMessage = NSLocalizedString(
+                "filter_lab.cloud_debug.endpoint.health_failed",
+                comment: ""
+            )
+        }
     }
     #endif
 

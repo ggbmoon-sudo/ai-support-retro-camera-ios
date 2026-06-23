@@ -1,8 +1,12 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import path from "node:path";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
+import { tmpdir } from "node:os";
 import test from "node:test";
+import { fileURLToPath } from "node:url";
 import { healthResponse } from "../src/routes/health.mjs";
+import { isDirectServerRun, loadDotEnvFileIfPresent } from "../src/server.mjs";
 import { handlePhotoAdvisorRequest } from "../src/routes/photoAdvisor.mjs";
 import { handleFilterLabRequest, resolveFilterLabProviderKind } from "../src/routes/filterLab.mjs";
 import { executableProviderKinds } from "../src/providers/ProviderRegistry.mjs";
@@ -34,12 +38,70 @@ import {
 import { evaluatePhotoAdvisorQAGate } from "../src/qa/photoAdvisorQAGate.mjs";
 import { validateSafeTextOutput } from "../src/security/safetyTextGuard.mjs";
 
-test("health returns mock-only status", () => {
-  assert.deepEqual(healthResponse(), {
+test("health returns safe provider readiness status", () => {
+  assert.deepEqual(healthResponse({}), {
     ok: true,
     service: "cloud-ai-boundary",
-    mode: "mock-only"
+    mode: "mock",
+    providerMode: "mock",
+    internalCloudAIAllowed: false,
+    photoAdvisorReady: false,
+    filterLabReady: false,
+    productionReady: false
   });
+
+  assert.deepEqual(healthResponse({
+    CLOUD_AI_PROVIDER_MODE: "siliconflowInternal",
+    ALLOW_INTERNAL_CLOUD_AI: "true",
+    SILICONFLOW_API_KEY: "test-key",
+    SILICONFLOW_BASE_URL: "https://api.siliconflow.com/v1/chat/completions",
+    SILICONFLOW_CHAT_COMPLETIONS_PATH: "/v1/chat/completions",
+    SILICONFLOW_PHOTO_ADVISOR_MODEL: "Qwen/Qwen3-VL-32B-Instruct",
+    SILICONFLOW_FILTER_LAB_MODEL: "Qwen/Qwen3-VL-32B-Instruct"
+  }), {
+    ok: true,
+    service: "cloud-ai-boundary",
+    mode: "siliconflowInternal",
+    providerMode: "siliconflowInternal",
+    internalCloudAIAllowed: true,
+    photoAdvisorReady: true,
+    filterLabReady: true,
+    productionReady: false
+  });
+});
+
+test("server direct-run detection accepts native argv paths", () => {
+  const serverURL = new URL("../src/server.mjs", import.meta.url);
+  const serverPath = fileURLToPath(serverURL);
+
+  assert.equal(isDirectServerRun(serverURL.href, serverPath), true);
+  assert.equal(isDirectServerRun(serverURL.href, path.join(path.dirname(serverPath), "other.mjs")), false);
+  assert.equal(isDirectServerRun(serverURL.href, ""), false);
+});
+
+test("server local env loader reads ignored env files without overriding process env", async () => {
+  const tmp = await mkdtemp(path.join(tmpdir(), "cloud-ai-env-"));
+  try {
+    const envFile = path.join(tmp, ".env.local");
+    await writeFile(envFile, [
+      "# local debug env",
+      "CLOUD_AI_PROVIDER_MODE=siliconflowInternal",
+      "ALLOW_INTERNAL_CLOUD_AI=true",
+      "QUOTED_VALUE='hello world'",
+      "EXISTING_VALUE=from_file"
+    ].join("\n"));
+
+    const env = { EXISTING_VALUE: "from_process" };
+    const result = loadDotEnvFileIfPresent(envFile, env);
+
+    assert.deepEqual(result, { loaded: true, setCount: 3 });
+    assert.equal(env.CLOUD_AI_PROVIDER_MODE, "siliconflowInternal");
+    assert.equal(env.ALLOW_INTERNAL_CLOUD_AI, "true");
+    assert.equal(env.QUOTED_VALUE, "hello world");
+    assert.equal(env.EXISTING_VALUE, "from_process");
+  } finally {
+    await rm(tmp, { force: true, recursive: true });
+  }
 });
 
 test("photo advisor accepts valid debug request", async () => {
