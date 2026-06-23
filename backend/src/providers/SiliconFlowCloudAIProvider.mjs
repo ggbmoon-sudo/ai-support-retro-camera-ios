@@ -6,6 +6,7 @@ import {
 import { parseSiliconFlowPhotoAdvisorResponse } from "./siliconflowPhotoAdvisorProviderContract.mjs";
 import {
   buildGeneratedFilterRecipeSchemaPrompt,
+  buildGeneratedFilterRecipeStyleGuidancePrompt,
   generatedFilterRecipeExampleCandidate,
   validateGeneratedFilterRecipeCandidate
 } from "./generatedFilterRecipeContract.mjs";
@@ -111,11 +112,12 @@ export class SiliconFlowCloudAIProvider extends CloudAIProvider {
         {
           role: "user",
           content: [
-            imageContentPart(input),
+            imageContentPart(input, { detail: "high" }),
             {
               type: "text",
               text: [
                 buildGeneratedFilterRecipeSchemaPrompt(),
+                buildGeneratedFilterRecipeStyleGuidancePrompt(),
                 "Use exactly the allowed enum strings. Do not invent localization keys.",
                 "If the image is ambiguous, return this safe contract object with only small numeric parameter changes:",
                 JSON.stringify(generatedFilterRecipeExampleCandidate()),
@@ -227,12 +229,12 @@ export function mapSiliconFlowPhotoAdvisorCandidateToCloudAIResponse(candidate =
   };
 }
 
-function imageContentPart(input) {
+function imageContentPart(input, { detail = "low" } = {}) {
   return {
     type: "image_url",
     image_url: {
       url: `data:${input.image.contentType};base64,${input.image.dataBase64}`,
-      detail: "low"
+      detail
     }
   };
 }

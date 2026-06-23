@@ -704,6 +704,7 @@
 "filter_lab.cloud_debug.ready.title" = "準備測試 Cloud AI";
 "filter_lab.cloud_debug.ready.message" = "按下 DEBUG 後端測試後，會用 Cloud AI 生成濾鏡 recipe。只會上傳目標濾鏡圖；原圖只留在本機做預覽。";
 "filter_lab.cloud_debug.fallback" = "雲端 Filter Lab 暫時未能使用，已改用本機濾鏡 recipe。";
+"filter_lab.cloud_debug.failed" = "雲端 Filter Lab 未能回傳雲端 recipe。今次 DEBUG 測試沒有使用 mock 結果。";
 "photo_advisor.intent.en.neutral.low_light" = "Low light can carry the retro mood. If you want a cleaner look, lift brightness slightly without flattening the shadows.";
 "photo_advisor.intent.en.neutral.motion" = "For a cleaner look, wait half a second before tapping the shutter; for a dreamy retro look, the slight motion can work.";
 "photo_advisor.intent.en.neutral.tilt" = "A little tilt can feel like street photography. If you want a cleaner look, straighten it slightly in crop.";

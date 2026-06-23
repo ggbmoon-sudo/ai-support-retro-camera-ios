@@ -122,6 +122,18 @@ export function buildGeneratedFilterRecipeSchemaPrompt() {
   ].join("\n");
 }
 
+export function buildGeneratedFilterRecipeStyleGuidancePrompt() {
+  return [
+    "Style extraction rules:",
+    "If the reference image contains a visible filter/settings panel, numeric slider values, icon/value rows, preset cards, or a recipe overlay, treat those visible parameters as the strongest signal.",
+    "Read visible signed values when possible, then translate them into the app's parameter ranges proportionally and clamp to the allowed schema range. Preserve the sign. Around +/-40 is moderate; around +/-80 is strong.",
+    "Likely control mapping: sun/brightness -> exposure; half circle/contrast -> contrast; droplet/color -> saturation or tint; thermometer/warmth -> temperature; cloud/haze/fade -> fade; grain/detail/sharpness/texture -> grain; edge/corner/dark circle -> vignette.",
+    "If a visible control is unknown, combine its value with the actual visual result instead of inventing a new schema field.",
+    "Ignore QR codes, watermarks, app logos, usernames, decorative stickers, and sharing UI.",
+    "Do not claim an exact clone of a third-party app/filter. Output only the closest safe app recipe."
+  ].join("\n");
+}
+
 export function validateGeneratedFilterRecipeCandidate(candidate) {
   if (!candidate || typeof candidate !== "object" || Array.isArray(candidate)) {
     return invalid("wrong_object_shape", "Generated filter recipe must be an object.");

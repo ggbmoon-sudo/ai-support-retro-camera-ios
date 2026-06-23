@@ -721,8 +721,9 @@ test("siliconflow provider builds image-first Filter Lab recipe request", async 
   assert.deepEqual(capturedRequest.response_format, { type: "json_object" });
   assert.equal(capturedRequest.messages[0].content.includes("Filter Lab recipe"), true);
   assert.equal(capturedRequest.messages[1].content[0].image_url.url, "data:image/jpeg;base64,/9j/");
-  assert.equal(capturedRequest.messages[1].content[0].image_url.detail, "low");
+  assert.equal(capturedRequest.messages[1].content[0].image_url.detail, "high");
   assert.equal(capturedRequest.messages[1].content[1].text.includes("Allowed recipeVersion: 1.0"), true);
+  assert.equal(capturedRequest.messages[1].content[1].text.includes("visible filter/settings panel"), true);
 });
 
 test("siliconflow generated filter parser rejects invalid recipe schema without raw output", () => {

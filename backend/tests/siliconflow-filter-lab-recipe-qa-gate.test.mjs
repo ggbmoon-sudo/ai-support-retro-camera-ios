@@ -100,7 +100,9 @@ test("siliconflow Filter Lab recipe QA sends one image request and accepts recip
   assert.deepEqual(capturedRequest.response_format, { type: "json_object" });
   assert.equal(capturedRequest.messages[1].content[0].type, "image_url");
   assert.match(capturedRequest.messages[1].content[0].image_url.url, /^data:image\/jpeg;base64,/);
+  assert.equal(capturedRequest.messages[1].content[0].image_url.detail, "high");
   assert.match(capturedRequest.messages[1].content[1].text, /Filter Lab recipe contract/);
+  assert.match(capturedRequest.messages[1].content[1].text, /visible filter\/settings panel/);
   assert.equal(report.ok, true);
   assert.equal(report.actualCalls, 1);
   assert.equal(report.acceptedCount, 1);
@@ -191,7 +193,8 @@ test("siliconflow Filter Lab recipe QA args and request builder are bounded", ()
   assert.equal(args.locale, "yue-Hant-HK");
   assert.equal(args.modelCandidate, "qwen3_vl_8b_instruct");
   assert.equal(request.model, "Qwen/Qwen3-VL-32B-Instruct");
-  assert.equal(request.messages[1].content[0].image_url.detail, "low");
+  assert.equal(request.messages[1].content[0].image_url.detail, "high");
+  assert.match(request.messages[1].content[1].text, /visible filter\/settings panel/);
 });
 
 test("siliconflow Filter Lab recipe QA CLI dry-run is sanitized", () => {

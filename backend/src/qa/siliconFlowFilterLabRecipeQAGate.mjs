@@ -13,6 +13,7 @@ import {
 } from "../providers/photoAdvisorProviderTypes.mjs";
 import {
   buildGeneratedFilterRecipeSchemaPrompt,
+  buildGeneratedFilterRecipeStyleGuidancePrompt,
   generatedFilterRecipeExampleCandidate,
   validateGeneratedFilterRecipeCandidate
 } from "../providers/generatedFilterRecipeContract.mjs";
@@ -239,13 +240,14 @@ export function buildSiliconFlowFilterLabRecipeQARequest({
             type: "image_url",
             image_url: {
               url: imageDataURL,
-              detail: "low"
+              detail: "high"
             }
           },
           {
             type: "text",
             text: [
               buildGeneratedFilterRecipeSchemaPrompt(),
+              buildGeneratedFilterRecipeStyleGuidancePrompt(),
               "Use exactly the allowed enum strings. Do not invent localization keys.",
               "If the image is ambiguous, return this safe contract object with only small numeric parameter changes:",
               JSON.stringify(generatedFilterRecipeExampleCandidate()),

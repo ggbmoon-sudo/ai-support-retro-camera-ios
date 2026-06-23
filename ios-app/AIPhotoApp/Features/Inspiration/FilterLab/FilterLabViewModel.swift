@@ -226,17 +226,8 @@ final class FilterLabViewModel: ObservableObject {
             state = .result
             renderPreview()
         } catch {
-            cloudDebugFallbackMessageKey = "filter_lab.cloud_debug.fallback"
-
-            do {
-                let fallback = try await fallbackGenerationService.generateFilter(from: styleReferenceImage)
-                recipe = FilterRecipeValidator.validated(fallback)
-                applyMessageKey = "filter_lab.cloud_debug.fallback"
-                state = .result
-                renderPreview()
-            } catch {
-                state = .unavailable(NSLocalizedString("filter_lab.cloud_debug.fallback", comment: ""))
-            }
+            cloudDebugFallbackMessageKey = "filter_lab.cloud_debug.failed"
+            state = .unavailable(NSLocalizedString("filter_lab.cloud_debug.failed", comment: ""))
         }
     }
     #endif

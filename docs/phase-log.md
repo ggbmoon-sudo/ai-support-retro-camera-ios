@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: PT2-SF-R9-R7 - Filter Lab Cloud Debug Primary Flow
+Current phase: PT2-SF-R9-R8 - Filter Lab Cloud Fail-closed and Parameter Panel Prompt
 Status: implemented; awaiting Xcode physical-device retry
-Latest implementation: PT2-SF-R9-R7 changes DEBUG Filter Lab so selecting the style reference image and apply/original image no longer auto-generates a mock recipe. DEBUG now shows a clear Cloud AI ready state and requires the backend test action plus consent before upload. Successful backend results show `Cloud result` / `雲端結果`; fallback results remain mock/local. No provider key or direct provider URL was added to iOS, no backend runtime code changed, and `productionReady:false` remains locked.
+Latest implementation: PT2-SF-R9-R8 disables mock fallback for DEBUG Filter Lab cloud tests and strengthens the SiliconFlow Filter Lab prompt for reference images that contain visible parameter panels. Cloud debug now shows a failure state instead of a mock result if the backend does not return a cloud recipe, and provider requests use high image detail with visible-parameter extraction guidance. No provider key or direct provider URL was added to iOS, no backend route/payload expansion was added, and `productionReady:false` remains locked.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -14831,6 +14831,66 @@ Physical-device Xcode run is still operator-side because this Windows Codex envi
 - Camera cloud AI entry: no.
 - Image editor provider behavior: no.
 - StoreKit/quota runtime: no.
+- Production rollout: no.
+- `productionReady:false` remains locked.
+
+## PT2-SF-R9-R8 - Filter Lab Cloud Fail-closed and Parameter Panel Prompt
+
+Status: implemented; awaiting Xcode physical-device retry
+Date: 2026-06-24
+Production readiness: `productionReady:false`
+
+### Summary
+
+PT2-SF-R9-R8 fixes two DEBUG Filter Lab test issues found during physical-device QA:
+
+- Cloud debug failures no longer fall back into a mock recipe result. If the backend does not return a cloud recipe, the app shows a cloud failure state so the operator cannot mistake a mock result for AI output.
+- The SiliconFlow Filter Lab prompt now prioritizes visible filter/settings panels, numeric slider values, icon/value rows, preset cards, or recipe overlays in the reference image. Filter Lab provider requests use high image detail so small visible parameter text is more likely to be read.
+
+This phase still sends only the target filter/style reference image to the backend. The apply/original image remains local-only for preview rendering.
+
+### Changed Files
+
+- `ios-app/AIPhotoApp/Features/Inspiration/FilterLab/FilterLabViewModel.swift`
+- `ios-app/AIPhotoApp/Resources/Localization/en.lproj/Localizable.strings`
+- `ios-app/AIPhotoApp/Resources/Localization/zh-Hant.lproj/Localizable.strings`
+- `backend/src/providers/generatedFilterRecipeContract.mjs`
+- `backend/src/providers/SiliconFlowCloudAIProvider.mjs`
+- `backend/src/qa/siliconFlowFilterLabRecipeQAGate.mjs`
+- `backend/tests/cloud-ai-boundary.test.mjs`
+- `backend/tests/siliconflow-filter-lab-recipe-qa-gate.test.mjs`
+- `docs/pt2-sf-r9-r8-filter-lab-cloud-fail-closed-parameter-panel-prompt.md`
+- `docs/phase-log.md`
+
+### Tests and Checks
+
+- `git diff --check`
+- `node --test backend/tests/cloud-ai-boundary.test.mjs backend/tests/siliconflow-filter-lab-recipe-qa-gate.test.mjs` passed: 76 tests
+- Safety scans for provider credential leakage, raw request/provider/image/base64 leakage, direct iOS provider calls, backend payload expansion, and `productionReady:true`
+
+### Xcode Verification Needed
+
+- Run Filter Lab in DEBUG.
+- Choose one target filter/style reference image with visible parameters.
+- Choose one separate original/apply image.
+- Tap `Debug: Test Filter Lab Backend` / `Debug：測試 Filter Lab 後端`.
+- Accept consent.
+- If the backend succeeds, confirm result source is `Cloud result` / `雲端結果`.
+- If backend fails, confirm no `Mock result` recipe is shown for the cloud test.
+
+### Boundary Confirmations
+
+- Cloud debug fallback to mock result disabled: yes.
+- Visible parameter-panel prompt guidance added: yes.
+- Filter Lab provider image detail changed to high: yes.
+- Backend runtime code changed: yes, provider prompt/request detail only.
+- Backend route/payload expanded: no.
+- Backend receives apply/original image: no.
+- Provider/model call run in this phase: no.
+- API key value printed/saved/committed: no.
+- Direct iOS provider call: no.
+- Direct provider URL/key in iOS: no.
+- Production/default behavior changed: no.
 - Production rollout: no.
 - `productionReady:false` remains locked.
 
