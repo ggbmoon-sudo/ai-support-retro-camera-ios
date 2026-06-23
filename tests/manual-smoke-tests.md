@@ -4875,6 +4875,21 @@ Backend parameter candidate acceptance verification:
 - [ ] Confirm no Xcode runtime behavior is expected to change.
 - [ ] Confirm no Swift runtime file, Xcode project change, model file, Core ML package, model download, CV inference, Camera integration, upload path, provider/model key, API key, real dataset/photo/local config/generated report, crawler/download mode, image read/upload, cloud/provider call, training/fine-tuning, parameter pack export, app runtime write, app runtime transfer, or production rollout was added.
 
+## Phase OD-R8F - Parameter-pack Candidate Builder
+
+Backend parameter-pack candidate builder verification:
+
+- [ ] From `backend/`, run `npm run qa:aesthetic-parameters:pack-candidate-builder`.
+- [ ] From `backend/`, run `node --test tests/aesthetic-parameter-pack-candidate-builder.test.mjs`.
+- [ ] Confirm CLI output is sanitized and reports `runMode:"parameter_pack_candidate_builder_no_export"` and `acceptedForPackCandidateReview:true`.
+- [ ] Confirm accepted keys are `horizonAngle.softTiltThreshold` and `visualWeightMoment.balanceWarningPolicy`.
+- [ ] Confirm excluded keys are `headroomRatio.highSoftWarningThreshold` and `sharpnessRatio.lowConfidenceThreshold`.
+- [ ] Confirm `candidateOnly:true`, `eligibleForParameterPackExport:false`, `eligibleForAppRuntime:false`, `parameterPackExported:false`, `appRuntimeWritePerformed:false`, and `productionReady:false`.
+- [ ] Confirm execution flags report `imageReadsPerformed:false`, `cvInferencePerformed:false`, `networkCallsMade:false`, `uploadPerformed:false`, `providerCallAttempted:false`, `generatedReportsPersisted:false`, and `appRuntimeIntegrationEnabled:false`.
+- [ ] Confirm output does not emit score/rating/aesthetic grading fields, user-facing guidance copy, retake-first guidance, raw image/path/base64/EXIF/GPS, provider payload, or debug fields.
+- [ ] Confirm no Xcode runtime behavior is expected to change.
+- [ ] Confirm no Swift runtime file, Xcode project change, model file, Core ML package, model download, CV inference, Camera integration, upload path, provider/model key, API key, real dataset/photo/local config/generated report, crawler/download mode, image read/upload, cloud/provider call, training/fine-tuning, parameter pack export, app runtime write, app runtime transfer, or production rollout was added.
+
 ## Phase OD-P1A - App Transfer Preflight Gate
 
 Backend app transfer preflight verification:
