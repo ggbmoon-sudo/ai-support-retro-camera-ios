@@ -5,7 +5,7 @@ struct CloudAIEndpointClient: Sendable {
     let timeoutSeconds: TimeInterval
 
     init(
-        baseURL: URL = URL(string: "http://127.0.0.1:8787")!,
+        baseURL: URL = CloudAIEndpointClient.defaultBaseURL,
         timeoutSeconds: TimeInterval = 35
     ) {
         self.baseURL = baseURL
@@ -50,4 +50,19 @@ struct CloudAIEndpointClient: Sendable {
         return try JSONDecoder().decode(CloudAIResponse.self, from: data)
     }
     #endif
+}
+
+private extension CloudAIEndpointClient {
+    static var defaultBaseURL: URL {
+        #if DEBUG
+        if let configuredURL = ProcessInfo.processInfo.environment["AI_PHOTO_CLOUD_AI_BASE_URL"],
+           let url = URL(string: configuredURL),
+           url.scheme == "http" || url.scheme == "https",
+           url.host != nil {
+            return url
+        }
+        #endif
+
+        return URL(string: "http://127.0.0.1:8787")!
+    }
 }

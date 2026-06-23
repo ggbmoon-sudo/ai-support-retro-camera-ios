@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: PT2-SF-R8-R1 - Server-side Debug Env Gate Correction
-Status: implemented; no provider smoke rerun
-Latest implementation: PT2-SF-R8-R1 corrected only the ignored local backend debug env gate by setting non-secret gate keys so the no-network Filter Lab provider gate now resolves to `siliconflowInternal` with the existing debug header. No backend server was started, no app endpoint request was made, no provider/model call ran, no provider image upload occurred, and no API key value, Authorization header, raw request, raw provider response, or raw image/base64 was printed or saved. `productionReady:false` remains locked.
+Current phase: PT2-SF-R9 - Physical-device DEBUG Filter Lab Backend E2E Smoke
+Status: implemented; awaiting operator physical-device run
+Latest implementation: PT2-SF-R9 added a DEBUG-only iOS backend base URL override through `AI_PHOTO_CLOUD_AI_BASE_URL` so a physical iPhone can reach a computer-hosted local/LAN backend for Filter Lab testing. No provider smoke was run, no provider key or direct provider URL was added to iOS, no Xcode project or backend runtime code changed, and `productionReady:false` remains locked.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -14774,3 +14774,78 @@ For the next phase, verify on physical device that the DEBUG Filter Lab UI can r
 Recommended next step is `PT2-SF-R9 - Physical-device DEBUG Filter Lab Backend E2E Smoke`.
 
 Use the operator's known phone/server pattern if needed: run the backend on the computer in a phone-reachable LAN setup, keep provider credentials server-side only, configure only the app/backend debug boundary as needed, upload only the style reference image, keep the apply/original image local-only, and do not start PT3 image editor provider work until Filter Lab's device debug path is stable.
+
+## PT2-SF-R9 - Physical-device DEBUG Filter Lab Backend E2E Smoke
+
+Status: implemented; awaiting operator physical-device run
+Date: 2026-06-23
+Production readiness: `productionReady:false`
+
+### Summary
+
+PT2-SF-R9 added the DEBUG-only iOS backend base URL override needed for physical-device Filter Lab testing over a phone-reachable local/LAN backend. Xcode DEBUG schemes can set `AI_PHOTO_CLOUD_AI_BASE_URL=http://<computer-lan-ip>:8787`, while the default remains `http://127.0.0.1:8787` for local simulator/backend use.
+
+No provider smoke was run in this phase. No provider key or direct provider URL was added to iOS. The backend Filter Lab payload remains one style reference image only; the separate apply/original image remains local and is used only for local preview rendering.
+
+### Completed Work
+
+- Inspected the existing DEBUG Filter Lab cloud path.
+- Added a DEBUG-only `AI_PHOTO_CLOUD_AI_BASE_URL` resolver to `CloudAIEndpointClient`.
+- Kept the default local backend URL unchanged when no DEBUG scheme override is present.
+- Documented the operator physical-device setup and R9-RUN next step.
+- Updated README, iOS README, roadmap, and phase log.
+
+### Changed Files
+
+- `README.md`
+- `ios-app/README.md`
+- `ios-app/AIPhotoApp/Services/CloudAI/CloudAIEndpointClient.swift`
+- `docs/pt2-sf-r9-physical-device-debug-filter-lab-backend-e2e.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-log.md`
+
+### Tests and Checks
+
+- Static source inspection of Filter Lab cloud path.
+- `git diff --check`
+- Safety scans for provider credential leakage, raw request/provider/image/base64 leakage, direct iOS provider calls, upload payload expansion, Xcode project edits, backend runtime edits, model artifacts, and `productionReady:true`.
+
+Physical-device Xcode run is still operator-side because this Windows Codex environment cannot run the iPhone/Xcode test directly.
+
+### Boundary Confirmations
+
+- Swift runtime changed: yes, DEBUG-only backend URL override.
+- Xcode project changed: no.
+- Backend runtime code changed: no.
+- Backend payload expanded: no.
+- Backend received apply/original image: no.
+- Provider/model call run in this phase: no.
+- API key value printed/saved/committed: no.
+- Authorization header printed/committed: no.
+- Raw request payload printed/committed: no.
+- Raw provider response printed/committed: no.
+- Raw image/base64 printed/committed: no.
+- Direct iOS provider call: no.
+- Direct provider URL/key in iOS: no.
+- Provider SDK in iOS: no.
+- Camera cloud AI entry: no.
+- Image editor provider behavior: no.
+- StoreKit/quota runtime: no.
+- Production rollout: no.
+- `productionReady:false` remains locked.
+
+### Xcode Verification Needed
+
+Set `AI_PHOTO_CLOUD_AI_BASE_URL=http://<computer-lan-ip>:8787` in the Xcode DEBUG run scheme, run the backend in a phone-reachable LAN mode, and verify Filter Lab on the physical iPhone:
+
+- choose one style reference image
+- choose one separate apply/original image
+- accept DEBUG cloud consent
+- confirm a generated recipe returns
+- confirm the before/after preview applies locally to the apply/original image
+
+### Ready for Next Phase
+
+Recommended next step is `PT2-SF-R9-RUN - Operator Physical-device Filter Lab LAN Backend Verification`.
+
+Keep it one physical-device E2E verification, backend-mediated only, one style reference upload only, apply/original image local-only, no direct iOS provider call, no raw logging, and `productionReady:false`.

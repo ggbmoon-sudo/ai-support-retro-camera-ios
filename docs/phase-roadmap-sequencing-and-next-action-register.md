@@ -16,9 +16,9 @@ If a user asks for the next prompt, Codex should consult this register, identify
 
 ## Current Next Recommended Phase
 
-**PT2-SF-R9 - Physical-device DEBUG Filter Lab Backend E2E Smoke**
+**PT2-SF-R9-RUN - Operator Physical-device Filter Lab LAN Backend Verification**
 
-Reason: PT2-SF-R8-R2 accepted the fresh-approved backend app endpoint smoke: one DEBUG `/v1/ai/filter-lab` request, one style reference image only, no apply/original image upload, `source:cloud`, generated filter present, sanitized output only, and `productionReady:false`. The next practical step is to verify the same path from the physical iOS DEBUG Filter Lab UI over a phone-reachable local/LAN backend, keeping provider credentials server-side only and preserving the two-image app boundary.
+Reason: PT2-SF-R9 added the DEBUG-only iOS backend base URL override needed for a phone to reach the local/LAN backend without putting any provider key or direct provider URL in iOS. The next practical step is an operator physical-device run with `AI_PHOTO_CLOUD_AI_BASE_URL` pointing to the computer LAN backend, verifying that Filter Lab receives a cloud generated recipe from one style reference image while the separate apply/original image remains local.
 
 Product correction: Camera-page Live Cloud AI / Live Advisor is no longer needed under the current direction because local on-device guidance replaces it. Cloud AI remains needed for Inspiration / post-capture photo analysis, generated filters, and image editing through backend-mediated mainland relay providers; direct iOS provider calls and iOS provider keys remain blocked.
 
@@ -41,8 +41,9 @@ PT2 SiliconFlow sequence:
 13. `PT2-SF-R8-RUN - Approved Debug Filter Lab Provider-backed One-reference Smoke`: completed; one DEBUG backend endpoint request only, one style reference image only, no apply/original image, sanitized `internal_cloud_disabled` fallback before provider/model execution because the ignored backend debug env gate was closed.
 14. `PT2-SF-R8-R1 - Server-side Debug Env Gate Correction and One-reference Smoke Retry Approval`: completed; corrected ignored local backend debug env gate only, no backend server start, no app endpoint request, no provider/model call.
 15. `PT2-SF-R8-R2 - Fresh Approved One-reference Provider Smoke Retry`: completed; one DEBUG backend app endpoint smoke returned `source:cloud` with generated filter present, one style reference image only, no apply/original image upload, no direct iOS provider call, no raw logging, and `productionReady:false`.
-16. `PT2-SF-R9 - Physical-device DEBUG Filter Lab Backend E2E Smoke`: next recommended phase; verify real iOS DEBUG Filter Lab UI reaches a local/LAN backend that the phone can access, receives the cloud generated recipe, and applies it locally to the separate apply/original image.
-17. `PT3 - Image Editor / 改圖師 Provider Contract`: separate future backend contract after Photo Advisor and Filter Lab are stable; do not mix image editing into PT2-SF.
+16. `PT2-SF-R9 - Physical-device DEBUG Filter Lab Backend E2E Smoke`: implemented DEBUG-only app backend URL override; no provider key/direct provider URL in iOS, no Xcode project change, no backend runtime change, and no provider smoke.
+17. `PT2-SF-R9-RUN - Operator Physical-device Filter Lab LAN Backend Verification`: next recommended phase; run the real iOS DEBUG Filter Lab UI against a phone-accessible local/LAN backend, receive the cloud generated recipe, and apply it locally to the separate apply/original image.
+18. `PT3 - Image Editor / 改圖師 Provider Contract`: separate future backend contract after Photo Advisor and Filter Lab are stable; do not mix image editing into PT2-SF.
 
 Naming note: older committed Phase 21-A backend-internal VLM records remain historical evidence. The completed on-device geometry phase should be referenced by its full title: `Phase 21-A - On-device Vision Geometry Spike`.
 
