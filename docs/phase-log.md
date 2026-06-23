@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: PT2-SF-R9-R5 - Pure SwiftUI DEBUG Safe Boot
+Current phase: PT2-SF-R9-R6 - Xcode Backtrace Recording Workaround
 Status: implemented; awaiting Xcode physical-device retry
-Latest implementation: PT2-SF-R9-R5 reduces the DEBUG safe boot root to pure SwiftUI `Text("DEBUG SAFE BOOT")`, referencing no app design tokens, Home, Filter Lab, Camera, backend client, or app services. If this still black-screens, the failure is likely outside the app view tree or new backend URL code, such as Xcode scheme/cache/install/project state. No provider smoke was run, no provider key or direct provider URL was added to iOS, no backend runtime code changed, and `productionReady:false` remains locked.
+Latest implementation: PT2-SF-R9-R6 identifies the physical-device launch crash as the known Xcode/iOS debugger `OS_dispatch_mach_msg _setContext:` issue caused by scheme backtrace recording. Temporary DEBUG safe boot changes were restored and the app launches through the normal root again. Disable `Enable backtrace recording` in `Edit Scheme > Run > Options` before retrying. No provider smoke was run, no provider key or direct provider URL was added to iOS, no backend runtime code changed, and `productionReady:false` remains locked.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -14831,6 +14831,54 @@ Physical-device Xcode run is still operator-side because this Windows Codex envi
 - Camera cloud AI entry: no.
 - Image editor provider behavior: no.
 - StoreKit/quota runtime: no.
+- Production rollout: no.
+- `productionReady:false` remains locked.
+
+## PT2-SF-R9-R6 - Xcode Backtrace Recording Workaround
+
+Status: implemented; awaiting Xcode physical-device retry
+Date: 2026-06-23
+Production readiness: `productionReady:false`
+
+### Summary
+
+PT2-SF-R9-R6 identifies the physical-device launch crash as the known Xcode/iOS debugger issue that reports `-[OS_dispatch_mach_msg _setContext:]: unrecognized selector sent to instance`. This happens before the app's SwiftUI root can render, even with a pure `Text("DEBUG SAFE BOOT")` root.
+
+The app-side temporary safe boot changes were restored. The required operator workaround is:
+
+`Edit Scheme > Run > Options > uncheck Enable backtrace recording`
+
+The DEBUG backend URL resolver supports both `UserDefaults` key `AIPhotoCloudAIBaseURL` and the Xcode Scheme environment variable `AI_PHOTO_CLOUD_AI_BASE_URL`.
+
+### Changed Files
+
+- `ios-app/AIPhotoApp/AIPhotoApp.swift`
+- `ios-app/AIPhotoApp/App/MainTabShellView.swift`
+- `ios-app/AIPhotoApp/Services/CloudAI/CloudAIEndpointClient.swift`
+- `docs/pt2-sf-r9-r6-xcode-backtrace-recording-workaround.md`
+- `docs/phase-log.md`
+
+### Xcode Retry Needed
+
+- Product > Scheme > Edit Scheme.
+- Select `Run`.
+- Open `Options`.
+- Uncheck `Enable backtrace recording`.
+- Keep `AI_PHOTO_CLOUD_AI_BASE_URL=http://192.168.68.60:8787` only as an Environment Variable if needed for the LAN backend test.
+- Clean Build Folder.
+- Delete the app from the iPhone.
+- Build and run again.
+
+### Boundary Confirmations
+
+- App launch restored to normal root: yes.
+- Temporary DEBUG safe boot removed: yes.
+- Backend runtime code changed: no.
+- Provider/model call run in this phase: no.
+- API key value printed/saved/committed: no.
+- Direct iOS provider call: no.
+- Direct provider URL/key in iOS: no.
+- Backend payload expanded: no.
 - Production rollout: no.
 - `productionReady:false` remains locked.
 

@@ -35,11 +35,7 @@ struct MainTabShellView: View {
     }
 
     @ObservedObject var authViewModel: AuthViewModel
-    #if DEBUG
-    @State private var selectedTab: Tab = .home
-    #else
     @State private var selectedTab: Tab = .camera
-    #endif
 
     init(authViewModel: AuthViewModel) {
         self.authViewModel = authViewModel
