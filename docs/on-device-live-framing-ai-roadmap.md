@@ -236,6 +236,7 @@ Boundaries:
 - Fine-tuning / distillation should come after dataset manifest, label schema, human review, and benchmark gaps are proven.
 - OD-R8C bridges the reviewed OD-R7F-R2 local CV aggregation summary into internal parameter tuning review signals only. It does not read images, run CV inference, create a production parameter pack, write to iOS, or add user-facing advice; it preserves the Observation -> Mood -> Retro intent -> Optional action direction and rejects Score -> Problem -> Fix -> Retake framing.
 - OD-R8D consumes that bridge output and emits review-only parameter adjustment candidates. It does not apply final tuned values, export a parameter pack, write to app runtime, or add user-facing scores/advice.
+- OD-R8E applies manual review decisions to the OD-R8D candidates. It accepts only `visualWeightMoment.balanceWarningPolicy` and `horizonAngle.softTiltThreshold` for future pack-candidate review, marks `headroomRatio.highSoftWarningThreshold` and `sharpnessRatio.lowConfidenceThreshold` as `needs_more_data`, and still does not export a parameter pack, read images, write reports, write to app runtime, or add user-facing scores/advice.
 
 ## Safety and Data Governance
 

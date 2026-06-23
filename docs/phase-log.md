@@ -13870,4 +13870,74 @@ Phase OD-R8D adds a backend/local-only Parameter Tuning Dry-run From Bridge. It 
 
 ### Ready for Next Phase
 
-Ready for a future `Phase OD-R8E - Reviewed Candidate Acceptance Gate` after commit/push. Not ready for production rollout.
+Ready for a future `Phase OD-R8E - Reviewed Candidate Acceptance Gate` after commit/push. Not ready for production rollout.## Phase OD-R8E - Reviewed Candidate Acceptance Gate
+
+Status: completed
+Date: 2026-06-23
+Production readiness: `productionReady:false`
+
+### Summary
+
+Phase OD-R8E adds a backend/local-only Reviewed Candidate Acceptance Gate. It applies explicit manual review decisions to OD-R8D review-only candidates while keeping parameter-pack export, app runtime writes, and production rollout blocked.
+
+### Completed Work
+
+- Added `backend/src/qa/aestheticParameterCandidateAcceptanceGate.mjs`.
+- Added `backend/scripts/run-aesthetic-parameter-candidate-acceptance-gate.mjs`.
+- Added `backend/tests/aesthetic-parameter-candidate-acceptance-gate.test.mjs`.
+- Added `npm run qa:aesthetic-parameters:candidate-acceptance-gate`.
+- Added `docs/od-r8e-parameter-candidate-acceptance-gate.md`.
+- Updated README, backend/iOS README, roadmap, handoff, phase log, sequencing register, and manual smoke notes for OD-R8E.
+
+### Changed Files
+
+- `README.md`
+- `backend/README.md`
+- `backend/package.json`
+- `backend/scripts/run-aesthetic-parameter-candidate-acceptance-gate.mjs`
+- `backend/src/qa/aestheticParameterCandidateAcceptanceGate.mjs`
+- `backend/tests/aesthetic-parameter-candidate-acceptance-gate.test.mjs`
+- `docs/od-r8e-parameter-candidate-acceptance-gate.md`
+- `docs/on-device-live-framing-ai-roadmap.md`
+- `docs/phase-roadmap-sequencing-and-next-action-register.md`
+- `docs/phase-log.md`
+- `docs/handoff/codex-transition-handoff.md`
+- `ios-app/README.md`
+- `tests/manual-smoke-tests.md`
+
+### Boundary Checks
+
+- Backend/local-only reviewed candidate acceptance gate: yes
+- Manual review decisions applied to OD-R8D candidates: yes
+- Accepted candidates for future pack-candidate review: 2
+- Needs-more-data candidates: 2
+- Parameter-pack export enabled: no
+- App runtime eligibility enabled: no
+- Parameter pack exported: no
+- App runtime write performed: no
+- Real image read/upload performed: no
+- Real CV inference performed: no
+- Provider/cloud/Xiaoyi relay call made: no
+- Network/upload/download/crawler mode added: no
+- Training/fine-tuning enabled: no
+- iOS runtime integration added: no
+- Swift/Xcode file changed: no
+- Model/Core ML/ONNX/TFLite/weight file added: no
+- Real dataset/photo/local config/generated report committed: no
+- Production rollout: no
+- `productionReady:false`: yes
+
+### Tests / Manual Checks
+
+- `node --test tests/aesthetic-parameter-candidate-acceptance-gate.test.mjs`: passed
+- `npm run qa:aesthetic-parameters:candidate-acceptance-gate`: passed
+- Full `npm test`, diff checks, and safety scans should pass before commit/push.
+
+### Known TODOs
+
+- OD-R8E does not build or export a parameter pack. Future OD-R8F may build a backend/local-only pack-candidate scaffold from accepted candidates while keeping app runtime blocked.
+- OD-R8E does not write an export artifact, write to iOS, run real CV inference, or enable app runtime behavior.
+
+### Ready for Next Phase
+
+Ready for a future `Phase OD-R8F - Parameter Pack Candidate Scaffold From Accepted Reviews` after commit/push. Not ready for production rollout.

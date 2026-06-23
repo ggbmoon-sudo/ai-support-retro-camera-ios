@@ -1272,6 +1272,14 @@ Latest Phase OD-R8D Parameter Tuning Dry-run From Bridge on 2026-06-22:
 - Output reports `runMode:"parameter_tuning_dry_run_from_bridge_no_export"`, `acceptedForTuningDryRunReview:true`, four `candidateOnly:true` adjustment candidates, `eligibleForParameterPackExport:false`, `eligibleForAppRuntime:false`, `parameterPackExported:false`, `appRuntimeWritePerformed:false`, and `productionReady:false`.
 - No final tuned values, production threshold mutation, user-facing advice, parameter pack export, app runtime write, image read, CV inference, provider/cloud/Xiaoyi relay call, network/upload/download/crawler, report write, real fixture/config/report commit, Swift/Xcode change, model file, training/fine-tuning, Camera behavior change, or production rollout is added.
 
+Latest Phase OD-R8E Reviewed Candidate Acceptance Gate on 2026-06-23:
+
+- OD-R8E applies explicit manual review decisions to OD-R8D review-only candidates.
+- Added `backend/src/qa/aestheticParameterCandidateAcceptanceGate.mjs`, `backend/scripts/run-aesthetic-parameter-candidate-acceptance-gate.mjs`, backend tests, `npm run qa:aesthetic-parameters:candidate-acceptance-gate`, and `docs/od-r8e-parameter-candidate-acceptance-gate.md`.
+- Accepted `visualWeightMoment.balanceWarningPolicy` and `horizonAngle.softTiltThreshold` for future pack-candidate review; marked `headroomRatio.highSoftWarningThreshold` and `sharpnessRatio.lowConfidenceThreshold` as `needs_more_data`.
+- Output reports `runMode:"reviewed_candidate_acceptance_gate_no_export"`, `reviewedCandidateCount:4`, `acceptedCandidateCount:2`, `needsMoreDataCount:2`, `eligibleForParameterPackExport:false`, `eligibleForAppRuntime:false`, `parameterPackExported:false`, `appRuntimeWritePerformed:false`, and `productionReady:false`.
+- Parameter-pack export and app runtime remain blocked; no image read, CV inference, provider/cloud/Xiaoyi relay call, network/upload/download/crawler, report write, real fixture/config/report commit, Swift/Xcode change, model file, training/fine-tuning, Camera behavior change, or production rollout is added.
+
 Latest Phase OD-R7B Local CV Feature Extractor Prototype on 2026-06-21:
 
 - OD-R7B adds a backend/local-only Local CV Feature Extractor prototype using safe inline synthetic local-CV observations only.
