@@ -40,6 +40,44 @@ nonisolated enum GeneratedFilterColorCubeBuilder {
         }
     }
 
+    static func adaptiveShadowDetailData(toeLift: Double) -> Data {
+        let maximumLuminanceLift = min(max(toeLift * 0.72, 0), 0.025)
+        var values: [Float] = []
+        values.reserveCapacity(dimension * dimension * dimension * 4)
+
+        for blueIndex in 0..<dimension {
+            for greenIndex in 0..<dimension {
+                for redIndex in 0..<dimension {
+                    let input = SIMD3<Double>(
+                        Double(redIndex) / Double(dimension - 1),
+                        Double(greenIndex) / Double(dimension - 1),
+                        Double(blueIndex) / Double(dimension - 1)
+                    )
+                    let inputLuminance = luminance(input)
+                    let rampIn = smoothstep(0.005, 0.055, inputLuminance)
+                    let rampOut = 1 - smoothstep(0.10, 0.24, inputLuminance)
+                    let targetLuminance = inputLuminance
+                        + maximumLuminanceLift * rampIn * rampOut
+                    let gain = inputLuminance > 0.000_001
+                        ? targetLuminance / inputLuminance
+                        : 1
+                    let output = clamp(input * gain)
+                    values.append(Float(output.x))
+                    values.append(Float(output.y))
+                    values.append(Float(output.z))
+                    values.append(1)
+                }
+            }
+        }
+
+        return values.withUnsafeBufferPointer { buffer in
+            Data(
+                bytes: buffer.baseAddress!,
+                count: buffer.count * MemoryLayout<Float>.size
+            )
+        }
+    }
+
     private static func applyCurves(
         _ color: SIMD3<Double>,
         transform: GeneratedFilterColorTransform

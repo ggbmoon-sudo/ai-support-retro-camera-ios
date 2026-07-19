@@ -366,8 +366,11 @@ export function buildGeneratedFilterRecipeStyleGuidancePrompt() {
     "Inspect neutral whites, grays, and low-saturation surfaces, then black point, midtone brightness, highlight roll-off, and tonal separation.",
     "Judge the black point from the darkest photographic areas. A bright wall, flash-lit subject, pale background, or interface panel is not evidence of a raised black floor.",
     "Then inspect chroma distribution: whether reds, browns, greens, blues, neutrals, shadows, and highlights move differently.",
+    "This recipe must transfer to unrelated source photos. Never encode the reference scene's subject, room brightness, flash exposure, or dark clothing as if it were reusable filter style.",
+    "lumaCurve owns the primary reusable tone transfer. Keep exposure, contrast, fade, and shadowLift as modest residual corrections; do not recreate the same tone change in both the curve and legacy controls.",
     "Use colorTransform for repeatable nonlinear or channel-selective style. Use legacy temperature/tint/saturation only for residual global correction.",
     "Curves must stay monotonic and close to identity. Keep each point within about 0.18 of its fixed input x. Keep lumaCurve black at or below 0.08 and white at or above 0.92. Set every RGB channel-curve black endpoint to exactly 0 and white endpoint to exactly 1 so channel curves cannot lift the black floor a second time.",
+    "The lumaCurve x=0.25 point declares reusable shadow-detail intent: keep it near or above 0.25 for a soft detailed toe, and lower it only when the darkest photographic regions consistently show intentional crushed texture rather than merely containing dark scene objects.",
     "Basis meanings: neutral preserves color; warmAmber warms yellows and highlights; roseFlash adds restrained pink-magenta flash character; coolChrome cools cyan-blue neutrals; tealOrange separates cooler shadows and warmer highlights; mutedPastel gently compresses chroma; deepBrown deepens warm red-brown mids; chromeSlide adds clean slide-film separation.",
     "Use multiple modest basis weights instead of one extreme basis. If the scene and style cannot be separated, increase neutral and lower confidence.",
     "When scene lighting and filter evidence conflict, lower confidence and keep only repeatable controls conservative.",
@@ -394,6 +397,7 @@ export function buildGeneratedFilterRecipeRendererCalibrationPrompt() {
       return `${key} (${minimum}..${maximum}): ${PARAMETER_DESCRIPTIONS[key]}`;
     }),
     "Curves and basis-LUT weights are combined into one deterministic local 17-level color cube in explicit sRGB. Identity curves plus neutral=1 produce no style shift. RGB curves preserve exact black and white endpoints; lumaCurve alone owns endpoint lift/compression.",
+    "Before bloom, diffusion, halation, grain, dust, and vignette, the local renderer checks small opaque source/tone-color tiles against the lumaCurve-owned tone floor. It allows bounded residual density from exposure/contrast, temperature, RGB curves, and basis looks; a bounded local chromaticity-preserving micro-lift requires repeated low-chroma textured-shadow evidence, so isolated dark objects, saturated color styling, declared vignette, and intentional low-key luma curves remain unchanged.",
     "The overall user intensity separately blends normalization, color transform, legacy controls, and film effects back toward identity.",
     "At zero, signed controls are identity. Do not use one control to compensate for another control's implementation.",
     "Estimate the full-strength recipe."

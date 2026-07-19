@@ -8,9 +8,75 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: PT2-SF-R9-R16-R1 - Recipe v2 compound black-floor correction
-Status: backend and iOS implementation complete; automated, saved-recipe regression, and bounded live-provider verification passed; Mac/Xcode physical-device visual verification pending
-Latest implementation: PT2-SF-R9-R16-R1 treats the operator-confirmed 100% washed result as a compound-control failure rather than a slider-strength issue. The backend and iOS now require exact `0/1` R/G/B curve endpoints and enforce one shared black-floor budget across the luma black point, fade, shadow lift, and negative contrast. The saved real v2 recipe is corrected deterministically while preserving warmth/saturation intent. The backend still receives one style/reference image only, apply/original and rendering stay local, and `productionReady:false` remains locked.
+Current phase: PT2-SF-R9-R16-R2 - General adaptive Recipe v2 tone transfer
+Status: experimental polished candidate; backend/source-contract and synthetic policy checks pass; Mac/Core Image multi-style visual/performance verification pending
+Latest implementation: PT2-SF-R9-R16-R2 targets all generated Recipe v2 filters rather than one reference pair. The prompt makes `lumaCurve` primary transferable tone intent. iOS uses alpha-aware 64-pixel source/tone-color samples, 6×6 repeated low-chroma textured-shadow evidence, bounded legacy/style allowances, a chromaticity-preserving 17-cube, and a local piecewise mask. Recipe `1.1`, declared vignette, saturated shadows, and intentional low-key curves stay outside the guard. The style/reference image still uses the existing consented backend path; apply/original and adaptive samples remain local. `productionReady:false` stays locked.
+
+## PT2-SF-R9-R16-R2 - General Adaptive Recipe v2 Tone Transfer
+
+Status: experimental polished candidate; source-contract and synthetic policy checks pass; Mac/Core Image multi-style visual/performance verification pending
+Date: 2026-07-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+The operator's post-R16-R1 100% result confirmed that gray wash and colour direction were corrected: q10 reached `0.218` against target `0.215`, and mean R-minus-B reached `0.119` against target `0.122`. However, deep-pixel share rose from the source's `2.2%` to `7.8%`, with dark fabric and black fur losing local shadow separation. The operator explicitly required a solution for every generated filter, not a hard-coded correction for this image.
+
+### Completed Work
+
+- Changed the provider guidance so recipes transfer across unrelated sources and do not encode scene subjects/brightness as style.
+- Made luma curve the declared primary tone intent; legacy exposure, contrast, fade, and shadow lift are residual controls.
+- Added a Recipe v2-only guard after deterministic tone/colour and before bloom, diffusion, halation, grain, dust, vignette, and final intensity blend.
+- Reused an alpha-aware 64-pixel source sample and compared source/tone-colour q10/q25 over a 6×6 grid; tiles require at least 75% opaque samples.
+- Added absolute-plus-relative chroma gates for bottom-quartile shadows and the selected q10 pixel, protecting saturated dark colour styling.
+- Required at least three eligible and two damaged textured-shadow tiles; used floor-index q75 damage with no single-worst outlier boost.
+- Aligned style intent by transforming every opaque sampled tile colour and taking the resulting q10; omitted spatial `CIHighlightShadowAdjust` from the packed pointwise calibration strip.
+- Capped legacy/style/combined density allowances at `0.016 / 0.020 / 0.034`.
+- Added a chromaticity-preserving adaptive 17-cube capped at `ΔL 0.025`; exact black and luma `>=0.24` remain identity.
+- Built a 144×144 piecewise mask (24 pixels per tile), then Lanczos-scaled and feathered it by only 2...6 output pixels before local blending.
+- Added a 100 ms intensity debounce to reduce slider-render backlog.
+- Kept Recipe `1.1`, declared vignette, stochastic film effects, intentional low-key curves, and non-damaged areas outside the correction.
+
+### Changed Files
+
+- Backend prompt/tests: `backend/src/providers/generatedFilterRecipeContract.mjs`, `backend/tests/filter-lab-recipe-fidelity.test.mjs`
+- iOS: `GeneratedFilterPreviewRenderer.swift`, `GeneratedFilterColorCubeBuilder.swift`, `FilterLabViewModel.swift`
+- Docs/tests: root/backend/iOS READMEs, image-pipeline notes, this phase report, phase log, and manual smoke tests
+
+### Verification
+
+- Focused Filter Lab recipe/render-policy test: 10 passed, 0 failed.
+- Full backend regression suite: 429 passed, 0 failed.
+- Static/source-contract checks cover alpha gating, full-tile percentile alignment, piecewise mask construction, bounded cube, debounce, and absence of image-specific/provider code in iOS.
+- Synthetic policy-math fixtures cover repeated crush, one dark object, flat black, intentional low-key, faded, bright normalization, chromatic shadows, and multiple synthetic style-density buckets. These are not actual Core Image cross-style pixel tests.
+- Cube invariants: exact black, luma `>=0.24` identity, maximum `ΔL <=0.025`.
+- Offline approximation on the supplied saved 100% PNG: q10 about `0.2176 -> 0.2178`, q50 unchanged at `0.6949`, deep pixels below `0.12` about `7.80% -> 7.45...7.50%`, saturation unchanged around `0.2275`. This is not a device render.
+- Final Swift/Core Image source review: no known compile/API, mandatory no-op, or obvious false-positive blocker; Mac `xcodebuild` remains the SDK check.
+- Previous ignored `filter_lab_sanitized_analysis.v2` artifact remains `single_attempt`, all seven privacy flags false, and `productionReady:false`; no new paid-provider request was needed for this local polish.
+- Backend restarted with the latest prompt and external process-only credential injection; localhost and `192.168.68.60:8787` are reachable in `xiaoyiLunaInternal`, Filter Lab is ready, and `productionReady:false`.
+- `git diff --check`: passed; only expected Windows LF-to-CRLF conversion warnings were printed.
+- Mac/Xcode compile, actual multi-style pixels, mask orientation/boundaries, timing, and memory: pending.
+
+### Known TODOs
+
+- Pull/build on the MacBook and retest the supplied 100% pair.
+- Test warm faded, cool chrome, intentional low-key, muted pastel, neutral, and saturated-neon references against both bright and dark apply photos.
+- Inspect for halo, visible tile boundary, orientation mismatch, lost vignette, colour shift, and stale slider renders.
+- Confirm the local sample/calibration/mask path does not regress the 1600-pixel memory bound or interaction latency.
+
+### Boundary Confirmations
+
+- Selected style/reference image still follows the existing consented backend path: yes.
+- Apply/original and adaptive samples/statistics stay local/in-memory: yes.
+- Image/statistic logging or persistence: no.
+- Direct iOS provider URL/key/SDK/call: no.
+- Camera cloud AI entry: no.
+- Default/production cloud rollout: no.
+- `productionReady:false` remains locked.
+
+### Ready for Next Step
+
+Backend restarted with latest prompt: yes. Ready for Mac/Xcode multi-style visual verification: yes. Ready for production rollout: no.
 
 ## PT2-SF-R9-R16-R1 - Recipe v2 Compound Black-Floor Correction
 

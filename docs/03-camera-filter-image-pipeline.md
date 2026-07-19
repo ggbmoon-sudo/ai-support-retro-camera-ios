@@ -1,5 +1,17 @@
 # 相機、復古濾鏡與圖片處理技術報告
 
+## PT2-SF-R9-R16-R2 General Adaptive Tone Transfer
+
+Recipe v2 filtering must transfer across unrelated source photos rather than memorize one successful reference/apply pair. The backend prompt assigns primary reusable tone intent to `lumaCurve`, treats exposure/contrast/fade/shadow lift as residual controls, and excludes reference-scene subject colour, room brightness, and flash exposure from reusable filter evidence.
+
+The experimental iOS guard runs after deterministic normalization, legacy tone controls, temperature, and the Recipe v2 colour cube, but before bloom, diffusion, halation, grain, dust, vignette, and the user's final intensity blend. It creates alpha-aware source/tone-color samples with a maximum long edge of 64 pixels and divides them into a 6×6 grid. A tile is eligible only when at least 75% of its sample pixels are opaque, source q10 is `0.004...0.38`, q25-q10 is at least `0.018`, bottom-quartile absolute chroma is at most `0.12`, bottom-quartile relative chroma is at most `0.45`, and the selected q10 pixel's relative chroma is at most `0.55`.
+
+The detector compares tone-color q10 with a `lumaCurve`-owned primary floor. It permits bounded downward residuals from legacy tone (`0.016`), pointwise temperature/RGB-curve/basis style (`0.020`), their combined density (`0.034`), plus a small temperature/tint allowance. The style allowance transforms every opaque sampled colour in the tile and then takes the aligned q10; the packed calibration strip deliberately omits spatial `CIHighlightShadowAdjust`. At least three eligible tiles and two damaged tiles must agree. A floor-index q75 damage estimate drives the correction, avoiding both a single-object trigger and a worst-outlier boost.
+
+Repair is local rather than a global tone curve. A deterministic 17-cube multiplies RGB by one gain, preserving chromaticity and exact black. Maximum luminance lift is `0.025`, it fades out between luma `0.10...0.24`, and luma `>=0.24` is identity. A 6×6 weight grid becomes a 144×144 piecewise-constant mask (24 pixels per tile), then receives Lanczos scaling and only 2...6 output-pixel Gaussian feathering before `CIBlendWithMask`. Declared vignette and stochastic film effects remain downstream and untouched. Recipe `1.1` never enters this guard.
+
+Sampling, mask generation, and repair stay local and in-memory; they are not logged, persisted, or uploaded. The selected style/reference image still uses the existing consented backend path, while the apply/original image is not added to that request. Source-contract and synthetic policy tests pass, but actual Swift/Core Image compilation, mask orientation, multi-style pixels, latency, and memory remain Mac/device checks.
+
 ## PT2-SF-R9-R16-R1 Compound Black-Floor Correction
 
 The operator confirmed that the latest returned comparison was the 100% result. Its warmth and tonal spread were substantially closer than R15, but its black floor and midtones remained too bright. Recipe v2 now assigns black/white endpoint shaping only to the luma curve; R/G/B curves must keep exact `0/1` endpoints so channel styling cannot silently lift the entire black floor a second time.

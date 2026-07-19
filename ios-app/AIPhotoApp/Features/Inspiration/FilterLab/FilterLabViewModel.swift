@@ -7,6 +7,7 @@ import UIKit
 @MainActor
 final class FilterLabViewModel: ObservableObject {
     private static let importedImageMaxLongEdge: CGFloat = 1600
+    private static let intensityRenderDebounceNanoseconds: UInt64 = 100_000_000
 
     enum State: Equatable {
         case idle
@@ -117,7 +118,7 @@ final class FilterLabViewModel: ObservableObject {
 
     func updateIntensity(_ value: Double) {
         intensity = min(max(value, 0), 1)
-        renderPreview()
+        renderPreview(debounceIntensityChange: true)
     }
 
     func saveFilteredPreviewToPhotoLibrary() async {
@@ -302,7 +303,7 @@ final class FilterLabViewModel: ObservableObject {
     }
     #endif
 
-    private func renderPreview() {
+    private func renderPreview(debounceIntensityChange: Bool = false) {
         guard let applyTargetImage, let recipe else { return }
 
         renderTask?.cancel()
@@ -313,6 +314,12 @@ final class FilterLabViewModel: ObservableObject {
 
         renderTask = Task { [weak self] in
             do {
+                if debounceIntensityChange {
+                    try await Task.sleep(
+                        nanoseconds: Self.intensityRenderDebounceNanoseconds
+                    )
+                    try Task.checkCancellation()
+                }
                 let renderedImage = try await renderer.render(
                     image: applyTargetImage,
                     recipe: recipe,

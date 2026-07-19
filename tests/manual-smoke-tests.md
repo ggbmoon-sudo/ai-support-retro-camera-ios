@@ -4915,6 +4915,35 @@ Backend-only verification:
 - [x] Confirm Camera remains local-only, default/production remains mock/local, and `productionReady:false` remains unchanged.
 - [ ] Re-test on the physical iPhone with the operator's target/original pair and long-press-save the after image for visual comparison.
 
+## PT2-SF-R9-R16-R2 - General Adaptive Recipe v2 Tone Transfer
+
+Backend/source-contract and Mac/Xcode multi-style verification:
+
+- [x] Confirm the guard is Recipe v2-wide and contains no target image, subject, third-party preset, or recipe-ID special case.
+- [x] Confirm the prompt treats `lumaCurve` as transferable primary tone intent and scene subject/brightness as non-style evidence.
+- [x] Confirm alpha-aware source/tone-colour sampling uses only local 64-pixel-long-edge in-memory buffers over a 6×6 grid.
+- [x] Confirm each tile requires at least 75% opaque samples, q25-q10 recoverable detail, and absolute-plus-relative low-chroma evidence.
+- [x] Confirm at least three eligible/two damaged tiles are required and floor-index q75 has no worst-outlier boost.
+- [x] Confirm full-tile sampled colours are pointwise transformed before aligned style q10; the packed strip does not run spatial `CIHighlightShadowAdjust`.
+- [x] Confirm the adaptive cube preserves exact black/chromaticity, is identity at luma `>=0.24`, and caps maximum `ΔL` at `0.025`.
+- [x] Confirm the piecewise mask is 144×144 (24 pixels per tile) before scaling and receives only 2...6 output-pixel feathering.
+- [x] Confirm Recipe `1.1`, declared vignette, stochastic film effects, saturated shadows, and intentional low-key curves remain outside the guard.
+- [x] Confirm intensity changes use a 100 ms debounce and stale tasks are cancellation-checked before renderer enqueue.
+- [x] Confirm focused tests pass 10/10 and the full backend suite passes 429/429.
+- [x] Confirm the offline approximation is documented as non-device evidence: q10 about `0.2176 -> 0.2178`, q50/saturation unchanged, and deep pixels about `7.80% -> 7.45...7.50%`.
+- [ ] Build `ios-app/AIPhotoApp.xcodeproj` in DEBUG on Mac without Swift/Core Image errors.
+- [ ] Retest the supplied reference/apply pair at 100%; confirm black fur and dark fabric regain texture without returning to the R16 gray veil.
+- [ ] Check the saved result for mask Y-orientation errors, tile borders, halo/spill, colour shift, or accidentally weakened vignette.
+- [ ] Test at least one warm faded, cool chrome, high-contrast/low-key, muted pastel, neutral, and saturated-neon reference.
+- [ ] Apply each reference to both one bright/high-key and one dark/low-key source; confirm the look transfers without forcing every source toward the same exposure.
+- [ ] Confirm a deliberately crushed-black luma curve remains visibly low-key and is not flattened by the guard.
+- [ ] Confirm a faded/raised-toe curve stays faded and does not receive a duplicate lift.
+- [ ] Confirm saturated red/blue shadow styling remains untouched by the low-chroma gate.
+- [ ] Compare 0%, 50%, and 100%; confirm 0% remains exact source and 50% remains a true midpoint.
+- [ ] Rapidly scrub intensity and repeat previews for ten minutes; confirm no stale preview, long queue, memory growth, or unacceptable latency under the 1600-pixel bound.
+- [ ] Confirm no source/output sample, raw image/base64, prompt, request, provider response, key, or Authorization header is logged/persisted.
+- [ ] Confirm the selected style/reference still uses only the existing consented backend path; apply/original and adaptive samples remain local, with no iOS provider call, Camera cloud entry, or production rollout.
+
 ## PT2-SF-R9-R16-R1 - Recipe v2 Compound Black-Floor Correction
 
 Backend and Mac/Xcode physical-device verification:
