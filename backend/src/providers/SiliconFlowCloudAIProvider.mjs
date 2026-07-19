@@ -5,9 +5,11 @@ import {
 } from "./siliconflowPhotoAdvisorPromptContract.mjs";
 import { parseSiliconFlowPhotoAdvisorResponse } from "./siliconflowPhotoAdvisorProviderContract.mjs";
 import {
+  buildGeneratedFilterRecipeRendererCalibrationPrompt,
   buildGeneratedFilterRecipeSchemaPrompt,
   buildGeneratedFilterRecipeStyleGuidancePrompt,
-  generatedFilterRecipeExampleCandidate,
+  buildGeneratedFilterRecipeSystemPrompt,
+  generatedFilterRecipeJSONSchema,
   validateGeneratedFilterRecipeCandidate
 } from "./generatedFilterRecipeContract.mjs";
 
@@ -97,17 +99,18 @@ export class SiliconFlowCloudAIProvider extends CloudAIProvider {
       model: this.filterLabModel,
       stream: false,
       temperature: 0.1,
-      top_p: 0.8,
       max_tokens: 384,
-      response_format: { type: "json_object" },
+      response_format: {
+        type: "json_schema",
+        json_schema: {
+          name: "filter_lab_recipe",
+          schema: generatedFilterRecipeJSONSchema()
+        }
+      },
       messages: [
         {
           role: "system",
-          content: [
-            "You generate one safe retro camera Filter Lab recipe.",
-            "Return only JSON for the app contract.",
-            "Do not output shader code, LUT URLs, image generation instructions, bitmap data, brand/movie clone claims, or final localized UI copy."
-          ].join("\n")
+          content: buildGeneratedFilterRecipeSystemPrompt()
         },
         {
           role: "user",
@@ -118,9 +121,9 @@ export class SiliconFlowCloudAIProvider extends CloudAIProvider {
               text: [
                 buildGeneratedFilterRecipeSchemaPrompt(),
                 buildGeneratedFilterRecipeStyleGuidancePrompt(),
+                buildGeneratedFilterRecipeRendererCalibrationPrompt(),
                 "Use exactly the allowed enum strings. Do not invent localization keys.",
-                "If the image is ambiguous, return this safe contract object with only small numeric parameter changes:",
-                JSON.stringify(generatedFilterRecipeExampleCandidate()),
+                "If the image is ambiguous, keep uncertain controls near identity and lower confidence. Do not substitute a preferred preset recipe.",
                 `Locale: ${input.locale ?? "zh-Hant"}`
               ].join("\n")
             }

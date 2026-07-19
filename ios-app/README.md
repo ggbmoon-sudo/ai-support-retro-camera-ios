@@ -2,6 +2,8 @@
 
 This folder contains the Swift + SwiftUI iOS app scaffold.
 
+PT2-SF-R9-R13 calibrates the local Filter Lab preview renderer against the generated-recipe contract. Exposure is now applied once, bounded monochrome grain is rendered locally, imported/generated previews keep the R12 memory bounds, and new recipes start at full intensity so the first comparison represents the requested recipe. The backend still receives only the style/reference image; the apply/original image remains local. No provider key, direct provider URL/call, provider SDK, Camera cloud AI entry, upload-payload expansion, or production rollout is added, and `productionReady:false` remains locked. Mac/Xcode physical-device visual and memory verification is pending.
+
 ## Today's AI Direction Update - On-device Live Framing First
 
 Live camera guidance should now prioritize on-device Apple Vision / AVFoundation geometry, hardware depth when available, and app-side retro-aware composition rules. Cloud/self-hosted VLM paths remain useful for post-capture Photo Advisor, offline benchmark, internal evaluation, and future labeling/distillation, but they are no longer the default live camera guidance path.

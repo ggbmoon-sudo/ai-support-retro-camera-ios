@@ -4895,3 +4895,25 @@ Xcode check:
 - [ ] No model file should appear in the app bundle.
 - [ ] No Camera behavior, permission, network, upload, or Photo Advisor flow should change.
 - [ ] Existing app should build/run as before.
+
+## PT2-SF-R9-R13 - Filter Lab Recipe Fidelity Calibration
+
+Mac/Xcode physical-device verification:
+
+- [ ] Build and run the DEBUG app on iPhone; confirm the updated renderer compiles without warnings or Core Image filter failures.
+- [ ] Start the local backend and confirm the Filter Lab DEBUG health test reports reachable and ready before attempting Cloud generation.
+- [ ] Select exactly one style/reference image and a separate apply/original image, accept the existing consent, and generate a Cloud recipe.
+- [ ] Confirm the backend receives only the style/reference image and the apply/original image remains local to the device.
+- [ ] Compare the generated result at the new default intensity `1.0`; confirm the first preview shows the complete generated recipe rather than a reduced-strength blend.
+- [ ] With controlled warm/cool and green/magenta references, confirm temperature and tint directions match the displayed recipe semantics.
+- [ ] Confirm exposure changes are not visibly doubled and that zero exposure stays neutral.
+- [ ] Confirm nonzero grain is visible as bounded monochrome texture, zero grain adds no texture, and repeated preview renders do not produce objectionable flicker.
+- [ ] Repeatedly change intensity and regenerate previews for at least 10 minutes; confirm memory remains bounded and the app is not terminated for memory pressure.
+- [ ] Confirm the 1600-pixel import/preview bounds from R12 remain effective and before/after comparison still works.
+- [ ] Confirm no raw image/base64, prompt, provider response, request body, provider error, secret, or Authorization header appears in app/backend logs.
+- [ ] Confirm no provider key/direct provider URL or provider SDK is present in iOS, no Camera cloud AI entry appears, no upload payload expansion occurs, and `productionReady:false` remains unchanged.
+
+Backend compatibility gate:
+
+- [ ] Do not run a live provider test without a separate explicit approval.
+- [ ] If separately approved, use one ignored synthetic style image, exactly one provider call, zero retries, sanitized report output only, and verify the deployed model accepts the `json_schema` response format.

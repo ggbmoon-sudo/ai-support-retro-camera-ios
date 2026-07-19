@@ -680,8 +680,9 @@ test("xiaoyi provider uses deepseek-v4-flash for generated Filter Lab recipes", 
   assert.equal(capturedRequest.model, "deepseek-v4-flash");
   assert.equal(capturedRequest.stream, false);
   assert.deepEqual(capturedRequest.response_format, { type: "json_object" });
-  assert.equal(capturedRequest.messages[0].content.includes("Filter Lab recipe writer"), true);
+  assert.equal(capturedRequest.messages[0].content.includes("color-science analyst"), true);
   assert.equal(capturedRequest.messages[1].content[0].text.includes("Allowed recipeVersion: 1.0"), true);
+  assert.equal(capturedRequest.messages[1].content[0].text.includes("Renderer calibration anchors"), true);
   assert.equal(capturedRequest.messages[1].content[1].image_url.url, "data:image/jpeg;base64,/9j/");
   assert.equal(capturedRequest.messages[1].content[1].image_url.detail, "low");
 });
@@ -780,12 +781,19 @@ test("siliconflow provider builds image-first Filter Lab recipe request", async 
   assert.equal(capturedHeaders.authorization, "Bearer test-key");
   assert.equal(capturedRequest.model, "Qwen/Qwen3-VL-32B-Instruct");
   assert.equal(capturedRequest.stream, false);
-  assert.deepEqual(capturedRequest.response_format, { type: "json_object" });
-  assert.equal(capturedRequest.messages[0].content.includes("Filter Lab recipe"), true);
+  assert.equal("top_p" in capturedRequest, false);
+  assert.equal(capturedRequest.response_format.type, "json_schema");
+  assert.equal(capturedRequest.response_format.json_schema.name, "filter_lab_recipe");
+  assert.equal(capturedRequest.response_format.json_schema.schema.additionalProperties, false);
+  assert.equal(capturedRequest.response_format.json_schema.schema.properties.parameters.additionalProperties, false);
+  assert.equal(capturedRequest.messages[0].content.includes("color-science analyst"), true);
   assert.equal(capturedRequest.messages[1].content[0].image_url.url, "data:image/jpeg;base64,/9j/");
   assert.equal(capturedRequest.messages[1].content[0].image_url.detail, "high");
   assert.equal(capturedRequest.messages[1].content[1].text.includes("Allowed recipeVersion: 1.0"), true);
   assert.equal(capturedRequest.messages[1].content[1].text.includes("visible filter/settings panel"), true);
+  assert.equal(capturedRequest.messages[1].content[1].text.includes("Renderer calibration anchors"), true);
+  assert.equal(capturedRequest.messages[1].content[1].text.includes("Do not substitute a preferred preset recipe"), true);
+  assert.equal(capturedRequest.messages[1].content[1].text.includes("return this safe contract object"), false);
 });
 
 test("siliconflow generated filter parser rejects invalid recipe schema without raw output", () => {

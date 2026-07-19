@@ -68,6 +68,17 @@ const PARAMETER_RANGES = Object.freeze({
   vignette: [0, 0.35]
 });
 
+const PARAMETER_DESCRIPTIONS = Object.freeze({
+  exposure: "Single Core Image exposure adjustment in EV. Zero is identity; negative darkens and positive brightens. Do not also compensate with brightness.",
+  contrast: "Core Image contrast offset around the identity multiplier: renderer contrast = 1 + value * intensity. Negative softens tonal separation; positive strengthens it.",
+  saturation: "Core Image saturation offset around the identity multiplier: renderer saturation = 1 + value * intensity. Negative mutes color; positive strengthens color.",
+  temperature: "Renderer white-balance warmth control. Zero targets 6500K; positive lowers the target Kelvin for a warmer result and negative raises it for a cooler result.",
+  tint: "Renderer green-magenta white-balance control. Zero is neutral; negative moves toward green and positive moves toward magenta.",
+  fade: "Tonal fade amount. Zero is identity; positive compresses highlights and opens shadows for softer separation. It is not exposure or grain.",
+  grain: "Monochrome film-grain strength rendered with a bounded soft-light texture. Zero is no grain; positive increases visible fine texture.",
+  vignette: "Corner darkening strength. Zero is no vignette; positive progressively darkens the edges while preserving the center."
+});
+
 export function generatedFilterRecipeExampleCandidate() {
   return {
     id: "ai_amber_travel_glow",
@@ -96,6 +107,97 @@ export function generatedFilterRecipeExampleCandidate() {
   };
 }
 
+export function generatedFilterRecipeJSONSchema() {
+  const parameterProperties = Object.fromEntries(
+    REQUIRED_PARAMETER_KEYS.map((key) => {
+      const [minimum, maximum] = PARAMETER_RANGES[key];
+      return [key, {
+        type: "number",
+        minimum,
+        maximum,
+        description: PARAMETER_DESCRIPTIONS[key]
+      }];
+    })
+  );
+
+  return {
+    type: "object",
+    additionalProperties: false,
+    required: [...REQUIRED_TOP_LEVEL_KEYS],
+    properties: {
+      id: {
+        type: "string",
+        pattern: "^ai_[a-z0-9_]{3,64}$",
+        description: "App-safe generated recipe identifier. This label must not influence the numeric parameters."
+      },
+      nameKey: {
+        type: "string",
+        enum: Array.from(ALLOWED_NAME_KEYS),
+        description: "Closest app localization key, selected only after estimating the numeric recipe."
+      },
+      descriptionKey: {
+        type: "string",
+        enum: Array.from(ALLOWED_DESCRIPTION_KEYS),
+        description: "Closest app localization key, selected only after estimating the numeric recipe."
+      },
+      source: {
+        type: "string",
+        enum: ["cloud"]
+      },
+      confidence: {
+        type: "number",
+        minimum: 0,
+        maximum: 1,
+        description: "Confidence that repeatable filter effects can be separated from scene content and lighting. It is not a quality score or effect strength."
+      },
+      recommendedUseKeys: {
+        type: "array",
+        minItems: 1,
+        maxItems: 3,
+        uniqueItems: true,
+        items: {
+          type: "string",
+          enum: Array.from(ALLOWED_USE_KEYS)
+        }
+      },
+      parameters: {
+        type: "object",
+        additionalProperties: false,
+        required: [...REQUIRED_PARAMETER_KEYS],
+        properties: parameterProperties,
+        description: "Independent renderer controls inferred from repeatable visual evidence, not from the selected name key."
+      },
+      warningsKeys: {
+        type: "array",
+        minItems: 1,
+        maxItems: 2,
+        uniqueItems: true,
+        items: {
+          type: "string",
+          enum: Array.from(ALLOWED_WARNING_KEYS)
+        }
+      },
+      recipeVersion: {
+        type: "string",
+        enum: [FILTER_RECIPE_VERSION]
+      }
+    }
+  };
+}
+
+export function buildGeneratedFilterRecipeSystemPrompt() {
+  return [
+    "You are a color-science analyst for a retro camera Filter Lab.",
+    "Infer one reusable global photo grade from one already-styled reference photo.",
+    "Separate repeatable filter effects from subject matter, object colors, scene lighting, time of day, camera exposure, and composition.",
+    "Estimate only controls that the app renderer can reproduce.",
+    "Do not identify or judge people and do not output hidden reasoning.",
+    "Return only the JSON object required by the supplied schema.",
+    "Do not echo the prompt or expose provider, backend, debug, request, or internal classification details.",
+    "Do not output shader code, LUT URLs, image-generation instructions, bitmap data, brand/movie/creator clone claims, or localized UI copy."
+  ].join("\n");
+}
+
 export function buildGeneratedFilterRecipeSchemaPrompt() {
   return [
     "Return exactly one JSON object for the app's Filter Lab recipe contract.",
@@ -117,20 +219,40 @@ export function buildGeneratedFilterRecipeSchemaPrompt() {
     "Allowed recipeVersion: 1.0",
     "Parameter ranges:",
     Object.entries(PARAMETER_RANGES).map(([key, [min, max]]) => `${key}=${min}..${max}`).join(", "),
-    "If uncertain, choose amber_travel_glow or soft_film_memory keys with conservative parameter values.",
+    "Estimate parameters before choosing nameKey or descriptionKey. Labels must not drive numeric values.",
+    "Confidence measures style-separation certainty, not visual quality or filter strength.",
     "Output JSON only. No markdown. No prose."
   ].join("\n");
 }
 
 export function buildGeneratedFilterRecipeStyleGuidancePrompt() {
   return [
-    "Style extraction rules:",
+    "Style extraction evidence order:",
     "If the reference image contains a visible filter/settings panel, numeric slider values, icon/value rows, preset cards, or a recipe overlay, treat those visible parameters as the strongest signal.",
     "Read visible signed values when possible, then translate them into the app's parameter ranges proportionally and clamp to the allowed schema range. Preserve the sign. Around +/-40 is moderate; around +/-80 is strong.",
     "Likely control mapping: sun/brightness -> exposure; half circle/contrast -> contrast; droplet/color -> saturation or tint; thermometer/warmth -> temperature; cloud/haze/fade -> fade; grain/detail/sharpness/texture -> grain; edge/corner/dark circle -> vignette.",
+    "Otherwise inspect neutral whites, grays, and low-saturation surfaces before strongly colored objects.",
+    "Then inspect luminance distribution: black point, midtone brightness, highlight roll-off, and tonal separation.",
+    "Then inspect chroma distribution: overall saturation, warm-cool balance, and green-magenta bias.",
+    "Use corner-to-center falloff as evidence for vignette and spatially consistent fine high-frequency texture as evidence for grain.",
+    "Do not treat a colorful subject, sunset, neon sign, painted wall, or single light source as global filter evidence by itself.",
+    "When scene lighting and filter evidence conflict, lower confidence and keep only well-supported controls conservative.",
+    "Choose every numeric parameter independently. Do not choose a preset family first and derive its parameters afterward.",
     "If a visible control is unknown, combine its value with the actual visual result instead of inventing a new schema field.",
     "Ignore QR codes, watermarks, app logos, usernames, decorative stickers, and sharing UI.",
     "Do not claim an exact clone of a third-party app/filter. Output only the closest safe app recipe."
+  ].join("\n");
+}
+
+export function buildGeneratedFilterRecipeRendererCalibrationPrompt() {
+  return [
+    "Renderer calibration anchors:",
+    ...REQUIRED_PARAMETER_KEYS.map((key) => {
+      const [minimum, maximum] = PARAMETER_RANGES[key];
+      return `${key} (${minimum}..${maximum}): ${PARAMETER_DESCRIPTIONS[key]}`;
+    }),
+    "At zero, signed controls are identity. Do not use one control to compensate for another control's implementation.",
+    "Estimate the full-strength recipe. The user intensity slider blends the recipe separately."
   ].join("\n");
 }
 

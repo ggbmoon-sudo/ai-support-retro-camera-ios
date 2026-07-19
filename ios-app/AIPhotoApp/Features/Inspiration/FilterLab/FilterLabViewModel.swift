@@ -1,10 +1,13 @@
 import Combine
+import ImageIO
 import PhotosUI
 import SwiftUI
 import UIKit
 
 @MainActor
 final class FilterLabViewModel: ObservableObject {
+    private static let importedImageMaxLongEdge: CGFloat = 1600
+
     enum State: Equatable {
         case idle
         case analyzing
@@ -18,7 +21,7 @@ final class FilterLabViewModel: ObservableObject {
     @Published private(set) var applyTargetImage: UIImage?
     @Published private(set) var previewImage: UIImage?
     @Published private(set) var recipe: GeneratedFilterRecipe?
-    @Published var intensity: Double = 0.72
+    @Published var intensity: Double = 1.0
     @Published private(set) var isRenderingPreview = false
     @Published private(set) var applyMessageKey: String?
     #if DEBUG
@@ -95,7 +98,7 @@ final class FilterLabViewModel: ObservableObject {
         applyTargetImage = nil
         previewImage = nil
         recipe = nil
-        intensity = 0.72
+        intensity = 1.0
         isRenderingPreview = false
         applyMessageKey = nil
         #if DEBUG
@@ -295,12 +298,34 @@ final class FilterLabViewModel: ObservableObject {
     }
 
     private func loadImage(from pickerItem: PhotosPickerItem) async throws -> UIImage {
-        guard let data = try await pickerItem.loadTransferable(type: Data.self),
-              let image = UIImage(data: data) else {
+        guard let data = try await pickerItem.loadTransferable(type: Data.self) else {
             throw FilterGenerationError.failed
         }
 
-        return image
+        return try Self.downsampleImageData(data, maxLongEdge: Self.importedImageMaxLongEdge)
+    }
+
+    private static func downsampleImageData(_ data: Data, maxLongEdge: CGFloat) throws -> UIImage {
+        let sourceOptions = [
+            kCGImageSourceShouldCache: false
+        ] as CFDictionary
+
+        guard let source = CGImageSourceCreateWithData(data as CFData, sourceOptions) else {
+            throw FilterGenerationError.failed
+        }
+
+        let thumbnailOptions = [
+            kCGImageSourceCreateThumbnailFromImageAlways: true,
+            kCGImageSourceCreateThumbnailWithTransform: true,
+            kCGImageSourceShouldCacheImmediately: true,
+            kCGImageSourceThumbnailMaxPixelSize: Int(maxLongEdge)
+        ] as CFDictionary
+
+        guard let image = CGImageSourceCreateThumbnailAtIndex(source, 0, thumbnailOptions) else {
+            throw FilterGenerationError.failed
+        }
+
+        return UIImage(cgImage: image, scale: 1, orientation: .up)
     }
 
     private static func sampleStyleReferenceImage() -> UIImage {

@@ -1,7 +1,10 @@
 import { CloudAIProvider } from "./CloudAIProvider.mjs";
 import { buildPhotoAdvisorPrompt } from "../prompts/photoAdvisorPrompt.mjs";
 import {
+  buildGeneratedFilterRecipeRendererCalibrationPrompt,
   buildGeneratedFilterRecipeSchemaPrompt,
+  buildGeneratedFilterRecipeStyleGuidancePrompt,
+  buildGeneratedFilterRecipeSystemPrompt,
   validateGeneratedFilterRecipeCandidate
 } from "./generatedFilterRecipeContract.mjs";
 
@@ -96,18 +99,19 @@ export class XiaoyiDeepseekRelayProvider extends CloudAIProvider {
       messages: [
         {
           role: "system",
-          content: [
-            "You are a backend-only Filter Lab recipe writer for a retro / film camera app.",
-            "Return JSON only. No Markdown, prose, raw prompt echo, provider/debug text, chain-of-thought, code, shader, LUT URL, or exact-copy claim.",
-            "The app renderer owns all image processing; you output safe typed recipe keys and numeric parameters only."
-          ].join(" ")
+          content: buildGeneratedFilterRecipeSystemPrompt()
         },
         {
           role: "user",
           content: [
             {
               type: "text",
-              text: buildGeneratedFilterRecipeSchemaPrompt()
+              text: [
+                buildGeneratedFilterRecipeSchemaPrompt(),
+                buildGeneratedFilterRecipeStyleGuidancePrompt(),
+                buildGeneratedFilterRecipeRendererCalibrationPrompt(),
+                "If the image is ambiguous, keep uncertain controls near identity and lower confidence. Do not substitute a preferred preset recipe."
+              ].join("\n")
             },
             {
               type: "image_url",

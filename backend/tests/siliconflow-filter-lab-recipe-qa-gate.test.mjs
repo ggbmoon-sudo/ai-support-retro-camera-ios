@@ -97,12 +97,17 @@ test("siliconflow Filter Lab recipe QA sends one image request and accepts recip
   assert.equal(capturedRequest.model, "Qwen/Qwen3-VL-32B-Instruct");
   assert.equal(capturedRequest.stream, false);
   assert.equal(capturedRequest.max_tokens, 384);
-  assert.deepEqual(capturedRequest.response_format, { type: "json_object" });
+  assert.equal("top_p" in capturedRequest, false);
+  assert.equal(capturedRequest.response_format.type, "json_schema");
+  assert.equal(capturedRequest.response_format.json_schema.name, "filter_lab_recipe");
+  assert.equal(capturedRequest.response_format.json_schema.schema.additionalProperties, false);
   assert.equal(capturedRequest.messages[1].content[0].type, "image_url");
   assert.match(capturedRequest.messages[1].content[0].image_url.url, /^data:image\/jpeg;base64,/);
   assert.equal(capturedRequest.messages[1].content[0].image_url.detail, "high");
   assert.match(capturedRequest.messages[1].content[1].text, /Filter Lab recipe contract/);
   assert.match(capturedRequest.messages[1].content[1].text, /visible filter\/settings panel/);
+  assert.match(capturedRequest.messages[1].content[1].text, /Renderer calibration anchors/);
+  assert.doesNotMatch(capturedRequest.messages[1].content[1].text, /return this safe contract object/);
   assert.equal(report.ok, true);
   assert.equal(report.actualCalls, 1);
   assert.equal(report.acceptedCount, 1);

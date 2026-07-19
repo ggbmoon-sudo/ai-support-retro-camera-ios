@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: PT2-SF-R9-R11 - Filter Lab Cloud Readiness Diagnostics
-Status: implemented; awaiting Xcode physical-device retry
-Latest implementation: PT2-SF-R9-R11 fixes the misleading Filter Lab Cloud diagnostics after physical-device testing showed the app could open and generate, but the operator still could not reliably tell whether the result was truly Cloud AI. Backend `/health` now returns safe provider readiness buckets instead of hardcoded `mock-only`, and the DEBUG Filter Lab endpoint panel decodes `filterLabReady` to show whether the backend is reachable and ready for Filter Lab Cloud. No provider call/smoke was run, no iOS provider key/direct provider URL was added, no backend payload expansion occurred, no apply/original image is uploaded, no Camera cloud AI entry was added, and `productionReady:false` remains locked.
+Current phase: PT2-SF-R9-R13 - Filter Lab Recipe Fidelity Calibration
+Status: implemented; pending Mac/Xcode and bounded provider compatibility/fidelity QA
+Latest implementation: PT2-SF-R9-R13 replaces preset-anchored Filter Lab prompting with content/style disentanglement and renderer calibration, adds a strict SiliconFlow `json_schema` recipe response contract, aligns the local preview renderer so exposure is applied once and grain is actually rendered, starts generated recipes at full intensity, and adds sanitized no-network recipe-fidelity regression coverage. No provider/model call was run, no iOS provider key/direct provider URL was added, no backend upload payload expansion occurred, no apply/original image is uploaded, no Camera cloud AI entry was added, and `productionReady:false` remains locked.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -76,6 +76,124 @@ Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-o
 Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. If continuing app-side feature development, choose a non-composition Camera feature or focused runtime/UI polish. If continuing composition intelligence, use a separate training-AI branch phase that begins with dataset/label schema, source/license/consent gates, and human review policy, not app runtime composition logic. Any model artifact handling, Core ML package use, inference execution, benchmark run, Camera runtime integration beyond explicit local scope, preview-frame upload/upload persistence, upload payload change, provider/cloud call, iOS provider/model key, raw artifact, sensitive inference, dataset crawler, user-photo training, or production rollout requires separate explicit approval before execution. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries.
 
 ---
+
+## PT2-SF-R9-R13 - Filter Lab Recipe Fidelity Calibration
+
+Status: implemented; pending Mac/Xcode and bounded provider compatibility/fidelity QA
+Date: 2026-07-19
+Production readiness: `productionReady:false`
+
+### Summary
+
+PT2-SF-R9-R13 improves one-reference Filter Lab recipe fidelity after online research showed that prompt wording alone cannot solve an uncalibrated renderer or the ill-posed task of inferring a reusable filter from one already-styled photo. The phase adds content/style disentanglement, explicit renderer anchors, strict structured output, renderer semantic alignment, and sanitized synthetic recipe-error evaluation.
+
+### Completed Work
+
+- Added a Filter Lab recipe JSON Schema with required fields, enums, numeric ranges, descriptions, and `additionalProperties:false`.
+- Added shared color-science, visual-evidence, ambiguity, and renderer-calibration prompt contracts.
+- Removed the runtime amber/soft-film example fallback that could anchor unrelated references to a preferred recipe.
+- Updated SiliconFlow Filter Lab runtime and QA requests from `json_object` to `json_schema`.
+- Kept Xiaoyi on JSON mode for compatibility while sharing the calibrated prompt.
+- Changed generated Filter Lab default intensity from `0.72` to `1.0`.
+- Removed duplicate exposure-driven `CIColorControls` brightness adjustment.
+- Added bounded local monochrome soft-light grain rendering.
+- Added a sanitized no-network recipe fidelity evaluator and regression tests.
+- Added the implementation/research summary `docs/pt2-sf-r9-r13-filter-lab-recipe-fidelity-calibration.md`.
+
+### Changed Files
+
+- `README.md`
+- `backend/README.md`
+- `backend/src/providers/generatedFilterRecipeContract.mjs`
+- `backend/src/providers/SiliconFlowCloudAIProvider.mjs`
+- `backend/src/providers/XiaoyiDeepseekRelayProvider.mjs`
+- `backend/src/qa/filterLabRecipeFidelityEvaluator.mjs`
+- `backend/src/qa/siliconFlowFilterLabRecipeQAGate.mjs`
+- `backend/tests/cloud-ai-boundary.test.mjs`
+- `backend/tests/filter-lab-recipe-fidelity.test.mjs`
+- `backend/tests/siliconflow-filter-lab-recipe-qa-gate.test.mjs`
+- `docs/pt2-sf-r9-r13-filter-lab-recipe-fidelity-calibration.md`
+- `docs/phase-log.md`
+- `ios-app/AIPhotoApp/Features/Inspiration/FilterLab/FilterLabViewModel.swift`
+- `ios-app/AIPhotoApp/Features/Inspiration/FilterLab/GeneratedFilterPreviewRenderer.swift`
+- `ios-app/README.md`
+- `tests/manual-smoke-tests.md`
+
+### Tests / Manual Checks
+
+- Targeted backend and source-contract tests passed `83/83` during implementation.
+- No-network fidelity tests made `0` provider calls and read `0` images.
+- Mac/Xcode build and physical-device visual/memory verification remain pending.
+- SiliconFlow Qwen3-VL `json_schema` compatibility remains pending a separately approved bounded provider QA; no provider call was made in this phase.
+
+### Boundary Confirmations
+
+- Provider/model call run by Codex in this phase: no.
+- API key, Authorization header, raw prompt/request/provider response, or image/base64 printed/persisted/committed: no.
+- Direct iOS provider call or provider key/URL: no.
+- Backend payload expanded: no.
+- Style/reference upload count changed: no, remains exactly one explicit DEBUG upload.
+- Apply/original image uploaded: no, remains local-only.
+- Camera cloud AI entry or capture-context upload: no.
+- Generated bitmap, shader, remote LUT, or real image-editing provider: no.
+- Exact-copy promise: no.
+- Production rollout: no.
+- `productionReady:false` remains locked.
+
+### Ready for Next Phase
+
+No. First complete Mac/Xcode build plus physical-device R12/R13 memory and visual calibration. A later one-case SiliconFlow structured-output compatibility call or multi-fixture prompt A/B requires separate explicit provider-run approval.
+
+## PT2-SF-R9-R12 - Filter Lab Physical-device Memory Pressure Hotfix
+
+Status: implemented; awaiting Xcode physical-device retry
+Date: 2026-06-24
+Production readiness: `productionReady:false`
+
+### Summary
+
+PT2-SF-R9-R12 fixes the physical-device memory pressure observed after the DEBUG Filter Lab Cloud path successfully connected to AI and generated a recipe. Xcode reported the app was terminated by the operating system with code 9 due to excessive memory use.
+
+The likely spike was the Filter Lab path holding two full-resolution PhotosPicker images plus a full-resolution generated Core Image preview at the same time. The fix keeps the feature behavior the same while bounding app-side image memory.
+
+### Completed Work
+
+- Downsampled imported Filter Lab PhotosPicker images before storing them in `FilterLabViewModel`.
+- Kept Cloud Filter Lab upload compression as the existing one style/reference image only.
+- Capped generated before/after preview rendering to a bounded long edge.
+- Disabled Core Image intermediate caching for generated Filter Lab preview rendering.
+- Cleared Core Image caches after generated preview render.
+
+### Changed Files
+
+- `README.md`
+- `docs/phase-log.md`
+- `ios-app/AIPhotoApp/Features/Inspiration/FilterLab/FilterLabViewModel.swift`
+- `ios-app/AIPhotoApp/Features/Inspiration/FilterLab/GeneratedFilterPreviewRenderer.swift`
+
+### Tests / Manual Checks
+
+- Pending physical-device Xcode retry.
+- Required manual check: run Filter Lab Cloud again with one style/reference image and one apply/original image, confirm the recipe returns, before/after preview appears, and Xcode no longer reports memory termination.
+
+### Boundary Confirmations
+
+- Provider/model call run by Codex in this phase: no.
+- API key value printed/saved/committed: no.
+- Authorization header printed/committed: no.
+- Raw request/provider/image/base64 printed/committed: no.
+- Direct iOS provider call: no.
+- Direct provider URL/key in iOS: no.
+- Backend payload expanded: no.
+- Style/reference image upload count changed: no, remains one explicit DEBUG upload.
+- Apply/original image uploaded: no, remains local-only.
+- Camera cloud AI entry: no.
+- Production rollout: no.
+- `productionReady:false` remains locked.
+
+### Ready for Next Phase
+
+Recommended next step is the operator physical-device retry of Filter Lab Cloud after reinstall/build. If memory is stable, commit R9-R11/R12 together or split R12 as the app-side memory hotfix. If memory termination persists, use Xcode Memory Graph / Allocations and capture only sanitized memory category notes, not images, raw payloads, provider responses, API keys, or Authorization headers.
 
 ## PT2-SF-R9-R11 - Filter Lab Cloud Readiness Diagnostics
 
