@@ -62,7 +62,7 @@ test("sanitized Filter Lab artifact writer creates one ignored JSON analysis fil
 
   try {
     const result = await persistSanitizedFilterLabAnalysisArtifact({
-      providerKind: "xiaoyiRelayInternal",
+      providerKind: "xiaoyiLunaInternal",
       recipe: generatedFilterRecipeExampleCandidate(),
       attempts: 2,
       latencyMs: 16000,
@@ -73,7 +73,7 @@ test("sanitized Filter Lab artifact writer creates one ignored JSON analysis fil
     const persisted = JSON.parse(await readFile(new URL(result.fileName, directoryURL), "utf8"));
 
     assert.equal(result.saved, true);
-    assert.equal(persisted.providerModeBucket, "xiaoyi_relay_internal");
+    assert.equal(persisted.providerModeBucket, "xiaoyi_luna_internal");
     assert.equal(persisted.attemptsBucket, "retry");
     assert.equal(persisted.latencyBucket, "gt_15s");
     assert.deepEqual(persisted.normalizedRecipe.parameters, generatedFilterRecipeExampleCandidate().parameters);

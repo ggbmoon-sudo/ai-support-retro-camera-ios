@@ -10,6 +10,7 @@ import { checkDevRateLimit } from "../security/rateLimit.mjs";
 import { withProviderTimeout } from "../security/timeout.mjs";
 import { elapsedMs, nowMs } from "../utils/latency.mjs";
 import { validateFilterLabRequest } from "../validators/validateFilterLabRequest.mjs";
+import { XIAOYI_LUNA_TOTAL_TIMEOUT_MS } from "../providers/XiaoyiLunaRelayProvider.mjs";
 
 export async function handleFilterLabRequest(requestBody, options = {}) {
   const startedAt = nowMs();
@@ -54,7 +55,7 @@ export async function handleFilterLabRequest(requestBody, options = {}) {
     providerResult = await generateWithRetry({
       provider,
       input: providerInputFromRequest(requestBody),
-      timeoutMs: options.timeoutMs
+      timeoutMs: options.timeoutMs ?? timeoutForProvider(providerKind)
     });
   } catch (error) {
     const code = mapProviderErrorCode(error?.code);
@@ -103,9 +104,16 @@ export async function handleFilterLabRequest(requestBody, options = {}) {
   };
 }
 
+function timeoutForProvider(providerKind) {
+  return providerKind === ProviderKind.xiaoyiLunaInternal
+    ? XIAOYI_LUNA_TOTAL_TIMEOUT_MS
+    : undefined;
+}
+
 export function resolveFilterLabProviderKind({ config, headers = {} }) {
   if (
     config.providerMode !== ProviderKind.xiaoyiRelayInternal &&
+    config.providerMode !== ProviderKind.xiaoyiLunaInternal &&
     config.providerMode !== ProviderKind.siliconflowInternal
   ) {
     return ProviderKind.disabled;
@@ -115,7 +123,10 @@ export function resolveFilterLabProviderKind({ config, headers = {} }) {
     return ProviderKind.disabled;
   }
 
-  if (config.providerMode === ProviderKind.xiaoyiRelayInternal) {
+  if (
+    config.providerMode === ProviderKind.xiaoyiRelayInternal ||
+    config.providerMode === ProviderKind.xiaoyiLunaInternal
+  ) {
     if (
       !config.xiaoyiAPIKey ||
       !config.xiaoyiBaseURL ||
@@ -125,7 +136,7 @@ export function resolveFilterLabProviderKind({ config, headers = {} }) {
       return ProviderKind.disabled;
     }
 
-    return ProviderKind.xiaoyiRelayInternal;
+    return config.providerMode;
   }
 
   if (

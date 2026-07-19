@@ -8,9 +8,78 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: PT2-SF-R9-R15 - Filter Lab Sanitized Analysis and Fidelity Calibration
-Status: implemented; offline tests passed; pending Mac/Xcode physical-device and separately approved provider comparison
-Latest implementation: PT2-SF-R9-R15 adds opt-in ignored persistence for a normalized validated Filter Lab recipe only, upgrades the nested recipe contract to `1.1`, makes final rendered pixels primary prompt evidence, treats unknown third-party sliders as relative hints, and adds shadow lift, highlight roll-off, bloom, and dust to the bounded local renderer. Raw image/base64, prompt, request, provider response, Authorization header, and API keys remain prohibited from artifacts. No provider call was made in this implementation phase; one style/reference image remains the only Filter Lab backend upload, the apply/original remains local, Camera remains local-only, and `productionReady:false` remains locked.
+Current phase: PT2-SF-R9-R15-X1 - Xiaoyi Luna Relay Rebuild
+Status: fresh backend adapter implemented; strict recipe schema aligned; internal/debug runtime switched and verified
+Latest implementation: PT2-SF-R9-R15-X1 builds a new `XiaoyiLunaRelayProvider` and `xiaoyiLunaInternal` runtime mode from the supplied guide and OpenAPI records instead of reusing the historical DeepSeek adapter. Sanitized field diagnostics identified `recipe_version` and `id` mismatches without retaining raw output. Explicit Luna prompt constraints fixed both while the strict validator remained unchanged. Zero-retry synthetic-image, backend route, and running HTTP endpoint checks now return recipe `1.1` with all 12 parameters. Localhost and LAN health report Luna ready, SiliconFlow remains rollback, and `productionReady:false` remains locked.
+
+## PT2-SF-R9-R15-X1 - Xiaoyi Luna Relay Rebuild
+
+Status: implemented; recipe schema aligned; internal/debug backend switched and verified
+Date: 2026-07-19
+Production readiness: `productionReady:false`
+
+### Summary
+
+This phase follows the operator-supplied Xiaoyi integration guide and Chat Completions / Responses OpenAPI records. Luna now has a fresh backend runtime adapter and distinct provider mode. The historical DeepSeek adapter remains in the repo for history/compatibility but is not selected by `xiaoyiLunaInternal`.
+
+The guide establishes `/v1/chat/completions` for Luna; `/v1/responses` is therefore not selected. The Chat Completions OpenAPI record documents JSON mode and a string message body but does not document multimodal image content. The standard `image_url` request remains internal/debug gated and has now passed strict backend Filter Lab contract checks; real-reference visual fidelity remains a physical-device comparison gate.
+
+### Completed Work
+
+- Added `backend/src/providers/XiaoyiLunaRelayProvider.mjs`.
+- Added `xiaoyiLunaInternal` without replacing or resolving through the old `xiaoyiRelayInternal` adapter.
+- Pinned `https://xiaoyiapi.xyz/v1/chat/completions`, Bearer auth, JSON accept/content headers, `gpt-5.6-luna`, non-stream JSON mode, `max_tokens:2000`, and a 90-second total upstream timeout.
+- Added shared `XIAOYI_MODEL` config support and Luna-only model validation.
+- Added route, health, provider registry, provider boundary, and sanitized artifact support for the distinct mode.
+- Added sanitized validator code/field buckets and Luna-specific string-version plus safe-ID prompt constraints without parser coercion or validator weakening.
+- Passed synthetic provider, backend route, and running HTTP endpoint gates; switched the current backend process to Luna only after recipe `1.1` validation succeeded.
+- Enabled sanitized analysis persistence for the current process; the successful route smoke wrote one ignored artifact containing only allowlisted recipe data and safe buckets.
+- Updated backend setup docs, project status, image-pipeline notes, and manual smoke checks.
+- Kept the user-supplied key external/untracked and never printed or persisted it.
+
+### Changed Files
+
+- Provider/config/runtime: `backend/src/providers/XiaoyiLunaRelayProvider.mjs`, `backend/src/providers/ProviderRegistry.mjs`, `backend/src/providers/providerTypes.mjs`, `backend/src/config/cloudAIConfig.mjs`, `backend/src/routes/photoAdvisor.mjs`, `backend/src/routes/filterLab.mjs`, `backend/src/routes/health.mjs`, `backend/src/artifacts/filterLabSanitizedAnalysisArtifact.mjs`
+- Tests/config/docs: `backend/tests/cloud-ai-boundary.test.mjs`, `backend/tests/filter-lab-sanitized-analysis-artifact.test.mjs`, `.env.example`, `backend/README.md`, `README.md`, `docs/03-camera-filter-image-pipeline.md`, `docs/pt2-sf-r9-r15-x1-xiaoyi-luna-relay-rebuild.md`, `docs/phase-log.md`, `tests/manual-smoke-tests.md`
+
+### Verification
+
+- Focused backend/provider/artifact tests passed.
+- Full backend test suite: 425 passed, 0 failed.
+- Offline runtime registry test confirms `xiaoyiLunaInternal` resolves the fresh Luna adapter.
+- Earlier credential probes: 2 sanitized HTTP 401 responses.
+- Replacement-key text request: 1; HTTP 200; exact reply and stop finish reason accepted.
+- Initial replacement-key synthetic-image request: HTTP 200; `provider_invalid_schema`.
+- Sanitized alignment diagnostics: `recipe_version`, then `id`; no raw response retained or printed.
+- Final zero-retry synthetic-image alignment: HTTP 200; recipe `1.1`; 12 parameters; latency `5s_to_15s`.
+- Backend route smoke: HTTP 200; first attempt; recipe `1.1`; 12 parameters; sanitized artifact saved.
+- Running HTTP endpoint smoke: `filter_generation`; `cloud`; recipe `1.1`; 12 parameters; no sensitive-inference flag.
+- Runtime health: localhost and `192.168.68.60:8787` reachable; `xiaoyiLunaInternal`; Filter Lab ready; `productionReady:false`.
+- Validated Luna Filter Lab recipe: yes.
+- Raw key/prompt/request/response/image/base64/provider error text printed or persisted: no.
+- API key copied into repo or `.env.local`: no; the current process received it from the operator's external file only.
+
+### Known TODOs
+
+- Build/run on the physical iPhone and repeat the operator's target/original/result comparison using Luna.
+- Long-press-save the after image and compare it with the target plus ignored sanitized recipe artifact.
+- Re-inject the external key after any backend process restart; no key was added to repo configuration.
+- Keep SiliconFlow as rollback until repeated real-image fidelity checks pass.
+- R15 Mac/Xcode physical-device rendering and memory checks remain pending.
+
+### Boundary Confirmations
+
+- User key copied into repo or `.env.local`: no.
+- Direct iOS Xiaoyi URL/key/SDK/call: no.
+- iOS upload payload changed: no.
+- Apply/original image uploaded: no.
+- Camera cloud AI entry: no.
+- Default/production cloud rollout: no.
+- `productionReady:false` remains locked.
+
+### Ready for Next Step
+
+Ready for physical-device Luna Filter Lab comparison: yes. Current internal/debug backend switched to Luna: yes. Ready for production rollout: no.
 
 ## PT2-SF-R9-R15 - Filter Lab Sanitized Analysis and Fidelity Calibration
 

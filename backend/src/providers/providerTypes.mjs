@@ -6,7 +6,7 @@ export const ProviderMode = Object.freeze({
 export function providerBoundaryStatus() {
   return {
     mode: ProviderMode.mockOnly,
-    executableProviders: ["mock", "qweInternal", "xiaoyiRelayInternal", "siliconflowInternal", "disabled"],
+    executableProviders: ["mock", "qweInternal", "xiaoyiRelayInternal", "xiaoyiLunaInternal", "siliconflowInternal", "disabled"],
     providerCallsEnabled: false,
     providerKeyRequired: false
   };

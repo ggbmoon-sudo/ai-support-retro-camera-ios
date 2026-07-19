@@ -276,54 +276,54 @@ export function buildGeneratedFilterRecipeRendererCalibrationPrompt() {
 
 export function validateGeneratedFilterRecipeCandidate(candidate) {
   if (!candidate || typeof candidate !== "object" || Array.isArray(candidate)) {
-    return invalid("wrong_object_shape", "Generated filter recipe must be an object.");
+    return invalid("wrong_object_shape", "Generated filter recipe must be an object.", "top_level");
   }
 
   const extraKeys = Object.keys(candidate).filter((key) => !REQUIRED_TOP_LEVEL_KEYS.includes(key));
   if (extraKeys.length > 0) {
-    return invalid("additional_property", "Generated filter recipe has unsupported fields.");
+    return invalid("additional_property", "Generated filter recipe has unsupported fields.", "top_level");
   }
 
   for (const key of REQUIRED_TOP_LEVEL_KEYS) {
     if (!(key in candidate)) {
-      return invalid("missing_required_field", "Generated filter recipe is missing required fields.");
+      return invalid("missing_required_field", "Generated filter recipe is missing required fields.", "top_level");
     }
   }
 
   if (candidate.recipeVersion !== FILTER_RECIPE_VERSION) {
-    return invalid("unsupported_enum", "Generated filter recipeVersion is unsupported.");
+    return invalid("unsupported_enum", "Generated filter recipeVersion is unsupported.", "recipe_version");
   }
 
   if (typeof candidate.id !== "string" || !/^ai_[a-z0-9_]{3,64}$/.test(candidate.id)) {
-    return invalid("unsupported_enum", "Generated filter id must be an app-safe ai_* id.");
+    return invalid("unsupported_enum", "Generated filter id must be an app-safe ai_* id.", "id");
   }
 
   if (!ALLOWED_NAME_KEYS.has(candidate.nameKey) || !ALLOWED_DESCRIPTION_KEYS.has(candidate.descriptionKey)) {
-    return invalid("unsupported_enum", "Generated filter recipe must use known localization keys.");
+    return invalid("unsupported_enum", "Generated filter recipe must use known localization keys.", "localization_keys");
   }
 
   if (candidate.source !== "cloud") {
-    return invalid("unsupported_enum", "Generated filter source must be cloud.");
+    return invalid("unsupported_enum", "Generated filter source must be cloud.", "source");
   }
 
   if (!Number.isFinite(candidate.confidence)) {
-    return invalid("wrong_type", "Generated filter confidence must be a finite number.");
+    return invalid("wrong_type", "Generated filter confidence must be a finite number.", "confidence");
   }
 
   if (!Array.isArray(candidate.recommendedUseKeys) || candidate.recommendedUseKeys.length < 1 || candidate.recommendedUseKeys.length > 3) {
-    return invalid("wrong_type", "Generated filter recommendedUseKeys must contain 1 to 3 keys.");
+    return invalid("wrong_type", "Generated filter recommendedUseKeys must contain 1 to 3 keys.", "recommended_use_keys");
   }
 
   if (!candidate.recommendedUseKeys.every((key) => ALLOWED_USE_KEYS.has(key))) {
-    return invalid("unsupported_enum", "Generated filter recommendedUseKeys must be known localization keys.");
+    return invalid("unsupported_enum", "Generated filter recommendedUseKeys must be known localization keys.", "recommended_use_keys");
   }
 
   if (!Array.isArray(candidate.warningsKeys) || candidate.warningsKeys.length < 1 || candidate.warningsKeys.length > 2) {
-    return invalid("wrong_type", "Generated filter warningsKeys must contain 1 to 2 keys.");
+    return invalid("wrong_type", "Generated filter warningsKeys must contain 1 to 2 keys.", "warning_keys");
   }
 
   if (!candidate.warningsKeys.every((key) => ALLOWED_WARNING_KEYS.has(key))) {
-    return invalid("unsupported_enum", "Generated filter warningsKeys must be known safe warning keys.");
+    return invalid("unsupported_enum", "Generated filter warningsKeys must be known safe warning keys.", "warning_keys");
   }
 
   const parameterValidation = validateAndClampParameters(candidate.parameters);
@@ -349,22 +349,22 @@ export function validateGeneratedFilterRecipeCandidate(candidate) {
 
 function validateAndClampParameters(parameters) {
   if (!parameters || typeof parameters !== "object" || Array.isArray(parameters)) {
-    return invalid("wrong_object_shape", "Generated filter parameters must be an object.");
+    return invalid("wrong_object_shape", "Generated filter parameters must be an object.", "parameters");
   }
 
   const extraKeys = Object.keys(parameters).filter((key) => !REQUIRED_PARAMETER_KEYS.includes(key));
   if (extraKeys.length > 0) {
-    return invalid("additional_property", "Generated filter parameters have unsupported fields.");
+    return invalid("additional_property", "Generated filter parameters have unsupported fields.", "parameters");
   }
 
   const clampedFields = [];
   const sanitized = {};
   for (const key of REQUIRED_PARAMETER_KEYS) {
     if (!(key in parameters)) {
-      return invalid("missing_required_field", "Generated filter parameters are missing required fields.");
+      return invalid("missing_required_field", "Generated filter parameters are missing required fields.", "parameters");
     }
     if (!Number.isFinite(parameters[key])) {
-      return invalid("wrong_type", "Generated filter parameters must be finite numbers.");
+      return invalid("wrong_type", "Generated filter parameters must be finite numbers.", "parameters");
     }
     const [min, max] = PARAMETER_RANGES[key];
     sanitized[key] = clamp(parameters[key], min, max);
@@ -384,12 +384,13 @@ function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
 
-function invalid(code, message) {
+function invalid(code, message, fieldBucket = "unknown") {
   return {
     ok: false,
     error: {
       code,
-      message
+      message,
+      fieldBucket
     },
     rawOutputPrinted: false,
     rawOutputPersisted: false

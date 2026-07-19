@@ -214,7 +214,7 @@ PT2-SF-R6 fixes the backend app endpoint routing gap after the app-side DEBUG sc
 
 Next recommended backend/app step: PT2-SF-R6-VERIFY MacBook/Xcode debug SiliconFlow app endpoint routing verification. Verify disabled/fallback behavior first, then a single selected-photo Photo Advisor or Filter Lab provider-backed debug smoke only if separately approved and using server-side env credentials. Keep selected-photo Inspiration only, debug/internal only, backend-mediated only, production/default mock/local, and Camera local-only; no iOS provider key, no direct SiliconFlow URL in iOS, and no production/default cloud rollout.
 
-## Local Xiaoyi DeepSeek Relay Internal Setup (Historical Fallback)
+## Local Xiaoyi `gpt-5.6-luna` Relay Internal Setup
 
 Do not commit real secrets. The Xiaoyi relay key is backend/server-side only and must never be added to iOS.
 
@@ -222,15 +222,16 @@ Local internal test config:
 
 ```sh
 XIAOYI_API_KEY=replace_me
-XIAOYI_BASE_URL=https://xiaoyiapi.xyz
-XIAOYI_CHAT_COMPLETIONS_PATH=/v1/chat/completions
-XIAOYI_PHOTO_ADVISOR_MODEL=deepseek-v4-flash
-XIAOYI_FILTER_LAB_MODEL=deepseek-v4-flash
-CLOUD_AI_PROVIDER_MODE=xiaoyiRelayInternal
+XIAOYI_MODEL=gpt-5.6-luna
+XIAOYI_PHOTO_ADVISOR_MODEL=gpt-5.6-luna
+XIAOYI_FILTER_LAB_MODEL=gpt-5.6-luna
+CLOUD_AI_PROVIDER_MODE=xiaoyiLunaInternal
 ALLOW_INTERNAL_CLOUD_AI=true
 ```
 
-The active base URL is `https://xiaoyiapi.xyz`, and the provider adapter posts to `/v1/chat/completions` with OpenAI-compatible JSON chat completions. Photo Advisor and Filter Lab both use `deepseek-v4-flash` by default.
+The fresh Luna adapter is `backend/src/providers/XiaoyiLunaRelayProvider.mjs`; runtime mode `xiaoyiLunaInternal` does not use the historical DeepSeek relay adapter. It pins `https://xiaoyiapi.xyz`, `/v1/chat/completions`, Bearer auth, non-stream JSON, JSON mode, a 2,000-token output cap, a 90-second total upstream timeout, and the one-item model allowlist `gpt-5.6-luna`. `XIAOYI_MODEL` is the shared-model shorthand from the supplied integration guide; the two surface-specific variables take precedence when present.
+
+The supplied `/v1/responses` OpenAPI record is not used because the integration guide verifies Luna on `/v1/chat/completions`. The supplied Chat Completions schema documents string message content but does not document image content parts, so the standard `image_url` shape remains internal/debug gated. Credentialed synthetic-image, backend route, and running HTTP endpoint checks now pass strict recipe `1.1` validation; real-reference fidelity remains a separate physical-device comparison gate.
 
 The auth header is OpenAI-compatible:
 
@@ -240,13 +241,15 @@ The API key, raw prompt, raw request body, raw provider response, and raw image/
 
 Filter Lab returns a validated structured generated filter recipe only. It does not return generated bitmaps, arbitrary Core Image filter names, shader code, LUT URLs, exact-copy claims, or direct rendering instructions.
 
-This path is not the current PT2 mainline. SiliconFlow is the active provider direction unless a future phase explicitly switches back.
+This path is internal/debug only. Keep SiliconFlow configuration available as the rollback path during real-reference fidelity testing. This does not enable production/default cloud AI.
+
+Current live status: the replacement external/untracked credential passed text and image requests. Sanitized diagnostics identified `recipe_version` and `id` schema mismatches; the Luna prompt now fixes their JSON types/format while the strict validator stays unchanged. A zero-retry synthetic-image call, first-attempt backend route smoke, and the running HTTP endpoint all returned validated recipe `1.1` with 12 parameters. The current process is reachable locally and at `192.168.68.60:8787` in `xiaoyiLunaInternal` mode with sanitized artifact persistence enabled and `productionReady:false`. The key is injected from its external file for this process only and must be re-injected after a backend restart.
 
 
 ## Endpoints
 
 - `GET /health`
-  - Returns mock-only service status.
+  - Returns safe provider/internal readiness buckets and always keeps `productionReady:false`.
 - `POST /v1/ai/photo-advisor`
   - Validates the hardened request shape.
   - Requires `schemaVersion: "1.0"`, `feature: "photo_advisor"`, `mode: "post_capture"`, locale, and explicit consent.
@@ -255,12 +258,12 @@ This path is not the current PT2 mainline. SiliconFlow is the active provider di
   - Validates optional `selectedFilterId` against the app filter whitelist.
   - Returns a structured `CloudAIResponse`.
   - Uses mock provider by default.
-  - Can use QweAPI or Xiaoyi internal provider only when explicitly enabled and internally guarded.
+  - Can use QweAPI, Xiaoyi, or SiliconFlow only when explicitly enabled and internally guarded.
 - `POST /v1/ai/filter-lab`
   - Validates a backend-only internal reference-image request shape.
   - Requires `schemaVersion: "1.0"`, `feature: "filter_lab"`, `mode: "reference_image"`, locale, explicit consent, JPEG image payload, and stripped metadata.
   - Returns a structured `CloudAIResponse` with `mode: "filter_generation"` and a validated `generatedFilter` recipe on success.
-  - Uses Xiaoyi internal provider only when explicitly enabled and internally guarded.
+  - Can use the distinct Xiaoyi Luna or SiliconFlow internal provider only when explicitly enabled and internally guarded.
   - Falls back to an unavailable response when internal cloud is disabled, credentials are missing, validation fails, provider output is invalid, or the provider is unavailable.
 
 ## Provider Boundary
@@ -270,6 +273,8 @@ Executable provider kinds:
 - `mock`
 - `qweInternal`
 - `xiaoyiRelayInternal`
+- `xiaoyiLunaInternal`
+- `siliconflowInternal`
 - `disabled`
 
 There is no Firebase AI, Stability, or image-generation provider implementation. QweAPI and Xiaoyi gateway access is backend-only and internal/debug guarded. Do not add provider SDKs to iOS or provider keys to the repo.

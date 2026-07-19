@@ -2,12 +2,14 @@ import { MockCloudAIProvider } from "./MockCloudAIProvider.mjs";
 import { DisabledProvider } from "./DisabledProvider.mjs";
 import { QwePhotoAdvisorProvider } from "./QwePhotoAdvisorProvider.mjs";
 import { XiaoyiDeepseekRelayProvider } from "./XiaoyiDeepseekRelayProvider.mjs";
+import { XiaoyiLunaRelayProvider } from "./XiaoyiLunaRelayProvider.mjs";
 import { SiliconFlowCloudAIProvider } from "./SiliconFlowCloudAIProvider.mjs";
 
 export const ProviderKind = Object.freeze({
   mock: "mock",
   qweInternal: "qweInternal",
   xiaoyiRelayInternal: "xiaoyiRelayInternal",
+  xiaoyiLunaInternal: "xiaoyiLunaInternal",
   siliconflowInternal: "siliconflowInternal",
   disabled: "disabled"
 });
@@ -26,6 +28,14 @@ export function resolveProvider(kind = ProviderKind.mock, config = {}) {
     });
   case ProviderKind.xiaoyiRelayInternal:
     return new XiaoyiDeepseekRelayProvider({
+      apiKey: config.xiaoyiAPIKey,
+      baseURL: config.xiaoyiBaseURL,
+      photoAdvisorModel: config.xiaoyiPhotoAdvisorModel,
+      filterLabModel: config.xiaoyiFilterLabModel,
+      path: config.xiaoyiChatCompletionsPath
+    });
+  case ProviderKind.xiaoyiLunaInternal:
+    return new XiaoyiLunaRelayProvider({
       apiKey: config.xiaoyiAPIKey,
       baseURL: config.xiaoyiBaseURL,
       photoAdvisorModel: config.xiaoyiPhotoAdvisorModel,
@@ -52,6 +62,7 @@ export function executableProviderKinds() {
     ProviderKind.mock,
     ProviderKind.qweInternal,
     ProviderKind.xiaoyiRelayInternal,
+    ProviderKind.xiaoyiLunaInternal,
     ProviderKind.siliconflowInternal,
     ProviderKind.disabled
   ];

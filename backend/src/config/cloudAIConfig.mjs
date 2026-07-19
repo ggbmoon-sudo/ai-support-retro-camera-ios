@@ -5,7 +5,7 @@ const DEFAULT_QWE_AUTH_HEADER = "authorization_bearer";
 const SUPPORTED_QWE_BASE_URL = "https://qweapi.com";
 const DEFAULT_XIAOYI_CHAT_COMPLETIONS_PATH = "/v1/chat/completions";
 const SUPPORTED_XIAOYI_BASE_URL = "https://xiaoyiapi.xyz";
-const DEFAULT_XIAOYI_MODEL = "deepseek-v4-flash";
+const DEFAULT_XIAOYI_MODEL = "gpt-5.6-luna";
 const DEFAULT_SILICONFLOW_CHAT_COMPLETIONS_PATH = "/v1/chat/completions";
 const SUPPORTED_SILICONFLOW_BASE_URL = "https://api.siliconflow.com";
 const DEFAULT_SILICONFLOW_VISION_MODEL = "Qwen/Qwen3-VL-32B-Instruct";
@@ -29,8 +29,8 @@ export function cloudAIConfig(env = process.env) {
     xiaoyiAPIKey: env.XIAOYI_API_KEY ?? "",
     xiaoyiBaseURL: normalizeXiaoyiRelayBaseURL(env.XIAOYI_BASE_URL),
     xiaoyiChatCompletionsPath: normalizeXiaoyiRelayPath(env.XIAOYI_CHAT_COMPLETIONS_PATH),
-    xiaoyiPhotoAdvisorModel: normalizeXiaoyiModel(env.XIAOYI_PHOTO_ADVISOR_MODEL),
-    xiaoyiFilterLabModel: normalizeXiaoyiModel(env.XIAOYI_FILTER_LAB_MODEL),
+    xiaoyiPhotoAdvisorModel: normalizeXiaoyiModel(env.XIAOYI_PHOTO_ADVISOR_MODEL ?? env.XIAOYI_MODEL),
+    xiaoyiFilterLabModel: normalizeXiaoyiModel(env.XIAOYI_FILTER_LAB_MODEL ?? env.XIAOYI_MODEL),
     siliconFlowAPIKey: env.SILICONFLOW_API_KEY ?? "",
     siliconFlowBaseURL: normalizeSiliconFlowBaseURL(env.SILICONFLOW_BASE_URL),
     siliconFlowChatCompletionsPath: normalizeSiliconFlowPath(env.SILICONFLOW_CHAT_COMPLETIONS_PATH),
@@ -45,6 +45,8 @@ function normalizeProviderMode(value) {
     return ProviderKind.qweInternal;
   case ProviderKind.xiaoyiRelayInternal:
     return ProviderKind.xiaoyiRelayInternal;
+  case ProviderKind.xiaoyiLunaInternal:
+    return ProviderKind.xiaoyiLunaInternal;
   case ProviderKind.siliconflowInternal:
     return ProviderKind.siliconflowInternal;
   case ProviderKind.disabled:
@@ -120,7 +122,7 @@ function normalizeQweAPIAuthHeader(value) {
 function normalizeXiaoyiRelayBaseURL(value) {
   const trimmed = String(value ?? "").trim();
   if (trimmed.length === 0) {
-    return "";
+    return SUPPORTED_XIAOYI_BASE_URL;
   }
 
   let url;

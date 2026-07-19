@@ -4897,6 +4897,24 @@ Xcode check:
 - [ ] No Camera behavior, permission, network, upload, or Photo Advisor flow should change.
 - [ ] Existing app should build/run as before.
 
+## PT2-SF-R9-R15-X1 - Xiaoyi Luna Relay Rebuild
+
+Backend-only verification:
+
+- [x] Keep SiliconFlow available as rollback; switch only after Luna returns a validated recipe `1.1`.
+- [x] Confirm `CLOUD_AI_PROVIDER_MODE=xiaoyiLunaInternal` resolves the fresh `XiaoyiLunaRelayProvider`, not `XiaoyiDeepseekRelayProvider`.
+- [x] Use only the external/server-side `XIAOYI_API_KEY`; never add it to iOS, Git, logs, screenshots, `.env.local`, or committed env files.
+- [x] Replacement-key text smoke accepted HTTP 200, `choices[0].message.content`, `finish_reason:stop`, and the exact expected reply.
+- [x] One ignored synthetic style-image request returned HTTP 200 with zero retries but failed recipe validation as `provider_invalid_schema`.
+- [x] Add sanitized schema failure-code/field buckets and align `recipe_version` plus `id` without weakening the validator.
+- [x] Require and receive a validated recipe `1.1` with all 12 parameters before enabling Luna.
+- [x] Confirm backend route smoke succeeds on the first attempt and writes one ignored sanitized artifact.
+- [x] Confirm the running HTTP endpoint returns `filter_generation` / `cloud` and localhost plus LAN health report Luna ready.
+- [x] Confirm the backend receives only the synthetic/style reference image and never the apply/original image.
+- [x] Confirm no raw prompt, request, response, image/base64, provider error text, Authorization header, or key appears in output or persisted artifacts.
+- [x] Confirm Camera remains local-only, default/production remains mock/local, and `productionReady:false` remains unchanged.
+- [ ] Re-test on the physical iPhone with the operator's target/original pair and long-press-save the after image for visual comparison.
+
 ## PT2-SF-R9-R13 - Filter Lab Recipe Fidelity Calibration
 
 Mac/Xcode physical-device verification:

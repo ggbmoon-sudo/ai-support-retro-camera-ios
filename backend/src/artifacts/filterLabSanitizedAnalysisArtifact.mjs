@@ -104,6 +104,8 @@ function normalizeProviderKind(value) {
     return "siliconflow_internal";
   case "xiaoyiRelayInternal":
     return "xiaoyi_relay_internal";
+  case "xiaoyiLunaInternal":
+    return "xiaoyi_luna_internal";
   default:
     return "internal_unknown";
   }

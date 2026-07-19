@@ -32,6 +32,7 @@ function isPhotoAdvisorReady(config) {
       config.qwePhotoAdvisorModel
     );
   case ProviderKind.xiaoyiRelayInternal:
+  case ProviderKind.xiaoyiLunaInternal:
     return Boolean(
       config.xiaoyiAPIKey &&
       config.xiaoyiBaseURL &&
@@ -57,6 +58,7 @@ function isFilterLabReady(config) {
 
   switch (config.providerMode) {
   case ProviderKind.xiaoyiRelayInternal:
+  case ProviderKind.xiaoyiLunaInternal:
     return Boolean(
       config.xiaoyiAPIKey &&
       config.xiaoyiBaseURL &&

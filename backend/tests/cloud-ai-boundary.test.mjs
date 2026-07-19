@@ -9,13 +9,13 @@ import { healthResponse } from "../src/routes/health.mjs";
 import { isDirectServerRun, loadDotEnvFileIfPresent } from "../src/server.mjs";
 import { handlePhotoAdvisorRequest } from "../src/routes/photoAdvisor.mjs";
 import { handleFilterLabRequest, resolveFilterLabProviderKind } from "../src/routes/filterLab.mjs";
-import { executableProviderKinds } from "../src/providers/ProviderRegistry.mjs";
+import { executableProviderKinds, resolveProvider } from "../src/providers/ProviderRegistry.mjs";
 import { providerBoundaryStatus } from "../src/providers/providerTypes.mjs";
 import { QwePhotoAdvisorProvider, parseQweCloudAIResponse } from "../src/providers/QwePhotoAdvisorProvider.mjs";
 import {
-  XiaoyiDeepseekRelayProvider,
-  parseXiaoyiGeneratedFilterRecipeResponse
-} from "../src/providers/XiaoyiDeepseekRelayProvider.mjs";
+  XiaoyiLunaRelayProvider,
+  parseXiaoyiLunaGeneratedFilterRecipeResponse
+} from "../src/providers/XiaoyiLunaRelayProvider.mjs";
 import {
   SiliconFlowCloudAIProvider,
   parseSiliconFlowGeneratedFilterRecipeResponse
@@ -399,11 +399,11 @@ test("unsafe provider output maps to fallback response", async () => {
 test("provider key is not required and mock provider is the only active path", () => {
   assert.deepEqual(providerBoundaryStatus(), {
     mode: "mock-only",
-    executableProviders: ["mock", "qweInternal", "xiaoyiRelayInternal", "siliconflowInternal", "disabled"],
+    executableProviders: ["mock", "qweInternal", "xiaoyiRelayInternal", "xiaoyiLunaInternal", "siliconflowInternal", "disabled"],
     providerCallsEnabled: false,
     providerKeyRequired: false
   });
-  assert.deepEqual(executableProviderKinds(), ["mock", "qweInternal", "xiaoyiRelayInternal", "siliconflowInternal", "disabled"]);
+  assert.deepEqual(executableProviderKinds(), ["mock", "qweInternal", "xiaoyiRelayInternal", "xiaoyiLunaInternal", "siliconflowInternal", "disabled"]);
 });
 
 test("qwe provider is not used when mode is mock", () => {
@@ -609,20 +609,24 @@ test("siliconflow internal path returns validated photo advisor response when en
   assert.equal(result.metadata.providerKind, "siliconflowInternal");
 });
 
-test("xiaoyi config trims and allows only the supported relay url, path, and model", () => {
+test("xiaoyi config trims and allows only the supported relay url, path, and Luna model", () => {
   const config = cloudAIConfig({
-    CLOUD_AI_PROVIDER_MODE: "xiaoyiRelayInternal",
+    CLOUD_AI_PROVIDER_MODE: "xiaoyiLunaInternal",
     XIAOYI_BASE_URL: " https://xiaoyiapi.xyz/ ",
     XIAOYI_CHAT_COMPLETIONS_PATH: " /v1/chat/completions ",
-    XIAOYI_PHOTO_ADVISOR_MODEL: " deepseek-v4-flash ",
-    XIAOYI_FILTER_LAB_MODEL: " deepseek-v4-flash "
+    XIAOYI_PHOTO_ADVISOR_MODEL: " gpt-5.6-luna ",
+    XIAOYI_FILTER_LAB_MODEL: " gpt-5.6-luna "
   });
 
-  assert.equal(config.providerMode, "xiaoyiRelayInternal");
+  assert.equal(config.providerMode, "xiaoyiLunaInternal");
   assert.equal(config.xiaoyiBaseURL, "https://xiaoyiapi.xyz");
   assert.equal(config.xiaoyiChatCompletionsPath, "/v1/chat/completions");
-  assert.equal(config.xiaoyiPhotoAdvisorModel, "deepseek-v4-flash");
-  assert.equal(config.xiaoyiFilterLabModel, "deepseek-v4-flash");
+  assert.equal(config.xiaoyiPhotoAdvisorModel, "gpt-5.6-luna");
+  assert.equal(config.xiaoyiFilterLabModel, "gpt-5.6-luna");
+  const sharedModelConfig = cloudAIConfig({ XIAOYI_MODEL: "gpt-5.6-luna" });
+  assert.equal(sharedModelConfig.xiaoyiPhotoAdvisorModel, "gpt-5.6-luna");
+  assert.equal(sharedModelConfig.xiaoyiFilterLabModel, "gpt-5.6-luna");
+  assert.equal(cloudAIConfig({}).xiaoyiBaseURL, "https://xiaoyiapi.xyz");
   assert.equal(cloudAIConfig({ XIAOYI_BASE_URL: "https://xiaoyiapi.xyz/v1" }).xiaoyiBaseURL, "");
   assert.equal(cloudAIConfig({ XIAOYI_BASE_URL: "http://xiaoyiapi.xyz" }).xiaoyiBaseURL, "");
   assert.equal(cloudAIConfig({ XIAOYI_BASE_URL: "https://evil.example" }).xiaoyiBaseURL, "");
@@ -630,14 +634,14 @@ test("xiaoyi config trims and allows only the supported relay url, path, and mod
   assert.equal(cloudAIConfig({ XIAOYI_PHOTO_ADVISOR_MODEL: "other-model" }).xiaoyiPhotoAdvisorModel, "");
 });
 
-test("xiaoyi provider uses deepseek-v4-flash for photo advisor request shape", async () => {
+test("xiaoyi provider uses gpt-5.6-luna for photo advisor request shape", async () => {
   let capturedURL;
   let capturedHeaders;
   let capturedRequest;
-  const provider = new XiaoyiDeepseekRelayProvider({
+  const provider = new XiaoyiLunaRelayProvider({
     apiKey: "test-key",
     baseURL: "https://xiaoyiapi.xyz",
-    photoAdvisorModel: "deepseek-v4-flash",
+    photoAdvisorModel: "gpt-5.6-luna",
     path: "/v1/chat/completions",
     fetchImpl: async (url, request) => {
       capturedURL = url;
@@ -652,21 +656,24 @@ test("xiaoyi provider uses deepseek-v4-flash for photo advisor request shape", a
   assert.equal(response.source, "cloud");
   assert.equal(capturedURL, "https://xiaoyiapi.xyz/v1/chat/completions");
   assert.equal(capturedHeaders.authorization, "Bearer test-key");
-  assert.equal(capturedRequest.model, "deepseek-v4-flash");
+  assert.equal(capturedHeaders.accept, "application/json");
+  assert.equal(capturedRequest.model, "gpt-5.6-luna");
   assert.equal(capturedRequest.stream, false);
+  assert.equal(capturedRequest.max_tokens, 2000);
+  assert.equal("top_p" in capturedRequest, false);
   assert.deepEqual(capturedRequest.response_format, { type: "json_object" });
   assert.equal(capturedRequest.messages[1].content[0].text.includes("Do not identify people"), true);
   assert.equal(capturedRequest.messages[1].content[1].image_url.url, "data:image/jpeg;base64,/9j/");
   assert.equal(capturedRequest.messages[1].content[1].image_url.detail, "low");
 });
 
-test("xiaoyi provider uses deepseek-v4-flash for generated Filter Lab recipes", async () => {
+test("xiaoyi provider uses gpt-5.6-luna for generated Filter Lab recipes", async () => {
   let capturedRequest;
   const recipe = generatedFilterRecipeExampleCandidate();
-  const provider = new XiaoyiDeepseekRelayProvider({
+  const provider = new XiaoyiLunaRelayProvider({
     apiKey: "test-key",
     baseURL: "https://xiaoyiapi.xyz",
-    filterLabModel: "deepseek-v4-flash",
+    filterLabModel: "gpt-5.6-luna",
     path: "/v1/chat/completions",
     fetchImpl: async (_url, request) => {
       capturedRequest = JSON.parse(request.body);
@@ -677,25 +684,37 @@ test("xiaoyi provider uses deepseek-v4-flash for generated Filter Lab recipes", 
   const response = await provider.generateFilterRecipe(providerInput());
 
   assert.deepEqual(response, recipe);
-  assert.equal(capturedRequest.model, "deepseek-v4-flash");
+  assert.equal(capturedRequest.model, "gpt-5.6-luna");
   assert.equal(capturedRequest.stream, false);
+  assert.equal(capturedRequest.max_tokens, 2000);
   assert.deepEqual(capturedRequest.response_format, { type: "json_object" });
   assert.equal(capturedRequest.messages[0].content.includes("color-science analyst"), true);
   assert.equal(capturedRequest.messages[1].content[0].text.includes("Allowed recipeVersion: 1.1"), true);
+  assert.equal(capturedRequest.messages[1].content[0].text.includes("JSON string \"1.1\", never the number 1.1"), true);
+  assert.equal(capturedRequest.messages[1].content[0].text.includes("exact JSON string \"ai_reference_grade\""), true);
+  assert.equal(capturedRequest.messages[1].content[0].text.includes("Do not add, rename, omit, or change the type"), true);
   assert.equal(capturedRequest.messages[1].content[0].text.includes("Renderer calibration anchors"), true);
   assert.equal(capturedRequest.messages[1].content[1].image_url.url, "data:image/jpeg;base64,/9j/");
   assert.equal(capturedRequest.messages[1].content[1].image_url.detail, "low");
 });
 
 test("xiaoyi generated filter parser rejects invalid recipe schema without raw output", () => {
-  assert.throws(() => parseXiaoyiGeneratedFilterRecipeResponse(openAICompatibleJSON({
+  assert.throws(() => parseXiaoyiLunaGeneratedFilterRecipeResponse(openAICompatibleJSON({
     ...generatedFilterRecipeExampleCandidate(),
     source: "provider_debug"
   })), (error) => {
     assert.equal(error.code, "provider_invalid_schema");
+    assert.equal(error.validationCode, "unsupported_enum");
+    assert.equal(error.validationFieldBucket, "source");
     assert.equal(String(error.message).includes("provider_debug"), false);
     return true;
   });
+});
+
+test("xiaoyi runtime registry resolves the fresh Luna adapter", () => {
+  const provider = resolveProvider("xiaoyiLunaInternal", enabledXiaoyiAPIConfig());
+  assert.equal(provider instanceof XiaoyiLunaRelayProvider, true);
+  assert.equal(provider.endpointURL(), "https://xiaoyiapi.xyz/v1/chat/completions");
 });
 
 test("siliconflow config trims supported base url variants, path, and vision models", () => {
@@ -854,7 +873,7 @@ test("filter lab route returns validated generated recipe when xiaoyi is enabled
   assert.equal(result.body.generatedFilter.source, "cloud");
   assert.equal(result.body.generatedFilter.recipeVersion, "1.1");
   assert.equal(result.body.safety.containsSensitiveInference, false);
-  assert.equal(result.metadata.providerKind, "xiaoyiRelayInternal");
+  assert.equal(result.metadata.providerKind, "xiaoyiLunaInternal");
 });
 
 test("filter lab route returns validated generated recipe when siliconflow is enabled", async () => {
@@ -916,7 +935,7 @@ test("filter lab provider kind only enables approved internal providers with ful
   assert.equal(resolveFilterLabProviderKind({
     config: enabledXiaoyiAPIConfig(),
     headers: { "x-internal-debug-cloudai": "true" }
-  }), "xiaoyiRelayInternal");
+  }), "xiaoyiLunaInternal");
   assert.equal(resolveFilterLabProviderKind({
     config: {
       ...enabledXiaoyiAPIConfig(),
@@ -1551,13 +1570,13 @@ function providerInput() {
 
 function enabledXiaoyiAPIConfig() {
   return {
-    providerMode: "xiaoyiRelayInternal",
+    providerMode: "xiaoyiLunaInternal",
     allowInternalCloudAI: true,
     xiaoyiAPIKey: "test-key",
     xiaoyiBaseURL: "https://xiaoyiapi.xyz",
     xiaoyiChatCompletionsPath: "/v1/chat/completions",
-    xiaoyiPhotoAdvisorModel: "deepseek-v4-flash",
-    xiaoyiFilterLabModel: "deepseek-v4-flash"
+    xiaoyiPhotoAdvisorModel: "gpt-5.6-luna",
+    xiaoyiFilterLabModel: "gpt-5.6-luna"
   };
 }
 

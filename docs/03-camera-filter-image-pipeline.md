@@ -1,5 +1,11 @@
 # 相機、復古濾鏡與圖片處理技術報告
 
+## PT2-SF-R9-R15-X1 Xiaoyi Luna relay rebuild
+
+Filter Lab now has a separate backend-only `xiaoyiLunaInternal` candidate built from the supplied Xiaoyi integration guide and OpenAPI records. The runtime resolves `XiaoyiLunaRelayProvider` rather than the historical DeepSeek relay adapter. It pins `gpt-5.6-luna`, `https://xiaoyiapi.xyz/v1/chat/completions`, Bearer auth, `Accept: application/json`, non-stream JSON mode, `max_tokens: 2000`, and a 90-second total upstream timeout. `/v1/responses` is not selected because the supplied guide verifies Luna on Chat Completions.
+
+The supplied Chat Completions OpenAPI schema documents string message content but does not document image content parts. The new adapter therefore keeps its standard OpenAI-compatible `image_url` content part behind the existing internal/debug, consent, one-reference-image, validator, and fallback gates. A replacement-key text smoke passed with HTTP 200. Sanitized validator buckets then identified `recipe_version` and `id` prompt mismatches without exposing raw output; explicit typing constraints fixed both without changing the validator. Zero-retry synthetic-image, backend route, and running HTTP endpoint checks now pass strict recipe `1.1` validation with all 12 renderer parameters. The current internal/debug backend process runs Luna and keeps SiliconFlow as rollback. Real-reference fidelity still requires the operator's Xcode comparison; the apply/original image remains local, Camera remains local-only, and `productionReady:false` remains locked.
+
 ## PT2-SF-R9-R15 Filter Lab fidelity calibration
 
 Filter Lab generated recipes now use contract `1.1`. Final rendered pixels are the primary reference; unknown third-party preset codes and slider values are relative clues only, never direct absolute mappings. The local Core Image pipeline adds bounded `shadowLift`, `highlightRollOff`, `bloom`, and `dust`, changes fade to raise the black floor, and reduces vignette calibration. This targets the supplied comparison's black-crush, weak warmth/magenta, and missing analog-defect gaps while preserving the R12 1600-pixel/memory bound and R14 local preview export. The backend still receives exactly one style/reference image and the apply/original remains local-only.

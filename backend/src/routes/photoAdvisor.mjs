@@ -9,6 +9,7 @@ import { withProviderTimeout } from "../security/timeout.mjs";
 import { elapsedMs, nowMs } from "../utils/latency.mjs";
 import { validatePhotoAdvisorRequest } from "../validators/validatePhotoAdvisorRequest.mjs";
 import { validateCloudAIResponse } from "../validators/validateCloudAIResponse.mjs";
+import { XIAOYI_LUNA_TOTAL_TIMEOUT_MS } from "../providers/XiaoyiLunaRelayProvider.mjs";
 
 export async function handlePhotoAdvisorRequest(requestBody, options = {}) {
   const startedAt = nowMs();
@@ -54,7 +55,7 @@ export async function handlePhotoAdvisorRequest(requestBody, options = {}) {
       provider,
       providerKind,
       input: providerInputFromRequest(requestBody),
-      timeoutMs: options.timeoutMs
+      timeoutMs: options.timeoutMs ?? timeoutForProvider(providerKind)
     });
   } catch (error) {
     const code = mapProviderErrorCode(error?.code);
@@ -99,6 +100,12 @@ export async function handlePhotoAdvisorRequest(requestBody, options = {}) {
   };
 }
 
+function timeoutForProvider(providerKind) {
+  return providerKind === ProviderKind.xiaoyiLunaInternal
+    ? XIAOYI_LUNA_TOTAL_TIMEOUT_MS
+    : undefined;
+}
+
 export function resolveProviderKind({ config, headers = {} }) {
   if (config.providerMode === ProviderKind.qweInternal) {
     if (!isInternalCloudAIAllowed({ headers, config })) {
@@ -110,7 +117,10 @@ export function resolveProviderKind({ config, headers = {} }) {
     return ProviderKind.qweInternal;
   }
 
-  if (config.providerMode === ProviderKind.xiaoyiRelayInternal) {
+  if (
+    config.providerMode === ProviderKind.xiaoyiRelayInternal ||
+    config.providerMode === ProviderKind.xiaoyiLunaInternal
+  ) {
     if (!isInternalCloudAIAllowed({ headers, config })) {
       return ProviderKind.mock;
     }
@@ -122,7 +132,7 @@ export function resolveProviderKind({ config, headers = {} }) {
     ) {
       return ProviderKind.disabled;
     }
-    return ProviderKind.xiaoyiRelayInternal;
+    return config.providerMode;
   }
 
   if (config.providerMode === ProviderKind.siliconflowInternal) {
