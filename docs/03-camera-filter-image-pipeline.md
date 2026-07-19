@@ -1,5 +1,9 @@
 # 相機、復古濾鏡與圖片處理技術報告
 
+## PT2-SF-R9-R14 Filter Lab 本機預覽匯出
+
+Filter Lab 的「套用後」預覽現在支援明確長按儲存到 Apple Photos。相簿寫入只會在使用者主動匯出時要求 `.addOnly` 權限，並只儲存現有 R12 1600 像素長邊上限內的本機 `previewImage`；因此輸出適合用作濾鏡準確度比較，但不視為全解像度匯出。此流程不會自動保存來源圖、不會新增 backend/provider call 或上載，亦不會改變只上載一張 style reference、apply/original image 留在本機的邊界。
+
 ## 報告結論
 
 以你已經確定的技術邊界來看，這個 App 的相機與圖片處理層，最穩健的做法是：**相機使用 AVFoundation 自建拍照介面、單張匯入使用 PhotosPicker、濾鏡與輸出使用 Core Image、輕量即時導引只用 Vision、雲端保存只保存必要版本、AI 分析只吃「已正向化但未套復古風格」的單張來源圖**。這個組合剛好符合你目前的產品定位：不是大型修圖工作室，而是「底片感相機 + 單張 AI 拍攝教練」。AVFoundation 本來就是 Apple 提供自訂相機 UI 的主要 capture 架構；PhotosPicker 是 Apple 提供的相簿選擇元件；Core Image 提供高效的內建濾鏡鍊式處理，而且可以用 Metal-backed `CIContext`；Vision 則提供臉框、人體姿勢、地平線等本機電腦視覺能力。這些官方能力本身就足以完成你要的 MVP，不需要第一版就跳進純 Metal shader 或第三方濾鏡框架。citeturn6search10turn0search1turn18search11turn6search17turn0search10turn19search8

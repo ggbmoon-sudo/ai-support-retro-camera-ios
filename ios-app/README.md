@@ -2,6 +2,8 @@
 
 This folder contains the Swift + SwiftUI iOS app scaffold.
 
+PT2-SF-R9-R14 adds local user-initiated export for the Filter Lab after preview. A long press saves only the currently rendered, 1600-pixel-bounded preview to Apple Photos with `.addOnly` authorization; localized status copy and a VoiceOver custom action make the gesture discoverable and accessible. It does not auto-save, persist the generated recipe, upload the apply/original image, change the one-style-reference backend request, add a provider key/direct call, or enable production rollout. `productionReady:false` remains locked, and Mac/Xcode physical-device verification is pending.
+
 PT2-SF-R9-R13 calibrates the local Filter Lab preview renderer against the generated-recipe contract. Exposure is now applied once, bounded monochrome grain is rendered locally, imported/generated previews keep the R12 memory bounds, and new recipes start at full intensity so the first comparison represents the requested recipe. The backend still receives only the style/reference image; the apply/original image remains local. No provider key, direct provider URL/call, provider SDK, Camera cloud AI entry, upload-payload expansion, or production rollout is added, and `productionReady:false` remains locked. Mac/Xcode physical-device visual and memory verification is pending.
 
 ## Today's AI Direction Update - On-device Live Framing First

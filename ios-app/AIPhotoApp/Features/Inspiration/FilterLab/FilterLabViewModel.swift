@@ -24,6 +24,9 @@ final class FilterLabViewModel: ObservableObject {
     @Published var intensity: Double = 1.0
     @Published private(set) var isRenderingPreview = false
     @Published private(set) var applyMessageKey: String?
+    @Published private(set) var isSavingFilteredPreview = false
+    @Published private(set) var exportMessageKey: String?
+    @Published private(set) var exportMessageIsError = false
     #if DEBUG
     @Published private(set) var cloudDebugFallbackMessageKey: String?
     #endif
@@ -31,6 +34,7 @@ final class FilterLabViewModel: ObservableObject {
     private let generationService: FilterGenerationService
     private let fallbackGenerationService: FilterGenerationService
     private let previewRenderer = GeneratedFilterPreviewRenderer()
+    private let photoLibrarySaver = FilterLabPhotoLibrarySaver()
     private var renderTask: Task<Void, Never>?
 
     init(
@@ -101,6 +105,7 @@ final class FilterLabViewModel: ObservableObject {
         intensity = 1.0
         isRenderingPreview = false
         applyMessageKey = nil
+        resetExportState()
         #if DEBUG
         cloudDebugFallbackMessageKey = nil
         #endif
@@ -113,6 +118,34 @@ final class FilterLabViewModel: ObservableObject {
     func updateIntensity(_ value: Double) {
         intensity = min(max(value, 0), 1)
         renderPreview()
+    }
+
+    func saveFilteredPreviewToPhotoLibrary() async {
+        guard !isRenderingPreview,
+              !isSavingFilteredPreview,
+              let previewImage else {
+            exportMessageKey = "filter_lab.export.failed"
+            exportMessageIsError = true
+            return
+        }
+
+        isSavingFilteredPreview = true
+        exportMessageKey = "filter_lab.export.saving"
+        exportMessageIsError = false
+
+        do {
+            try await photoLibrarySaver.save(previewImage)
+            exportMessageKey = "filter_lab.export.saved"
+            exportMessageIsError = false
+        } catch FilterLabPhotoLibrarySaveError.accessDenied {
+            exportMessageKey = "filter_lab.export.denied"
+            exportMessageIsError = true
+        } catch {
+            exportMessageKey = "filter_lab.export.failed"
+            exportMessageIsError = true
+        }
+
+        isSavingFilteredPreview = false
     }
 
     func applyMockFilter() {
@@ -154,6 +187,7 @@ final class FilterLabViewModel: ObservableObject {
         recipe = nil
         isRenderingPreview = false
         applyMessageKey = nil
+        resetExportState()
         cloudDebugFallbackMessageKey = nil
         state = .idle
     }
@@ -170,6 +204,7 @@ final class FilterLabViewModel: ObservableObject {
         recipe = nil
         isRenderingPreview = false
         applyMessageKey = nil
+        resetExportState()
         #if DEBUG
         cloudDebugFallbackMessageKey = nil
         #endif
@@ -191,6 +226,7 @@ final class FilterLabViewModel: ObservableObject {
         recipe = nil
         isRenderingPreview = false
         applyMessageKey = nil
+        resetExportState()
         state = .idle
         #if DEBUG
         cloudDebugFallbackMessageKey = nil
@@ -209,6 +245,7 @@ final class FilterLabViewModel: ObservableObject {
         recipe = nil
         isRenderingPreview = false
         applyMessageKey = nil
+        resetExportState()
         cloudDebugFallbackMessageKey = nil
         state = .analyzing
 
@@ -269,6 +306,7 @@ final class FilterLabViewModel: ObservableObject {
         guard let applyTargetImage, let recipe else { return }
 
         renderTask?.cancel()
+        resetExportState()
         isRenderingPreview = true
         let renderer = previewRenderer
         let currentIntensity = intensity
@@ -295,6 +333,11 @@ final class FilterLabViewModel: ObservableObject {
                 }
             }
         }
+    }
+
+    private func resetExportState() {
+        exportMessageKey = nil
+        exportMessageIsError = false
     }
 
     private func loadImage(from pickerItem: PhotosPickerItem) async throws -> UIImage {

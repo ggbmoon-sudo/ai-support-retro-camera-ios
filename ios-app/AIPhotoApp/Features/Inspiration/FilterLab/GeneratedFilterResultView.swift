@@ -9,7 +9,11 @@ struct GeneratedFilterResultView: View {
     let intensity: Double
     let isRenderingPreview: Bool
     let applyMessageKey: String?
+    let isSavingFilteredPreview: Bool
+    let exportMessageKey: String?
+    let exportMessageIsError: Bool
     let onIntensityChanged: (Double) -> Void
+    let onSaveFilteredPreview: () -> Void
     let onApply: () -> Void
     let onTryAnother: () -> Void
 
@@ -55,8 +59,22 @@ struct GeneratedFilterResultView: View {
             GeneratedFilterPreviewView(
                 beforeImage: applyTargetImage,
                 afterImage: previewImage,
-                isRendering: isRenderingPreview
+                isRendering: isRenderingPreview,
+                isSaving: isSavingFilteredPreview,
+                onSaveAfterImage: onSaveFilteredPreview
             )
+
+            if let exportMessageKey {
+                Label(
+                    LocalizedStringKey(exportMessageKey),
+                    systemImage: isSavingFilteredPreview
+                        ? "arrow.down.circle"
+                        : (exportMessageIsError ? "exclamationmark.triangle" : "checkmark.circle")
+                )
+                .font(AppTypography.caption)
+                .foregroundStyle(exportMessageIsError ? AppColors.error : AppColors.success)
+                .fixedSize(horizontal: false, vertical: true)
+            }
 
             VStack(alignment: .leading, spacing: AppSpacing.xs) {
                 HStack {
@@ -77,6 +95,7 @@ struct GeneratedFilterResultView: View {
                     in: 0...1
                 )
                 .accessibilityLabel("filter_lab.intensity")
+                .disabled(isSavingFilteredPreview)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
@@ -87,6 +106,7 @@ struct GeneratedFilterResultView: View {
             PrimaryButton("filter_lab.action.apply", systemImage: "checkmark.circle") {
                 onApply()
             }
+            .disabled(isSavingFilteredPreview)
 
             Button {
                 onTryAnother()
@@ -99,6 +119,7 @@ struct GeneratedFilterResultView: View {
                     .foregroundStyle(AppColors.textPrimary)
                     .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.md))
             }
+            .disabled(isSavingFilteredPreview)
 
             if let applyMessageKey {
                 Text(LocalizedStringKey(applyMessageKey))

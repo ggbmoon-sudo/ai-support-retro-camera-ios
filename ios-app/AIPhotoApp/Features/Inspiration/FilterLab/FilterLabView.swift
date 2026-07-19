@@ -187,8 +187,16 @@ struct FilterLabView: View {
                     intensity: viewModel.intensity,
                     isRenderingPreview: viewModel.isRenderingPreview,
                     applyMessageKey: viewModel.applyMessageKey,
+                    isSavingFilteredPreview: viewModel.isSavingFilteredPreview,
+                    exportMessageKey: viewModel.exportMessageKey,
+                    exportMessageIsError: viewModel.exportMessageIsError,
                     onIntensityChanged: { value in
                         viewModel.updateIntensity(value)
+                    },
+                    onSaveFilteredPreview: {
+                        Task {
+                            await viewModel.saveFilteredPreviewToPhotoLibrary()
+                        }
                     },
                     onApply: {
                         viewModel.applyMockFilter()

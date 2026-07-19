@@ -8,9 +8,9 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: PT2-SF-R9-R13 - Filter Lab Recipe Fidelity Calibration
-Status: implemented; pending Mac/Xcode and bounded provider compatibility/fidelity QA
-Latest implementation: PT2-SF-R9-R13 replaces preset-anchored Filter Lab prompting with content/style disentanglement and renderer calibration, adds a strict SiliconFlow `json_schema` recipe response contract, aligns the local preview renderer so exposure is applied once and grain is actually rendered, starts generated recipes at full intensity, and adds sanitized no-network recipe-fidelity regression coverage. No provider/model call was run, no iOS provider key/direct provider URL was added, no backend upload payload expansion occurred, no apply/original image is uploaded, no Camera cloud AI entry was added, and `productionReady:false` remains locked.
+Current phase: PT2-SF-R9-R14 - Filter Lab Local Preview Export
+Status: implemented; pending Mac/Xcode physical-device verification
+Latest implementation: PT2-SF-R9-R14 adds an explicit long press on the Filter Lab filtered/after preview to save the current 1600-pixel-bounded local render to Apple Photos with add-only authorization, localized state feedback, and a VoiceOver action. It does not auto-save, call a backend/provider, change the one-style-reference request, upload the apply/original image, persist history, add Camera cloud AI, or enable production rollout; `productionReady:false` remains locked.
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09
@@ -74,6 +74,68 @@ Phase 17C-R3 verification: generated five ignored synthetic local QA images and 
 Phase 17C-R4 verification: provider QA reporting now includes p90 / p95 / max latency, timeout count, unsafe-response count, fallback category counts, normalized per-case latency / fallback buckets, and a latency assessment for debug QA / internal testing / production readiness; timeout thresholds are centralized for reporting without raising provider timeouts; manual review template now records fixture name, locale, provider status, fallback code, latency bucket, language naturalness, filter fit, crop / framing usefulness, safety concern, and notes; latest real-provider QA run showed 20 cases, 18 cloud successes, 2 `unsafe_response` fallbacks, average latency 4969 ms, p50 4958 ms, p90 5421 ms, p95 5894 ms, max 6778 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by fallback rate, unsafe-response QA, and manual language / filter-fit review.
 Phase 17C-R5 verification: Photo Advisor prompt was tightened to allowed photo-only topics, unsafe guard diagnostics now emit safe labels only, QA reports include `unsafeByCategory` and per-case `unsafeCategory`, approved real sample photos have a local ignored workflow under `backend/tests/approved-real-samples/`, and QA script supports `--image-set=synthetic`, `--image-set=approved-real`, and `--image-set=all`; latest real-provider synthetic QA run showed 20 cases, 19 cloud successes, 1 `provider_invalid_json` fallback, 0 `unsafe_response` fallbacks, average latency 6130 ms, p50 4842 ms, p90 5837 ms, p95 9637 ms, max 24372 ms, 0 timeouts, 0 schema failures, 0 safety metadata failures, and 0 invalid filter IDs; production rollout remains blocked by manual language review, approved real sample review, filter / crop usefulness review, cost guard, abuse guard, privacy review, and explicit user approval.
 Next phase: Use `docs/phase-roadmap-sequencing-and-next-action-register.md` before choosing the next implementation phase. If continuing app-side feature development, choose a non-composition Camera feature or focused runtime/UI polish. If continuing composition intelligence, use a separate training-AI branch phase that begins with dataset/label schema, source/license/consent gates, and human review policy, not app runtime composition logic. Any model artifact handling, Core ML package use, inference execution, benchmark run, Camera runtime integration beyond explicit local scope, preview-frame upload/upload persistence, upload payload change, provider/cloud call, iOS provider/model key, raw artifact, sensitive inference, dataset crawler, user-photo training, or production rollout requires separate explicit approval before execution. Production rollout is still blocked. Future prompts can say "Read AGENTS.md and follow all project rules" to inherit the consolidated safety/language boundaries.
+
+---
+
+## PT2-SF-R9-R14 - Filter Lab Local Preview Export
+
+Status: implemented; pending Mac/Xcode physical-device verification
+Date: 2026-07-19
+Production readiness: `productionReady:false`
+
+### Summary
+
+PT2-SF-R9-R14 lets the user long-press only the Filter Lab filtered/after preview to save the currently rendered result to Apple Photos. The export is local, explicit, add-only, and bounded by the existing R12 1600-pixel preview path so the saved asset can be shared back for visual filter comparison without adding a full-resolution export pipeline.
+
+### Completed Work
+
+- Added a Photos `.addOnly` writer that requests authorization only after the user invokes export.
+- Wired the writer to `previewImage`, not the style reference or apply/original input.
+- Added a 0.6-second long-press gesture only to the after preview and blocked it while rendering/saving.
+- Added a named VoiceOver save action.
+- Added localized save hint, saving, success, denied, and failure states in English and Traditional Chinese.
+- Added `NSPhotoLibraryAddUsageDescription` to both Xcode build configurations.
+- Added a no-network source-contract regression test and physical-device manual checklist.
+
+### Changed Files
+
+- `README.md`
+- `backend/tests/filter-lab-local-export.test.mjs`
+- `docs/03-camera-filter-image-pipeline.md`
+- `docs/phase-log.md`
+- `docs/pt2-sf-r9-r14-filter-lab-local-preview-export.md`
+- `ios-app/AIPhotoApp.xcodeproj/project.pbxproj`
+- `ios-app/AIPhotoApp/Features/Inspiration/FilterLab/FilterLabPhotoLibrarySaver.swift`
+- `ios-app/AIPhotoApp/Features/Inspiration/FilterLab/FilterLabView.swift`
+- `ios-app/AIPhotoApp/Features/Inspiration/FilterLab/FilterLabViewModel.swift`
+- `ios-app/AIPhotoApp/Features/Inspiration/FilterLab/GeneratedFilterPreviewView.swift`
+- `ios-app/AIPhotoApp/Features/Inspiration/FilterLab/GeneratedFilterResultView.swift`
+- `ios-app/AIPhotoApp/Resources/Localization/en.lproj/Localizable.strings`
+- `ios-app/AIPhotoApp/Resources/Localization/zh-Hant.lproj/Localizable.strings`
+- `ios-app/README.md`
+- `tests/manual-smoke-tests.md`
+
+### Tests / Manual Checks
+
+- Filter Lab local export plus recipe fidelity source-contract tests passed `7/7` during implementation.
+- `git diff --check` passed during implementation.
+- Mac/Xcode compile and physical-device Photos permission/saved-asset verification remain pending.
+- The saved comparison asset is intentionally the current preview with a maximum long edge of 1600 pixels, not a full-resolution export.
+
+### Boundary Confirmations
+
+- Automatic/background Photos save: no.
+- Backend/provider/model call added or run: no.
+- API key, direct provider URL/SDK/call, raw image/base64 logging, or provider response persistence: no.
+- Backend upload payload or one-style-reference upload count changed: no.
+- Apply/original image uploaded: no, remains local-only.
+- Firebase/history persistence or Camera cloud AI entry: no.
+- Production rollout: no.
+- `productionReady:false` remains locked.
+
+### Ready for Next Phase
+
+No. First build from Mac/Xcode and verify the long press, add-only permission, saved result parity, VoiceOver action, and 1600-pixel bound on a physical iPhone.
 
 ---
 

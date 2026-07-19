@@ -4917,3 +4917,20 @@ Backend compatibility gate:
 
 - [ ] Do not run a live provider test without a separate explicit approval.
 - [ ] If separately approved, use one ignored synthetic style image, exactly one provider call, zero retries, sanitized report output only, and verify the deployed model accepts the `json_schema` response format.
+
+## PT2-SF-R9-R14 - Filter Lab Local Preview Export
+
+Mac/Xcode physical-device verification:
+
+- [ ] Build and run the app on iPhone; confirm `FilterLabPhotoLibrarySaver.swift` is included automatically by the filesystem-synchronized Xcode group.
+- [ ] Generate a Filter Lab result, wait for rendering to finish, and confirm the hint says to long-press the filtered/after image.
+- [ ] Long-press only the original/before image and confirm no Photos save occurs.
+- [ ] Long-press the filtered/after image and grant Add Photos access; confirm exactly one asset is saved and the success message appears.
+- [ ] Compare the saved asset with the on-screen after preview at the same intensity and confirm their visible filter result matches.
+- [ ] Inspect the asset dimensions and confirm the maximum long edge is at most 1600 pixels; this is a comparison preview, not a full-resolution export.
+- [ ] Change intensity, wait for the preview to finish, long-press again, and confirm the newly saved asset matches the new intensity.
+- [ ] Deny Add Photos access, long-press again, and confirm a localized denied message appears without a crash or network request.
+- [ ] While preview rendering or Photos saving is active, confirm repeated long presses do not start duplicate saves.
+- [ ] With VoiceOver enabled, invoke the named Save filtered photo action and confirm it follows the same local save path.
+- [ ] Confirm no automatic/background save, backend/provider call, Firebase/history write, apply/original image upload, style-reference upload-count change, Camera cloud AI entry, provider key/URL/SDK, or production rollout occurs.
+- [ ] Confirm `productionReady:false` remains unchanged.
