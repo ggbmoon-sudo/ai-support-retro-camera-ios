@@ -96,7 +96,7 @@ test("siliconflow Filter Lab recipe QA sends one image request and accepts recip
   assert.equal(capturedHeaders.Authorization, "Bearer local-test-key");
   assert.equal(capturedRequest.model, "Qwen/Qwen3-VL-32B-Instruct");
   assert.equal(capturedRequest.stream, false);
-  assert.equal(capturedRequest.max_tokens, 512);
+  assert.equal(capturedRequest.max_tokens, 1400);
   assert.equal("top_p" in capturedRequest, false);
   assert.equal(capturedRequest.response_format.type, "json_schema");
   assert.equal(capturedRequest.response_format.json_schema.name, "filter_lab_recipe");

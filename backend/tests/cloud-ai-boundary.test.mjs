@@ -689,13 +689,19 @@ test("xiaoyi provider uses gpt-5.6-luna for generated Filter Lab recipes", async
   assert.equal(capturedRequest.max_tokens, 2000);
   assert.deepEqual(capturedRequest.response_format, { type: "json_object" });
   assert.equal(capturedRequest.messages[0].content.includes("color-science analyst"), true);
-  assert.equal(capturedRequest.messages[1].content[0].text.includes("Allowed recipeVersion: 1.1"), true);
-  assert.equal(capturedRequest.messages[1].content[0].text.includes("JSON string \"1.1\", never the number 1.1"), true);
+  assert.equal(capturedRequest.messages[1].content[0].text.includes("Allowed recipeVersion: 2.0"), true);
+  assert.equal(capturedRequest.messages[1].content[0].text.includes("JSON string \"2.0\", never the number 2.0"), true);
   assert.equal(capturedRequest.messages[1].content[0].text.includes("exact JSON string \"ai_reference_grade\""), true);
+  assert.equal(capturedRequest.messages[1].content[0].text.includes("recommendedUseKeys must be a JSON array"), true);
+  assert.equal(capturedRequest.messages[1].content[0].text.includes("warningsKeys must be the JSON array"), true);
+  assert.equal(capturedRequest.messages[1].content[0].text.includes("lumaCurve, redCurve, greenCurve, and blueCurve"), true);
+  assert.equal(capturedRequest.messages[1].content[0].text.includes("basisLUTWeights must be one JSON object"), true);
   assert.equal(capturedRequest.messages[1].content[0].text.includes("Do not add, rename, omit, or change the type"), true);
+  assert.equal(capturedRequest.messages[1].content[0].text.includes("exclude white settings panels"), true);
+  assert.equal(capturedRequest.messages[1].content[0].text.includes("Fade, shadowLift, and negative contrast compound"), true);
   assert.equal(capturedRequest.messages[1].content[0].text.includes("Renderer calibration anchors"), true);
   assert.equal(capturedRequest.messages[1].content[1].image_url.url, "data:image/jpeg;base64,/9j/");
-  assert.equal(capturedRequest.messages[1].content[1].image_url.detail, "low");
+  assert.equal(capturedRequest.messages[1].content[1].image_url.detail, "high");
 });
 
 test("xiaoyi generated filter parser rejects invalid recipe schema without raw output", () => {
@@ -800,16 +806,18 @@ test("siliconflow provider builds image-first Filter Lab recipe request", async 
   assert.equal(capturedHeaders.authorization, "Bearer test-key");
   assert.equal(capturedRequest.model, "Qwen/Qwen3-VL-32B-Instruct");
   assert.equal(capturedRequest.stream, false);
-  assert.equal(capturedRequest.max_tokens, 512);
+  assert.equal(capturedRequest.max_tokens, 1400);
   assert.equal("top_p" in capturedRequest, false);
   assert.equal(capturedRequest.response_format.type, "json_schema");
   assert.equal(capturedRequest.response_format.json_schema.name, "filter_lab_recipe");
   assert.equal(capturedRequest.response_format.json_schema.schema.additionalProperties, false);
   assert.equal(capturedRequest.response_format.json_schema.schema.properties.parameters.additionalProperties, false);
+  assert.equal(capturedRequest.response_format.json_schema.schema.properties.colorTransform.additionalProperties, false);
+  assert.equal(capturedRequest.response_format.json_schema.schema.properties.film.additionalProperties, false);
   assert.equal(capturedRequest.messages[0].content.includes("color-science analyst"), true);
   assert.equal(capturedRequest.messages[1].content[0].image_url.url, "data:image/jpeg;base64,/9j/");
   assert.equal(capturedRequest.messages[1].content[0].image_url.detail, "high");
-  assert.equal(capturedRequest.messages[1].content[1].text.includes("Allowed recipeVersion: 1.1"), true);
+  assert.equal(capturedRequest.messages[1].content[1].text.includes("Allowed recipeVersion: 2.0"), true);
   assert.equal(capturedRequest.messages[1].content[1].text.includes("final rendered photo pixels"), true);
   assert.equal(capturedRequest.messages[1].content[1].text.includes("NEVER map them proportionally or directly"), true);
   assert.equal(capturedRequest.messages[1].content[1].text.includes("Renderer calibration anchors"), true);
@@ -871,7 +879,10 @@ test("filter lab route returns validated generated recipe when xiaoyi is enabled
   assert.equal(result.body.mode, "filter_generation");
   assert.equal(result.body.source, "cloud");
   assert.equal(result.body.generatedFilter.source, "cloud");
-  assert.equal(result.body.generatedFilter.recipeVersion, "1.1");
+  assert.equal(result.body.generatedFilter.recipeVersion, "2.0");
+  assert.equal(result.body.generatedFilter.colorTransform.lumaCurve.length, 5);
+  assert.equal(Object.keys(result.body.generatedFilter.colorTransform.basisLUTWeights).length, 8);
+  assert.equal(Object.keys(result.body.generatedFilter.film).length, 7);
   assert.equal(result.body.safety.containsSensitiveInference, false);
   assert.equal(result.metadata.providerKind, "xiaoyiLunaInternal");
 });
@@ -894,7 +905,7 @@ test("filter lab route returns validated generated recipe when siliconflow is en
   assert.equal(result.body.mode, "filter_generation");
   assert.equal(result.body.source, "cloud");
   assert.equal(result.body.generatedFilter.source, "cloud");
-  assert.equal(result.body.generatedFilter.recipeVersion, "1.1");
+  assert.equal(result.body.generatedFilter.recipeVersion, "2.0");
   assert.equal(result.body.safety.containsSensitiveInference, false);
   assert.equal(result.metadata.providerKind, "siliconflowInternal");
 });

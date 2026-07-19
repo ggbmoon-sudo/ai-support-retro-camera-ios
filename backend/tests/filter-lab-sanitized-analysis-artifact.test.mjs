@@ -34,7 +34,9 @@ test("sanitized Filter Lab artifact contains only normalized recipe and privacy-
   assert.equal(artifact.attemptsBucket, "single_attempt");
   assert.equal(artifact.latencyBucket, "lte_5s");
   assert.deepEqual(artifact.normalizedRecipe.parameters, generatedFilterRecipeExampleCandidate().parameters);
-  assert.equal(artifact.normalizedRecipe.recipeVersion, "1.1");
+  assert.deepEqual(artifact.normalizedRecipe.colorTransform, generatedFilterRecipeExampleCandidate().colorTransform);
+  assert.deepEqual(artifact.normalizedRecipe.film, generatedFilterRecipeExampleCandidate().film);
+  assert.equal(artifact.normalizedRecipe.recipeVersion, "2.0");
   assert.equal(artifact.normalizedRecipe.confidenceBucket, "medium");
   assert.equal("id" in artifact.normalizedRecipe, false);
   assert.equal("confidence" in artifact.normalizedRecipe, false);
@@ -77,6 +79,8 @@ test("sanitized Filter Lab artifact writer creates one ignored JSON analysis fil
     assert.equal(persisted.attemptsBucket, "retry");
     assert.equal(persisted.latencyBucket, "gt_15s");
     assert.deepEqual(persisted.normalizedRecipe.parameters, generatedFilterRecipeExampleCandidate().parameters);
+    assert.deepEqual(persisted.normalizedRecipe.colorTransform, generatedFilterRecipeExampleCandidate().colorTransform);
+    assert.deepEqual(persisted.normalizedRecipe.film, generatedFilterRecipeExampleCandidate().film);
     assert.equal("id" in persisted.normalizedRecipe, false);
     assert.equal("confidence" in persisted.normalizedRecipe, false);
     assert.equal(persisted.privacy.rawProviderResponseIncluded, false);

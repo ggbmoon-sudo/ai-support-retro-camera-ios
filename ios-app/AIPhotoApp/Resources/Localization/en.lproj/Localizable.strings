@@ -80,6 +80,8 @@
 "filter_lab.recommended_use" = "Recommended use";
 "filter_lab.parameters" = "Filter parameters";
 "filter_lab.parameters.summary" = "Exposure %.2f · Contrast %.2f · Saturation %.2f · Temp %.2f · Tint %.2f · Fade %.2f · Shadow lift %.2f · Highlight roll-off %.2f · Bloom %.2f · Grain %.2f · Dust %.2f · Vignette %.2f";
+"filter_lab.color_transform.summary" = "Local tone normalization %.0f%% · Curve/LUT color mapping %.0f%%";
+"filter_lab.film.summary" = "Grain size %.2f · Roughness %.2f · Luma response %.2f · Halation %.2f / %.0f px · Warmth %.2f · Diffusion %.2f";
 "filter_lab.action.apply" = "Apply generated filter";
 "filter_lab.action.save_filtered" = "Save filtered photo";
 "filter_lab.action.try_another" = "Choose other images";

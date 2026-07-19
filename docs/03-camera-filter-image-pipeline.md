@@ -1,5 +1,13 @@
 # 相機、復古濾鏡與圖片處理技術報告
 
+## PT2-SF-R9-R16 Filter Lab Recipe v2
+
+Recipe `2.0` keeps the twelve existing global controls as final fine adjustments and adds bounded five-point luma/R/G/B curves, normalized weights over eight app-owned basis looks, local luminance normalization, grain size/roughness/luminance response, warm highlight halation, and diffusion. iOS builds a deterministic 17-cube locally; the provider cannot return a raw LUT, LUT URL, arbitrary renderer name, shader, or code. Historical `1.1` recipes map to identity v2 structures. The user intensity is now a final source-versus-complete-result blend, so `0%` is the original, `100%` is the entire recipe, and `50%` is their true midpoint. The backend still receives only one style/reference image; the apply/original and all rendering stay local, Camera remains local-only, and `productionReady:false` remains locked.
+
+## PT2-SF-R9-R15-X2 real-reference fidelity correction
+
+The first Luna physical-device result showed an excessive black-floor lift: result luminance q10 was `0.506`, while the original was `0.241` and the target photograph region was `0.214`. The saved recipe combined `contrast:-0.18`, `fade:0.20`, and `shadowLift:0.16`; the local renderer then mapped shadow lift at `1.8x`. X2 corrects both sources. The backend prompt excludes screenshot UI from tone/color evidence, protects deep photographic blacks, avoids compounded faded-look controls, and uses `detail:high` for Filter Lab. The iOS renderer now maps shadow lift at bounded `0.55x`. The accepted real-reference recipe is `contrast:0.01`, `fade:0.06`, `shadowLift:0.04`, `temperature:0.22`, with strict recipe `1.1` still enforced. Physical-device rendering of this combined correction is pending; only the target reference was uploaded, the apply/original stayed local, and `productionReady:false` remains locked.
+
 ## PT2-SF-R9-R15-X1 Xiaoyi Luna relay rebuild
 
 Filter Lab now has a separate backend-only `xiaoyiLunaInternal` candidate built from the supplied Xiaoyi integration guide and OpenAPI records. The runtime resolves `XiaoyiLunaRelayProvider` rather than the historical DeepSeek relay adapter. It pins `gpt-5.6-luna`, `https://xiaoyiapi.xyz/v1/chat/completions`, Bearer auth, `Accept: application/json`, non-stream JSON mode, `max_tokens: 2000`, and a 90-second total upstream timeout. `/v1/responses` is not selected because the supplied guide verifies Luna on Chat Completions.

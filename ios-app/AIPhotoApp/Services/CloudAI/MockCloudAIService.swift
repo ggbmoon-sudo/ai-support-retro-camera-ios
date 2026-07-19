@@ -108,8 +108,47 @@ private extension CloudAIGeneratedFilter {
         confidence = recipe.confidence
         recommendedUseKeys = recipe.recommendedUseKeys
         parameters = CloudAIGeneratedFilterParameters(parameters: recipe.parameters)
+        colorTransform = CloudAIGeneratedFilterColorTransform(transform: recipe.colorTransform)
+        film = CloudAIGeneratedFilterFilm(film: recipe.film)
         warningsKeys = recipe.warningsKeys
         recipeVersion = recipe.recipeVersion
+    }
+}
+
+private extension CloudAIGeneratedFilterColorTransform {
+    init(transform: GeneratedFilterColorTransform) {
+        inputNormalizationStrength = transform.inputNormalizationStrength
+        styleIntensity = transform.styleIntensity
+        lumaCurve = transform.lumaCurve
+        redCurve = transform.redCurve
+        greenCurve = transform.greenCurve
+        blueCurve = transform.blueCurve
+        basisLUTWeights = CloudAIGeneratedFilterBasisLUTWeights(weights: transform.basisLUTWeights)
+    }
+}
+
+private extension CloudAIGeneratedFilterBasisLUTWeights {
+    init(weights: GeneratedFilterBasisLUTWeights) {
+        neutral = weights.neutral
+        warmAmber = weights.warmAmber
+        roseFlash = weights.roseFlash
+        coolChrome = weights.coolChrome
+        tealOrange = weights.tealOrange
+        mutedPastel = weights.mutedPastel
+        deepBrown = weights.deepBrown
+        chromeSlide = weights.chromeSlide
+    }
+}
+
+private extension CloudAIGeneratedFilterFilm {
+    init(film: GeneratedFilmParameterSet) {
+        grainSize = film.grainSize
+        grainRoughness = film.grainRoughness
+        grainLumaResponse = film.grainLumaResponse
+        halationStrength = film.halationStrength
+        halationRadius = film.halationRadius
+        halationWarmth = film.halationWarmth
+        diffusion = film.diffusion
     }
 }
 

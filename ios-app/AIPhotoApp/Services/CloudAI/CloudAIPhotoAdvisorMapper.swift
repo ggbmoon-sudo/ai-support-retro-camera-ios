@@ -137,6 +137,12 @@ enum CloudAIFilterLabMapper {
                 dust: generatedFilter.parameters.dust,
                 vignette: generatedFilter.parameters.vignette
             ),
+            colorTransform: generatedFilter.colorTransform.map {
+                GeneratedFilterColorTransform(cloud: $0)
+            } ?? .identity,
+            film: generatedFilter.film.map {
+                GeneratedFilmParameterSet(cloud: $0)
+            } ?? .identity,
             warningsKeys: generatedFilter.warningsKeys,
             recipeVersion: generatedFilter.recipeVersion
         )
@@ -153,5 +159,48 @@ enum CloudAIFilterLabMapper {
         case .cloud:
             return .cloud
         }
+    }
+}
+
+private extension GeneratedFilterColorTransform {
+    init(cloud: CloudAIGeneratedFilterColorTransform) {
+        self.init(
+            inputNormalizationStrength: cloud.inputNormalizationStrength,
+            styleIntensity: cloud.styleIntensity,
+            lumaCurve: cloud.lumaCurve,
+            redCurve: cloud.redCurve,
+            greenCurve: cloud.greenCurve,
+            blueCurve: cloud.blueCurve,
+            basisLUTWeights: GeneratedFilterBasisLUTWeights(cloud: cloud.basisLUTWeights)
+        )
+    }
+}
+
+private extension GeneratedFilterBasisLUTWeights {
+    init(cloud: CloudAIGeneratedFilterBasisLUTWeights) {
+        self.init(
+            neutral: cloud.neutral,
+            warmAmber: cloud.warmAmber,
+            roseFlash: cloud.roseFlash,
+            coolChrome: cloud.coolChrome,
+            tealOrange: cloud.tealOrange,
+            mutedPastel: cloud.mutedPastel,
+            deepBrown: cloud.deepBrown,
+            chromeSlide: cloud.chromeSlide
+        )
+    }
+}
+
+private extension GeneratedFilmParameterSet {
+    init(cloud: CloudAIGeneratedFilterFilm) {
+        self.init(
+            grainSize: cloud.grainSize,
+            grainRoughness: cloud.grainRoughness,
+            grainLumaResponse: cloud.grainLumaResponse,
+            halationStrength: cloud.halationStrength,
+            halationRadius: cloud.halationRadius,
+            halationWarmth: cloud.halationWarmth,
+            diffusion: cloud.diffusion
+        )
     }
 }

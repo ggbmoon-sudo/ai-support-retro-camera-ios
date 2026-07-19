@@ -63,7 +63,8 @@ export class XiaoyiLunaRelayProvider extends CloudAIProvider {
         "Never use Score -> Problem -> Fix -> Retake."
       ].join(" "),
       userPrompt: buildPhotoAdvisorPrompt({ locale: input.locale }),
-      image: input.image
+      image: input.image,
+      imageDetail: "low"
     });
   }
 
@@ -73,16 +74,19 @@ export class XiaoyiLunaRelayProvider extends CloudAIProvider {
       maxTokens: 2_000,
       systemPrompt: buildGeneratedFilterRecipeSystemPrompt(),
       userPrompt: [
-        "Critical JSON typing: recipeVersion must be the JSON string \"1.1\", never the number 1.1.",
+        "Critical JSON typing: recipeVersion must be the JSON string \"2.0\", never the number 2.0.",
         "Set id to the exact JSON string \"ai_reference_grade\". Do not invent another id, use uppercase letters, spaces, or hyphens.",
-        "id, nameKey, descriptionKey, source, recipeVersion, and every array item must be JSON strings. confidence and all parameters must be JSON numbers.",
+        "id, nameKey, descriptionKey, source, recipeVersion, and localization array items must be JSON strings. confidence, parameters, curves, LUT weights, and film fields must be JSON numbers.",
+        "recommendedUseKeys must be a JSON array containing 1 to 3 allowed string values, never a single string or object. warningsKeys must be the JSON array [\"filter_lab.warning.session_only\"].",
+        "lumaCurve, redCurve, greenCurve, and blueCurve must each be JSON arrays containing exactly five numbers. basisLUTWeights must be one JSON object containing all eight required numeric fields.",
         "Do not add, rename, omit, or change the type of any required field.",
         buildGeneratedFilterRecipeSchemaPrompt(),
         buildGeneratedFilterRecipeStyleGuidancePrompt(),
         buildGeneratedFilterRecipeRendererCalibrationPrompt(),
         "If the image is ambiguous, keep uncertain controls near identity and lower confidence. Do not substitute a preferred preset recipe."
       ].join("\n"),
-      image: input.image
+      image: input.image,
+      imageDetail: "high"
     });
   }
 
@@ -174,7 +178,7 @@ export function parseJsonFromXiaoyiLunaPayload(payload) {
   }
 }
 
-function buildRequestBody({ model, maxTokens, systemPrompt, userPrompt, image }) {
+function buildRequestBody({ model, maxTokens, systemPrompt, userPrompt, image, imageDetail }) {
   return {
     model,
     messages: [
@@ -187,7 +191,7 @@ function buildRequestBody({ model, maxTokens, systemPrompt, userPrompt, image })
             type: "image_url",
             image_url: {
               url: `data:${image.contentType};base64,${image.dataBase64}`,
-              detail: "low"
+              detail: imageDetail
             }
           }
         ]

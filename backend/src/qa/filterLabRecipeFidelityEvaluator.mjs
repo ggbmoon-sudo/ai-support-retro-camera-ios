@@ -23,6 +23,39 @@ const SIGNED_PARAMETER_KEYS = new Set([
   "tint"
 ]);
 
+const COLOR_TRANSFORM_SCALAR_KEYS = Object.freeze([
+  "inputNormalizationStrength",
+  "styleIntensity"
+]);
+
+const CURVE_KEYS = Object.freeze([
+  "lumaCurve",
+  "redCurve",
+  "greenCurve",
+  "blueCurve"
+]);
+
+const BASIS_LUT_KEYS = Object.freeze([
+  "neutral",
+  "warmAmber",
+  "roseFlash",
+  "coolChrome",
+  "tealOrange",
+  "mutedPastel",
+  "deepBrown",
+  "chromeSlide"
+]);
+
+const FILM_KEYS = Object.freeze([
+  "grainSize",
+  "grainRoughness",
+  "grainLumaResponse",
+  "halationStrength",
+  "halationRadius",
+  "halationWarmth",
+  "diffusion"
+]);
+
 export function evaluateFilterLabRecipeFidelity({ expected, actual } = {}) {
   const expectedValidation = validateGeneratedFilterRecipeCandidate(expected);
   if (!expectedValidation.ok) {
@@ -57,7 +90,35 @@ export function evaluateFilterLabRecipeFidelity({ expected, actual } = {}) {
     }
   }
 
-  const meanAbsoluteError = totalAbsoluteError / PARAMETER_KEYS.length;
+  for (const key of COLOR_TRANSFORM_SCALAR_KEYS) {
+    addError(`colorTransform.${key}`, expectedValidation.value.colorTransform[key], actualValidation.value.colorTransform[key]);
+  }
+  for (const key of CURVE_KEYS) {
+    for (let index = 0; index < expectedValidation.value.colorTransform[key].length; index += 1) {
+      addError(
+        `colorTransform.${key}.${index}`,
+        expectedValidation.value.colorTransform[key][index],
+        actualValidation.value.colorTransform[key][index]
+      );
+    }
+  }
+  for (const key of BASIS_LUT_KEYS) {
+    addError(
+      `colorTransform.basisLUTWeights.${key}`,
+      expectedValidation.value.colorTransform.basisLUTWeights[key],
+      actualValidation.value.colorTransform.basisLUTWeights[key]
+    );
+  }
+  for (const key of FILM_KEYS) {
+    addError(`film.${key}`, expectedValidation.value.film[key], actualValidation.value.film[key]);
+  }
+
+  const valueCount = PARAMETER_KEYS.length
+    + COLOR_TRANSFORM_SCALAR_KEYS.length
+    + CURVE_KEYS.length * 5
+    + BASIS_LUT_KEYS.length
+    + FILM_KEYS.length;
+  const meanAbsoluteError = totalAbsoluteError / valueCount;
   return {
     ok: true,
     validationBucket: "accepted",
@@ -65,7 +126,7 @@ export function evaluateFilterLabRecipeFidelity({ expected, actual } = {}) {
     perParameterErrorBuckets,
     directionMismatchCount,
     neutralizedStrongControlCount,
-    parameterCount: PARAMETER_KEYS.length,
+    parameterCount: valueCount,
     rawExpectedRecipeIncluded: false,
     rawActualRecipeIncluded: false,
     rawImageIncluded: false,
@@ -74,6 +135,12 @@ export function evaluateFilterLabRecipeFidelity({ expected, actual } = {}) {
     imageReadsPerformed: false,
     productionReady: false
   };
+
+  function addError(key, expectedValue, actualValue) {
+    const absoluteError = Math.abs(expectedValue - actualValue);
+    totalAbsoluteError += absoluteError;
+    perParameterErrorBuckets[key] = absoluteErrorBucket(absoluteError);
+  }
 }
 
 function invalidReport(validationBucket) {
@@ -84,7 +151,11 @@ function invalidReport(validationBucket) {
     perParameterErrorBuckets: {},
     directionMismatchCount: 0,
     neutralizedStrongControlCount: 0,
-    parameterCount: PARAMETER_KEYS.length,
+    parameterCount: PARAMETER_KEYS.length
+      + COLOR_TRANSFORM_SCALAR_KEYS.length
+      + CURVE_KEYS.length * 5
+      + BASIS_LUT_KEYS.length
+      + FILM_KEYS.length,
     rawExpectedRecipeIncluded: false,
     rawActualRecipeIncluded: false,
     rawImageIncluded: false,

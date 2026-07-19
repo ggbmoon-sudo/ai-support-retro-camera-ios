@@ -8,9 +8,137 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: PT2-SF-R9-R15-X1 - Xiaoyi Luna Relay Rebuild
-Status: fresh backend adapter implemented; strict recipe schema aligned; internal/debug runtime switched and verified
-Latest implementation: PT2-SF-R9-R15-X1 builds a new `XiaoyiLunaRelayProvider` and `xiaoyiLunaInternal` runtime mode from the supplied guide and OpenAPI records instead of reusing the historical DeepSeek adapter. Sanitized field diagnostics identified `recipe_version` and `id` mismatches without retaining raw output. Explicit Luna prompt constraints fixed both while the strict validator remained unchanged. Zero-retry synthetic-image, backend route, and running HTTP endpoint checks now return recipe `1.1` with all 12 parameters. Localhost and LAN health report Luna ready, SiliconFlow remains rollback, and `productionReady:false` remains locked.
+Current phase: PT2-SF-R9-R16 - Filter Lab Recipe v2
+Status: backend and iOS implementation complete; automated and bounded live-provider verification passed; Mac/Xcode physical-device visual verification pending
+Latest implementation: PT2-SF-R9-R16 keeps the original twelve controls as bounded fine adjustments and adds safe five-point luma/R/G/B curves, a deterministic app-owned basis colour cube, local source normalization, advanced grain response, warm highlight halation, and diffusion. User intensity now blends the untouched source with the complete result. Backend-generated recipes are strict `2.0`; iOS accepts historical `1.1` with identity v2 values. A bounded target-only Luna check accepted strict v2 in one attempt, localhost/LAN are ready, the backend still receives one style/reference image only, apply/original and rendering stay local, and `productionReady:false` remains locked.
+
+## PT2-SF-R9-R16 - Filter Lab Recipe v2
+
+Status: implemented; automated and bounded live-provider verification passed; Mac/Xcode physical-device visual verification pending
+Date: 2026-07-19
+Production readiness: `productionReady:false`
+
+### Summary
+
+The operator approved the full fidelity upgrade after the target/result comparison showed that twelve global controls alone could not reproduce channel-specific tone, nonlinear colour response, or multi-dimensional film texture. Recipe `2.0` adds bounded primitives that the app can render deterministically without accepting executable provider output.
+
+### Completed Work
+
+- Upgraded the backend schema, prompt, validation, examples, provider token bounds, sanitized artifact allowlist, and fidelity evaluator to recipe `2.0`.
+- Added fixed monotonic five-point luma/R/G/B curves and normalized weights over eight app-owned basis looks; rejected arbitrary/raw LUT, URL, shader, code, and renderer fields.
+- Added bounded input normalization, transform intensity, grain size/roughness/luminance response, halation strength/radius/warmth, and diffusion.
+- Added iOS v2 decoding/mapping/validation with historical `1.1` identity compatibility.
+- Added a deterministic local 17-cube builder and local Core Image rendering for normalization, colour transform, diffusion, warm highlight halation, and luminance-aware grain.
+- Changed intensity to one final source-versus-complete-result blend, preserving exact source behaviour at zero intensity.
+- Extended result diagnostics with safe colour-transform and film summaries without exposing raw internal weights.
+- Updated English and Traditional Chinese localization.
+- Preserved the R12 1600-pixel preview/memory bound and R14 long-press local export.
+
+### Changed Files
+
+- Backend contract/providers/artifacts/QA: `generatedFilterRecipeContract.mjs`, Luna/SiliconFlow/legacy relay providers, sanitized artifact builder, fidelity evaluator, and Filter Lab QA gate.
+- Backend tests: cloud boundary, Recipe v2 fidelity, sanitized artifact, and QA gate suites.
+- iOS Filter Lab: recipe/model/validator, new colour-transform and film models, new local cube builder, preview renderer, result diagnostics, and mock generator.
+- iOS Cloud AI: decoding, mapping, response validation, and mock service.
+- Localization: English and Traditional Chinese Filter Lab strings.
+- Docs/tests: root/backend/iOS READMEs, image-pipeline notes, this phase report, phase log, and manual smoke tests.
+
+### Verification
+
+- Focused Recipe v2/provider/artifact/QA tests: 93 passed, 0 failed.
+- Full backend regression suite: 427 passed, 0 failed.
+- Bounded target-only Luna request: one provider attempt; strict recipe `2.0`; latency bucket `gt_15s`; cloud source; no sensitive-inference flag.
+- Live recipe structure: 12 fine controls, four five-point curves, eight normalized basis weights summing to `1`, and a complete film block.
+- Sanitized artifact: `filter_lab_sanitized_analysis.v2`; single-attempt bucket; all privacy flags false; `productionReady:false`.
+- Runtime health: localhost and `192.168.68.60:8787` reachable in `xiaoyiLunaInternal`; Filter Lab ready; `productionReady:false`.
+- Mac/Xcode Swift build: unavailable on this Windows host; physical-device build pending.
+- Apply/original upload added: no.
+- Raw LUT/shader/code accepted: no.
+
+### Known TODOs
+
+- Pull/build on the MacBook and confirm the new filesystem-synchronized Swift files compile in Xcode.
+- Compare and long-press-save the same pair at 0%, 50%, and 100%.
+- Complete the existing ten-minute physical-device memory check.
+
+### Boundary Confirmations
+
+- Backend input remains one style/reference image: yes.
+- Apply/original image and 17-cube stay local: yes.
+- Raw prompt/request/provider response/image/base64/key persisted: no.
+- Direct iOS provider URL/key/SDK/call: no.
+- Camera cloud AI entry: no.
+- Default/production cloud rollout: no.
+- `productionReady:false` remains locked.
+
+### Ready for Next Step
+
+Backend restarted and bounded internal/debug v2 provider check passed: yes. Ready for Mac/Xcode physical-device visual verification: yes. Ready for production rollout: no.
+
+## PT2-SF-R9-R15-X2 - Luna Real-reference Fidelity Correction
+
+Status: implemented; backend/provider verification passed; physical-device visual retest pending
+Date: 2026-07-19
+Production readiness: `productionReady:false`
+
+### Summary
+
+The operator returned the first Luna-generated 100% after image together with the target-filter screenshot. The generated result was visibly washed, too low-contrast, and insufficiently warm. A sanitized comparison against the previously supplied original confirmed that the recipe/renderer combination moved real photographic blacks toward mid-gray rather than matching the target's retained tonal separation.
+
+### Completed Work
+
+- Compared result/original/target photograph-region luminance, contrast spread, RGB balance, and saturation without adding images to the repo.
+- Read the latest ignored sanitized analysis artifact and identified `contrast:-0.18`, `fade:0.20`, and `shadowLift:0.16` as the compounding recipe controls.
+- Updated the shared prompt to isolate the actual photograph region and exclude white settings panels, QR codes, controls, borders, captions, and sharing UI from tone/color estimates.
+- Added deep-black preservation, saturation-region separation, and compound fade/shadow/negative-contrast guidance.
+- Changed Luna Filter Lab image detail from `low` to `high`; Photo Advisor remains `low`.
+- Added explicit Luna array typing for `recommendedUseKeys` and `warningsKeys` without parser coercion or validator weakening.
+- Reduced the iOS renderer shadow mapping from `shadowLift * 1.8` to bounded `min(0.22, shadowLift * 0.55)`.
+- Restarted the current Luna backend with the updated prompt; localhost and LAN health remain ready.
+
+### Changed Files
+
+- Backend prompt/provider: `backend/src/providers/generatedFilterRecipeContract.mjs`, `backend/src/providers/XiaoyiLunaRelayProvider.mjs`
+- iOS renderer: `ios-app/AIPhotoApp/Features/Inspiration/FilterLab/GeneratedFilterPreviewRenderer.swift`
+- Tests: `backend/tests/cloud-ai-boundary.test.mjs`, `backend/tests/filter-lab-recipe-fidelity.test.mjs`
+- Docs: `README.md`, `backend/README.md`, `ios-app/README.md`, `docs/03-camera-filter-image-pipeline.md`, `docs/pt2-sf-r9-r15-x2-luna-real-reference-fidelity-correction.md`, `docs/phase-log.md`, `tests/manual-smoke-tests.md`
+
+### Verification
+
+- Pre-fix original q10/q90: `0.241 / 0.870`.
+- Pre-fix result q10/q90: `0.506 / 0.849`.
+- Target photograph-region q10/q90: `0.214 / 0.793`.
+- Pre-fix result contrast spread: `0.342`; target: `0.579`.
+- Focused tests: 83 passed, then 77 passed after Luna array typing alignment.
+- Full backend suite: 425 passed, 0 failed.
+- First target-only Luna call: HTTP 200; zero retry; safely rejected as `wrong_type / recommended_use_keys`; no artifact saved.
+- Second target-only Luna call: HTTP 200; zero retry; strict recipe `1.1` accepted; sanitized artifact saved.
+- Accepted recipe: exposure `0.02`, contrast `0.01`, saturation `-0.08`, temperature `0.22`, tint `0.03`, fade `0.06`, shadow lift `0.04`, highlight roll-off `0.12`, bloom `0.02`, grain `0.20`, dust `0.18`, vignette `0.08`.
+- Original/apply and generated-result uploads during QA: no; only the target-filter image was uploaded.
+- Runtime health: localhost and `192.168.68.60:8787` reachable in `xiaoyiLunaInternal`; Filter Lab ready; `productionReady:false`.
+
+### Known TODOs
+
+- Update the MacBook clone and rebuild the changed iOS renderer.
+- Repeat the same target/original pair at 100% on the physical iPhone.
+- Long-press-save the new after image and compare it against the target.
+- Verify the reduced shadow mapping preserves deep blacks without making a genuinely faded reference too contrasty.
+- Run the existing 10-minute R12/R15 memory check after the visual comparison passes.
+
+### Boundary Confirmations
+
+- Target screenshot added to repo or persisted by backend: no.
+- Raw prompt/request/provider response/image/base64/key persisted: no.
+- Direct iOS Xiaoyi URL/key/SDK/call: no.
+- iOS upload payload expanded: no.
+- Apply/original image uploaded: no.
+- Camera cloud AI entry: no.
+- Production/default cloud rollout: no.
+- `productionReady:false` remains locked.
+
+### Ready for Next Step
+
+Ready for MacBook/Xcode physical-device visual retest: yes. Ready for production rollout: no.
 
 ## PT2-SF-R9-R15-X1 - Xiaoyi Luna Relay Rebuild
 

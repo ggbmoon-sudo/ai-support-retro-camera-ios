@@ -172,8 +172,41 @@ nonisolated struct CloudAIGeneratedFilter: Codable, Hashable, Sendable {
     let confidence: Double
     let recommendedUseKeys: [String]
     let parameters: CloudAIGeneratedFilterParameters
+    let colorTransform: CloudAIGeneratedFilterColorTransform?
+    let film: CloudAIGeneratedFilterFilm?
     let warningsKeys: [String]
     let recipeVersion: String
+}
+
+nonisolated struct CloudAIGeneratedFilterColorTransform: Codable, Hashable, Sendable {
+    let inputNormalizationStrength: Double
+    let styleIntensity: Double
+    let lumaCurve: [Double]
+    let redCurve: [Double]
+    let greenCurve: [Double]
+    let blueCurve: [Double]
+    let basisLUTWeights: CloudAIGeneratedFilterBasisLUTWeights
+}
+
+nonisolated struct CloudAIGeneratedFilterBasisLUTWeights: Codable, Hashable, Sendable {
+    let neutral: Double
+    let warmAmber: Double
+    let roseFlash: Double
+    let coolChrome: Double
+    let tealOrange: Double
+    let mutedPastel: Double
+    let deepBrown: Double
+    let chromeSlide: Double
+}
+
+nonisolated struct CloudAIGeneratedFilterFilm: Codable, Hashable, Sendable {
+    let grainSize: Double
+    let grainRoughness: Double
+    let grainLumaResponse: Double
+    let halationStrength: Double
+    let halationRadius: Double
+    let halationWarmth: Double
+    let diffusion: Double
 }
 
 nonisolated enum CloudAIGeneratedFilterSource: String, Codable, Hashable, Sendable {

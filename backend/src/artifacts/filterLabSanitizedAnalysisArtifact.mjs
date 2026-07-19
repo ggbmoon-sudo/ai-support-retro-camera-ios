@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { mkdir, writeFile } from "node:fs/promises";
 
-export const FILTER_LAB_ANALYSIS_ARTIFACT_SCHEMA_VERSION = "filter_lab_sanitized_analysis.v1";
+export const FILTER_LAB_ANALYSIS_ARTIFACT_SCHEMA_VERSION = "filter_lab_sanitized_analysis.v2";
 export const DEFAULT_FILTER_LAB_ANALYSIS_ARTIFACT_DIR = new URL(
   "../../reports/filter-lab-sanitized-analysis/",
   import.meta.url
@@ -56,6 +56,33 @@ function normalizedRecipeArtifact(recipe) {
       grain: recipe.parameters.grain,
       dust: recipe.parameters.dust,
       vignette: recipe.parameters.vignette
+    },
+    colorTransform: {
+      inputNormalizationStrength: recipe.colorTransform.inputNormalizationStrength,
+      styleIntensity: recipe.colorTransform.styleIntensity,
+      lumaCurve: [...recipe.colorTransform.lumaCurve],
+      redCurve: [...recipe.colorTransform.redCurve],
+      greenCurve: [...recipe.colorTransform.greenCurve],
+      blueCurve: [...recipe.colorTransform.blueCurve],
+      basisLUTWeights: {
+        neutral: recipe.colorTransform.basisLUTWeights.neutral,
+        warmAmber: recipe.colorTransform.basisLUTWeights.warmAmber,
+        roseFlash: recipe.colorTransform.basisLUTWeights.roseFlash,
+        coolChrome: recipe.colorTransform.basisLUTWeights.coolChrome,
+        tealOrange: recipe.colorTransform.basisLUTWeights.tealOrange,
+        mutedPastel: recipe.colorTransform.basisLUTWeights.mutedPastel,
+        deepBrown: recipe.colorTransform.basisLUTWeights.deepBrown,
+        chromeSlide: recipe.colorTransform.basisLUTWeights.chromeSlide
+      }
+    },
+    film: {
+      grainSize: recipe.film.grainSize,
+      grainRoughness: recipe.film.grainRoughness,
+      grainLumaResponse: recipe.film.grainLumaResponse,
+      halationStrength: recipe.film.halationStrength,
+      halationRadius: recipe.film.halationRadius,
+      halationWarmth: recipe.film.halationWarmth,
+      diffusion: recipe.film.diffusion
     },
     warningsKeys: [...recipe.warningsKeys]
   };

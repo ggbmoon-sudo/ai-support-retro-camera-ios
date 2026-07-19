@@ -143,7 +143,7 @@ enum CloudAIValidationIssue: Equatable, CustomStringConvertible {
 
 private extension CloudAIGeneratedFilter {
     var parametersAreSafe: Bool {
-        guard recipeVersion == "1.1",
+        guard recipeVersion == "1.1" || recipeVersion == "2.0",
               id.hasPrefix("ai_"),
               source == .cloud || source == .mock || source == .local,
               (0.0...1.0).contains(confidence),
@@ -155,7 +155,7 @@ private extension CloudAIGeneratedFilter {
         }
 
         let params = parameters
-        return (-0.35...0.35).contains(params.exposure)
+        let legacyParametersAreSafe = (-0.35...0.35).contains(params.exposure)
             && (-0.35...0.35).contains(params.contrast)
             && (-0.35...0.45).contains(params.saturation)
             && (-0.45...0.45).contains(params.temperature)
@@ -167,5 +167,64 @@ private extension CloudAIGeneratedFilter {
             && (0.0...0.35).contains(params.grain)
             && (0.0...0.35).contains(params.dust)
             && (0.0...0.35).contains(params.vignette)
+
+        guard legacyParametersAreSafe else { return false }
+        guard recipeVersion == "2.0" else { return true }
+        guard let colorTransform, let film else { return false }
+        return colorTransform.isSafe && film.isSafe
+    }
+}
+
+private extension CloudAIGeneratedFilterColorTransform {
+    var isSafe: Bool {
+        guard (0.0...0.35).contains(inputNormalizationStrength),
+              (0.0...1.0).contains(styleIntensity),
+              lumaCurve.isSafeGeneratedFilterCurve,
+              redCurve.isSafeGeneratedFilterCurve,
+              greenCurve.isSafeGeneratedFilterCurve,
+              blueCurve.isSafeGeneratedFilterCurve else {
+            return false
+        }
+
+        let weights = basisLUTWeights.values
+        let sum = weights.reduce(0, +)
+        return weights.allSatisfy { $0.isFinite && (0.0...1.0).contains($0) }
+            && abs(sum - 1) <= 0.001
+    }
+}
+
+private extension CloudAIGeneratedFilterBasisLUTWeights {
+    var values: [Double] {
+        [neutral, warmAmber, roseFlash, coolChrome, tealOrange, mutedPastel, deepBrown, chromeSlide]
+    }
+}
+
+private extension CloudAIGeneratedFilterFilm {
+    var isSafe: Bool {
+        (0.6...2.2).contains(grainSize)
+            && (0.0...1.0).contains(grainRoughness)
+            && (-1.0...1.0).contains(grainLumaResponse)
+            && (0.0...0.25).contains(halationStrength)
+            && (2.0...24.0).contains(halationRadius)
+            && (0.0...1.0).contains(halationWarmth)
+            && (0.0...0.25).contains(diffusion)
+    }
+}
+
+private extension Array where Element == Double {
+    var isSafeGeneratedFilterCurve: Bool {
+        let identity = [0.0, 0.25, 0.5, 0.75, 1.0]
+        guard count == identity.count else { return false }
+        for index in indices {
+            guard self[index].isFinite,
+                  (0.0...1.0).contains(self[index]),
+                  abs(self[index] - identity[index]) <= 0.180001 else {
+                return false
+            }
+            if index > startIndex && self[index] < self[index - 1] {
+                return false
+            }
+        }
+        return self[0] <= 0.12 && self[count - 1] >= 0.88
     }
 }

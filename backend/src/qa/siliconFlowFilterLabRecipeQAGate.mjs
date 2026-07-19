@@ -223,7 +223,7 @@ export function buildSiliconFlowFilterLabRecipeQARequest({
     model,
     stream: false,
     temperature: 0.1,
-    max_tokens: 512,
+      max_tokens: 1_400,
     response_format: {
       type: "json_schema",
       json_schema: {

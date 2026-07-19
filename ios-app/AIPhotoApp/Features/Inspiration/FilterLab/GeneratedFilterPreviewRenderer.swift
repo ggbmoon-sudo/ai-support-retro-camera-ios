@@ -12,6 +12,7 @@ enum GeneratedFilterPreviewError: LocalizedError {
 nonisolated final class GeneratedFilterPreviewRenderer {
     private static let renderQueue = DispatchQueue(label: "app.ai-photo.filter-lab.render", qos: .userInitiated)
     private static let context = CIContext(options: [.cacheIntermediates: false])
+    private static let sRGBColorSpace = CGColorSpace(name: CGColorSpace.sRGB)!
     private static let maxPreviewLongEdge: CGFloat = 1600
 
     func render(image: UIImage, recipe: GeneratedFilterRecipe, intensity: Double) async throws -> UIImage {
@@ -23,7 +24,7 @@ nonisolated final class GeneratedFilterPreviewRenderer {
                 do {
                     let renderedImage = try Self.renderSynchronously(
                         image: image,
-                        parameters: safeRecipe.parameters,
+                        recipe: safeRecipe,
                         intensity: safeIntensity
                     )
                     continuation.resume(returning: renderedImage)
@@ -36,7 +37,7 @@ nonisolated final class GeneratedFilterPreviewRenderer {
 
     private static func renderSynchronously(
         image: UIImage,
-        parameters: GeneratedFilterParameterSet,
+        recipe: GeneratedFilterRecipe,
         intensity: Double
     ) throws -> UIImage {
         let normalizedImage = image
@@ -45,19 +46,32 @@ nonisolated final class GeneratedFilterPreviewRenderer {
         guard var outputImage = CIImage(image: normalizedImage) else {
             throw GeneratedFilterPreviewError.renderFailed
         }
+        let sourceImage = outputImage
+        let parameters = recipe.parameters
 
         defer {
             context.clearCaches()
         }
 
-        outputImage = try applyExposure(parameters.exposure * intensity, to: outputImage)
-        outputImage = try applyColorControls(parameters, intensity: intensity, to: outputImage)
-        outputImage = try applyTemperature(parameters, intensity: intensity, to: outputImage)
-        outputImage = try applyTone(parameters, intensity: intensity, to: outputImage)
-        outputImage = try applyBloom(parameters.bloom * intensity, to: outputImage)
-        outputImage = try applyGrain(parameters.grain * intensity, to: outputImage)
-        outputImage = try applyDust(parameters.dust * intensity, to: outputImage)
-        outputImage = try applyVignette(parameters.vignette * intensity, to: outputImage)
+        if intensity > 0.0001 {
+            let effectIntensity = 1.0
+            outputImage = try applyInputNormalization(
+                recipe.colorTransform.inputNormalizationStrength,
+                to: outputImage
+            )
+            outputImage = try applyExposure(parameters.exposure, to: outputImage)
+            outputImage = try applyColorControls(parameters, intensity: effectIntensity, to: outputImage)
+            outputImage = try applyTemperature(parameters, intensity: effectIntensity, to: outputImage)
+            outputImage = try applyTone(parameters, intensity: effectIntensity, to: outputImage)
+            outputImage = try applyColorTransform(recipe.colorTransform, intensity: effectIntensity, to: outputImage)
+            outputImage = try applyBloom(parameters.bloom, to: outputImage)
+            outputImage = try applyDiffusion(recipe.film.diffusion, to: outputImage)
+            outputImage = try applyHalation(recipe.film, intensity: effectIntensity, to: outputImage)
+            outputImage = try applyGrain(parameters.grain, film: recipe.film, to: outputImage)
+            outputImage = try applyDust(parameters.dust, to: outputImage)
+            outputImage = try applyVignette(parameters.vignette, to: outputImage)
+            outputImage = try blend(source: sourceImage, filtered: outputImage, intensity: intensity)
+        }
 
         let extent = outputImage.extent
         guard let cgImage = context.createCGImage(outputImage, from: extent) else {
@@ -65,6 +79,76 @@ nonisolated final class GeneratedFilterPreviewRenderer {
         }
 
         return UIImage(cgImage: cgImage, scale: normalizedImage.scale, orientation: .up)
+    }
+
+    private static func blend(
+        source: CIImage,
+        filtered: CIImage,
+        intensity: Double
+    ) throws -> CIImage {
+        let safeIntensity = min(max(intensity, 0), 1)
+        if safeIntensity >= 0.9999 { return filtered }
+        return try outputImage(named: "CIDissolveTransition", values: [
+            kCIInputImageKey: source,
+            "inputTargetImage": filtered,
+            "inputTime": safeIntensity
+        ]).cropped(to: source.extent)
+    }
+
+    private static func applyInputNormalization(_ strength: Double, to image: CIImage) throws -> CIImage {
+        let safeStrength = min(max(strength, 0), 0.35)
+        guard safeStrength > 0.0001,
+              let averageLuminance = averageLuminance(of: image),
+              averageLuminance > 0.02 else {
+            return image
+        }
+
+        let target: Double
+        if averageLuminance < 0.34 {
+            target = 0.34
+        } else if averageLuminance > 0.66 {
+            target = 0.66
+        } else {
+            return image
+        }
+        let correctionEV = min(max(log2(target / averageLuminance) * safeStrength, -0.18), 0.18)
+        return try applyExposure(correctionEV, to: image)
+    }
+
+    private static func averageLuminance(of image: CIImage) -> Double? {
+        guard let filter = CIFilter(name: "CIAreaAverage") else { return nil }
+        filter.setValue(image, forKey: kCIInputImageKey)
+        filter.setValue(CIVector(cgRect: image.extent), forKey: kCIInputExtentKey)
+        guard let averageImage = filter.outputImage else { return nil }
+
+        var pixel = [UInt8](repeating: 0, count: 4)
+        context.render(
+            averageImage,
+            toBitmap: &pixel,
+            rowBytes: 4,
+            bounds: CGRect(x: 0, y: 0, width: 1, height: 1),
+            format: .RGBA8,
+            colorSpace: sRGBColorSpace
+        )
+        let red = Double(pixel[0]) / 255
+        let green = Double(pixel[1]) / 255
+        let blue = Double(pixel[2]) / 255
+        return red * 0.2126 + green * 0.7152 + blue * 0.0722
+    }
+
+    private static func applyColorTransform(
+        _ transform: GeneratedFilterColorTransform,
+        intensity: Double,
+        to image: CIImage
+    ) throws -> CIImage {
+        let safeStrength = min(max(transform.styleIntensity * intensity, 0), 1)
+        guard safeStrength > 0.0001 else { return image }
+        return try outputImage(named: "CIColorCubeWithColorSpace", values: [
+            kCIInputImageKey: image,
+            "inputCubeDimension": GeneratedFilterColorCubeBuilder.dimension,
+            "inputCubeData": GeneratedFilterColorCubeBuilder.data(transform: transform, intensity: intensity),
+            "inputColorSpace": sRGBColorSpace
+        ]).cropped(to: image.extent)
     }
 
     private static func applyExposure(_ exposure: Double, to image: CIImage) throws -> CIImage {
@@ -133,7 +217,7 @@ nonisolated final class GeneratedFilterPreviewRenderer {
             output = try outputImage(named: "CIHighlightShadowAdjust", values: [
                 kCIInputImageKey: output,
                 "inputHighlightAmount": max(0.7, 1 - highlightRollOff * 0.75),
-                "inputShadowAmount": min(1, shadowLift * 1.8)
+                "inputShadowAmount": min(0.22, shadowLift * 0.55)
             ])
         }
 
@@ -151,21 +235,96 @@ nonisolated final class GeneratedFilterPreviewRenderer {
         ]).cropped(to: image.extent)
     }
 
-    private static func applyGrain(_ grain: Double, to image: CIImage) throws -> CIImage {
+    private static func applyDiffusion(_ diffusion: Double, to image: CIImage) throws -> CIImage {
+        let safeDiffusion = min(max(diffusion, 0), 0.25)
+        guard safeDiffusion > 0.0001 else { return image }
+
+        let blurred = try outputImage(named: "CIGaussianBlur", values: [
+            kCIInputImageKey: image,
+            kCIInputRadiusKey: 1.2 + safeDiffusion * 18
+        ]).cropped(to: image.extent)
+        let translucentBlur = try applyingOpacity(min(safeDiffusion * 0.72, 0.18), to: blurred)
+        return try outputImage(named: "CISourceOverCompositing", values: [
+            kCIInputImageKey: translucentBlur,
+            kCIInputBackgroundImageKey: image
+        ]).cropped(to: image.extent)
+    }
+
+    private static func applyHalation(
+        _ film: GeneratedFilmParameterSet,
+        intensity: Double,
+        to image: CIImage
+    ) throws -> CIImage {
+        let strength = min(max(film.halationStrength * intensity, 0), 0.25)
+        guard strength > 0.0001 else { return image }
+
+        let luminance = try outputImage(named: "CIColorMatrix", values: [
+            kCIInputImageKey: image,
+            "inputRVector": CIVector(x: 0.2126, y: 0.7152, z: 0.0722, w: 0),
+            "inputGVector": CIVector(x: 0.2126, y: 0.7152, z: 0.0722, w: 0),
+            "inputBVector": CIVector(x: 0.2126, y: 0.7152, z: 0.0722, w: 0),
+            "inputAVector": CIVector(x: 0, y: 0, z: 0, w: 1),
+            "inputBiasVector": CIVector(x: 0, y: 0, z: 0, w: 0)
+        ]).cropped(to: image.extent)
+        let highlightIsolation = try outputImage(named: "CIColorMatrix", values: [
+            kCIInputImageKey: luminance,
+            "inputRVector": CIVector(x: 5, y: 0, z: 0, w: 0),
+            "inputGVector": CIVector(x: 0, y: 5, z: 0, w: 0),
+            "inputBVector": CIVector(x: 0, y: 0, z: 5, w: 0),
+            "inputAVector": CIVector(x: 0, y: 0, z: 0, w: 1),
+            "inputBiasVector": CIVector(x: -4, y: -4, z: -4, w: 0)
+        ]).cropped(to: image.extent)
+        let clampedHighlights = try outputImage(named: "CIColorClamp", values: [
+            kCIInputImageKey: highlightIsolation,
+            "inputMinComponents": CIVector(x: 0, y: 0, z: 0, w: 0),
+            "inputMaxComponents": CIVector(x: 1, y: 1, z: 1, w: 1)
+        ]).cropped(to: image.extent)
+        let warmth = min(max(film.halationWarmth, 0), 1)
+        let warmHighlights = try outputImage(named: "CIColorMatrix", values: [
+            kCIInputImageKey: clampedHighlights,
+            "inputRVector": CIVector(x: 1, y: 0, z: 0, w: 0),
+            "inputGVector": CIVector(x: 0, y: CGFloat(1 - warmth * 0.36), z: 0, w: 0),
+            "inputBVector": CIVector(x: 0, y: 0, z: CGFloat(1 - warmth * 0.78), w: 0),
+            "inputAVector": CIVector(x: 0, y: 0, z: 0, w: 1),
+            "inputBiasVector": CIVector(x: 0, y: 0, z: 0, w: 0)
+        ])
+        let blurredHalo = try outputImage(named: "CIGaussianBlur", values: [
+            kCIInputImageKey: warmHighlights,
+            kCIInputRadiusKey: min(max(film.halationRadius, 2), 24)
+        ]).cropped(to: image.extent)
+        let translucentHalo = try applyingOpacity(min(strength * 1.15, 0.25), to: blurredHalo)
+        return try outputImage(named: "CIScreenBlendMode", values: [
+            kCIInputImageKey: translucentHalo,
+            kCIInputBackgroundImageKey: image
+        ]).cropped(to: image.extent)
+    }
+
+    private static func applyGrain(
+        _ grain: Double,
+        film: GeneratedFilmParameterSet,
+        to image: CIImage
+    ) throws -> CIImage {
         let safeGrain = min(max(grain, 0), 0.35)
         guard safeGrain > 0 else { return image }
         guard let randomNoise = CIFilter(name: "CIRandomGenerator")?.outputImage else {
             throw GeneratedFilterPreviewError.renderFailed
         }
 
-        let monochromeNoise = try outputImage(named: "CIColorControls", values: [
+        var shapedNoise = try outputImage(named: "CIColorControls", values: [
             kCIInputImageKey: randomNoise,
             kCIInputSaturationKey: 0,
-            kCIInputContrastKey: 1.4
+            kCIInputContrastKey: 1.15 + min(max(film.grainRoughness, 0), 1) * 0.85
         ])
+        let grainBlurRadius = max(0, (min(max(film.grainSize, 0.6), 2.2) - 0.6) * 0.55)
+        if grainBlurRadius > 0.001 {
+            shapedNoise = try outputImage(named: "CIGaussianBlur", values: [
+                kCIInputImageKey: shapedNoise,
+                kCIInputRadiusKey: grainBlurRadius
+            ])
+        }
         let opacity = min(safeGrain * 0.5, 0.18)
         let translucentNoise = try outputImage(named: "CIColorMatrix", values: [
-            kCIInputImageKey: monochromeNoise,
+            kCIInputImageKey: shapedNoise,
             "inputRVector": CIVector(x: 1, y: 0, z: 0, w: 0),
             "inputGVector": CIVector(x: 0, y: 1, z: 0, w: 0),
             "inputBVector": CIVector(x: 0, y: 0, z: 1, w: 0),
@@ -173,9 +332,45 @@ nonisolated final class GeneratedFilterPreviewRenderer {
             "inputBiasVector": CIVector(x: 0, y: 0, z: 0, w: 0)
         ]).cropped(to: image.extent)
 
-        return try outputImage(named: "CISoftLightBlendMode", values: [
+        let grainComposite = try outputImage(named: "CISoftLightBlendMode", values: [
             kCIInputImageKey: translucentNoise,
             kCIInputBackgroundImageKey: image
+        ]).cropped(to: image.extent)
+
+        let response = min(max(film.grainLumaResponse, -1), 1)
+        guard abs(response) > 0.001 else { return grainComposite }
+        let coefficient: Double
+        let bias: Double
+        if response > 0 {
+            coefficient = -0.65 * response
+            bias = 1
+        } else {
+            coefficient = -0.65 * response
+            bias = 1 + 0.65 * response
+        }
+        let mask = try luminanceMask(image, coefficient: coefficient, bias: bias)
+        return try outputImage(named: "CIBlendWithMask", values: [
+            kCIInputImageKey: grainComposite,
+            kCIInputBackgroundImageKey: image,
+            kCIInputMaskImageKey: mask
+        ]).cropped(to: image.extent)
+    }
+
+    private static func luminanceMask(
+        _ image: CIImage,
+        coefficient: Double,
+        bias: Double
+    ) throws -> CIImage {
+        let red = 0.2126 * coefficient
+        let green = 0.7152 * coefficient
+        let blue = 0.0722 * coefficient
+        return try outputImage(named: "CIColorMatrix", values: [
+            kCIInputImageKey: image,
+            "inputRVector": CIVector(x: CGFloat(red), y: CGFloat(green), z: CGFloat(blue), w: 0),
+            "inputGVector": CIVector(x: CGFloat(red), y: CGFloat(green), z: CGFloat(blue), w: 0),
+            "inputBVector": CIVector(x: CGFloat(red), y: CGFloat(green), z: CGFloat(blue), w: 0),
+            "inputAVector": CIVector(x: 0, y: 0, z: 0, w: 1),
+            "inputBiasVector": CIVector(x: CGFloat(bias), y: CGFloat(bias), z: CGFloat(bias), w: 0)
         ]).cropped(to: image.extent)
     }
 

@@ -80,6 +80,8 @@
 "filter_lab.recommended_use" = "推薦用途";
 "filter_lab.parameters" = "濾鏡參數";
 "filter_lab.parameters.summary" = "曝光 %.2f · 對比 %.2f · 飽和 %.2f · 色溫 %.2f · 色偏 %.2f · 褪色 %.2f · 陰影提亮 %.2f · 高光柔化 %.2f · 光暈 %.2f · 顆粒 %.2f · 塵點 %.2f · 暗角 %.2f";
+"filter_lab.color_transform.summary" = "本機明暗標準化 %.0f%% · 曲線／LUT 色彩映射 %.0f%%";
+"filter_lab.film.summary" = "顆粒大小 %.2f · 粗糙度 %.2f · 明暗反應 %.2f · 暖色暈光 %.2f／%.0f px · 暖度 %.2f · 柔焦 %.2f";
 "filter_lab.action.apply" = "套用生成濾鏡";
 "filter_lab.action.save_filtered" = "儲存套用後照片";
 "filter_lab.action.try_another" = "重新選擇圖片";

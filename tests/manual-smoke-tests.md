@@ -4915,6 +4915,47 @@ Backend-only verification:
 - [x] Confirm Camera remains local-only, default/production remains mock/local, and `productionReady:false` remains unchanged.
 - [ ] Re-test on the physical iPhone with the operator's target/original pair and long-press-save the after image for visual comparison.
 
+## PT2-SF-R9-R16 - Filter Lab Recipe v2
+
+Backend and Mac/Xcode physical-device verification:
+
+- [x] Confirm the strict backend schema/validator requires recipe `2.0`, fixed five-point curves, exact basis-weight keys, and bounded film values.
+- [x] Confirm raw LUT data/URLs, arbitrary renderer names, shader/code fields, and malformed/non-monotonic curves are rejected.
+- [x] Confirm zero-sum basis weights fall back to neutral and other accepted weights are normalized.
+- [x] Confirm sanitized artifacts include only normalized v2 recipe fields plus safe metadata/privacy buckets.
+- [x] Confirm backend/iOS source-contract, provider-boundary, artifact, fidelity, and QA tests pass 93/93.
+- [x] Restart the backend with the external/untracked Luna key and confirm localhost/LAN health report Filter Lab ready with `productionReady:false`.
+- [x] Run one bounded target-only request and accept strict recipe `2.0` in one attempt with a v2 sanitized artifact and all privacy flags false.
+- [ ] Pull the phase on the MacBook, open `ios-app/AIPhotoApp.xcodeproj`, and build the DEBUG app without Swift or Core Image errors.
+- [ ] Generate the same target/reference and original/apply pair; confirm recipe `2.0` is accepted without local fallback.
+- [ ] Save `0%`, `50%`, and `100%` via long press; confirm 0% matches the original and 50% is visibly between original and full effect.
+- [ ] Confirm deep blacks remain separated, warm red/brown colour remains targeted, and the blue/cyan wall is not turned into a global pale cast.
+- [ ] Confirm halation stays around bright highlights instead of lifting the entire frame.
+- [ ] Confirm grain size, roughness, and luminance response change texture independently and do not add coloured noise.
+- [ ] Repeat preview/intensity changes for 10 minutes; confirm the 1600-pixel bound remains active and memory stays stable.
+- [ ] Confirm only the target/reference image is uploaded; apply/original and the generated 17-cube remain local.
+- [ ] Confirm no raw image/base64/prompt/request/provider response/error text, Authorization header, or key appears in logs/artifacts.
+- [ ] Confirm no iOS provider key/direct call/SDK, Camera cloud entry, default cloud rollout, or `productionReady:true` appears.
+
+## PT2-SF-R9-R15-X2 - Luna Real-reference Fidelity Correction
+
+Backend and Xcode verification:
+
+- [x] Confirm the first real-reference result has an over-lifted q10 black level and reduced contrast spread relative to the target photograph region.
+- [x] Confirm the saved pre-fix recipe combined negative contrast, fade, and shadow lift.
+- [x] Exclude white settings/share UI, QR codes, controls, borders, and captions from photographic tone/color estimates.
+- [x] Keep Filter Lab image detail high while Photo Advisor remains low.
+- [x] Reduce iOS `inputShadowAmount` mapping from `shadowLift * 1.8` to bounded `shadowLift * 0.55`.
+- [x] Run two zero-retry target-only Luna calls; safely reject the first array-type mismatch and accept the second strict recipe `1.1` result.
+- [x] Confirm the accepted recipe reduces fade to `0.06`, shadow lift to `0.04`, and restores contrast to `0.01`.
+- [x] Confirm full backend suite passes 425/425 and LAN health remains Luna ready with `productionReady:false`.
+- [ ] Update the Mac clone, build the changed iOS renderer, and run on the physical iPhone.
+- [ ] Use the same target screenshot and original photo at 100% intensity.
+- [ ] Confirm blacks remain substantially deeper, tonal separation returns, and the white haze is reduced.
+- [ ] Long-press-save the new after image and return it for comparison.
+- [ ] Confirm only the target reference is uploaded; the original/apply image remains local.
+- [ ] Confirm no iOS provider key/direct call, Camera cloud entry, raw artifact leakage, or production rollout appears.
+
 ## PT2-SF-R9-R13 - Filter Lab Recipe Fidelity Calibration
 
 Mac/Xcode physical-device verification:

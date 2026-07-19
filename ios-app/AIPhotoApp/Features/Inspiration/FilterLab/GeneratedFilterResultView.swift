@@ -190,6 +190,16 @@ struct GeneratedFilterResultView: View {
                 .font(AppTypography.caption)
                 .foregroundStyle(AppColors.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)
+
+            Text(colorTransformSummaryText)
+                .font(AppTypography.caption)
+                .foregroundStyle(AppColors.textSecondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Text(filmSummaryText)
+                .font(AppTypography.caption)
+                .foregroundStyle(AppColors.textSecondary)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -222,6 +232,29 @@ struct GeneratedFilterResultView: View {
             params.grain,
             params.dust,
             params.vignette
+        )
+    }
+
+    private var colorTransformSummaryText: String {
+        let transform = recipe.colorTransform
+        return String(
+            format: NSLocalizedString("filter_lab.color_transform.summary", comment: ""),
+            transform.inputNormalizationStrength * 100,
+            transform.styleIntensity * 100
+        )
+    }
+
+    private var filmSummaryText: String {
+        let film = recipe.film
+        return String(
+            format: NSLocalizedString("filter_lab.film.summary", comment: ""),
+            film.grainSize,
+            film.grainRoughness,
+            film.grainLumaResponse,
+            film.halationStrength,
+            film.halationRadius,
+            film.halationWarmth,
+            film.diffusion
         )
     }
 }
