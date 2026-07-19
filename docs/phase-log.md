@@ -8,9 +8,70 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: PT2-SF-R9-R16 - Filter Lab Recipe v2
-Status: backend and iOS implementation complete; automated and bounded live-provider verification passed; Mac/Xcode physical-device visual verification pending
-Latest implementation: PT2-SF-R9-R16 keeps the original twelve controls as bounded fine adjustments and adds safe five-point luma/R/G/B curves, a deterministic app-owned basis colour cube, local source normalization, advanced grain response, warm highlight halation, and diffusion. User intensity now blends the untouched source with the complete result. Backend-generated recipes are strict `2.0`; iOS accepts historical `1.1` with identity v2 values. A bounded target-only Luna check accepted strict v2 in one attempt, localhost/LAN are ready, the backend still receives one style/reference image only, apply/original and rendering stay local, and `productionReady:false` remains locked.
+Current phase: PT2-SF-R9-R16-R1 - Recipe v2 compound black-floor correction
+Status: backend and iOS implementation complete; automated, saved-recipe regression, and bounded live-provider verification passed; Mac/Xcode physical-device visual verification pending
+Latest implementation: PT2-SF-R9-R16-R1 treats the operator-confirmed 100% washed result as a compound-control failure rather than a slider-strength issue. The backend and iOS now require exact `0/1` R/G/B curve endpoints and enforce one shared black-floor budget across the luma black point, fade, shadow lift, and negative contrast. The saved real v2 recipe is corrected deterministically while preserving warmth/saturation intent. The backend still receives one style/reference image only, apply/original and rendering stay local, and `productionReady:false` remains locked.
+
+## PT2-SF-R9-R16-R1 - Recipe v2 Compound Black-Floor Correction
+
+Status: implemented; automated, saved-recipe regression, and bounded live-provider verification passed; Mac/Xcode physical-device visual verification pending
+Date: 2026-07-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+The operator confirmed that the newest returned comparison was rendered at 100% intensity. Compared with the target photograph region, R16 was much closer in warm colour direction and contrast spread than R15, but its black floor and midtones remained visibly too bright. The cause was deterministic: luma/R/G/B black endpoints, fade, shadow lift, and negative contrast could all lift blacks in sequence.
+
+### Completed Work
+
+- Added one shared backend/iOS compound black-floor formula covering luma black point, fade, shadow lift, and negative contrast.
+- Gave black/white endpoint ownership to the luma curve and required exact `0/1` endpoints for R/G/B channel curves.
+- Added backend normalization that neutralizes compounding negative contrast first, then proportionally scales fade/shadow lift to the safe budget.
+- Added iOS defense-in-depth normalization plus cloud-response rejection for unsafe unnormalized v2 recipes.
+- Preserved temperature, tint, saturation, curve midpoints, basis-look weights, and film-texture intent.
+- Updated the Luna prompt/example and local mock fallback to generate within the new contract.
+- Added a regression using the saved sanitized real recipe that produced the operator's 100% result.
+
+### Changed Files
+
+- Backend contract/provider: `backend/src/providers/generatedFilterRecipeContract.mjs`, `backend/src/providers/XiaoyiLunaRelayProvider.mjs`
+- Backend tests: `backend/tests/filter-lab-recipe-fidelity.test.mjs`, `backend/tests/cloud-ai-boundary.test.mjs`
+- iOS validation/fallback: `FilterRecipeValidator.swift`, `CloudAIResponseValidator.swift`, `GeneratedFilterRecipe.swift`
+- Docs/tests: root/backend/iOS READMEs, image-pipeline notes, this phase report, phase log, and manual smoke tests
+
+### Verification
+
+- Focused Recipe/provider/artifact/QA tests: 94 passed, 0 failed.
+- Full backend regression suite: 428 passed, 0 failed.
+- Saved real v2 recipe before normalization: `contrast:-0.03`, `fade:0.07`, `shadowLift:0.05`, and non-identity channel endpoints.
+- After normalization: `contrast:0`, `fade:0.048837`, `shadowLift:0.034884`, exact RGB endpoints, and total black-floor contribution `0.035`.
+- Temperature `0.18` and saturation `0.06` are preserved.
+- Provider calls for saved-recipe regression: zero; raw image read: no.
+- Bounded target-only Luna request: cloud Recipe `2.0` in one provider attempt; `contrast:0.06`, `fade:0.04`, `shadowLift:0.02`, exact R/G/B `0/1` endpoints, and compound black floor `0.0204` against budget `0.035`.
+- Live sanitized artifact: `filter_lab_sanitized_analysis.v2`; `single_attempt`; eight weights summing to `1`; seven privacy flags all false; `productionReady:false`; ignored by Git.
+- Runtime health: localhost and `192.168.68.60:8787` reachable in `xiaoyiLunaInternal`; Filter Lab ready; `productionReady:false`.
+- `git diff --check`: passed with Windows line-ending warnings only.
+- Mac/Xcode Swift build: unavailable on this Windows host; physical-device build pending.
+
+### Known TODOs
+
+- Pull/build on the MacBook and retest the same target/original at 100%.
+- Long-press-save the corrected result for visual comparison.
+- Complete the existing 0/50/100 and ten-minute memory checks.
+
+### Boundary Confirmations
+
+- Backend input remains one style/reference image: yes.
+- Apply/original image and all rendering stay local: yes.
+- Raw prompt/request/provider response/image/base64/key persisted: no.
+- Direct iOS provider URL/key/SDK/call: no.
+- Camera cloud AI entry: no.
+- Default/production cloud rollout: no.
+- `productionReady:false` remains locked.
+
+### Ready for Next Step
+
+Backend restarted and bounded target-only live verification passed: yes. Ready for Mac/Xcode visual retest: yes. Ready for production rollout: no.
 
 ## PT2-SF-R9-R16 - Filter Lab Recipe v2
 

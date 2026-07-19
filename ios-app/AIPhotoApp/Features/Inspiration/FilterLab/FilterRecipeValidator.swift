@@ -3,11 +3,24 @@ import Foundation
 nonisolated enum FilterRecipeValidator {
     private static let identityCurve = [0.0, 0.25, 0.5, 0.75, 1.0]
     private static let supportedVersions: Set<String> = ["1.1", "2.0"]
+    private static let minimumBlackFloorBudget = 0.035
+    private static let maximumLumaBlackPoint = 0.08
+    private static let fadeBlackLiftContribution = 0.15
+    private static let shadowBlackLiftContribution = 0.22
+    private static let negativeContrastBlackLiftContribution = 0.35
 
     static func validated(_ recipe: GeneratedFilterRecipe) -> GeneratedFilterRecipe {
         let fallback = GeneratedFilterRecipe.mockFallback
         let safeVersion = supportedVersions.contains(recipe.recipeVersion) ? recipe.recipeVersion : fallback.recipeVersion
         let isLegacy = safeVersion == "1.1"
+        let safeColorTransform = isLegacy ? GeneratedFilterColorTransform.identity : validated(recipe.colorTransform)
+        var safeParameters = validated(recipe.parameters, fallback: fallback.parameters)
+        if !isLegacy {
+            safeParameters = normalizedBlackFloor(
+                safeParameters,
+                lumaBlackPoint: safeColorTransform.lumaCurve[0]
+            )
+        }
 
         return GeneratedFilterRecipe(
             id: recipe.id.isEmpty ? fallback.id : recipe.id,
@@ -16,8 +29,8 @@ nonisolated enum FilterRecipeValidator {
             source: recipe.source,
             confidence: clamp(recipe.confidence, to: 0...1, fallback: fallback.confidence),
             recommendedUseKeys: recipe.recommendedUseKeys.isEmpty ? fallback.recommendedUseKeys : recipe.recommendedUseKeys,
-            parameters: validated(recipe.parameters, fallback: fallback.parameters),
-            colorTransform: isLegacy ? .identity : validated(recipe.colorTransform),
+            parameters: safeParameters,
+            colorTransform: safeColorTransform,
             film: isLegacy ? .identity : validated(recipe.film),
             warningsKeys: recipe.warningsKeys,
             recipeVersion: safeVersion
@@ -48,10 +61,10 @@ nonisolated enum FilterRecipeValidator {
         GeneratedFilterColorTransform(
             inputNormalizationStrength: clamp(transform.inputNormalizationStrength, to: 0...0.35, fallback: 0),
             styleIntensity: clamp(transform.styleIntensity, to: 0...1, fallback: 0),
-            lumaCurve: validatedCurve(transform.lumaCurve),
-            redCurve: validatedCurve(transform.redCurve),
-            greenCurve: validatedCurve(transform.greenCurve),
-            blueCurve: validatedCurve(transform.blueCurve),
+            lumaCurve: validatedLumaCurve(transform.lumaCurve),
+            redCurve: validatedChannelCurve(transform.redCurve),
+            greenCurve: validatedChannelCurve(transform.greenCurve),
+            blueCurve: validatedChannelCurve(transform.blueCurve),
             basisLUTWeights: validated(transform.basisLUTWeights)
         )
     }
@@ -68,19 +81,67 @@ nonisolated enum FilterRecipeValidator {
         )
     }
 
-    private static func validatedCurve(_ values: [Double]) -> [Double] {
+    private static func validatedLumaCurve(_ values: [Double]) -> [Double] {
+        validatedCurve(values, preservesEndpoints: false)
+    }
+
+    private static func validatedChannelCurve(_ values: [Double]) -> [Double] {
+        validatedCurve(values, preservesEndpoints: true)
+    }
+
+    private static func validatedCurve(_ values: [Double], preservesEndpoints: Bool) -> [Double] {
         guard values.count == identityCurve.count else { return identityCurve }
         var result: [Double] = []
         for (index, value) in values.enumerated() {
             let identity = identityCurve[index]
             let localRange = max(0, identity - 0.18)...min(1, identity + 0.18)
             var next = clamp(value, to: localRange, fallback: identity)
-            if index == 0 { next = min(next, 0.12) }
-            if index == identityCurve.count - 1 { next = max(next, 0.88) }
+            if preservesEndpoints {
+                if index == 0 { next = 0 }
+                if index == identityCurve.count - 1 { next = 1 }
+            } else {
+                if index == 0 { next = min(next, maximumLumaBlackPoint) }
+                if index == identityCurve.count - 1 { next = max(next, 0.92) }
+            }
             if let previous = result.last { next = max(previous, next) }
             result.append(next)
         }
         return result
+    }
+
+    private static func normalizedBlackFloor(
+        _ parameters: GeneratedFilterParameterSet,
+        lumaBlackPoint: Double
+    ) -> GeneratedFilterParameterSet {
+        var safe = parameters
+        let totalBudget = max(minimumBlackFloorBudget, lumaBlackPoint)
+        var remainingBudget = max(0, totalBudget - lumaBlackPoint)
+        let fadeLift = safe.fade * fadeBlackLiftContribution
+        let shadowLift = safe.shadowLift * shadowBlackLiftContribution
+        let negativeContrastLift = max(-safe.contrast, 0) * negativeContrastBlackLiftContribution
+        let hasSeparateLift = fadeLift + shadowLift > 0.000001
+
+        guard fadeLift + shadowLift + negativeContrastLift > remainingBudget + 0.000001 else {
+            return safe
+        }
+
+        if safe.contrast < 0, hasSeparateLift {
+            safe.contrast = 0
+        } else if negativeContrastLift > remainingBudget {
+            safe.contrast = -remainingBudget / negativeContrastBlackLiftContribution
+            remainingBudget = 0
+        } else {
+            remainingBudget -= negativeContrastLift
+        }
+
+        let separateLift = fadeLift + shadowLift
+        if separateLift > remainingBudget + 0.000001 {
+            let scale = separateLift > 0 ? remainingBudget / separateLift : 0
+            safe.fade *= scale
+            safe.shadowLift *= scale
+        }
+
+        return safe
     }
 
     private static func validated(_ weights: GeneratedFilterBasisLUTWeights) -> GeneratedFilterBasisLUTWeights {

@@ -4915,6 +4915,27 @@ Backend-only verification:
 - [x] Confirm Camera remains local-only, default/production remains mock/local, and `productionReady:false` remains unchanged.
 - [ ] Re-test on the physical iPhone with the operator's target/original pair and long-press-save the after image for visual comparison.
 
+## PT2-SF-R9-R16-R1 - Recipe v2 Compound Black-Floor Correction
+
+Backend and Mac/Xcode physical-device verification:
+
+- [x] Confirm the operator's newest supplied result represents Recipe v2 at 100% intensity.
+- [x] Regress the saved real v2 recipe without reading or uploading a raw image or making a provider call.
+- [x] Confirm R/G/B channel curves require exact black/white endpoints `0/1`, while the luma curve retains bounded endpoint ownership.
+- [x] Confirm backend normalization and iOS validation use the same black-floor budget formula.
+- [x] Confirm the saved recipe normalizes from negative contrast plus `fade:0.07` / `shadowLift:0.05` to `contrast:0`, `fade:0.048837`, and `shadowLift:0.034884`.
+- [x] Confirm temperature/saturation intent and curve midpoints remain intact.
+- [x] Confirm focused tests pass 94/94 and the full backend suite passes 428/428.
+- [x] Restart backend and run one bounded target-only Luna request; the single-attempt recipe has compound black floor `0.0204` against budget `0.035` and writes only an ignored sanitized v2 artifact with all privacy flags false.
+- [ ] Pull the changes on the MacBook and build `ios-app/AIPhotoApp.xcodeproj` without Swift/Core Image errors.
+- [ ] Generate with the same target/reference and original/apply pair at 100%; confirm the corrected result is not globally gray/washed.
+- [ ] Confirm the cat's dark fur and hanging dark fabric retain clear black separation without crushing detail.
+- [ ] Confirm warm red/brown target direction remains visible without turning the blue/cyan wall into a global warm cast.
+- [ ] Long-press-save the corrected 100% result and return it for measured/visual comparison.
+- [ ] Recheck 0% and 50%; confirm 0% matches source and 50% remains a true midpoint.
+- [ ] Confirm only the target/reference is uploaded; apply/original stays local and no raw artifacts, iOS provider key/direct call, Camera cloud entry, or production rollout appears.
+- [ ] Confirm `productionReady:false` remains unchanged.
+
 ## PT2-SF-R9-R16 - Filter Lab Recipe v2
 
 Backend and Mac/Xcode physical-device verification:

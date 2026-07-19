@@ -77,8 +77,11 @@ test("Filter Lab prompt separates scene content from reusable filter evidence wi
   assert.match(prompt, /First locate the actual photograph region/i);
   assert.match(prompt, /exclude white settings panels/i);
   assert.match(prompt, /bright wall, flash-lit subject, pale background/i);
-  assert.match(prompt, /Fade, shadowLift, and negative contrast compound/i);
-  assert.match(prompt, /fade at or below 0\.10, shadowLift at or below 0\.08/i);
+  assert.match(prompt, /Fade, shadowLift, lumaCurve black lift, and negative contrast compound/i);
+  assert.match(prompt, /one black-floor budget/i);
+  assert.match(prompt, /lumaBlack \+ fade\*0\.15 \+ shadowLift\*0\.22/i);
+  assert.match(prompt, /fade at or below 0\.05, shadowLift at or below 0\.035/i);
+  assert.match(prompt, /RGB channel-curve black endpoint to exactly 0/i);
   assert.match(prompt, /wash them to mid-gray/i);
   assert.match(prompt, /scene lighting and filter evidence conflict/i);
   assert.match(prompt, /Do not choose a preset family first/i);
@@ -154,6 +157,54 @@ test("Filter Lab recipe validator clamps curves and normalizes only fixed safe L
   assert.equal(Object.values(validation.value.colorTransform.basisLUTWeights).every((value) => value === 0.125), true);
   assert.equal(validation.clampedFields.includes("colorTransform.lumaCurve"), true);
   assert.equal(validation.clampedFields.includes("colorTransform.basisLUTWeights"), true);
+});
+
+test("Filter Lab recipe validator prevents compound black-floor lift without changing the warm style direction", () => {
+  const candidate = generatedFilterRecipeExampleCandidate();
+  candidate.parameters = {
+    ...candidate.parameters,
+    contrast: -0.03,
+    saturation: 0.06,
+    temperature: 0.18,
+    fade: 0.07,
+    shadowLift: 0.05
+  };
+  candidate.colorTransform = {
+    ...candidate.colorTransform,
+    styleIntensity: 0.82,
+    lumaCurve: [0.02, 0.24, 0.5, 0.77, 0.98],
+    redCurve: [0.03, 0.27, 0.53, 0.78, 0.98],
+    greenCurve: [0.02, 0.25, 0.51, 0.76, 0.97],
+    blueCurve: [0.02, 0.24, 0.48, 0.72, 0.95]
+  };
+
+  const validation = validateGeneratedFilterRecipeCandidate(candidate);
+
+  assert.equal(validation.ok, true);
+  assert.equal(validation.value.parameters.contrast, 0);
+  assert.equal(validation.value.parameters.fade < 0.05, true);
+  assert.equal(validation.value.parameters.shadowLift < 0.035, true);
+  assert.equal(validation.value.parameters.temperature, 0.18);
+  assert.equal(validation.value.parameters.saturation, 0.06);
+  for (const key of ["redCurve", "greenCurve", "blueCurve"]) {
+    assert.equal(validation.value.colorTransform[key][0], 0);
+    assert.equal(validation.value.colorTransform[key][4], 1);
+  }
+  const blackFloorLift = validation.value.colorTransform.lumaCurve[0]
+    + validation.value.parameters.fade * 0.15
+    + validation.value.parameters.shadowLift * 0.22
+    + Math.max(-validation.value.parameters.contrast, 0) * 0.35;
+  assert.equal(blackFloorLift <= 0.035001, true);
+  for (const field of [
+    "parameters.contrast",
+    "parameters.fade",
+    "parameters.shadowLift",
+    "colorTransform.redCurve",
+    "colorTransform.greenCurve",
+    "colorTransform.blueCurve"
+  ]) {
+    assert.equal(validation.clampedFields.includes(field), true);
+  }
 });
 
 test("Filter Lab recipe validator rejects raw LUT fields and malformed curve arrays", () => {
@@ -245,6 +296,9 @@ test("Filter Lab recipe 2.0 remains aligned across backend, iOS decoding, valida
   const parameterKeys = generatedFilterRecipeJSONSchema().properties.parameters.required;
 
   assert.match(cloudValidator, /recipeVersion == "1\.1" \|\| recipeVersion == "2\.0"/);
+  assert.match(cloudValidator, /hasSafeV2BlackFloorBudget/);
+  assert.match(cloudValidator, /isSafeGeneratedFilterChannelCurve/);
+  assert.match(colorTransformModel, /redCurve: \[Double\]/);
   for (const key of parameterKeys) {
     assert.match(parameterSet, new RegExp(`var ${key}: Double`));
     assert.match(cloudModels, new RegExp(`let ${key}: Double`));

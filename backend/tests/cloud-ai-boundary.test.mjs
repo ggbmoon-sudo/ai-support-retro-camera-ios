@@ -695,10 +695,11 @@ test("xiaoyi provider uses gpt-5.6-luna for generated Filter Lab recipes", async
   assert.equal(capturedRequest.messages[1].content[0].text.includes("recommendedUseKeys must be a JSON array"), true);
   assert.equal(capturedRequest.messages[1].content[0].text.includes("warningsKeys must be the JSON array"), true);
   assert.equal(capturedRequest.messages[1].content[0].text.includes("lumaCurve, redCurve, greenCurve, and blueCurve"), true);
+  assert.equal(capturedRequest.messages[1].content[0].text.includes("first and last numbers of redCurve"), true);
   assert.equal(capturedRequest.messages[1].content[0].text.includes("basisLUTWeights must be one JSON object"), true);
   assert.equal(capturedRequest.messages[1].content[0].text.includes("Do not add, rename, omit, or change the type"), true);
   assert.equal(capturedRequest.messages[1].content[0].text.includes("exclude white settings panels"), true);
-  assert.equal(capturedRequest.messages[1].content[0].text.includes("Fade, shadowLift, and negative contrast compound"), true);
+  assert.equal(capturedRequest.messages[1].content[0].text.includes("one black-floor budget"), true);
   assert.equal(capturedRequest.messages[1].content[0].text.includes("Renderer calibration anchors"), true);
   assert.equal(capturedRequest.messages[1].content[1].image_url.url, "data:image/jpeg;base64,/9j/");
   assert.equal(capturedRequest.messages[1].content[1].image_url.detail, "high");

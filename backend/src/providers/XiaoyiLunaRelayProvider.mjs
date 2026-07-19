@@ -79,6 +79,7 @@ export class XiaoyiLunaRelayProvider extends CloudAIProvider {
         "id, nameKey, descriptionKey, source, recipeVersion, and localization array items must be JSON strings. confidence, parameters, curves, LUT weights, and film fields must be JSON numbers.",
         "recommendedUseKeys must be a JSON array containing 1 to 3 allowed string values, never a single string or object. warningsKeys must be the JSON array [\"filter_lab.warning.session_only\"].",
         "lumaCurve, redCurve, greenCurve, and blueCurve must each be JSON arrays containing exactly five numbers. basisLUTWeights must be one JSON object containing all eight required numeric fields.",
+        "Set the first and last numbers of redCurve, greenCurve, and blueCurve to exactly 0 and 1. Only lumaCurve may use non-identity endpoints.",
         "Do not add, rename, omit, or change the type of any required field.",
         buildGeneratedFilterRecipeSchemaPrompt(),
         buildGeneratedFilterRecipeStyleGuidancePrompt(),

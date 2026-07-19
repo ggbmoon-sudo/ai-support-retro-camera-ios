@@ -171,7 +171,9 @@ private extension CloudAIGeneratedFilter {
         guard legacyParametersAreSafe else { return false }
         guard recipeVersion == "2.0" else { return true }
         guard let colorTransform, let film else { return false }
-        return colorTransform.isSafe && film.isSafe
+        return colorTransform.isSafe
+            && film.isSafe
+            && parameters.hasSafeV2BlackFloorBudget(lumaBlackPoint: colorTransform.lumaCurve[0])
     }
 }
 
@@ -179,10 +181,10 @@ private extension CloudAIGeneratedFilterColorTransform {
     var isSafe: Bool {
         guard (0.0...0.35).contains(inputNormalizationStrength),
               (0.0...1.0).contains(styleIntensity),
-              lumaCurve.isSafeGeneratedFilterCurve,
-              redCurve.isSafeGeneratedFilterCurve,
-              greenCurve.isSafeGeneratedFilterCurve,
-              blueCurve.isSafeGeneratedFilterCurve else {
+              lumaCurve.isSafeGeneratedFilterLumaCurve,
+              redCurve.isSafeGeneratedFilterChannelCurve,
+              greenCurve.isSafeGeneratedFilterChannelCurve,
+              blueCurve.isSafeGeneratedFilterChannelCurve else {
             return false
         }
 
@@ -190,6 +192,17 @@ private extension CloudAIGeneratedFilterColorTransform {
         let sum = weights.reduce(0, +)
         return weights.allSatisfy { $0.isFinite && (0.0...1.0).contains($0) }
             && abs(sum - 1) <= 0.001
+    }
+}
+
+private extension CloudAIGeneratedFilterParameters {
+    func hasSafeV2BlackFloorBudget(lumaBlackPoint: Double) -> Bool {
+        let budget = max(0.035, lumaBlackPoint)
+        let combinedLift = lumaBlackPoint
+            + fade * 0.15
+            + shadowLift * 0.22
+            + max(-contrast, 0) * 0.35
+        return combinedLift <= budget + 0.000001
     }
 }
 
@@ -212,7 +225,19 @@ private extension CloudAIGeneratedFilterFilm {
 }
 
 private extension Array where Element == Double {
-    var isSafeGeneratedFilterCurve: Bool {
+    var isSafeGeneratedFilterLumaCurve: Bool {
+        isSafeGeneratedFilterCurveShape
+            && self[0] <= 0.08
+            && self[count - 1] >= 0.92
+    }
+
+    var isSafeGeneratedFilterChannelCurve: Bool {
+        isSafeGeneratedFilterCurveShape
+            && abs(self[0]) <= 0.000001
+            && abs(self[count - 1] - 1) <= 0.000001
+    }
+
+    private var isSafeGeneratedFilterCurveShape: Bool {
         let identity = [0.0, 0.25, 0.5, 0.75, 1.0]
         guard count == identity.count else { return false }
         for index in indices {
@@ -225,6 +250,6 @@ private extension Array where Element == Double {
                 return false
             }
         }
-        return self[0] <= 0.12 && self[count - 1] >= 0.88
+        return true
     }
 }

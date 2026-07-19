@@ -1,6 +1,13 @@
 const FILTER_RECIPE_VERSION = "2.0";
 const CURVE_POINT_COUNT = 5;
 const IDENTITY_CURVE = Object.freeze([0, 0.25, 0.5, 0.75, 1]);
+const BLACK_FLOOR_BUDGET = Object.freeze({
+  minimumTotal: 0.035,
+  maximumLumaBlackPoint: 0.08,
+  fadeContribution: 0.15,
+  shadowLiftContribution: 0.22,
+  negativeContrastContribution: 0.35
+});
 
 const ALLOWED_NAME_KEYS = new Set([
   "filter_lab.recipe.golden_rooftop_dream.name",
@@ -161,12 +168,12 @@ export function generatedFilterRecipeExampleCandidate() {
     ],
     parameters: {
       exposure: -0.02,
-      contrast: -0.04,
-      saturation: -0.08,
+      contrast: 0.03,
+      saturation: 0.04,
       temperature: 0.18,
       tint: 0.05,
-      fade: 0.08,
-      shadowLift: 0.06,
+      fade: 0.04,
+      shadowLift: 0.025,
       highlightRollOff: 0.14,
       bloom: 0.04,
       grain: 0.14,
@@ -176,17 +183,17 @@ export function generatedFilterRecipeExampleCandidate() {
     colorTransform: {
       inputNormalizationStrength: 0.16,
       styleIntensity: 0.72,
-      lumaCurve: [0.03, 0.24, 0.5, 0.76, 0.96],
-      redCurve: [0.02, 0.27, 0.52, 0.78, 0.98],
-      greenCurve: [0.01, 0.25, 0.5, 0.75, 0.97],
-      blueCurve: [0.01, 0.23, 0.47, 0.72, 0.95],
+      lumaCurve: [0.02, 0.24, 0.5, 0.76, 0.98],
+      redCurve: [0, 0.27, 0.52, 0.78, 1],
+      greenCurve: [0, 0.25, 0.5, 0.75, 1],
+      blueCurve: [0, 0.23, 0.47, 0.72, 1],
       basisLUTWeights: {
-        neutral: 0.25,
+        neutral: 0.27,
         warmAmber: 0.35,
         roseFlash: 0.12,
         coolChrome: 0.03,
         tealOrange: 0.05,
-        mutedPastel: 0.08,
+        mutedPastel: 0.06,
         deepBrown: 0.1,
         chromeSlide: 0.02
       }
@@ -198,7 +205,7 @@ export function generatedFilterRecipeExampleCandidate() {
       halationStrength: 0.06,
       halationRadius: 9,
       halationWarmth: 0.72,
-      diffusion: 0.05
+      diffusion: 0.04
     },
     warningsKeys: [
       "filter_lab.warning.session_only"
@@ -214,11 +221,17 @@ export function generatedFilterRecipeJSONSchema() {
       return [key, boundedNumberSchema(minimum, maximum, PARAMETER_DESCRIPTIONS[key])];
     })
   );
-  const curveSchema = {
+  const lumaCurveSchema = {
     type: "array",
     minItems: CURVE_POINT_COUNT,
     maxItems: CURVE_POINT_COUNT,
-    items: boundedNumberSchema(0, 1, "One output value for fixed input x positions 0, 0.25, 0.5, 0.75, and 1. Values must stay monotonic and near identity.")
+    items: boundedNumberSchema(0, 1, "One luminance output value for fixed input x positions 0, 0.25, 0.5, 0.75, and 1. Values must stay monotonic and near identity; only this curve may deliberately lift the black endpoint.")
+  };
+  const channelCurveSchema = {
+    type: "array",
+    minItems: CURVE_POINT_COUNT,
+    maxItems: CURVE_POINT_COUNT,
+    items: boundedNumberSchema(0, 1, "One channel output value for fixed input x positions 0, 0.25, 0.5, 0.75, and 1. Values must stay monotonic and near identity; the first and last values are normalized to exact 0 and 1.")
   };
   const basisLUTProperties = Object.fromEntries(BASIS_LUT_KEYS.map((key) => [
     key,
@@ -272,10 +285,10 @@ export function generatedFilterRecipeJSONSchema() {
         properties: {
           inputNormalizationStrength: boundedNumberSchema(0, 0.35, "Strength of conservative local-only exposure normalization before style mapping. Zero disables it."),
           styleIntensity: boundedNumberSchema(0, 1, "Strength of the safe curve plus basis-LUT transform before the user's overall intensity slider."),
-          lumaCurve: curveSchema,
-          redCurve: curveSchema,
-          greenCurve: curveSchema,
-          blueCurve: curveSchema,
+          lumaCurve: lumaCurveSchema,
+          redCurve: channelCurveSchema,
+          greenCurve: channelCurveSchema,
+          blueCurve: channelCurveSchema,
           basisLUTWeights: {
             type: "object",
             additionalProperties: false,
@@ -325,6 +338,7 @@ export function buildGeneratedFilterRecipeSchemaPrompt() {
     `Use only these parameter fields: ${REQUIRED_PARAMETER_KEYS.join(", ")}`,
     `Use only these colorTransform fields: ${REQUIRED_COLOR_TRANSFORM_KEYS.join(", ")}`,
     `Each luma/red/green/blue curve must be a JSON array of exactly ${CURVE_POINT_COUNT} numeric y values for fixed x values [0,0.25,0.5,0.75,1].`,
+    "redCurve, greenCurve, and blueCurve must each start at exactly 0 and end at exactly 1. Only lumaCurve may lift the black endpoint or compress the white endpoint.",
     `Use only these basisLUTWeights fields: ${BASIS_LUT_KEYS.join(", ")}. Include every field as a JSON number from 0 to 1.`,
     "basisLUTWeights are normalized by the backend, but you should make them sum to 1. Use neutral for unexplained or ambiguous color.",
     `Use only these film fields: ${REQUIRED_FILM_KEYS.join(", ")}`,
@@ -353,7 +367,7 @@ export function buildGeneratedFilterRecipeStyleGuidancePrompt() {
     "Judge the black point from the darkest photographic areas. A bright wall, flash-lit subject, pale background, or interface panel is not evidence of a raised black floor.",
     "Then inspect chroma distribution: whether reds, browns, greens, blues, neutrals, shadows, and highlights move differently.",
     "Use colorTransform for repeatable nonlinear or channel-selective style. Use legacy temperature/tint/saturation only for residual global correction.",
-    "Curves must stay monotonic and close to identity. Keep each point within about 0.18 of its fixed input x; keep black endpoints at or below 0.12 and white endpoints at or above 0.88.",
+    "Curves must stay monotonic and close to identity. Keep each point within about 0.18 of its fixed input x. Keep lumaCurve black at or below 0.08 and white at or above 0.92. Set every RGB channel-curve black endpoint to exactly 0 and white endpoint to exactly 1 so channel curves cannot lift the black floor a second time.",
     "Basis meanings: neutral preserves color; warmAmber warms yellows and highlights; roseFlash adds restrained pink-magenta flash character; coolChrome cools cyan-blue neutrals; tealOrange separates cooler shadows and warmer highlights; mutedPastel gently compresses chroma; deepBrown deepens warm red-brown mids; chromeSlide adds clean slide-film separation.",
     "Use multiple modest basis weights instead of one extreme basis. If the scene and style cannot be separated, increase neutral and lower confidence.",
     "When scene lighting and filter evidence conflict, lower confidence and keep only repeatable controls conservative.",
@@ -362,8 +376,10 @@ export function buildGeneratedFilterRecipeStyleGuidancePrompt() {
     "Use corner-to-center falloff as evidence for vignette, high-frequency texture as grain, sparse spots/scratches as dust, neutral haze as bloom/diffusion, and warm glow limited to strong highlights as halation.",
     "grain is strength; grainSize, grainRoughness, and grainLumaResponse define structure. Positive grainLumaResponse favors shadows; negative favors highlights.",
     "Bloom is neutral white glow. Halation is a separate restrained warm highlight-edge effect. Do not use either as exposure.",
-    "Fade, shadowLift, and negative contrast compound; mutedPastel and diffusion can compound with them too. Never use all of them strongly because the reference is bright or flash-lit.",
-    "For a warm direct-flash look whose darkest photographic areas remain deep, keep fade at or below 0.10, shadowLift at or below 0.08, and contrast no lower than -0.05.",
+    "Fade, shadowLift, lumaCurve black lift, and negative contrast compound; mutedPastel and diffusion can soften them further. Never use all of them because the reference is bright or flash-lit.",
+    "The backend enforces one black-floor budget: lumaBlack + fade*0.15 + shadowLift*0.22 + max(-contrast,0)*0.35 must not exceed max(0.035,lumaBlack). If it would, negative contrast is removed before fade and shadowLift are proportionally reduced.",
+    "For a warm direct-flash look whose darkest photographic areas remain deep, normally keep lumaCurve black at or below 0.02, fade at or below 0.05, shadowLift at or below 0.035, contrast at or above 0, mutedPastel at or below 0.08, and diffusion at or below 0.04.",
+    "If saturated accents remain visible in the photograph, preserve their separation: prefer positive residual saturation or deepBrown/warmAmber over mutedPastel plus diffusion.",
     "Use stronger fade or shadowLift only when the darkest photographic regions themselves show a raised black floor. Do not wash them to mid-gray.",
     "Ignore QR codes, watermarks, app logos, usernames, decorative stickers, and sharing UI.",
     "Do not claim an exact clone of a third-party app/filter. Output only the closest safe app recipe."
@@ -377,7 +393,7 @@ export function buildGeneratedFilterRecipeRendererCalibrationPrompt() {
       const [minimum, maximum] = PARAMETER_RANGES[key];
       return `${key} (${minimum}..${maximum}): ${PARAMETER_DESCRIPTIONS[key]}`;
     }),
-    "Curves and basis-LUT weights are combined into one deterministic local 17-level color cube in explicit sRGB. Identity curves plus neutral=1 produce no style shift.",
+    "Curves and basis-LUT weights are combined into one deterministic local 17-level color cube in explicit sRGB. Identity curves plus neutral=1 produce no style shift. RGB curves preserve exact black and white endpoints; lumaCurve alone owns endpoint lift/compression.",
     "The overall user intensity separately blends normalization, color transform, legacy controls, and film effects back toward identity.",
     "At zero, signed controls are identity. Do not use one control to compensate for another control's implementation.",
     "Estimate the full-strength recipe."
@@ -433,13 +449,17 @@ export function validateGeneratedFilterRecipeCandidate(candidate) {
   if (!colorTransformValidation.ok) return colorTransformValidation;
   const filmValidation = validateAndClampNumberObject(candidate.film, REQUIRED_FILM_KEYS, FILM_RANGES, "film");
   if (!filmValidation.ok) return filmValidation;
+  const blackFloorValidation = normalizeCompoundBlackFloor(
+    parameterValidation.value,
+    colorTransformValidation.value
+  );
 
   return {
     ok: true,
     value: {
       ...candidate,
       confidence: clamp(candidate.confidence, 0, 1),
-      parameters: parameterValidation.value,
+      parameters: blackFloorValidation.value,
       colorTransform: colorTransformValidation.value,
       film: filmValidation.value
     },
@@ -447,7 +467,8 @@ export function validateGeneratedFilterRecipeCandidate(candidate) {
       ...(candidate.confidence < 0 || candidate.confidence > 1 ? ["confidence"] : []),
       ...parameterValidation.clampedFields,
       ...colorTransformValidation.clampedFields,
-      ...filmValidation.clampedFields
+      ...filmValidation.clampedFields,
+      ...blackFloorValidation.clampedFields
     ],
     rawOutputPrinted: false,
     rawOutputPersisted: false
@@ -504,8 +525,13 @@ function validateAndClampCurve(curve, key) {
     const localMin = index === 0 ? 0 : Math.max(0, identity - 0.18);
     const localMax = index === CURVE_POINT_COUNT - 1 ? 1 : Math.min(1, identity + 0.18);
     let next = clamp(curve[index], localMin, localMax);
-    if (index === 0) next = Math.min(next, 0.12);
-    if (index === CURVE_POINT_COUNT - 1) next = Math.max(next, 0.88);
+    if (key === "lumaCurve") {
+      if (index === 0) next = Math.min(next, BLACK_FLOOR_BUDGET.maximumLumaBlackPoint);
+      if (index === CURVE_POINT_COUNT - 1) next = Math.max(next, 0.92);
+    } else {
+      if (index === 0) next = 0;
+      if (index === CURVE_POINT_COUNT - 1) next = 1;
+    }
     if (index > 0) next = Math.max(next, sanitized[index - 1]);
     sanitized.push(next);
     if (next !== curve[index]) changed = true;
@@ -516,6 +542,45 @@ function validateAndClampCurve(curve, key) {
     value: sanitized,
     clampedFields: changed ? [`colorTransform.${key}`] : []
   };
+}
+
+function normalizeCompoundBlackFloor(parameters, colorTransform) {
+  const sanitized = { ...parameters };
+  const clampedFields = [];
+  const lumaBlackPoint = colorTransform.lumaCurve[0];
+  const totalBudget = Math.max(BLACK_FLOOR_BUDGET.minimumTotal, lumaBlackPoint);
+  let remainingBudget = Math.max(0, totalBudget - lumaBlackPoint);
+
+  const fadeLift = sanitized.fade * BLACK_FLOOR_BUDGET.fadeContribution;
+  const shadowLift = sanitized.shadowLift * BLACK_FLOOR_BUDGET.shadowLiftContribution;
+  const negativeContrastLift = Math.max(-sanitized.contrast, 0)
+    * BLACK_FLOOR_BUDGET.negativeContrastContribution;
+  const hasSeparateLift = fadeLift + shadowLift > 0.000001;
+
+  if (fadeLift + shadowLift + negativeContrastLift <= remainingBudget + 0.000001) {
+    return { value: sanitized, clampedFields };
+  }
+
+  if (sanitized.contrast < 0 && hasSeparateLift) {
+    sanitized.contrast = 0;
+    clampedFields.push("parameters.contrast");
+  } else if (negativeContrastLift > remainingBudget) {
+    sanitized.contrast = -remainingBudget / BLACK_FLOOR_BUDGET.negativeContrastContribution;
+    remainingBudget = 0;
+    clampedFields.push("parameters.contrast");
+  } else {
+    remainingBudget -= negativeContrastLift;
+  }
+
+  const separateLift = fadeLift + shadowLift;
+  if (separateLift > remainingBudget + 0.000001) {
+    const scale = separateLift > 0 ? remainingBudget / separateLift : 0;
+    sanitized.fade *= scale;
+    sanitized.shadowLift *= scale;
+    clampedFields.push("parameters.fade", "parameters.shadowLift");
+  }
+
+  return { value: sanitized, clampedFields };
 }
 
 function validateAndNormalizeBasisWeights(weights) {

@@ -71,12 +71,12 @@ extension GeneratedFilterRecipe {
         ],
         parameters: GeneratedFilterParameterSet(
             exposure: 0.08,
-            contrast: -0.12,
-            saturation: 0.18,
+            contrast: 0.03,
+            saturation: 0.14,
             temperature: 0.22,
             tint: 0.04,
-            fade: 0.18,
-            shadowLift: 0.16,
+            fade: 0.04,
+            shadowLift: 0.025,
             highlightRollOff: 0.12,
             bloom: 0.06,
             grain: 0.12,
@@ -86,17 +86,17 @@ extension GeneratedFilterRecipe {
         colorTransform: GeneratedFilterColorTransform(
             inputNormalizationStrength: 0.16,
             styleIntensity: 0.72,
-            lumaCurve: [0.03, 0.24, 0.5, 0.76, 0.96],
-            redCurve: [0.02, 0.27, 0.52, 0.78, 0.98],
-            greenCurve: [0.01, 0.25, 0.5, 0.75, 0.97],
-            blueCurve: [0.01, 0.23, 0.47, 0.72, 0.95],
+            lumaCurve: [0.02, 0.24, 0.5, 0.76, 0.98],
+            redCurve: [0, 0.27, 0.52, 0.78, 1],
+            greenCurve: [0, 0.25, 0.5, 0.75, 1],
+            blueCurve: [0, 0.23, 0.47, 0.72, 1],
             basisLUTWeights: GeneratedFilterBasisLUTWeights(
-                neutral: 0.25,
+                neutral: 0.27,
                 warmAmber: 0.35,
                 roseFlash: 0.12,
                 coolChrome: 0.03,
                 tealOrange: 0.05,
-                mutedPastel: 0.08,
+                mutedPastel: 0.06,
                 deepBrown: 0.1,
                 chromeSlide: 0.02
             )
@@ -108,7 +108,7 @@ extension GeneratedFilterRecipe {
             halationStrength: 0.06,
             halationRadius: 9,
             halationWarmth: 0.72,
-            diffusion: 0.05
+            diffusion: 0.04
         ),
         warningsKeys: [
             "filter_lab.warning.mock_only",

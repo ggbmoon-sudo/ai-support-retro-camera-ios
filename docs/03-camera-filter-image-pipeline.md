@@ -1,5 +1,15 @@
 # 相機、復古濾鏡與圖片處理技術報告
 
+## PT2-SF-R9-R16-R1 Compound Black-Floor Correction
+
+The operator confirmed that the latest returned comparison was the 100% result. Its warmth and tonal spread were substantially closer than R15, but its black floor and midtones remained too bright. Recipe v2 now assigns black/white endpoint shaping only to the luma curve; R/G/B curves must keep exact `0/1` endpoints so channel styling cannot silently lift the entire black floor a second time.
+
+Both backend and iOS enforce the same deterministic budget:
+
+`lumaBlack + fade*0.15 + shadowLift*0.22 + max(-contrast, 0)*0.35 <= max(0.035, lumaBlack)`
+
+When a candidate exceeds the budget, negative contrast is neutralized first when it compounds fade/shadow lift, then fade and shadow lift are proportionally reduced. Temperature, tint, saturation, curve midpoints, basis-look intent, and film texture remain intact. The correction is validation/input normalization; renderer order, 1600-pixel memory bound, local intensity blend, and local-only apply/original image are unchanged.
+
 ## PT2-SF-R9-R16 Filter Lab Recipe v2
 
 Recipe `2.0` keeps the twelve existing global controls as final fine adjustments and adds bounded five-point luma/R/G/B curves, normalized weights over eight app-owned basis looks, local luminance normalization, grain size/roughness/luminance response, warm highlight halation, and diffusion. iOS builds a deterministic 17-cube locally; the provider cannot return a raw LUT, LUT URL, arbitrary renderer name, shader, or code. Historical `1.1` recipes map to identity v2 structures. The user intensity is now a final source-versus-complete-result blend, so `0%` is the original, `100%` is the entire recipe, and `50%` is their true midpoint. The backend still receives only one style/reference image; the apply/original and all rendering stay local, Camera remains local-only, and `productionReady:false` remains locked.
