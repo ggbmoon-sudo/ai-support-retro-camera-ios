@@ -78,8 +78,8 @@
 "filter_lab.preview.save_hint" = "Press and hold the filtered photo to save this exact preview to Photos.";
 "filter_lab.intensity" = "Intensity";
 "filter_lab.recommended_use" = "Recommended use";
-"filter_lab.parameters" = "Mock parameter summary";
-"filter_lab.parameters.summary" = "Exposure %.2f · Contrast %.2f · Saturation %.2f · Temp %.2f · Fade %.2f · Grain %.2f · Vignette %.2f";
+"filter_lab.parameters" = "Filter parameters";
+"filter_lab.parameters.summary" = "Exposure %.2f · Contrast %.2f · Saturation %.2f · Temp %.2f · Tint %.2f · Fade %.2f · Shadow lift %.2f · Highlight roll-off %.2f · Bloom %.2f · Grain %.2f · Dust %.2f · Vignette %.2f";
 "filter_lab.action.apply" = "Apply generated filter";
 "filter_lab.action.save_filtered" = "Save filtered photo";
 "filter_lab.action.try_another" = "Choose other images";

@@ -48,6 +48,7 @@ ios-app/LocalOnlyModels/DepthAnythingV2Small/*
 !ios-app/LocalOnlyModels/DepthAnythingV2Small/README.md
 tests/manual/local-results/
 backend/reports/provider-qa/
+backend/reports/filter-lab-sanitized-analysis/
 backend/reports/vlm-benchmark/
 backend/reports/vlm-local-sandbox/
 backend/reports/open-weight-vlm-local-*.json

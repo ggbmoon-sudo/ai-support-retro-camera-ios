@@ -96,7 +96,7 @@ test("siliconflow Filter Lab recipe QA sends one image request and accepts recip
   assert.equal(capturedHeaders.Authorization, "Bearer local-test-key");
   assert.equal(capturedRequest.model, "Qwen/Qwen3-VL-32B-Instruct");
   assert.equal(capturedRequest.stream, false);
-  assert.equal(capturedRequest.max_tokens, 384);
+  assert.equal(capturedRequest.max_tokens, 512);
   assert.equal("top_p" in capturedRequest, false);
   assert.equal(capturedRequest.response_format.type, "json_schema");
   assert.equal(capturedRequest.response_format.json_schema.name, "filter_lab_recipe");
@@ -105,7 +105,8 @@ test("siliconflow Filter Lab recipe QA sends one image request and accepts recip
   assert.match(capturedRequest.messages[1].content[0].image_url.url, /^data:image\/jpeg;base64,/);
   assert.equal(capturedRequest.messages[1].content[0].image_url.detail, "high");
   assert.match(capturedRequest.messages[1].content[1].text, /Filter Lab recipe contract/);
-  assert.match(capturedRequest.messages[1].content[1].text, /visible filter\/settings panel/);
+  assert.match(capturedRequest.messages[1].content[1].text, /final rendered photo pixels/);
+  assert.match(capturedRequest.messages[1].content[1].text, /NEVER map them proportionally or directly/);
   assert.match(capturedRequest.messages[1].content[1].text, /Renderer calibration anchors/);
   assert.doesNotMatch(capturedRequest.messages[1].content[1].text, /return this safe contract object/);
   assert.equal(report.ok, true);
@@ -199,7 +200,7 @@ test("siliconflow Filter Lab recipe QA args and request builder are bounded", ()
   assert.equal(args.modelCandidate, "qwen3_vl_8b_instruct");
   assert.equal(request.model, "Qwen/Qwen3-VL-32B-Instruct");
   assert.equal(request.messages[1].content[0].image_url.detail, "high");
-  assert.match(request.messages[1].content[1].text, /visible filter\/settings panel/);
+  assert.match(request.messages[1].content[1].text, /final rendered photo pixels/);
 });
 
 test("siliconflow Filter Lab recipe QA CLI dry-run is sanitized", () => {

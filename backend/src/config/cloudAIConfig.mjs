@@ -19,6 +19,7 @@ export function cloudAIConfig(env = process.env) {
   return {
     providerMode: normalizeProviderMode(env.CLOUD_AI_PROVIDER_MODE),
     allowInternalCloudAI: env.ALLOW_INTERNAL_CLOUD_AI === "true",
+    saveSanitizedFilterLabAnalysis: env.FILTER_LAB_SAVE_SANITIZED_ANALYSIS === "true",
     internalDebugToken: env.INTERNAL_CLOUD_AI_DEBUG_TOKEN ?? "",
     qweAPIKey: env.QWE_API_KEY ?? "",
     qweBaseURL: normalizeQweAPIBaseURL(env.QWE_BASE_URL),

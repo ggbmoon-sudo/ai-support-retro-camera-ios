@@ -189,7 +189,11 @@ nonisolated struct CloudAIGeneratedFilterParameters: Codable, Hashable, Sendable
     let temperature: Double
     let tint: Double
     let fade: Double
+    let shadowLift: Double
+    let highlightRollOff: Double
+    let bloom: Double
     let grain: Double
+    let dust: Double
     let vignette: Double
 }
 

@@ -130,7 +130,11 @@ enum CloudAIFilterLabMapper {
                 temperature: generatedFilter.parameters.temperature,
                 tint: generatedFilter.parameters.tint,
                 fade: generatedFilter.parameters.fade,
+                shadowLift: generatedFilter.parameters.shadowLift,
+                highlightRollOff: generatedFilter.parameters.highlightRollOff,
+                bloom: generatedFilter.parameters.bloom,
                 grain: generatedFilter.parameters.grain,
+                dust: generatedFilter.parameters.dust,
                 vignette: generatedFilter.parameters.vignette
             ),
             warningsKeys: generatedFilter.warningsKeys,

@@ -681,7 +681,7 @@ test("xiaoyi provider uses deepseek-v4-flash for generated Filter Lab recipes", 
   assert.equal(capturedRequest.stream, false);
   assert.deepEqual(capturedRequest.response_format, { type: "json_object" });
   assert.equal(capturedRequest.messages[0].content.includes("color-science analyst"), true);
-  assert.equal(capturedRequest.messages[1].content[0].text.includes("Allowed recipeVersion: 1.0"), true);
+  assert.equal(capturedRequest.messages[1].content[0].text.includes("Allowed recipeVersion: 1.1"), true);
   assert.equal(capturedRequest.messages[1].content[0].text.includes("Renderer calibration anchors"), true);
   assert.equal(capturedRequest.messages[1].content[1].image_url.url, "data:image/jpeg;base64,/9j/");
   assert.equal(capturedRequest.messages[1].content[1].image_url.detail, "low");
@@ -781,6 +781,7 @@ test("siliconflow provider builds image-first Filter Lab recipe request", async 
   assert.equal(capturedHeaders.authorization, "Bearer test-key");
   assert.equal(capturedRequest.model, "Qwen/Qwen3-VL-32B-Instruct");
   assert.equal(capturedRequest.stream, false);
+  assert.equal(capturedRequest.max_tokens, 512);
   assert.equal("top_p" in capturedRequest, false);
   assert.equal(capturedRequest.response_format.type, "json_schema");
   assert.equal(capturedRequest.response_format.json_schema.name, "filter_lab_recipe");
@@ -789,8 +790,9 @@ test("siliconflow provider builds image-first Filter Lab recipe request", async 
   assert.equal(capturedRequest.messages[0].content.includes("color-science analyst"), true);
   assert.equal(capturedRequest.messages[1].content[0].image_url.url, "data:image/jpeg;base64,/9j/");
   assert.equal(capturedRequest.messages[1].content[0].image_url.detail, "high");
-  assert.equal(capturedRequest.messages[1].content[1].text.includes("Allowed recipeVersion: 1.0"), true);
-  assert.equal(capturedRequest.messages[1].content[1].text.includes("visible filter/settings panel"), true);
+  assert.equal(capturedRequest.messages[1].content[1].text.includes("Allowed recipeVersion: 1.1"), true);
+  assert.equal(capturedRequest.messages[1].content[1].text.includes("final rendered photo pixels"), true);
+  assert.equal(capturedRequest.messages[1].content[1].text.includes("NEVER map them proportionally or directly"), true);
   assert.equal(capturedRequest.messages[1].content[1].text.includes("Renderer calibration anchors"), true);
   assert.equal(capturedRequest.messages[1].content[1].text.includes("Do not substitute a preferred preset recipe"), true);
   assert.equal(capturedRequest.messages[1].content[1].text.includes("return this safe contract object"), false);
@@ -850,7 +852,7 @@ test("filter lab route returns validated generated recipe when xiaoyi is enabled
   assert.equal(result.body.mode, "filter_generation");
   assert.equal(result.body.source, "cloud");
   assert.equal(result.body.generatedFilter.source, "cloud");
-  assert.equal(result.body.generatedFilter.recipeVersion, "1.0");
+  assert.equal(result.body.generatedFilter.recipeVersion, "1.1");
   assert.equal(result.body.safety.containsSensitiveInference, false);
   assert.equal(result.metadata.providerKind, "xiaoyiRelayInternal");
 });
@@ -873,7 +875,7 @@ test("filter lab route returns validated generated recipe when siliconflow is en
   assert.equal(result.body.mode, "filter_generation");
   assert.equal(result.body.source, "cloud");
   assert.equal(result.body.generatedFilter.source, "cloud");
-  assert.equal(result.body.generatedFilter.recipeVersion, "1.0");
+  assert.equal(result.body.generatedFilter.recipeVersion, "1.1");
   assert.equal(result.body.safety.containsSensitiveInference, false);
   assert.equal(result.metadata.providerKind, "siliconflowInternal");
 });

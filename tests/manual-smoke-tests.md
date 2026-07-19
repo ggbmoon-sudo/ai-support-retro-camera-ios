@@ -4574,6 +4574,7 @@ Manual Xcode check:
 - [ ] Confirm capture/import, local filters, selected-photo review, mock save, and post-capture advisor behavior still work as before.
 - [ ] Confirm backend/iOS upload payloads are unchanged.
 - [ ] Confirm `productionReady:false` remains unchanged.
+
 ## Phase 21-B - AVFoundation Depth Capability Probe
 
 - [ ] Build and run the iOS app in Xcode.
@@ -4933,4 +4934,23 @@ Mac/Xcode physical-device verification:
 - [ ] While preview rendering or Photos saving is active, confirm repeated long presses do not start duplicate saves.
 - [ ] With VoiceOver enabled, invoke the named Save filtered photo action and confirm it follows the same local save path.
 - [ ] Confirm no automatic/background save, backend/provider call, Firebase/history write, apply/original image upload, style-reference upload-count change, Camera cloud AI entry, provider key/URL/SDK, or production rollout occurs.
+- [ ] Confirm `productionReady:false` remains unchanged.
+
+## PT2-SF-R9-R15 - Filter Lab Sanitized Analysis and Fidelity Calibration
+
+Mac/Xcode and backend verification:
+
+- [ ] Build and run the DEBUG app on a physical iPhone; confirm recipe `1.1` decodes without a fallback and no Core Image filter fails.
+- [ ] Confirm the result card shows all 12 parameters, including tint, shadow lift, highlight roll-off, bloom, and dust.
+- [ ] With a faded-flash reference, confirm raised blacks retain shadow detail instead of producing crushed black regions.
+- [ ] Confirm warm/magenta direction, highlight softness, and corner falloff visually follow the reference more closely.
+- [ ] Confirm grain appears as fine uniform texture while dust produces separate sparse spots/short scratches; zero values add neither effect.
+- [ ] Re-render and change intensity repeatedly for at least 10 minutes; confirm the R12 1600-pixel bound remains active and memory stays stable.
+- [ ] Long-press the after preview and confirm the saved comparison asset matches the visible R15 preview.
+- [ ] Leave `FILTER_LAB_SAVE_SANITIZED_ANALYSIS` unset/false and confirm no artifact directory/file is created.
+- [ ] In ignored backend `.env.local`, set `FILTER_LAB_SAVE_SANITIZED_ANALYSIS=true`; only after a fresh provider-test approval, make one DEBUG Filter Lab request and confirm exactly one ignored JSON artifact appears under `backend/reports/filter-lab-sanitized-analysis/`.
+- [ ] Inspect the JSON and confirm it includes the normalized recipe plus only provider/attempt/latency buckets and false privacy flags.
+- [ ] Confirm the artifact contains no image, base64, raw prompt, raw request, raw provider response, Authorization header, API key, provider error text, or apply/original photo.
+- [ ] Confirm only one style/reference image is sent to the backend and the separate apply/original image remains local.
+- [ ] Confirm no provider key/direct provider URL/call or provider SDK exists in iOS, no Camera cloud AI entry appears, and production/default remains mock/local.
 - [ ] Confirm `productionReady:false` remains unchanged.

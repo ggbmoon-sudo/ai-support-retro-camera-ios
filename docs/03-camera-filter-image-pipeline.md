@@ -1,5 +1,9 @@
 # 相機、復古濾鏡與圖片處理技術報告
 
+## PT2-SF-R9-R15 Filter Lab fidelity calibration
+
+Filter Lab generated recipes now use contract `1.1`. Final rendered pixels are the primary reference; unknown third-party preset codes and slider values are relative clues only, never direct absolute mappings. The local Core Image pipeline adds bounded `shadowLift`, `highlightRollOff`, `bloom`, and `dust`, changes fade to raise the black floor, and reduces vignette calibration. This targets the supplied comparison's black-crush, weak warmth/magenta, and missing analog-defect gaps while preserving the R12 1600-pixel/memory bound and R14 local preview export. The backend still receives exactly one style/reference image and the apply/original remains local-only.
+
 ## PT2-SF-R9-R14 Filter Lab 本機預覽匯出
 
 Filter Lab 的「套用後」預覽現在支援明確長按儲存到 Apple Photos。相簿寫入只會在使用者主動匯出時要求 `.addOnly` 權限，並只儲存現有 R12 1600 像素長邊上限內的本機 `previewImage`；因此輸出適合用作濾鏡準確度比較，但不視為全解像度匯出。此流程不會自動保存來源圖、不會新增 backend/provider call 或上載，亦不會改變只上載一張 style reference、apply/original image 留在本機的邊界。

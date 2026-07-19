@@ -214,8 +214,13 @@ struct GeneratedFilterResultView: View {
             params.contrast,
             params.saturation,
             params.temperature,
+            params.tint,
             params.fade,
+            params.shadowLift,
+            params.highlightRollOff,
+            params.bloom,
             params.grain,
+            params.dust,
             params.vignette
         )
     }

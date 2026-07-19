@@ -53,8 +53,10 @@ nonisolated final class GeneratedFilterPreviewRenderer {
         outputImage = try applyExposure(parameters.exposure * intensity, to: outputImage)
         outputImage = try applyColorControls(parameters, intensity: intensity, to: outputImage)
         outputImage = try applyTemperature(parameters, intensity: intensity, to: outputImage)
-        outputImage = try applyFade(parameters.fade * intensity, to: outputImage)
+        outputImage = try applyTone(parameters, intensity: intensity, to: outputImage)
+        outputImage = try applyBloom(parameters.bloom * intensity, to: outputImage)
         outputImage = try applyGrain(parameters.grain * intensity, to: outputImage)
+        outputImage = try applyDust(parameters.dust * intensity, to: outputImage)
         outputImage = try applyVignette(parameters.vignette * intensity, to: outputImage)
 
         let extent = outputImage.extent
@@ -99,13 +101,54 @@ nonisolated final class GeneratedFilterPreviewRenderer {
         ])
     }
 
-    private static func applyFade(_ fade: Double, to image: CIImage) throws -> CIImage {
-        guard fade > 0 else { return image }
-        return try outputImage(named: "CIHighlightShadowAdjust", values: [
+    private static func applyTone(
+        _ parameters: GeneratedFilterParameterSet,
+        intensity: Double,
+        to image: CIImage
+    ) throws -> CIImage {
+        let fade = min(max(parameters.fade * intensity, 0), 0.5)
+        let shadowLift = min(max(parameters.shadowLift * intensity, 0), 0.4)
+        let highlightRollOff = min(max(parameters.highlightRollOff * intensity, 0), 0.4)
+        var output = image
+
+        if fade > 0 {
+            let blackLift = min(fade * 0.15, 0.075)
+            let channelScale = 1 - blackLift
+            output = try outputImage(named: "CIColorMatrix", values: [
+                kCIInputImageKey: output,
+                "inputRVector": CIVector(x: CGFloat(channelScale), y: 0, z: 0, w: 0),
+                "inputGVector": CIVector(x: 0, y: CGFloat(channelScale), z: 0, w: 0),
+                "inputBVector": CIVector(x: 0, y: 0, z: CGFloat(channelScale), w: 0),
+                "inputAVector": CIVector(x: 0, y: 0, z: 0, w: 1),
+                "inputBiasVector": CIVector(
+                    x: CGFloat(blackLift),
+                    y: CGFloat(blackLift),
+                    z: CGFloat(blackLift),
+                    w: 0
+                )
+            ])
+        }
+
+        if shadowLift > 0 || highlightRollOff > 0 {
+            output = try outputImage(named: "CIHighlightShadowAdjust", values: [
+                kCIInputImageKey: output,
+                "inputHighlightAmount": max(0.7, 1 - highlightRollOff * 0.75),
+                "inputShadowAmount": min(1, shadowLift * 1.8)
+            ])
+        }
+
+        return output.cropped(to: image.extent)
+    }
+
+    private static func applyBloom(_ bloom: Double, to image: CIImage) throws -> CIImage {
+        let safeBloom = min(max(bloom, 0), 0.3)
+        guard safeBloom > 0 else { return image }
+
+        return try outputImage(named: "CIBloom", values: [
             kCIInputImageKey: image,
-            "inputHighlightAmount": max(0.6, 1 - fade * 0.35),
-            "inputShadowAmount": min(1, fade * 1.3)
-        ])
+            kCIInputRadiusKey: 3 + safeBloom * 20,
+            kCIInputIntensityKey: safeBloom
+        ]).cropped(to: image.extent)
     }
 
     private static func applyGrain(_ grain: Double, to image: CIImage) throws -> CIImage {
@@ -136,12 +179,61 @@ nonisolated final class GeneratedFilterPreviewRenderer {
         ]).cropped(to: image.extent)
     }
 
+    private static func applyDust(_ dust: Double, to image: CIImage) throws -> CIImage {
+        let safeDust = min(max(dust, 0), 0.35)
+        guard safeDust > 0 else { return image }
+        guard let randomNoise = CIFilter(name: "CIRandomGenerator")?.outputImage else {
+            throw GeneratedFilterPreviewError.renderFailed
+        }
+
+        let monochromeNoise = try outputImage(named: "CIColorControls", values: [
+            kCIInputImageKey: randomNoise,
+            kCIInputSaturationKey: 0,
+            kCIInputContrastKey: 1
+        ])
+        let sparseDefects = try outputImage(named: "CIColorMatrix", values: [
+            kCIInputImageKey: monochromeNoise,
+            "inputRVector": CIVector(x: 3, y: 0, z: 0, w: 0),
+            "inputGVector": CIVector(x: 0, y: 3, z: 0, w: 0),
+            "inputBVector": CIVector(x: 0, y: 0, z: 3, w: 0),
+            "inputAVector": CIVector(x: 0, y: 0, z: 0, w: 1),
+            "inputBiasVector": CIVector(x: -2.55, y: -2.55, z: -2.55, w: 0)
+        ]).cropped(to: image.extent)
+        let specks = try applyingOpacity(min(safeDust * 0.24, 0.08), to: sparseDefects)
+        let motionBlurred = try outputImage(named: "CIMotionBlur", values: [
+            kCIInputImageKey: sparseDefects,
+            kCIInputRadiusKey: 9,
+            kCIInputAngleKey: CGFloat(Double.pi / 2)
+        ]).cropped(to: image.extent)
+        let scratches = try applyingOpacity(min(safeDust * 0.08, 0.026), to: motionBlurred)
+        let imageWithSpecks = try outputImage(named: "CIScreenBlendMode", values: [
+            kCIInputImageKey: specks,
+            kCIInputBackgroundImageKey: image
+        ]).cropped(to: image.extent)
+
+        return try outputImage(named: "CIScreenBlendMode", values: [
+            kCIInputImageKey: scratches,
+            kCIInputBackgroundImageKey: imageWithSpecks
+        ]).cropped(to: image.extent)
+    }
+
+    private static func applyingOpacity(_ opacity: Double, to image: CIImage) throws -> CIImage {
+        try outputImage(named: "CIColorMatrix", values: [
+            kCIInputImageKey: image,
+            "inputRVector": CIVector(x: 1, y: 0, z: 0, w: 0),
+            "inputGVector": CIVector(x: 0, y: 1, z: 0, w: 0),
+            "inputBVector": CIVector(x: 0, y: 0, z: 1, w: 0),
+            "inputAVector": CIVector(x: 0, y: 0, z: 0, w: CGFloat(opacity)),
+            "inputBiasVector": CIVector(x: 0, y: 0, z: 0, w: 0)
+        ]).cropped(to: image.extent)
+    }
+
     private static func applyVignette(_ vignette: Double, to image: CIImage) throws -> CIImage {
         guard vignette > 0 else { return image }
         return try outputImage(named: "CIVignette", values: [
             kCIInputImageKey: image,
-            kCIInputIntensityKey: vignette * 2.2,
-            kCIInputRadiusKey: 1.65
+            kCIInputIntensityKey: vignette * 1.35,
+            kCIInputRadiusKey: 1.8
         ])
     }
 

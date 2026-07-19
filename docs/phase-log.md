@@ -8,9 +8,78 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: PT2-SF-R9-R14 - Filter Lab Local Preview Export
-Status: implemented; pending Mac/Xcode physical-device verification
-Latest implementation: PT2-SF-R9-R14 adds an explicit long press on the Filter Lab filtered/after preview to save the current 1600-pixel-bounded local render to Apple Photos with add-only authorization, localized state feedback, and a VoiceOver action. It does not auto-save, call a backend/provider, change the one-style-reference request, upload the apply/original image, persist history, add Camera cloud AI, or enable production rollout; `productionReady:false` remains locked.
+Current phase: PT2-SF-R9-R15 - Filter Lab Sanitized Analysis and Fidelity Calibration
+Status: implemented; offline tests passed; pending Mac/Xcode physical-device and separately approved provider comparison
+Latest implementation: PT2-SF-R9-R15 adds opt-in ignored persistence for a normalized validated Filter Lab recipe only, upgrades the nested recipe contract to `1.1`, makes final rendered pixels primary prompt evidence, treats unknown third-party sliders as relative hints, and adds shadow lift, highlight roll-off, bloom, and dust to the bounded local renderer. Raw image/base64, prompt, request, provider response, Authorization header, and API keys remain prohibited from artifacts. No provider call was made in this implementation phase; one style/reference image remains the only Filter Lab backend upload, the apply/original remains local, Camera remains local-only, and `productionReady:false` remains locked.
+
+## PT2-SF-R9-R15 - Filter Lab Sanitized Analysis and Fidelity Calibration
+
+Status: implemented; offline verification passed; awaiting Mac/Xcode physical-device and separately approved provider comparison
+Date: 2026-07-19
+Production readiness: `productionReady:false`
+
+### Summary
+
+R15 fixes the mismatch exposed by the supplied target/original/result comparison. Final rendered pixels are now the primary style evidence, while unknown third-party preset labels and slider values are only directional hints and cannot be directly scaled into this renderer. The nested generated recipe moves to `1.1` with dedicated shadow lift, highlight roll-off, bloom, and dust controls. The local Core Image renderer now raises the black floor for fade, separates highlight/shadow shaping, keeps grain separate from sparse analog defects, and applies a gentler vignette.
+
+The backend can optionally keep an ignored sanitized analysis JSON after recipe validation. The artifact contains an explicit allowlist of recipe keys/parameters, confidence bucket, and provider/attempt/latency buckets only. It never contains the model-generated recipe ID, exact confidence, image/base64, raw prompt, raw request, raw provider response, Authorization header, API key, provider error text, or apply/original photo. Persistence defaults to false.
+
+### Completed Work
+
+- Added `FILTER_LAB_SAVE_SANITIZED_ANALYSIS=false` default/opt-in configuration.
+- Added an ignored `backend/reports/filter-lab-sanitized-analysis/` artifact directory.
+- Persisted only validated normalized recipe contract data and safe metadata buckets.
+- Kept artifact write failures sanitized and non-disruptive to the app response.
+- Upgraded backend JSON schema, prompt, validators, example, evaluator, and provider token bound to recipe `1.1`.
+- Reframed prompt evidence so third-party slider numbers are never treated as this renderer's absolute values.
+- Added faded-flash guardrails against black crush and unsupported vignette/exposure compensation.
+- Added iOS decoding, mapping, range validation, local rendering, mock recipes, and diagnostics for all 12 controls.
+- Renamed the result heading from Mock parameters to neutral Filter parameters and exposed tint/new controls.
+- Added offline artifact privacy, route opt-in, prompt fidelity, renderer consumption, and backend-iOS alignment tests.
+
+### Changed Files
+
+- Root/config: `.env.example`, `.gitignore`, `README.md`
+- Backend runtime: `backend/src/artifacts/filterLabSanitizedAnalysisArtifact.mjs`, `backend/src/config/cloudAIConfig.mjs`, `backend/src/providers/SiliconFlowCloudAIProvider.mjs`, `backend/src/providers/generatedFilterRecipeContract.mjs`, `backend/src/qa/filterLabRecipeFidelityEvaluator.mjs`, `backend/src/qa/siliconFlowFilterLabRecipeQAGate.mjs`, `backend/src/routes/filterLab.mjs`
+- Backend tests/docs: `backend/tests/cloud-ai-boundary.test.mjs`, `backend/tests/filter-lab-recipe-fidelity.test.mjs`, `backend/tests/filter-lab-sanitized-analysis-artifact.test.mjs`, `backend/tests/siliconflow-filter-lab-recipe-qa-gate.test.mjs`, `backend/README.md`
+- iOS Filter Lab: `FilterRecipeValidator.swift`, `GeneratedFilterParameterSet.swift`, `GeneratedFilterPreviewRenderer.swift`, `GeneratedFilterRecipe.swift`, `GeneratedFilterResultView.swift`, `MockFilterGenerationService.swift`
+- iOS Cloud AI: `CloudAIModels.swift`, `CloudAIPhotoAdvisorMapper.swift`, `CloudAIResponseValidator.swift`, `MockCloudAIService.swift`
+- iOS copy/docs: English and Traditional Chinese `Localizable.strings`, `ios-app/README.md`
+- Project docs/tests: `docs/03-camera-filter-image-pipeline.md`, `docs/pt2-sf-r9-r15-filter-lab-sanitized-analysis-and-fidelity-calibration.md`, `docs/phase-log.md`, `tests/manual-smoke-tests.md`
+
+### Verification
+
+- Sanitized artifact tests: 6 passed.
+- Focused backend/Filter Lab regression set: 90 passed.
+- Full backend test suite: 424 passed.
+- Recipe 1.1 cross-layer source contract verifies all 12 backend/iOS controls and diagnostic placeholders.
+- Live provider calls: 0.
+- Mac/Xcode compile and physical-device rendering: pending because this workspace is Windows.
+
+### Known TODOs
+
+- Build in Xcode and visually verify Core Image tone/bloom/dust behavior on the physical iPhone.
+- Run the 10-minute R12 memory regression check.
+- Enable the ignored artifact flag and make one new provider-backed comparison only after fresh explicit approval.
+- Share only the saved target/original/result comparison and sanitized normalized artifact; do not share ignored credentials/logs/raw responses.
+
+### Boundary Confirmations
+
+- Provider/model call run in this phase: no.
+- API key value printed/saved/committed: no.
+- Authorization header printed/committed: no.
+- Raw prompt/request/provider response/image/base64 persisted: no.
+- Direct iOS provider call or provider URL/key/SDK: no.
+- Backend Filter Lab upload expanded beyond one style/reference image: no.
+- Apply/original image uploaded: no.
+- Camera cloud AI entry: no.
+- Production rollout: no.
+- `productionReady:false` remains locked.
+
+### Ready for Next Phase
+
+Ready for the R15 Mac/Xcode test pass: yes. Ready to start a different product phase: no; complete the physical-device and separately approved provider comparison first.
+
 Marker correction: Phase 21-W-R2 was implemented and pushed, but the visible commit marker was misspelled as `unavailabl`. This corrective marker commit restores the exact prerequisite marker `Phase 21-W-R2: diagnose controlled benchmark local model unavailable`. No model call, benchmark, endpoint call, external server edit, runtime change, raw artifact, secret, or production rollout occurred, and `productionReady:false` remains locked.
 Mac/Xcode verification: Phase 01/02 build succeeded on 2026-06-09
 Phase 03 build verification: command-line Xcode simulator build succeeded on 2026-06-09

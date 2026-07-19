@@ -7,7 +7,11 @@ const PARAMETER_KEYS = Object.freeze([
   "temperature",
   "tint",
   "fade",
+  "shadowLift",
+  "highlightRollOff",
+  "bloom",
   "grain",
+  "dust",
   "vignette"
 ]);
 

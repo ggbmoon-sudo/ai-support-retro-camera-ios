@@ -1,4 +1,4 @@
-const FILTER_RECIPE_VERSION = "1.0";
+const FILTER_RECIPE_VERSION = "1.1";
 
 const ALLOWED_NAME_KEYS = new Set([
   "filter_lab.recipe.golden_rooftop_dream.name",
@@ -53,7 +53,11 @@ const REQUIRED_PARAMETER_KEYS = [
   "temperature",
   "tint",
   "fade",
+  "shadowLift",
+  "highlightRollOff",
+  "bloom",
   "grain",
+  "dust",
   "vignette"
 ];
 
@@ -64,7 +68,11 @@ const PARAMETER_RANGES = Object.freeze({
   temperature: [-0.45, 0.45],
   tint: [-0.25, 0.25],
   fade: [0, 0.5],
+  shadowLift: [0, 0.4],
+  highlightRollOff: [0, 0.4],
+  bloom: [0, 0.3],
   grain: [0, 0.35],
+  dust: [0, 0.35],
   vignette: [0, 0.35]
 });
 
@@ -74,9 +82,13 @@ const PARAMETER_DESCRIPTIONS = Object.freeze({
   saturation: "Core Image saturation offset around the identity multiplier: renderer saturation = 1 + value * intensity. Negative mutes color; positive strengthens color.",
   temperature: "Renderer white-balance warmth control. Zero targets 6500K; positive lowers the target Kelvin for a warmer result and negative raises it for a cooler result.",
   tint: "Renderer green-magenta white-balance control. Zero is neutral; negative moves toward green and positive moves toward magenta.",
-  fade: "Tonal fade amount. Zero is identity; positive compresses highlights and opens shadows for softer separation. It is not exposure or grain.",
+  fade: "Milky global fade amount. Zero is identity; positive gently raises the black floor and softens color separation without darkening the image.",
+  shadowLift: "Dedicated shadow-opening amount. Zero is identity; positive reveals dark detail and prevents crushed blacks without changing overall exposure.",
+  highlightRollOff: "Highlight compression amount. Zero is identity; positive softens bright peaks while preserving midtone brightness instead of lowering exposure.",
+  bloom: "Soft highlight glow amount. Zero is no glow; positive adds bounded diffusion around bright areas and must not be used as exposure.",
   grain: "Monochrome film-grain strength rendered with a bounded soft-light texture. Zero is no grain; positive increases visible fine texture.",
-  vignette: "Corner darkening strength. Zero is no vignette; positive progressively darkens the edges while preserving the center."
+  dust: "Sparse analog dust and short scratch texture amount. Zero is clean; positive adds defects distinct from uniform film grain.",
+  vignette: "Corner darkening strength. Zero is no vignette; positive progressively darkens the edges while preserving the center. Keep it conservative unless corner falloff is visible."
 });
 
 export function generatedFilterRecipeExampleCandidate() {
@@ -91,14 +103,18 @@ export function generatedFilterRecipeExampleCandidate() {
       "filter_lab.use.golden_hour"
     ],
     parameters: {
-      exposure: 0.06,
-      contrast: -0.08,
-      saturation: 0.16,
-      temperature: 0.28,
-      tint: 0.06,
-      fade: 0.12,
-      grain: 0.1,
-      vignette: 0.14
+      exposure: -0.02,
+      contrast: -0.1,
+      saturation: -0.08,
+      temperature: 0.24,
+      tint: 0.1,
+      fade: 0.18,
+      shadowLift: 0.16,
+      highlightRollOff: 0.14,
+      bloom: 0.08,
+      grain: 0.08,
+      dust: 0.18,
+      vignette: 0.06
     },
     warningsKeys: [
       "filter_lab.warning.session_only"
@@ -216,7 +232,7 @@ export function buildGeneratedFilterRecipeSchemaPrompt() {
     "Allowed warningsKeys:",
     Array.from(ALLOWED_WARNING_KEYS).join(", "),
     "Allowed source: cloud",
-    "Allowed recipeVersion: 1.0",
+    `Allowed recipeVersion: ${FILTER_RECIPE_VERSION}`,
     "Parameter ranges:",
     Object.entries(PARAMETER_RANGES).map(([key, [min, max]]) => `${key}=${min}..${max}`).join(", "),
     "Estimate parameters before choosing nameKey or descriptionKey. Labels must not drive numeric values.",
@@ -228,17 +244,19 @@ export function buildGeneratedFilterRecipeSchemaPrompt() {
 export function buildGeneratedFilterRecipeStyleGuidancePrompt() {
   return [
     "Style extraction evidence order:",
-    "If the reference image contains a visible filter/settings panel, numeric slider values, icon/value rows, preset cards, or a recipe overlay, treat those visible parameters as the strongest signal.",
-    "Read visible signed values when possible, then translate them into the app's parameter ranges proportionally and clamp to the allowed schema range. Preserve the sign. Around +/-40 is moderate; around +/-80 is strong.",
-    "Likely control mapping: sun/brightness -> exposure; half circle/contrast -> contrast; droplet/color -> saturation or tint; thermometer/warmth -> temperature; cloud/haze/fade -> fade; grain/detail/sharpness/texture -> grain; edge/corner/dark circle -> vignette.",
-    "Otherwise inspect neutral whites, grays, and low-saturation surfaces before strongly colored objects.",
+    "Treat the final rendered photo pixels as the primary evidence. Match the visible tonal and color result, not a label or number printed by another app.",
+    "A visible settings panel is strong evidence only when it is known to describe this renderer's exact control semantics and identity baseline.",
+    "Third-party preset names, filter codes, icons, and signed slider numbers are secondary relative hints. They may be adjustments layered on an unknown base preset, so NEVER map them proportionally or directly into this app's absolute parameter ranges.",
+    "Use a third-party slider only to suggest a likely direction after verifying that direction against the final rendered pixels. If the icon or control meaning is uncertain, lower confidence and rely on the pixels.",
+    "Inspect neutral whites, grays, and low-saturation surfaces before strongly colored objects.",
     "Then inspect luminance distribution: black point, midtone brightness, highlight roll-off, and tonal separation.",
     "Then inspect chroma distribution: overall saturation, warm-cool balance, and green-magenta bias.",
-    "Use corner-to-center falloff as evidence for vignette and spatially consistent fine high-frequency texture as evidence for grain.",
+    "Use corner-to-center falloff as evidence for vignette, spatially consistent fine high-frequency texture as evidence for grain, sparse spots or scratches as evidence for dust, and glow around bright regions as evidence for bloom.",
     "Do not treat a colorful subject, sunset, neon sign, painted wall, or single light source as global filter evidence by itself.",
     "When scene lighting and filter evidence conflict, lower confidence and keep only well-supported controls conservative.",
     "Choose every numeric parameter independently. Do not choose a preset family first and derive its parameters afterward.",
-    "If a visible control is unknown, combine its value with the actual visual result instead of inventing a new schema field.",
+    "For a faded direct-flash or warm instant-film look with a visibly raised black floor, prefer fade plus shadowLift, low or negative contrast, conservative exposure and vignette, warm temperature with verified magenta tint, and only evidence-backed highlightRollOff or bloom. Do not crush blacks to imitate the sample.",
+    "If a visible control is unknown, use the actual visual result instead of inventing a new schema field or treating its number as an absolute value.",
     "Ignore QR codes, watermarks, app logos, usernames, decorative stickers, and sharing UI.",
     "Do not claim an exact clone of a third-party app/filter. Output only the closest safe app recipe."
   ].join("\n");

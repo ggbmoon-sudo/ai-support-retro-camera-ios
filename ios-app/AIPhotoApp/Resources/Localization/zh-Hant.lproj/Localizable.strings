@@ -78,8 +78,8 @@
 "filter_lab.preview.save_hint" = "長按「套用後」照片，即可把目前預覽儲存到相簿。";
 "filter_lab.intensity" = "強度";
 "filter_lab.recommended_use" = "推薦用途";
-"filter_lab.parameters" = "Mock 參數摘要";
-"filter_lab.parameters.summary" = "曝光 %.2f · 對比 %.2f · 飽和 %.2f · 色溫 %.2f · 褪色 %.2f · 顆粒 %.2f · 暗角 %.2f";
+"filter_lab.parameters" = "濾鏡參數";
+"filter_lab.parameters.summary" = "曝光 %.2f · 對比 %.2f · 飽和 %.2f · 色溫 %.2f · 色偏 %.2f · 褪色 %.2f · 陰影提亮 %.2f · 高光柔化 %.2f · 光暈 %.2f · 顆粒 %.2f · 塵點 %.2f · 暗角 %.2f";
 "filter_lab.action.apply" = "套用生成濾鏡";
 "filter_lab.action.save_filtered" = "儲存套用後照片";
 "filter_lab.action.try_another" = "重新選擇圖片";

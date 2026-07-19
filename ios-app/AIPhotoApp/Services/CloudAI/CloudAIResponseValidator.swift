@@ -143,7 +143,7 @@ enum CloudAIValidationIssue: Equatable, CustomStringConvertible {
 
 private extension CloudAIGeneratedFilter {
     var parametersAreSafe: Bool {
-        guard recipeVersion == "1.0",
+        guard recipeVersion == "1.1",
               id.hasPrefix("ai_"),
               source == .cloud || source == .mock || source == .local,
               (0.0...1.0).contains(confidence),
@@ -161,7 +161,11 @@ private extension CloudAIGeneratedFilter {
             && (-0.45...0.45).contains(params.temperature)
             && (-0.25...0.25).contains(params.tint)
             && (0.0...0.5).contains(params.fade)
+            && (0.0...0.4).contains(params.shadowLift)
+            && (0.0...0.4).contains(params.highlightRollOff)
+            && (0.0...0.3).contains(params.bloom)
             && (0.0...0.35).contains(params.grain)
+            && (0.0...0.35).contains(params.dust)
             && (0.0...0.35).contains(params.vignette)
     }
 }

@@ -48,13 +48,17 @@ extension GeneratedFilterRecipe {
             temperature: 0.22,
             tint: 0.04,
             fade: 0.18,
+            shadowLift: 0.16,
+            highlightRollOff: 0.12,
+            bloom: 0.06,
             grain: 0.12,
+            dust: 0.08,
             vignette: 0.08
         ),
         warningsKeys: [
             "filter_lab.warning.mock_only",
             "filter_lab.warning.session_only"
         ],
-        recipeVersion: "1.0"
+        recipeVersion: "1.1"
     )
 }

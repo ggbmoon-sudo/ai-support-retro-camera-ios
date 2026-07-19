@@ -25,7 +25,11 @@ test("Filter Lab structured output schema describes every bounded renderer contr
     "temperature",
     "tint",
     "fade",
+    "shadowLift",
+    "highlightRollOff",
+    "bloom",
     "grain",
+    "dust",
     "vignette"
   ]);
 
@@ -48,6 +52,10 @@ test("Filter Lab prompt separates scene content from reusable filter evidence wi
   assert.match(prompt, /color-science analyst/i);
   assert.match(prompt, /neutral whites, grays/i);
   assert.match(prompt, /black point, midtone brightness, highlight roll-off/i);
+  assert.match(prompt, /final rendered photo pixels as the primary evidence/i);
+  assert.match(prompt, /NEVER map them proportionally or directly/i);
+  assert.match(prompt, /faded direct-flash or warm instant-film look/i);
+  assert.match(prompt, /Do not crush blacks/i);
   assert.match(prompt, /scene lighting and filter evidence conflict/i);
   assert.match(prompt, /Do not choose a preset family first/i);
   assert.match(prompt, /Renderer calibration anchors/i);
@@ -109,9 +117,59 @@ test("Filter Lab local renderer consumes every recipe control with one exposure 
   ), "utf8");
 
   assert.match(renderer, /applyExposure\(parameters\.exposure \* intensity/);
+  assert.match(renderer, /applyTone\(parameters, intensity: intensity/);
+  assert.match(renderer, /parameters\.shadowLift \* intensity/);
+  assert.match(renderer, /parameters\.highlightRollOff \* intensity/);
+  assert.match(renderer, /applyBloom\(parameters\.bloom \* intensity/);
   assert.match(renderer, /applyGrain\(parameters\.grain \* intensity/);
+  assert.match(renderer, /applyDust\(parameters\.dust \* intensity/);
   assert.match(renderer, /CISoftLightBlendMode/);
+  assert.match(renderer, /CIScreenBlendMode/);
+  assert.match(renderer, /blackLift = min\(fade \* 0\.15, 0\.075\)/);
+  assert.match(renderer, /vignette \* 1\.35/);
   assert.doesNotMatch(renderer, /kCIInputBrightnessKey/);
   assert.match(viewModel, /intensity: Double = 1\.0/);
   assert.doesNotMatch(renderer, /api\.siliconflow|Authorization|Bearer /i);
+});
+
+test("Filter Lab recipe 1.1 remains aligned across backend, iOS decoding, validation, and diagnostics", async () => {
+  const parameterSet = await readFile(new URL(
+    "../../ios-app/AIPhotoApp/Features/Inspiration/FilterLab/GeneratedFilterParameterSet.swift",
+    import.meta.url
+  ), "utf8");
+  const cloudModels = await readFile(new URL(
+    "../../ios-app/AIPhotoApp/Services/CloudAI/CloudAIModels.swift",
+    import.meta.url
+  ), "utf8");
+  const cloudMapper = await readFile(new URL(
+    "../../ios-app/AIPhotoApp/Services/CloudAI/CloudAIPhotoAdvisorMapper.swift",
+    import.meta.url
+  ), "utf8");
+  const cloudValidator = await readFile(new URL(
+    "../../ios-app/AIPhotoApp/Services/CloudAI/CloudAIResponseValidator.swift",
+    import.meta.url
+  ), "utf8");
+  const resultView = await readFile(new URL(
+    "../../ios-app/AIPhotoApp/Features/Inspiration/FilterLab/GeneratedFilterResultView.swift",
+    import.meta.url
+  ), "utf8");
+  const englishLocalization = await readFile(new URL(
+    "../../ios-app/AIPhotoApp/Resources/Localization/en.lproj/Localizable.strings",
+    import.meta.url
+  ), "utf8");
+  const parameterKeys = generatedFilterRecipeJSONSchema().properties.parameters.required;
+
+  assert.match(cloudValidator, /recipeVersion == "1\.1"/);
+  for (const key of parameterKeys) {
+    assert.match(parameterSet, new RegExp(`var ${key}: Double`));
+    assert.match(cloudModels, new RegExp(`let ${key}: Double`));
+    assert.match(cloudMapper, new RegExp(`${key}: generatedFilter\\.parameters\\.${key}`));
+    assert.match(resultView, new RegExp(`params\\.${key}`));
+  }
+
+  const summaryLine = englishLocalization
+    .split("\n")
+    .find((line) => line.includes('"filter_lab.parameters.summary"'));
+  assert.equal(summaryLine?.match(/%\.2f/g)?.length, parameterKeys.length);
+  assert.match(englishLocalization, /"filter_lab\.parameters" = "Filter parameters"/);
 });

@@ -20,11 +20,15 @@ struct MockFilterGenerationService: FilterGenerationService {
                 temperature: 0.12,
                 tint: 0.02,
                 fade: 0.24,
+                shadowLift: 0.2,
+                highlightRollOff: 0.14,
+                bloom: 0.05,
                 grain: 0.1,
+                dust: 0.06,
                 vignette: 0.06
             ),
             warningsKeys: ["filter_lab.warning.mock_only"],
-            recipeVersion: "1.0"
+            recipeVersion: "1.1"
         ),
         GeneratedFilterRecipe(
             id: "mock_neon_street_fade",
@@ -43,11 +47,15 @@ struct MockFilterGenerationService: FilterGenerationService {
                 temperature: -0.18,
                 tint: 0.12,
                 fade: 0.08,
+                shadowLift: 0.05,
+                highlightRollOff: 0.12,
+                bloom: 0.08,
                 grain: 0.16,
+                dust: 0.1,
                 vignette: 0.18
             ),
             warningsKeys: ["filter_lab.warning.mock_only"],
-            recipeVersion: "1.0"
+            recipeVersion: "1.1"
         ),
         GeneratedFilterRecipe(
             id: "mock_ccd_party_warm",
@@ -66,11 +74,15 @@ struct MockFilterGenerationService: FilterGenerationService {
                 temperature: 0.16,
                 tint: -0.04,
                 fade: 0.04,
+                shadowLift: 0.08,
+                highlightRollOff: 0.18,
+                bloom: 0.12,
                 grain: 0.22,
+                dust: 0.08,
                 vignette: 0.12
             ),
             warningsKeys: ["filter_lab.warning.mock_only"],
-            recipeVersion: "1.0"
+            recipeVersion: "1.1"
         ),
         GeneratedFilterRecipe(
             id: "mock_cool_chrome_portrait",
@@ -89,11 +101,15 @@ struct MockFilterGenerationService: FilterGenerationService {
                 temperature: -0.22,
                 tint: -0.02,
                 fade: 0.1,
+                shadowLift: 0.08,
+                highlightRollOff: 0.1,
+                bloom: 0.03,
                 grain: 0.08,
+                dust: 0.04,
                 vignette: 0.1
             ),
             warningsKeys: ["filter_lab.warning.mock_only"],
-            recipeVersion: "1.0"
+            recipeVersion: "1.1"
         ),
         GeneratedFilterRecipe(
             id: "mock_amber_travel_glow",
@@ -112,11 +128,15 @@ struct MockFilterGenerationService: FilterGenerationService {
                 temperature: 0.28,
                 tint: 0.06,
                 fade: 0.12,
+                shadowLift: 0.12,
+                highlightRollOff: 0.14,
+                bloom: 0.09,
                 grain: 0.1,
+                dust: 0.06,
                 vignette: 0.14
             ),
             warningsKeys: ["filter_lab.warning.mock_only"],
-            recipeVersion: "1.0"
+            recipeVersion: "1.1"
         )
     ]
 

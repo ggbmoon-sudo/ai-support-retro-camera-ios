@@ -7,7 +7,11 @@ nonisolated enum FilterRecipeValidator {
     private static let temperatureRange = -0.45...0.45
     private static let tintRange = -0.25...0.25
     private static let fadeRange = 0.0...0.5
+    private static let shadowLiftRange = 0.0...0.4
+    private static let highlightRollOffRange = 0.0...0.4
+    private static let bloomRange = 0.0...0.3
     private static let grainRange = 0.0...0.35
+    private static let dustRange = 0.0...0.35
     private static let vignetteRange = 0.0...0.35
 
     static func validated(_ recipe: GeneratedFilterRecipe) -> GeneratedFilterRecipe {
@@ -40,7 +44,11 @@ nonisolated enum FilterRecipeValidator {
             temperature: clamp(parameters.temperature, to: temperatureRange, fallback: fallback.temperature),
             tint: clamp(parameters.tint, to: tintRange, fallback: fallback.tint),
             fade: clamp(parameters.fade, to: fadeRange, fallback: fallback.fade),
+            shadowLift: clamp(parameters.shadowLift, to: shadowLiftRange, fallback: fallback.shadowLift),
+            highlightRollOff: clamp(parameters.highlightRollOff, to: highlightRollOffRange, fallback: fallback.highlightRollOff),
+            bloom: clamp(parameters.bloom, to: bloomRange, fallback: fallback.bloom),
             grain: clamp(parameters.grain, to: grainRange, fallback: fallback.grain),
+            dust: clamp(parameters.dust, to: dustRange, fallback: fallback.dust),
             vignette: clamp(parameters.vignette, to: vignetteRange, fallback: fallback.vignette)
         )
     }

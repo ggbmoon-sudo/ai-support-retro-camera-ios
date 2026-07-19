@@ -121,7 +121,11 @@ private extension CloudAIGeneratedFilterParameters {
         temperature = parameters.temperature
         tint = parameters.tint
         fade = parameters.fade
+        shadowLift = parameters.shadowLift
+        highlightRollOff = parameters.highlightRollOff
+        bloom = parameters.bloom
         grain = parameters.grain
+        dust = parameters.dust
         vignette = parameters.vignette
     }
 }

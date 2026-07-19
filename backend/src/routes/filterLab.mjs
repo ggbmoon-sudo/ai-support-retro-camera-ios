@@ -1,4 +1,5 @@
 import { cloudAIConfig } from "../config/cloudAIConfig.mjs";
+import { persistSanitizedFilterLabAnalysisArtifact } from "../artifacts/filterLabSanitizedAnalysisArtifact.mjs";
 import { resolveProvider, ProviderKind } from "../providers/ProviderRegistry.mjs";
 import { validateGeneratedFilterRecipeCandidate } from "../providers/generatedFilterRecipeContract.mjs";
 import { fallbackCloudAIResponse } from "../responses/fallbackResponse.mjs";
@@ -68,17 +69,37 @@ export async function handleFilterLabRequest(requestBody, options = {}) {
     };
   }
 
+  const latencyMs = elapsedMs(startedAt);
+  const metadata = {
+    providerKind,
+    latencyMs,
+    attempts: providerResult.attempts
+  };
+
+  if (config.saveSanitizedFilterLabAnalysis) {
+    const artifactWriter = options.analysisArtifactWriter ?? persistSanitizedFilterLabAnalysisArtifact;
+    try {
+      metadata.analysisArtifact = await artifactWriter({
+        providerKind,
+        recipe: providerResult.recipe,
+        attempts: providerResult.attempts,
+        latencyMs
+      });
+    } catch {
+      metadata.analysisArtifact = {
+        saved: false,
+        errorBucket: "artifact_write_failed"
+      };
+    }
+  }
+
   return {
     status: 200,
     body: filterLabResponse({
       locale: requestBody.locale,
       recipe: providerResult.recipe
     }),
-    metadata: {
-      providerKind,
-      latencyMs: elapsedMs(startedAt),
-      attempts: providerResult.attempts
-    }
+    metadata
   };
 }
 
