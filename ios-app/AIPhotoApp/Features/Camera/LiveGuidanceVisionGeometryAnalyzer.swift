@@ -9,13 +9,15 @@ nonisolated struct LiveGuidanceVisionGeometryAnalyzer: Sendable {
 
     func analysis(
         from pixelBuffer: CVPixelBuffer,
-        depthSignals: DepthSignals = .unavailable
+        depthSignals: DepthSignals = .unavailable,
+        includeSceneHorizon: Bool = false,
+        pixelOrientation: CameraFramePixelOrientation = .sensorNativeLandscape
     ) -> LiveVisionGeometryAnalysis {
         let faceRequest = VNDetectFaceRectanglesRequest()
         let bodyPoseRequest = VNDetectHumanBodyPoseRequest()
         let handler = VNImageRequestHandler(
             cvPixelBuffer: pixelBuffer,
-            orientation: .right,
+            orientation: pixelOrientation.imagePropertyOrientation,
             options: [:]
         )
 
@@ -25,24 +27,52 @@ nonisolated struct LiveGuidanceVisionGeometryAnalyzer: Sendable {
             return .empty
         }
 
-        let faceBox = faceRequest.results?
+        let faceBoxes = faceRequest.results?
             .map(\.boundingBox)
-            .max(by: { area(of: $0) < area(of: $1) })
             .map(LiveFrameNormalizedRect.init)
+            .sorted(by: { $0.area > $1.area }) ?? []
 
-        let bodyBox = bodyPoseRequest.results?
-            .compactMap(bodyBoundingBox)
-            .max(by: { $0.area < $1.area })
+        let bodyDetections = bodyPoseRequest.results?
+            .compactMap(bodyDetection)
+            .sorted(by: { $0.box.area > $1.box.area }) ?? []
+        let bodyBoxes = bodyDetections.map(\.box)
+        let sceneHorizonSignal = includeSceneHorizon
+            ? sceneHorizonSignal(using: handler)
+            : nil
 
-        guard let subjectBox = bodyBox ?? faceBox else {
-            return .empty
+        let faceBox = faceBoxes.first
+        let bodyBox = bodyBoxes.first
+        let personCandidates = subjectCandidates(
+            faceBoxes: faceBoxes,
+            bodyDetections: bodyDetections
+        )
+
+        let salientObjectBoxes = personCandidates.isEmpty
+            ? salientObjectBoundingBoxes(using: handler)
+            : []
+        let salientObjectBox = salientObjectBoxes.first
+        let subjectCandidates = personCandidates.isEmpty
+            ? salientObjectBoxes.map {
+                LiveFrameSubjectCandidate(box: $0, kind: .salientObject)
+            }
+            : personCandidates
+
+        guard let subjectBox = bodyBox ?? faceBox ?? salientObjectBox else {
+            return LiveVisionGeometryAnalysis(
+                liveFrameSignals: nil,
+                signals: [],
+                subjectCandidates: [],
+                sceneHorizonSignal: sceneHorizonSignal
+            )
         }
 
         return compositionAnalyzer.analysis(
             subjectBox: subjectBox,
             faceBox: faceBox,
             bodyBox: bodyBox,
-            depthSignals: depthSignals
+            depthSignals: depthSignals,
+            subjectCandidates: subjectCandidates,
+            sceneHorizonSignal: sceneHorizonSignal
         )
     }
 
@@ -53,12 +83,25 @@ nonisolated struct LiveGuidanceVisionGeometryAnalyzer: Sendable {
         analysis(from: pixelBuffer, depthSignals: depthSignals).signals
     }
 
-    private func bodyBoundingBox(from observation: VNHumanBodyPoseObservation) -> LiveFrameNormalizedRect? {
+    private func bodyDetection(
+        from observation: VNHumanBodyPoseObservation
+    ) -> BodyDetection? {
         guard let recognizedPoints = try? observation.recognizedPoints(.all) else {
             return nil
         }
 
-        let points = recognizedPoints.values
+        let points = Array(recognizedPoints.values)
+        guard let box = bodyBoundingBox(from: points) else { return nil }
+        return BodyDetection(
+            box: box,
+            poseFramingSignal: poseFramingSignal(from: points)
+        )
+    }
+
+    private func bodyBoundingBox(
+        from recognizedPoints: [VNRecognizedPoint]
+    ) -> LiveFrameNormalizedRect? {
+        let points = recognizedPoints
             .filter { $0.confidence >= 0.35 }
             .map(\.location)
 
@@ -81,19 +124,150 @@ nonisolated struct LiveGuidanceVisionGeometryAnalyzer: Sendable {
         )
     }
 
+    private func poseFramingSignal(
+        from recognizedPoints: [VNRecognizedPoint]
+    ) -> LiveFramePoseFramingSignal? {
+        let points = recognizedPoints
+            .filter { $0.confidence >= 0.55 }
+            .map(\.location)
+        guard points.count >= 5 else { return nil }
+
+        let edgeThreshold: CGFloat = 0.045
+        var nearEdges: LiveFramePoseEdges = []
+        if points.contains(where: { $0.x <= edgeThreshold }) {
+            nearEdges.insert(.left)
+        }
+        if points.contains(where: { $0.x >= 1 - edgeThreshold }) {
+            nearEdges.insert(.right)
+        }
+        if points.contains(where: { $0.y >= 1 - edgeThreshold }) {
+            nearEdges.insert(.top)
+        }
+        if points.contains(where: { $0.y <= edgeThreshold }) {
+            nearEdges.insert(.bottom)
+        }
+
+        guard !nearEdges.isEmpty else { return nil }
+        return LiveFramePoseFramingSignal(nearEdges: nearEdges)
+    }
+
     private func area(of rect: CGRect) -> CGFloat {
         rect.width * rect.height
+    }
+
+    private func subjectCandidates(
+        faceBoxes: [LiveFrameNormalizedRect],
+        bodyDetections: [BodyDetection]
+    ) -> [LiveFrameSubjectCandidate] {
+        let bodyBoxes = bodyDetections.map(\.box)
+        var candidates = bodyDetections.prefix(6).map {
+            LiveFrameSubjectCandidate(
+                box: $0.box,
+                kind: .body,
+                poseFramingSignal: $0.poseFramingSignal
+            )
+        }
+
+        let unpairedFaces = faceBoxes.filter { faceBox in
+            !bodyBoxes.contains(where: { $0.contains(faceBox.center) })
+        }
+        candidates.append(contentsOf: unpairedFaces.prefix(6).map {
+            LiveFrameSubjectCandidate(box: $0, kind: .face)
+        })
+
+        return Array(candidates.prefix(6))
+    }
+
+    private func salientObjectBoundingBoxes(
+        using handler: VNImageRequestHandler
+    ) -> [LiveFrameNormalizedRect] {
+        let request = VNGenerateObjectnessBasedSaliencyImageRequest()
+
+        do {
+            try handler.perform([request])
+        } catch {
+            return []
+        }
+
+        let candidateBoxes = request.results?
+            .first?
+            .salientObjects?
+            .filter { $0.confidence >= 0.2 }
+            .map(\.boundingBox)
+            .filter {
+                let boxArea = area(of: $0)
+                return boxArea >= 0.02 && boxArea <= 0.78
+            } ?? []
+
+        return candidateBoxes
+            .map(LiveFrameNormalizedRect.init)
+            .sorted(by: { $0.area > $1.area })
+            .prefix(6)
+            .map { $0 }
+    }
+
+    private struct BodyDetection {
+        let box: LiveFrameNormalizedRect
+        let poseFramingSignal: LiveFramePoseFramingSignal?
+    }
+
+    private func sceneHorizonSignal(
+        using handler: VNImageRequestHandler
+    ) -> LiveFrameSceneHorizonSignal? {
+        let request = VNDetectHorizonRequest()
+
+        do {
+            try handler.perform([request])
+        } catch {
+            return nil
+        }
+
+        guard let observation = request.results?.first,
+              observation.confidence >= 0.35 else {
+            return nil
+        }
+        let angleDegrees = Double(observation.angle) * 180 / .pi
+        guard angleDegrees.isFinite,
+              abs(angleDegrees) <= 25 else {
+            return nil
+        }
+
+        return LiveFrameSceneHorizonSignal(
+            angleDegreesRounded: (angleDegrees * 2).rounded() / 2
+        )
     }
 }
 
 nonisolated struct LiveVisionGeometryAnalysis: Equatable, Sendable {
     let liveFrameSignals: LiveFrameSignals?
     let signals: [LiveGuidanceSignal]
+    let subjectCandidates: [LiveFrameSubjectCandidate]
+    let sceneHorizonSignal: LiveFrameSceneHorizonSignal?
 
     static let empty = LiveVisionGeometryAnalysis(
         liveFrameSignals: nil,
-        signals: []
+        signals: [],
+        subjectCandidates: [],
+        sceneHorizonSignal: nil
     )
+
+    func applyingDepthSignals(
+        _ depthSignals: DepthSignals
+    ) -> LiveVisionGeometryAnalysis {
+        guard let liveFrameSignals else { return self }
+        return LiveVisionGeometryAnalysis(
+            liveFrameSignals: LiveFrameSignals(
+                geometry: liveFrameSignals.geometry,
+                depth: depthSignals,
+                composition: liveFrameSignals.composition,
+                safety: liveFrameSignals.safety,
+                productionReady: false
+            ),
+            signals: signals,
+            subjectCandidates: subjectCandidates,
+            sceneHorizonSignal: sceneHorizonSignal
+        )
+    }
 }
 
 nonisolated struct LiveVisionCompositionAnalyzer: Sendable {
@@ -109,7 +283,9 @@ nonisolated struct LiveVisionCompositionAnalyzer: Sendable {
         subjectBox: LiveFrameNormalizedRect,
         faceBox: LiveFrameNormalizedRect?,
         bodyBox: LiveFrameNormalizedRect?,
-        depthSignals: DepthSignals = .unavailable
+        depthSignals: DepthSignals = .unavailable,
+        subjectCandidates: [LiveFrameSubjectCandidate] = [],
+        sceneHorizonSignal: LiveFrameSceneHorizonSignal? = nil
     ) -> LiveVisionGeometryAnalysis {
         let geometry = geometrySignals(
             subjectBox: subjectBox,
@@ -125,7 +301,9 @@ nonisolated struct LiveVisionCompositionAnalyzer: Sendable {
 
         return LiveVisionGeometryAnalysis(
             liveFrameSignals: liveFrameSignals,
-            signals: guidanceSignals(from: geometry, composition: composition)
+            signals: guidanceSignals(from: geometry, composition: composition),
+            subjectCandidates: subjectCandidates,
+            sceneHorizonSignal: sceneHorizonSignal
         )
     }
 

@@ -8,9 +8,1309 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: PT2-SF-R9-R16-R2 - General adaptive Recipe v2 tone transfer
-Status: experimental polished candidate; backend/source-contract and synthetic policy checks pass; Mac/Core Image multi-style visual/performance verification pending
-Latest implementation: PT2-SF-R9-R16-R2 targets all generated Recipe v2 filters rather than one reference pair. The prompt makes `lumaCurve` primary transferable tone intent. iOS uses alpha-aware 64-pixel source/tone-color samples, 6×6 repeated low-chroma textured-shadow evidence, bounded legacy/style allowances, a chromaticity-preserving 17-cube, and a local piecewise mask. Recipe `1.1`, declared vignette, saturated shadows, and intentional low-key curves stay outside the guard. The style/reference image still uses the existing consented backend path; apply/original and adaptive samples remain local. `productionReady:false` stays locked.
+Current phase: Local AI Compose P22 - foreground-aware AR guide occlusion
+Status: implemented; 20/20 deterministic mask/stability/mirroring/source/static/privacy checks passed; Mac/Xcode physical-device depth alignment/performance verification required
+Latest implementation: P22 reuses P20 synchronized absolute hardware depth and the current full-analysis Vision subject to form an ephemeral fixed 18-by-24 binary occupancy mask only under reliable high foreground/background separation. Private cleanup removes isolated cells and fills strongly enclosed gaps. Two compatible masks activate, one miss is tolerated, two clear, and a distant replacement requires two observations. P17 motion entry, P21 thermal protection, camera/lens/Compose/selected-photo resets, and Group Balance clear the mask. Front mirroring occurs only at display mapping. SwiftUI isolates grid/tint in a compositing group and applies `destinationOut`, so guides disappear behind foreground cells while subject/target/action/readiness UI remains visible. The mask contains no metric depth, pixels, confidence, identity, class, or semantics and is never logged, persisted, uploaded, analyzed remotely, or used for training. No ARKit, Xiaoyi/provider call, Camera route/upload, automatic camera control/capture, model/training, or production rollout is added. `productionReady:false` stays locked. Mac/iPhone validation and PT2-SF-R9-R16-R2 Core Image verification remain pending operator tasks.
+
+## Local AI Compose P22 - Foreground-aware AR Guide Occlusion
+
+Status: implemented; 20/20 deterministic mask/stability/mirroring and source/static/privacy checks passed; pending Mac/Xcode physical-device verification
+Date: 2026-07-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+P22 makes the composition grid respect a reliably nearer foreground subject by reducing synchronized hardware depth to a bounded, temporary display mask.
+
+### Completed Work
+
+- Added `LiveFrameDepthOcclusionMask`, a fixed 18-by-24 logical portrait grid that accepts only bounded, unique cell indices.
+- Extended `LiveGuidanceDepthAnalyzer` to return one optional mask only after reliable P20 high-separation absolute depth and a current full-analysis Vision subject rectangle.
+- Kept metric depth, subject/background medians, validity ratios, pixel samples, thresholds, and cell tests private to the analyzer call.
+- Limited mask generation to an expanded subject neighborhood, removed isolated cells, filled cells surrounded by at least three cardinal neighbors, and rejected empty, weak, or oversized results.
+- Added `LocalAIComposeDepthOcclusionController`: two compatible masks activate, compatible continuation stabilizes, one miss retains, two misses clear, and two consistent distant masks replace.
+- Updated mask state only on the P17 motion-stable full-analysis path. P13 sequence tracking cannot create evidence; motion-pause entry clears immediately.
+- Cleared the mask on P21 thermal protection, Compose/camera/lens/selected-photo lifecycle resets, and Group Balance transitions.
+- Mapped the logical mask into the displayed preview rectangle, with front-camera mirroring applied once at display time.
+- Isolated composition grid/tint in a SwiftUI compositing group and used `destinationOut` for occupied cells, leaving subject/target/action/Hold/Ready/depth explanation above the cutout.
+- Preserved ordinary 2D guidance for unsupported/weak depth and left preview, filters, capture output, focus/exposure, zoom, shutter, and automatic-capture behavior unchanged.
+
+### Changed Files
+
+- Mask signal and depth extraction: `LiveFrameGeometrySignals.swift`, `LiveGuidanceDepthAnalyzer.swift`
+- New temporal controller: `LocalAIComposeDepthOcclusionStability.swift`
+- Capture and app state integration: `CameraCaptureService.swift`, `CameraViewModel.swift`, `CameraView.swift`
+- Isolated AR cutout rendering: `LocalAIComposeOverlayView.swift`
+- Docs/tests: root/iOS READMEs, camera pipeline, decisions, Doka decomposition, this phase log, and manual smoke tests
+
+### Verification
+
+- Twenty of twenty deterministic mask/stability/source cases pass: first pending, second activation, adjacent smoothing, one-miss retention, two-miss clear, distant replacement, empty input, near/distant IoU, front display mirror/no double mirror, bounds/deduplication, isolated-cell removal, cardinal-neighbor fill, thermal nil mask, P17 motion clear, isolated `destinationOut`, and Group Balance exclusion.
+- Source contracts confirm both `LiveGuidanceFrameAnalysis` construction paths provide an explicit mask, with thermal protection providing nil; only reliable high-separation depth may produce one.
+- Source order confirms P17 motion entry and P21 thermal handling clear spatial state before it can appear as fresh guidance.
+- Grid/tint alone are in the isolated compositing group; subject, target, and readiness layers remain outside/above the cutout.
+- `git diff --check` and delimiter balance across 65 Camera Swift files pass.
+- New mask/controller/rendering scans contain no ARKit, Xiaoyi/provider/network, logging, persistence, upload, analytics, model/training, automatic capture, or `productionReady:true` path.
+- Apple SDK compile, physical sensor alignment, real front-camera mirroring, mask-edge quality, filtered-preview continuity, depth teardown/rebuild, CPU/GPU/memory, dropped frames, thermal behavior, and shutter latency remain pending on Mac/iPhone because `swiftc`, Xcode, and Apple SDKs are unavailable here.
+
+### Known TODOs
+
+- Build in Xcode and verify the new synchronized-group Swift file is included under the deployment target.
+- Validate foreground cutout alignment on compatible TrueDepth and rear LiDAR/depth formats, including front display mirroring and every supported orientation/lens.
+- Exercise weak/invalid/reflective/dark/flat depth scenes and confirm ordinary guidance appears without a false cutout.
+- Tune only the private depth band, cleanup, and IoU values from physical-device evidence; do not expose numeric depth/confidence or turn the mask into a score.
+- Run Instruments with Compose, non-original live filter, P20 depth, and P22 cutout to compare CPU/GPU, memory, preview drops, thermal transitions, and shutter latency against P21.
+- Evaluate ARKit only in a separately approved world-anchor/plane/mesh/persistent-placement phase. Use Xiaoyi only through the backend for separately consented semantic still-image analysis, never for this live occlusion loop.
+
+### Boundary Confirmations
+
+- Raw/coarse mask, depth value/map, subject geometry/history, frame, log, persistence, analytics, upload, profile, or training use: no.
+- Metric depth, confidence, identity/class/semantic label, score, rating, or quality claim in UI: no.
+- ARKit, Xiaoyi/provider call, Camera route/upload, direct iOS provider key/call, semantic segmentation model, auto-trigger, or automatic camera control/capture: no.
+- Captured photo, Core Image recipe, preview priority, focus/exposure, zoom, or shutter behavior changed: no.
+- Custom model/training or production rollout: no.
+- Camera remains local-only and `productionReady:false` remains locked: yes.
+
+### Ready for Next Step
+
+Ready for Mac/Xcode physical-device verification: yes. Ready for production rollout: no.
+
+## Local AI Compose P21 - Capture-first Adaptive Workload
+
+Status: implemented; deterministic thermal/power/cadence/recovery and source/static/privacy checks passed; pending Mac/Xcode physical-device verification
+Date: 2026-07-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+P21 protects viewfinder and shutter responsiveness by adapting optional local AI cadence to Low Power Mode and coarse OS thermal pressure.
+
+### Completed Work
+
+- Added `LocalCameraAIWorkloadController` with only `nominal`, `reduced`, and `thermallyPaused` output buckets.
+- Preserved nominal ceilings at 0.5-second full analysis and 12 FPS explicit-lock tracking.
+- Selected reduced mode for Low Power Mode or fair thermal pressure, using 0.85-second full analysis and 8 FPS tracking.
+- Entered protection immediately for serious/critical pressure and skipped Vision, luma, depth reduction, and P13 tracking while keeping RGB filtered-preview delivery ahead of the gate.
+- Emitted a bucket-only thermal pause callback immediately on entry and at a bounded two-second refresh cadence; no raw state/timing crosses to UI.
+- Reset the private P13 sequence on protection entry and required a fresh detector analysis after recovery.
+- Added a five-second recovery dwell outside serious/critical; renewed heat cancels the dwell, and recovery returns to the current nominal/reduced tier.
+- Handled thermal pause before app-side frame/candidate assignment, cleared action/pose/Ready/depth evidence, removed the live depth output, and blocked all fresh-evidence advancement.
+- Preserved existing subject/target geometry only as dimmed continuity state; it cannot produce Ready or a haptic.
+- Added a localized orange thermometer reticle plus copy that explicitly keeps preview and shutter available.
+- Re-enabled depth only after recovery and only through the existing Compose/permission/selected-photo capability gate, so P20 still requires fresh depth evidence.
+
+### Changed Files
+
+- New scheduler: `LocalCameraAIWorkloadPolicy.swift`
+- Capture scheduling and bucket callback: `CameraCaptureService.swift`, `LiveFrameGeometrySignals.swift`
+- App-side pause/depth lifecycle: `CameraViewModel.swift`
+- Pause presentation: `LocalAIComposeGuide.swift`, `LocalAIComposeOverlayView.swift`
+- Copy: English and Traditional Chinese `Localizable.strings`
+- Docs/tests: root/iOS READMEs, camera pipeline, decisions, Doka decomposition, this phase log, and manual smoke tests
+
+### Verification
+
+- Eighteen of eighteen deterministic transition/source cases pass: nominal, low-power reduced, fair reduced, immediate serious/critical entry, recovery start, sub-five-second hold, five-second nominal/reduced release, reheat cancellation, preview-before-gate, Vision skip, tracker reset, bucket-only callback, handler ordering, Ready clearing, depth removal, and preserved-target-only pause presentation.
+- Source contracts confirm two explicit `LiveGuidanceFrameAnalysis` workload initializers, preview delivery before the workload gate, no Vision call in the protective path, and app-side thermal handling before latest-frame assignment.
+- English and Traditional Chinese each contain exactly one thermal instruction and one thermal detail key.
+- `git diff --check` and delimiter balance across 64 Camera Swift files pass.
+- New scheduler/runtime scans contain no network/provider/ARKit, logging/persistence/analytics/upload, automatic capture, model/training, or `productionReady:true` path.
+- Apple SDK compile plus real Low Power/fair/serious/critical transitions, session/depth rebuild, filtered-preview continuity, haptics, thermal recovery timing, memory, dropped frames, and shutter latency remain pending on Mac/iPhone because `swiftc`, Xcode, and Apple SDKs are unavailable here.
+
+### Known TODOs
+
+- Build with the project Apple SDK and confirm `ProcessInfo.ThermalState` and Low Power APIs under the deployment target.
+- Use Xcode thermal simulation and real Instruments stress to verify every tier without relying only on synthetic policy inputs.
+- Confirm serious/critical callback, depth removal, synchronizer-to-video-delegate transition, and recovery rebuild never freeze or duplicate preview callbacks.
+- Compare CPU/GPU, memory, dropped frames, shutter latency, and thermal time-to-protection/recovery for nominal, reduced, and protected modes with live filter and depth.
+- Tune only cadence/recovery implementation values from device evidence. Do not convert them into numeric UI, scores, warnings, or device-health claims.
+- A future semantic still-image request may use Xiaoyi through the backend only after a separate explicit Camera boundary/consent phase; it must not bypass this local capture-first scheduler.
+
+### Boundary Confirmations
+
+- Preview/filter/manual controls/shutter gated by thermal AI state: no.
+- Raw thermal state, timestamp, dwell/cadence value, history, log, persistence, analytics, upload, profile, or training use: no.
+- Temperature/FPS/timer/confidence/score/device-health display or blur/photo-quality inference: no.
+- ARKit, Xiaoyi/provider call, Camera route/upload, direct iOS provider key/call, auto-trigger, or automatic camera control/capture: no.
+- Custom model/training or production rollout: no.
+- Camera remains local-only and `productionReady:false` remains locked: yes.
+
+### Ready for Next Step
+
+Ready for Mac/Xcode physical-device verification: yes. Ready for production rollout: no.
+
+## Local AI Compose P20 - Synchronized Hardware-depth Layers
+
+Status: implemented; deterministic bucket/orientation/hysteresis and source/static/privacy checks passed; pending Mac/Xcode physical-device verification
+Date: 2026-07-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+P20 turns the earlier depth-capability probe into a real capability-gated, synchronized, local depth signal and a restrained AR layer cue.
+
+### Completed Work
+
+- Added one `AVCaptureDepthDataOutput` only for active Compose analysis, paired it with the existing `AVCaptureVideoDataOutput` through `AVCaptureDataOutputSynchronizer` on the existing frame queue, and removed it when Compose analysis is disabled.
+- Selected a compatible active-format depth stream, preferred `DepthFloat32` within a 640-by-480 bound, enabled filtered/late-frame-discard behavior, and preserved the ordinary RGB sample delegate whenever depth setup is unavailable.
+- Added safe teardown/rebuild around camera/lens input changes so a depth-compatible and incompatible format can transition without making depth mandatory.
+- Tracked video and depth rotation independently. Vision lower-left coordinates are converted into top-left logical portrait depth points and then mapped to portrait-rotated or sensor-native buffers.
+- Added `LiveGuidanceDepthAnalyzer`; it accepts only absolute hardware depth, converts to `DepthFloat32`, samples a bounded subject interior and surrounding ring, rejects invalid values, and exports only coarse distance/separation/confidence buckets.
+- Applied the depth buckets to the existing `LiveFrameSignals` without rerunning Vision and kept `productionReady:false` explicit.
+- Added `LocalAIComposeDepthStabilityController`: two reliable `high`-separation observations activate, one clear observation is tolerated, and the second clears.
+- Updated depth stability only inside the P17 motion-stable full-analysis path. P13 fast tracking cannot advance it; motion pause hides/freezes it; Group Balance hides the single-subject cue.
+- Added a subtle pair of offset subject halos plus localized `Depth layers · on-device` copy.
+- Kept ARKit out because no world anchor/plane/mesh/persistent 3D placement is required, and kept Xiaoyi out because a network model cannot provide frame-synchronous hardware geometry.
+
+### Changed Files
+
+- Capture/synchronization: `CameraCaptureService.swift`
+- New depth reduction/stability: `LiveGuidanceDepthAnalyzer.swift`, `LocalAIComposeDepthStability.swift`
+- Typed signal application/UI integration: `LiveGuidanceVisionGeometryAnalyzer.swift`, `CameraViewModel.swift`, `CameraView.swift`, `LocalAIComposeOverlayView.swift`
+- Copy: English and Traditional Chinese `Localizable.strings`
+- Docs/tests: root/iOS READMEs, camera pipeline, decisions, Doka decomposition, this phase log, and manual smoke tests
+
+### Verification
+
+- Fifteen of fifteen deterministic cases pass: two-sample activation, one-clear retention, two-clear removal, portrait-matte rejection, balanced-separation rejection, private near/middle/far boundaries, strong/weak separation boundaries, portrait and sensor-native coordinate mapping, P17 stable-path placement, and Group Balance suppression.
+- Source contracts confirm exactly one depth output and one data-output synchronizer, depth analysis only after a full-analysis Vision subject exists, independent depth orientation state, safe no-depth video delegate fallback, and no P13 depth update path.
+- Both localization files contain the P20 key exactly once.
+- `git diff --check` and delimiter balance across 63 Camera Swift files pass.
+- ARKit, provider/network, logging/persistence/upload/analytics, automatic capture, model/training, and `productionReady:true` scans over the P20 source are empty.
+- Apple SDK compilation plus compatible TrueDepth/LiDAR delivery, portrait/sensor-native alignment, lens-transition behavior, dropped-depth behavior, live-filter coexistence, thermal, memory, dropped frames, and shutter latency remain pending on Mac/iPhone because `swiftc`, Xcode, and Apple SDKs are unavailable in this Windows environment.
+
+### Known TODOs
+
+- Build on Mac/Xcode and confirm AVFoundation depth format/output/synchronizer APIs against the project SDK.
+- Validate front TrueDepth and every back lens independently; unsupported lenses must retain the full RGB/Vision/filtered-preview/capture path.
+- Tune private valid-ratio, distance, and separation thresholds only from diverse physical-device scenes, reflective surfaces, occlusion, low light, pets/objects, and people without turning the cue into a quality judgment.
+- Confirm the depth map and Vision rectangle remain aligned across front mirroring, portrait rotation support/fallback, and repeated front/back/lens switches.
+- Measure CPU/GPU, memory, frame drops, thermal state, live-filter contention, and shutter latency for at least ten minutes with Instruments.
+- If a future feature actually needs world anchors, occlusion, mesh/plane understanding, or persistent placement, evaluate ARKit in a separate phase. Do not add it only for this 2D subject-relative cue.
+
+### Boundary Confirmations
+
+- Raw depth map/pixels, metres, valid ratio, medians, sample positions, boxes, or history logging/persistence/upload/analytics/training: no.
+- Metric distance/confidence display, portrait/bokeh promise, quality score, sensitive/identity inference, or aesthetic judgment: no.
+- Portrait-matte-only cue, Depth Anything/Core ML fallback, ARKit world session, Xiaoyi/provider call, Camera backend route/upload, or direct iOS provider key/call: no.
+- Automatic focus/exposure/zoom/crop/bokeh/rotation/capture or shutter gate: no.
+- Camera remains local-only and `productionReady:false` remains locked: yes.
+
+### Ready for Next Step
+
+Ready for Mac/Xcode physical-device verification: yes. Ready for production rollout: no.
+
+## Local AI Compose P19 - Photographer-selected Group Balance
+
+Status: implemented; deterministic temporal/geometry/fresh-evidence and source/static/privacy checks passed; pending Mac/Xcode physical-device verification
+Date: 2026-07-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+P19 adds an explicit group-photo composition path without asking the app to infer identity, relationship, or automatic group membership.
+
+### Completed Work
+
+- Added `LocalAIComposeGroupStabilityController` over the same deterministic P11 candidate set, bounded to two through four rectangles.
+- Rejected union area outside `0.035...0.78` and width/height above `0.94` before temporal activation.
+- Required two compatible full-analysis samples for activation and distant replacement; smoothed compatible continuation.
+- Tolerated one missing sample for display continuity and cleared on the second.
+- Added `hasFreshActiveObservation` so a retained miss, first activation sample, or pending replacement cannot advance pose/action/Hold/Ready.
+- Updated state only inside the P17-stable full-analysis path; P13 callbacks remain excluded.
+- Added manual-only `.groupBalance`; automatic recommendation never returns it and horizontal target flip is unsupported.
+- Selecting Group Balance clears individual lock/tracking and starts fresh acquisition. Long-pressing an individual exits group mode to automatic guidance and starts the existing explicit tracker.
+- Added a centered anchor, group target area `0.38`, expanded bounded target dimensions, dashed cyan union frame/group badge, central safe-region grid, and localized searching/privacy copy.
+- Reused every existing Compose/analysis/camera/lens/photo/lifecycle reset through group state clearing.
+
+### Changed Files
+
+- New stability controller: `LocalAIComposeGroupStability.swift`
+- Policy/guide/integration: `LocalAIComposePolicy.swift`, `LocalAIComposeGuide.swift`, `CameraViewModel.swift`
+- AR UI/copy: `LocalAIComposeOverlayView.swift`, English and Traditional Chinese `Localizable.strings`
+- Docs/tests: root/iOS READMEs, camera pipeline, decisions, Doka decomposition, this phase log, and manual smoke tests
+
+### Verification
+
+- Sixteen of sixteen deterministic temporal/geometry/freshness cases pass: one-member rejection, one-sample rejection, two-sample activation, exact bounded union, one-miss retention without fresh evidence, two-miss clearing, continuation, one/two distant replacements, pending replacement freshness block, four-member cap, overwide rejection, motion-pause freeze, centered target, and no flip.
+- Source contracts confirm one group-controller update site inside the full-analysis device-motion gate, zero P13 group updates, manual-only policy, and fresh-group gating around pose/action/Hold/Ready.
+- Group source is bounded to two through four members and contains no network/provider/ARKit/logging/persistence path.
+- Request counts remain one human-body pose, one objectness saliency, one horizon, and one explicit-lock object tracker; contour request count remains zero.
+- Both localization files contain each P19 key exactly once.
+- `git diff --check`, 67-Camera-Swift-file delimiter balance, synchronized Xcode root, secret/provider/network/ARKit/logging/persistence scans, runtime production flag, and symbol-flow checks pass on Windows.
+- Swift/Apple SDK compile plus real group candidate stability, mixed-kind behavior, union mapping, front/back parity, overlay legibility, thermal, memory, filter contention, and shutter latency remain pending on Mac/iPhone because `swiftc` and `xcodebuild` are unavailable here.
+
+### Known TODOs
+
+- Tune union compatibility, area, and dimension gates only from physical-device pairs, groups of three/four, staggered depth, crossings, partial occlusion, low light, and mixed candidate kinds.
+- Confirm group union/target/action geometry remains visually coherent on every front/back lens and aspect-fit mapping.
+- Confirm one-miss continuity never reads as current detection and cannot emit a Ready haptic.
+- Measure full-analysis/P13/CoreMotion/Core Image contention, dropped frames, thermal state, memory, and shutter latency with Instruments.
+- Keep group membership photographer-selected. Any semantic relationship or social grouping would require a separate consented still-image backend phase and must not be inferred continuously.
+
+### Boundary Confirmations
+
+- Candidate/union box, member set, counter, group history logging, persistence, upload, analytics, or numeric display: no.
+- Automatic group membership, identity, relationship, social role, importance, attractiveness, quality score, sensitive inference, or claim that the group layout is best: no.
+- New Vision request, ARKit session, Xiaoyi/provider call, Camera route/upload, or direct iOS provider key/call: no.
+- Retained/pending group or P13 callback counting as action/Hold/Ready evidence: no.
+- Automatic focus/exposure/zoom/crop/rotation/capture or shutter gate: no.
+- Custom model artifact, dataset, user-photo training, or production rollout: no.
+- Camera remains local-only and `productionReady:false` remains locked: yes.
+
+### Ready for Next Step
+
+Ready for Mac/Xcode physical-device verification: yes. Ready for production rollout: no.
+
+## Local AI Compose P18 - Explicit-lock Lead Room
+
+Status: implemented; deterministic temporal/geometry and source/static/privacy checks passed; pending Mac/Xcode physical-device verification
+Date: 2026-07-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+P18 reserves visible space ahead of a consistently moving, photographer-locked subject using bounded local screen-space geometry rather than semantic cloud analysis.
+
+### Completed Work
+
+- Added `LocalAIComposeSubjectMotionDirection` with only left/right buckets; numeric velocity and private thresholds never enter the UI contract.
+- Added `LocalAIComposeLeadRoomStabilityController` with two-sample entry/reversal, a lower continuation threshold, one weak/missing-sample tolerance, and two-sample clearing.
+- Accepted evidence only from fresh approximately 2 FPS full-analysis detector matches for an explicit subject lock.
+- Excluded predicted tracker misses and all P13 fast `VNTrackObjectRequest` callbacks from Lead Room evidence.
+- Frozen Lead Room state while P17 reports device movement so camera pan cannot silently become subject-motion evidence.
+- Added automatic policy priority: valid Leading Lines, bounded Lead Room, scene-aware Negative Space, Symmetry, then existing geometry rules.
+- Bounded automatic Lead Room to subject area `0.025...0.32` and opposite-third distance at most `0.32`.
+- Added opposite-third anchors, per-kind target areas, front-camera-safe mapping, manual policy selection, and horizontal target flip.
+- Added a low-opacity open-side tint, three dashed motion lanes, and a dashed third line without numeric velocity, trajectory, confidence, or score.
+- Reset direction state on subject selection/unlock and every existing Compose/analysis/camera/lens/photo/lifecycle path that clears selection.
+- Added English `Lead room` and Traditional Chinese `前方留位` policy names.
+
+### Changed Files
+
+- New temporal controller: `LocalAIComposeLeadRoomStability.swift`
+- Policy/guide/integration: `LocalAIComposePolicy.swift`, `LocalAIComposeGuide.swift`, `CameraViewModel.swift`
+- AR UI/copy: `LocalAIComposeOverlayView.swift`, English and Traditional Chinese `Localizable.strings`
+- Docs/tests: root/iOS READMEs, camera pipeline, decisions, Doka decomposition, this phase log, and manual smoke tests
+
+### Verification
+
+- Twenty of twenty deterministic temporal/policy/geometry cases pass: stationary jitter, single-sample rejection, two-sample left/right entry, alternating rejection, continuation hysteresis, one/two misses, one/two reverse samples, opposite-third anchors, front mirroring, manual flip/fallback, policy priority, area bounds, and distance bound.
+- Source contracts confirm one controller update site in the full-analysis callback, fresh explicit-lock match gating, device-motion pause gating, and no update from the P13 fast tracker callback.
+- Policy/target contracts confirm Leading Lines priority, Lead Room bounds, opposite-third target placement, manual fallback, and supported horizontal flip.
+- Request counts remain one human-body pose, one objectness saliency, one horizon, and one explicit-lock object tracker; contour request count remains zero.
+- Both localization files contain the P18 key exactly once.
+- `git diff --check`, Camera Swift delimiter balance, synchronized Xcode root, iOS provider/direct-call/import, P18 network/persistence/logging/ARKit, runtime production flag, and symbol-flow checks pass on Windows.
+- Swift/Apple SDK compile plus real subject-motion threshold, pan rejection, front/back direction parity, overlay legibility, thermal, memory, live-filter contention, and shutter-latency checks remain pending on Mac/iPhone because `swiftc` and `xcodebuild` are unavailable here.
+
+### Known TODOs
+
+- Tune private entry/continuation magnitudes only from physical-device locked-subject scenes at varied apparent speeds, distances, lenses, light, occlusion, crossings, and detector cadence.
+- Confirm P17 rejects deliberate camera pans without making genuine moving-subject activation feel sticky after release.
+- Confirm front/back direction, target side, lane direction, movement arrow, long-press selection, and manual flip share one visible coordinate contract.
+- Measure full-analysis/tracker/CoreMotion/Core Image contention, dropped frames, thermal state, memory, and shutter latency with Instruments.
+- Keep the bucket described as screen-space geometry; richer intent, activity, gaze, destination, or semantic motion would need a separately approved backend/still-image phase and must not enter the continuous Camera loop implicitly.
+
+### Boundary Confirmations
+
+- Velocity, threshold, counter, direction/box/trajectory history logging, persistence, upload, analytics, or numeric display: no.
+- Physical speed, gaze, intent, identity, activity, destination, narrative, aesthetic score, sensitive inference, or claim that Lead Room is best: no.
+- New Vision request, ARKit session, Xiaoyi/provider call, Camera route/upload, or direct iOS provider key/call: no.
+- P13 fast tracker counting as Lead Room/action/Hold/Ready evidence: no.
+- Automatic focus/exposure/zoom/crop/rotation/capture or shutter gate: no.
+- Custom model artifact, dataset, user-photo training, or production rollout: no.
+- Camera remains local-only and `productionReady:false` remains locked: yes.
+
+### Ready for Next Step
+
+Ready for Mac/Xcode physical-device verification: yes. Ready for production rollout: no.
+
+## Local AI Compose P17 - Motion-coherent AR Guidance Gate
+
+Status: implemented; deterministic bucket/state/target/source/static/privacy checks passed; pending Mac/Xcode physical-device verification
+Date: 2026-07-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+P17 stops a moving phone from silently advancing composition policy or Ready evidence, while retaining low latency, existing target continuity, and intentional handheld creative freedom.
+
+### Completed Work
+
+- Extended the existing CoreMotion sample with rotation-rate magnitude while retaining the same approximately 12 Hz cadence, 36-sample cap, main-actor ownership, stop-time clearing, and memory-only lifecycle.
+- Added a 500 ms Compose summary that averages user-acceleration and rotation-rate magnitudes, privately normalizes both, uses the stronger channel, and exports only stable/moving/unavailable.
+- Added a nonisolated, Sendable `LocalAIComposeMotionBucket` so no default-MainActor capture-context type or raw value crosses into the deterministic gate.
+- Added `LocalAIComposeMotionGateController`: moving enters pause immediately; another moving sample resets release progress; two stable/unavailable full-analysis samples release it.
+- Updated the approximately 2 FPS full-analysis callback so motion gating occurs before horizon/P14/P15/P16 scene evidence.
+- Frozen horizon, symmetry, convergence, quiet-side, ambiguity, pose-edge, action, Hold, and Ready evidence while paused; kept P13 fast tracking geometry-only.
+- Cleared action/pose/readiness on pause entry without clearing an explicit subject lock/tracker or existing target.
+- Prevented policy/target creation and caching while moving. Existing targets remain frozen and are only dimmed in the overlay.
+- Added `.stabilizing` guide state, typed motion-pause projection, centered gyroscope-style decorative reticle, hidden movement/level cues, and dimmed preserved grid.
+- Added English/Traditional Chinese optional copy that describes the guide pause and explicitly allows intentional handheld motion.
+- Reset the gate across Compose toggle, disabled analysis, target/guide lifecycle, lens/camera/selected-photo/camera-stop paths.
+
+### Changed Files
+
+- Sensor/gate: `CameraCaptureDeviceSignalMonitor.swift`, new `LocalAIComposeMotionGate.swift`
+- Integration/state: `CameraViewModel.swift`, `LocalAIComposeGuide.swift`
+- AR UI/copy: `LocalAIComposeOverlayView.swift`, English and Traditional Chinese `Localizable.strings`
+- Docs/tests: root/iOS READMEs, camera pipeline, decisions, Doka decomposition, this phase log, and manual smoke tests
+
+### Verification
+
+- Seven of seven deterministic sensor fixtures pass: still and gentle drift remain stable; slow pan, translation, fast pan, shake, and clamped extreme movement become moving.
+- Thirteen of thirteen gate transitions pass: immediate entry, one-release-sample hold, second-sample release, unavailable release fallback, repeated moving reset, and re-entry behavior.
+- Four of four target cases pass: moving without target does not cache/show one, moving with an existing target preserves display without creating a new one, and stable states can create/show targets.
+- Source contracts confirm rotation-rate sampling, bucket-only output, 500 ms window, immediate moving pause, two-sample release, scene/full temporal evidence gates, no target caching while paused, and fast-tracker exclusion.
+- Five reset symbol occurrences cover four reset entry points plus the reset method across Compose/analysis/target/guide lifecycle paths.
+- Request counts remain one human-body pose, one objectness saliency, one horizon, and one explicit-lock object tracker; contour request count remains zero.
+- Both localization files contain each P17 key exactly once.
+- `git diff --check`, 59-Camera-Swift-file delimiter balance, nonisolated actor boundary, P17 network/provider/ARKit/logging/persistence scans, and synchronized Xcode root checks pass on Windows.
+- Swift/Apple SDK compile plus real acceleration/rotation thresholds, slow/fast pan response, unavailable-motion behavior, front/back overlay parity, thermal, memory, filter contention, and shutter-latency checks remain pending on Mac/iPhone because `swiftc` and `xcodebuild` are unavailable here.
+
+### Known TODOs
+
+- Tune the private acceleration and rotation normalization only from physical-device stationary hand tremor, deliberate pan, walking, shake, tripod, and front-camera tests.
+- Confirm a 500 ms window plus approximately 2 FPS gate entry feels responsive without flicker across older and newer iPhones.
+- Confirm two-sample release is neither sticky nor premature when the motion feed becomes temporarily unavailable.
+- Measure main-thread CoreMotion callback cost, Compose/full-analysis latency, live-filter contention, thermal state, memory, and shutter latency with Instruments.
+- Keep device motion distinct from image blur or subject motion; a future optical-motion cue would require its own approved phase and evidence contract.
+
+### Boundary Confirmations
+
+- Raw acceleration/gyro axes, magnitudes, normalized values, thresholds, timestamps, histories, logging, persistence, upload, or analytics: no.
+- Image-blur claim, subject-motion inference, quality score, sensitive/identity inference, or claim that handheld motion is wrong: no.
+- New Vision request, ARKit session, Xiaoyi/provider call, Camera route/upload, or direct iOS provider key/call: no.
+- P13 fast tracker counting as gate/scene/action/Hold/Ready evidence: no.
+- Auto-trigger, automatic focus/exposure/zoom/crop/rotation/capture, or shutter gate: no.
+- Custom model artifact, dataset, user-photo training, or production rollout: no.
+- Camera remains local-only and `productionReady:false` remains locked: yes.
+
+### Ready for Next Step
+
+Ready for Mac/Xcode physical-device verification: yes. Ready for production rollout: no.
+
+## Local AI Compose P16 - Scene-aware Negative Space
+
+Status: implemented; deterministic algorithm/orientation/stability/policy/source/static/privacy checks passed; pending Mac/Xcode physical-device verification
+Date: 2026-07-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+P16 lets Negative Space use one stable, explainable left/right viewfinder-activity cue while preserving the local-only camera boundary, fixed cost, temporal truth, and photographer choice.
+
+### Completed Work
+
+- Refactored the P15 analyzer to return leading-line and quiet-space signals from one fixed 24×32 portrait grid under one read-only Y-plane lock.
+- Added fixed left columns `1...8` and right columns `15...22` over thirty interior rows, with 240 local horizontal/vertical luma comparisons per side independent of source resolution.
+- Kept active-side floor, absolute side difference, and quiet-to-active ratio private; exported only observed/not-observed/unavailable plus an optional left/right bucket.
+- Added two-matching-full-sample activation/switching, one-clear tolerance, and two-clear removal. Malformed observed-without-side input fails closed.
+- Updated automatic policy priority to Leading Lines, bounded quiet-space Negative Space, Symmetry, then prior subject-geometry rules.
+- Limited scene-aware Negative Space to subject area `0.020...0.14` and subject-to-opposite-third distance at most `0.34`.
+- Placed the subject target opposite the stable lower-activity side while preserving manual Negative Space, safe no-evidence fallback, and supported horizontal target flip.
+- Added a subtle cyan half-frame tint and dashed divider to explain the displayed region to preserve; front-camera display uses the existing mirrored coordinate mapper.
+- Rebuilt automatic/fixed-Negative-Space target/action/pose/Hold/Ready geometry on a stable side transition without clearing explicit subject lock or P13 tracking.
+- Reset quiet-space state across Compose, full target/guide, camera stop, selected-photo, lens/camera, and lifecycle boundaries.
+- Documented that the signal measures local luma activity only and does not infer semantic emptiness, full visual clutter, or photographic quality.
+
+### Changed Files
+
+- Signal/analyzer/stability: `LiveFrameGeometrySignals.swift`, `LiveGuidanceLumaConvergenceAnalyzer.swift`, `LiveGuidanceLumaStructureAnalyzer.swift`, `LocalAIComposeQuietSpaceStability.swift`
+- Queue/integration: `CameraCaptureService.swift`, `CameraViewModel.swift`
+- Policy/guide/overlay: `LocalAIComposePolicy.swift`, `LocalAIComposeGuide.swift`, `LocalAIComposeOverlayView.swift`
+- Docs/tests: root/iOS READMEs, camera pipeline, decisions, Doka decomposition, this phase log, and manual smoke tests
+
+### Verification
+
+- Fourteen of fourteen quantized raw-image fixtures pass across portrait-rotated and sensor-native-landscape paths: quiet-left, quiet-right, balanced texture, blank, smooth-gradient versus texture, activity-left, and activity-right return the expected evidence/side with orientation parity.
+- One hundred mirrored balanced-noise grids produced zero directional false positives.
+- Seven of seven temporal transitions pass: two-sample entry, one-clear tolerance, two-sample side replacement, one-clear tolerance, and second-clear removal.
+- Seven of seven policy cases pass for Leading Lines priority, quiet-space priority over Symmetry, both sides, distance bound, prior small-object fallback, and Symmetry fallback.
+- Four of four target cases pass for quiet-left/right opposite targets and photographer horizontal flip.
+- Source contracts confirm one shared P15/P16 analysis call, one lock/unlock and one plane access in the shared analyzer, full-analysis-only stability updates, no quiet-state update in P13 fast tracking, and four reset entry points reused across Compose/analysis/target/guide lifecycle paths.
+- Request counts remain one human-body pose, one objectness saliency, one horizon, and one explicit-lock object tracker; contour request count remains zero.
+- `git diff --check`, 58-Camera-Swift-file delimiter balance, synchronized Xcode root, iOS provider/direct-call/import, P16 network/persistence/logging/ARKit, runtime production flag, and symbol-flow checks pass on Windows.
+- Swift/Apple SDK compile plus real quiet-space scene accuracy, front/back display parity, overlay legibility, thermal, memory, live-filter contention, and shutter-latency checks remain pending on Mac/iPhone because `swiftc` and `xcodebuild` are unavailable here.
+
+### Known TODOs
+
+- Tune private thresholds only from varied physical-device scenes including walls, sky, foliage, fabric, grids, clutter, low light, motion blur, reflections, and high-grain filtered preview.
+- Confirm left/right evidence and the displayed preserve-region tint match every front/back lens and target flip without retaining diagnostic images, grids, activity values, or histories.
+- Measure the shared 768-sample P15/P16 pass beside P13 tracking and live Core Image; reduce cadence only if physical Instruments evidence requires it.
+- Consider richer local colour/orientation congestion only as a separate approved phase; never rename this bounded luminance cue as full semantic empty-space understanding.
+- Keep Negative Space optional and descriptive; never expose private activity/difference/ratio as confidence, score, ranking, or shutter gate.
+
+### Boundary Confirmations
+
+- Raw luma grid/activity/difference/ratio/side history logging, persistence, upload, or analytics: no.
+- Semantic emptiness/clutter label, aesthetic score, sensitive/identity inference, face recognition, or claim that the layout is best: no.
+- New Vision request, second P15/P16 pixel-buffer lock, ARKit session, Xiaoyi/provider call, Camera route/upload, or direct iOS provider key/call: no.
+- P13 fast tracker counting as quiet-space/action/Hold/Ready evidence: no.
+- Automatic focus/exposure/zoom/crop/rotation/capture or shutter gate: no.
+- Custom model artifact, dataset, user-photo training, or production rollout: no.
+- Camera remains local-only and `productionReady:false` remains locked: yes.
+
+### Ready for Next Step
+
+Ready for Mac/Xcode physical-device verification: yes. Ready for production rollout: no.
+
+## Local AI Compose P15 - Bounded Local Leading-line Convergence And Policy
+
+Status: implemented; deterministic algorithm/orientation/policy/source/static/privacy checks passed; pending Mac/Xcode physical-device verification
+Date: 2026-07-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+P15 adds one fixed-cost local perspective cue so Compose can respect strong viewfinder lines without introducing semantic cloud analysis, another Vision request, or unstable per-frame target movement.
+
+### Completed Work
+
+- Added a separate read-only full-range Y-plane convergence analyzer on the existing approximately 2 FPS Compose full-analysis background path.
+- Sampled a fixed 24×32 logical portrait grid with the P8 portrait/sensor-native orientation contract.
+- Derived Sobel-style edge tangents, partitioned them into 6×8 spatial buckets, and retained at most four strongest edges per bucket.
+- Bounded the working set to 192 edges and 18,336 edge pairs independent of source resolution.
+- Required edge separation, divergent directions, bounded extrapolation, bounded intersection region, an 8×7 convergence peak, direct radial support count/weight, multiple spatial sectors, and divergent orientation families.
+- Exported only observed/not-observed/unavailable plus one bounded normalized convergence point; converted CPU top-down Y to the existing Vision/Compose bottom-up contract.
+- Added two-nearby-sample activation, frozen nearby continuation, two-consistent-distant-sample replacement, one-clear tolerance, and two-clear removal.
+- Added Leading Lines policy priority when a subject lies within `0.26` and has area `0.025...0.55`, with prior symmetry/thirds/centered/negative-space fallback unchanged otherwise.
+- Added manual Leading Lines with a safe centered fallback, localized policy name, four dashed target rays, bounded focus marker, and no horizontal flip.
+- Rebuilt automatic or fixed-Leading-Lines target/action/pose/Hold/Ready state on point transitions without clearing explicit subject lock/tracking.
+- Reset convergence state across Compose, frame-analysis, selected-photo, camera/lens, and lifecycle boundaries.
+
+### Changed Files
+
+- New analyzer/stability: `LiveGuidanceLumaConvergenceAnalyzer.swift`, `LocalAIComposeLeadingLineStability.swift`
+- Signal/queue/integration: `LiveFrameGeometrySignals.swift`, `LiveGuidanceLumaStructureAnalyzer.swift`, `CameraCaptureService.swift`, `CameraViewModel.swift`
+- Policy/guide/overlay/UI: `LocalAIComposePolicy.swift`, `LocalAIComposeGuide.swift`, `LocalAIComposeOverlayView.swift`, existing policy menu in `CameraView.swift`
+- Localization: English and Traditional Chinese `Localizable.strings`
+- Docs/tests: root/iOS READMEs, camera pipeline, decisions, Doka decomposition, this phase log, and manual smoke tests
+
+### Verification
+
+- Fourteen of fourteen synthetic orientation fixtures pass: corridor and road are observed; blank is unavailable; horizontal bands, regular checker pattern, single diagonal, and deterministic high texture are not observed in portrait and sensor-native paths.
+- Seven of seven portrait/sensor-native evidence and point parity comparisons pass. Bounded corridor/road points remain within the deterministic fixture tolerance after top-down to bottom-up conversion.
+- One hundred additional deterministic noise fields produced zero observed false positives.
+- Eight of eight temporal transitions pass: two-sample entry, one-clear tolerance, frozen nearby continuation, two-sample distant replacement, one-clear tolerance, and second-clear removal.
+- Five of five policy priority/bound cases and five of five target/manual-fallback/no-flip checks pass.
+- Source contracts confirm a 24×32 grid, 6×8×4 edge cap, 18,336 maximum pairs, read-only lock/unlock parity, Y-plane-only access, bottom-up conversion, full-analysis-only state update, and at least five lifecycle resets.
+- Request counts remain one body pose, one objectness, one horizon, and one explicit-lock object tracker; `VNDetectContoursRequest` count is zero.
+- `git diff --check`, 57-Swift-file delimiter balance, localization, privacy/network/ARKit/logging, and iOS secret scans pass on Windows.
+- Swift/Apple SDK compile plus real corridor/road/rail accuracy, false-positive matrix, front/back orientation, target legibility, thermal, memory, live-filter contention, and shutter-latency checks remain pending on Mac/iPhone because `swiftc` and `xcodebuild` are unavailable here.
+
+### Known TODOs
+
+- Tune private thresholds only from varied physical-device scenes, including architecture, roads, bridges, rails, furniture edges, grids, clutter, foliage, low light, motion blur, and retro high-grain filters.
+- Confirm the detected point matches the visible convergence across every front/back lens without retaining diagnostic images, grids, edges, or histories.
+- Measure the extra 768 luma samples and bounded 18,336 pair loop beside P13 and live Core Image; reduce cadence/edge cap if physical Instruments evidence requires it.
+- Consider merging the P14/P15 sequential read-only Y-plane locks only after profiling proves lock overhead material; do not broaden retained state to optimize prematurely.
+- Keep Leading Lines optional and descriptive; never expose private votes/support as confidence, score, ranking, or shutter gate.
+
+### Boundary Confirmations
+
+- Raw luma grid/gradient/edge/intersection/vote/weight/count/sector/orientation/history logging, persistence, upload, or analytics: no.
+- Semantic road/corridor classification, aesthetic score, sensitive/identity inference, face recognition, or claim that the layout is best: no.
+- New Vision/contour request, ARKit session, Xiaoyi/provider call, Camera route/upload, or direct iOS provider key/call: no.
+- P13 fast tracker counting as convergence/action/Hold/Ready evidence: no.
+- Automatic focus/exposure/zoom/crop/rotation/capture or shutter gate: no.
+- Custom model artifact, dataset, user-photo training, or production rollout: no.
+- Camera remains local-only and `productionReady:false` remains locked: yes.
+
+### Ready for Next Step
+
+Ready for Mac/Xcode physical-device verification: yes. Ready for production rollout: no.
+
+## Local AI Compose P14 - Sparse Local Symmetry Evidence And Policy
+
+Status: implemented; deterministic algorithm/source/static/privacy checks passed; pending Mac/Xcode physical-device verification
+Date: 2026-07-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+P14 adds one explainable scene-structure bucket so automatic composition is not limited to subject-box geometry, while preserving low-frequency local processing, temporal truth, and photographer choice.
+
+### Completed Work
+
+- Added an orientation-aware sparse luma analyzer on the existing Compose full-analysis background path only.
+- Required the configured full-range bi-planar buffer, a read-only Core Video lock, plane 0, and a fixed 14-pair by 18-row workload.
+- Kept mirror difference, left/right balance, dynamic range, and local texture private; only observed/not-observed/unavailable crosses the analysis boundary.
+- Classified low-dynamic-range or low-texture scenes as unavailable rather than useful symmetry.
+- Added two-fresh-sample entry and exit hysteresis; P13 sequence updates never advance the state.
+- Added bounded automatic Symmetry eligibility for near-center, non-extreme-area subjects while preserving prior policy rules as fallback.
+- Added photographer-selectable Symmetry, a central target family, distinct central-axis/quarter-guide overlay, localization, and no meaningless horizontal flip.
+- Rebuilt automatic target/action/pose/readiness state on symmetry transition without clearing an explicit subject lock or tracker.
+- Reset symmetry evidence across Compose, frame-analysis, selected-photo, camera/lens, and lifecycle boundaries.
+
+### Changed Files
+
+- New analyzer/stability: `LiveGuidanceLumaStructureAnalyzer.swift`, `LocalAIComposeSymmetryStability.swift`
+- Signal/queue/integration: `LiveFrameGeometrySignals.swift`, `CameraCaptureService.swift`, `CameraViewModel.swift`
+- Policy/guide/overlay/UI: `LocalAIComposePolicy.swift`, `LocalAIComposeGuide.swift`, `LocalAIComposeOverlayView.swift`, `CameraView.swift`
+- Localization: English and Traditional Chinese `Localizable.strings`
+- Docs/tests: root/iOS READMEs, camera pipeline, decisions, Doka decomposition, this phase log, and manual smoke tests
+
+### Verification
+
+- Deterministic synthetic sampling covers mirrored structured, asymmetric, blank, low-texture, and sensor-native orientation-parity fixtures.
+- State/policy simulation covers two-sample activation/clear, bounded subject eligibility, fallback, central target, manual availability, and no Symmetry flip.
+- Source inspection confirms fixed sparse work, read-only lock/unlock parity, Y-plane-only access, one shared orientation snapshot, Compose-only gating, and full-analysis-only state updates.
+- Source scans confirm the three existing full Vision requests remain one each and P13 remains one explicit-lock-only object tracker; P14 adds no Vision request.
+- `git diff --check`, localization, privacy/network/ARKit/logging, secrets/production-ready, and lifecycle reset checks pass on Windows.
+- Swift/Apple SDK compile plus real-scene thresholds, front/back orientation parity, overlay legibility, thermal, memory, filter contention, and shutter-latency checks remain pending on Mac/iPhone.
+
+### Known TODOs
+
+- Tune thresholds only from a varied physical-device matrix of architecture, reflections, portraits, objects, blank walls, low light, clutter, and deliberately asymmetric scenes.
+- Confirm the sparse Y-plane signal matches the visible portrait preview across all front/back lenses without using or retaining raw diagnostic images.
+- Measure the extra fixed CPU work alongside P13 tracking and live filters; reduce sample count or cadence if physical evidence requires it.
+- Keep Symmetry descriptive and optional; never turn the private measurements into a quality score, confidence, ranking, or shutter gate.
+
+### Boundary Confirmations
+
+- Raw luma/sample grid/intermediate metric/evidence-history logging, persistence, upload, or analytics: no.
+- Aesthetic score, semantic/sensitive/identity inference, face recognition, or claim that symmetry is best: no.
+- New Vision request, ARKit session, Xiaoyi/provider call, Camera route/upload, or direct iOS provider key/call: no.
+- Automatic focus/exposure/zoom/crop/rotation/capture or shutter gate: no.
+- Custom model artifact, dataset, user-photo training, or production rollout: no.
+- Camera remains local-only and `productionReady:false` remains locked: yes.
+
+### Ready for Next Step
+
+Ready for Mac/Xcode physical-device verification: yes. Ready for production rollout: no.
+
+## Local AI Compose P13 - User-lock Vision Sequence Tracking
+
+Status: implemented; deterministic policy/source/static/privacy checks passed; pending Mac/Xcode physical-device verification
+Date: 2026-07-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+P13 makes the selected-subject AR frame update between full detections while keeping user lock, detector correction, temporal truth, and privacy boundaries authoritative.
+
+### Completed Work
+
+- Added typed ephemeral Vision tracking seed/update/phase contracts and a single-subject sequence tracker.
+- Started tracking only from an explicit long-press lock; no lock means no sequence request.
+- Ran one `.fast` object request synchronously on the existing serial background frame queue at a 12 FPS maximum with late-frame discard preserved.
+- Reused the P8 typed pixel orientation for every sequence request.
+- Added finite/bounded-coordinate, minimum-size, bounded-area, area-ratio, center-jump, and private confidence acceptance gates.
+- Required two consecutive misses before one lost update; loss stops the sequence and shows existing reacquiring behavior.
+- Added bounded display-box interpolation while keeping the raw observation only inside the active tracker.
+- Reseeded from each accepted approximately 2 FPS geometric detector match to bound drift.
+- Added an ephemeral generation UUID, seed-local monotonic index, and main-actor gates so replaced or reordered callbacks cannot mutate the current lock.
+- Kept high-rate guide refreshes outside all fresh-full-analysis ambiguity/action/pose/Hold/Ready controllers.
+- Cleared tracking on unlock, loss, Compose/target reset, frame-analysis shutdown, lens/camera change, selected-photo transition, and Camera stop.
+
+### Changed Files
+
+- New tracker: `LocalAIComposeVisionSequenceTracker.swift`
+- Frame queue/integration: `CameraCaptureService.swift`, `CameraViewModel.swift`
+- Docs/tests: root/iOS READMEs, camera pipeline, decisions, Doka decomposition, this phase log, and manual smoke tests
+
+### Verification
+
+- Thirty-three deterministic/source-contract checks pass. Gate/miss/smoothing/order simulation confirms one miss is tolerated, the second loses exactly once, invalid coordinate/size/area/jump/area-ratio observations fail, interpolation remains bounded, and reordered same-seed callbacks are rejected.
+- Source-contract inspection confirms one `.fast` request, 12 FPS throttle, serial background execution, typed orientation, detector reseed, stale-token/nonmonotonic-update rejection, and `consumesFreshFrameSample:false` fast refresh.
+- Source scans confirm the three existing full Vision requests remain one each and P13 adds exactly one lock-only `VNTrackObjectRequest`.
+- `git diff --check`, privacy/network/ARKit/logging, secrets/production-ready, and lifecycle reset scans pass on Windows.
+- Swift/Apple SDK compile plus real tracking fidelity, crossings/occlusion, frame cadence, thermal, memory, gesture, and shutter-latency checks remain pending on Mac/iPhone.
+
+### Known TODOs
+
+- Validate the private thresholds across people, pets, generic objects, close/far subjects, fast pans, occlusion, low texture, and low light.
+- Confirm 12 FPS `.fast` tracking gives sufficient fluidity without unacceptable thermal or live-filter contention; lower cadence if physical evidence requires it.
+- Confirm detector reseeding corrects drift without a visible half-second snap.
+- Keep the seed UUID strictly as an in-memory generation token, never identity or analytics.
+
+### Boundary Confirmations
+
+- Face/person/object identity recognition or persistent tracking identifier: no.
+- Raw frame/observation/confidence/box/token/trajectory logging, persistence, upload, or analytics: no.
+- Fast tracker counting as ambiguity/action/pose/Hold/Ready evidence: no.
+- ARKit session, Xiaoyi/provider call, Camera route/upload, automatic focus/exposure/capture, direct iOS provider key/call: no.
+- Custom model artifact, dataset, training, sensitive inference, score, or production rollout: no.
+- Camera remains local-only and `productionReady:false` remains locked: yes.
+
+### Ready for Next Step
+
+Ready for Mac/Xcode physical-device verification: yes. Ready for production rollout: no.
+
+## Local AI Compose P12 - Explicit Tap Focus And Exposure
+
+Status: implemented; shared-geometry simulation and source/static/privacy checks passed; pending Mac/Xcode physical-device verification
+Date: 2026-07-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+P12 connects a visible preview tap to supported local camera focus/exposure while preserving explicit photographer control and the existing AR Compose gesture loop.
+
+### Completed Work
+
+- Added a preview-owned tap callback that carries only the ephemeral visible layer point and AVFoundation-converted device point.
+- Added a shared displayed-content rectangle to the existing overlay mapper and reject aspect-fit letterbox taps before conversion.
+- Used `AVCaptureVideoPreviewLayer.captureDevicePointConverted(fromLayerPoint:)` for active gravity/rotation/mirroring conversion.
+- Added capability-gated focus/exposure point modes with bounded finite input, short configuration lock, set-point-before-mode ordering, and guaranteed unlock.
+- Added a temporary accent or neutral-dashed reticle plus success/warning haptic without quality/score language.
+- Added a localized VoiceOver custom action for explicit center focus/exposure.
+- Cleared reticle/task state on replacement tap, lens/camera switch, selected-photo transition, disappearance, inactive, and background lifecycle.
+
+### Changed Files
+
+- Preview/geometry: `CameraPreviewView.swift`, `CameraOverlayCoordinateMapper.swift`
+- Camera hardware/ViewModel/UI: `CameraCaptureService.swift`, `CameraViewModel.swift`, `CameraView.swift`
+- Localization: English and Traditional Chinese `Localizable.strings`
+- Docs/tests: root/iOS READMEs, camera pipeline, decisions, Doka decomposition, this phase log, and manual smoke tests
+
+### Verification
+
+- Shared geometry simulation confirmed the portrait 3:4 aspect-fit content rect rejects letterbox points while center/edge content points remain accepted.
+- Source-contract inspection confirmed preview-layer conversion, capability checks, point-before-mode ordering, configuration lock/defer unlock, bounded point input, and explicit UI-only call ownership.
+- Localization coverage, `git diff --check`, privacy/network/ARKit/logging scans, Vision request-count checks, and secret/production-ready scans pass on Windows.
+- Swift/Apple SDK compile plus real optical response, front/back/lens parity, gesture coexistence, accessibility, thermal, and performance checks remain pending on Mac/iPhone.
+
+### Known TODOs
+
+- Verify focus/exposure optical behavior and capability fallbacks on every available physical lens and front camera.
+- Confirm tap, long press, pinch, dual-focal frame drag, shutter, and Compose controls coexist without gesture starvation.
+- Confirm reticle contrast across Original and bright/dark live filters, VoiceOver, Reduce Motion, and supported iPhone sizes.
+- Keep tap/device points temporary and never connect Compose/Vision targets to automatic camera actuation without a separate approved decision.
+
+### Boundary Confirmations
+
+- Automatic AI/Vision focus, exposure, zoom, crop, rotation, capture, or shutter gate: no.
+- Tap/device-point/focus/exposure history logging, persistence, upload, or analytics: no.
+- New Vision request, ARKit session, Xiaoyi/provider call, Camera route/upload, or direct iOS provider key/call: no.
+- Sensitive inference, score/rating, model artifact, dataset, or training: no.
+- Camera remains local-only and `productionReady:false` remains locked: yes.
+
+### Ready for Next Step
+
+Ready for Mac/Xcode physical-device verification: yes. Ready for production rollout: no.
+
+## Local AI Compose P11 - Visible Ambiguity Candidate Frames
+
+Status: implemented; deterministic simulation and source/static/privacy checks passed; pending Mac/Xcode physical-device verification
+Date: 2026-07-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+P11 makes the existing confirmed-ambiguity long-press flow visible, bounded, and internally consistent. Every highlighted candidate is selectable and hidden candidates are not selectable during that state.
+
+### Completed Work
+
+- Added one policy-resolver candidate function with existing area floor `0.012`, deterministic largest-first ordering, and maximum four.
+- Derived ambiguity count and display rectangles from that exact candidate set.
+- Limited confirmed-ambiguity long-press hit testing to the same top-four set while preserving ordinary single-subject optional locking.
+- Extended `LocalAIComposeGuide` with bounded selection rectangles only in the confirmed multiple-subject state.
+- Added mirrored/aspect-fit dashed cyan candidate frames with accent corner markers and decorative accessibility treatment.
+- Added localized highlighted-frame guidance in English and Traditional Chinese.
+
+### Changed Files
+
+- Candidate/guide/integration: `LocalAIComposePolicy.swift`, `LocalAIComposeGuide.swift`, `CameraViewModel.swift`
+- Overlay/localization: `LocalAIComposeOverlayView.swift`, English and Traditional Chinese `Localizable.strings`
+- Docs/tests: root/iOS READMEs, camera pipeline, decisions, Doka decomposition, this phase log, and manual smoke tests
+
+### Verification
+
+- Deterministic areas `0.25, 0.10, 0.05, 0.02, 0.015, 0.01` produced visible `0.25, 0.10, 0.05, 0.02`: four boxes, the fifth eligible candidate bounded out, and the below-floor candidate excluded.
+- Twelve source-contract checks passed: area gate, top-four bound, shared candidate/box derivation, ambiguity hit-test parity, unchanged normal lock set, guide cap, confirmed-only propagation, multiple-guide carriage, mirror mapper, dashed visuals, decorative accessibility, and localized hint.
+- Source inspection confirms candidate boxes cross only after the P9 fresh-frame ambiguity state requires selection and clear in all other guide constructors.
+- Localization coverage, `git diff --check`, privacy/network/ARKit/logging scans, Vision request-count checks, and secret/production-ready scans pass on Windows.
+- Swift/Apple SDK compile plus physical-device candidate accuracy, overlap behavior, front mirroring, hit-test parity, visual contrast, accessibility, thermal, and performance checks remain pending.
+
+### Known TODOs
+
+- Verify the area floor and four-candidate cap across people, pets, objects, overlapping detections, close subjects, and cluttered scenes.
+- Confirm candidate visual contrast without confusing dashed alternatives with the solid selected-subject frame.
+- Confirm the most-specific overlap rule matches the visible selection expectation on device.
+- Keep candidate geometry temporary and never attach identity, numbering, confidence, or quality ranking.
+
+### Boundary Confirmations
+
+- Candidate number/kind/identity/face recognition/confidence/score/ranking: no.
+- Candidate/frame/touch/history logging or persistence: no.
+- Automatic focus/exposure/zoom/crop/rotation/capture or shutter gate: no.
+- New Vision request, ARKit session, Xiaoyi/provider call, Camera route/upload, or direct iOS provider key/call: no.
+- Sensitive inference, model artifact, dataset, or training: no.
+- Camera remains local-only and `productionReady:false` remains locked: yes.
+
+### Ready for Next Step
+
+Ready for Mac/Xcode physical-device verification: yes. Ready for production rollout: no.
+
+## Local AI Compose P10 - User-steerable Policy And Target Side
+
+Status: implemented; deterministic simulation and source/static/privacy checks passed; pending Mac/Xcode physical-device verification
+Date: 2026-07-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+P10 gives the photographer bounded control when the automatic composition policy does not match their creative intent. It exposes existing local alternatives and horizontal target flip without sacrificing subject lock or temporal correctness.
+
+### Completed Work
+
+- Made the three local policy families iterable/identifiable and added typed automatic/fixed preference state.
+- Added an optional horizontal flip to target-anchor resolution; centered policy remains invariant.
+- Added ViewModel actions for policy selection and target-side flip with target/action/pose/readiness reset but no subject/tracker reset.
+- Kept preference/side in memory across ordinary target, subject, lens, camera, and ambiguity recomputation within the active Compose session.
+- Reset preference to AI choice and default side whenever Compose toggles.
+- Added a compact Compose-only menu with current preference icon, selected checkmarks, automatic/three fixed choices, contextual flip action, and localized accessibility label/value.
+
+### Changed Files
+
+- Policy/target runtime: `LocalAIComposePolicy.swift`, `LocalAIComposeGuide.swift`, `CameraViewModel.swift`
+- Camera UI/localization: `CameraView.swift`, English and Traditional Chinese `Localizable.strings`
+- Docs/tests: root/iOS READMEs, camera pipeline, decisions, Doka decomposition, this phase log, and manual smoke tests
+
+### Verification
+
+- Deterministic anchor simulation confirmed thirds `0.333333 -> 0.666667`, centered X remains `0.5`, and two flips return to the original side.
+- Twelve source-contract checks passed: three iterable policies, typed preference, centered exclusion, fixed override, target-only reset for selection/flip, preference survival, Compose reset, guide flip consumption, complete menu choices, and contextual flip visibility.
+- Source inspection confirms neither policy-selection nor flip methods call the subject-selection clear path; both call the target-geometry clear path that resets readiness.
+- Localization coverage, `git diff --check`, privacy/network/ARKit/logging scans, Vision request-count checks, and secret/production-ready scans pass on Windows.
+- Swift/Apple SDK compile plus physical-device menu layout, front/back flip direction, subject-lock retention, accessibility, and interaction checks remain pending.
+
+### Known TODOs
+
+- Verify the extra 38-point control fits supported small iPhone widths without shutter/right-control collision.
+- Confirm front-camera visible side and action direction after one/two flips using asymmetric real scenes.
+- Confirm manual policy persistence feels predictable across lens/camera changes and resets correctly when Compose toggles.
+- Keep alternatives descriptive and never add a “best,” ranking, quality score, or forced policy.
+
+### Boundary Confirmations
+
+- Aesthetic ranking/best claim, score/confidence, or user quality judgment: no.
+- Automatic zoom/focus/exposure/crop/rotation/capture or shutter gate: no.
+- Policy/side/target/subject/frame/geometry logging or persistence: no.
+- Extra Vision request, ARKit session, Xiaoyi/provider call, Camera route/upload, or direct iOS provider key/call: no.
+- Identity/sensitive inference, model artifact, dataset, or training: no.
+- Camera remains local-only and `productionReady:false` remains locked: yes.
+
+### Ready for Next Step
+
+Ready for Mac/Xcode physical-device verification: yes. Ready for production rollout: no.
+
+## Local AI Compose P9 - Stable Hold-to-ready Completion
+
+Status: implemented; deterministic simulation and source/static/privacy checks passed; pending Mac/Xcode physical-device verification
+Date: 2026-07-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+P9 closes the final observable loop between geometric alignment and a calm manual Ready state. It also prevents non-frame UI refreshes from masquerading as repeated temporal evidence.
+
+### Completed Work
+
+- Added typed `inactive`, `holding`, and `ready` presentation states plus a two-fresh-frame readiness controller.
+- Marked only the local frame-analysis callback as consuming a fresh frame sample.
+- Gated ambiguity, pose-edge, action-switch, and readiness state updates behind that fresh-frame flag.
+- Required both raw proposed alignment and stabilized aligned action before readiness can advance.
+- Added localized hold copy, accent scope, dashed outer target ring, mint Ready target/cue, and a short transition animation.
+- Made the short readiness animation conditional on the system Reduce Motion setting.
+- Added one success haptic only when the published guide changes from non-Ready to Ready.
+- Reset readiness inside the shared target/lens/camera/Compose lifecycle clear path.
+
+### Changed Files
+
+- New temporal runtime: `LocalAIComposeReadiness.swift`
+- Guide/integration: `LocalAIComposeGuide.swift`, `CameraViewModel.swift`
+- Overlay/haptic/localization: `LocalAIComposeOverlayView.swift`, `CameraView.swift`, English and Traditional Chinese `Localizable.strings`
+- Docs/tests: root/iOS READMEs, camera pipeline, decisions, Doka decomposition, this phase log, and manual smoke tests
+
+### Verification
+
+- Deterministic sequence `aligned, aligned, aligned, off, aligned, off, off` produced `holding, ready, ready, inactive, holding, inactive, inactive`, with the counter capped at two.
+- Ten source-contract checks passed: explicit fresh-frame entry, ambiguity/pose/action/readiness gating, shared reset, two-frame gate, hold copy, transition-only Ready haptic, holding visual, and Ready visual.
+- Static inspection confirms only the frame-analysis callback passes `consumesFreshFrameSample: true`; other guide refresh call sites use the default false path.
+- Localization coverage, `git diff --check`, privacy/network/ARKit/logging scans, request-count checks, and secret/production-ready scans pass on Windows.
+- Swift/Apple SDK compile plus physical-device haptic cadence, visual transition, reset behavior, accessibility, thermal, and performance checks remain pending.
+
+### Known TODOs
+
+- Verify the approximately 2 FPS two-sample dwell feels calm rather than slow across newer/older devices and tune only from physical-device evidence.
+- Confirm haptic timing is singular under rapid threshold crossing, app lifecycle changes, and front/back/lens switches.
+- Confirm Reduce Motion, VoiceOver, silent-mode expectations, and overlay contrast across filters.
+- Keep capture manual and available in every state; never turn Ready into a shutter gate or quality guarantee.
+
+### Boundary Confirmations
+
+- Numeric score/confidence/progress, countdown, quality guarantee, or retake demand: no.
+- Automatic shutter, shutter gate, zoom/pan/crop/rotation, or camera actuation: no.
+- Temporal sample/readiness/action/geometry/frame/haptic logging or persistence: no.
+- Extra Vision request, ARKit session, Xiaoyi/provider call, Camera route/upload, or direct iOS provider key/call: no.
+- Identity/sensitive inference, model artifact, dataset, or training: no.
+- Camera remains local-only and `productionReady:false` remains locked: yes.
+
+### Ready for Next Step
+
+Ready for Mac/Xcode physical-device verification: yes. Ready for production rollout: no.
+
+## Local AI Compose P8 - Preview/Vision Orientation Contract
+
+Status: implemented; source-contract/static/privacy checks passed; pending Mac/Xcode physical-device verification
+Date: 2026-07-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+P8 aligns the physical `CVPixelBuffer`, Vision interpretation, native/filtered previews, AR-style drawing, and long-press selection under one explicit portrait orientation contract. It fixes the high-risk path where a hardware-rotated portrait buffer was also passed to Vision as `.right`.
+
+### Completed Work
+
+- Added `CameraFramePixelOrientation` and `CameraFrameOrientationContract` with one 90-degree connection constant, one portrait 3:4 normalized source size, and explicit sensor-native/portrait-rotated states.
+- Made the video-data-output connection record whether physical rotation succeeded under the existing locked frame state.
+- Passed the typed state into the shared Vision handler: portrait-rotated uses `.up`; sensor-native fallback uses `.right`.
+- Applied the same orientation contract to the legacy local face analyzer and the filtered-preview landscape fallback.
+- Replaced duplicate preview, overlay, and long-press rotation/source-size constants with the shared contract.
+- Kept the existing product behavior: a portrait 3:4 feed remains aspect-fit even while the surrounding interface is landscape.
+
+### Changed Files
+
+- New contract: `CameraFrameOrientationContract.swift`
+- Capture/Vision: `CameraCaptureService.swift`, `LiveGuidanceVisionGeometryAnalyzer.swift`, `LiveGuidanceFaceAnalyzer.swift`
+- Preview/coordinates: `CameraPreviewView.swift`, `RealtimeFilteredCameraPreviewView.swift`, `LocalAIComposeOverlayView.swift`, `CameraView.swift`
+- Docs/tests: root/iOS READMEs, camera pipeline, decisions, Doka decomposition, this phase log, and manual smoke tests
+
+### Verification
+
+- Apple primary guidance confirms that video-data-output rotation can deliver physically rotated `CVPixelBuffer`s; Vision must describe the remaining pixel orientation rather than repeat the connection rotation: [Apple QA1744](https://developer.apple.com/library/archive/qa/qa1744/_index.html).
+- Deterministic/source-contract checks confirm the 90-degree rotation maps to `.portraitRotated`/Vision `.up`, an unsupported rotation maps to `.sensorNativeLandscape`/Vision `.right`, and both overlay drawing and long-press hit testing use the same 3:4 source contract.
+- Static inspection confirms the filtered preview keeps its dimension-based landscape fallback, the Xcode source group remains filesystem synchronized, and no new Vision request was added.
+- `git diff --check`, privacy/boundary scans, localization coverage, and secret/production-ready scans pass on Windows; Swift/Apple SDK compilation and physical-device orientation checks remain pending.
+
+### Known TODOs
+
+- Verify the actual `CVPixelBuffer` width/height and overlay alignment on representative iPhone front/back lenses without logging or persisting frames/metadata.
+- Verify horizon angle sign and pose-edge mapping with asymmetric real scenes after the orientation correction.
+- Verify filtered/native preview parity and long-press letterbox rejection in portrait plus surrounding landscape UI.
+- Treat dynamic interface-following camera rotation as a separate end-to-end phase covering preview, data output, photo output metadata, Vision, gestures, filters, and saved results.
+
+### Boundary Confirmations
+
+- Extra Vision request, ARKit session, or Xiaoyi/provider call: no.
+- Raw frame/pixel buffer/dimension history/Vision output/geometry/touch persistence or logging: no.
+- Automatic rotation/crop/zoom/capture or shutter gate: no.
+- Camera backend route, preview upload, direct iOS provider call/key, or payload change: no.
+- Identity/sensitive inference, model artifact, dataset, or training: no.
+- Camera remains local-only and `productionReady:false` remains locked: yes.
+
+### Ready for Next Step
+
+Ready for Mac/Xcode physical-device verification: yes. Ready for production rollout: no.
+
+## Local AI Compose P7 - Conservative Pose-edge Framing Guard
+
+Status: implemented; deterministic simulation and source/static/privacy checks passed; pending Mac/Xcode physical-device verification
+Date: 2026-07-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+P7 closes a person-framing gap that rectangle alignment alone can miss. High-confidence visible pose points near preview edges become a stabilized, optional leave-space action and a small AR edge marker, without exposing raw joints or adding another Vision request.
+
+### Completed Work
+
+- Reworked the existing body-pose result path so body boxes and optional pose-edge flags are derived from the same `VNHumanBodyPoseObservation`.
+- Required at least five points at confidence `>= 0.55`; only left/right/top/bottom proximity within normalized threshold `0.045` leaves the analyzer.
+- Attached the bounded bitmask only to ephemeral body candidates and carried the current matched signal through selected-subject box smoothing.
+- Added `LocalAIComposePoseFramingStabilityController` with two-sample activation, edge-set change, and clear rules plus pending cancellation.
+- Kept unresolved X/Y placement ahead of pose framing, then placed pose-edge leave-space ahead of normal size guidance.
+- Mirrored left/right display edges for the front camera and rendered short orange markers inside the mapped preview boundary.
+- Added optional English/Traditional Chinese detail copy and kept visual markers accessibility-hidden.
+
+### Changed Files
+
+- Pose signal/analyzer: `LiveFrameGeometrySignals.swift`, `LiveGuidanceVisionGeometryAnalyzer.swift`
+- Pose temporal/runtime: `LocalAIComposePoseFramingStability.swift`, `LocalAIComposeTemporalSubjectTracker.swift`, `LocalAIComposePolicy.swift`, `LocalAIComposeGuidanceAction.swift`, `LocalAIComposeGuide.swift`, `CameraViewModel.swift`
+- Overlay/localization: `LocalAIComposeOverlayView.swift`, English and Traditional Chinese `Localizable.strings`
+- Docs/tests: root/iOS READMEs, camera pipeline, decisions, Doka decomposition, this phase log, and manual smoke tests
+
+### Verification
+
+- Deterministic simulation passed two-sample activation/change/clear, one-clear hold/cancellation, left/right mirror, placement-before-pose priority, pose-before-scale priority, and unchanged normal zoom/aligned cases.
+- Source-contract assertions passed the single existing body-pose request, raw-pose API confinement, five-point/confidence/edge gates, tracker signal carriage, placement-before-pose-before-scale priority, ambiguity suppression, plan reset, front mirroring, and decorative marker checks.
+- Localization coverage found 24 referenced Compose keys and 25 definitions in each of English and Traditional Chinese, with no missing or duplicate keys; the extra definition remains the local-privacy copy.
+- `git diff --check` passed with expected Windows LF-to-CRLF notices only. P7 source scans found no network, ARKit session, persistence, logging, identity descriptor, provider/model reference, automatic zoom, or added automatic capture API. Runtime source has no `productionReady:true` addition or secret value.
+- The Xcode project remains unchanged and filesystem synchronized; all raw recognized-point API use is confined to the analyzer, and only one `VNDetectHumanBodyPoseRequest` exists in the Camera source.
+- Mac/Xcode compile plus physical-device pose accuracy, front-mirror markers, false positives, accessibility, visual overlap, thermal, and performance checks remain pending because this Windows host has no Swift/Apple SDK.
+
+### Known TODOs
+
+- Verify Apple Vision point confidence and the conservative `0.045` edge threshold across standing, sitting, occluded, close, unusual-pose, and low-light device sessions.
+- Confirm the two-sample state is calm at approximately 2 FPS and tune only from diverse physical-device evidence.
+- Confirm locked-body association during crossings, misses, and reacquisition; keep ambiguity as no-match rather than guessing.
+- Keep the cue optional and never infer that a missing/unrecognized joint is cropped or defective.
+- Keep any future Xiaoyi semantics user initiated, still-image-only, backend mediated, consent gated, non-continuous, and separately approved.
+
+### Boundary Confirmations
+
+- Extra Vision request, skeleton/joint-dot overlay, or raw pose output: no.
+- Raw joint/name/confidence/observation/history/trajectory persistence or logging: no.
+- Automatic zoom/pan/crop/rotation/capture or shutter gate: no.
+- ARKit world tracking, plane detection, mesh, or 3D anchors: no.
+- Xiaoyi/provider call, Camera backend route, preview upload, or iOS provider key: no.
+- Identity, face recognition, sensitive/appearance inference, custom model, dataset, or training: no.
+- Camera remains local-only and `productionReady:false` remains locked: yes.
+
+### Ready for Next Step
+
+Ready for Mac/Xcode physical-device verification: yes. Ready for production rollout: no.
+
+## Local AI Compose P6 - Stabilized Dominant-error AR Action Cues
+
+Status: implemented; source/static/privacy checks passed; pending Mac/Xcode physical-device verification
+Date: 2026-07-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+P6 turns the composition coach into a direct AR action loop. It resolves the largest normalized placement error, stabilizes action changes over time, and renders the resulting manual movement/scale/ready cue in the viewfinder. It remains nonnumeric, optional, and never actuates the camera.
+
+### Completed Work
+
+- Added typed `LocalAIComposeGuidanceAction` cases for left/right/up/down, zoom in, leave space, and aligned, with existing localized copy and SF Symbols.
+- Added a pure dominant-error resolver that compares X/Y displacement against separate tolerances before considering target-area ratio.
+- Added aligned exit tolerance, tighter active movement exit tolerance, and separate zoom-in/step-back exit ranges.
+- Added `LocalAIComposeGuidanceActionStabilityController`: first action immediate, later switch after two matching proposals, pending switch cancellation on active-action return, and reset on missing guidance.
+- Integrated action state into `CameraViewModel` and reset it with every target-plan/lifecycle clear.
+- Added bounded display-coordinate arrows for stable movement actions, including mirrored front-camera behavior through existing display mapping.
+- Added target-centered plus/minus magnifier and mint aligned cues without numeric confidence/percentage/score.
+- Marked visual cues decorative for accessibility and retained localized instruction text as semantic output.
+
+### Changed Files
+
+- New action runtime: `LocalAIComposeGuidanceAction.swift`
+- Compose integration/UI: `CameraViewModel.swift`, `LocalAIComposeGuide.swift`, `LocalAIComposeOverlayView.swift`
+- Docs/tests: root/iOS READMEs, camera pipeline, decisions, Doka decomposition, this phase log, and manual smoke tests
+
+### Verification
+
+- Deterministic action simulation passed dominant vertical/horizontal selection, placement-before-scale ordering, zoom-in, step-back, aligned, and active aligned/movement/zoom/step-back exit hysteresis cases.
+- Temporal simulation passed immediate first action, one-sample switch hold, two-sample switch, pending cancellation, and nil reset.
+- Xcode's source group remains filesystem synchronized, so the new Swift file requires no manual `project.pbxproj` entry.
+- Localization coverage found 23 referenced Compose keys and 24 definitions in each of English and Traditional Chinese, with no missing or duplicate keys; the extra definition remains the local-privacy copy.
+- `git diff --check` passed with expected Windows LF-to-CRLF notices only. P6 source scans found no network, ARKit session, persistence, logging, identity descriptor, provider/model reference, automatic zoom, or automatic capture API.
+- Integration inspection found the typed action state feeding the resolver and overlay, one reset inside the shared target-plan clear path, no secret-value or `productionReady:true` diff hit, and an unchanged filesystem-synchronized Xcode project file.
+- Mac/Xcode compile plus physical-device arrow direction, threshold behavior, accessibility, visual overlap, thermal, and performance checks remain pending because this Windows host has no Swift/Apple SDK.
+
+### Known TODOs
+
+- Verify arrow direction and endpoint placement for all actions on back/front cameras and aspect-fit letterboxing.
+- Tune tolerances/hysteresis only from diverse moving-subject device sessions, not one fixture.
+- Verify cue density with grids, target/subject frames, horizon, bright/dark filters, Dynamic Type, and VoiceOver.
+- Keep actions manual; never connect them to automatic zoom, crop, rotation, gimbal movement, or shutter.
+- Keep any future Xiaoyi semantics user initiated, still-image-only, backend mediated, consent gated, non-continuous, and separately approved.
+
+### Boundary Confirmations
+
+- Action output is one optional nonnumeric manual cue, not score/rating: yes.
+- Proposed/active/pending action, vector, sample, or trajectory persistence/logging: no.
+- Automatic zoom/pan/crop/rotation/capture or shutter gate: no.
+- ARKit world tracking, plane detection, mesh, or 3D anchors: no.
+- Xiaoyi/provider call, Camera backend route, preview upload, or iOS provider key: no.
+- Identity, face recognition, sensitive/appearance inference, custom model, dataset, or training: no.
+- Camera remains local-only and `productionReady:false` remains locked: yes.
+
+### Ready for Next Step
+
+Ready for Mac/Xcode physical-device verification: yes. Ready for production rollout: no.
+
+## Local AI Compose P5 - Optional Local Vision Scene-horizon Cue
+
+Status: implemented; source/static/privacy checks passed; pending Mac/Xcode physical-device verification
+Date: 2026-07-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+P5 distinguishes the visible image horizon from device orientation. Compose can now show a stabilized, optional local Vision scene-horizon line over a horizontal reference while keeping the existing CoreMotion cue as fallback. The feature treats tilt as creative context, never a defect or capture requirement.
+
+### Completed Work
+
+- Added a Compose-only flag to the locked `FrameSignalState`; normal Local Guidance does not request horizon analysis.
+- Added `VNDetectHorizonRequest` to the existing background Vision handler without making horizon failure discard face/body/object analysis.
+- Gated observations at confidence `0.35`, finite angle, and ±25 degrees; only a half-degree-rounded angle crosses to the main actor.
+- Extended typed frame analysis with an optional `LiveFrameSceneHorizonSignal`, including horizon-only callback delivery so stale state can clear when no subject exists.
+- Added `LocalAIComposeHorizonStabilityController`: two agreeing activations, bounded smoothing, two-sample large replacement, one-miss hold, and second-miss clear.
+- Reset horizon request/state on Compose disable, unavailable frame analysis, camera stop, lens/camera plan reset, and selected-photo lifecycle boundaries.
+- Mirrored the displayed scene angle for the front camera and preserved raw analysis coordinates internally.
+- Added a detected cyan/mint line plus dashed horizontal reference; suppressed the CoreMotion line while stable scene horizon is present and restored it as fallback.
+- Added optional, non-judgmental English and Traditional Chinese copy.
+
+### Changed Files
+
+- Horizon runtime: `LocalAIComposeHorizonStability.swift`, `LiveFrameGeometrySignals.swift`, `LiveGuidanceVisionGeometryAnalyzer.swift`
+- Capture/integration: `CameraCaptureService.swift`, `CameraViewModel.swift`, `LocalAIComposeGuide.swift`, `LocalAIComposeOverlayView.swift`
+- Localization: English and Traditional Chinese `Localizable.strings`
+- Docs/tests: root/iOS READMEs, camera pipeline, decisions, Doka decomposition, this phase log, and manual smoke tests
+
+### Verification
+
+- Apple primary documentation confirms classic `VNDetectHorizonRequest`, `VNHorizonObservation.angle`/transform, and inherited `VNObservation.confidence` for this local analysis path.
+- Deterministic stability simulation passed two-sample activation, half-degree rounding, continuation smoothing, one-miss hold, second-miss clear, two-sample large replacement, near-level threshold, and out-of-range rejection.
+- Xcode's source group remains filesystem synchronized, so the new Swift file requires no manual `project.pbxproj` entry.
+- Localization coverage found 23 referenced Compose keys and 24 definitions in each of English and Traditional Chinese, with no missing or duplicate keys; the extra definition is retained local-privacy copy.
+- `git diff --check` passed with expected Windows LF-to-CRLF notices only. Request-gating/lifecycle inspection found the compose flag in the locked service state, two ViewModel setter sites, and five horizon resets. P5 source/diff scans found no network/ARKit/persistence/logging API, identity descriptor, provider/secret value, or `productionReady:true` assignment.
+- Mac/Xcode compile plus physical-device angle sign, Vision accuracy, overlay alignment, thermal, and performance checks remain pending because this Windows host has no Swift/Apple SDK.
+
+### Known TODOs
+
+- Verify `VNHorizonObservation.angle` display sign on back and mirrored front previews with asymmetric physical reference lines; adjust only from device evidence.
+- Tune confidence/angle/stability thresholds from natural and artificial horizon scenes, not one fixture.
+- Measure the extra Compose-only request using Instruments on representative older/newer iPhones.
+- Keep deliberate tilt valid; never promote horizon context into a score, defect label, retake demand, automatic crop/rotation, or shutter gate.
+- Keep any future Xiaoyi semantics user initiated, still-image-only, backend mediated, consent gated, non-continuous, and separately approved.
+
+### Boundary Confirmations
+
+- Horizon request runs only while explicit Local AI Compose frame analysis is active: yes.
+- Raw observation/confidence/transform/frame/angle history or CoreMotion stream persistence/logging: no.
+- ARKit world tracking, plane detection, mesh, or 3D anchors: no.
+- Xiaoyi/provider call, Camera backend route, preview upload, or iOS provider key: no.
+- Score/rating, defect label, automatic rotation/crop/zoom, capture gate, or automatic shutter: no.
+- Identity, face recognition, sensitive/appearance inference, custom model, dataset, or training: no.
+- Camera remains local-only and `productionReady:false` remains locked: yes.
+
+### Ready for Next Step
+
+Ready for Mac/Xcode physical-device verification: yes. Ready for production rollout: no.
+
+## Local AI Compose P4 - Stable Local Composition Policy And AR-style Grids
+
+Status: implemented; source/static/privacy checks passed; pending Mac/Xcode physical-device verification
+Date: 2026-07-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+P4 fills the composition-strategy gap between local subject geometry and the AR-style overlay. It introduces three explainable creative starting points—thirds, centered balance, and negative space—plus conservative multi-subject hysteresis. The guide now names and visualizes its current policy without scoring the photo or claiming semantic/aesthetic understanding.
+
+### Completed Work
+
+- Added `LocalAIComposePolicyResolver` with bounded rules over local subject kind, normalized rectangle area/aspect, and center location.
+- Added thirds, centered, and negative-space target anchors and policy-specific target-size budgets.
+- Kept policy, anchor, and target size stable for the active composition plan, resetting only through explicit subject/ambiguity or existing Camera lifecycle boundaries.
+- Added a two-sample `LocalAIComposeSubjectAmbiguityController` before entering or leaving explicit subject-choice mode.
+- Made confirmed multiple-subject scenes pause automatic targeting and request a long press instead of picking an arbitrary candidate.
+- Added localized policy badges and matching subtle thirds/dashed-negative-space or centered AR-style screen-space grids.
+- Generalized left/right guidance copy so it remains accurate for thirds, centered, and negative-space policies.
+- Preserved policy and target geometry while a locked subject is temporarily in the P3 reacquiring state.
+
+### Changed Files
+
+- New policy runtime: `ios-app/AIPhotoApp/Features/Camera/LocalAIComposePolicy.swift`
+- Compose integration/UI: `CameraViewModel.swift`, `LocalAIComposeGuide.swift`, `LocalAIComposeOverlayView.swift`
+- Localization: English and Traditional Chinese `Localizable.strings`
+- Docs/tests: root/iOS READMEs, camera pipeline, decisions, Doka decomposition, this phase log, and manual smoke tests
+
+### Verification
+
+- Deterministic synthetic policy simulation passed for a normal face (`thirds`), close centered face (`centered`), large centered body (`centered`), small generic object (`negativeSpace`), centered square-like object (`centered`), and off-center generic object (`thirds`).
+- Two-sample ambiguity simulation passed entry, delayed exit, and immediate explicit-lock override cases.
+- Xcode uses a filesystem-synchronized source group, so `LocalAIComposePolicy.swift` needs no manual `project.pbxproj` target entry.
+- Localization coverage found 22 referenced Compose keys and 23 definitions in each of English and Traditional Chinese, with no missing or duplicate keys; the extra definition is retained local-privacy copy.
+- `git diff --check` passed with expected Windows LF-to-CRLF notices only. P4 source/diff scans found no network/ARKit/persistence/logging API, identity descriptor, provider/secret value, or `productionReady:true` assignment.
+- Mac/Xcode compile and physical-device policy/grid/contrast/performance verification remain pending because this Windows host has no Swift/Apple SDK.
+
+### Known TODOs
+
+- Tune thresholds only from a varied physical-device scene matrix; do not optimize against one person/photo.
+- Verify policy/grid legibility across filters, bright/dark scenes, front-camera mirroring, Dynamic Type, and VoiceOver.
+- Treat leading lines, symmetry, gaze direction, storytelling, and scene semantics as unavailable rather than inventing them from rectangles.
+- If future Xiaoyi semantics are approved, keep them user initiated, still-image-only, backend mediated, consent gated, non-continuous, and separate from live preview tracking.
+
+### Boundary Confirmations
+
+- Policy output is a creative starting point, not score/rating/objective quality: yes.
+- ARKit world tracking, plane detection, mesh, or 3D anchors: no.
+- Xiaoyi/provider call, Camera backend route, preview upload, or iOS provider key: no.
+- Candidate/policy/counter/target/frame persistence or logging: no.
+- Identity, face recognition, sensitive/appearance inference, automatic zoom, or automatic shutter: no.
+- Custom model, dataset crawler, model training, or user-photo training: no.
+- Camera remains local-only and `productionReady:false` remains locked: yes.
+
+### Ready for Next Step
+
+Ready for Mac/Xcode physical-device verification: yes. Ready for production rollout: no.
+
+## Local AI Compose P3 - Conservative Temporal Subject-lock Stabilization
+
+Status: implemented; source/static/privacy checks passed; pending Mac/Xcode physical-device verification
+Date: 2026-07-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+P3 improves the stability of the user-selected local subject across the existing throttled Vision samples. The lock now uses short motion prediction, overlap, size consistency, hard jump gates, ambiguity rejection, and rectangle smoothing. When geometric evidence is insufficient or two same-kind candidates are similarly plausible, the UI safely reacquires instead of presenting an arbitrary subject swap.
+
+### Completed Work
+
+- Added a pure, deterministic `LocalAIComposeTemporalSubjectTracker` with typed in-memory state: candidate kind, smoothed normalized rectangle, bounded velocity, and bounded missed-sample count.
+- Replaced P2 same-kind nearest-center continuation in `CameraViewModel` with predicted-center, intersection-over-union, and relative-area matching.
+- Added hard location/size gates and a small bounded reacquisition allowance; distant or abruptly resized candidates are rejected.
+- Added a score-gap ambiguity gate so near-tied candidates return no visible match and enter the existing locked-subject reacquiring state.
+- Added bounded rectangle smoothing and velocity decay so the cyan AR-style frame is less sensitive to raw low-frequency Vision box jitter.
+- Preserved the P2 target position/scale and all existing Compose/camera lifecycle resets.
+- Kept the feature as non-identifying screen-space geometry. No ARKit world session or Xiaoyi call was needed.
+
+### Changed Files
+
+- Tracking runtime: `ios-app/AIPhotoApp/Features/Camera/LocalAIComposeTemporalSubjectTracker.swift`
+- Camera integration: `ios-app/AIPhotoApp/Features/Camera/CameraViewModel.swift`
+- Docs/tests: root/iOS READMEs, camera pipeline, decisions, Doka decomposition, this phase log, and manual smoke tests
+
+### Verification
+
+- Deterministic synthetic geometry simulation covers stable motion, brief miss/reacquisition, distant-candidate rejection, near-tie ambiguity rejection, and accepted-box smoothing.
+- Static source inspection confirms the matcher filters by candidate kind before scoring and exposes no identity descriptor, face embedding, confidence/rating, network, storage, or logging path.
+- Xcode uses a filesystem-synchronized source group, so the new Swift file requires no manual `project.pbxproj` target entry.
+- `git diff --check` passed with expected Windows LF-to-CRLF notices only. Source/diff scans found no network session, ARKit session, persistence/logging API, identity descriptor, provider/secret value, or `productionReady:true` assignment in the P3 scope.
+- Mac/Xcode compile and physical-device crossing/jitter/performance verification remain pending because this Windows host has no Swift/Apple SDK.
+
+### Known TODOs
+
+- On a physical iPhone, tune smoothing and ambiguity thresholds only from a multi-scene matrix rather than one sample.
+- Verify two-person crossings, fast motion, large apparent-size changes, temporary occlusion, front-camera mirroring, filters, and thermal behavior.
+- Evaluate local `VNTrackObjectRequest` only in a separately scoped phase if device evidence shows this deterministic matcher is inadequate; do not add identity recognition.
+- Keep any future Xiaoyi semantic composition experiment user initiated, still-image-only, backend mediated, consent gated, non-continuous, and separately approved.
+
+### Boundary Confirmations
+
+- ARKit world tracking, plane detection, mesh, or 3D anchors: no.
+- Xiaoyi/provider call, Camera backend route, preview upload, or iOS provider key: no.
+- Candidate/velocity/miss/trajectory/frame persistence or logging: no.
+- Face recognition, identity tracking, sensitive inference, score/rating, automatic zoom, or automatic shutter: no.
+- Custom model, dataset crawler, model training, or user-photo training: no.
+- Camera remains local-only and `productionReady:false` remains locked: yes.
+
+### Ready for Next Step
+
+Ready for Mac/Xcode physical-device verification: yes. Ready for production rollout: no.
+
+## Local AI Compose P2 - Explicit Subject Lock And AR-style 2D Alignment
+
+Status: implemented; source/static/privacy checks passed; pending Mac/Xcode physical-device verification
+Date: 2026-07-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+P2 adds a user-controlled subject-selection layer to the local Compose loop. Long press selects a bounded local Vision candidate, locks the target to that subject, and renders a cyan AR-style frame. Tracking is deliberately geometric and non-identifying; when the match is lost it waits for the same candidate kind near the prior center rather than switching to another subject.
+
+### Completed Work
+
+- Extended the ephemeral frame analysis with at most six typed subject candidates and no confidence/UI score.
+- Deduplicated faces contained by body candidates and kept objectness saliency as the no-person fallback.
+- Added inverse aspect-fit coordinate mapping and front-camera touch unmirroring.
+- Added bounded containing/nearest candidate selection, same-kind nearest-center continuation, and a safe reacquiring state.
+- Added long-press success/warning haptics, a cyan locked-subject frame, lock badge, local-only copy, and a VoiceOver clear-selection action.
+- Preserved the selected target position/scale across temporary reacquisition and cleared all selection state on Compose disable, lens/camera change, selected-photo entry, or Camera stop.
+- Kept the overlay in AVFoundation/SwiftUI/Vision. No ARKit session or world anchor is created because the guide is screen-space 2D.
+- Determined that Xiaoyi is not needed for this phase; live selection remains local and no backend/provider payload or route changes were made.
+
+### Changed Files
+
+- Camera runtime: `CameraCaptureService.swift`, `CameraOverlayCoordinateMapper.swift`, `CameraView.swift`, `CameraViewModel.swift`, `LiveFrameGeometrySignals.swift`, `LiveGuidanceVisionGeometryAnalyzer.swift`
+- Compose runtime: `LocalAIComposeGuide.swift`, `LocalAIComposeOverlayView.swift`
+- Localization: English and Traditional Chinese `Localizable.strings`
+- Docs/tests: root/iOS READMEs, camera pipeline, decisions, Doka decomposition, this phase log, and manual smoke tests
+
+### Verification
+
+- Deterministic coordinate/selection simulation passed: center inverse mapping `(0.5,0.5)`, front-camera `0.2 -> 0.8` unmirror, most-specific containing candidate, same-kind nearest tracking, and letterbox rejection.
+- Localization coverage found 18 referenced Compose keys and 19 defined keys in both English and Traditional Chinese, with no missing or duplicate keys; the extra key is the retained P1 local-privacy copy.
+- Runtime boundary scans found no network/provider execution, Xiaoyi call, ARKit session, persistence/logging path, secret value, model artifact, or `productionReady:true` assignment in the feature scope.
+- Backend and Xcode project files are unchanged. Changed and new files passed trailing-whitespace checks and `git diff --check` with expected Windows LF-to-CRLF warnings only.
+- Official Apple SwiftUI gesture, Vision tracking, and ARKit world-tracking/configuration documentation was reviewed; the 2D overlay remains the narrower implementation.
+- Mac/Xcode compile and physical-device gesture/overlay/tracking/performance verification: pending because this Windows host has no Apple SDK.
+
+### Known TODOs
+
+- Verify long-press gesture arbitration with camera chrome, pinch focal crop, front-camera mirroring, and filters on a physical iPhone.
+- Test multiple people/objects, crossing subjects, fast movement, low light, missed saliency, and leave/re-enter reacquisition.
+- Consider a separate local `VNTrackObjectRequest` evaluation only if same-kind nearest-center matching is not stable enough; do not add identity tracking.
+- Keep any future Xiaoyi scene-semantics experiment user initiated, single-snapshot, backend mediated, consent gated, and separately approved.
+
+### Boundary Confirmations
+
+- ARKit world tracking, plane detection, scene mesh, or 3D anchors: no.
+- Xiaoyi/provider call, Camera backend route, preview upload, or iOS provider key: no.
+- Candidate/touch/frame/tracking persistence or logging: no.
+- Face recognition, identity tracking, sensitive inference, score/rating, automatic zoom, or automatic shutter: no.
+- Custom model, training, dataset crawler, or user-photo training: no.
+- Camera remains local-only and `productionReady:false` remains locked: yes.
+
+### Ready for Next Step
+
+Ready for Mac/Xcode physical-device verification: yes. Ready for production rollout: no.
+
+## Local AI Compose P1 - Doka-style On-device Composition Loop
+
+Status: implemented; pending Mac/Xcode physical-device verification
+Date: 2026-07-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+The supplied Doka Cam Reel was decomposed into a subject proposal, composition-policy target, live geometry comparison, one-action guidance, optional level cue, and manual capture loop. The exact third-party model/code is proprietary and was not copied. This phase implements the observable interaction as a bounded local prototype over Apple Vision and the app's existing camera signals.
+
+### Completed Work
+
+- Added an `AI Compose` Camera control beside the shutter and a dedicated full-viewfinder overlay.
+- Extended the frame callback from a signal-only array to a typed `LiveGuidanceFrameAnalysis` that can carry ephemeral `LiveFrameSignals` geometry to the main actor.
+- Preserved face/body geometry as the primary proposal and added `VNGenerateObjectnessBasedSaliencyImageRequest` only when no person geometry exists.
+- Added a session-stable nearby rule-of-thirds target, target frame, current subject outline, directional placement, distance/zoom, searching, and aligned/hold states.
+- Reused the local CoreMotion level snapshot for a bounded optional level line; deliberate tilt remains allowed.
+- Reset target geometry on lens/camera changes and when leaving the live Camera result path.
+- Kept analysis at the existing approximately 2 FPS sampling rate and off the main thread.
+- Added English/Traditional Chinese copy, VoiceOver state labels, research/architecture notes, decision record, and a physical-device manual checklist.
+
+### Changed Files
+
+- Camera runtime: `CameraCaptureService.swift`, `CameraViewModel.swift`, `CameraView.swift`, `LiveFrameGeometrySignals.swift`, `LiveGuidanceVisionGeometryAnalyzer.swift`
+- New local Compose code: `LocalAIComposeGuide.swift`, `LocalAIComposeOverlayView.swift`
+- Localization: English and Traditional Chinese `Localizable.strings`
+- Docs/tests: root/iOS READMEs, `docs/decisions.md`, `docs/research/doka-cam-ai-compose-functional-decomposition.md`, this phase log, and manual smoke tests
+
+### Verification
+
+- Doka Reel visual flow inspected: activate compose, target geometry, scene-aware instruction, level line, zoom guidance, and final capture framing were observed.
+- Doka App Store public product claims and current Apple Vision/Core ML/Create ML documentation were reviewed; links and inference limits are recorded in the research note.
+- Xcode target uses a filesystem-synchronized root group, so the two new Swift files require no manual project-file entry.
+- Localization-key coverage check found all 14 referenced `camera.ai_compose.*` keys in both English and Traditional Chinese tables.
+- Deterministic guide simulation covered rear-camera horizontal direction, front-camera mirrored direction, zoom-in, and aligned/hold outcomes.
+- Runtime source scans found no Camera network/provider call, persistence/logging path, model artifact, or `productionReady:true` assignment in the feature scope.
+- Changed and new files passed the trailing-whitespace scan; final `git diff --check` passed with expected Windows LF-to-CRLF warnings only.
+- Mac/Xcode compile and physical-device camera/overlay/performance verification: pending because this Windows host has no Apple SDK.
+
+### Known TODOs
+
+- Complete the physical-device matrix for people, generic objects, no subject, multiple subjects, low light, movement, front-camera mirroring, lens changes, filters, thermal load, and false saliency boxes.
+- Add explicit long-press subject selection in a separate P2 phase before relying on ambiguous multi-subject scenes.
+- If a learned composition policy is still desired, begin with governed source/license/consent manifests, label schema, deterministic splits, and human review before any crawler, model artifact, provider labeling, or user-photo training.
+- Calibrate subject-size/tolerance thresholds from approved device QA rather than one Reel.
+
+### Boundary Confirmations
+
+- Third-party Doka brand/assets/code/model copied: no.
+- Custom `.mlmodel`/`.mlpackage`, training, fine-tuning, or `MLUpdateTask`: no.
+- User-photo training, dataset crawler, or training consent change: no.
+- Preview-frame/image/subject-rectangle/saliency persistence or logging: no.
+- Camera frame/image upload, provider/cloud call, or iOS provider key/SDK: no.
+- Automatic zoom, automatic shutter, photo scoring, sensitive inference, face recognition, or identity inference: no.
+- Camera remains local-only and `productionReady:false` remains locked: yes.
+
+### Ready for Next Step
+
+Ready for Mac/Xcode physical-device verification: yes. Ready for P2 explicit subject selection or governed training-data schema: no, until P1 is built and visually/performance verified. Ready for production rollout: no.
 
 ## PT2-SF-R9-R16-R2 - General Adaptive Recipe v2 Tone Transfer
 

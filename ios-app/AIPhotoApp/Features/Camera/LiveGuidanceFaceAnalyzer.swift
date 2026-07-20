@@ -10,11 +10,14 @@ nonisolated struct LiveGuidanceFaceAnalyzer: Sendable {
     private let tooCloseHeightThreshold = 0.62
     private let tooFarHeightThreshold = 0.18
 
-    func signals(from pixelBuffer: CVPixelBuffer) -> [LiveGuidanceSignal] {
+    func signals(
+        from pixelBuffer: CVPixelBuffer,
+        pixelOrientation: CameraFramePixelOrientation = .sensorNativeLandscape
+    ) -> [LiveGuidanceSignal] {
         let request = VNDetectFaceRectanglesRequest()
         let handler = VNImageRequestHandler(
             cvPixelBuffer: pixelBuffer,
-            orientation: .right,
+            orientation: pixelOrientation.imagePropertyOrientation,
             options: [:]
         )
 

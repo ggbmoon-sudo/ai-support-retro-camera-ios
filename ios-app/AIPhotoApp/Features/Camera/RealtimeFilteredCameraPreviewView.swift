@@ -207,7 +207,7 @@ final class RealtimeFilteredCameraPreviewMetalView: MTKView {
             return image
         }
 
-        return image.oriented(.right)
+        return image.oriented(CameraFramePixelOrientation.sensorNativeLandscape.imagePropertyOrientation)
     }
 
     private static func horizontallyMirrored(_ image: CIImage) -> CIImage {

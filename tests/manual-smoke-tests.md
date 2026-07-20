@@ -1,5 +1,89 @@
 # Manual Smoke Tests
 
+## Local AI Compose P22 - Foreground-aware AR guide occlusion
+
+Windows/static verification:
+
+- [x] Confirm the exported mask is fixed at 18 by 24, bounded to valid unique cell indices, contains no depth value/pixel/confidence/identity/label, and is produced only for reliable high-separation hardware depth near the current full-analysis subject.
+- [x] Confirm isolated-cell cleanup, enclosed-neighbor fill, two-compatible-sample activation, one-miss retention, two-miss clear, and two-sample distant replacement.
+- [x] Confirm 20/20 deterministic mask/stability/source cases pass, including IoU near/distant behavior, empty input, bounds/deduplication, front display mirroring without double mirroring, thermal nil-mask output, P17 motion clear, isolated compositing, and Group Balance exclusion.
+- [x] Confirm both `LiveGuidanceFrameAnalysis` construction paths explicitly provide `depthOcclusionMask`, with thermal protection always providing nil.
+- [x] Confirm grid/tint alone are inside the compositing group and `destinationOut`; subject/target/action/readiness overlays remain outside and above the cutout.
+- [x] Confirm Camera Swift delimiter balance, `git diff --check`, and scans for no ARKit, Xiaoyi/provider/network, logging, persistence, upload, analytics, model/training, automatic capture, or `productionReady:true` path.
+
+Mac/Xcode and physical-device verification:
+
+- [ ] Pull the branch, open `ios-app/AIPhotoApp.xcodeproj`, and build DEBUG on a physical iPhone; confirm `LocalAIComposeDepthOcclusionStability.swift` is included by the synchronized Xcode group.
+- [ ] On a compatible TrueDepth or LiDAR/depth lens, enable Compose and place one clearly nearer subject against a distant textured background. Hold stable until P20 depth settles; confirm grid/tint disappears behind the foreground silhouette while the subject outline and target remain visible.
+- [ ] Compare front and back cameras; confirm front-camera cutout follows the mirrored visible subject exactly and is not mirrored twice, rotated, transposed, or vertically flipped.
+- [ ] Move the subject slightly for several seconds; confirm the coarse edge remains restrained and temporally stable rather than flashing across the frame. Then remove/occlude depth briefly and confirm one miss is tolerated but two clear samples remove the cutout.
+- [ ] Trigger P17 phone-motion pause; confirm the spatial mask clears immediately and fresh stable evidence is required after release.
+- [ ] Enter P21 serious/critical thermal protection; confirm the cutout clears, the cooling reticle appears, and preview/filter/manual shutter remain available. After recovery, confirm no stale mask returns.
+- [ ] Select Group Balance; confirm no single-subject grid cutout remains. Return to a one-subject policy and confirm fresh P20/P22 evidence is required.
+- [ ] Test an unsupported lens, flat wall, reflective surface, dark scene, depth-sensor occlusion, and weak separation; confirm the unchanged ordinary 2D guide remains usable without a false cutout or crash.
+- [ ] Switch Compose, selected-photo mode, front/back camera, and compatible/incompatible lenses repeatedly; confirm no stale mask, frozen preview, duplicate callback, depth-session failure, or lost ordinary video delegate.
+- [ ] Capture while cutout is visible and absent; confirm the saved image and Core Image recipe contain no overlay/cutout change and no focus, exposure, zoom, crop, shutter, or automatic-capture behavior changes.
+- [ ] Run Instruments for at least 15 minutes with a non-original live filter, Compose, P20 depth, and P22 occlusion. Record CPU/GPU, memory, preview drops, thermal transitions, and shutter latency; compare with P21 and verify capture remains higher priority.
+- [ ] Inspect console/runtime artifacts and confirm no raw/coarse mask, depth map/value, subject geometry/history, frame, provider text, Authorization header, or key is logged, persisted, uploaded, or sent to analytics.
+- [ ] Confirm Camera makes no network request, iOS has no provider key/direct provider call, ARKit is absent, automatic capture remains absent, and `productionReady:false` remains unchanged.
+
+## Local AI Compose P21 - Capture-first adaptive workload
+
+Windows/static verification:
+
+- [x] Confirm nominal, Low Power, fair, serious, and critical states resolve to the expected nominal/reduced/thermal-pause buckets.
+- [x] Confirm serious/critical enters immediately, first cool sample begins recovery, less than five seconds stays paused, five seconds resumes the current nominal/reduced tier, and renewed heat cancels recovery.
+- [x] Confirm 18/18 deterministic policy/source cases pass, including preview-before-gate, Vision skip, tracker reset, bucket-only pause callback, app-side pause-before-frame-assignment, Ready clearing, depth removal, and preserved-target-only presentation.
+- [x] Confirm both normal and thermal `LiveGuidanceFrameAnalysis` constructors set an explicit workload mode.
+- [x] Confirm thermal entry is handled before latest frame/candidate assignment and cannot count as fresh ambiguity/action/Hold/Ready evidence.
+- [x] Confirm English and Traditional Chinese thermal instruction/detail keys each occur once.
+- [x] Confirm no thermal state/timestamp/history logging, persistence, analytics, upload, score, ARKit, Xiaoyi/provider call, Camera route, automatic capture, model/training, or `productionReady:true` path was added.
+
+Mac/Xcode and physical-device verification:
+
+- [ ] Pull the branch, open `ios-app/AIPhotoApp.xcodeproj`, and build DEBUG on a physical iPhone; confirm `LocalCameraAIWorkloadPolicy.swift` is included automatically by the synchronized group.
+- [ ] In nominal state with AI Compose and a non-original live filter, confirm subject detection remains approximately 2 FPS, explicit-lock movement remains smooth, depth may activate on supported hardware, and shutter response matches P20.
+- [ ] Enable iOS Low Power Mode; confirm preview/filter/shutter remain stable and Compose continues at visibly slower but usable cadence without displaying numeric FPS or a warning.
+- [ ] Use Xcode's thermal-state simulation or a controlled Instruments stress session to enter fair; confirm it follows the reduced tier without clearing the current plan unnecessarily.
+- [ ] Enter serious/critical thermal state; confirm the orange cooling reticle and localized message appear promptly, movement arrows/level/depth/Ready disappear, depth output is removed, and no Ready haptic fires.
+- [ ] While thermally paused, confirm filtered preview, tap focus/exposure, lens/camera controls, filter selection, photo capture, and saving remain available; no AI state blocks the shutter.
+- [ ] Confirm explicit-lock fast tracking stops during protection and the displayed subject/target can remain only as dimmed continuity geometry without advancing.
+- [ ] Return to nominal/fair and confirm protection remains for about five seconds, reheating restarts the dwell, and a fresh detector sample—not stale pre-pause geometry—resumes action guidance.
+- [ ] After recovery on a depth-compatible lens, confirm depth is rebuilt only while Compose is active and its badge requires fresh P20 evidence.
+- [ ] Toggle Compose or leave/re-enter Camera during serious thermal state; confirm the next frame re-enters protection and the UI cannot bypass it by toggling.
+- [ ] Repeat nominal/reduced/protection/recovery transitions with front/back cameras and compatible/incompatible depth lenses; confirm no duplicate callbacks, frozen preview, stale Ready, session crash, or lost video delegate.
+- [ ] Run Instruments for at least 15 minutes with live filter + Compose + depth. Record CPU/GPU, memory, thermal state, preview drops, capture latency, and recovery behavior; compare nominal and reduced tiers.
+- [ ] Inspect console/artifacts and confirm no raw thermal state, timestamp, dwell/cadence value, frame/depth data, subject geometry/history, provider text, Authorization header, or key is logged or persisted.
+- [ ] Confirm Camera makes no network request, iOS contains no provider key/direct provider call, ARKit is absent, automatic capture remains absent, and `productionReady:false` remains unchanged.
+
+## Local AI Compose P20 - Synchronized hardware-depth layers
+
+Windows/static verification:
+
+- [x] Confirm exactly one `AVCaptureDepthDataOutput` and one `AVCaptureDataOutputSynchronizer` are installed in `CameraCaptureService`.
+- [x] Confirm unsupported/no-format paths restore the ordinary video sample-buffer delegate and keep RGB/Vision analysis available.
+- [x] Confirm depth reduction runs only after the existing full-analysis Vision subject rectangle exists and never from the P13 fast tracker callback.
+- [x] Confirm 15/15 deterministic bucket/orientation/hysteresis/source cases pass: two-sample activation, one-clear retention, two-clear removal, portrait-matte rejection, weak-separation rejection, private near/mid/far bucket boundaries, separation boundaries, portrait/sensor-native coordinate mapping, motion-gate placement, and Group Balance suppression.
+- [x] Confirm English/Traditional Chinese depth-layer keys each occur once; Camera Swift delimiters and `git diff --check` pass.
+- [x] Confirm no ARKit, Xiaoyi/provider/network call, iOS provider key, logging, persistence, upload, analytics, model/training, automatic capture, or `productionReady:true` path was added.
+
+Mac/Xcode and physical-device verification:
+
+- [ ] Pull the branch on the MacBook, open `ios-app/AIPhotoApp.xcodeproj`, and build the DEBUG app; confirm `LiveGuidanceDepthAnalyzer.swift` and `LocalAIComposeDepthStability.swift` are included by the synchronized Xcode group.
+- [ ] Run on a physical iPhone with a TrueDepth front camera. Enable AI Compose, frame one clear subject in front of a more distant background, hold the phone stable, and confirm the `Depth layers · on-device` badge plus subtle offset halo appears only after the guide settles.
+- [ ] Disable AI Compose and enter/leave selected-photo mode; confirm the depth cue clears, ordinary filtered preview remains live, and re-enabling Compose requires fresh two-sample depth evidence.
+- [ ] Repeat on each back lens. On a LiDAR/depth-compatible format confirm the cue can appear; on an unsupported ultra-wide/telephoto format confirm Camera, live filter, Vision guide, tap focus, and shutter continue normally without a cue or crash.
+- [ ] Cover part of the depth sensor, use a flat wall, low-validity edge subject, reflective surface, and dark scene; confirm missing/weak depth does not fabricate the badge and never blocks ordinary guidance.
+- [ ] Confirm one brief dropped/weak sample does not flicker the cue off, while two full-analysis clear samples remove it.
+- [ ] Move the phone enough to trigger the P17 motion pause; confirm the depth badge/halo is hidden during pause and no new depth evidence advances until stable release.
+- [ ] Select Group Balance; confirm the single-subject depth badge/halo is hidden even when hardware depth remains available. Return to one subject and confirm fresh evidence is required again after a Compose/camera/lens reset.
+- [ ] Verify front preview mirroring and every back lens: the depth halo follows the same visible subject rectangle and is not rotated, transposed, vertically flipped, or offset to the background.
+- [ ] Switch front/back and compatible/incompatible lenses repeatedly for at least 20 cycles; confirm no frozen preview, duplicate callback, stale cue, session error, crash, or lost filtered preview.
+- [ ] Capture photos while the cue is active and inactive; confirm no automatic focus, zoom, crop, bokeh, depth effect, capture, or shutter gating is applied.
+- [ ] Use Instruments for at least 10 minutes with AI Compose plus a non-original live filter. Record dropped frames, CPU/GPU, thermal state, memory, and shutter latency; confirm the synchronized depth path remains acceptable and unsupported-lens fallback is no worse than P19.
+- [ ] Inspect console/runtime artifacts and confirm no raw image, depth map, metric distance, depth median, valid ratio, sample coordinate, subject box/history, prompt, provider response, Authorization header, or key is logged or persisted.
+- [ ] Confirm Camera makes no network request, iOS contains no provider key/direct provider call, the dormant Depth Anything sandbox remains disabled, and `productionReady:false` remains unchanged.
+
 ## Phase 21-H2
 
 Qwen MoE + Live Advisor target re-evaluation gate:
@@ -4573,6 +4657,432 @@ Manual Xcode check:
 - [ ] Confirm no model file, Core ML package, ONNX/TFLite package, Florence-2 runtime, or Depth Anything runtime appears in the iOS bundle.
 - [ ] Confirm capture/import, local filters, selected-photo review, mock save, and post-capture advisor behavior still work as before.
 - [ ] Confirm backend/iOS upload payloads are unchanged.
+- [ ] Confirm `productionReady:false` remains unchanged.
+
+## Local AI Compose P1 - Doka-style On-device Composition Loop
+
+Mac/Xcode physical-device verification:
+
+- [ ] Build and run on a physical iPhone; confirm the filesystem-synchronized target includes both `LocalAIComposeGuide.swift` and `LocalAIComposeOverlayView.swift`.
+- [ ] Open Camera and tap `AI Compose`; confirm the normal compact Local Guidance card hides while the Compose overlay is active.
+- [ ] With no clear person/object, confirm the overlay stays in a searching state and does not invent a composition instruction.
+- [ ] Aim at one person; confirm face/body geometry produces a stable target frame and a single placement or distance instruction.
+- [ ] Keep the same Compose session active while moving closer/farther; confirm the target frame position and size remain stable instead of following the live subject box.
+- [ ] Aim at a clear non-person object such as a cup, plant, or bicycle; confirm objectness saliency can propose a bounded subject frame without a crash.
+- [ ] Move the subject toward the target; confirm left/right/up/down guidance converges and changes to the hold/aligned state near the target.
+- [ ] Move closer and farther; confirm bounded zoom/distance copy appears without automatic lens zoom or forced capture.
+- [ ] Tilt the iPhone slightly; confirm the yellow level line responds and the copy remains optional rather than treating tilt as an error.
+- [ ] Toggle Compose off/on; confirm a fresh target is selected for the new session.
+- [ ] Switch lens and front/back camera while Compose is active; confirm the old target clears, front-camera subject/target rectangles mirror correctly, and a fresh frame is required.
+- [ ] Turn Local Guidance off while Compose remains active; confirm Compose still receives local frames and no cloud entry appears.
+- [ ] Apply several live filters; confirm Compose remains responsive and the filter preview/capture path still works.
+- [ ] Run Compose for ten minutes across person/object/no-subject scenes; confirm late frames are discarded, camera/shutter remains responsive, and there is no excessive heat or memory growth.
+- [ ] Inspect device logs and confirm there is no raw frame, pixel buffer, face/body/saliency rectangle, prompt, image/base64, model output, or sensitive inference logging.
+- [ ] Confirm no frame/image upload, URLSession/Cloud Function/provider call, provider key/SDK, `.mlmodel`/`.mlpackage`, user-photo training, automatic save, scoring/rating, or production rollout is present.
+- [ ] Confirm `productionReady:false` remains unchanged.
+
+## Local AI Compose P2 - Long-press Subject Lock And AR-style 2D Alignment
+
+Mac/Xcode physical-device verification:
+
+- [ ] Build and run on a physical iPhone; enable `AI Compose` and confirm normal shutter/top/lens controls still receive taps.
+- [ ] With two people visible, long-press each person in turn; confirm the cyan lock frame selects the intended local candidate and the target resets for the newly selected subject.
+- [ ] With multiple non-person objects and no person visible, long-press different objectness candidates; confirm selection is bounded and a miss gives warning haptic without inventing a lock.
+- [ ] Long-press a blank or aspect-fit letterbox area; confirm no subject is selected and no crash occurs.
+- [ ] Move a locked subject gradually; confirm the cyan frame follows the same candidate kind near its prior center and does not jump to another visible subject.
+- [ ] Let the selected subject leave the frame; confirm the overlay enters the reacquiring state. Bring it back near the prior area and confirm the same-kind candidate can be reacquired.
+- [ ] Cross two similar subjects; confirm behavior is conservative. Record any same-kind swap for a future local `VNTrackObjectRequest` evaluation rather than treating the lock as identity tracking.
+- [ ] Repeat selection with the front camera; confirm displayed touch position, cyan subject frame, target frame, and left/right instructions all match the mirrored preview.
+- [ ] Switch lens and front/back camera while locked; confirm candidate, tracking point, target position, and target size are all cleared before a fresh frame.
+- [ ] Toggle Compose off/on, select a library photo, and leave/re-enter Camera; confirm no old lock or candidate returns.
+- [ ] Use the VoiceOver custom action to clear a locked subject; confirm automatic local subject proposal resumes.
+- [ ] Pinch the dual-focal crop and operate Camera chrome while Compose is active; confirm the long-press gesture does not block existing controls.
+- [ ] Apply several live filters and run for ten minutes across person/object/no-subject scenes; confirm responsive shutter, bounded heat/memory, and no gesture/overlay backlog.
+- [ ] Inspect device logs and confirm no raw frame, pixel buffer, candidate box, touch point, tracking center/history, face/body/saliency output, prompt, image/base64, or sensitive inference logging.
+- [ ] Confirm no ARKit world session, Xiaoyi/provider call, Camera cloud route, URLSession, provider key/SDK, frame upload, model package, user-photo training, identity recognition, automatic capture, or production rollout is present.
+- [ ] Confirm `productionReady:false` remains unchanged.
+
+## Local AI Compose P3 - Temporal Lock Stability And Ambiguity Rejection
+
+Mac/Xcode physical-device verification:
+
+- [ ] Build and run on a physical iPhone; confirm the filesystem-synchronized target includes `LocalAIComposeTemporalSubjectTracker.swift` without manual target membership edits.
+- [ ] Lock one subject and move it slowly left/right and toward/away from the camera; confirm the cyan frame is visibly smoother than raw low-frequency Vision boxes and guidance remains responsive.
+- [ ] Move the locked subject quickly but continuously; confirm bounded motion prediction can follow plausible movement without snapping across the frame.
+- [ ] Let the subject disappear for one to four Vision samples and return near the predicted path; confirm reacquisition is possible and the fixed composition target does not reset.
+- [ ] Place two similar people at different positions, lock one, and move only the other; confirm center/overlap/size evidence keeps the selected geometry stable.
+- [ ] Cross two similar people or same-kind objects; confirm closely scored candidates produce the reacquiring state instead of an arbitrary visible lock swap.
+- [ ] After an ambiguous crossing, separate the subjects; confirm reacquisition occurs only when one same-kind candidate becomes geometrically plausible again. Treat this as geometry continuity, not verified identity.
+- [ ] Change the selected subject's apparent size abruptly or introduce a distant same-kind subject; confirm hard gates reject implausible size/location jumps.
+- [ ] Repeat with front camera, filters, lens switching, Compose off/on, photo selection, and Camera re-entry; confirm mirror behavior stays correct and temporal state is cleared at every existing lifecycle boundary.
+- [ ] Run for ten minutes across person/object/no-subject scenes; confirm frame, guidance, shutter, heat, and memory remain acceptable with no tracking backlog.
+- [ ] Inspect logs and app storage; confirm no candidate rectangle, velocity, missed count, trajectory, touch, frame, prompt, image/base64, identity descriptor, or sensitive inference is logged or persisted.
+- [ ] Confirm no ARKit session, Vision identity/face recognition, Xiaoyi/provider call, Camera cloud route, URLSession, provider key/SDK, upload, model/training artifact, automatic shutter, or production rollout is added.
+- [ ] Confirm `productionReady:false` remains unchanged.
+
+## Local AI Compose P4 - Stable Local Policy And AR-style Grids
+
+Mac/Xcode physical-device verification:
+
+- [ ] Build and run on a physical iPhone; confirm the synchronized target includes `LocalAIComposePolicy.swift` automatically.
+- [ ] Frame a normal single face/body subject; confirm the policy badge shows the localized thirds policy and the subtle thirds grid aligns with the aspect-fit preview.
+- [ ] Frame a geometrically centered close face/body subject; confirm centered balance is selected and the overlay changes to centered axes/crosshair without describing the person.
+- [ ] Frame a small generic object with no person present; confirm negative space is selected, its grid is dashed, and the target does not unnecessarily fill most of the viewfinder.
+- [ ] Frame a medium centered square-like generic object; confirm centered balance can be selected. Move it off center before starting a new Compose plan and confirm thirds is selected instead.
+- [ ] Keep one policy active while the subject jitters near a threshold; confirm policy badge, target anchor, target size, and grid do not oscillate.
+- [ ] Introduce a second plausible subject for only one Vision sample; confirm automatic guidance does not immediately switch into selection mode.
+- [ ] Keep multiple subjects visible for at least two samples; confirm the target/grid clears, no central searching reticle appears, and localized copy asks the user to long-press the intended subject.
+- [ ] Long-press one subject; confirm subject choice immediately overrides multiple-subject mode and creates a stable policy/target for the locked subject.
+- [ ] Clear the lock while multiple subjects remain; confirm two-sample subject-choice hysteresis returns without arbitrary automatic selection.
+- [ ] Remove the additional subject for one sample and then two samples; confirm guidance resumes only after the second clear sample.
+- [ ] Occlude a locked subject; confirm its policy badge and target remain visible during P3 reacquisition, then recover without changing policy.
+- [ ] Repeat with front camera; confirm mirrored arrows remain correct while symmetric thirds/center grids, policy badge, and target remain aligned.
+- [ ] Verify English and Traditional Chinese policy/multiple-subject copy, Dynamic Type, VoiceOver reading order, and contrast over bright/dark filtered previews.
+- [ ] Switch lens/camera, disable/re-enable Compose, select a photo, and leave/re-enter Camera; confirm policy, target, ambiguity counters, tracking state, and candidate geometry all reset.
+- [ ] Run for ten minutes and confirm grids add no interaction blocking, frame backlog, excessive heat, memory growth, or shutter delay.
+- [ ] Inspect logs/storage and confirm no policy, candidate rectangle, counter, target, trajectory, frame, identity descriptor, prompt, image/base64, score/rating, or sensitive inference is logged or persisted.
+- [ ] Confirm no ARKit session, Xiaoyi/provider call, Camera cloud route, URLSession, provider key/SDK, preview upload, custom model/training, automatic shutter, or production rollout is added.
+- [ ] Confirm `productionReady:false` remains unchanged.
+
+## Local AI Compose P5 - Optional Vision Scene Horizon
+
+Mac/Xcode physical-device verification:
+
+- [ ] Build and run on a physical iPhone; confirm the synchronized target automatically includes `LocalAIComposeHorizonStability.swift` and the classic `VNDetectHorizonRequest` API compiles at the project deployment target.
+- [ ] Keep Compose off with Local Guidance on; profile/inspect the frame path and confirm scene-horizon analysis remains disabled.
+- [ ] Enable Compose and aim at a clear sea/land horizon or strong architectural horizon; confirm no horizon cue appears after only one sample and it appears after a second agreeing sample.
+- [ ] Confirm the detected cyan line visually follows the image-content horizon while the dashed line stays horizontal.
+- [ ] Level the scene horizon; confirm the detected line turns mint near ±1.5 degrees and no score/rating appears.
+- [ ] Deliberately tilt the camera; confirm copy says leveling is optional, the primary subject-placement instruction remains higher priority, capture is never blocked, and no automatic rotation/crop occurs.
+- [ ] Briefly obscure the horizon for one sample; confirm the stable line holds. Keep it unavailable for a second sample and confirm the line clears.
+- [ ] Jump between two very different horizon angles; confirm one sample cannot replace the active line and two agreeing samples are required.
+- [ ] Aim at scenes without a reliable horizon, highly textured clutter, vertical-only architecture, and low light; confirm the UI safely shows no scene line instead of fabricating one.
+- [ ] Test angle beyond approximately ±25 degrees; confirm the bounded cue clears rather than displaying an extreme/likely-invalid result.
+- [ ] Test a horizon with no detected subject; confirm horizon stability can still activate/clear while the subject guide remains searching.
+- [ ] Repeat on the front camera with an asymmetric tilted line; confirm display angle is mirrored and visually follows the preview rather than rotating the wrong direction.
+- [ ] Remove the scene horizon while a subject remains; confirm the existing CoreMotion yellow/mint level cue remains the fallback when applicable, never simultaneously drawing two competing level lines.
+- [ ] Repeat across all lenses, several live filters, bright/dark scenes, subject lock/reacquisition, and multi-subject choice mode; confirm the scene cue remains aligned and does not block gestures.
+- [ ] Switch lens/camera, disable Compose, select a photo, stop/re-enter Camera, and revoke frame-analysis conditions; confirm horizon pending/active/miss state and request enablement reset.
+- [ ] Run Compose for ten minutes while profiling; confirm the extra compose-only request causes no unacceptable frame backlog, thermal rise, memory growth, or shutter delay.
+- [ ] Verify English/Traditional Chinese optional-horizon copy, VoiceOver, Dynamic Type, and contrast over bright/dark filtered previews.
+- [ ] Inspect logs/storage and confirm no raw frame, horizon observation, confidence, transform, angle history, stability sample, CoreMotion stream, prompt, image/base64, score, identity descriptor, or sensitive inference is logged or persisted.
+- [ ] Confirm no ARKit session, Xiaoyi/provider call, Camera cloud route, URLSession, provider key/SDK, preview upload, custom model/training, automatic correction/capture, or production rollout is added.
+- [ ] Confirm `productionReady:false` remains unchanged.
+
+## Local AI Compose P6 - Stabilized AR Action Cues
+
+Mac/Xcode physical-device verification:
+
+- [ ] Build and run on a physical iPhone; confirm the synchronized target automatically includes `LocalAIComposeGuidanceAction.swift`.
+- [ ] Create simultaneous horizontal and much larger vertical target error; confirm vertical text/arrow wins instead of horizontal always taking priority.
+- [ ] Create simultaneous vertical and much larger horizontal error; confirm horizontal text/arrow wins.
+- [ ] Confirm zoom-in or leave-space guidance appears only after placement is within current X/Y tolerance.
+- [ ] Move the subject around the horizontal/vertical threshold; confirm the first action appears immediately and a different action needs two consecutive samples before text/icon/arrow switches.
+- [ ] Trigger a one-sample pending action and return to the active action; confirm the pending switch is cancelled with no visible flicker.
+- [ ] Approach aligned state slowly; confirm movement action persists through its tighter exit threshold, then aligned requires stable evidence and does not immediately leave on small jitter.
+- [ ] Approach zoom target from too small and too large states; confirm zoom-in/step-back exit hysteresis prevents rapid alternation with aligned.
+- [ ] Verify left/right/up/down arrows visually agree with localized text, start near the current subject, remain bounded inside the preview overlay, and point in the stable action direction.
+- [ ] Repeat every direction on the front camera; confirm mirrored target mapping, arrow, and text agree.
+- [ ] Confirm zoom-in shows the plus magnifier, leave-space shows the minus magnifier, and aligned shows a mint check at target center without any numeric percentage or score.
+- [ ] Lose/reacquire a locked subject; confirm stale arrow/action clears during reacquisition and the first fresh action returns immediately after a valid match.
+- [ ] Enter confirmed multiple-subject selection mode and no-subject searching; confirm no stale arrow, zoom, or aligned badge remains.
+- [ ] Switch policy/target through a new lock or lifecycle reset; confirm pending/active action state resets with the plan.
+- [ ] Verify action cues coexist legibly with thirds/centered/negative-space grids, scene horizon, CoreMotion fallback, cyan lock frame, target frame, and bright/dark live filters.
+- [ ] Operate long press, pinch, shutter, lens/filter controls, VoiceOver, and Dynamic Type; confirm decorative arrows/symbols do not intercept interaction or add duplicate accessibility speech.
+- [ ] Run for ten minutes across moving subjects and thresholds; confirm no animation/frame backlog, excessive heat, memory growth, or shutter delay.
+- [ ] Inspect logs/storage and confirm no proposed/active/pending action, sample count, vector, trajectory, target, frame, prompt, image/base64, score, identity descriptor, or sensitive inference is logged or persisted.
+- [ ] Confirm no automatic zoom/pan/crop/rotation/capture, ARKit session, Xiaoyi/provider call, Camera cloud route, URLSession, provider key/SDK, preview upload, custom model/training, or production rollout is added.
+- [ ] Confirm `productionReady:false` remains unchanged.
+
+## Local AI Compose P19 - Photographer-selected Group Balance
+
+Mac/Xcode physical-device verification:
+
+- [ ] Build and run on a physical iPhone; confirm synchronized membership includes `LocalAIComposeGroupStability.swift` without manual project-file editing.
+- [ ] Enable Compose with two clearly visible people or objects, open the policy menu, and choose Group Balance; confirm any individual lock clears and the localized group-searching state appears first.
+- [ ] Hold two compatible full-analysis samples; confirm one dashed cyan union frame/group badge, centered target, policy badge, and central safe-region grid appear only on the second sample.
+- [ ] Show only one candidate for several samples; confirm Group Balance stays in searching and never treats it as a group.
+- [ ] Show five plausible candidates; confirm no more than the existing top four contribute and no member number, kind, confidence, ranking, or identity appears.
+- [ ] Spread two candidates across almost the full width/height; confirm the bounded union is rejected rather than drawing an unsafe nearly full-frame target.
+- [ ] Move the group slightly while keeping all members visible; confirm the union frame smooths without resetting target/action/Hold/Ready on every sample.
+- [ ] Make the detected union jump to a distant set for one full sample; confirm the old group remains and no action/Hold/Ready evidence advances. Hold the replacement for a second compatible sample and confirm one clean replacement/replan.
+- [ ] Hide or invalidate the group for one full sample; confirm the frame remains for continuity but Hold cannot become Ready. Keep it missing for a second sample and confirm the union/target clear into group searching.
+- [ ] Pan or shake the phone during group acquisition and while a group is active; confirm P17 pauses and neither activation, replacement, clearing, action, Hold, nor Ready advances until stable fresh group observations return.
+- [ ] Confirm P13 fast tracking of a previously locked individual stops when Group Balance is selected and cannot update the group union.
+- [ ] While Group Balance is active, long-press one visible candidate; confirm policy returns to automatic, the individual becomes locked, the group state clears, and single-subject tracking resumes.
+- [ ] Switch from Group Balance to thirds/centered/symmetry/leading/lead-room/negative-space; confirm ordinary policy behavior returns and no hidden group union persists.
+- [ ] Confirm Group Balance never appears as an automatic recommendation and has no horizontal target-flip action.
+- [ ] Repeat with front/back cameras, mixed face/body/object candidates, different lenses, bright/dark filters, partial occlusion, candidate crossings, and low light; confirm geometry remains bounded and mirrored correctly.
+- [ ] Check VoiceOver and Dynamic Type; confirm `Group balance` / `群組平衡`, searching copy, and privacy detail are readable while decorative union/grid geometry stays noninteractive.
+- [ ] Toggle Compose, select a photo, switch lens/camera, background/foreground, stop/reopen Camera, and return from capture; confirm no group rectangle, counter, target, or member set returns.
+- [ ] Run group scenes for ten minutes; inspect CPU, thermal state, memory, dropped frames, full-analysis cadence, and shutter latency.
+- [ ] Inspect logs/storage/network and confirm no candidate/union rectangle, member set, counter, group history, image/base64, identity, relationship, importance, score, sensitive inference, or provider data is logged, persisted, or uploaded.
+- [ ] Confirm request counts remain one body pose, one objectness, one horizon, one explicit-lock tracker, and zero contour; P19 adds no ARKit, Xiaoyi/provider call, Camera upload/route, auto-trigger, model, or automatic camera control/capture.
+- [ ] Confirm `productionReady:false` remains unchanged.
+
+## Local AI Compose P18 - Explicit-lock Lead Room
+
+Mac/Xcode physical-device verification:
+
+- [ ] Build and run on a physical iPhone; confirm synchronized membership includes `LocalAIComposeLeadRoomStability.swift` without manual project-file editing.
+- [ ] Enable Compose, long-press one subject, and move that subject steadily toward the visible right for two full-analysis samples while keeping the phone stable; confirm automatic Lead Room can place the subject on the left third and softly mark the visible right side.
+- [ ] Repeat leftward; confirm the subject target moves to the right third and the open-side tint/three dashed lanes move left only after two matching samples.
+- [ ] Provide only one strong-direction sample, then stop or reverse; confirm Lead Room does not activate from one sample.
+- [ ] Activate rightward Lead Room, provide one leftward sample, then return rightward; confirm the target does not flip. Hold leftward for two fresh matches and confirm it flips once.
+- [ ] After activation, lose the detector match for one full-analysis sample; confirm the target remains. Lose it for a second sample and confirm automatic policy replans without stale direction.
+- [ ] Move slowly in the active direction near the continuation threshold; confirm hysteresis prevents rapid policy/target flicker. Test hand tremor and near-stationary jitter; confirm they do not activate Lead Room.
+- [ ] Pan or shake the phone while the locked subject is stationary; confirm P17 pauses and Lead Room direction/counters freeze. Settle for two full samples, then confirm only later fresh subject matches can change Lead Room.
+- [ ] Track a moving subject using only visible P13 fast updates between detector callbacks; confirm the rectangle is smooth but Lead Room cannot enter, reverse, clear, or advance from fast callbacks alone.
+- [ ] Present valid leading-line convergence at the same time; confirm Leading Lines retains priority. Remove it and confirm stable bounded Lead Room can become eligible.
+- [ ] Test very small/large subjects and a subject too far from the opposite-third target; confirm automatic Lead Room stays bounded out while manual Lead Room remains available.
+- [ ] Choose Lead Room manually without motion evidence; confirm a safe current-side target appears. Use target flip and confirm target, open tint, and dashed lanes all mirror together.
+- [ ] Repeat front/back cameras and every supported lens; confirm visible subject direction, target side, tint, lanes, touch lock, and movement arrows agree after mirroring.
+- [ ] Confirm `Lead room` / `前方留位` appears once in the policy menu and VoiceOver reads the policy without reading decorative lanes.
+- [ ] Toggle Compose, unlock/reselect a subject, choose a photo, switch lens/camera, background/foreground, stop/reopen Camera, and return from capture; confirm no old motion direction or target returns.
+- [ ] Run moving-subject scenes for ten minutes with bright/dark live filters; inspect CPU, thermal state, memory, dropped frames, full-analysis cadence, and shutter latency.
+- [ ] Inspect logs/storage/network and confirm no velocity, threshold, direction history, trajectory, rectangle history, frame/image/base64, provider data, score, identity, activity, gaze, intent, destination, or sensitive inference is logged, persisted, or uploaded.
+- [ ] Confirm request counts remain one body pose, one objectness, one horizon, one explicit-lock tracker, and zero contour; P18 adds no ARKit, Xiaoyi/provider call, Camera upload/route, auto-trigger, model, or automatic camera control/capture.
+- [ ] Confirm `productionReady:false` remains unchanged.
+
+## Local AI Compose P17 - Motion-coherent AR Guidance Gate
+
+Mac/Xcode physical-device verification:
+
+- [ ] Build and run on a physical iPhone; confirm synchronized membership includes `LocalAIComposeMotionGate.swift` without manual project-file editing.
+- [ ] Enable Compose and hold the phone still; confirm normal target, arrow, horizon/level, Hold, and Ready behavior remains unchanged.
+- [ ] Pan the phone slowly while a target exists; confirm the next full-analysis update shows the localized motion-pause card and centered gyroscope reticle, dims the existing grid, hides arrows/level lines, and retains the frozen target.
+- [ ] Shake or translate the phone; confirm the same bounded pause appears without score, percentage, raw sensor value, harsh warning, or automatic shutter behavior.
+- [ ] Start moving before any target exists; confirm subject geometry may remain visible but no target/policy grid is created or cached until the phone settles.
+- [ ] Stop moving for one full-analysis sample; confirm pause remains. Hold through the second fresh sample and confirm guidance resumes once without flicker.
+- [ ] During release, move again after the first stable sample; confirm release progress resets and two new stable samples are required.
+- [ ] Test a device/simulator path where motion is unavailable; confirm unavailable never enters pause and two unavailable samples can release a previously simulated pause without trapping the UI.
+- [ ] While paused, present/remove symmetry, leading-line, quiet-space, multiple-subject, and pose-edge evidence; confirm none enters, switches, clears, or advances until stable full-analysis samples resume.
+- [ ] Long-press and track a subject, then move the phone; confirm P13 geometry may redraw but cannot update the motion gate, ambiguity, action, pose-edge, Hold, or Ready.
+- [ ] Enter pause from Hold and Ready; confirm readiness clears immediately and no success haptic/capture fires. After release, fresh aligned evidence must rebuild Hold then Ready.
+- [ ] Change manual policy or target side while moving; confirm no new target appears until release, then the chosen photographer override is respected.
+- [ ] Repeat on front/back cameras, every lens, bright/dark live filters, and with an existing P16 Negative Space tint; confirm overlay mapping remains coherent.
+- [ ] Perform intentional handheld/candid movement; confirm copy says it may stay part of the shot and does not call motion wrong, bad, blurry, or a failed photo.
+- [ ] Toggle Compose, select a photo, switch lens/camera, background/foreground, stop/reopen Camera, and return from capture; confirm no stale paused state or sensor history returns.
+- [ ] Run ten minutes while alternating stillness, slow pan, fast pan, and shake; inspect CPU, thermal state, memory, dropped frames, main-thread responsiveness, and shutter latency.
+- [ ] Inspect logs/storage/network and confirm no acceleration/gyro axes, magnitude, normalized motion value, threshold, timestamp/history, frame/image/base64, provider data, score, identity, or sensitive inference is logged, persisted, or uploaded.
+- [ ] Confirm request counts remain one body pose, one objectness, one horizon, one explicit-lock tracker, and zero contour; P17 adds no ARKit, Xiaoyi/provider call, Camera upload/route, auto-trigger, model, or automatic camera control/capture.
+- [ ] Confirm `productionReady:false` remains unchanged.
+
+## Local AI Compose P16 - Scene-aware Negative Space
+
+Mac/Xcode physical-device verification:
+
+- [ ] Build and run on a physical iPhone; confirm synchronized membership includes `LocalAIComposeQuietSpaceStability.swift` and the refactored luma analyzer without manual project-file editing.
+- [ ] Enable Compose with a small bounded subject on the right and a visibly low-activity wall/sky area on the left; hold for two full-analysis samples and confirm automatic policy may become Negative Space with the subject target on the right third.
+- [ ] Reverse the scene; confirm stable quiet-right evidence produces a left-third target only after two matching samples.
+- [ ] Show one matching sample only, then return to balanced detail; confirm the policy does not activate from one frame.
+- [ ] After activation, interrupt evidence for one full sample and restore it; confirm no target flicker. Clear for two full samples and confirm fallback planning resumes.
+- [ ] Move from quiet-left to quiet-right and hold; confirm the old target survives the first opposite sample, switches once on the second, and action/Hold/Ready restart without losing an explicit subject lock.
+- [ ] Aim at a blank wall and evenly detailed scene; confirm they do not become directional Negative Space evidence.
+- [ ] Test similarly textured left/right foliage, fabric, grid, low light, motion blur, and high-grain scenes; confirm conservative no-direction behavior unless one side is repeatedly and clearly lower activity.
+- [ ] Test a smooth gradient beside strong texture; confirm only the lower-activity side is treated as a bounded cue, without UI wording that calls it empty, uncluttered, or objectively better.
+- [ ] Keep quiet-side evidence but use an extremely small/large subject or place it far from the opposite-third target; confirm automatic Negative Space remains bounded out.
+- [ ] Present valid nearby leading-line convergence together with a quiet side; confirm Leading Lines retains priority. Remove it and confirm Negative Space/Symmetry/subject fallback can resume from fresh stable evidence.
+- [ ] Choose Negative Space manually with and without active side evidence; confirm the target remains safe, the quiet-region tint is opposite the displayed target, and horizontal target flip updates both target and tint.
+- [ ] Repeat on front/back cameras and every lens; confirm left/right evidence, mirrored target, movement arrow, target frame, and quiet-region tint agree with the visible portrait preview.
+- [ ] Repeat with Original plus bright/dark live filters; confirm analysis remains based on the camera luma plane, overlay stays legible, and saved filter output is unchanged.
+- [ ] Move a locked subject at P13 cadence; confirm fast tracking redraws geometry but cannot activate/switch/clear quiet-side evidence or advance Hold/Ready.
+- [ ] Toggle Compose, select a photo, switch lens/camera, background/foreground, stop/reopen Camera, and return from capture; confirm no stale side returns.
+- [ ] Run ten minutes with live filters and a locked subject; inspect CPU, thermal state, dropped frames, memory, main-thread responsiveness, shutter latency, and confirm P15/P16 use one 768-sample grid/lock rather than two.
+- [ ] Inspect logs/storage/network and confirm no pixel/grid/activity/difference/ratio/side history, frame/image/base64, identity, confidence, score, or provider data is logged, persisted, or uploaded.
+- [ ] Confirm existing full Vision requests remain one each, P13 remains one explicit-lock tracker, and P16 adds no new Vision request, second P15/P16 pixel lock, ARKit, Xiaoyi/provider call, Camera upload/route, direct provider access, or automatic camera control/capture.
+- [ ] Confirm `productionReady:false` remains unchanged.
+
+## Local AI Compose P15 - Local Leading-line Convergence And Policy
+
+Mac/Xcode physical-device verification:
+
+- [ ] Build and run on a physical iPhone; confirm synchronized membership includes `LiveGuidanceLumaConvergenceAnalyzer.swift` and `LocalAIComposeLeadingLineStability.swift` without manual project-file editing.
+- [ ] Enable Compose in a textured corridor, road, bridge, railing, or architectural perspective scene with a bounded subject near the visible convergence; keep framing steady for two full-analysis samples and confirm automatic policy may become localized Leading Lines.
+- [ ] Confirm the dashed four-ray grid converges on the same visible side/height as the perspective structure and the target remains inside the bounded viewfinder region.
+- [ ] Show valid structure for one sample only and remove it; confirm Leading Lines does not activate from one frame.
+- [ ] After activation, disturb structure for one sample and restore it; confirm the target does not flicker. Remove it for two full samples and confirm automatic policy falls back.
+- [ ] Slowly move a valid convergence point within the continuation radius; confirm the active target stays stable rather than jittering every half second.
+- [ ] Move to a clearly different convergence point and hold for two full samples; confirm the plan replaces once and action/Hold/Ready restart without losing an explicit subject lock.
+- [ ] Test a blank wall, horizontal blinds, one isolated diagonal, regular grid/checker pattern, foliage/noisy texture, and clutter; confirm unavailable/not-observed behavior rather than false Leading Lines.
+- [ ] Keep a valid convergence point but place the subject far from it, extremely small, or extremely large; confirm automatic policy remains bounded out.
+- [ ] Present simultaneous symmetric corridor structure; confirm valid nearby Leading Lines takes precedence. Move the subject away from convergence but near center and confirm Symmetry/fallback can remain available.
+- [ ] Select Leading Lines manually without detected convergence; confirm a safe centered target appears. When stable evidence appears/disappears, confirm only that manual plan is rebuilt.
+- [ ] Confirm Leading Lines never presents target-side flip, while thirds and negative-space retain it.
+- [ ] Repeat across front/back cameras and all lenses; confirm CPU top-down to Compose bottom-up Y conversion and front mirroring match the visible portrait preview.
+- [ ] Repeat with Original and bright/dark live filters; confirm analysis remains based on the camera luma plane and overlay legibility does not alter saved filter rendering.
+- [ ] Move a locked subject at P13 tracking cadence; confirm fast tracking redraws geometry but cannot activate/replace/clear Leading Lines or advance Hold/Ready.
+- [ ] Toggle Compose, select a photo, switch lens/camera, background/foreground, and stop/reopen Camera; confirm no stale point returns.
+- [ ] Run ten minutes across perspective/non-perspective scenes with live filters and a locked subject; inspect CPU, thermal state, dropped frames, memory, main-thread responsiveness, shutter latency, and the fixed 192-edge/18,336-pair ceiling.
+- [ ] Inspect logs/storage/network and confirm no luma grid, gradient, edge, intersection, vote, weight, count, convergence history, frame/image/base64, identity, confidence, score, or provider data is logged, persisted, or uploaded.
+- [ ] Confirm existing full Vision requests remain one each, P13 remains one explicit-lock tracker, and P15 adds no `VNDetectContoursRequest`, ARKit, Xiaoyi/provider call, Camera upload/route, direct provider access, or automatic camera control/capture.
+- [ ] Confirm `productionReady:false` remains unchanged.
+
+## Local AI Compose P14 - Local Symmetry Evidence And Policy
+
+Mac/Xcode physical-device verification:
+
+- [ ] Build and run on a physical iPhone; confirm synchronized file membership includes `LiveGuidanceLumaStructureAnalyzer.swift` and `LocalAIComposeSymmetryStability.swift` without manual project-file editing.
+- [ ] Enable Compose on a clearly left/right-balanced architectural scene with visible texture and a bounded subject near the center; hold for two full-analysis samples and confirm automatic policy may change to localized Symmetry.
+- [ ] Show the same scene for one sample only, then break the symmetry; confirm automatic policy does not enter Symmetry from one observation.
+- [ ] After Symmetry is active, break the scene for one sample and restore it; confirm the plan does not flicker away. Break it for two full samples and confirm automatic policy returns to the previous geometry rules.
+- [ ] Aim at a blank, evenly lit wall and a very low-texture dark scene; confirm they remain unavailable rather than being promoted to Symmetry.
+- [ ] Keep a symmetric background but move the subject far from center, extremely small, or extremely large; confirm automatic Symmetry stays bounded out.
+- [ ] Open the policy menu and choose Symmetry manually on an asymmetric scene; confirm the cyan center axis and paired dashed quarter guides appear and no left/right flip action is offered.
+- [ ] Long-press a subject, then enter/leave automatic Symmetry; confirm the explicit subject lock and P13 tracker remain while target/action/Hold/Ready geometry restarts.
+- [ ] Repeat on front/back cameras and every available lens; confirm the central axis and mirrored sampling behavior correspond to the visible portrait preview.
+- [ ] Repeat with Original and several bright/dark live filters; confirm policy is based on the camera luma buffer and the overlay remains legible without affecting saved filter rendering.
+- [ ] Move a locked subject at P13 tracking cadence while holding scene structure steady; confirm fast rectangle updates do not accelerate Symmetry entry/exit, Hold, or Ready.
+- [ ] Toggle Compose off, select a photo, switch lens/camera, background/foreground the app, and stop/reopen Camera; confirm stale Symmetry state never returns.
+- [ ] Run Compose for ten minutes across textured/symmetric/asymmetric/blank scenes; inspect CPU/thermal state, dropped frames, memory, main-thread responsiveness, live-filter contention, and shutter latency.
+- [ ] Inspect logs/storage/network and confirm no luma pixels, sample grid, mirror/balance/dynamic/texture measurement, evidence history, preview image/base64, provider data, identity, confidence, or score is logged, persisted, or uploaded.
+- [ ] Confirm the three existing full Vision requests remain one each, P13 remains one lock-only `VNTrackObjectRequest`, and P14 adds no Vision request, ARKit session, Xiaoyi/provider call, Camera upload/route, automatic camera control/capture, or model training.
+- [ ] Confirm `productionReady:false` remains unchanged.
+
+## Local AI Compose P13 - User-lock Vision Sequence Tracking
+
+Mac/Xcode physical-device verification:
+
+- [ ] Build and run on a physical iPhone; confirm synchronized file membership includes `LocalAIComposeVisionSequenceTracker.swift` without manual project-file editing.
+- [ ] Enable Compose but do not lock a subject; confirm ordinary searching/candidate/policy behavior is unchanged and Instruments shows no object sequence request running.
+- [ ] Long-press one highlighted or ordinary candidate; confirm the cyan locked frame begins following that selected subject more fluidly than the approximately 2 FPS detector cadence.
+- [ ] Move the locked subject slowly left/right/up/down and toward/away from camera; confirm the frame follows without obvious half-second stepping, implausible jumps, or growing drift.
+- [ ] Move quickly, occlude the subject briefly for one tracking sample, then reveal it; confirm one miss is tolerated without immediate reacquiring flicker.
+- [ ] Occlude or leave frame long enough for two rejected tracking samples; confirm the locked frame enters the existing reacquiring state once rather than freezing or jumping to another subject.
+- [ ] Let the full detector see the subject again; confirm it reseeds/reacquires the same-kind local lock and fast tracking resumes with no stale box flash.
+- [ ] Cross two same-kind subjects; confirm private gating plus periodic detector correction avoids an obvious swap where possible and falls back to reacquiring instead of claiming identity.
+- [ ] Unlock and immediately lock a different candidate; confirm updates from the first ephemeral seed never move the second subject frame.
+- [ ] Repeat across front/back cameras and all available lenses; confirm overlay mirroring/orientation remains correct and camera/lens changes clear old tracking state.
+- [ ] Repeat with Original and several bright/dark live filters, horizon cue, policy changes, target flip, tap focus/exposure, focal pinch, dual-focal frame drag, and shutter; confirm gesture/control behavior remains intact.
+- [ ] Move into/out of target while tracking updates rapidly; confirm Hold and Ready still require the existing fresh full-analysis evidence and cannot complete at 12 FPS.
+- [ ] Run for ten minutes with a locked moving subject; use Instruments to inspect CPU/GPU/thermal state, dropped frames, memory, main-thread responsiveness, and shutter latency. Confirm the queue discards late frames rather than accumulating work.
+- [ ] Inspect logs/storage/network and confirm no raw frame, Vision observation, confidence, box, seed UUID, trajectory, identity descriptor, image/base64, or provider data is logged, persisted, or uploaded.
+- [ ] Confirm only one `VNTrackObjectRequest` exists while explicitly locked, existing body/objectness/horizon detector counts remain unchanged, and no ARKit/Xiaoyi/provider call or automatic focus/exposure/capture is added.
+- [ ] Confirm `productionReady:false` remains unchanged.
+
+## Local AI Compose P12 - Explicit Tap Focus And Exposure
+
+Mac/Xcode physical-device verification:
+
+- [ ] Build and run on a physical iPhone; confirm the synchronized Xcode project includes the existing edited Camera files without manual membership changes.
+- [ ] Tap several visible points near the center and all four content edges; confirm a small accent reticle appears exactly under the finger, a light haptic occurs, and nearby/far subjects visibly refocus or exposure metering reacts where supported.
+- [ ] Tap top/bottom or side black aspect-fit letterbox space; confirm no reticle, haptic, focus, or exposure change occurs.
+- [ ] Repeat on front and back cameras and every available lens; confirm focus/exposure follows the visible tapped side, with no manual mirror inversion error.
+- [ ] Repeat with Original plus bright/dark live filters; confirm the reticle remains visible and conversion still follows the underlying camera preview rather than filtered pixels.
+- [ ] Enable Compose and repeat tap, long-press subject selection, pinch focal crop, policy menu, target flip, Hold, and Ready; confirm tap stays independent and the other gestures/actions still work.
+- [ ] Confirm no Compose/Vision transition, subject detection, target change, Hold, Ready, lens switch, or camera switch triggers focus/exposure without an explicit tap or accessibility action.
+- [ ] On hardware without one of the capabilities, confirm supported focus or exposure still applies; if neither applies or configuration locking fails, confirm a short neutral dashed reticle and warning haptic appear without a crash.
+- [ ] Enable VoiceOver, focus the camera preview, invoke `Focus and expose at center`, and confirm the explicit center operation and temporary reticle work without exposing coordinates.
+- [ ] Tap repeatedly, select a photo, send the app inactive/background, and return; confirm old reticles/tasks do not reappear and camera controls remain responsive.
+- [ ] Run for ten minutes while alternating tap, Compose, front/back, lenses, filters, pinch, long press, and shutter; confirm no lock leak, frame backlog, excessive heat, memory growth, or shutter delay.
+- [ ] Inspect logs/storage/network and confirm no tap/device point, focus/exposure state/history, preview frame, image/base64, prompt, identity, confidence, or score is logged, persisted, or uploaded.
+- [ ] Confirm no new Vision request, ARKit session, Xiaoyi/provider call, Camera route/upload, automatic AI focus/exposure/zoom/capture, custom model/training, or production rollout is added.
+- [ ] Confirm `productionReady:false` remains unchanged.
+
+## Local AI Compose P11 - Visible Ambiguity Candidate Frames
+
+Mac/Xcode physical-device verification:
+
+- [ ] Build and run on a physical iPhone; confirm no project-file membership change is needed because the P11 edits use existing synchronized files.
+- [ ] Present two plausible people/objects for one analyzed frame only; confirm no candidate frames appear before the existing second fresh ambiguity sample.
+- [ ] Keep both candidates through the second sample; confirm each receives a dashed cyan frame with an accent corner marker, the generic searching reticle is absent, and the localized highlighted-frame hint appears.
+- [ ] Present five or six plausible candidates; confirm at most four frames are visible and only those highlighted candidates can be selected during confirmed ambiguity.
+- [ ] Include a tiny candidate below the area floor; confirm it is neither highlighted nor selectable during confirmed ambiguity.
+- [ ] Long-press inside each highlighted candidate in separate runs; confirm success haptic, immediate solid cyan lock on the chosen subject, alternative-frame removal, and normal target/action guidance resume.
+- [ ] Long-press a visible but non-highlighted fifth candidate during confirmed ambiguity; confirm warning feedback/no lock rather than selecting an invisible option.
+- [ ] Long-press empty preview space or aspect-fit letterbox space; confirm no candidate locks.
+- [ ] Test overlapping candidate boxes; confirm the existing most-specific containing candidate rule applies when both highlighted boxes contain the point.
+- [ ] Repeat on the front camera; confirm candidate frames mirror with the preview and a long press selects the visible framed subject rather than the opposite analysis coordinate.
+- [ ] Allow ambiguity to clear for two fresh frames; confirm all candidate frames/hint disappear and automatic policy targeting resumes without stale geometry.
+- [ ] Lock a subject, lose it, and reacquire it; confirm ambiguity alternatives do not leak into the existing reacquisition state.
+- [ ] Verify frames with Original and bright/dark filters, portrait plus surrounding landscape UI, Dynamic Type, VoiceOver, Reduce Motion, and smaller supported screens.
+- [ ] Confirm VoiceOver receives the localized long-press guidance but does not enumerate decorative frames as identities or numbered subjects.
+- [ ] Run the ambiguity flow for ten minutes; confirm no frame backlog, excessive thermal rise, memory growth, stale frames, or shutter delay.
+- [ ] Inspect logs/storage and confirm no candidate box/list/kind/history, touch point, frame, confidence, score, identity, prompt, image/base64, or provider data is logged or persisted.
+- [ ] Confirm no new Vision request, ARKit session, Xiaoyi/provider call, Camera route/upload, automatic camera control/capture, custom model/training, or production rollout is added.
+- [ ] Confirm `productionReady:false` remains unchanged.
+
+## Local AI Compose P10 - User-steerable Policy And Target Side
+
+Mac/Xcode physical-device verification:
+
+- [ ] Build and run on a physical iPhone; confirm the existing synchronized target sees the P10 edits without manual project-file membership changes.
+- [ ] Enable Compose and confirm a compact policy menu appears immediately beside the Compose toggle without colliding with the centered shutter, camera flip, or lens control on supported iPhone sizes.
+- [ ] Open the menu before a subject is found; confirm AI/thirds/centered/negative-space choices are available but target-side flip is hidden.
+- [ ] Select `AI choice`; confirm the displayed policy badge still follows the existing bounded local resolver.
+- [ ] Select each fixed policy and confirm the policy badge/grid/target update immediately while the visible subject box remains on the same tracked subject.
+- [ ] During a long-press subject lock, change policy; confirm the cyan lock and tracker remain active, target/action/Hold/Ready restart, and no second long press is required.
+- [ ] With thirds and negative space active, choose `Flip target side`; confirm the target moves to the opposite visible side and the directional arrow points toward it on the back camera.
+- [ ] Repeat target flip on the front camera; confirm visible target side and arrow direction remain consistent with the mirrored preview.
+- [ ] Choose centered balance; confirm the flip action is hidden and the target stays at horizontal center.
+- [ ] Flip twice on a stable subject; confirm the target returns to its original side without cumulative drift.
+- [ ] Change policy or side while Hold/Ready is active; confirm readiness and haptic eligibility reset and require fresh aligned frames for the new plan.
+- [ ] Switch lenses/cameras or allow ambiguity to clear/rebuild the target; confirm the selected policy preference and side remain session-stable while the detected subject plan updates safely.
+- [ ] Disable then re-enable Compose; confirm policy resets to `AI choice`, side resets to default, no old subject lock/target/Ready survives, and nothing persists after app relaunch.
+- [ ] Verify menu labels, selected checkmark, VoiceOver label/value, Dynamic Type, Reduce Motion, portrait plus surrounding landscape UI, bright/dark filters, and smaller supported screen widths.
+- [ ] Confirm shutter remains available and policy/side selection never changes zoom, focus, exposure, crop, rotation, or capture automatically.
+- [ ] Inspect logs/storage and confirm no policy preference, target side, selected candidate, geometry, frame, score/confidence, prompt, image/base64, or provider data is logged or persisted.
+- [ ] Confirm no extra Vision request, ARKit session, Xiaoyi/provider call, Camera route/upload, custom model/training, or production rollout is added.
+- [ ] Confirm `productionReady:false` remains unchanged.
+
+## Local AI Compose P9 - Stable Hold-to-ready Completion
+
+Mac/Xcode physical-device verification:
+
+- [ ] Build and run on a physical iPhone; confirm the synchronized target automatically includes `LocalAIComposeReadiness.swift`.
+- [ ] Enable Compose on a clearly detected subject and move it into the target. Confirm the first fresh aligned analysis shows “Hold this framing for a moment,” an accent scope, and dashed outer target ring rather than mint Ready.
+- [ ] Hold through the next fresh aligned analysis; confirm the target/cue becomes mint, aligned copy appears, and exactly one success haptic fires.
+- [ ] Remain aligned for several more analyses; confirm Ready remains stable and the haptic does not repeat every frame.
+- [ ] Move clearly outside alignment; confirm readiness clears. Return and verify a new hold frame is required before Ready and one new haptic is allowed only on the new Ready transition.
+- [ ] Enter alignment for one frame, leave on the next, then return; confirm the two separated aligned frames do not combine into Ready.
+- [ ] While holding for Ready, tap/toggle unrelated Camera controls, open/close a callout, or trigger a non-frame guide refresh; confirm none of these advances Hold to Ready.
+- [ ] Create multiple-subject ambiguity for only one analyzed frame, then perform a UI refresh; confirm it does not counterfeit the second ambiguity sample. Repeat the same principle for one pose-edge sample and one pending action switch.
+- [ ] Long-press a subject during an aligned scene; confirm target/readiness resets and the new selected-subject plan must gather fresh evidence.
+- [ ] Switch lenses, switch front/back camera, disable/re-enable Compose, background/foreground the app, and select/clear a photo; confirm no stale Ready, haptic, sample count, target, or subject lock survives the relevant reset.
+- [ ] Verify holding/Ready styling with Original and several bright/dark filters, front-camera mirroring, portrait plus surrounding landscape UI, Dynamic Type, Reduce Motion, VoiceOver, and silent mode as appropriate.
+- [ ] Confirm the shutter remains available before, during, and after Ready; Compose never auto-captures or blocks a deliberate early/late capture.
+- [ ] Run Compose for ten minutes and confirm no repeated haptic storm, frame backlog, thermal regression, memory growth, or shutter delay.
+- [ ] Inspect logs/storage and confirm no frame sample, readiness counter/history, action proposal, geometry, haptic event, score/confidence, prompt, image/base64, or provider data is logged or persisted.
+- [ ] Confirm no extra Vision request, ARKit session, Xiaoyi/provider call, Camera route/upload, numeric progress/countdown, automatic camera control/capture, training, or production rollout is added.
+- [ ] Confirm `productionReady:false` remains unchanged.
+
+## Local AI Compose P8 - Preview/Vision Orientation Contract
+
+Mac/Xcode physical-device verification:
+
+- [ ] Build and run on a physical iPhone; confirm the synchronized target automatically includes `CameraFrameOrientationContract.swift`.
+- [ ] With Original selected, enable Compose on the back camera and place one subject distinctly left, right, high, and low; confirm the subject box, target, movement arrow, pose-edge marker, and long-press hit all agree with the visible portrait preview rather than appearing 90 degrees away.
+- [ ] Repeat on the front camera and confirm only display mirroring changes left/right; top/bottom and touch selection remain aligned.
+- [ ] Select several live filters and confirm the Metal filtered preview has the same upright orientation and aspect-fit letterboxing as the native preview, with no additional 90-degree turn.
+- [ ] Long-press inside the portrait image and then inside black letterbox space in both portrait and landscape interface orientations; confirm the image hit selects normally and the letterbox hit is rejected.
+- [ ] Rotate the surrounding iPhone/iPad interface to landscape; confirm the current product contract stays a portrait 3:4 camera feed and all overlays remain aligned within that feed. Do not expect the camera content itself to rotate with the interface in P8.
+- [ ] Exercise a scene horizon and asymmetric pose near each edge; confirm horizon sign/position and left/right/top/bottom markers correspond to the visible scene.
+- [ ] Switch lenses and front/back cameras repeatedly; confirm orientation state updates without one stale or rotated analysis frame.
+- [ ] Capture and save photos in portrait and surrounding landscape UI; confirm existing photo output behavior is unchanged and P8 affects live analysis/preview coordinates only.
+- [ ] Run Compose plus a live filter for ten minutes and confirm no frame backlog, unexpected thermal regression, memory growth, overlay drift, or shutter delay.
+- [ ] Confirm no pixel buffer, frame dimension history, raw Vision output, raw pose/geometry, touch point, prompt, image/base64, provider secret, or sensor stream is logged or persisted.
+- [ ] Confirm no extra Vision request, ARKit session, Xiaoyi/provider call, Camera route/upload, automatic rotate/crop/zoom/capture, model/training path, or production rollout is added.
+- [ ] Confirm `productionReady:false` remains unchanged.
+
+## Local AI Compose P7 - Pose-edge Framing Guard
+
+Mac/Xcode physical-device verification:
+
+- [ ] Build and run on a physical iPhone; confirm the synchronized target automatically includes `LocalAIComposePoseFramingStability.swift`.
+- [ ] Frame one standing person with at least five reliably visible pose points and move a confident head/wrist/ankle point within roughly 4.5% of the left edge; confirm one sample shows no cue and the second matching sample activates the optional leave-space action and a left orange marker.
+- [ ] Repeat for right, top, and bottom edges; confirm only the affected edge markers appear and no skeleton/joint dot is drawn.
+- [ ] Create a simultaneous large X/Y target error and pose-edge risk; confirm movement toward the composition target remains the primary action, then leave-space follows only after placement is close.
+- [ ] Clear the edge for one Vision sample and return; confirm the active cue is held and clear is cancelled. Keep it clear for two samples; confirm the pose-edge state clears without stale marker/detail text.
+- [ ] Change directly from one edge to another; confirm one different sample is held and the second matching sample changes the marker set.
+- [ ] Test two simultaneous edges, such as top plus left, and confirm both markers are bounded inside the preview.
+- [ ] Repeat left/right cases with the front camera; confirm the display marker mirrors horizontally while top/bottom remain unchanged.
+- [ ] Long-press a body subject among multiple people; confirm only the matched body's current pose-edge flags drive the guard and a lost/ambiguous match shows reacquisition without stale edge markers.
+- [ ] Test sitting, partially occluded, low-light, unusual-pose, close-up, and deliberately cropped scenes; confirm weak or fewer-than-five reliable points do not fabricate an edge warning and copy remains optional rather than declaring an error.
+- [ ] Confirm face-only and salient-object guidance behaves exactly as P6 with no pose-edge cue.
+- [ ] Verify the orange markers remain legible with all policies, movement arrow, target/subject frames, scene/device horizon, bright/dark live filters, Dynamic Type, and VoiceOver.
+- [ ] Run Compose for ten minutes while profiling; confirm no extra Vision request, frame backlog, unacceptable thermal rise, memory growth, or shutter delay.
+- [ ] Inspect logs/storage and confirm no raw joint, joint name, confidence, pose observation, edge sample history, selected body trajectory, frame, prompt, image/base64, score, identity descriptor, or sensitive inference is logged or persisted.
+- [ ] Confirm no automatic zoom/pan/crop/rotation/capture, skeleton overlay, ARKit session, Xiaoyi/provider call, Camera cloud route, URLSession, provider key/SDK, preview upload, custom model/training, or production rollout is added.
 - [ ] Confirm `productionReady:false` remains unchanged.
 
 ## Phase 21-B - AVFoundation Depth Capability Probe

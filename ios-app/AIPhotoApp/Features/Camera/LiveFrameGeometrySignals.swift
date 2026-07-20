@@ -37,6 +37,13 @@ nonisolated struct LiveFrameNormalizedRect: Equatable, Sendable {
         width * height
     }
 
+    func contains(_ point: LiveFramePoint) -> Bool {
+        point.x >= x
+            && point.x <= x + width
+            && point.y >= y
+            && point.y <= y + height
+    }
+
     init(_ rect: CGRect) {
         let normalized = rect.standardized
         let clampedMinX = Self.clamp(normalized.minX)
@@ -53,6 +60,116 @@ nonisolated struct LiveFrameNormalizedRect: Equatable, Sendable {
     private static func clamp(_ value: CGFloat) -> CGFloat {
         min(1, max(0, value))
     }
+}
+
+nonisolated enum LiveFrameSubjectCandidateKind: String, Equatable, Sendable {
+    case face
+    case body
+    case salientObject
+}
+
+/// A bounded, nonnumeric summary of high-confidence body-pose points near preview edges.
+/// Raw joints and confidence values never leave the background Vision analyzer.
+nonisolated struct LiveFramePoseEdges: OptionSet, Equatable, Sendable {
+    let rawValue: UInt8
+
+    static let left = LiveFramePoseEdges(rawValue: 1 << 0)
+    static let right = LiveFramePoseEdges(rawValue: 1 << 1)
+    static let top = LiveFramePoseEdges(rawValue: 1 << 2)
+    static let bottom = LiveFramePoseEdges(rawValue: 1 << 3)
+
+    var mirroredHorizontally: LiveFramePoseEdges {
+        var mirrored: LiveFramePoseEdges = []
+        if contains(.left) { mirrored.insert(.right) }
+        if contains(.right) { mirrored.insert(.left) }
+        if contains(.top) { mirrored.insert(.top) }
+        if contains(.bottom) { mirrored.insert(.bottom) }
+        return mirrored
+    }
+}
+
+nonisolated struct LiveFramePoseFramingSignal: Equatable, Sendable {
+    let nearEdges: LiveFramePoseEdges
+}
+
+nonisolated struct LiveFrameSubjectCandidate: Equatable, Sendable {
+    let box: LiveFrameNormalizedRect
+    let kind: LiveFrameSubjectCandidateKind
+    let poseFramingSignal: LiveFramePoseFramingSignal?
+
+    init(
+        box: LiveFrameNormalizedRect,
+        kind: LiveFrameSubjectCandidateKind,
+        poseFramingSignal: LiveFramePoseFramingSignal? = nil
+    ) {
+        self.box = box
+        self.kind = kind
+        self.poseFramingSignal = poseFramingSignal
+    }
+}
+
+nonisolated struct LiveFrameSceneHorizonSignal: Equatable, Sendable {
+    /// Rounded to half-degree steps and bounded by the Vision analyzer before crossing actors.
+    let angleDegreesRounded: Double
+}
+
+nonisolated enum LiveFrameLeadingLineEvidence: String, Equatable, Sendable {
+    case observed
+    case notObserved
+    case unavailable
+}
+
+nonisolated struct LiveFrameLeadingLineSignal: Equatable, Sendable {
+    let evidence: LiveFrameLeadingLineEvidence
+    let convergencePoint: LiveFramePoint?
+
+    static let unavailable = LiveFrameLeadingLineSignal(
+        evidence: .unavailable,
+        convergencePoint: nil
+    )
+}
+
+nonisolated enum LiveFrameHorizontalSide: String, Equatable, Sendable {
+    case left
+    case right
+}
+
+nonisolated enum LiveFrameQuietSpaceEvidence: String, Equatable, Sendable {
+    case observed
+    case notObserved
+    case unavailable
+}
+
+nonisolated struct LiveFrameQuietSpaceSignal: Equatable, Sendable {
+    let evidence: LiveFrameQuietSpaceEvidence
+    let side: LiveFrameHorizontalSide?
+
+    static let unavailable = LiveFrameQuietSpaceSignal(
+        evidence: .unavailable,
+        side: nil
+    )
+}
+
+nonisolated struct LiveFrameLumaCompositionAnalysis: Equatable, Sendable {
+    let leadingLineSignal: LiveFrameLeadingLineSignal
+    let quietSpaceSignal: LiveFrameQuietSpaceSignal
+
+    static let unavailable = LiveFrameLumaCompositionAnalysis(
+        leadingLineSignal: .unavailable,
+        quietSpaceSignal: .unavailable
+    )
+}
+
+nonisolated enum LiveFrameSymmetryEvidence: String, Equatable, Sendable {
+    case observed
+    case notObserved
+    case unavailable
+}
+
+nonisolated struct LiveFrameSceneStructureSignal: Equatable, Sendable {
+    let symmetryEvidence: LiveFrameSymmetryEvidence
+    let leadingLineSignal: LiveFrameLeadingLineSignal
+    let quietSpaceSignal: LiveFrameQuietSpaceSignal
 }
 
 nonisolated struct GeometrySignals: Equatable, Sendable {
@@ -95,6 +212,28 @@ nonisolated struct DepthSignals: Equatable, Sendable {
         subjectDistanceBucket: .unknown,
         depthConfidenceBucket: .unknown
     )
+}
+
+/// A fixed, coarse, ephemeral foreground grid used only to cut AR guide lines
+/// around hardware-depth-supported subject geometry. It contains no depth values.
+nonisolated struct LiveFrameDepthOcclusionMask: Equatable, Sendable {
+    static let columnCount = 18
+    static let rowCount = 24
+    static let maximumCellCount = columnCount * rowCount
+
+    let occupiedCellIndices: [UInt16]
+
+    init(occupiedCellIndices: [UInt16]) {
+        self.occupiedCellIndices = Array(
+            Set(
+                occupiedCellIndices.filter {
+                    Int($0) < Self.maximumCellCount
+                }
+            )
+            .sorted()
+            .prefix(Self.maximumCellCount)
+        )
+    }
 }
 
 nonisolated struct CompositionSignals: Equatable, Sendable {
@@ -143,6 +282,16 @@ nonisolated struct LiveFrameSignals: Equatable, Sendable {
         self.safety = safety
         self.productionReady = productionReady
     }
+}
+
+nonisolated struct LiveGuidanceFrameAnalysis: Equatable, Sendable {
+    let guidanceSignals: [LiveGuidanceSignal]
+    let liveFrameSignals: LiveFrameSignals?
+    let subjectCandidates: [LiveFrameSubjectCandidate]
+    let sceneHorizonSignal: LiveFrameSceneHorizonSignal?
+    let sceneStructureSignal: LiveFrameSceneStructureSignal?
+    let workloadMode: LocalCameraAIWorkloadMode
+    let depthOcclusionMask: LiveFrameDepthOcclusionMask?
 }
 
 nonisolated struct AdvisorHintCandidate: Equatable, Sendable {

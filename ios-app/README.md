@@ -20,6 +20,12 @@ PT2-SF-R9-R13 calibrates the local Filter Lab preview renderer against the gener
 
 Live camera guidance should now prioritize on-device Apple Vision / AVFoundation geometry, hardware depth when available, and app-side retro-aware composition rules. Cloud/self-hosted VLM paths remain useful for post-capture Photo Advisor, offline benchmark, internal evaluation, and future labeling/distillation, but they are no longer the default live camera guidance path.
 
+Local AI Compose P22 makes the guide visually respect foreground depth. P20's synchronized absolute hardware depth may produce one fixed 18×24 binary cell mask limited to the current Vision subject neighborhood after reliable high-separation evidence. It contains no metric values, pixels, confidence, identity, or labels. A bounded cleanup removes isolated cells and fills enclosed holes; two compatible masks activate, one miss is tolerated, and two consistent distant masks replace. P17 motion entry, P21 thermal protection, camera/lens/Compose/selected-photo resets, and Group Balance clear or hide it. The front camera mirrors columns only in display. Inside an isolated SwiftUI compositing group, `destinationOut` punches the composition grid/tint behind occupied foreground cells while target and subject frames remain above. Unsupported/weak depth uses the unchanged overlay. No mask/depth persistence, log, upload, analytics, training, ARKit, Xiaoyi/provider call, Camera route, direct iOS provider access, automatic camera control/capture, or production rollout is added; `productionReady:false` remains locked.
+
+Local AI Compose P21 adds a capture-first workload scheduler over the local frame queue. Nominal state keeps the existing 0.5-second full-analysis and 12 FPS explicit-lock tracking ceilings. Low Power Mode or fair thermal pressure changes them to 0.85 seconds and 8 FPS. Serious/critical thermal pressure stops Vision/sequence tracking, sends only a coarse thermal-pause bucket, removes live depth, clears action/pose/Ready evidence, and presents a localized cooling cue while preview, filter rendering, controls, and shutter remain available. Recovery waits five seconds outside serious/critical before a fresh full analysis resumes and depth can be rebuilt. Raw OS thermal state, timestamps, cadence calculations, or recovery timing are not shown, logged, persisted, uploaded, or scored. No ARKit, Xiaoyi/provider call, Camera cloud route, direct iOS provider key/call, model/training, automatic camera control/capture, or production rollout is added; `productionReady:false` remains locked.
+
+Local AI Compose P20 turns the earlier capability probe into an actual capability-gated live depth path. Only while Compose analysis is active, compatible camera formats add `AVCaptureDepthDataOutput` and synchronize it with the existing video output through `AVCaptureDataOutputSynchronizer`; disabling Compose/entering selected-photo mode removes it, while unsupported lenses and dropped depth frames keep the ordinary RGB/Vision/filtered-preview path. The raw absolute depth map is converted locally to `DepthFloat32`, sampled sparsely around the current Vision subject, and immediately reduced to distance/separation/confidence buckets. Only two consecutive reliable strong-separation full-analysis samples show the subtle depth-layer halo and local badge; one clear sample is tolerated, the second clears, P17 motion pause freezes it, and Group Balance hides it. Raw depth maps, metric values, sample ratios, medians, and histories are not logged, persisted, uploaded, displayed, or used for training. P20 adds no ARKit world session, Xiaoyi/provider call, Camera cloud route, iOS provider key/direct call, model artifact, automatic camera control/capture, or production rollout; `productionReady:false` remains locked.
+
 This docs-only update adds no iOS runtime behavior, no model file, no Core ML package, no Florence-2 integration, no Depth Anything bundle, no provider SDK/key, no direct provider/model call, no Camera live cloud AI entry, no frame upload, no upload payload change, and no production rollout. `productionReady:false` remains locked.
 
 Phase 21-A starts this path in iOS with Apple Vision geometry-only live guidance. It adds typed local geometry/composition signal contracts, Vision face/body/pose geometry analysis on ephemeral preview frames, and a normalized overlay coordinate mapper for future debug overlays. It does not add model bundles, provider SDKs, API keys, direct provider/model calls, Camera live cloud AI, frame upload, upload payload changes, raw frame persistence, sensitive inference, or production rollout.
@@ -1288,3 +1294,272 @@ Known product gaps accepted for commit:
 - Camera viewfinder should be more prominent and information density should be lower.
 - Camera controls should be completed in a future hardening pass: flash, timer, camera flip, capture button, filter picker, and photo picker import.
 - Recommended follow-up before Phase 12: Camera Entry Flow & Camera Shell Redesign if the current shell is not yet product-satisfying.
+
+## Local AI Compose P19
+
+P19 adds a photographer-selected Group Balance policy for two to four visible local candidates.
+
+- It reuses P11's bounded candidate set and computes one normalized union only; one candidate and extreme almost-full-frame unions are rejected.
+- Two compatible full-analysis samples activate the union, compatible continuation is smoothed, distant replacement needs two samples, and two misses clear it.
+- One retained miss or pending replacement stays visible but cannot advance action, Hold, or Ready from stale geometry.
+- P17 device movement freezes group evidence, and P13 fast tracking cannot update it.
+- Group Balance is manual only. Choosing it clears any individual lock; long-pressing an individual returns to automatic single-subject guidance.
+- The group gets a dashed cyan union frame/badge, centered bounded target, distinct safe-region grid, localized searching/privacy copy, and no horizontal target flip.
+
+P19 does not automatically decide group membership or infer identity, relationship, importance, attractiveness, or quality. It adds no new Vision request, ARKit, Xiaoyi/provider call, Camera upload/route, logging/persistence, automatic camera control/capture, model/training, or production rollout. `productionReady:false` remains locked.
+
+## Local AI Compose P18
+
+P18 adds a stable Lead Room policy for horizontal screen-space movement of a photographer-locked subject.
+
+- The existing full-analysis temporal matcher supplies ephemeral smoothed velocity only after a fresh detector match; P13 fast tracker updates never count.
+- Two matching left/right samples activate or reverse the bucket. A lower continuation threshold prevents flicker, one weak/missing sample is tolerated, and the second clears it.
+- P17 device movement freezes this evidence, preventing camera pan from silently becoming subject-motion evidence.
+- Automatic selection keeps Leading Lines first, then bounded Lead Room, quiet-space Negative Space, Symmetry, and existing subject fallback.
+- A right-moving subject targets the left third and leaves space to the right; left-moving does the reverse. Front-camera mapping and manual target flip preserve photographer control.
+- The AR grid shades the open side and adds three dashed motion lanes without showing velocity, confidence, trajectory, score, or ranking.
+
+P18 is coarse 2D geometry, not speed, gaze, intent, identity, activity, destination, or aesthetic inference. It adds no new Vision request, ARKit, Xiaoyi/provider call, Camera upload/route, logging/persistence, automatic camera control/capture, model/training, or production rollout. `productionReady:false` remains locked.
+
+## Local AI Compose P17
+
+P17 prevents moving-phone frames from silently changing AR composition evidence or reaching Ready.
+
+- The existing memory-only CoreMotion monitor now records rotation-rate magnitude beside user-acceleration magnitude at its existing approximately 12 Hz cadence and 36-sample cap.
+- A 500 ms Compose-only summary emits `stable`, `moving`, or `unavailable`; raw axes/magnitudes, normalized values, thresholds, timestamps, and history remain private and clear when the monitor stops.
+- Moving pauses immediately on the next full-analysis sample. Two fresh stable/unavailable full-analysis samples release it; another moving sample resets that release progress.
+- Horizon, symmetry, leading-line, quiet-side, ambiguity, pose-edge, action, Hold, and Ready evidence freeze during pause. P13 may redraw locked-subject geometry but cannot advance any counter.
+- Existing target geometry remains frozen and dimmed. If no target exists, no policy target is created/cached/shown until guidance resumes.
+- Entering pause clears action/pose/readiness only, preserving the explicit subject lock/tracker. The overlay replaces arrow/level cues with a centered gyroscope-style reticle and optional handheld-friendly copy.
+
+P17 measures device motion only; it does not detect blur, infer subject motion, score quality, gate the shutter, or auto-trigger capture. It adds no new Vision request, ARKit, Xiaoyi/provider call, Camera upload/route, raw sensor logging/persistence, automatic camera control/capture, custom model/training, or production rollout. `productionReady:false` remains locked.
+
+## Local AI Compose P16
+
+P16 makes the local Negative Space option sensitive to a stable lower-activity side of the viewfinder.
+
+- P15 and P16 now share one read-only Y-plane lock and one fixed 24×32 logical portrait grid on the existing approximately 2 FPS Compose full-analysis path.
+- Fixed left/right zones each aggregate 240 local horizontal/vertical luma differences. Private active-floor, side-difference, and ratio gates reduce them to a three-state bucket plus optional side only.
+- Two matching full-analysis samples activate or switch the side; two clear samples remove it. P13 fast tracking cannot advance the state.
+- Automatic Negative Space is limited to a small bounded subject near the opposite-third target. Valid Leading Lines retains priority and subject geometry remains the fallback when side evidence is absent.
+- Automatic or fixed-Negative-Space side changes rebuild target/action/pose/Hold/Ready planning without losing an explicit lock/tracker.
+- The 2D AR overlay softly marks the displayed side to preserve. Front-camera mirroring, manual policy choice, and supported target flip remain photographer-controlled.
+
+P16 detects lower local luma activity only; it does not claim semantic emptiness, full visual-clutter understanding, or better composition. It adds no new Vision request or pixel-buffer lock, sensitive/identity inference, numeric score, raw artifact storage/logging, ARKit session, Xiaoyi/provider call, Camera upload/route, direct iOS provider key/call, automatic camera control/capture, custom model/training, or production rollout. `productionReady:false` remains locked.
+
+## Local AI Compose P15
+
+P15 gives the local Camera loop a bounded Leading Lines option derived from perspective structure rather than scene semantics.
+
+- `LiveGuidanceLumaConvergenceAnalyzer` runs only on the existing approximately 2 FPS full-analysis background path while Compose is active.
+- A read-only full-range Y-plane pass samples a fixed 24×32 portrait grid and calculates local Sobel-style edge directions.
+- Six-by-eight spatial buckets retain at most four strong edges each, so no more than 192 edges and 18,336 edge pairs are considered regardless of source resolution.
+- Bounded line intersections must form one supported peak, then pass direct radial-support, weight, sector, and divergent-orientation gates.
+- Only a three-state bucket and one safe normalized convergence point leave the analyzer. Raw pixels, grids, gradients, edge lists, intersections, votes, and measurements do not.
+- Two nearby fresh observations activate the point. Nearby continuation stays frozen, two consistent distant samples replace it, and two clear samples remove it. P13 fast tracking cannot advance any of these counters.
+- Automatic Leading Lines requires a non-extreme subject within a bounded distance of the convergence point and takes precedence over a simultaneous broad symmetry cue.
+- The photographer may select Leading Lines directly. A four-ray dashed 2D AR-style grid converges on the target, and no horizontal flip is offered.
+- Point transitions reset only target/action/pose/Hold/Ready planning and preserve explicit subject lock/tracking.
+
+P15 adds no contour/new Vision request, semantic/sensitive/identity inference, numeric score, raw artifact storage/logging, ARKit session, Xiaoyi/provider call, Camera upload/route, direct iOS provider key/call, automatic camera control/capture, custom model/training, or production rollout. `productionReady:false` remains locked.
+
+## Local AI Compose P14
+
+P14 lets automatic composition consider simple local scene structure instead of deriving every plan from a subject rectangle alone.
+
+- `LiveGuidanceLumaStructureAnalyzer` runs only on the existing approximately 2 FPS full-analysis background path while Compose is active.
+- It takes a read-only Core Video lock, reads only plane 0 of the configured full-range bi-planar buffer, and samples 14 mirrored pairs across 18 rows with the P8 portrait orientation contract.
+- Mirror difference, left/right mean balance, dynamic range, and local texture are temporary implementation details. Only `observed`, `notObserved`, or `unavailable` reaches the main actor.
+- Low-dynamic-range or low-texture scenes return unavailable, so a blank wall does not become false symmetry evidence.
+- Two fresh observations activate symmetry and two clear/unavailable samples remove it. Fast P13 tracking frames do not advance either counter.
+- Automatic Symmetry also requires a bounded, near-center subject; otherwise the prior thirds/centered/negative-space rules remain active.
+- A photographer may choose Symmetry manually. Its 2D AR-style grid has a central cyan axis and paired quarter guides, while horizontal target flip stays limited to thirds and negative-space.
+- Automatic symmetry state changes rebuild target/action/Hold/Ready geometry without removing an explicit subject lock or its tracker.
+
+P14 adds no numeric aesthetic score, semantic/sensitive/identity inference, raw pixel/stat storage or logging, new Vision request, ARKit session, Xiaoyi/provider call, Camera upload/route, automatic camera control/capture, custom model/training, or production rollout. `productionReady:false` remains locked.
+
+## Local AI Compose P13
+
+P13 improves the visible continuity of an explicitly locked subject without replacing the detector or adding identity tracking.
+
+- Long-press selection seeds one local Vision object sequence with an ephemeral generation UUID and normalized box.
+- The existing background video-output queue may run one `.fast` `VNTrackObjectRequest` at no more than 12 FPS while that seed is active.
+- The approximately 2 FPS full detector remains authoritative. Each accepted same-kind geometric match creates a new seed so drift cannot accumulate indefinitely.
+- Main-actor updates require the current seed UUID and a strictly increasing seed-local index; results from a replaced lock/seed or reordered callback are ignored.
+- Private confidence, size, area-ratio, and center-jump gates reject implausible observations. Two consecutive misses produce one lost event and existing reacquisition.
+- A bounded display interpolation makes the cyan subject frame more fluid without persisting a path.
+- Fast sequence frames redraw current geometry but never increment ambiguity/action/pose/Hold/Ready temporal controllers.
+- Unlock, loss, Compose reset, frame-analysis shutdown, lens/camera change, selected-photo transition, and Camera stop clear the seed.
+
+P13 adds no face recognition, identity descriptor, token/box/confidence/trajectory UI or persistence, raw-frame retention, extra full-scene detector, ARKit session, Xiaoyi/provider call, Camera route/upload, automatic focus/capture, custom model/training, or production rollout. `productionReady:false` remains locked.
+
+## Local AI Compose P12
+
+P12 gives the local AR-style Camera loop an explicit photographer-controlled focus/exposure action.
+
+- Tap recognition lives on the AVFoundation preview view, not on Vision or a cloud/provider path.
+- The shared portrait 3:4 aspect-fit content rect rejects letterbox taps before any hardware request.
+- `AVCaptureVideoPreviewLayer.captureDevicePointConverted(fromLayerPoint:)` converts the accepted visible point, preserving active gravity, rotation, and front-camera mirroring.
+- The current camera checks point-of-interest and focus/exposure mode support, takes a short configuration lock, sets each point before mode, and always unlocks.
+- A temporary local reticle/haptic reports applied versus unavailable state without claiming sharpness or quality.
+- VoiceOver can explicitly focus/expose at the preview center through a localized custom action.
+- Reticle state is session-only and clears on lens/camera switch, photo selection, lifecycle exit, or replacement tap.
+
+P12 does not allow Compose/Vision to auto-focus or auto-expose. It adds no tap logging/persistence, new Vision request, ARKit session, Xiaoyi/provider call, Camera route/upload, automatic zoom/capture, custom model/training, or production rollout. `productionReady:false` remains locked.
+
+## Local AI Compose P11
+
+P11 makes confirmed multi-subject selection visible and keeps rendered choices equal to selectable choices.
+
+- The existing two-fresh-frame ambiguity controller remains the gate. Candidate frames are not shown from a single noisy detection.
+- `selectionCandidates(in:)` applies the existing plausible area floor `0.012`, sorts by area only to keep output deterministic, and bounds the set to four.
+- `selectionCandidateBoxes(in:)` derives directly from that same candidate array; it does not create a second ranking or inference path.
+- Only while ambiguity is confirmed does the guide carry those normalized rectangles and use the highlighted top-four set for long-press hit testing.
+- The overlay maps each rectangle through the shared portrait/aspect-fit/front-mirror coordinate path and draws a dashed cyan frame with a small accent corner marker.
+- Frames expose no index, candidate kind, face/body/object label, identity, confidence, or quality value and are decorative for accessibility. Localized instruction/hint copy carries the semantic guidance.
+- Once the user locks a highlighted candidate, alternatives disappear and the existing same-kind geometric tracker, policy, target, action, Hold, and Ready loop resumes.
+- Outside confirmed ambiguity, optional long-press locking keeps the prior candidate behavior.
+
+P11 adds no new Vision request, candidate history, identity tracking, score/rating, persistence/logging, ARKit session, Xiaoyi/provider call, Camera route/upload, automatic capture/control, custom model/training, or production rollout. `productionReady:false` remains locked.
+
+## Local AI Compose P10
+
+P10 adds bounded human steering because composition is a creative choice rather than an objective prediction.
+
+- A compact menu appears beside the Compose toggle only while Compose is active.
+- `AI choice` keeps the existing geometry-based policy resolver; fixed choices expose rule of thirds, centered balance, and negative space.
+- The active fixed preference overrides only policy selection. Subject detection, explicit long-press lock, temporal tracker, horizon, pose-edge guard, action resolver, and readiness contract remain unchanged.
+- For an active thirds/negative-space target, `Flip target side` mirrors the target anchor horizontally. Centered balance never exposes a meaningless flip action.
+- Selecting a policy resets horizontal flip to its default and rebuilds target/action/Hold/Ready state from the current subject. Flipping also rebuilds that state.
+- Policy/side changes do not clear the selected subject or temporal tracker. The in-memory preference survives ordinary target, lens, camera, and subject-plan refreshes within the active Compose session.
+- Toggling Compose resets preference to `AI choice` and restores the default target side. Nothing is written to settings or storage.
+
+P10 presents alternatives, not a quality ranking. It adds no aesthetic score, confidence, “best” claim, extra Vision request, ARKit session, Xiaoyi/provider call, Camera route/upload, persistence, automatic zoom/crop/capture, model/training path, or production rollout. `productionReady:false` remains locked.
+
+## Local AI Compose P9
+
+P9 separates “inside the guide once” from “stable enough to present as Ready.”
+
+- `LocalAIComposeReadinessController` consumes only fresh analyzed-frame evidence and requires two consecutive aligned frames.
+- The first aligned frame produces a `holding` presentation with localized hold copy, an accent scope cue, and a dashed outer target ring.
+- The second fresh aligned frame produces mint Ready styling and one success haptic when the presentation transitions into Ready.
+- The short visual transition is disabled when Reduce Motion is enabled; localized instruction text remains the semantic output.
+- A non-aligned analyzed frame resets the readiness counter. Existing action hysteresis remains, but stale UI refreshes cannot advance the readiness gate.
+- Ambiguity, pose-edge, and action temporal controllers are now also updated only inside the explicit fresh-frame path. Compose toggles, long-press selection, target resets, and ordinary redraws do not count as additional samples.
+- Readiness clears with the shared target/lens/camera/lifecycle reset path and never persists across sessions.
+
+The cue remains advice, not a capture decision. P9 adds no numeric score/confidence/progress, countdown, shutter gate, auto-capture, automatic camera control, extra Vision request, ARKit session, Xiaoyi/provider call, Camera route/upload, logging/persistence, training, or production rollout. `productionReady:false` remains locked.
+
+## Local AI Compose P8
+
+P8 makes the camera frame orientation explicit across capture, Vision, filtered preview, overlay drawing, and long-press hit testing.
+
+- `AVCaptureVideoDataOutput` still requests a 90-degree portrait rotation because the live Core Image/Metal preview consumes those buffers.
+- Successful physical pixel-buffer rotation records `.portraitRotated`, so Vision uses `CGImagePropertyOrientation.up` and does not rotate the frame a second time.
+- If the capture connection cannot apply 90 degrees, the state falls back to `.sensorNativeLandscape` and Vision uses `.right`.
+- `CameraPreviewView`, `CameraCaptureService`, `RealtimeFilteredCameraPreviewView`, `LocalAIComposeOverlayView`, and `CameraView` now share `CameraFrameOrientationContract` constants instead of duplicating rotation/source-size assumptions.
+- The current product contract remains a portrait 3:4 camera feed, aspect-fitted even when the surrounding iPhone/iPad interface is landscape. Dynamic interface-following camera rotation is separate future scope.
+
+Apple's AVFoundation guidance says a video-data output can deliver physically rotated `CVPixelBuffer`s when its connection requests rotation. Vision orientation must therefore describe only the remaining pixel-buffer orientation, not repeat the connection transform: [Apple QA1744](https://developer.apple.com/library/archive/qa/qa1744/_index.html).
+
+P8 adds no extra Vision request, cloud/provider call, Camera route/upload, raw frame/geometry persistence, ARKit session, automatic rotation/crop/zoom/capture, new model/training path, or production rollout. `productionReady:false` remains locked.
+
+## Local AI Compose P7
+
+P7 reuses the existing body-pose request to protect optional person framing near preview edges.
+
+- The background analyzer requires at least five recognized points at confidence `>= 0.55` and emits only a left/right/top/bottom bitmask when a point is within `0.045` of an edge.
+- Raw pose points, joint labels, observations, and confidences never reach `CameraViewModel`.
+- The matched long-press subject carries its current pose bitmask through P3 box smoothing without storing a joint trajectory.
+- A pure two-sample controller stabilizes activation, edge changes, and clearing.
+- Stable edge evidence selects the existing leave-space action only after X/Y placement is inside tolerance.
+- Orange edge markers use display coordinates; the front camera swaps left/right markers while top/bottom remain unchanged.
+- The marker is decorative and the optional localized detail text remains the accessibility output.
+
+P7 adds no extra Vision request, skeleton, score, persistence, ARKit, Xiaoyi/provider call, Camera upload/route, automatic zoom/crop/capture, model/training artifact, or production rollout. `productionReady:false` remains locked.
+
+## Local AI Compose P6
+
+P6 adds stabilized typed actions and direct AR movement/scale cues.
+
+- Horizontal and vertical errors are normalized by separate tolerances; the dominant placement error wins.
+- Scale guidance begins only after subject placement is inside the current tolerance.
+- The first action is immediate; every later switch needs two consecutive matching samples.
+- Aligned, horizontal/vertical movement, zoom-in, and step-back states use separate exit thresholds to reduce boundary flicker.
+- A pending action is cancelled if the next frame returns to the active action.
+- Left/right/up/down render a bounded gradient arrow in display coordinates.
+- Zoom-in, step-back, and aligned render nonnumeric symbols at the target center.
+- Reacquiring, multiple-subject, no-subject, plan reset, and Camera lifecycle transitions clear action state.
+- Visual cues are decorative for accessibility and never intercept touches.
+
+P6 does not control zoom/crop/rotation/shutter, create a score, store action history, or send geometry off-device. It adds no ARKit session, Xiaoyi call, Camera network/upload route, identity/sensitive inference, model/training artifact, or production rollout. `productionReady:false` remains locked.
+
+## Local AI Compose P5
+
+P5 adds an optional scene-horizon overlay using Apple Vision.
+
+- `VNDetectHorizonRequest` runs only when Local AI Compose and frame analysis are both active.
+- The request stays on the existing approximately 2 FPS background queue and does not block the main actor.
+- Confidence/range gates reject weak, non-finite, or over-25-degree results; only a half-degree-rounded angle crosses to the view model.
+- Two agreeing samples activate the cue. Accepted continuation is smoothed, one missing sample is held, and the second clears it.
+- A large angle jump also needs two agreeing samples before replacing the active line.
+- Front-camera display reverses the angle sign for the mirrored preview.
+- The overlay draws detected cyan/mint scene horizon over a dashed horizontal reference; CoreMotion device level remains the fallback when no stable horizon is available.
+- Straightening remains optional. Deliberate tilt is allowed and capture stays manual.
+
+No raw horizon observation/confidence/transform/frame/angle history is logged or persisted. P5 adds no ARKit session, Xiaoyi call, Camera network/upload route, identity/sensitive inference, score/rating, automatic rotation/crop/capture, custom model/training, or production rollout. `productionReady:false` remains locked.
+
+## Local AI Compose P4
+
+P4 adds an explainable local composition policy and matching AR-style grids.
+
+- `thirds` is the default for most portrait/body subjects and off-center generic objects.
+- `centered` preserves close, already centered face/body/object geometry.
+- `negativeSpace` keeps a smaller target for small generic subjects.
+- The selected policy, target position, and target size stay fixed for the current plan so low-frequency samples cannot make the UI oscillate.
+- Two consecutive multiple-candidate samples pause automatic guidance and ask the user to long-press a subject; two clear samples are required before automatic guidance resumes.
+- The overlay shows a localized policy badge and a thirds/dashed-negative-space or centered grid.
+- A temporarily lost locked subject keeps its policy and target visible while P3 safely reacquires the subject rectangle.
+
+The policy is a creative starting point, not a score or objective quality judgment. It uses local rectangle/kind geometry only and adds no identity/sensitive inference, ARKit session, Xiaoyi call, Camera network route/upload, state persistence, custom model/training, automatic capture, or production rollout. `productionReady:false` remains locked.
+
+## Local AI Compose P3
+
+P3 stabilizes the P2 subject lock with an ephemeral geometry-only temporal matcher.
+
+- The next candidate position is predicted from a bounded short motion vector.
+- Only same-kind candidates are evaluated, using predicted-center distance, rectangle overlap, and relative size.
+- Implausible jumps are rejected, while reacquisition gets a small bounded distance allowance.
+- If the two best candidates are similarly plausible, no candidate is accepted for that sample; the existing reacquiring state appears instead of a subject swap.
+- Accepted rectangles are smoothed before rendering the cyan lock frame and calculating guidance.
+- Temporal state clears with the existing Compose/camera lifecycle and is never logged or persisted.
+
+This remains non-identifying 2D screen-space geometry. It adds no face/identity recognition, ARKit world session, Xiaoyi call, Camera upload/route, model artifact, automatic capture, or production rollout. `productionReady:false` remains locked.
+
+## Local AI Compose P2
+
+P2 adds explicit subject choice and a stronger AR-style local alignment state without adding ARKit or a Camera cloud route.
+
+- Long-press a visible subject while `AI Compose` is active to lock the guide to it.
+- Vision exposes at most six ephemeral candidates: body regions first, unpaired faces, or objectness-saliency regions when no person is present.
+- Touch coordinates are converted from the aspect-fit preview back into Vision-normalized coordinates; front-camera touches are unmirrored before matching.
+- A containing candidate wins; otherwise the nearest candidate must stay within a bounded distance.
+- Locked tracking only considers the same candidate kind near its previous center. If it is temporarily lost, the overlay shows a reacquiring state instead of jumping to a different subject.
+- The subject frame becomes cyan with a local lock badge, while success or miss produces bounded haptic feedback.
+- Disabling Compose, selecting a photo, switching lens/camera, or stopping Camera clears the lock and all candidate geometry.
+
+This is an AR-style 2D viewfinder overlay. ARKit world tracking is unnecessary because no world anchor, plane, depth mesh, or 3D placement is required. Xiaoyi `gpt-5.6-luna` is not called in P2: live subject choice and alignment remain local for latency and privacy. P2 adds no preview upload, provider route, model artifact, candidate persistence/logging, automatic shutter, or production rollout.
+
+## Local AI Compose P1
+
+Local AI Compose P1 adds a user-invoked composition overlay to the live Camera while keeping analysis on-device.
+
+- Tap `AI Compose` beside the shutter to enter/exit the mode.
+- The existing low-frequency Vision pipeline detects face/body geometry first.
+- If no person is present, Vision objectness saliency proposes one generic subject region.
+- The current session locks a nearby rule-of-thirds target and bounded subject-fill target to avoid direction/zoom-reference flicker.
+- The viewfinder shows a target frame, current subject outline, one placement/distance hint, and an optional device-level line.
+- Lens or front/back camera changes clear the old target and wait for a fresh frame.
+- Capture remains manual; the guide does not score the photo or require a retake.
+
+P1 is a deterministic local prototype, not a custom trained composition model. It adds no `.mlmodel`/`.mlpackage`, Core ML update task, dataset crawler, user-photo training, cloud Camera call, preview upload, raw-frame persistence, subject/face history, sensitive inference, automatic zoom, automatic shutter, or production rollout. `productionReady:false` remains locked.

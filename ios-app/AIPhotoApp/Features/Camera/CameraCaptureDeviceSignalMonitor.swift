@@ -18,6 +18,7 @@ final class CameraCaptureDeviceSignalMonitor {
         let rollDegrees: Double
         let pitchDegrees: Double
         let accelerationMagnitude: Double
+        let rotationRateMagnitude: Double
     }
 
     private let motionManager = CMMotionManager()
@@ -90,18 +91,70 @@ final class CameraCaptureDeviceSignalMonitor {
         )
     }
 
+    /// Returns one bucket for live AR coherence. Raw accelerometer and gyro
+    /// samples remain inside this short in-memory monitor and never cross to UI.
+    func composeMotionStability(
+        captureWindowMs: Int = 500
+    ) -> LocalAIComposeMotionBucket {
+        guard !samples.isEmpty else {
+            return .unavailable
+        }
+
+        let latestTimestamp = samples[samples.count - 1].timestamp
+        guard ProcessInfo.processInfo.systemUptime - latestTimestamp <= maxSnapshotAge else {
+            return .unavailable
+        }
+
+        let windowStart = latestTimestamp - Double(captureWindowMs) / 1000.0
+        let windowSamples = samples.filter { $0.timestamp >= windowStart }
+        let activeSamples = windowSamples.isEmpty ? samples : windowSamples
+        guard !activeSamples.isEmpty else {
+            return .unavailable
+        }
+
+        let averageAcceleration = activeSamples
+            .map(\.accelerationMagnitude)
+            .reduce(0, +) / Double(activeSamples.count)
+        let averageRotationRate = activeSamples
+            .map(\.rotationRateMagnitude)
+            .reduce(0, +) / Double(activeSamples.count)
+        let normalizedMotionScore = min(
+            max(
+                max(
+                    averageAcceleration / 0.18,
+                    averageRotationRate / 1.4
+                ),
+                0
+            ),
+            1
+        )
+
+        let motion = CameraMotionContext.summary(
+            score: normalizedMotionScore,
+            captureWindowMs: captureWindowMs
+        ).motionBucket
+        return motion == .stable ? .stable : .moving
+    }
+
     private func record(_ motion: CMDeviceMotion) {
         let userAcceleration = motion.userAcceleration
-        let magnitude = sqrt(
+        let accelerationMagnitude = sqrt(
             userAcceleration.x * userAcceleration.x
                 + userAcceleration.y * userAcceleration.y
                 + userAcceleration.z * userAcceleration.z
+        )
+        let rotationRate = motion.rotationRate
+        let rotationRateMagnitude = sqrt(
+            rotationRate.x * rotationRate.x
+                + rotationRate.y * rotationRate.y
+                + rotationRate.z * rotationRate.z
         )
         let sample = Sample(
             timestamp: motion.timestamp,
             rollDegrees: motion.attitude.roll * 180 / Double.pi,
             pitchDegrees: motion.attitude.pitch * 180 / Double.pi,
-            accelerationMagnitude: magnitude
+            accelerationMagnitude: accelerationMagnitude,
+            rotationRateMagnitude: rotationRateMagnitude
         )
 
         samples.append(sample)

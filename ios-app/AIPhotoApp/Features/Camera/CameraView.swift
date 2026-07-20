@@ -1,5 +1,6 @@
 import PhotosUI
 import SwiftUI
+import UIKit
 
 enum CameraAppDestination {
     case inspiration
@@ -14,6 +15,12 @@ private enum CameraCallout {
     case lens
     case pose
     case dualFocalZoom
+}
+
+private struct CameraFocusReticleState: Equatable {
+    let id: UUID
+    let point: CGPoint
+    let didApply: Bool
 }
 
 struct CameraView: View {
@@ -36,6 +43,9 @@ struct CameraView: View {
     @State private var activeSelectedPhotoPanel: FloatingPhotoActionPanel?
     @State private var isCameraViewVisible = false
     @State private var focalPinchStartMillimeters: Double?
+    @State private var focusReticle: CameraFocusReticleState?
+    @State private var focusReticleDismissTask: Task<Void, Never>?
+    private let localAIComposeCoordinateMapper = CameraOverlayCoordinateMapper()
 
     init(
         showsCloseButton: Bool = true,
@@ -121,6 +131,7 @@ struct CameraView: View {
         .onDisappear {
             isCameraViewVisible = false
             captureCountdownTask?.cancel()
+            clearFocusReticle()
             timerCountdown = nil
             viewModel.stopCamera()
         }
@@ -135,13 +146,28 @@ struct CameraView: View {
         .onChange(of: viewModel.selectedPhoto?.id) { _, newValue in
             if newValue == nil {
                 activeSelectedPhotoPanel = nil
+            } else {
+                clearFocusReticle()
             }
         }
         .onChange(of: viewModel.isUsingFrontCamera) { _, _ in
+            clearFocusReticle()
             reconcileFlashAvailability()
+        }
+        .onChange(of: viewModel.selectedLensOption.id) { _, _ in
+            clearFocusReticle()
         }
         .onChange(of: viewModel.isHardwareFlashAvailable) { _, _ in
             reconcileFlashAvailability()
+        }
+        .onChange(of: viewModel.localAIComposeGuide.readiness) { previous, current in
+            guard viewModel.isLocalAIComposeEnabled,
+                  previous != .ready,
+                  current == .ready else {
+                return
+            }
+            let feedback = UINotificationFeedbackGenerator()
+            feedback.notificationOccurred(.success)
         }
         .onChange(of: toneSettings.languageMode) { _, _ in
             viewModel.refreshLiveGuidanceCopyForCurrentTone()
@@ -161,6 +187,7 @@ struct CameraView: View {
             }
         case .inactive, .background:
             captureCountdownTask?.cancel()
+            clearFocusReticle()
             timerCountdown = nil
             viewModel.stopCamera()
         @unknown default:
@@ -286,7 +313,9 @@ struct CameraView: View {
                     HStack {
                         Spacer()
 
-                        nativeLiveGuidanceOverlay
+                        if !viewModel.isLocalAIComposeEnabled {
+                            nativeLiveGuidanceOverlay
+                        }
                     }
                         .padding(.horizontal, AppSpacing.md)
                         .padding(.bottom, guidanceBottomInset)
@@ -352,21 +381,36 @@ struct CameraView: View {
     }
 
     private var cameraFullscreenCanvas: some View {
-        ZStack {
-            Color.black
+        GeometryReader { proxy in
+            ZStack {
+                Color.black
 
-            switch viewModel.permissionState {
-            case .authorized:
-                CameraPreviewView(
-                    session: viewModel.service.session,
-                    isMirrored: viewModel.isUsingFrontCamera
-                )
+                switch viewModel.permissionState {
+                case .authorized:
+                    CameraPreviewView(
+                        session: viewModel.service.session,
+                        isMirrored: viewModel.isUsingFrontCamera,
+                        onFocusTap: handleFocusTap
+                    )
                     .ignoresSafeArea()
                     .overlay {
                         realtimeFilteredPreviewLayer
                     }
                     .overlay {
                         ruleOfThirdsGrid
+                    }
+                    .overlay {
+                        focusReticleOverlay
+                    }
+                    .overlay {
+                        if viewModel.isLocalAIComposeEnabled {
+                            LocalAIComposeOverlayView(
+                                guide: viewModel.localAIComposeGuide,
+                                isMirrored: viewModel.isUsingFrontCamera,
+                                showsDepthLayerCue: viewModel.isLocalAIComposeDepthLayerCueActive,
+                                depthOcclusionMask: viewModel.localAIComposeDepthOcclusionMask
+                            )
+                        }
                     }
                     .overlay {
                         if viewModel.isDualFocalZoomEnabled {
@@ -377,26 +421,40 @@ struct CameraView: View {
                             )
                         }
                     }
-            case .notDetermined, .denied, .restricted, .unavailable:
-                permissionMessage
-                    .padding(AppSpacing.xl)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(Color.black)
-            }
+                    .accessibilityLabel(Text("camera.focus.preview_accessibility"))
+                    .accessibilityAction(named: Text("camera.focus.center_accessibility")) {
+                        handleFocusTap(
+                            CameraPreviewFocusTap(
+                                layerPoint: CGPoint(
+                                    x: proxy.size.width / 2,
+                                    y: proxy.size.height / 2
+                                ),
+                                devicePoint: CGPoint(x: 0.5, y: 0.5)
+                            )
+                        )
+                    }
+                case .notDetermined, .denied, .restricted, .unavailable:
+                    permissionMessage
+                        .padding(AppSpacing.xl)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .background(Color.black)
+                }
 
-            VStack {
-                Spacer()
+                VStack {
+                    Spacer()
 
-                LinearGradient(
-                    colors: [.clear, .black.opacity(0.12), .black.opacity(0.54)],
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-                .frame(height: 188)
-                .allowsHitTesting(false)
+                    LinearGradient(
+                        colors: [.clear, .black.opacity(0.12), .black.opacity(0.54)],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                    .frame(height: 188)
+                    .allowsHitTesting(false)
+                }
             }
+            .simultaneousGesture(focalCropPinchGesture)
+            .simultaneousGesture(localAIComposeSubjectSelectionGesture(in: proxy.size))
         }
-        .simultaneousGesture(focalCropPinchGesture)
     }
 
     private var focalCropPinchGesture: some Gesture {
@@ -411,6 +469,82 @@ struct CameraView: View {
             }
             .onEnded { _ in
                 focalPinchStartMillimeters = nil
+            }
+    }
+
+    @ViewBuilder
+    private var focusReticleOverlay: some View {
+        if let focusReticle {
+            CameraFocusReticleView(didApply: focusReticle.didApply)
+                .position(focusReticle.point)
+                .id(focusReticle.id)
+                .transition(.scale(scale: 0.72).combined(with: .opacity))
+                .allowsHitTesting(false)
+                .accessibilityHidden(true)
+        }
+    }
+
+    private func handleFocusTap(_ tap: CameraPreviewFocusTap) {
+        let didApply = viewModel.focusAndExpose(at: tap.devicePoint)
+        let reticle = CameraFocusReticleState(
+            id: UUID(),
+            point: tap.layerPoint,
+            didApply: didApply
+        )
+
+        focusReticleDismissTask?.cancel()
+        withAnimation(.easeOut(duration: 0.16)) {
+            focusReticle = reticle
+        }
+
+        if didApply {
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        } else {
+            UINotificationFeedbackGenerator().notificationOccurred(.warning)
+        }
+
+        focusReticleDismissTask = Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 1_100_000_000)
+            guard !Task.isCancelled,
+                  focusReticle?.id == reticle.id else {
+                return
+            }
+
+            withAnimation(.easeIn(duration: 0.18)) {
+                focusReticle = nil
+            }
+            focusReticleDismissTask = nil
+        }
+    }
+
+    private func clearFocusReticle() {
+        focusReticleDismissTask?.cancel()
+        focusReticleDismissTask = nil
+        focusReticle = nil
+    }
+
+    private func localAIComposeSubjectSelectionGesture(in overlaySize: CGSize) -> some Gesture {
+        LongPressGesture(minimumDuration: 0.48, maximumDistance: 18)
+            .sequenced(before: DragGesture(minimumDistance: 0, coordinateSpace: .local))
+            .onEnded { value in
+                guard viewModel.isLocalAIComposeEnabled,
+                      case let .second(true, dragValue) = value,
+                      let dragValue,
+                      let normalizedPoint = localAIComposeCoordinateMapper.normalizedPoint(
+                          for: dragValue.location,
+                          sourceSize: CameraFrameOrientationContract.portraitNormalizedSourceSize,
+                          overlaySize: overlaySize,
+                          contentMode: .aspectFit
+                      ) else {
+                    return
+                }
+
+                let feedback = UINotificationFeedbackGenerator()
+                feedback.notificationOccurred(
+                    viewModel.selectLocalAIComposeSubject(at: normalizedPoint)
+                        ? .success
+                        : .warning
+                )
             }
     }
 
@@ -866,6 +1000,14 @@ struct CameraView: View {
             }
 
             HStack(spacing: AppSpacing.xs) {
+                HStack(spacing: 5) {
+                    localAIComposeButton
+
+                    if viewModel.isLocalAIComposeEnabled {
+                        localAIComposePolicyMenu
+                    }
+                }
+
                 Spacer(minLength: AppSpacing.xs)
 
                 HStack(spacing: AppSpacing.xs) {
@@ -882,6 +1024,137 @@ struct CameraView: View {
         }
         .frame(maxWidth: .infinity)
         .frame(height: 82)
+    }
+
+    private var localAIComposeButton: some View {
+        Button {
+            activeCameraCallout = .none
+            isLiveGuidanceExpanded = false
+            withAnimation(.snappy(duration: 0.2)) {
+                viewModel.toggleLocalAICompose()
+            }
+        } label: {
+            VStack(spacing: 3) {
+                Image(systemName: viewModel.isLocalAIComposeEnabled ? "sparkles" : "viewfinder")
+                    .font(.system(size: 17, weight: .bold))
+
+                Text("camera.ai_compose.short_title")
+                    .font(.caption2.weight(.semibold))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.72)
+            }
+            .frame(width: 58, height: 48)
+            .foregroundStyle(viewModel.isLocalAIComposeEnabled ? Color.black : Color.white)
+            .background(
+                viewModel.isLocalAIComposeEnabled
+                    ? AppColors.accent
+                    : Color.black.opacity(0.54)
+            )
+            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .stroke(
+                        viewModel.isLocalAIComposeEnabled
+                            ? Color.white.opacity(0.28)
+                            : Color.white.opacity(0.16),
+                        lineWidth: 1
+                    )
+            }
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("camera.ai_compose.toggle_accessibility")
+        .accessibilityValue(
+            Text(
+                LocalizedStringKey(
+                    viewModel.isLocalAIComposeEnabled
+                        ? "camera.ai_compose.accessibility_on"
+                        : "camera.ai_compose.accessibility_off"
+                )
+            )
+        )
+        .accessibilityAction(
+            named: Text("camera.ai_compose.clear_subject_accessibility")
+        ) {
+            guard viewModel.isLocalAIComposeSubjectLocked else { return }
+            viewModel.clearLocalAIComposeSubjectSelection()
+        }
+    }
+
+    private var localAIComposePolicyMenu: some View {
+        Menu {
+            Button {
+                viewModel.selectLocalAIComposePolicyPreference(.automatic)
+            } label: {
+                policyMenuLabel(
+                    titleKey: LocalAIComposePolicyPreference.automatic.titleKey,
+                    systemImage: LocalAIComposePolicyPreference.automatic.systemImage,
+                    isSelected: viewModel.localAIComposePolicyPreference == .automatic
+                )
+            }
+
+            Divider()
+
+            ForEach(LocalAIComposePolicy.allCases) { policy in
+                Button {
+                    viewModel.selectLocalAIComposePolicyPreference(.fixed(policy))
+                } label: {
+                    policyMenuLabel(
+                        titleKey: policy.titleKey,
+                        systemImage: policy.systemImage,
+                        isSelected: viewModel.localAIComposePolicyPreference == .fixed(policy)
+                    )
+                }
+            }
+
+            if let activePolicy = viewModel.localAIComposeGuide.policy,
+               activePolicy.supportsHorizontalTargetFlip {
+                Divider()
+
+                Button {
+                    viewModel.toggleLocalAIComposeTargetSide()
+                } label: {
+                    Label(
+                        LocalizedStringKey("camera.ai_compose.policy.flip_target"),
+                        systemImage: "arrow.left.and.right"
+                    )
+                }
+                .disabled(viewModel.localAIComposeGuide.subjectBox == nil)
+            }
+        } label: {
+            VStack(spacing: 2) {
+                Image(systemName: viewModel.localAIComposePolicyPreference.systemImage)
+                    .font(.system(size: 14, weight: .bold))
+
+                Image(systemName: "chevron.up.chevron.down")
+                    .font(.system(size: 8, weight: .bold))
+            }
+            .frame(width: 38, height: 48)
+            .foregroundStyle(.white)
+            .background(Color.black.opacity(0.54))
+            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .stroke(Color.white.opacity(0.18), lineWidth: 1)
+            }
+        }
+        .accessibilityLabel("camera.ai_compose.policy.menu_accessibility")
+        .accessibilityValue(
+            Text(LocalizedStringKey(viewModel.localAIComposePolicyPreference.titleKey))
+        )
+    }
+
+    private func policyMenuLabel(
+        titleKey: String,
+        systemImage: String,
+        isSelected: Bool
+    ) -> some View {
+        HStack {
+            Label(LocalizedStringKey(titleKey), systemImage: systemImage)
+
+            if isSelected {
+                Image(systemName: "checkmark")
+            }
+        }
     }
 
     @ViewBuilder
@@ -1799,6 +2072,26 @@ struct CameraView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(AppColors.surface.opacity(0.76))
         .clipShape(RoundedRectangle(cornerRadius: AppCornerRadius.md))
+    }
+}
+
+private struct CameraFocusReticleView: View {
+    let didApply: Bool
+
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(
+                    didApply ? AppColors.accent : Color.white.opacity(0.72),
+                    style: StrokeStyle(lineWidth: 1.7, dash: didApply ? [] : [4, 3])
+                )
+                .frame(width: 52, height: 52)
+
+            Circle()
+                .fill(didApply ? AppColors.accent : Color.white.opacity(0.72))
+                .frame(width: 4, height: 4)
+        }
+        .shadow(color: .black.opacity(0.52), radius: 2, y: 1)
     }
 }
 
