@@ -12,7 +12,7 @@ struct HybridCompositionPlannerView: View {
             Group {
                 switch state {
                 case .consentRequired:
-                    CloudAIConsentView(
+                    HybridCompositionConsentView(
                         onAccept: acceptConsent,
                         onCancel: dismiss
                     )

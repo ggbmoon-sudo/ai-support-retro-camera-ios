@@ -10,7 +10,7 @@ import {
 import {
   buildCompositionPlannerSystemPrompt,
   buildCompositionPlannerUserPrompt,
-  validateCompositionPlanCandidate
+  validateCompositionPlanGrounding
 } from "./compositionPlannerContract.mjs";
 
 export const XIAOYI_LUNA_BASE_URL = "https://xiaoyiapi.xyz";
@@ -58,7 +58,7 @@ export class XiaoyiLunaRelayProvider extends CloudAIProvider {
   async analyzeCompositionPlan(input) {
     this.assertReady(this.compositionPlannerModel);
     const payload = await this.sendChatCompletion(this.compositionPlannerRequestBody(input));
-    return parseXiaoyiLunaCompositionPlanResponse(payload);
+    return parseXiaoyiLunaCompositionPlanResponse(payload, input.localContext?.focusHint);
   }
 
   endpointURL() {
@@ -189,9 +189,9 @@ export function parseXiaoyiLunaGeneratedFilterRecipeResponse(payload) {
   return validation.value;
 }
 
-export function parseXiaoyiLunaCompositionPlanResponse(payload) {
+export function parseXiaoyiLunaCompositionPlanResponse(payload, focusHint) {
   const candidate = parseJsonFromXiaoyiLunaPayload(payload);
-  const validation = validateCompositionPlanCandidate(candidate);
+  const validation = validateCompositionPlanGrounding(candidate, focusHint);
   if (!validation.ok) {
     const error = new Error("Xiaoyi Luna composition plan failed validation");
     error.code = "provider_invalid_schema";

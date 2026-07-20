@@ -49,18 +49,22 @@ async function runSmoke() {
     ? { "x-internal-cloud-ai-debug-token": config.internalDebugToken }
     : { "x-internal-debug-cloudai": "true" };
   const result = await handleCompositionPlannerRequest({
-    schemaVersion: "1.0",
+    schemaVersion: "1.1",
     feature: "composition_planner",
-    mode: "one_shot_pre_capture",
+    mode: "live_keyframe",
     locale: args.get("--locale") ?? "zh-Hant-HK",
     consent: {
       imageUploadAccepted: true,
-      consentVersion: "2026-07-20.phase24.v1"
+      consentVersion: "2026-07-20.phase25.live-keyframes.v1"
     },
     localContext: {
       subjectKind: args.get("--subject-kind") ?? "salient_object",
       subjectCount: args.get("--subject-count") ?? "single",
-      lensBucket: args.get("--lens-bucket") ?? "standard"
+      lensBucket: args.get("--lens-bucket") ?? "standard",
+      focusHint: {
+        x: boundedPermille(args.get("--focus-x")),
+        y: boundedPermille(args.get("--focus-y"))
+      }
     },
     image: {
       contentType: "image/jpeg",
@@ -79,6 +83,11 @@ async function runSmoke() {
     plan: result.body?.plan ?? null,
     productionReady: false
   };
+}
+
+function boundedPermille(value) {
+  const parsed = Number.parseInt(value ?? "500", 10);
+  return Number.isFinite(parsed) ? Math.min(1000, Math.max(0, parsed)) : 500;
 }
 
 function jpegDimensions(buffer) {

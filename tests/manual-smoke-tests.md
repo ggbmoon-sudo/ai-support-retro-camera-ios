@@ -1,5 +1,34 @@
 # Manual Smoke Tests
 
+## Local AI Compose P25 - bounded live Xiaoyi keyframes
+
+Windows/backend verification:
+
+- [x] Confirm the full backend test suite passes 440/440 after schema `1.1`, focus grounding, subject-box validation, live-session source contracts, ignored key-file loading, and boundary coverage are added.
+- [x] Confirm an invalid/missing/out-of-range/undersized/oversized subject box, extra field, or box inconsistent with the focus hint fails closed.
+- [x] Confirm iOS source owns one session ID and one request ID, captures the next frame only after the prior reply, waits at least one second before the next cycle, and has no frame queue.
+- [x] Confirm stop/reset paths cancel snapshot/network work and stale session/request IDs cannot apply a reply.
+- [x] Confirm provider/model/key/base URL remain backend-only and `productionReady:false` is unchanged.
+- [x] Restart the current Windows backend through ignored `XIAOYI_API_KEY_FILE` configuration and confirm localhost plus `192.168.68.60:8787` report `xiaoyiLunaInternal`, `compositionPlannerReady:true`, and `productionReady:false` without printing the key.
+- [ ] Run one explicitly approved ignored sample through the schema `1.1` Xiaoyi smoke runner on the configured Mac/backend; print only the validated enum/geometry plan and never raw prompt, response, base64, key, or header.
+
+Mac/Xcode and physical-device verification:
+
+- [ ] Configure ignored backend values for Xiaoyi internal mode, restart, and confirm `/health` reports `compositionPlannerReady:true` and `productionReady:false` without exposing credentials.
+- [ ] Open `ios-app/AIPhotoApp.xcodeproj`, Clean Build Folder, and build DEBUG. Confirm all Hybrid Composition files, including `HybridCompositionConsentView.swift`, are included and no Swift/concurrency diagnostic appears.
+- [ ] Enable Compose and long-press a person, pet, or object. If no local candidate is highlighted, confirm the touch still creates a provisional box and enables Start Live AI.
+- [ ] Start the session, cancel consent, and confirm no upload. Start again, accept, and confirm the live indicator is visible until Stop or a lifecycle boundary.
+- [ ] Inspect network timing for at least 30 seconds: never more than one composition request in flight; the next capture starts no earlier than one second after the prior reply; slow replies reduce cadence; no queue or catch-up burst occurs.
+- [ ] Confirm the first valid reply grounds the chosen subject and strategy. Pan/zoom/walk while keeping it visible; the local outline should update near 15 FPS and AR-style move/zoom/distance guidance should remain materially steadier than 1 FPS cloud boxes alone.
+- [ ] Confirm the app does not repeatedly snap a healthy local track back to an older cloud keyframe box. Cover/reveal the subject and verify safe local reacquisition or cloud grounding without switching silently to an unrelated subject.
+- [ ] Cause two successive cloud replies to recommend another supported strategy and confirm replacement occurs only after the second match; one isolated change must not flicker the plan.
+- [ ] Tap Stop and confirm no later frame/request. Repeat Compose off, capture, selected-photo change, front/rear/lens switch, Camera dismissal, and app background; confirm outstanding work is cancelled and stale replies cannot reapply.
+- [ ] Disconnect backend during a session. Confirm the session stops safely, the last validated guide may remain local, Camera/shutter stay usable, and there is no silent retry storm.
+- [ ] Repeat on front-camera mirrored preview and rear cameras. Confirm the top-left cloud box, bottom-left Vision geometry, and display mirroring map to the same visible subject without double mirroring.
+- [ ] Confirm guidance never actuates zoom, lens, focus, exposure, crop, shutter, or capture and never blocks manual capture.
+- [ ] Build RELEASE and confirm the live Xiaoyi Camera entry and remote client path remain unavailable.
+- [ ] Inspect console, backend files, and traffic metadata: no key, Authorization header, raw/base64 image, prompt, raw provider response, EXIF/GPS, box history, sensor stream, identity/sensitive inference, score/rating, or training artifact.
+
 ## Local AI Compose P24 - Xiaoyi one-shot composition planner
 
 Windows/backend verification:

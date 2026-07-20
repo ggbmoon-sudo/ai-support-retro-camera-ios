@@ -4,7 +4,7 @@ Phase 17A adds a backend boundary for future Cloud AI work.
 
 By default this backend runs in mock mode. Phase 17C-R1 adds a Photo Advisor internal beta path through the QweAPI OpenAI-compatible gateway, but it is disabled unless explicitly enabled with local/internal backend config and server-side secrets. It must not store uploaded images or request payloads.
 
-Local AI Compose P24 adds an explicitly approved internal/debug `POST /v1/ai/composition-planner` path. It accepts one consented, bounded, metadata-stripped JPEG and three non-identifying local context buckets, then calls Xiaoyi `gpt-5.6-luna` through the backend only. The response is an exact enum-only composition plan; free prose, extra fields, scores, sensitive inference, and inconsistent target geometry fail closed. The route does not persist images/prompts/responses and remains `productionReady:false`. Continuous live tracking stays on the iPhone; this endpoint is not video streaming or automatic capture.
+Local AI Compose P25 uses the explicitly approved internal/debug `POST /v1/ai/composition-planner` path for bounded live-like keyframes. Each schema `1.1` request is one consented, metadata-stripped JPEG plus non-identifying buckets and a top-left permille focus hint. Xiaoyi `gpt-5.6-luna` must return an exact enum plan plus a grounded subject kind/box; free prose, extra fields, scores, sensitive inference, focus inconsistency, and invalid target geometry fail closed. The client permits at most one request in flight and schedules the next frame only after the reply plus at least one second. The route does not persist images/prompts/responses and remains `productionReady:false`. Fast tracking stays on the iPhone; this endpoint is not bidirectional Gemini Live, video streaming, WebSocket, or automatic capture.
 
 PT2-SF-R9-R16-R2 makes the Recipe v2 prompt explicitly transferable across unrelated apply photos. `lumaCurve` owns primary reusable tone intent; exposure, contrast, fade, and shadow lift are residual rather than duplicate tone operations. Dark subjects, room brightness, and target-scene flash exposure must not be encoded as filter style. The response schema and one-style/reference-image request remain unchanged. Alpha-aware source/tone-color sampling, low-chroma evidence gates, and bounded local shadow repair are iOS-only operations; the apply/original is not added to the backend request.
 
@@ -115,7 +115,13 @@ XIAOYI_CHAT_COMPLETIONS_PATH=/v1/chat/completions
 XIAOYI_COMPOSITION_PLANNER_MODEL=gpt-5.6-luna
 ```
 
-Restart `npm start`, then confirm `/health` reports `compositionPlannerReady:true` and `productionReady:false`. A physical DEBUG iPhone must still use the computer's private-LAN backend URL and explicit in-app consent for each attempt.
+For local development, the key may instead remain in one ignored external text file. Set only its path in the ignored backend environment; the file may contain the raw key or one `XIAOYI_API_KEY=...` line. A direct `XIAOYI_API_KEY` takes precedence, and a missing/invalid file fails closed:
+
+```sh
+XIAOYI_API_KEY_FILE=/absolute/path/outside-the-repo/xiaoyi-api-key.txt
+```
+
+Restart `npm start`, then confirm `/health` reports `compositionPlannerReady:true` and `productionReady:false`. A physical DEBUG iPhone must still use the computer's private-LAN backend URL and explicit in-app consent for each live session.
 
 The safe bounded CLI requires an explicitly approved local JPEG and flag:
 

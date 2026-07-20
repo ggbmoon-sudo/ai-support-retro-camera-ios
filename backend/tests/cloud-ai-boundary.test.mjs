@@ -659,6 +659,19 @@ test("xiaoyi config trims and allows only the supported relay url, path, and Lun
   assert.equal(cloudAIConfig({ XIAOYI_COMPOSITION_PLANNER_MODEL: "other-model" }).xiaoyiCompositionPlannerModel, "");
 });
 
+test("xiaoyi config can read an ignored backend key file without exposing its value", async () => {
+  const directory = await mkdtemp(path.join(tmpdir(), "xiaoyi-key-"));
+  const keyPath = path.join(directory, "xiaoyi.key");
+  try {
+    await writeFile(keyPath, "XIAOYI_API_KEY=test-secret-from-file\n", "utf8");
+    const config = cloudAIConfig({ XIAOYI_API_KEY_FILE: keyPath });
+    assert.equal(config.xiaoyiAPIKey.length > 0, true);
+    assert.equal(cloudAIConfig({ XIAOYI_API_KEY_FILE: path.join(directory, "missing") }).xiaoyiAPIKey, "");
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
 test("xiaoyi provider uses gpt-5.6-luna for photo advisor request shape", async () => {
   let capturedURL;
   let capturedHeaders;
@@ -730,10 +743,12 @@ test("xiaoyi provider uses gpt-5.6-luna for generated Filter Lab recipes", async
   assert.equal(capturedRequest.messages[1].content[1].image_url.detail, "high");
 });
 
-test("xiaoyi provider uses a strict one-shot composition request", async () => {
+test("xiaoyi provider uses a strict grounded composition keyframe request", async () => {
   let capturedRequest;
   const plan = {
-    schemaVersion: "1.0",
+    schemaVersion: "1.1",
+    subjectKind: "salient_object",
+    subjectBox: [360, 310, 640, 690],
     sceneFamily: "pet",
     policy: "thirds",
     targetHorizontal: "left",
@@ -760,7 +775,8 @@ test("xiaoyi provider uses a strict one-shot composition request", async () => {
     localContext: {
       subjectKind: "salient_object",
       subjectCount: "single",
-      lensBucket: "standard"
+      lensBucket: "standard",
+      focusHint: { x: 500, y: 500 }
     }
   });
 
@@ -773,6 +789,8 @@ test("xiaoyi provider uses a strict one-shot composition request", async () => {
   assert.equal(capturedRequest.messages[0].content.includes("sensitive"), true);
   assert.equal(capturedRequest.messages[0].content.includes("score"), true);
   assert.equal(capturedRequest.messages[0].content.includes("one user-authorized still image"), true);
+  assert.equal(capturedRequest.messages[0].content.includes("bounding box"), true);
+  assert.equal(capturedRequest.messages[1].content[0].text.includes("focusHint"), true);
   assert.equal(capturedRequest.messages[1].content[1].image_url.detail, "high");
 });
 

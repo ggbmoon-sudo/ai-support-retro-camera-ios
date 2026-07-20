@@ -16,12 +16,41 @@ nonisolated struct HybridCompositionLocalContext: Codable, Equatable, Sendable {
     let subjectKind: HybridCompositionSubjectKind
     let subjectCount: HybridCompositionSubjectCount
     let lensBucket: HybridCompositionLensBucket
+    let focusHint: HybridCompositionFocusHint
+}
+
+/// The photographer's current intended-subject point in the exact displayed JPEG.
+/// Coordinates are bounded integer permille with a top-left origin so the backend
+/// never needs raw touch history or preview geometry.
+nonisolated struct HybridCompositionFocusHint: Codable, Equatable, Sendable {
+    let x: Int
+    let y: Int
+
+    init(displayPoint: LiveFramePoint) {
+        x = Self.permille(displayPoint.x)
+        y = Self.permille(1 - displayPoint.y)
+    }
+
+    private static func permille(_ value: CGFloat) -> Int {
+        Int((min(1, max(0, value)) * 1_000).rounded())
+    }
 }
 
 nonisolated enum HybridCompositionSubjectKind: String, Codable, Equatable, Sendable {
     case face
     case body
     case salientObject = "salient_object"
+
+    var localCandidateKind: LiveFrameSubjectCandidateKind {
+        switch self {
+        case .face:
+            return .face
+        case .body:
+            return .body
+        case .salientObject:
+            return .salientObject
+        }
+    }
 }
 
 nonisolated enum HybridCompositionSubjectCount: String, Codable, Equatable, Sendable {
@@ -45,9 +74,9 @@ nonisolated struct HybridCompositionPlannerRequest: Codable, Equatable, Sendable
     let image: CloudAIRequestImage
 
     init(input: HybridCompositionPlannerInput) {
-        schemaVersion = "1.0"
+        schemaVersion = "1.1"
         feature = "composition_planner"
-        mode = "one_shot_pre_capture"
+        mode = "live_keyframe"
         locale = input.locale
         consent = input.consent
         localContext = input.localContext
@@ -72,6 +101,8 @@ nonisolated struct HybridCompositionPlannerResponse: Codable, Equatable, Sendabl
 
 nonisolated struct HybridCompositionPlan: Codable, Equatable, Sendable {
     let schemaVersion: String
+    let subjectKind: HybridCompositionSubjectKind
+    let subjectBox: [Int]
     let sceneFamily: HybridCompositionSceneFamily
     let policy: HybridCompositionPolicy
     let targetHorizontal: HybridCompositionHorizontalSlot
@@ -81,6 +112,54 @@ nonisolated struct HybridCompositionPlan: Codable, Equatable, Sendable {
     let focalSuggestion: HybridCompositionFocalSuggestion
     let reasonCode: HybridCompositionReasonCode
     let confidence: CloudAIConfidence
+
+    func hasSameStrategy(as other: HybridCompositionPlan) -> Bool {
+        sceneFamily == other.sceneFamily
+            && policy == other.policy
+            && targetHorizontal == other.targetHorizontal
+            && targetVertical == other.targetVertical
+            && targetSize == other.targetSize
+            && distanceAction == other.distanceAction
+            && focalSuggestion == other.focalSuggestion
+            && reasonCode == other.reasonCode
+    }
+
+    func groundedSubjectCandidate(
+        isFrontCameraMirrored: Bool
+    ) -> LiveFrameSubjectCandidate? {
+        guard subjectBox.count == 4 else { return nil }
+        let left = CGFloat(subjectBox[0]) / 1_000
+        let top = CGFloat(subjectBox[1]) / 1_000
+        let right = CGFloat(subjectBox[2]) / 1_000
+        let bottom = CGFloat(subjectBox[3]) / 1_000
+        guard left >= 0,
+              top >= 0,
+              right <= 1,
+              bottom <= 1,
+              right - left >= 0.025,
+              bottom - top >= 0.025 else {
+            return nil
+        }
+
+        let analysisX = isFrontCameraMirrored ? 1 - right : left
+        let analysisBox = LiveFrameNormalizedRect(
+            CGRect(
+                x: analysisX,
+                y: 1 - bottom,
+                width: right - left,
+                height: bottom - top
+            )
+        )
+        guard analysisBox.area >= 0.004,
+              analysisBox.area <= 0.92 else {
+            return nil
+        }
+
+        return LiveFrameSubjectCandidate(
+            box: analysisBox,
+            kind: subjectKind.localCandidateKind
+        )
+    }
 
     var localPolicy: LocalAIComposePolicy {
         switch policy {

@@ -108,6 +108,7 @@ nonisolated struct CloudAIRequestClient: Codable, Hashable, Sendable {
 
 nonisolated struct CloudAIConsent: Codable, Hashable, Sendable {
     static let currentVersion = "2026-07-20.phase24.v1"
+    static let liveCompositionVersion = "2026-07-20.phase25.live-keyframes.v1"
 
     let imageUploadAccepted: Bool
     let consentVersion: String
@@ -116,6 +117,13 @@ nonisolated struct CloudAIConsent: Codable, Hashable, Sendable {
         CloudAIConsent(
             imageUploadAccepted: true,
             consentVersion: currentVersion
+        )
+    }
+
+    static var acceptedLiveComposition: CloudAIConsent {
+        CloudAIConsent(
+            imageUploadAccepted: true,
+            consentVersion: liveCompositionVersion
         )
     }
 }

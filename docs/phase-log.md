@@ -8,9 +8,74 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Local AI Compose P24 - Xiaoyi One-Shot Composition Planner
-Status: implemented; 438/438 backend tests and two bounded real-provider smoke calls passed; Mac/Xcode physical-device end-to-end verification required
-Latest implementation: P24 adds an explicitly approved internal/debug hybrid path. After the photographer enables Compose and long-presses a subject, a DEBUG-only action requests fresh one-shot consent, captures one preview frame without firing the shutter, strips metadata through the existing bounded JPEG compressor, and sends it through the backend to Xiaoyi `gpt-5.6-luna`. The provider may return only one strict enum plan: scene family, policy, target slots/size, coarse distance/lens suggestions, reason code, and confidence bucket. Free-form prose, scores, sensitive inference, extra fields, and malformed policy/target combinations fail closed. The returned plan is frozen into the existing P23 target geometry; continuous subject tracking, action/Hold/Ready evidence, preview, camera controls, and capture remain local and photographer-controlled. There is no video streaming, automatic trigger, automatic zoom/focus/shutter, provider key in iOS, direct iOS provider call, raw prompt/response/image logging, persistence, training use, ARKit session, or production rollout. `productionReady:false` stays locked. Current ignored Windows `.env.local` still selects SiliconFlow; Mac/device end-to-end testing requires a local ignored Xiaoyi internal configuration and backend restart.
+Current phase: Local AI Compose P25 - Bounded Live Xiaoyi Keyframes
+Status: implemented; 440/440 backend tests passed; Mac/Xcode, physical-device, and schema 1.1 real-provider verification required
+Latest implementation: P25 replaces the P24 one-shot handoff with an explicitly approved DEBUG/internal live-like session. After a long-press focus hint and one session-specific consent, Camera may send independent metadata-stripped keyframes through the backend to Xiaoyi `gpt-5.6-luna` at no more than 1 FPS. Exactly one request may be in flight and no frames are queued. Strict schema `1.1` grounds a safe subject box/kind to the photographer's focus hint and returns only supported composition enums; strategy changes require two matching later replies. Apple Vision carries the selected image-space subject at a nominal 15 FPS between replies and the existing 2D overlay provides movement and zoom/distance guidance. This is sequential HTTP keyframe analysis, not persistent Gemini Live/WebSocket streaming. Hardware zoom/focus/exposure/lens/shutter/capture remain manual. Stop, capture, Compose/lifecycle/context changes cancel the session and reject stale replies. There is no release/default Camera entry, iOS provider key/direct call, raw cloud artifact logging/persistence, training use, ARKit world anchor, or production rollout. `productionReady:false` stays locked.
+
+## Local AI Compose P25 - Bounded Live Xiaoyi Keyframes
+
+Status: implemented; 440/440 backend tests passed; pending Mac/Xcode, physical-device, and schema 1.1 real-provider verification
+Date: 2026-07-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+P25 provides a Gemini-Live-like composition interaction using bounded independent Xiaoyi keyframes and fast local subject tracking, within the actual HTTP request/response capabilities of the relay.
+
+### Completed Work
+
+- Upgraded the composition request/response contract to schema `1.1` and `mode: live_keyframe`.
+- Added a safe top-left permille focus hint to each request and required the provider to return a bounded `subjectKind` plus `subjectBox` grounded to that hint.
+- Added exact-key, geometry, size, focus-containment, banned-language, and existing policy/target cross-field validation to both provider and route output.
+- Retained the backend-only Xiaoyi `gpt-5.6-luna` boundary and complete JSON response validation; provider text SSE remains disabled because it is not a bidirectional frame transport.
+- Added optional `XIAOYI_API_KEY_FILE` loading for ignored local development so backend restarts can read the external one-line secret without copying the key into Git, commands, or logs. Direct `XIAOYI_API_KEY` still takes precedence and missing/invalid files fail closed.
+- Added a session-specific Camera consent sheet describing the one-keyframe-per-second ceiling, third-party processing, no queue, stop behavior, no app/backend image storage, and no training consent.
+- Added one-session/one-request identifiers, one in-flight request enforcement, no-backlog snapshot capture, at-least-one-second scheduling after each reply, cancellation, and stale-reply rejection.
+- Allowed a long-press focus hint to seed a provisional local subject track while the first cloud reply is pending, including when the slow local detector has no current candidate.
+- Raised nominal explicit-lock sequence tracking to 15 FPS while retaining the reduced 8 FPS and thermal-pause workload policy.
+- Applied the first validated plan immediately and stabilized later strategy changes across two matching replies. Healthy local geometry carries forward instead of snapping to an older cloud box.
+- Reused the existing local movement, zoom/distance, Hold, Ready, preview, controls, and manual shutter loop. No automatic hardware command or capture was added.
+- Added a visible DEBUG live-session indicator and explicit Start/Stop behavior with localized English and Traditional Chinese copy.
+
+### Changed Files
+
+- Backend schema/provider/route/config: `compositionPlannerContract.mjs`, `validateCompositionPlannerRequest.mjs`, `compositionPlanner.mjs`, `XiaoyiLunaRelayProvider.mjs`, `cloudAIConfig.mjs`, and `.env.example`
+- Backend QA: `run-xiaoyi-composition-planner-smoke.mjs`, `composition-planner.test.mjs`, and `cloud-ai-boundary.test.mjs`
+- iOS session/grounding: `CameraViewModel.swift`, `CameraView.swift`, `HybridCompositionPlannerModels.swift`, `HybridCompositionPlannerService.swift`, `HybridCompositionPlannerView.swift`, and new `HybridCompositionConsentView.swift`
+- iOS cadence/boundary/copy: `LocalCameraAIWorkloadPolicy.swift`, `CloudAIModels.swift`, and both `Localizable.strings` files
+- Docs/manual QA: root/iOS READMEs, camera pipeline, decisions, Doka decomposition, this phase log, and manual smoke tests
+
+### Verification
+
+- Full backend suite passes 440/440, including schema `1.1`, subject-box/focus grounding, exact-key rejection, provider request shape, fallback behavior, ignored key-file loading/fail-closed behavior, one-session/one-in-flight iOS source contracts, lifecycle cancellation, and credential/direct-provider boundary checks.
+- `git diff --check` passes apart from Windows line-ending notices.
+- Static scans find no provider key, provider URL, direct Xiaoyi/OpenAI/Gemini call, or provider model selection in iOS.
+- The backend was restarted from ignored local config through `XIAOYI_API_KEY_FILE`; localhost and `192.168.68.60:8787` report `xiaoyiLunaInternal`, all three internal services ready, and `productionReady:false` without exposing the secret.
+- No real-provider call was made for schema `1.1`; the earlier P24 real smoke validates provider connectivity only, not the new grounded subject-box contract.
+- Xcode/Apple SDK compilation and physical Camera behavior remain pending because this workspace is Windows-only.
+
+### Known TODOs
+
+- On Mac, clean-build DEBUG and verify Swift concurrency, task cancellation, new synchronized project file inclusion, and no P22/P24 regression.
+- Configure the ignored backend Xiaoyi internal environment, restart it, and run one approved schema `1.1` smoke without printing or persisting raw artifacts.
+- Measure actual request cadence/concurrency on a physical iPhone; confirm no request overlap, queue, catch-up burst, background continuation, or stale-result application.
+- Test rear/front mirroring, no-detector provisional lock, subject motion/occlusion/reacquisition, strategy stabilization, timeout/offline failure, lens/context transitions, capture, and explicit Stop.
+- Review composition quality across people, pets, products, architecture, landscapes, and difficult/ambiguous scenes before considering any wider experiment.
+
+### Boundary Confirmations
+
+- Camera cloud entry: DEBUG/internal, explicit action and session consent only; no release/default entry.
+- Cloud cadence: at most 1 FPS, one in flight, no queue/backlog/catch-up; no true Gemini Live, WebSocket, WebRTC, audio, or video stream.
+- iOS provider key/URL/SDK/direct provider call: no; backend boundary only.
+- Automatic zoom, lens, focus, exposure, crop, shutter, or capture: no; guidance only.
+- Raw image/prompt/provider response persistence/logging, GPS/EXIF dump, analytics, profile, or training use: no.
+- Sensitive/identity/age/gender/emotion/attractiveness inference, score/rating, or objective quality claim: no.
+- ARKit/world anchor/full AR: no; local image-space Vision plus 2D AR-style overlay only.
+- Production rollout: no; `productionReady:false` remains locked.
+
+### Ready for Next Step
+
+Ready for Mac/Xcode DEBUG, physical-iPhone, and bounded schema `1.1` provider verification: yes. Ready for production rollout: no.
 
 ## Local AI Compose P24 - Xiaoyi One-Shot Composition Planner
 

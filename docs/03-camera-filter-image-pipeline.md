@@ -1,5 +1,21 @@
 # 相機、復古濾鏡與圖片處理技術報告
 
+## Local AI Compose P25
+
+P25 replaces the P24 one-shot strategy handoff with a bounded live-like cloud-keyframe session while retaining the local closed loop.
+
+- A DEBUG-only user action and session-specific consent start the flow. A long-press focus hint may seed a provisional local box even when the slow detector has no candidate yet.
+- Camera captures only the next preview frame, applies display orientation/mirroring once, redraws it through the existing bounded JPEG compressor to remove metadata, and sends it through the backend. It never fires or saves `AVCapturePhotoOutput` for analysis.
+- Cadence is bounded by design: the next keyframe is scheduled no earlier than one second after the previous reply, exactly one request may be in flight, and missed frames are discarded rather than queued or replayed. Effective cloud cadence is therefore at most 1 FPS and normally lower than 1 FPS.
+- Backend schema `1.1` accepts `mode: live_keyframe`, a top-left permille focus hint, explicit session consent, and the existing safe local buckets. Xiaoyi `gpt-5.6-luna` must return an enum plan plus `subjectKind` and a top-left permille `subjectBox` that contains or safely neighbours the focus hint.
+- Exact-key, range, size, policy/target, banned-language, and focus-grounding validation fail closed. No raw prose, reasoning, score, rating, identity, or sensitive attribute reaches Camera UI.
+- The first valid cloud strategy applies immediately. A different later strategy requires two matching cloud replies before replacement; moving subject geometry is not treated as a strategy change.
+- The current local `VNTrackObjectRequest` result carries subject geometry between cloud replies at a nominal 15 FPS. Later cloud boxes do not repeatedly snap a healthy local tracker back to an older keyframe; cloud grounding can recover the box if local geometry is unavailable.
+- The existing local overlay converts geometry differences into movement and zoom/distance guidance. It does not actuate zoom, lens, focus, exposure, shutter, crop, or capture.
+- Stop, Compose off, capture, selected-photo/lens/camera transitions, Camera disappearance, or app background cancels outstanding work and prevents a stale reply from applying. Failure stops new cloud keyframes while retaining the last validated local guide when safe.
+
+This is a Gemini-Live-like product interaction built on sequential HTTP image requests because the current Xiaoyi relay exposes `POST /v1/chat/completions`, not persistent bidirectional image streaming. Provider `stream:true` would only stream response text and would not create continuous frame input; P25 deliberately keeps `stream:false` so one complete JSON object can be strictly validated before use. There is no WebSocket, frame backlog, audio, automatic capture, ARKit world anchor, release/default entry, iOS provider key/direct call, raw image/prompt/response persistence, training use, or production rollout. `productionReady:false` remains locked.
+
 ## Local AI Compose P24
 
 P24 adds one semantic strategy-selection step without moving the frame-synchronous loop to the cloud.

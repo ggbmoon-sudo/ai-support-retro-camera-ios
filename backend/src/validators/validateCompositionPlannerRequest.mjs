@@ -4,26 +4,28 @@ import { validateImageShape } from "./validatePhotoAdvisorRequest.mjs";
 const SUBJECT_KINDS = new Set(["face", "body", "salient_object"]);
 const SUBJECT_COUNTS = new Set(["single", "multiple"]);
 const LENS_BUCKETS = new Set(["wide", "standard", "telephoto"]);
+const LIVE_COMPOSITION_CONSENT_VERSION = "2026-07-20.phase25.live-keyframes.v1";
 
 export function validateCompositionPlannerRequest(request) {
   if (!request || typeof request !== "object" || Array.isArray(request)) {
     return invalid("invalid_request", "Request must be a JSON object");
   }
 
-  if (request.schemaVersion !== "1.0") {
-    return invalid("unsupported_schema_version", "schemaVersion must be 1.0");
+  if (request.schemaVersion !== "1.1") {
+    return invalid("unsupported_schema_version", "schemaVersion must be 1.1");
   }
 
   if (request.feature !== "composition_planner") {
     return invalid("unsupported_feature", "feature must be composition_planner");
   }
 
-  if (request.mode !== "one_shot_pre_capture") {
-    return invalid("unsupported_mode", "mode must be one_shot_pre_capture");
+  if (request.mode !== "live_keyframe") {
+    return invalid("unsupported_mode", "mode must be live_keyframe");
   }
 
-  if (!hasUploadConsent(request.consent)) {
-    return invalid("consent_required", "Explicit one-shot image upload consent is required");
+  if (!hasUploadConsent(request.consent)
+    || request.consent.consentVersion !== LIVE_COMPOSITION_CONSENT_VERSION) {
+    return invalid("consent_required", "Explicit live composition session consent is required");
   }
 
   if (typeof request.locale !== "string" || request.locale.trim().length === 0) {
@@ -49,7 +51,7 @@ function validateLocalContext(context) {
   }
 
   const keys = Object.keys(context).sort();
-  const expected = ["lensBucket", "subjectCount", "subjectKind"].sort();
+  const expected = ["focusHint", "lensBucket", "subjectCount", "subjectKind"].sort();
   if (keys.length !== expected.length || keys.some((key, index) => key !== expected[index])) {
     return invalid("invalid_local_context", "localContext has missing or unsupported fields");
   }
@@ -62,6 +64,19 @@ function validateLocalContext(context) {
   }
   if (!LENS_BUCKETS.has(context.lensBucket)) {
     return invalid("invalid_local_context", "localContext.lensBucket is unsupported");
+  }
+
+  if (!context.focusHint
+    || typeof context.focusHint !== "object"
+    || Array.isArray(context.focusHint)
+    || Object.keys(context.focusHint).sort().join(",") !== "x,y"
+    || !Number.isInteger(context.focusHint.x)
+    || !Number.isInteger(context.focusHint.y)
+    || context.focusHint.x < 0
+    || context.focusHint.x > 1000
+    || context.focusHint.y < 0
+    || context.focusHint.y > 1000) {
+    return invalid("invalid_local_context", "localContext.focusHint is unsupported");
   }
 
   return { ok: true };

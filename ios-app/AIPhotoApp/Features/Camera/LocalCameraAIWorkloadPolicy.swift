@@ -78,7 +78,7 @@ nonisolated struct LocalCameraAIWorkloadController: Sendable {
             return LocalCameraAIWorkloadProfile(
                 mode: mode,
                 fullAnalysisInterval: 0.5,
-                lockedSubjectTrackingInterval: 1.0 / 12.0,
+                lockedSubjectTrackingInterval: 1.0 / 15.0,
                 runsVisionAnalysis: true,
                 runsLockedSubjectTracking: true
             )

@@ -20,8 +20,8 @@ struct RemoteHybridCompositionPlannerService: HybridCompositionPlannerService {
         let response = try await endpointClient.postCompositionPlanner(
             HybridCompositionPlannerRequest(input: input)
         )
-        guard response.schemaVersion == "1.0",
-              response.mode == "composition_plan",
+        guard response.schemaVersion == "1.1",
+              response.mode == "composition_live_keyframe",
               response.source == .cloud,
               response.safety.containsSensitiveInference == false,
               response.safety.requiresUserConsent,

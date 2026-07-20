@@ -1,6 +1,6 @@
 import { cloudAIConfig } from "../config/cloudAIConfig.mjs";
 import { resolveProvider, ProviderKind } from "../providers/ProviderRegistry.mjs";
-import { validateCompositionPlanCandidate } from "../providers/compositionPlannerContract.mjs";
+import { validateCompositionPlanGrounding } from "../providers/compositionPlannerContract.mjs";
 import { isInternalCloudAIAllowed } from "../security/internalDebugGuard.mjs";
 import { checkDevQuota } from "../security/quota.mjs";
 import { checkDevRateLimit } from "../security/rateLimit.mjs";
@@ -40,7 +40,10 @@ export async function handleCompositionPlannerRequest(requestBody, options = {})
       provider.analyzeCompositionPlan(providerInputFromRequest(requestBody)),
       options.timeoutMs ?? XIAOYI_LUNA_TOTAL_TIMEOUT_MS
     );
-    const validation = validateCompositionPlanCandidate(candidate);
+    const validation = validateCompositionPlanGrounding(
+      candidate,
+      requestBody.localContext.focusHint
+    );
     if (!validation.ok) {
       return { status: 200, body: fallbackResponse("provider_invalid_schema") };
     }
@@ -48,8 +51,8 @@ export async function handleCompositionPlannerRequest(requestBody, options = {})
     return {
       status: 200,
       body: {
-        schemaVersion: "1.0",
-        mode: "composition_plan",
+        schemaVersion: "1.1",
+        mode: "composition_live_keyframe",
         plan: validation.value,
         source: "cloud",
         safety: {
@@ -113,8 +116,8 @@ function providerInputFromRequest(requestBody) {
 
 function fallbackResponse(code) {
   return {
-    schemaVersion: "1.0",
-    mode: "composition_plan",
+    schemaVersion: "1.1",
+    mode: "composition_live_keyframe",
     plan: null,
     source: "fallback",
     safety: {

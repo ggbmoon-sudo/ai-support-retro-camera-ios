@@ -24,6 +24,7 @@ final class CameraViewModel: ObservableObject {
     @Published private(set) var localAIComposePolicyPreference = LocalAIComposePolicyPreference.automatic
     @Published private(set) var isLocalAIComposeTargetHorizontallyFlipped = false
     @Published private(set) var hybridCompositionPlannerState: HybridCompositionPlannerState = .idle
+    @Published private(set) var isHybridCompositionLiveSessionActive = false
     @Published private(set) var cloudSnapshotGuidanceState: CloudSnapshotGuidanceState = .idle
     @Published private(set) var selectedLensOption = LensOption.classic35
     @Published private(set) var lensOptions = LensOption.all
@@ -72,6 +73,12 @@ final class CameraViewModel: ObservableObject {
     private var activeFilterRenderID: UUID?
     private var activeCloudSnapshotGuidanceID: UUID?
     private var activeHybridCompositionPlannerID: UUID?
+    private var hybridCompositionLiveSessionID: UUID?
+    private var hybridCompositionLiveLoopTask: Task<Void, Never>?
+    private var hybridCompositionNetworkTask: Task<Void, Never>?
+    private var hybridCompositionSubjectHint: LiveFramePoint?
+    private var pendingHybridCompositionPlan: HybridCompositionPlan?
+    private var pendingHybridCompositionPlanMatchCount = 0
     private var activeHybridCompositionPlan: HybridCompositionPlan?
     private var latestLocalFrameSignals: [LiveGuidanceSignal]?
     private var latestLiveFrameSignals: LiveFrameSignals?
@@ -98,6 +105,7 @@ final class CameraViewModel: ObservableObject {
     private var localAIComposeDepthOcclusionState = LocalAIComposeDepthOcclusionState.initial
     private var localAIComposeGroupHasFreshEvidence = false
     private var isLocalAIComposeThermalProtectionActive = false
+    private let hybridCompositionKeyframeIntervalNanoseconds: UInt64 = 1_000_000_000
 
     init(
         service: CameraCaptureService,
@@ -217,8 +225,8 @@ final class CameraViewModel: ObservableObject {
 
     var canRequestHybridCompositionPlan: Bool {
         isLocalAIComposeEnabled
-            && isLocalAIComposeSubjectLocked
-            && localAIComposeSelectedCandidate != nil
+            && hybridCompositionSubjectHint != nil
+            && !isHybridCompositionLiveSessionActive
             && !hybridCompositionPlannerState.isWorking
     }
 
@@ -557,6 +565,15 @@ final class CameraViewModel: ObservableObject {
     func selectLocalAIComposeSubject(at displayPoint: LiveFramePoint) -> Bool {
         guard isLocalAIComposeEnabled else { return false }
 
+        #if DEBUG
+        // In the internal hybrid path the long press is also the photographer's
+        // semantic grounding hint. It remains useful even when the local detector
+        // has not produced a candidate; GPT Vision will provide the authoritative
+        // initial box after explicit session consent.
+        resetHybridCompositionPlanner()
+        hybridCompositionSubjectHint = displayPoint
+        #endif
+
         let analysisPoint = LiveFramePoint(
             x: isUsingFrontCamera ? 1 - displayPoint.x : displayPoint.x,
             y: displayPoint.y
@@ -571,11 +588,24 @@ final class CameraViewModel: ObservableObject {
             in: selectableCandidates,
             maximumDistance: 0.22
         ) else {
+            #if DEBUG
+            let provisionalCandidate = provisionalHybridSubjectCandidate(
+                centeredAt: analysisPoint
+            )
+            isLocalAIComposeSubjectLocked = true
+            localAIComposeSelectedCandidate = provisionalCandidate
+            localAIComposeTrackingState = localAIComposeTemporalSubjectTracker
+                .initialState(for: provisionalCandidate)
+            seedLocalAIComposeVisionTracking(with: provisionalCandidate)
+            clearLocalAIComposeTargetGeometry()
+            refreshLocalAIComposeGuide()
+            return true
+            #else
             return false
+            #endif
         }
 
         isLocalAIComposeSubjectLocked = true
-        resetHybridCompositionPlanner()
         localAIComposeSelectedCandidate = candidate
         if localAIComposePolicyPreference == .fixed(.groupBalance) {
             localAIComposePolicyPreference = .automatic
@@ -642,45 +672,17 @@ final class CameraViewModel: ObservableObject {
             return
         }
 
-        let requestID = UUID()
-        activeHybridCompositionPlannerID = requestID
+        let sessionID = UUID()
+        hybridCompositionLiveSessionID = sessionID
+        isHybridCompositionLiveSessionActive = true
+        pendingHybridCompositionPlan = nil
+        pendingHybridCompositionPlanMatchCount = 0
         hybridCompositionPlannerState = .preparingSnapshot
-
-        service.captureAnalysisSnapshot { [weak self] result in
-            guard let self,
-                  self.activeHybridCompositionPlannerID == requestID else {
-                return
-            }
-
-            switch result {
-            case .success(let image):
-                Task { @MainActor [weak self] in
-                    await self?.analyzeHybridCompositionSnapshot(
-                        image,
-                        consent: consent,
-                        requestID: requestID
-                    )
-                }
-            case .failure:
-                self.activeHybridCompositionPlannerID = nil
-                self.hybridCompositionPlannerState = .failed(
-                    messageKey: "camera.hybrid_compose.error.snapshot"
-                )
-            }
-        }
-
-        Task { @MainActor [weak self] in
-            try? await Task.sleep(nanoseconds: 3_000_000_000)
-            guard let self,
-                  self.activeHybridCompositionPlannerID == requestID,
-                  self.hybridCompositionPlannerState == .preparingSnapshot else {
-                return
-            }
-            self.activeHybridCompositionPlannerID = nil
-            self.hybridCompositionPlannerState = .failed(
-                messageKey: "camera.hybrid_compose.error.snapshot"
-            )
-        }
+        requestNextHybridCompositionKeyframe(
+            sessionID: sessionID,
+            consent: consent,
+            showsWorkingState: true
+        )
     }
 
     func retryHybridCompositionPlanner() {
@@ -689,7 +691,14 @@ final class CameraViewModel: ObservableObject {
     }
 
     func dismissHybridCompositionPlanner() {
-        activeHybridCompositionPlannerID = nil
+        hybridCompositionPlannerState = .idle
+    }
+
+    func stopHybridCompositionLiveSession() {
+        stopHybridCompositionLiveSession(
+            clearsPlan: false,
+            clearsSubjectHint: false
+        )
         hybridCompositionPlannerState = .idle
     }
 
@@ -1380,22 +1389,88 @@ final class CameraViewModel: ObservableObject {
         localAIComposeReadinessState = .initial
     }
 
-    private func analyzeHybridCompositionSnapshot(
-        _ image: UIImage,
+    private func requestNextHybridCompositionKeyframe(
+        sessionID: UUID,
         consent: CloudAIConsent,
-        requestID: UUID
-    ) async {
-        guard activeHybridCompositionPlannerID == requestID,
-              let selectedCandidate = localAIComposeSelectedCandidate else {
+        showsWorkingState: Bool
+    ) {
+        guard isHybridCompositionLiveSessionActive,
+              hybridCompositionLiveSessionID == sessionID,
+              let focusPoint = resolvedHybridCompositionFocusPoint() else {
             return
         }
 
-        hybridCompositionPlannerState = .analyzing
+        let requestID = UUID()
+        activeHybridCompositionPlannerID = requestID
+        if showsWorkingState {
+            hybridCompositionPlannerState = .preparingSnapshot
+        }
+
+        service.captureAnalysisSnapshot { [weak self] result in
+            guard let self,
+                  self.hybridCompositionLiveSessionID == sessionID,
+                  self.activeHybridCompositionPlannerID == requestID,
+                  self.hybridCompositionNetworkTask == nil else {
+                return
+            }
+
+            switch result {
+            case .success(let image):
+                self.hybridCompositionNetworkTask = Task { @MainActor [weak self] in
+                    await self?.analyzeHybridCompositionSnapshot(
+                        image,
+                        consent: consent,
+                        focusPoint: focusPoint,
+                        sessionID: sessionID,
+                        requestID: requestID,
+                        showsWorkingState: showsWorkingState
+                    )
+                }
+            case .failure:
+                self.failHybridCompositionLiveSession(
+                    sessionID: sessionID,
+                    messageKey: "camera.hybrid_compose.error.snapshot"
+                )
+            }
+        }
+
+        Task { @MainActor [weak self] in
+            try? await Task.sleep(nanoseconds: 3_000_000_000)
+            guard let self,
+                  self.hybridCompositionLiveSessionID == sessionID,
+                  self.activeHybridCompositionPlannerID == requestID,
+                  self.hybridCompositionNetworkTask == nil else {
+                return
+            }
+            self.failHybridCompositionLiveSession(
+                sessionID: sessionID,
+                messageKey: "camera.hybrid_compose.error.snapshot"
+            )
+        }
+    }
+
+    private func analyzeHybridCompositionSnapshot(
+        _ image: UIImage,
+        consent: CloudAIConsent,
+        focusPoint: LiveFramePoint,
+        sessionID: UUID,
+        requestID: UUID,
+        showsWorkingState: Bool
+    ) async {
+        guard hybridCompositionLiveSessionID == sessionID,
+              activeHybridCompositionPlannerID == requestID else {
+            return
+        }
+
+        if showsWorkingState {
+            hybridCompositionPlannerState = .analyzing
+        }
         do {
             let displayedImage = isUsingFrontCamera
                 ? image.horizontallyMirroredForFrontCameraCapture()
                 : image
             let compressedImage = try CloudAIImageCompressor().compress(displayedImage)
+            let selectedCandidate = localAIComposeSelectedCandidate
             let response = try await hybridCompositionPlannerService.analyze(
                 HybridCompositionPlannerInput(
                     imageData: compressedImage.data,
@@ -1406,33 +1481,126 @@ final class CameraViewModel: ObservableObject {
                     locale: Locale.preferredLanguages.first ?? "en",
                     consent: consent,
                     localContext: HybridCompositionLocalContext(
-                        subjectKind: hybridSubjectKind(for: selectedCandidate.kind),
+                        subjectKind: selectedCandidate.map {
+                            hybridSubjectKind(for: $0.kind)
+                        } ?? .salientObject,
                         subjectCount: latestLocalAIComposeSubjectCandidates.count > 1
                             ? .multiple
                             : .single,
-                        lensBucket: hybridLensBucket(for: selectedLensOption)
+                        lensBucket: hybridLensBucket(for: selectedLensOption),
+                        focusHint: HybridCompositionFocusHint(displayPoint: focusPoint)
                     )
                 )
             )
-            guard activeHybridCompositionPlannerID == requestID,
-                  let plan = response.plan else {
+            guard hybridCompositionLiveSessionID == sessionID,
+                  activeHybridCompositionPlannerID == requestID else {
                 return
+            }
+            guard let plan = response.plan,
+                  let cloudCandidate = plan.groundedSubjectCandidate(
+                    isFrontCameraMirrored: isUsingFrontCamera
+                  ) else {
+                throw CloudAIServiceError.invalidResponse(["invalid_composition_grounding"])
             }
 
             activeHybridCompositionPlannerID = nil
-            activeHybridCompositionPlan = plan
-            localAIComposePolicyPreference = .fixed(plan.localPolicy)
-            isLocalAIComposeTargetHorizontallyFlipped = false
-            clearLocalAIComposeTargetGeometry()
-            refreshLocalAIComposeGuide()
-            hybridCompositionPlannerState = .applied(plan)
+            hybridCompositionNetworkTask = nil
+            applyHybridCompositionGrounding(cloudCandidate)
+            applyStabilizedHybridCompositionStrategy(plan)
+            hybridCompositionPlannerState = .applied(activeHybridCompositionPlan ?? plan)
+            scheduleNextHybridCompositionKeyframe(
+                sessionID: sessionID,
+                consent: consent
+            )
+        } catch is CancellationError {
+            return
         } catch {
-            guard activeHybridCompositionPlannerID == requestID else { return }
-            activeHybridCompositionPlannerID = nil
-            hybridCompositionPlannerState = .failed(
+            guard hybridCompositionLiveSessionID == sessionID,
+                  activeHybridCompositionPlannerID == requestID else {
+                return
+            }
+            failHybridCompositionLiveSession(
+                sessionID: sessionID,
                 messageKey: "camera.hybrid_compose.error.unavailable"
             )
         }
+    }
+
+    private func scheduleNextHybridCompositionKeyframe(
+        sessionID: UUID,
+        consent: CloudAIConsent
+    ) {
+        hybridCompositionLiveLoopTask?.cancel()
+        hybridCompositionLiveLoopTask = Task { @MainActor [weak self] in
+            guard let self else { return }
+            try? await Task.sleep(
+                nanoseconds: self.hybridCompositionKeyframeIntervalNanoseconds
+            )
+            guard !Task.isCancelled,
+                  self.hybridCompositionLiveSessionID == sessionID,
+                  self.isHybridCompositionLiveSessionActive else {
+                return
+            }
+            self.requestNextHybridCompositionKeyframe(
+                sessionID: sessionID,
+                consent: consent,
+                showsWorkingState: false
+            )
+        }
+    }
+
+    private func applyHybridCompositionGrounding(
+        _ cloudCandidate: LiveFrameSubjectCandidate
+    ) {
+        if activeHybridCompositionPlan != nil,
+           localAIComposeSelectedCandidate != nil {
+            // The cloud box belongs to an older keyframe by the time it arrives.
+            // Keep the current fast local geometry instead of snapping backward.
+            return
+        }
+        let currentBox = localAIComposeSelectedCandidate?.box
+        let liveCandidate = LiveFrameSubjectCandidate(
+            box: currentBox ?? cloudCandidate.box,
+            kind: cloudCandidate.kind
+        )
+        isLocalAIComposeSubjectLocked = true
+        localAIComposeSelectedCandidate = liveCandidate
+        localAIComposeTrackingState = localAIComposeTemporalSubjectTracker
+            .initialState(for: liveCandidate)
+        localAIComposeSubjectAmbiguityState = .initial
+        seedLocalAIComposeVisionTracking(with: liveCandidate)
+        refreshLocalAIComposeGuide()
+    }
+
+    private func applyStabilizedHybridCompositionStrategy(
+        _ plan: HybridCompositionPlan
+    ) {
+        let shouldApply: Bool
+        if let activePlan = activeHybridCompositionPlan {
+            if activePlan.hasSameStrategy(as: plan) {
+                pendingHybridCompositionPlan = nil
+                pendingHybridCompositionPlanMatchCount = 0
+                shouldApply = false
+            } else if pendingHybridCompositionPlan?.hasSameStrategy(as: plan) == true {
+                pendingHybridCompositionPlanMatchCount += 1
+                shouldApply = pendingHybridCompositionPlanMatchCount >= 2
+            } else {
+                pendingHybridCompositionPlan = plan
+                pendingHybridCompositionPlanMatchCount = 1
+                shouldApply = false
+            }
+        } else {
+            shouldApply = true
+        }
+
+        guard shouldApply else { return }
+        activeHybridCompositionPlan = plan
+        pendingHybridCompositionPlan = nil
+        pendingHybridCompositionPlanMatchCount = 0
+        localAIComposePolicyPreference = .fixed(plan.localPolicy)
+        isLocalAIComposeTargetHorizontallyFlipped = false
+        clearLocalAIComposeTargetGeometry()
+        refreshLocalAIComposeGuide()
     }
 
     private func resolvedHybridCompositionTarget(
@@ -1485,9 +1653,75 @@ final class CameraViewModel: ObservableObject {
     }
 
     private func resetHybridCompositionPlanner() {
-        activeHybridCompositionPlannerID = nil
-        activeHybridCompositionPlan = nil
+        stopHybridCompositionLiveSession(
+            clearsPlan: true,
+            clearsSubjectHint: true
+        )
         hybridCompositionPlannerState = .idle
+    }
+
+    private func stopHybridCompositionLiveSession(
+        clearsPlan: Bool,
+        clearsSubjectHint: Bool
+    ) {
+        hybridCompositionLiveLoopTask?.cancel()
+        hybridCompositionLiveLoopTask = nil
+        hybridCompositionNetworkTask?.cancel()
+        hybridCompositionNetworkTask = nil
+        hybridCompositionLiveSessionID = nil
+        activeHybridCompositionPlannerID = nil
+        isHybridCompositionLiveSessionActive = false
+        pendingHybridCompositionPlan = nil
+        pendingHybridCompositionPlanMatchCount = 0
+        if clearsPlan {
+            activeHybridCompositionPlan = nil
+        }
+        if clearsSubjectHint {
+            hybridCompositionSubjectHint = nil
+        }
+    }
+
+    private func failHybridCompositionLiveSession(
+        sessionID: UUID,
+        messageKey: String
+    ) {
+        guard hybridCompositionLiveSessionID == sessionID else { return }
+        stopHybridCompositionLiveSession(
+            clearsPlan: false,
+            clearsSubjectHint: false
+        )
+        hybridCompositionPlannerState = .failed(messageKey: messageKey)
+    }
+
+    private func resolvedHybridCompositionFocusPoint() -> LiveFramePoint? {
+        guard let candidate = localAIComposeSelectedCandidate else {
+            return hybridCompositionSubjectHint
+        }
+        let analysisCenter = candidate.box.center
+        let displayPoint = LiveFramePoint(
+            x: isUsingFrontCamera ? 1 - analysisCenter.x : analysisCenter.x,
+            y: analysisCenter.y
+        )
+        hybridCompositionSubjectHint = displayPoint
+        return displayPoint
+    }
+
+    private func provisionalHybridSubjectCandidate(
+        centeredAt point: LiveFramePoint
+    ) -> LiveFrameSubjectCandidate {
+        let width: CGFloat = 0.20
+        let height: CGFloat = 0.20
+        return LiveFrameSubjectCandidate(
+            box: LiveFrameNormalizedRect(
+                CGRect(
+                    x: point.x - width / 2,
+                    y: point.y - height / 2,
+                    width: width,
+                    height: height
+                )
+            ),
+            kind: .salientObject
+        )
     }
 
     private func clearLocalAIComposeLockTransientEvidence() {
@@ -1554,6 +1788,15 @@ final class CameraViewModel: ObservableObject {
             return false
 
         case .lost:
+            if isHybridCompositionLiveSessionActive,
+               activeHybridCompositionPlan == nil,
+               activeLocalAIComposeVisionTrackingSeedID != nil {
+                // A touch-seeded VNTrackObjectRequest may still be carrying the
+                // subject while the first GPT keyframe is in flight. Do not let
+                // the slower category detector discard that provisional track
+                // solely because its pre-GPT kind does not match yet.
+                return false
+            }
             localAIComposeSelectedCandidate = nil
             stopLocalAIComposeVisionTracking()
             clearLocalAIComposeLockTransientEvidence()

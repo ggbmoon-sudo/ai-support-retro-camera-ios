@@ -432,6 +432,23 @@ struct CameraView: View {
                             )
                         }
                     }
+                    .overlay(alignment: .top) {
+                        #if DEBUG
+                        if viewModel.isHybridCompositionLiveSessionActive {
+                            Label(
+                                "camera.hybrid_compose.live_indicator",
+                                systemImage: "cloud.fill"
+                            )
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, AppSpacing.sm)
+                            .padding(.vertical, AppSpacing.xs)
+                            .background(.black.opacity(0.68), in: Capsule())
+                            .padding(.top, topControlInset + 52)
+                            .accessibilityAddTraits(.isStaticText)
+                        }
+                        #endif
+                    }
                     .overlay {
                         if viewModel.isDualFocalZoomEnabled {
                             CameraDualFocalViewfinderOverlay(
@@ -1145,15 +1162,28 @@ struct CameraView: View {
             Divider()
 
             Button {
-                viewModel.requestHybridCompositionPlannerConsent()
-                isHybridCompositionPlannerPresented = true
+                if viewModel.isHybridCompositionLiveSessionActive {
+                    viewModel.stopHybridCompositionLiveSession()
+                } else {
+                    viewModel.requestHybridCompositionPlannerConsent()
+                    isHybridCompositionPlannerPresented = true
+                }
             } label: {
                 Label(
-                    LocalizedStringKey("camera.hybrid_compose.action"),
-                    systemImage: "sparkles.rectangle.stack"
+                    LocalizedStringKey(
+                        viewModel.isHybridCompositionLiveSessionActive
+                            ? "camera.hybrid_compose.stop_action"
+                            : "camera.hybrid_compose.action"
+                    ),
+                    systemImage: viewModel.isHybridCompositionLiveSessionActive
+                        ? "stop.circle"
+                        : "sparkles.rectangle.stack"
                 )
             }
-            .disabled(!viewModel.canRequestHybridCompositionPlan)
+            .disabled(
+                !viewModel.isHybridCompositionLiveSessionActive
+                    && !viewModel.canRequestHybridCompositionPlan
+            )
             #endif
         } label: {
             VStack(spacing: 2) {

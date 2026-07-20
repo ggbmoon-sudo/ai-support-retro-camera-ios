@@ -30,6 +30,14 @@ These product claims imply four distinct technical responsibilities:
 
 Only the middle strategy-selection responsibility necessarily benefits from a custom learned composition model. Live detection, geometry, overlay rendering, and level guidance can use Apple frameworks locally.
 
+## P25 Live-Like Cloud Keyframes Plus Local Tracking
+
+P25 moves the experiment closer to the Reel's repeated analyze-and-guide behavior without attempting to upload a video stream. One explicitly consented session samples independent display-oriented JPEG keyframes at an upper bound of 1 FPS. The backend asks Xiaoyi `gpt-5.6-luna` for both a photographer-grounded subject rectangle and one strict strategy. Only one request is allowed at a time; there is no backlog, catch-up burst, or hidden retry loop.
+
+Between those sparse semantic observations, a provisional or grounded Apple Vision object track runs locally at a nominal 15 FPS. The current local box drives the existing image-space target comparison, directional arrow, zoom/distance, Hold, and Ready overlay. A later cloud reply can update strategy only after stabilization and cannot repeatedly pull a healthy local track back to stale keyframe coordinates.
+
+This division is intentionally similar to the user experience of Gemini Live rather than its transport. The available Xiaoyi relay is request/response `POST /v1/chat/completions`; SSE response streaming does not provide bidirectional frame input. P25 therefore uses complete strictly validated JSON replies, not WebSocket/WebRTC or provider-native live sessions. It remains an inferred functional equivalent, not a copy of Doka's proprietary source, assets, thresholds, model, training data, or server architecture.
+
 ## P24 Hybrid Xiaoyi Strategy Selection
 
 P24 tests that split directly: Xiaoyi `gpt-5.6-luna` sees one explicitly consented still preview and selects one strict composition strategy, while Apple Vision keeps the closed-loop subject tracking and alignment local.

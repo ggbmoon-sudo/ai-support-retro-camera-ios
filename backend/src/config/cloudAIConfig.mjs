@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { ProviderKind } from "../providers/ProviderRegistry.mjs";
 
 const DEFAULT_QWE_CHAT_COMPLETIONS_PATH = "/v1/chat/completions";
@@ -26,7 +27,7 @@ export function cloudAIConfig(env = process.env) {
     qwePhotoAdvisorModel: normalizeRequiredString(env.QWE_PHOTO_ADVISOR_MODEL),
     qweChatCompletionsPath: normalizeQweAPIPath(env.QWE_CHAT_COMPLETIONS_PATH),
     qweAuthHeader: normalizeQweAPIAuthHeader(env.QWE_AUTH_HEADER),
-    xiaoyiAPIKey: env.XIAOYI_API_KEY ?? "",
+    xiaoyiAPIKey: resolveXiaoyiAPIKey(env),
     xiaoyiBaseURL: normalizeXiaoyiRelayBaseURL(env.XIAOYI_BASE_URL),
     xiaoyiChatCompletionsPath: normalizeXiaoyiRelayPath(env.XIAOYI_CHAT_COMPLETIONS_PATH),
     xiaoyiPhotoAdvisorModel: normalizeXiaoyiModel(env.XIAOYI_PHOTO_ADVISOR_MODEL ?? env.XIAOYI_MODEL),
@@ -40,6 +41,36 @@ export function cloudAIConfig(env = process.env) {
     siliconFlowPhotoAdvisorModel: normalizeSiliconFlowVisionModel(env.SILICONFLOW_PHOTO_ADVISOR_MODEL),
     siliconFlowFilterLabModel: normalizeSiliconFlowVisionModel(env.SILICONFLOW_FILTER_LAB_MODEL)
   };
+}
+
+function resolveXiaoyiAPIKey(env) {
+  const directKey = normalizeBackendSecret(env.XIAOYI_API_KEY);
+  if (directKey.length > 0) {
+    return directKey;
+  }
+
+  const secretFilePath = String(env.XIAOYI_API_KEY_FILE ?? "").trim();
+  if (secretFilePath.length === 0) {
+    return "";
+  }
+
+  try {
+    const fileValue = readFileSync(secretFilePath, "utf8").trim();
+    const keyValue = fileValue.startsWith("XIAOYI_API_KEY=")
+      ? fileValue.slice("XIAOYI_API_KEY=".length).trim()
+      : fileValue;
+    return normalizeBackendSecret(keyValue);
+  } catch {
+    return "";
+  }
+}
+
+function normalizeBackendSecret(value) {
+  const normalized = String(value ?? "").trim();
+  if (normalized.length < 8 || normalized.length > 512 || /\s/.test(normalized)) {
+    return "";
+  }
+  return normalized;
 }
 
 function normalizeProviderMode(value) {
