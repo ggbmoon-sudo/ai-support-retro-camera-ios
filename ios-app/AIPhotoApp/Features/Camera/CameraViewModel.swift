@@ -23,6 +23,7 @@ final class CameraViewModel: ObservableObject {
     @Published private(set) var isLocalAIComposeSubjectLocked = false
     @Published private(set) var localAIComposePolicyPreference = LocalAIComposePolicyPreference.automatic
     @Published private(set) var isLocalAIComposeTargetHorizontallyFlipped = false
+    @Published private(set) var hybridCompositionPlannerState: HybridCompositionPlannerState = .idle
     @Published private(set) var cloudSnapshotGuidanceState: CloudSnapshotGuidanceState = .idle
     @Published private(set) var selectedLensOption = LensOption.classic35
     @Published private(set) var lensOptions = LensOption.all
@@ -49,6 +50,7 @@ final class CameraViewModel: ObservableObject {
     private let mockLiveGuidanceProvider: any LiveGuidanceProvider
     private let localLiveGuidanceProvider: any LiveGuidanceProvider
     private let cloudSnapshotGuidanceService: any CloudSnapshotGuidanceService
+    private let hybridCompositionPlannerService: any HybridCompositionPlannerService
     private let liveGuidanceStabilityController = LiveGuidanceStabilityController()
     private let localAIComposeGuideResolver = LocalAIComposeGuideResolver()
     private let localAIComposePolicyResolver = LocalAIComposePolicyResolver()
@@ -69,6 +71,8 @@ final class CameraViewModel: ObservableObject {
     private let captureSignalMonitor = CameraCaptureDeviceSignalMonitor()
     private var activeFilterRenderID: UUID?
     private var activeCloudSnapshotGuidanceID: UUID?
+    private var activeHybridCompositionPlannerID: UUID?
+    private var activeHybridCompositionPlan: HybridCompositionPlan?
     private var latestLocalFrameSignals: [LiveGuidanceSignal]?
     private var latestLiveFrameSignals: LiveFrameSignals?
     private var latestLocalAIComposeSubjectCandidates: [LiveFrameSubjectCandidate] = []
@@ -102,6 +106,7 @@ final class CameraViewModel: ObservableObject {
         liveGuidanceProvider: (any LiveGuidanceProvider)? = nil,
         localLiveGuidanceProvider: (any LiveGuidanceProvider)? = nil,
         cloudSnapshotGuidanceService: (any CloudSnapshotGuidanceService)? = nil,
+        hybridCompositionPlannerService: (any HybridCompositionPlannerService)? = nil,
         initialSelectedPhoto: CapturedPhoto? = nil
     ) {
         self.service = service
@@ -110,6 +115,8 @@ final class CameraViewModel: ObservableObject {
         self.mockLiveGuidanceProvider = liveGuidanceProvider ?? MockLiveGuidanceProvider()
         self.localLiveGuidanceProvider = localLiveGuidanceProvider ?? LocalRuleBasedGuidanceProvider()
         self.cloudSnapshotGuidanceService = cloudSnapshotGuidanceService ?? MockCloudSnapshotGuidanceService()
+        self.hybridCompositionPlannerService = hybridCompositionPlannerService
+            ?? RemoteHybridCompositionPlannerService()
         self.selectedPhoto = initialSelectedPhoto
         self.permissionState = CameraPermissionState(
             authorizationStatus: AVCaptureDevice.authorizationStatus(for: .video)
@@ -206,6 +213,13 @@ final class CameraViewModel: ObservableObject {
 
     var dualFocalAspectRatioOptions: [CameraFocalCropAspectRatio] {
         CameraFocalCropAspectRatio.allCases
+    }
+
+    var canRequestHybridCompositionPlan: Bool {
+        isLocalAIComposeEnabled
+            && isLocalAIComposeSubjectLocked
+            && localAIComposeSelectedCandidate != nil
+            && !hybridCompositionPlannerState.isWorking
     }
 
     var selectedDualFocalAspectRatioLabel: String {
@@ -516,6 +530,7 @@ final class CameraViewModel: ObservableObject {
         isLocalAIComposeEnabled.toggle()
         localAIComposePolicyPreference = .automatic
         isLocalAIComposeTargetHorizontallyFlipped = false
+        resetHybridCompositionPlanner()
         resetLocalAIComposeHorizon()
         resetLocalAIComposeSymmetry()
         resetLocalAIComposeLeadingLines()
@@ -560,6 +575,7 @@ final class CameraViewModel: ObservableObject {
         }
 
         isLocalAIComposeSubjectLocked = true
+        resetHybridCompositionPlanner()
         localAIComposeSelectedCandidate = candidate
         if localAIComposePolicyPreference == .fixed(.groupBalance) {
             localAIComposePolicyPreference = .automatic
@@ -577,6 +593,7 @@ final class CameraViewModel: ObservableObject {
     }
 
     func clearLocalAIComposeSubjectSelection() {
+        resetHybridCompositionPlanner()
         clearLocalAIComposeSelectionState()
         clearLocalAIComposeTargetGeometry()
         refreshLocalAIComposeGuide()
@@ -586,6 +603,7 @@ final class CameraViewModel: ObservableObject {
         _ preference: LocalAIComposePolicyPreference
     ) {
         guard isLocalAIComposeEnabled else { return }
+        resetHybridCompositionPlanner()
         let wasGroupBalance = localAIComposePolicyPreference == .fixed(.groupBalance)
         localAIComposePolicyPreference = preference
         isLocalAIComposeTargetHorizontallyFlipped = false
@@ -608,6 +626,71 @@ final class CameraViewModel: ObservableObject {
         isLocalAIComposeTargetHorizontallyFlipped.toggle()
         clearLocalAIComposeTargetGeometry()
         refreshLocalAIComposeGuide()
+    }
+
+    func requestHybridCompositionPlannerConsent() {
+        guard canRequestHybridCompositionPlan else { return }
+        hybridCompositionPlannerState = .consentRequired
+    }
+
+    func startHybridCompositionPlanner(consent: CloudAIConsent) {
+        guard canRequestHybridCompositionPlan,
+              consent.imageUploadAccepted else {
+            hybridCompositionPlannerState = .failed(
+                messageKey: "camera.hybrid_compose.error.subject_required"
+            )
+            return
+        }
+
+        let requestID = UUID()
+        activeHybridCompositionPlannerID = requestID
+        hybridCompositionPlannerState = .preparingSnapshot
+
+        service.captureAnalysisSnapshot { [weak self] result in
+            guard let self,
+                  self.activeHybridCompositionPlannerID == requestID else {
+                return
+            }
+
+            switch result {
+            case .success(let image):
+                Task { @MainActor [weak self] in
+                    await self?.analyzeHybridCompositionSnapshot(
+                        image,
+                        consent: consent,
+                        requestID: requestID
+                    )
+                }
+            case .failure:
+                self.activeHybridCompositionPlannerID = nil
+                self.hybridCompositionPlannerState = .failed(
+                    messageKey: "camera.hybrid_compose.error.snapshot"
+                )
+            }
+        }
+
+        Task { @MainActor [weak self] in
+            try? await Task.sleep(nanoseconds: 3_000_000_000)
+            guard let self,
+                  self.activeHybridCompositionPlannerID == requestID,
+                  self.hybridCompositionPlannerState == .preparingSnapshot else {
+                return
+            }
+            self.activeHybridCompositionPlannerID = nil
+            self.hybridCompositionPlannerState = .failed(
+                messageKey: "camera.hybrid_compose.error.snapshot"
+            )
+        }
+    }
+
+    func retryHybridCompositionPlanner() {
+        guard canRequestHybridCompositionPlan else { return }
+        hybridCompositionPlannerState = .consentRequired
+    }
+
+    func dismissHybridCompositionPlanner() {
+        activeHybridCompositionPlannerID = nil
+        hybridCompositionPlannerState = .idle
     }
 
     func toggleLiveGuidance() {
@@ -919,7 +1002,8 @@ final class CameraViewModel: ObservableObject {
                 )
                 localAIComposeSymmetryState = symmetryUpdate.state
                 if symmetryUpdate.didChangeActiveState,
-                   localAIComposePolicyPreference == .automatic {
+                   localAIComposePolicyPreference == .automatic,
+                   !isLocalAIComposeSubjectLocked {
                     clearLocalAIComposeTargetGeometry()
                 }
                 let leadingLineUpdate = localAIComposeLeadingLineStabilityController.update(
@@ -929,7 +1013,8 @@ final class CameraViewModel: ObservableObject {
                 localAIComposeLeadingLineState = leadingLineUpdate.state
                 if leadingLineUpdate.didChangeActivePoint,
                    (localAIComposePolicyPreference == .automatic
-                    || localAIComposePolicyPreference == .fixed(.leadingLines)) {
+                    || localAIComposePolicyPreference == .fixed(.leadingLines)),
+                   !isLocalAIComposeSubjectLocked {
                     clearLocalAIComposeTargetGeometry()
                 }
                 let quietSpaceUpdate = localAIComposeQuietSpaceStabilityController.update(
@@ -939,7 +1024,8 @@ final class CameraViewModel: ObservableObject {
                 localAIComposeQuietSpaceState = quietSpaceUpdate.state
                 if quietSpaceUpdate.didChangeActiveSide,
                    (localAIComposePolicyPreference == .automatic
-                    || localAIComposePolicyPreference == .fixed(.negativeSpace)) {
+                    || localAIComposePolicyPreference == .fixed(.negativeSpace)),
+                   !isLocalAIComposeSubjectLocked {
                     clearLocalAIComposeTargetGeometry()
                 }
                 let groupUpdate = localAIComposeGroupStabilityController.update(
@@ -968,7 +1054,8 @@ final class CameraViewModel: ObservableObject {
             localAIComposeLeadRoomState = leadRoomUpdate.state
             if leadRoomUpdate.didChangeActiveDirection,
                (localAIComposePolicyPreference == .automatic
-                || localAIComposePolicyPreference == .fixed(.leadRoom)) {
+                || localAIComposePolicyPreference == .fixed(.leadRoom)),
+               !isLocalAIComposeSubjectLocked {
                 clearLocalAIComposeTargetGeometry()
             }
         }
@@ -998,6 +1085,10 @@ final class CameraViewModel: ObservableObject {
                   let selectedCandidate = localAIComposeSelectedCandidate else {
                 return
             }
+            if let trackingState = localAIComposeTrackingState {
+                localAIComposeTrackingState = localAIComposeTemporalSubjectTracker
+                    .reconcilingFastTrackedBox(box, with: trackingState)
+            }
             localAIComposeSelectedCandidate = LiveFrameSubjectCandidate(
                 box: box,
                 kind: selectedCandidate.kind,
@@ -1006,6 +1097,7 @@ final class CameraViewModel: ObservableObject {
         case .lost:
             localAIComposeSelectedCandidate = nil
             stopLocalAIComposeVisionTracking()
+            clearLocalAIComposeLockTransientEvidence()
         }
 
         // Sequence tracking improves display cadence only. It must not advance the
@@ -1079,7 +1171,8 @@ final class CameraViewModel: ObservableObject {
                 isSubjectLocked: isLocalAIComposeSubjectLocked
             )
             localAIComposeSubjectAmbiguityState = ambiguityUpdate.state
-            if ambiguityUpdate.didChangeRequirement {
+            if ambiguityUpdate.didChangeRequirement,
+               !isLocalAIComposeSubjectLocked {
                 clearLocalAIComposeTargetGeometry()
             }
         }
@@ -1118,27 +1211,35 @@ final class CameraViewModel: ObservableObject {
            !isLocalAIComposeThermalProtectionActive,
            !requiresSubjectSelection,
            let subjectContext {
-            switch localAIComposePolicyPreference {
-            case .automatic:
-                localAIComposePolicy = localAIComposePolicyResolver.recommendedPolicy(
-                    for: subjectContext,
-                    favorsSymmetry: localAIComposeSymmetryState.isActive,
-                    leadingLinePoint: localAIComposeLeadingLineState.activePoint,
-                    subjectMotionDirection: localAIComposeLeadRoomState.activeDirection,
-                    quietSpaceSide: localAIComposeQuietSpaceState.activeSide
-                )
-            case let .fixed(policy):
-                localAIComposePolicy = policy
+            if let activeHybridCompositionPlan {
+                localAIComposePolicy = activeHybridCompositionPlan.localPolicy
+            } else {
+                switch localAIComposePolicyPreference {
+                case .automatic:
+                    localAIComposePolicy = localAIComposePolicyResolver.recommendedPolicy(
+                        for: subjectContext,
+                        favorsSymmetry: localAIComposeSymmetryState.isActive,
+                        leadingLinePoint: localAIComposeLeadingLineState.activePoint,
+                        subjectMotionDirection: localAIComposeLeadRoomState.activeDirection,
+                        quietSpaceSide: localAIComposeQuietSpaceState.activeSide
+                    )
+                case let .fixed(policy):
+                    localAIComposePolicy = policy
+                }
             }
         }
+        let hybridTarget = resolvedHybridCompositionTarget(
+            subjectContext: subjectContext,
+            policy: localAIComposePolicy
+        )
         let provisionalGuide = localAIComposeGuideResolver.guide(
             subjectContext: subjectContext,
             policy: localAIComposePolicy,
             requiresSubjectSelection: requiresSubjectSelection,
             isGroupGuidanceSelected: isGroupGuidanceSelected,
             isSubjectLocked: isLocalAIComposeSubjectLocked,
-            targetAnchor: localAIComposeTargetAnchor,
-            targetBox: localAIComposeTargetBox,
+            targetAnchor: localAIComposeTargetAnchor ?? hybridTarget?.anchor,
+            targetBox: localAIComposeTargetBox ?? hybridTarget?.box,
             level: deviceSignals.level,
             isMirrored: isUsingFrontCamera,
             sceneHorizonAngleDegrees: localAIComposeHorizonState.activeAngleDegrees,
@@ -1193,6 +1294,7 @@ final class CameraViewModel: ObservableObject {
     }
 
     private func resetLocalAIComposeTarget() {
+        resetHybridCompositionPlanner()
         clearLocalAIComposeTargetGeometry()
         clearLocalAIComposeSelectionState()
         resetLocalAIComposeHorizon()
@@ -1208,6 +1310,7 @@ final class CameraViewModel: ObservableObject {
     }
 
     private func resetLocalAIComposeGuide() {
+        resetHybridCompositionPlanner()
         localAIComposePolicyPreference = .automatic
         isLocalAIComposeTargetHorizontallyFlipped = false
         clearLocalAIComposeTargetGeometry()
@@ -1277,6 +1380,123 @@ final class CameraViewModel: ObservableObject {
         localAIComposeReadinessState = .initial
     }
 
+    private func analyzeHybridCompositionSnapshot(
+        _ image: UIImage,
+        consent: CloudAIConsent,
+        requestID: UUID
+    ) async {
+        guard activeHybridCompositionPlannerID == requestID,
+              let selectedCandidate = localAIComposeSelectedCandidate else {
+            return
+        }
+
+        hybridCompositionPlannerState = .analyzing
+        do {
+            let displayedImage = isUsingFrontCamera
+                ? image.horizontallyMirroredForFrontCameraCapture()
+                : image
+            let compressedImage = try CloudAIImageCompressor().compress(displayedImage)
+            let response = try await hybridCompositionPlannerService.analyze(
+                HybridCompositionPlannerInput(
+                    imageData: compressedImage.data,
+                    contentType: compressedImage.contentType,
+                    width: compressedImage.width,
+                    height: compressedImage.height,
+                    metadataStripped: compressedImage.metadataStripped,
+                    locale: Locale.preferredLanguages.first ?? "en",
+                    consent: consent,
+                    localContext: HybridCompositionLocalContext(
+                        subjectKind: hybridSubjectKind(for: selectedCandidate.kind),
+                        subjectCount: latestLocalAIComposeSubjectCandidates.count > 1
+                            ? .multiple
+                            : .single,
+                        lensBucket: hybridLensBucket(for: selectedLensOption)
+                    )
+                )
+            )
+            guard activeHybridCompositionPlannerID == requestID,
+                  let plan = response.plan else {
+                return
+            }
+
+            activeHybridCompositionPlannerID = nil
+            activeHybridCompositionPlan = plan
+            localAIComposePolicyPreference = .fixed(plan.localPolicy)
+            isLocalAIComposeTargetHorizontallyFlipped = false
+            clearLocalAIComposeTargetGeometry()
+            refreshLocalAIComposeGuide()
+            hybridCompositionPlannerState = .applied(plan)
+        } catch {
+            guard activeHybridCompositionPlannerID == requestID else { return }
+            activeHybridCompositionPlannerID = nil
+            hybridCompositionPlannerState = .failed(
+                messageKey: "camera.hybrid_compose.error.unavailable"
+            )
+        }
+    }
+
+    private func resolvedHybridCompositionTarget(
+        subjectContext: LocalAIComposeSubjectContext?,
+        policy: LocalAIComposePolicy?
+    ) -> (anchor: LiveFramePoint, box: LiveFrameNormalizedRect)? {
+        guard let plan = activeHybridCompositionPlan,
+              let subjectContext,
+              let policy else {
+            return nil
+        }
+
+        var anchor = plan.targetAnchor(
+            isFrontCameraMirrored: isUsingFrontCamera
+        )
+        if isLocalAIComposeTargetHorizontallyFlipped,
+           policy.supportsHorizontalTargetFlip {
+            anchor = LiveFramePoint(x: 1 - anchor.x, y: anchor.y)
+        }
+        let box = localAIComposePolicyResolver.targetBox(
+            for: subjectContext,
+            policy: policy,
+            centeredAt: anchor,
+            desiredAreaOverride: plan.targetArea
+        )
+        return (anchor, box)
+    }
+
+    private func hybridSubjectKind(
+        for kind: LiveFrameSubjectCandidateKind
+    ) -> HybridCompositionSubjectKind {
+        switch kind {
+        case .face:
+            return .face
+        case .body:
+            return .body
+        case .salientObject:
+            return .salientObject
+        }
+    }
+
+    private func hybridLensBucket(for lens: LensOption) -> HybridCompositionLensBucket {
+        if lens.focalLengthMillimeters < 30 {
+            return .wide
+        }
+        if lens.focalLengthMillimeters >= 60 {
+            return .telephoto
+        }
+        return .standard
+    }
+
+    private func resetHybridCompositionPlanner() {
+        activeHybridCompositionPlannerID = nil
+        activeHybridCompositionPlan = nil
+        hybridCompositionPlannerState = .idle
+    }
+
+    private func clearLocalAIComposeLockTransientEvidence() {
+        localAIComposeGuidanceActionState = .initial
+        localAIComposePoseFramingState = .initial
+        localAIComposeReadinessState = .initial
+        resetLocalAIComposeDepth()
+    }
+
     private func clearLocalAIComposeSelectionState() {
         stopLocalAIComposeVisionTracking()
         isLocalAIComposeSubjectLocked = false
@@ -1300,12 +1520,43 @@ final class CameraViewModel: ObservableObject {
             candidates: latestLocalAIComposeSubjectCandidates
         )
         localAIComposeTrackingState = trackingUpdate.state
-        localAIComposeSelectedCandidate = trackingUpdate.candidate
-        if let candidate = trackingUpdate.candidate {
-            seedLocalAIComposeVisionTracking(with: candidate)
-            return true
-        } else {
+
+        switch trackingUpdate.phase {
+        case .confirmed:
+            guard let candidate = trackingUpdate.candidate else {
+                return false
+            }
+            let displayedCandidate = localAIComposeSelectedCandidate
+            let needsSequenceReseed = displayedCandidate.map {
+                localAIComposeTemporalSubjectTracker.requiresSequenceReseed(
+                    displayedBox: $0.box,
+                    detectorBox: candidate.box
+                )
+            } ?? true
+
+            if needsSequenceReseed || activeLocalAIComposeVisionTrackingSeedID == nil {
+                localAIComposeSelectedCandidate = candidate
+                seedLocalAIComposeVisionTracking(with: candidate)
+            } else if let displayedCandidate {
+                localAIComposeSelectedCandidate = LiveFrameSubjectCandidate(
+                    box: displayedCandidate.box,
+                    kind: displayedCandidate.kind,
+                    poseFramingSignal: candidate.poseFramingSignal
+                )
+            }
+            return trackingUpdate.hasFreshObservation
+
+        case .retained:
+            if activeLocalAIComposeVisionTrackingSeedID == nil {
+                localAIComposeSelectedCandidate = nil
+                clearLocalAIComposeLockTransientEvidence()
+            }
+            return false
+
+        case .lost:
+            localAIComposeSelectedCandidate = nil
             stopLocalAIComposeVisionTracking()
+            clearLocalAIComposeLockTransientEvidence()
             return false
         }
     }

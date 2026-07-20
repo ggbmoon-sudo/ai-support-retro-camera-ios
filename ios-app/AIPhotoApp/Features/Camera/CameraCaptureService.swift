@@ -1,4 +1,5 @@
 @preconcurrency import AVFoundation
+import CoreImage
 import UIKit
 
 enum CameraCaptureError: LocalizedError {
@@ -195,6 +196,40 @@ final class CameraCaptureService {
 
         delegates.append(delegate)
         photoOutput.capturePhoto(with: settings, delegate: delegate)
+    }
+
+    func captureAnalysisSnapshot(
+        completion: @MainActor @Sendable @escaping (Result<UIImage, Error>) -> Void
+    ) {
+        guard isConfigured else {
+            completion(.failure(CameraCaptureError.cameraUnavailable))
+            return
+        }
+
+        let orientation = frameSignalState.pixelOrientation.imagePropertyOrientation
+        filteredPreviewState.requestNextFrame { pixelBuffer in
+            let image = CIImage(cvPixelBuffer: pixelBuffer).oriented(orientation)
+            let context = CIContext(options: [.cacheIntermediates: false])
+            guard let cgImage = context.createCGImage(image, from: image.extent) else {
+                Task { @MainActor in
+                    completion(.failure(CameraCaptureError.imageDataUnavailable))
+                }
+                return
+            }
+
+            let sendableImage = SendableCGImage(value: cgImage)
+            Task { @MainActor in
+                completion(
+                    .success(
+                        UIImage(
+                            cgImage: sendableImage.value,
+                            scale: 1,
+                            orientation: .up
+                        )
+                    )
+                )
+            }
+        }
     }
 
     func focusAndExpose(at devicePoint: CGPoint) -> Bool {
@@ -650,9 +685,14 @@ private final class FrameSignalState: @unchecked Sendable {
 
 }
 
+private struct SendableCGImage: @unchecked Sendable {
+    let value: CGImage
+}
+
 private final class FilteredPreviewFrameState: @unchecked Sendable {
     private let lock = NSLock()
     nonisolated(unsafe) private var _frameHandler: ((CVPixelBuffer) -> Void)?
+    nonisolated(unsafe) private var _nextFrameHandler: (@Sendable (CVPixelBuffer) -> Void)?
 
     nonisolated var frameHandler: ((CVPixelBuffer) -> Void)? {
         get {
@@ -667,6 +707,18 @@ private final class FilteredPreviewFrameState: @unchecked Sendable {
 
     nonisolated func handle(pixelBuffer: CVPixelBuffer) {
         frameHandler?(pixelBuffer)
+        let nextFrameHandler = lock.withLock { () -> (@Sendable (CVPixelBuffer) -> Void)? in
+            let handler = _nextFrameHandler
+            _nextFrameHandler = nil
+            return handler
+        }
+        nextFrameHandler?(pixelBuffer)
+    }
+
+    nonisolated func requestNextFrame(_ handler: @escaping @Sendable (CVPixelBuffer) -> Void) {
+        lock.withLock {
+            _nextFrameHandler = handler
+        }
     }
 }
 

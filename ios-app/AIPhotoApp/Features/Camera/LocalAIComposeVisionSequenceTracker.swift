@@ -25,15 +25,15 @@ nonisolated struct LocalAIComposeVisionTrackingUpdate: Equatable, Sendable {
 /// This tracks one temporary rectangle on the camera background queue; it does not identify,
 /// recognize, label, log, upload, or persist the person/object inside that rectangle.
 nonisolated final class LocalAIComposeVisionSequenceTracker {
-    private let minimumAcceptedConfidence: VNConfidence = 0.45
+    private let minimumAcceptedConfidence: VNConfidence = 0.55
     private let minimumAcceptedArea: CGFloat = 0.004
     private let maximumAcceptedArea: CGFloat = 0.92
     private let minimumAcceptedSide: CGFloat = 0.025
     private let coordinateTolerance: CGFloat = 0.08
-    private let maximumCenterJump: CGFloat = 0.28
-    private let minimumAreaRatio: CGFloat = 0.20
-    private let missesBeforeLost = 2
-    private let displaySmoothingAlpha: CGFloat = 0.62
+    private let maximumCenterJump: CGFloat = 0.18
+    private let minimumAreaRatio: CGFloat = 0.45
+    private let missesBeforeLost = 3
+    private let displaySmoothingAlpha: CGFloat = 0.34
 
     private var activeSeedID: UUID?
     private var inputObservation: VNDetectedObjectObservation?
@@ -184,12 +184,42 @@ nonisolated final class LocalAIComposeVisionSequenceTracker {
     ) -> LiveFrameNormalizedRect {
         LiveFrameNormalizedRect(
             CGRect(
-                x: start.x + (end.x - start.x) * alpha,
-                y: start.y + (end.y - start.y) * alpha,
-                width: start.width + (end.width - start.width) * alpha,
-                height: start.height + (end.height - start.height) * alpha
+                x: stabilizedValue(
+                    from: start.x,
+                    to: end.x,
+                    alpha: alpha,
+                    deadZone: 0.004
+                ),
+                y: stabilizedValue(
+                    from: start.y,
+                    to: end.y,
+                    alpha: alpha,
+                    deadZone: 0.004
+                ),
+                width: stabilizedValue(
+                    from: start.width,
+                    to: end.width,
+                    alpha: alpha,
+                    deadZone: 0.008
+                ),
+                height: stabilizedValue(
+                    from: start.height,
+                    to: end.height,
+                    alpha: alpha,
+                    deadZone: 0.008
+                )
             )
         )
+    }
+
+    private func stabilizedValue(
+        from start: CGFloat,
+        to end: CGFloat,
+        alpha: CGFloat,
+        deadZone: CGFloat
+    ) -> CGFloat {
+        guard abs(end - start) > deadZone else { return start }
+        return start + (end - start) * alpha
     }
 
     private func centerDistance(

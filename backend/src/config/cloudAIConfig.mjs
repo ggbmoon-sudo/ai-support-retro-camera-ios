@@ -31,6 +31,9 @@ export function cloudAIConfig(env = process.env) {
     xiaoyiChatCompletionsPath: normalizeXiaoyiRelayPath(env.XIAOYI_CHAT_COMPLETIONS_PATH),
     xiaoyiPhotoAdvisorModel: normalizeXiaoyiModel(env.XIAOYI_PHOTO_ADVISOR_MODEL ?? env.XIAOYI_MODEL),
     xiaoyiFilterLabModel: normalizeXiaoyiModel(env.XIAOYI_FILTER_LAB_MODEL ?? env.XIAOYI_MODEL),
+    xiaoyiCompositionPlannerModel: normalizeXiaoyiModel(
+      env.XIAOYI_COMPOSITION_PLANNER_MODEL ?? env.XIAOYI_MODEL
+    ),
     siliconFlowAPIKey: env.SILICONFLOW_API_KEY ?? "",
     siliconFlowBaseURL: normalizeSiliconFlowBaseURL(env.SILICONFLOW_BASE_URL),
     siliconFlowChatCompletionsPath: normalizeSiliconFlowPath(env.SILICONFLOW_CHAT_COMPLETIONS_PATH),

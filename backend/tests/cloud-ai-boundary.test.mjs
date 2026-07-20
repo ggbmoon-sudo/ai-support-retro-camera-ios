@@ -47,6 +47,7 @@ test("health returns safe provider readiness status", () => {
     internalCloudAIAllowed: false,
     photoAdvisorReady: false,
     filterLabReady: false,
+    compositionPlannerReady: false,
     productionReady: false
   });
 
@@ -66,6 +67,26 @@ test("health returns safe provider readiness status", () => {
     internalCloudAIAllowed: true,
     photoAdvisorReady: true,
     filterLabReady: true,
+    compositionPlannerReady: false,
+    productionReady: false
+  });
+
+  assert.deepEqual(healthResponse({
+    CLOUD_AI_PROVIDER_MODE: "xiaoyiLunaInternal",
+    ALLOW_INTERNAL_CLOUD_AI: "true",
+    XIAOYI_API_KEY: "test-key",
+    XIAOYI_BASE_URL: "https://xiaoyiapi.xyz",
+    XIAOYI_CHAT_COMPLETIONS_PATH: "/v1/chat/completions",
+    XIAOYI_MODEL: "gpt-5.6-luna"
+  }), {
+    ok: true,
+    service: "cloud-ai-boundary",
+    mode: "xiaoyiLunaInternal",
+    providerMode: "xiaoyiLunaInternal",
+    internalCloudAIAllowed: true,
+    photoAdvisorReady: true,
+    filterLabReady: true,
+    compositionPlannerReady: true,
     productionReady: false
   });
 });
@@ -615,7 +636,8 @@ test("xiaoyi config trims and allows only the supported relay url, path, and Lun
     XIAOYI_BASE_URL: " https://xiaoyiapi.xyz/ ",
     XIAOYI_CHAT_COMPLETIONS_PATH: " /v1/chat/completions ",
     XIAOYI_PHOTO_ADVISOR_MODEL: " gpt-5.6-luna ",
-    XIAOYI_FILTER_LAB_MODEL: " gpt-5.6-luna "
+    XIAOYI_FILTER_LAB_MODEL: " gpt-5.6-luna ",
+    XIAOYI_COMPOSITION_PLANNER_MODEL: " gpt-5.6-luna "
   });
 
   assert.equal(config.providerMode, "xiaoyiLunaInternal");
@@ -623,15 +645,18 @@ test("xiaoyi config trims and allows only the supported relay url, path, and Lun
   assert.equal(config.xiaoyiChatCompletionsPath, "/v1/chat/completions");
   assert.equal(config.xiaoyiPhotoAdvisorModel, "gpt-5.6-luna");
   assert.equal(config.xiaoyiFilterLabModel, "gpt-5.6-luna");
+  assert.equal(config.xiaoyiCompositionPlannerModel, "gpt-5.6-luna");
   const sharedModelConfig = cloudAIConfig({ XIAOYI_MODEL: "gpt-5.6-luna" });
   assert.equal(sharedModelConfig.xiaoyiPhotoAdvisorModel, "gpt-5.6-luna");
   assert.equal(sharedModelConfig.xiaoyiFilterLabModel, "gpt-5.6-luna");
+  assert.equal(sharedModelConfig.xiaoyiCompositionPlannerModel, "gpt-5.6-luna");
   assert.equal(cloudAIConfig({}).xiaoyiBaseURL, "https://xiaoyiapi.xyz");
   assert.equal(cloudAIConfig({ XIAOYI_BASE_URL: "https://xiaoyiapi.xyz/v1" }).xiaoyiBaseURL, "");
   assert.equal(cloudAIConfig({ XIAOYI_BASE_URL: "http://xiaoyiapi.xyz" }).xiaoyiBaseURL, "");
   assert.equal(cloudAIConfig({ XIAOYI_BASE_URL: "https://evil.example" }).xiaoyiBaseURL, "");
   assert.equal(cloudAIConfig({ XIAOYI_CHAT_COMPLETIONS_PATH: "/v1/chat/completions?token=bad" }).xiaoyiChatCompletionsPath, "");
   assert.equal(cloudAIConfig({ XIAOYI_PHOTO_ADVISOR_MODEL: "other-model" }).xiaoyiPhotoAdvisorModel, "");
+  assert.equal(cloudAIConfig({ XIAOYI_COMPOSITION_PLANNER_MODEL: "other-model" }).xiaoyiCompositionPlannerModel, "");
 });
 
 test("xiaoyi provider uses gpt-5.6-luna for photo advisor request shape", async () => {
@@ -702,6 +727,52 @@ test("xiaoyi provider uses gpt-5.6-luna for generated Filter Lab recipes", async
   assert.equal(capturedRequest.messages[1].content[0].text.includes("one black-floor budget"), true);
   assert.equal(capturedRequest.messages[1].content[0].text.includes("Renderer calibration anchors"), true);
   assert.equal(capturedRequest.messages[1].content[1].image_url.url, "data:image/jpeg;base64,/9j/");
+  assert.equal(capturedRequest.messages[1].content[1].image_url.detail, "high");
+});
+
+test("xiaoyi provider uses a strict one-shot composition request", async () => {
+  let capturedRequest;
+  const plan = {
+    schemaVersion: "1.0",
+    sceneFamily: "pet",
+    policy: "thirds",
+    targetHorizontal: "left",
+    targetVertical: "middle",
+    targetSize: "medium",
+    distanceAction: "hold",
+    focalSuggestion: "current",
+    reasonCode: "subject_emphasis",
+    confidence: "medium"
+  };
+  const provider = new XiaoyiLunaRelayProvider({
+    apiKey: "test-key",
+    baseURL: "https://xiaoyiapi.xyz",
+    compositionPlannerModel: "gpt-5.6-luna",
+    path: "/v1/chat/completions",
+    fetchImpl: async (_url, request) => {
+      capturedRequest = JSON.parse(request.body);
+      return okJSON(openAICompatibleJSON(plan));
+    }
+  });
+
+  const response = await provider.analyzeCompositionPlan({
+    ...providerInput(),
+    localContext: {
+      subjectKind: "salient_object",
+      subjectCount: "single",
+      lensBucket: "standard"
+    }
+  });
+
+  assert.deepEqual(response, plan);
+  assert.equal(capturedRequest.model, "gpt-5.6-luna");
+  assert.equal(capturedRequest.max_tokens, 700);
+  assert.equal(capturedRequest.temperature, 0.2);
+  assert.equal(capturedRequest.stream, false);
+  assert.deepEqual(capturedRequest.response_format, { type: "json_object" });
+  assert.equal(capturedRequest.messages[0].content.includes("sensitive"), true);
+  assert.equal(capturedRequest.messages[0].content.includes("score"), true);
+  assert.equal(capturedRequest.messages[0].content.includes("one user-authorized still image"), true);
   assert.equal(capturedRequest.messages[1].content[1].image_url.detail, "high");
 });
 

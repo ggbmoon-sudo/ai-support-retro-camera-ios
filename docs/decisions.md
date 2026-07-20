@@ -263,3 +263,25 @@ When P20 has reliable synchronized absolute hardware depth and one current full-
 Two compatible full-analysis masks are required to activate or replace a distant mask. One missing sample may retain the current display and two must clear it. Motion-pause entry, thermal protection, camera/lens/Compose/selected-photo lifecycle changes, and Group Balance clear the mask. Fast sequence tracking cannot create occlusion evidence, and front-camera mirroring occurs only while mapping the fixed logical grid to display.
 
 The mask may punch only composition-grid/tint pixels inside an isolated SwiftUI compositing group. Subject/target/action/readiness guides remain visible, and the mask must not change preview delivery, capture output, Core Image processing, focus, exposure, zoom, shutter, or automatic capture. No mask/depth/geometry is logged, persisted, uploaded, analyzed remotely, or used for training. This decision adds no ARKit session, Xiaoyi/provider call, Camera route, direct iOS provider access, semantic segmentation, custom model, or production rollout. `productionReady:false` remains locked.
+
+## Decision 033 - Photographer-controlled True Subject Lock
+
+Status: Accepted on 2026-07-20 as a stability correction to explicit local subject locking
+
+A photographer's long press creates one session-only subject-relative lock. The throttled full detector remains authoritative for validating the same candidate through kind plus bounded center, area, overlap, and ambiguity gates. The faster `VNTrackObjectRequest` sequence may update display geometry and reconcile the current matcher reference, but it must not clear detector misses, create fresh action/Hold/Ready evidence, or silently establish a new subject.
+
+Detector misses must not translate the stored box through prediction. Two may retain the current sequence display; the third enters lost/reacquiring. Sequence loss or authoritative loss clears transient action, pose, readiness, and depth/occlusion evidence while retaining the selected composition policy, target anchor, and target size. Recovery requires a compatible full-detector match near the locked geometry or a new explicit long press. A different plausible candidate must not be selected merely because it is the only or largest visible candidate.
+
+After the initial locked plan is created, automatic symmetry, leading-line, quiet-space, lead-room, and ambiguity evidence must not rebuild it. Only an explicit photographer policy/side/new-subject/unlock action or a normal Compose/camera/lens/photo/lifecycle reset may change the plan. Full detector correction may reseed the sequence only after material drift; routine samples must not restart tracking.
+
+This is a stable 2D subject-relative lock, not identity/re-identification and not an ARKit world anchor. A future world-relative Scene Lock requires a separate decision because it has different semantics, hardware/lifecycle cost, failure behavior, and privacy expectations. This decision adds no face/identity recognition, ARKit session, Xiaoyi/provider call, Camera route/upload, direct iOS provider access, automatic camera control/capture, raw geometry history, persistence, analytics, model/training, or production rollout. `productionReady:false` remains locked.
+
+## Decision 034 - DEBUG-only Xiaoyi one-shot composition strategy
+
+Status: Accepted on 2026-07-20 by explicit user request to try real Xiaoyi AI in Local AI Compose
+
+After the photographer explicitly enables Local AI Compose and long-presses one subject, a DEBUG-only menu action may request fresh cloud consent and upload exactly one bounded, metadata-stripped preview JPEG through the backend to Xiaoyi `gpt-5.6-luna`. The provider may return only one strict enum plan covering scene family, existing supported composition policy, target slots/size, coarse distance/lens suggestion, safe reason code, and confidence bucket. Extra fields, free prose, scores/ratings, sensitive inference, chain-of-thought/provider leakage, and inconsistent policy/target geometry must fail closed.
+
+The validated strategy becomes one frozen session-only P23 target. Continuous subject tracking, geometry comparison, arrows, Hold/Ready, preview, focus/exposure, zoom/lens choice, and shutter remain local and photographer-controlled. The plan must not trigger another request, automatic zoom/focus/exposure/lens switch/crop/capture, or a silent subject change. Failure preserves the local feature without applying a cloud plan.
+
+This decision is a narrow exception to the prior Camera-local-only rule for an explicitly user-approved internal experiment; it does not approve a release/default Camera cloud entry, continuous frame/video streaming, background upload, auto-trigger, WebSocket, direct iOS provider call/URL/SDK/key, raw image/prompt/provider-response logging or persistence, model-training use, identity/sensitive inference, ARKit world tracking, or production rollout. Consent is per attempt, the backend is the only provider boundary, and `productionReady:false` remains locked.

@@ -1,5 +1,59 @@
 # Manual Smoke Tests
 
+## Local AI Compose P24 - Xiaoyi one-shot composition planner
+
+Windows/backend verification:
+
+- [x] Confirm the full backend test suite passes after adding exact enum contract, request validation, Xiaoyi request-shape, route/fallback, iOS source-boundary, and smoke-output redaction coverage.
+- [x] Confirm a disabled/non-Xiaoyi local configuration returns `internal_cloud_disabled` before any provider call.
+- [x] Run the explicitly approved ignored cat sample through the Xiaoyi smoke runner; confirm the final request returns a validated cloud plan and exit code 0 without printing key, Authorization header, base64, prompt, or raw provider response.
+- [x] Confirm no real sample, generated smoke JPEG, provider response, prompt, or QA artifact is tracked in Git.
+
+Mac/Xcode and physical-device verification:
+
+- [ ] Configure the Mac backend using ignored local environment only: `xiaoyiLunaInternal`, internal cloud allowed, approved Xiaoyi base/path, `gpt-5.6-luna`, and the local key. Restart backend and confirm `/health` reports `compositionPlannerReady:true` and `productionReady:false`.
+- [ ] Open `ios-app/AIPhotoApp.xcodeproj`, Clean Build Folder, and build DEBUG. Confirm the three `HybridCompositionPlanner*` files are included automatically and there are no Swift/concurrency errors.
+- [ ] Open Camera, enable AI Compose, and verify the Xiaoyi menu action is disabled before a subject is locked. Long-press a person, pet, or object and verify it becomes enabled.
+- [ ] Tap the Xiaoyi action and cancel consent. Confirm there is no request and local Compose continues unchanged.
+- [ ] Accept consent once. Confirm the sheet progresses through one-frame preparation and analysis, then displays only a localized policy/reason plus coarse lens/distance suggestions—not raw JSON, confidence, provider error, or debug text.
+- [ ] Use Network Instruments/Charles/backend safe metadata to confirm exactly one JPEG request for that accepted attempt, no repeated/background upload, no video/WebSocket, and no second call after the plan is applied.
+- [ ] Close the result and pan/move around the locked subject for at least 20 seconds. Confirm the target policy/anchor/size remains frozen and the local subject outline/action/Hold/Ready continues smoothly without half-second target changes.
+- [ ] Confirm another cloud attempt always presents fresh consent. A timeout, invalid response, or disconnected backend should show the safe unavailable state and leave local Compose usable with no new plan.
+- [ ] Repeat on front camera with selfie mirroring and rear lenses. Confirm the uploaded visible orientation and returned left/right target match the displayed preview once, without double mirror.
+- [ ] Change subject, policy, target side, lens/camera, Compose off/on, selected-photo state, or Camera lifecycle. Confirm the hybrid plan clears only at the intended explicit/lifecycle boundary and no stale request can reapply afterward.
+- [ ] Confirm the returned focal/distance buckets never change hardware zoom, lens, focus, exposure, crop, or shutter; capture remains manual and available throughout.
+- [ ] Build RELEASE and confirm the Xiaoyi Camera menu entry is absent and the remote client path is disabled.
+- [ ] Inspect app/backend console and filesystem: no API key, Authorization header, base64, prompt, raw provider response, raw frame, EXIF/GPS, subject geometry/history, score/confidence, or training artifact may appear.
+
+## Local AI Compose P23 - True Subject Lock
+
+Windows/static verification:
+
+- [x] Confirm 17/17 deterministic geometry cases pass: close match, far/undersized rejection, first/second miss retention, third miss loss, no miss translation, detector-miss preservation across fast tracking, material-only reseed, and position/size dead zones.
+- [x] Confirm 14/14 source-contract cases pass: three detector phases, conditional sequence reseed, transient-only loss clear, five locked-target freeze guards, tighter Vision confidence/jump/area/miss gates, and no predicted miss drift.
+- [x] Confirm full detector confirmation is the only path that clears detector misses; fast Vision reconciliation preserves `missedFrameCount` and never enters action/Hold/Ready evidence.
+- [x] Confirm automatic Symmetry, Leading Lines, Negative Space, Lead Room, and ambiguity transitions cannot call target clear while a subject is locked.
+- [x] Confirm lost tracking retains cached policy/target geometry, clears action/pose/Ready/depth evidence, stops the old sequence, and uses localized reacquiring copy.
+- [x] Confirm English and Traditional Chinese each contain one lock-held and one reacquiring-detail key.
+- [x] Confirm Camera Swift delimiter balance, `git diff --check`, and no ARKit, Xiaoyi/provider/network, logging, persistence, upload, identity, model/training, automatic capture, or `productionReady:true` path.
+
+Mac/Xcode and physical-device verification:
+
+- [ ] Clean Build Folder and build DEBUG; confirm the P22-R1 compiler/concurrency diagnostics remain resolved and P23 adds no new warning or error.
+- [ ] Enable Compose, long-press one stationary person, pet, or object, and record at least 20 seconds. Confirm the cyan subject frame has restrained micro-motion and the policy, target anchor, target size, and target side do not alternate.
+- [ ] While locked, create/remove visible symmetry, leading lines, quiet space, and horizontal subject motion. Confirm automatic evidence does not change the frozen composition plan.
+- [ ] Pan slowly while keeping the locked subject visible; confirm the subject frame follows smoothly, the target stays fixed, and periodic full detector samples do not cause a half-second pulse or jump.
+- [ ] Move two same-kind subjects through or near one another. Confirm an ambiguous/crossing sample is retained/reacquiring and never silently transfers the lock to the other subject.
+- [ ] Briefly cover the locked subject, then reveal it near its prior location. Confirm short loss does not predict the box across the screen, and compatible reappearance can resume the same frozen plan.
+- [ ] Hide or move the locked subject far away long enough to lose tracking. Confirm the subject frame disappears, target/policy remain, movement/Hold/Ready/depth cues clear, and the localized reacquiring message suggests another long press.
+- [ ] With the old subject absent, show another large same-kind subject elsewhere. Confirm the lock does not jump. Long-press that new subject and confirm only this explicit action creates a new plan.
+- [ ] While locked, explicitly choose another policy or flip target side; confirm that photographer action intentionally rebuilds the target once and then remains stable.
+- [ ] Repeat with front camera mirroring, rear lenses, compatible/unsupported depth, non-original live filter, P17 motion pause, P21 thermal protection, background/foreground, Compose off/on, and selected-photo transitions.
+- [ ] Confirm shutter, tap focus/exposure, flash, zoom/lens controls, saved orientation, selfie parity, filters, and P22 depth cutout remain operational and no lock state gates capture.
+- [ ] Use Instruments for at least 15 minutes; compare tracking FPS, CPU/GPU, memory, preview drops, thermal transitions, and shutter latency against P22.
+- [ ] Inspect console/artifacts and confirm no raw frame, box/history, trajectory, confidence, UUID, miss count, prompt, provider response, Authorization header, or key is logged, persisted, uploaded, or sent to analytics.
+- [ ] Confirm Camera makes no network request, iOS contains no provider key/direct provider call, ARKit remains absent, automatic capture remains absent, and `productionReady:false` remains unchanged.
+
 ## Local AI Compose P22-R1 - Xcode diagnostic repair
 
 Windows/static verification:

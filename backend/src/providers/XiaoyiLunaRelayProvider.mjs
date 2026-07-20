@@ -7,6 +7,11 @@ import {
   buildGeneratedFilterRecipeSystemPrompt,
   validateGeneratedFilterRecipeCandidate
 } from "./generatedFilterRecipeContract.mjs";
+import {
+  buildCompositionPlannerSystemPrompt,
+  buildCompositionPlannerUserPrompt,
+  validateCompositionPlanCandidate
+} from "./compositionPlannerContract.mjs";
 
 export const XIAOYI_LUNA_BASE_URL = "https://xiaoyiapi.xyz";
 export const XIAOYI_LUNA_CHAT_COMPLETIONS_PATH = "/v1/chat/completions";
@@ -22,6 +27,7 @@ export class XiaoyiLunaRelayProvider extends CloudAIProvider {
     baseURL = XIAOYI_LUNA_BASE_URL,
     photoAdvisorModel = XIAOYI_LUNA_MODEL,
     filterLabModel = XIAOYI_LUNA_MODEL,
+    compositionPlannerModel = XIAOYI_LUNA_MODEL,
     path = XIAOYI_LUNA_CHAT_COMPLETIONS_PATH,
     fetchImpl = globalThis.fetch,
     totalTimeoutMs = XIAOYI_LUNA_TOTAL_TIMEOUT_MS
@@ -31,6 +37,7 @@ export class XiaoyiLunaRelayProvider extends CloudAIProvider {
     this.baseURL = baseURL;
     this.photoAdvisorModel = photoAdvisorModel;
     this.filterLabModel = filterLabModel;
+    this.compositionPlannerModel = compositionPlannerModel;
     this.path = path;
     this.fetchImpl = fetchImpl;
     this.totalTimeoutMs = totalTimeoutMs;
@@ -46,6 +53,12 @@ export class XiaoyiLunaRelayProvider extends CloudAIProvider {
     this.assertReady(this.filterLabModel);
     const payload = await this.sendChatCompletion(this.filterLabRequestBody(input));
     return parseXiaoyiLunaGeneratedFilterRecipeResponse(payload);
+  }
+
+  async analyzeCompositionPlan(input) {
+    this.assertReady(this.compositionPlannerModel);
+    const payload = await this.sendChatCompletion(this.compositionPlannerRequestBody(input));
+    return parseXiaoyiLunaCompositionPlanResponse(payload);
   }
 
   endpointURL() {
@@ -86,6 +99,20 @@ export class XiaoyiLunaRelayProvider extends CloudAIProvider {
         buildGeneratedFilterRecipeRendererCalibrationPrompt(),
         "If the image is ambiguous, keep uncertain controls near identity and lower confidence. Do not substitute a preferred preset recipe."
       ].join("\n"),
+      image: input.image,
+      imageDetail: "high"
+    });
+  }
+
+  compositionPlannerRequestBody(input) {
+    return buildRequestBody({
+      model: this.compositionPlannerModel,
+      maxTokens: 700,
+      systemPrompt: buildCompositionPlannerSystemPrompt(),
+      userPrompt: buildCompositionPlannerUserPrompt({
+        locale: input.locale,
+        localContext: input.localContext
+      }),
       image: input.image,
       imageDetail: "high"
     });
@@ -157,6 +184,18 @@ export function parseXiaoyiLunaGeneratedFilterRecipeResponse(payload) {
     error.code = "provider_invalid_schema";
     error.validationCode = validation.error.code;
     error.validationFieldBucket = validation.error.fieldBucket;
+    throw error;
+  }
+  return validation.value;
+}
+
+export function parseXiaoyiLunaCompositionPlanResponse(payload) {
+  const candidate = parseJsonFromXiaoyiLunaPayload(payload);
+  const validation = validateCompositionPlanCandidate(candidate);
+  if (!validation.ok) {
+    const error = new Error("Xiaoyi Luna composition plan failed validation");
+    error.code = "provider_invalid_schema";
+    error.validationCode = validation.error.code;
     throw error;
   }
   return validation.value;

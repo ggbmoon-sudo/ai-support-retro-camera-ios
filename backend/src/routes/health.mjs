@@ -5,6 +5,7 @@ export function healthResponse(env = process.env) {
   const config = cloudAIConfig(env);
   const photoAdvisorReady = isPhotoAdvisorReady(config);
   const filterLabReady = isFilterLabReady(config);
+  const compositionPlannerReady = isCompositionPlannerReady(config);
 
   return {
     ok: true,
@@ -14,8 +15,20 @@ export function healthResponse(env = process.env) {
     internalCloudAIAllowed: config.allowInternalCloudAI === true,
     photoAdvisorReady,
     filterLabReady,
+    compositionPlannerReady,
     productionReady: false
   };
+}
+
+function isCompositionPlannerReady(config) {
+  return Boolean(
+    config.allowInternalCloudAI === true &&
+    config.providerMode === ProviderKind.xiaoyiLunaInternal &&
+    config.xiaoyiAPIKey &&
+    config.xiaoyiBaseURL &&
+    config.xiaoyiChatCompletionsPath &&
+    config.xiaoyiCompositionPlannerModel
+  );
 }
 
 function isPhotoAdvisorReady(config) {

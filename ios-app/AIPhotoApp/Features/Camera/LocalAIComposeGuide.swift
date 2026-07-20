@@ -160,7 +160,7 @@ nonisolated struct LocalAIComposeGuide: Equatable, Sendable {
             poseFramingEdges: [],
             instructionKey: "camera.ai_compose.subject_reacquiring",
             instructionSystemImage: "viewfinder",
-            detailKey: "camera.ai_compose.subject_locked",
+            detailKey: "camera.ai_compose.subject_reacquiring_detail",
             rollDegrees: nil,
             isNearLevel: false,
             sceneHorizonAngleDegrees: sceneHorizonAngleDegrees,
@@ -409,7 +409,7 @@ struct LocalAIComposeGuideResolver {
         } else if !displayPoseFramingEdges.isEmpty {
             detailKey = "camera.ai_compose.pose_edge_optional"
         } else if isSubjectLocked {
-            detailKey = "camera.ai_compose.subject_locked"
+            detailKey = "camera.ai_compose.subject_lock_held"
         } else if sceneHorizonNeedsAttention {
             detailKey = "camera.ai_compose.scene_horizon_optional"
         } else if levelNeedsAttention {

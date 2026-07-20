@@ -40,6 +40,7 @@ export function resolveProvider(kind = ProviderKind.mock, config = {}) {
       baseURL: config.xiaoyiBaseURL,
       photoAdvisorModel: config.xiaoyiPhotoAdvisorModel,
       filterLabModel: config.xiaoyiFilterLabModel,
+      compositionPlannerModel: config.xiaoyiCompositionPlannerModel,
       path: config.xiaoyiChatCompletionsPath
     });
   case ProviderKind.siliconflowInternal:

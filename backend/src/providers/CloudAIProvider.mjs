@@ -13,4 +13,8 @@ export class CloudAIProvider {
   async generateFilterRecipe(_input) {
     throw new Error("CloudAIProvider.generateFilterRecipe must be implemented by a safe provider");
   }
+
+  async analyzeCompositionPlan(_input) {
+    throw new Error("CloudAIProvider.analyzeCompositionPlan must be implemented by a safe provider");
+  }
 }

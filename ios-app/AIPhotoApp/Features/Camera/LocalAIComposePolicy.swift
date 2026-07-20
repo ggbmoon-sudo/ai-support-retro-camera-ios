@@ -303,11 +303,15 @@ nonisolated struct LocalAIComposePolicyResolver: Sendable {
     func targetBox(
         for context: LocalAIComposeSubjectContext,
         policy: LocalAIComposePolicy,
-        centeredAt target: LiveFramePoint
+        centeredAt target: LiveFramePoint,
+        desiredAreaOverride: CGFloat? = nil
     ) -> LiveFrameNormalizedRect {
         let safeHeight = max(context.box.height, 0.01)
         let aspectRatio = min(max(context.box.width / safeHeight, 0.28), 3.2)
-        let desiredArea = desiredArea(for: context.kind, policy: policy)
+        let desiredArea = min(
+            max(desiredAreaOverride ?? desiredArea(for: context.kind, policy: policy), 0.04),
+            0.55
+        )
         let minimumDimension: CGFloat
         let maximumWidth: CGFloat
         let maximumHeight: CGFloat

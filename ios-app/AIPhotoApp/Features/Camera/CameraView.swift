@@ -45,6 +45,7 @@ struct CameraView: View {
     @State private var focalPinchStartMillimeters: Double?
     @State private var focusReticle: CameraFocusReticleState?
     @State private var focusReticleDismissTask: Task<Void, Never>?
+    @State private var isHybridCompositionPlannerPresented = false
     private let localAIComposeCoordinateMapper = CameraOverlayCoordinateMapper()
 
     init(
@@ -109,6 +110,25 @@ struct CameraView: View {
         }) {
             filterPickerSheet
         }
+        #if DEBUG
+        .sheet(isPresented: $isHybridCompositionPlannerPresented, onDismiss: {
+            viewModel.dismissHybridCompositionPlanner()
+        }) {
+            HybridCompositionPlannerView(
+                state: viewModel.hybridCompositionPlannerState,
+                canAnalyze: viewModel.canRequestHybridCompositionPlan,
+                acceptConsent: { consent in
+                    viewModel.startHybridCompositionPlanner(consent: consent)
+                },
+                retry: {
+                    viewModel.retryHybridCompositionPlanner()
+                },
+                dismiss: {
+                    isHybridCompositionPlannerPresented = false
+                }
+            )
+        }
+        #endif
         .confirmationDialog(
             Text("camera.timer.dialog.title"),
             isPresented: $isTimerDialogPresented,
@@ -1120,6 +1140,21 @@ struct CameraView: View {
                 }
                 .disabled(viewModel.localAIComposeGuide.subjectBox == nil)
             }
+
+            #if DEBUG
+            Divider()
+
+            Button {
+                viewModel.requestHybridCompositionPlannerConsent()
+                isHybridCompositionPlannerPresented = true
+            } label: {
+                Label(
+                    LocalizedStringKey("camera.hybrid_compose.action"),
+                    systemImage: "sparkles.rectangle.stack"
+                )
+            }
+            .disabled(!viewModel.canRequestHybridCompositionPlan)
+            #endif
         } label: {
             VStack(spacing: 2) {
                 Image(systemName: viewModel.localAIComposePolicyPreference.systemImage)

@@ -30,6 +30,17 @@ These product claims imply four distinct technical responsibilities:
 
 Only the middle strategy-selection responsibility necessarily benefits from a custom learned composition model. Live detection, geometry, overlay rendering, and level guidance can use Apple frameworks locally.
 
+## P24 Hybrid Xiaoyi Strategy Selection
+
+P24 tests that split directly: Xiaoyi `gpt-5.6-luna` sees one explicitly consented still preview and selects one strict composition strategy, while Apple Vision keeps the closed-loop subject tracking and alignment local.
+
+- Cloud responsibility ends after an enum-only scene family, policy, target slot/size, coarse lens/distance suggestion, reason code, and confidence bucket are validated.
+- Local responsibility begins by freezing the policy/target into P23 and continues for every displayed tracking/action/Hold/Ready update.
+- The cloud does not see a video stream, local box history, motion/sensor stream, depth, GPS, EXIF dump, identity, or later live frames.
+- The app does not expose free model prose, scores, sensitive inference, raw provider response, provider debug fields, or automatic camera commands.
+
+This is closer to the inferred Doka responsibility split than the prior rule-only selector, but it still does not claim Doka's proprietary model, dataset, thresholds, model placement, or visual design. A single successful sample proves integration and schema alignment, not composition quality across all scene families. Multi-scene human review remains required.
+
 ## What This App Implements In P1
 
 P1 implements a functional-equivalent local loop without copying Doka branding, visual assets, proprietary copy, code, or model weights:
@@ -236,6 +247,16 @@ Only reliable high foreground/background separation may produce cells. Private m
 The visible implementation isolates grid/tint in a SwiftUI compositing group and cuts those pixels with `destinationOut`. The subject frame, target, action, Hold, and Ready stay visible above the cutout. Front-camera mirroring is a display-only column transform. Missing or weak hardware depth simply shows the existing 2D guide.
 
 This is the smallest truthful tool for the current effect. ARKit should be reconsidered only for a separately scoped feature that needs world anchors, planes, meshes, camera pose, or persistent virtual placement. Xiaoyi `gpt-5.6` should be used only through the backend for separately consented semantic still-image analysis; it cannot improve frame-synchronous hardware occlusion and must not receive this live mask or Camera frames.
+
+## P23 True Subject Lock
+
+A Doka-style long press loses trust if the target family, target position, target size, or displayed subject box keeps changing after the photographer has made a choice. The prior implementation used two independently smoothed streams: each full detector sample overwrote display geometry and created a new fast Vision sequence seed, while later scene-evidence transitions were still allowed to clear the cached composition plan. This produced visible alternation even when every individual analyzer was behaving as designed.
+
+P23 gives the streams separate authority. The full detector alone validates subject continuity through strict same-kind geometry and ambiguity gates. Fast `VNTrackObjectRequest` output fills display cadence and updates the match reference, but cannot erase detector misses or advance composition evidence. Routine detector confirmation keeps the existing sequence; material drift receives one smoothed correction/reseed. Position and size dead zones suppress sub-threshold shimmer in both paths.
+
+The selected composition plan becomes photographer-owned state. Once created, automatic Symmetry, Leading Lines, Negative Space, Lead Room, and ambiguity transitions cannot replace it. Missing evidence holds the plan, removes stale action/Ready/depth cues, and enters a clear reacquiring state instead of following another visible candidate. A new long press remains the explicit way to select a different subject.
+
+ARKit is intentionally not used for this repair. A world anchor can stabilize a point on a wall, table, or floor as the phone moves, but it does not identify or follow a moving person, pet, or object. A later Scene Lock should be a separate mode rather than silently changing Subject Lock semantics. Xiaoyi cannot supply low-latency continuity and remains outside the Camera frame loop.
 
 ## Correct Training Path For P3+
 

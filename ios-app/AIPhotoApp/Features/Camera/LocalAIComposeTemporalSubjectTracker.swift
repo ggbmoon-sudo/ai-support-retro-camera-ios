@@ -8,16 +8,28 @@ nonisolated struct LocalAIComposeTemporalTrackingState: Equatable, Sendable {
     let missedFrameCount: Int
 }
 
+nonisolated enum LocalAIComposeTemporalTrackingPhase: Equatable, Sendable {
+    case confirmed
+    case retained
+    case lost
+}
+
 nonisolated struct LocalAIComposeTemporalTrackingUpdate: Equatable, Sendable {
     let state: LocalAIComposeTemporalTrackingState
     let candidate: LiveFrameSubjectCandidate?
+    let phase: LocalAIComposeTemporalTrackingPhase
     let rejectedAsAmbiguous: Bool
+
+    var hasFreshObservation: Bool {
+        phase == .confirmed
+    }
 }
 
 /// Keeps a user-selected subject stable across the throttled Vision samples used by AI Compose.
 /// This is geometry-only matching. It does not identify, recognize, or persist a person or object.
 nonisolated struct LocalAIComposeTemporalSubjectTracker: Sendable {
-    private let ambiguityMargin: CGFloat = 0.08
+    private let ambiguityMargin: CGFloat = 0.12
+    private let missesBeforeLost = 3
     private let maximumRememberedMisses = 6
 
     func initialState(
@@ -35,9 +47,13 @@ nonisolated struct LocalAIComposeTemporalSubjectTracker: Sendable {
         state: LocalAIComposeTemporalTrackingState,
         candidates: [LiveFrameSubjectCandidate]
     ) -> LocalAIComposeTemporalTrackingUpdate {
+        let predictionScale: CGFloat = state.missedFrameCount == 0 ? 0.32 : 0
         let predictedBox = translated(
             state.smoothedBox,
-            by: state.velocity
+            by: LiveFramePoint(
+                x: state.velocity.x * predictionScale,
+                y: state.velocity.y * predictionScale
+            )
         )
         let viableMatches = candidates
             .filter { $0.kind == state.kind }
@@ -45,15 +61,15 @@ nonisolated struct LocalAIComposeTemporalSubjectTracker: Sendable {
             .sorted(by: isPreferredMatch)
 
         guard let bestMatch = viableMatches.first else {
-            return missedUpdate(from: state, predictedBox: predictedBox, isAmbiguous: false)
+            return missedUpdate(from: state, isAmbiguous: false)
         }
 
         if viableMatches.count > 1,
            viableMatches[1].score - bestMatch.score < ambiguityMargin {
-            return missedUpdate(from: state, predictedBox: predictedBox, isAmbiguous: true)
+            return missedUpdate(from: state, isAmbiguous: true)
         }
 
-        let smoothingAlpha: CGFloat = state.missedFrameCount > 0 ? 0.58 : 0.44
+        let smoothingAlpha: CGFloat = state.missedFrameCount > 0 ? 0.40 : 0.28
         let smoothedBox = interpolated(
             from: predictedBox,
             to: bestMatch.candidate.box,
@@ -64,8 +80,8 @@ nonisolated struct LocalAIComposeTemporalSubjectTracker: Sendable {
             y: bestMatch.candidate.box.center.y - state.smoothedBox.center.y
         )
         let velocity = LiveFramePoint(
-            x: clamp(state.velocity.x * 0.45 + measuredVelocity.x * 0.55, minimum: -0.14, maximum: 0.14),
-            y: clamp(state.velocity.y * 0.45 + measuredVelocity.y * 0.55, minimum: -0.14, maximum: 0.14)
+            x: clamp(state.velocity.x * 0.52 + measuredVelocity.x * 0.48, minimum: -0.08, maximum: 0.08),
+            y: clamp(state.velocity.y * 0.52 + measuredVelocity.y * 0.48, minimum: -0.08, maximum: 0.08)
         )
         let nextState = LocalAIComposeTemporalTrackingState(
             kind: state.kind,
@@ -81,8 +97,49 @@ nonisolated struct LocalAIComposeTemporalSubjectTracker: Sendable {
                 kind: state.kind,
                 poseFramingSignal: bestMatch.candidate.poseFramingSignal
             ),
+            phase: .confirmed,
             rejectedAsAmbiguous: false
         )
+    }
+
+    func reconcilingFastTrackedBox(
+        _ box: LiveFrameNormalizedRect,
+        with state: LocalAIComposeTemporalTrackingState
+    ) -> LocalAIComposeTemporalTrackingState {
+        let measuredVelocity = LiveFramePoint(
+            x: box.center.x - state.smoothedBox.center.x,
+            y: box.center.y - state.smoothedBox.center.y
+        )
+        return LocalAIComposeTemporalTrackingState(
+            kind: state.kind,
+            smoothedBox: box,
+            velocity: LiveFramePoint(
+                x: clamp(
+                    state.velocity.x * 0.35 + measuredVelocity.x * 0.65,
+                    minimum: -0.06,
+                    maximum: 0.06
+                ),
+                y: clamp(
+                    state.velocity.y * 0.35 + measuredVelocity.y * 0.65,
+                    minimum: -0.06,
+                    maximum: 0.06
+                )
+            ),
+            // Fast sequence tracking may improve display cadence, but only the
+            // authoritative full detector is allowed to clear detector misses.
+            missedFrameCount: state.missedFrameCount
+        )
+    }
+
+    func requiresSequenceReseed(
+        displayedBox: LiveFrameNormalizedRect,
+        detectorBox: LiveFrameNormalizedRect
+    ) -> Bool {
+        let smallerArea = min(displayedBox.area, detectorBox.area)
+        let largerArea = max(max(displayedBox.area, detectorBox.area), 0.0001)
+        return distance(from: displayedBox.center, to: detectorBox.center) > 0.045
+            || smallerArea / largerArea < 0.78
+            || intersectionOverUnion(displayedBox, detectorBox) < 0.65
     }
 
     private func scoredMatch(
@@ -90,9 +147,9 @@ nonisolated struct LocalAIComposeTemporalSubjectTracker: Sendable {
         predictedBox: LiveFrameNormalizedRect,
         state: LocalAIComposeTemporalTrackingState
     ) -> ScoredMatch? {
-        let missedAllowance = min(CGFloat(state.missedFrameCount), 4) * 0.03
-        let maximumCenterDistance = 0.24 + missedAllowance
-        let closeCenterDistance = 0.18 + missedAllowance
+        let missedAllowance = min(CGFloat(state.missedFrameCount), 3) * 0.01
+        let maximumCenterDistance = 0.18 + missedAllowance
+        let closeCenterDistance = 0.095 + missedAllowance
         let centerDistance = distance(from: candidate.box.center, to: predictedBox.center)
         let overlap = intersectionOverUnion(candidate.box, predictedBox)
         let smallerArea = min(candidate.box.area, predictedBox.area)
@@ -100,8 +157,8 @@ nonisolated struct LocalAIComposeTemporalSubjectTracker: Sendable {
         let areaRatio = smallerArea / largerArea
 
         guard centerDistance <= maximumCenterDistance,
-              areaRatio >= 0.34,
-              overlap >= 0.015 || centerDistance <= closeCenterDistance else {
+              areaRatio >= 0.50,
+              overlap >= 0.12 || centerDistance <= closeCenterDistance else {
             return nil
         }
 
@@ -115,21 +172,25 @@ nonisolated struct LocalAIComposeTemporalSubjectTracker: Sendable {
 
     private func missedUpdate(
         from state: LocalAIComposeTemporalTrackingState,
-        predictedBox: LiveFrameNormalizedRect,
         isAmbiguous: Bool
     ) -> LocalAIComposeTemporalTrackingUpdate {
+        let missedFrameCount = min(
+            state.missedFrameCount + 1,
+            maximumRememberedMisses
+        )
         let nextState = LocalAIComposeTemporalTrackingState(
             kind: state.kind,
-            smoothedBox: predictedBox,
+            smoothedBox: state.smoothedBox,
             velocity: LiveFramePoint(
-                x: state.velocity.x * 0.55,
-                y: state.velocity.y * 0.55
+                x: state.velocity.x * 0.35,
+                y: state.velocity.y * 0.35
             ),
-            missedFrameCount: min(state.missedFrameCount + 1, maximumRememberedMisses)
+            missedFrameCount: missedFrameCount
         )
         return LocalAIComposeTemporalTrackingUpdate(
             state: nextState,
             candidate: nil,
+            phase: missedFrameCount >= missesBeforeLost ? .lost : .retained,
             rejectedAsAmbiguous: isAmbiguous
         )
     }
@@ -170,12 +231,42 @@ nonisolated struct LocalAIComposeTemporalSubjectTracker: Sendable {
     ) -> LiveFrameNormalizedRect {
         LiveFrameNormalizedRect(
             CGRect(
-                x: start.x + (end.x - start.x) * alpha,
-                y: start.y + (end.y - start.y) * alpha,
-                width: start.width + (end.width - start.width) * alpha,
-                height: start.height + (end.height - start.height) * alpha
+                x: stabilizedValue(
+                    from: start.x,
+                    to: end.x,
+                    alpha: alpha,
+                    deadZone: 0.006
+                ),
+                y: stabilizedValue(
+                    from: start.y,
+                    to: end.y,
+                    alpha: alpha,
+                    deadZone: 0.006
+                ),
+                width: stabilizedValue(
+                    from: start.width,
+                    to: end.width,
+                    alpha: alpha,
+                    deadZone: 0.010
+                ),
+                height: stabilizedValue(
+                    from: start.height,
+                    to: end.height,
+                    alpha: alpha,
+                    deadZone: 0.010
+                )
             )
         )
+    }
+
+    private func stabilizedValue(
+        from start: CGFloat,
+        to end: CGFloat,
+        alpha: CGFloat,
+        deadZone: CGFloat
+    ) -> CGFloat {
+        guard abs(end - start) > deadZone else { return start }
+        return start + (end - start) * alpha
     }
 
     private func intersectionOverUnion(

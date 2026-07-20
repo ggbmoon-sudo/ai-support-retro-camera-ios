@@ -10,6 +10,7 @@
     "qa:photo-advisor:gate": "node scripts/run-photo-advisor-provider-qa.mjs --check-safety-gate",
     "qa:photo-advisor:review": "node scripts/check-photo-advisor-provider-qa-gate.mjs",
     "qa:photo-advisor:provider": "node scripts/run-photo-advisor-provider-qa.mjs --run-provider",
+    "qa:xiaoyi:composition-planner-smoke": "node scripts/run-xiaoyi-composition-planner-smoke.mjs",
     "qa:open-weight-vlm:synthetic": "node scripts/run-open-weight-vlm-photo-advisor-benchmark.mjs --synthetic",
     "qa:open-weight-vlm:gate": "node scripts/check-open-weight-vlm-photo-advisor-benchmark-gate.mjs --synthetic",
     "qa:open-weight-vlm:local-config": "node scripts/check-open-weight-vlm-local-sandbox-config.mjs --dry-run",

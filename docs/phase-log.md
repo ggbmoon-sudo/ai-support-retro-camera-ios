@@ -8,9 +8,136 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Local AI Compose P22-R1 - Xcode diagnostic repair
-Status: implemented; focused source/session-queue/static/privacy checks passed; Mac/Xcode clean build and physical-device regression verification required
-Latest implementation: P22-R1 resolves the reported Xcode build failure by adding the required explicit `return` to the temporal tracker's multi-statement rectangle translation helper. It also scopes AVFoundation's legacy incomplete `Sendable` annotations through `@preconcurrency import AVFoundation`, removing the reported module/captured-`AVCaptureSession` concurrency warnings while leaving `startRunning()` and `stopRunning()` on the existing dedicated serial session queue. No preview, capture, filter, depth/AR, Camera lifecycle, provider/network, payload, privacy, automatic-control, model/training, or production behavior changed. The generic Xcode recommended-settings notice was not bulk-applied and remains pending scoped operator inspection. `productionReady:false` stays locked. Mac clean-build confirmation, P22 physical-device validation, and PT2-SF-R9-R16-R2 Core Image verification remain pending operator tasks.
+Current phase: Local AI Compose P24 - Xiaoyi One-Shot Composition Planner
+Status: implemented; 438/438 backend tests and two bounded real-provider smoke calls passed; Mac/Xcode physical-device end-to-end verification required
+Latest implementation: P24 adds an explicitly approved internal/debug hybrid path. After the photographer enables Compose and long-presses a subject, a DEBUG-only action requests fresh one-shot consent, captures one preview frame without firing the shutter, strips metadata through the existing bounded JPEG compressor, and sends it through the backend to Xiaoyi `gpt-5.6-luna`. The provider may return only one strict enum plan: scene family, policy, target slots/size, coarse distance/lens suggestions, reason code, and confidence bucket. Free-form prose, scores, sensitive inference, extra fields, and malformed policy/target combinations fail closed. The returned plan is frozen into the existing P23 target geometry; continuous subject tracking, action/Hold/Ready evidence, preview, camera controls, and capture remain local and photographer-controlled. There is no video streaming, automatic trigger, automatic zoom/focus/shutter, provider key in iOS, direct iOS provider call, raw prompt/response/image logging, persistence, training use, ARKit session, or production rollout. `productionReady:false` stays locked. Current ignored Windows `.env.local` still selects SiliconFlow; Mac/device end-to-end testing requires a local ignored Xiaoyi internal configuration and backend restart.
+
+## Local AI Compose P24 - Xiaoyi One-Shot Composition Planner
+
+Status: implemented; 438/438 backend tests and bounded real-provider smoke passed; pending Mac/Xcode physical-device verification
+Date: 2026-07-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+P24 lets Xiaoyi choose one composition strategy from one explicitly consented still preview, then hands that fixed plan to the existing on-device Vision subject lock and AR-style guidance loop.
+
+### Completed Work
+
+- Added `POST /v1/ai/composition-planner` behind the existing internal-debug backend gate and Xiaoyi Luna provider mode.
+- Added an exact enum-only request/response contract with cross-field validation. Provider prose, extra keys, scores, ratings, chain-of-thought, sensitive inference, and inconsistent centered/off-center targets are rejected.
+- Extended the fresh Xiaoyi adapter with a high-detail single-image request fixed to `gpt-5.6-luna`, JSON object mode, low temperature, and bounded output length.
+- Added a safe real-provider smoke runner that requires an explicit flag and JPEG, prints only the validated plan/fallback bucket, and never prints an API key, Authorization header, image base64, prompt, or raw provider response.
+- Added a DEBUG-only Camera menu action that is disabled until Local AI Compose is active and the photographer has long-pressed a subject.
+- Reused the explicit cloud consent sheet for every attempt, captures only the next preview frame without photo-output capture, applies front-camera display parity, and reuses the bounded metadata-stripping JPEG compressor.
+- Mapped the cloud enum plan into the existing local composition policies and one bounded target anchor/area. After application, P23 tracking and local guidance continue without additional cloud calls.
+- Added localized preparing/analyzing/applied/fallback and coarse reason/lens/distance copy without exposing raw model output or numeric confidence.
+
+### Changed Files
+
+- Backend contract/route/config: `compositionPlannerContract.mjs`, `validateCompositionPlannerRequest.mjs`, `compositionPlanner.mjs`, `cloudAIConfig.mjs`, `server.mjs`, and `health.mjs`
+- Backend adapter/runtime: `CloudAIProvider.mjs`, `ProviderRegistry.mjs`, and `XiaoyiLunaRelayProvider.mjs`
+- Backend QA: `run-xiaoyi-composition-planner-smoke.mjs`, `package.json`, `composition-planner.test.mjs`, and `cloud-ai-boundary.test.mjs`
+- iOS hybrid path: `HybridCompositionPlannerModels.swift`, `HybridCompositionPlannerService.swift`, `HybridCompositionPlannerView.swift`, `CameraCaptureService.swift`, `CameraViewModel.swift`, `CameraView.swift`, and `LocalAIComposePolicy.swift`
+- iOS cloud boundary/copy: `CloudAIEndpointClient.swift`, `CloudAIModels.swift`, `CloudAIConsentView.swift`, and both `Localizable.strings` files
+- Docs/manual QA: root/iOS READMEs, camera pipeline, decisions, Doka decomposition, this phase log, and manual smoke tests
+
+### Verification
+
+- Full backend test suite passes 438/438, including exact plan enums, extra-field rejection, centered/off-center consistency, consent/context validation, internal Xiaoyi-only gating, fallback behavior, provider request shape, iOS one-shot/local-handoff source contracts, and smoke-output redaction.
+- Two approved bounded Xiaoyi calls used the ignored user-provided cat sample; both returned the same validated plan: pet, thirds, left/middle, medium target, hold distance, current lens, subject emphasis. The final smoke runner exited successfully.
+- The first disabled preflight returned `internal_cloud_disabled` before any provider call, confirming the route fails closed when the active local configuration is not Xiaoyi internal.
+- No real photo, generated JPEG, provider response, prompt, or QA report was committed or persisted by the backend; terminal output contained only the safe enum plan.
+- Xcode/Apple SDK compilation and physical Camera behavior remain pending because this workspace is Windows-only.
+
+### Known TODOs
+
+- On the Mac backend, set the ignored local configuration to `CLOUD_AI_PROVIDER_MODE=xiaoyiLunaInternal`, `ALLOW_INTERNAL_CLOUD_AI=true`, the approved Xiaoyi base/path/model, and the local Xiaoyi key; never add them to iOS or Git.
+- Clean-build DEBUG in Xcode and confirm the synchronized project group includes the three new Hybrid Composition files.
+- Test rear/front cameras, display mirroring, locked people/pets/objects, cloud timeout/fallback, repeated consent, subject/lens changes, background/foreground, and Compose off/on.
+- Verify the applied target does not pulse, switch policy, or move independently after the sheet closes; only the locked subject outline/action should update locally.
+- Inspect Network/Console and confirm exactly one JPEG request per accepted attempt, no continuous upload, and no raw/base64/prompt/response/key logging.
+- Compare whether Xiaoyi materially improves composition choice across a governed multi-scene test set before considering any wider rollout.
+
+### Boundary Confirmations
+
+- Camera cloud entry: DEBUG/internal, explicit user action and consent only; no release/default entry.
+- Continuous frame/video upload, WebSocket, auto-trigger, background analysis, or silent retry: no.
+- iOS provider key/SDK/direct Xiaoyi URL or direct provider call: no; backend boundary only.
+- Raw image/prompt/provider response persistence or logs, analytics, profile, GPS/EXIF dump, or training use: no.
+- Sensitive/identity/age/gender/emotion/attractiveness inference, score/rating, or objective quality claim: no.
+- Automatic focus, exposure, zoom, lens switching, crop, shutter, or capture gating: no.
+- ARKit/world anchor/full AR: no; the live handoff remains the existing local 2D Vision overlay.
+- Production rollout: no; `productionReady:false` remains locked.
+
+### Ready for Next Step
+
+Ready for Mac/Xcode DEBUG plus physical-iPhone hybrid verification: yes. Ready for production rollout: no.
+
+## Local AI Compose P23 - True Subject Lock
+
+Status: implemented; 31/31 deterministic algorithm/source contracts and static/privacy checks passed; pending Mac/Xcode physical-device verification
+Date: 2026-07-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+P23 turns long-press lock into a photographer-owned stable composition plan and prevents the full detector and fast Vision tracker from alternately replacing its geometry.
+
+### Completed Work
+
+- Added confirmed/retained/lost phases to the full-analysis temporal subject matcher.
+- Tightened same-kind candidate association with stronger center, area, overlap, and ambiguity gates so a nearby alternative is rejected rather than silently adopted.
+- Stopped detector-miss prediction drift: the stored box remains fixed, velocity decays, two misses retain, and the third becomes lost/reacquiring.
+- Added fast-tracker reconciliation into the match reference while deliberately preserving authoritative detector misses.
+- Reduced detector correction interpolation, position/size jitter through dead zones, and bounded estimated velocity more tightly.
+- Made full-detector sequence reseeding conditional on material center/area/overlap drift instead of generating a new UUID/request on every full sample.
+- Tightened `VNTrackObjectRequest` acceptance confidence, center jump, area consistency, miss count, smoothing alpha, and display dead zones while preserving `.fast` mode and P21 cadence limits.
+- Prevented automatic Symmetry, Leading Lines, quiet-space Negative Space, Lead Room, and ambiguity transitions from clearing a locked policy/target anchor/target size.
+- Preserved explicit policy selection, target-side flip, a new long press, unlock, and normal Camera/Compose/lens/photo/lifecycle resets as intentional plan changes.
+- On sequence/authoritative loss, retained policy/target geometry, stopped the old sequence, cleared action/pose/Hold/Ready/depth/occlusion evidence, and displayed localized reacquiring guidance.
+- Updated English and Traditional Chinese copy to distinguish a held subject+composition plan from reacquiring with a frozen guide.
+
+### Changed Files
+
+- Authoritative full-detector matching: `LocalAIComposeTemporalSubjectTracker.swift`
+- Fast Vision acceptance/smoothing: `LocalAIComposeVisionSequenceTracker.swift`
+- Lock orchestration and frozen-plan guards: `CameraViewModel.swift`
+- Lock/reacquiring presentation: `LocalAIComposeGuide.swift`
+- Copy: English and Traditional Chinese `Localizable.strings`
+- Docs/tests: root/iOS READMEs, camera pipeline, decisions, Doka decomposition, this phase log, and manual smoke tests
+
+### Verification
+
+- Seventeen of seventeen deterministic geometry cases pass: compatible/close match, far/tiny rejection, first/second miss retention, third miss loss, no miss translation, detector-miss preservation across fast tracking, material-only reseed, and position/size dead-zone behavior.
+- Fourteen of fourteen source-contract cases pass: three detector phases, conditional sequence reseed, transient-only loss clear, five locked-target freeze guards, tighter Vision confidence/jump/area/miss gates, no predicted miss drift, and detector authority over miss reset.
+- Source order confirms fast sequence callbacks only update display/matcher geometry and still do not enter ambiguity, action, pose, Hold, or Ready controllers.
+- Both localization files contain exactly one new lock-held and reacquiring-detail key.
+- `git diff --check` and delimiter balance across all Camera Swift files pass.
+- Focused runtime scans contain no ARKit, Xiaoyi/provider/network, logging, persistence, upload, identity/re-identification, automatic capture, model/training, or `productionReady:true` path.
+- Apple SDK compilation, stationary/moving/crossing subject behavior, front mirror, depth/filter integration, lifecycle, thermal performance, memory, dropped frames, and shutter latency remain pending on Mac/iPhone because Xcode and Apple SDKs are unavailable here.
+
+### Known TODOs
+
+- Clean-build in Xcode and confirm P22-R1 remains fixed plus P23 introduces no compiler/concurrency diagnostic.
+- Record a stationary locked subject for at least 20 seconds and verify no half-second detector pulse, policy switch, target movement, or size jump.
+- Test same-kind crossings, short occlusion, long/far loss, compatible return, and explicit new-subject long press on people, pets, and salient objects.
+- Tune only private association/reseed/dead-zone values from device evidence. Do not add identity, confidence, numeric miss UI, or silent candidate fallback.
+- Compare CPU/GPU, memory, tracking cadence, preview drops, thermal behavior, and shutter latency with P22 using Instruments.
+- Consider a later ARKit Scene Lock only for an explicitly world-relative wall/table/floor anchor. It must remain separate from moving Subject Lock semantics.
+
+### Boundary Confirmations
+
+- Raw frame, box/history, trajectory, confidence, UUID, miss count, log, persistence, analytics, upload, profile, or training use: no.
+- Face/identity recognition, re-identification, sensitive inference, confidence/score/rating, or quality claim: no.
+- ARKit, Xiaoyi/provider call, Camera route/upload, direct iOS provider key/call, auto-trigger, or automatic camera control/capture: no.
+- Preview/filter/manual controls/shutter or captured-photo pixels changed: no.
+- Custom model/training or production rollout: no.
+- Camera remains local-only and `productionReady:false` remains locked: yes.
+
+### Ready for Next Step
+
+Ready for Mac/Xcode physical-device True Lock verification: yes. Ready for ARKit Scene Lock or production rollout: no.
 
 ## Local AI Compose P22-R1 - Xcode Diagnostic Repair
 

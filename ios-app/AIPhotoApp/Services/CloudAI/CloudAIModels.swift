@@ -70,6 +70,20 @@ nonisolated struct CloudAIRequestImage: Codable, Hashable, Sendable {
     let metadataStripped: Bool
     let dataBase64: String
 
+    init(
+        contentType: String,
+        width: Int,
+        height: Int,
+        metadataStripped: Bool,
+        dataBase64: String
+    ) {
+        self.contentType = contentType
+        self.width = width
+        self.height = height
+        self.metadataStripped = metadataStripped
+        self.dataBase64 = dataBase64
+    }
+
     init(input: CloudAIPhotoAdvisorInput) {
         contentType = input.contentType
         width = input.width
@@ -93,7 +107,7 @@ nonisolated struct CloudAIRequestClient: Codable, Hashable, Sendable {
 }
 
 nonisolated struct CloudAIConsent: Codable, Hashable, Sendable {
-    static let currentVersion = "2026-06-12.phase17a.v1"
+    static let currentVersion = "2026-07-20.phase24.v1"
 
     let imageUploadAccepted: Bool
     let consentVersion: String

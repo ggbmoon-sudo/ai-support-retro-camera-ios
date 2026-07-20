@@ -56,26 +56,26 @@ private struct CloudAIConsentCopy {
         switch language {
         case .english:
             title = "Cloud photo analysis"
-            message = "Cloud photo analysis uploads the compressed photo you choose to our server for a one-time analysis.\nPhotos will not upload in the background, and neither the original nor compressed image will be stored."
-            footer = "You can cancel and keep using local features."
+            message = "Cloud photo analysis sends the compressed photo you choose to our server and a third-party AI service for one-time processing.\nIt will not upload in the background. This app and our backend do not store the original or compressed image or use it for training."
+            footer = "Third-party handling follows its service terms. You can cancel and keep using local features."
             acceptTitle = "Continue"
             cancelTitle = "Cancel"
         case .traditionalChinese:
             title = "雲端相片分析"
-            message = "雲端相片分析會上傳你選擇的壓縮相片到我們的伺服器作一次性分析。\n相片不會在背景上傳，也不會保存原圖或壓縮圖。"
-            footer = "你可以取消，繼續使用本機功能。"
+            message = "雲端相片分析會把你選擇的壓縮相片傳送到我們的伺服器和第三方 AI 服務作一次性處理。\n相片不會在背景上傳；本 App 和我們的後端不會保存原圖或壓縮圖，也不會用作訓練。"
+            footer = "第三方會按其服務條款處理資料。你可以取消，繼續使用本機功能。"
             acceptTitle = "繼續"
             cancelTitle = "取消"
         case .simplifiedChinese:
             title = "云端照片分析"
-            message = "云端照片分析会上传你选择的压缩照片到我们的服务器进行一次性分析。\n照片不会在后台上传，也不会保存原图或压缩图。"
-            footer = "你可以取消，继续使用本机功能。"
+            message = "云端照片分析会把你选择的压缩照片传送到我们的服务器和第三方 AI 服务进行一次性处理。\n照片不会在后台上传；本 App 和我们的后端不会保存原图或压缩图，也不会用于训练。"
+            footer = "第三方会按其服务条款处理数据。你可以取消，继续使用本机功能。"
             acceptTitle = "继续"
             cancelTitle = "取消"
         case .cantonese:
             title = "雲端相片分析"
-            message = "雲端相片分析會上傳你揀嘅壓縮相到我哋伺服器做一次分析。\n唔會背景偷偷上傳，亦唔會保存原圖或者壓縮圖。"
-            footer = "你可以取消，繼續用本機功能。"
+            message = "雲端相片分析會將你揀嘅壓縮相傳去我哋伺服器同第三方 AI 服務做一次處理。\n唔會背景偷偷上傳；本 App 同我哋 backend 唔會保存原圖或者壓縮圖，亦唔會用嚟訓練。"
+            footer = "第三方會按佢嘅服務條款處理資料。你可以取消，繼續用本機功能。"
             acceptTitle = "繼續"
             cancelTitle = "取消"
         }

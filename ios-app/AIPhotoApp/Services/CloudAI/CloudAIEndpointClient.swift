@@ -14,7 +14,7 @@ struct CloudAIEndpointClient: Sendable {
 
     func postPhotoAdvisor(_ request: CloudAIPhotoAdvisorRequest) async throws -> CloudAIResponse {
         #if DEBUG
-        return try await post(request, path: "v1/ai/photo-advisor")
+        return try await post(request, path: "v1/ai/photo-advisor", as: CloudAIResponse.self)
         #else
         throw CloudAIServiceError.remoteDisabled
         #endif
@@ -22,14 +22,32 @@ struct CloudAIEndpointClient: Sendable {
 
     func postFilterLab(_ request: CloudAIFilterLabRequest) async throws -> CloudAIResponse {
         #if DEBUG
-        return try await post(request, path: "v1/ai/filter-lab")
+        return try await post(request, path: "v1/ai/filter-lab", as: CloudAIResponse.self)
+        #else
+        throw CloudAIServiceError.remoteDisabled
+        #endif
+    }
+
+    func postCompositionPlanner(
+        _ request: HybridCompositionPlannerRequest
+    ) async throws -> HybridCompositionPlannerResponse {
+        #if DEBUG
+        return try await post(
+            request,
+            path: "v1/ai/composition-planner",
+            as: HybridCompositionPlannerResponse.self
+        )
         #else
         throw CloudAIServiceError.remoteDisabled
         #endif
     }
 
     #if DEBUG
-    private func post<Request: Encodable>(_ request: Request, path: String) async throws -> CloudAIResponse {
+    private func post<Request: Encodable & Sendable, Response: Decodable & Sendable>(
+        _ request: Request,
+        path: String,
+        as responseType: Response.Type
+    ) async throws -> Response {
         var urlRequest = Foundation.URLRequest(url: endpointURL(path: path))
         urlRequest.httpMethod = "POST"
         urlRequest.timeoutInterval = timeoutSeconds
@@ -47,7 +65,7 @@ struct CloudAIEndpointClient: Sendable {
             throw CloudAIServiceError.remoteHTTPStatus(httpResponse.statusCode)
         }
 
-        return try JSONDecoder().decode(CloudAIResponse.self, from: data)
+        return try JSONDecoder().decode(responseType, from: data)
     }
 
     func debugHealthCheck() async -> CloudAIEndpointHealthCheckResult {
@@ -189,6 +207,7 @@ private struct CloudAIEndpointHealthResponse: Decodable {
     let mode: String?
     let providerMode: String?
     let filterLabReady: Bool?
+    let compositionPlannerReady: Bool?
     let productionReady: Bool?
 }
 

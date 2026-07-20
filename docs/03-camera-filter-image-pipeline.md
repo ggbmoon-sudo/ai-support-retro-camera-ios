@@ -1,5 +1,36 @@
 # 相機、復古濾鏡與圖片處理技術報告
 
+## Local AI Compose P24
+
+P24 adds one semantic strategy-selection step without moving the frame-synchronous loop to the cloud.
+
+- The photographer must explicitly enable Compose, long-press a subject, choose the DEBUG-only Xiaoyi action, and accept a fresh consent sheet. No automatic trigger or background request exists.
+- `CameraCaptureService.captureAnalysisSnapshot` consumes the next video preview buffer and produces one correctly oriented still without invoking `AVCapturePhotoOutput`, shutter effects, Photos, or capture persistence.
+- The existing compressor bounds the long edge/JPEG payload and redraws pixels into a new image, removing source metadata. Front-camera display parity is applied once before upload.
+- The backend accepts only schema `1.0`, feature `composition_planner`, mode `one_shot_pre_capture`, three safe local context buckets, explicit consent, and the existing bounded JPEG image shape.
+- Xiaoyi `gpt-5.6-luna` receives one high-detail image and must return exactly ten fields drawn from fixed enums. Cross-field rules reject centered/symmetry plans outside center and thirds/negative-space plans at center.
+- A validated plan maps to an existing local policy plus one normalized anchor and target-area bucket. It is frozen into P23 state; subsequent full detections and `VNTrackObjectRequest` updates follow the chosen subject locally and cannot re-query or replace the plan.
+- Provider lens/distance/reason values are optional coarse photographer suggestions in the result sheet. They never actuate hardware or display numeric confidence.
+- Failure leaves Local AI Compose active with no new plan; there is no silent provider retry, fallback camera command, or capture block.
+
+This is a hybrid one-shot semantic planner plus local 2D tracker, not a truly on-device Xiaoyi model and not cloud real-time video AI. The backend is the only provider boundary. iOS has no provider key, raw endpoint, provider SDK, or direct provider call. Images/prompts/raw provider responses are not logged or persisted, and the photo is not used for training. ARKit is still unnecessary because the feature follows a photographer-selected moving image-space subject rather than a world-fixed plane or anchor. The entry and client call compile only for DEBUG; `productionReady:false` remains locked.
+
+## Local AI Compose P23
+
+P23 makes an explicit long-press a stable subject-relative composition contract rather than a temporary preference that automatic evidence may silently replace.
+
+- `LocalAIComposeTemporalSubjectTracker` now exports `confirmed`, `retained`, or `lost`. A full detector match must keep the locked candidate kind and pass tighter center-distance, area-ratio, and overlap/close-center gates. Competing similarly scored candidates are rejected as ambiguous rather than ranked into a silent switch.
+- The current box is not translated during a detector miss. Two misses retain the active fast display and decay velocity; the third becomes lost. Fast sequence tracking can reconcile its current box into the matcher, but deliberately preserves the detector miss count because it is display evidence, not authoritative re-detection.
+- Confirmed detector geometry is smoothed with position and size dead zones. A running Vision sequence is reseeded only after material center, area, or overlap drift; ordinary full-analysis samples no longer create a fresh UUID/request every approximately 0.5 seconds.
+- `LocalAIComposeVisionSequenceTracker` uses higher accepted confidence, smaller maximum center jump, stronger area consistency, three misses before loss, lower interpolation alpha, and independent position/size dead zones. It remains `.fast` and under P21's cadence limits.
+- Once a subject is locked and the first plan exists, automatic Symmetry, Leading Lines, quiet-space Negative Space, Lead Room, and ambiguity transitions may continue updating private evidence but cannot clear the policy, target anchor, or target size. Explicit policy selection, target-side flip, a new long press, unlock, lens/camera/Compose change, selected-photo transition, or Camera lifecycle reset may still rebuild it intentionally.
+- Sequence/full-detector loss clears action, pose-edge, Hold/Ready, and depth/occlusion evidence while retaining the frozen target/policy. The guide shows a localized reacquiring state and tells the photographer to long-press again if the subject moved away. It never silently falls back to the current largest candidate.
+- `VNTrackObjectRequest` remains a temporary rectangle tracker. Seed UUIDs distinguish request generations only; they are not identity, recognition, re-identification, analytics, or persistent subject IDs.
+
+Apple Vision provides the sequence request and object-tracking primitives used for this local screen-space behavior: [VNTrackObjectRequest](https://developer.apple.com/documentation/vision/vntrackobjectrequest) and [VNSequenceRequestHandler](https://developer.apple.com/documentation/vision/vnsequencerequesthandler). P23 deliberately does not add ARKit: a world anchor would keep a point attached to the environment, but would not identify or follow a moving person, pet, or object. A later Scene Lock phase may evaluate ARKit only for an explicitly different world-relative interaction.
+
+No raw frame, box history, trajectory, confidence, UUID, or miss count is logged, persisted, uploaded, displayed numerically, or used for training. No face/identity recognition, sensitive inference, Xiaoyi/provider call, Camera cloud route, direct iOS provider access, automatic camera control/capture, custom model, or production rollout is added. Camera remains local-only and `productionReady:false` remains locked.
+
 ## Local AI Compose P22-R1
 
 P22-R1 is a focused Mac/Xcode diagnostic repair with no intended Camera runtime behavior change.
