@@ -1,5 +1,9 @@
 # 相機、復古濾鏡與圖片處理技術報告
 
+## Local AI Compose P25-R1
+
+P25-R1 moves the DEBUG live-session badge out of the independent `cameraFullscreenCanvas` computed view and into the outer `captureContent` `GeometryReader` chrome. This restores lexical access to the existing safe-area-derived `topControlInset`, resolves the reported Xcode `Cannot find 'topControlInset' in scope` error, preserves the intended top placement, and prevents the decorative badge from intercepting preview touches. No Camera pipeline, keyframe cadence, tracking, payload, provider, or capture behavior changed.
+
 ## Local AI Compose P25
 
 P25 replaces the P24 one-shot strategy handoff with a bounded live-like cloud-keyframe session while retaining the local closed loop.

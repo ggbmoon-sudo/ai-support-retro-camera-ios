@@ -1,5 +1,20 @@
 # Manual Smoke Tests
 
+## Local AI Compose P25-R1 - Live badge Xcode scope repair
+
+Windows/static verification:
+
+- [x] Confirm every `topControlInset` reference in `CameraView.swift` remains inside the outer `captureContent` `GeometryReader` closure where it is defined.
+- [x] Confirm the Live AI badge appears exactly once, remains inside `#if DEBUG`, and uses `.allowsHitTesting(false)`.
+- [x] Confirm Swift delimiter balance, full 440/440 backend/source-contract tests, and `git diff --check` pass.
+
+Mac/Xcode verification:
+
+- [ ] Product > Clean Build Folder and build DEBUG. Confirm `Cannot find 'topControlInset' in scope` is gone and no replacement Swift diagnostic appears.
+- [ ] Start Live AI Compose and confirm the badge is visible below the top controls on the current iPhone.
+- [ ] Tap focus and long-press through/near the badge region; confirm it does not intercept preview gestures.
+- [ ] Stop Live AI Compose and confirm the badge disappears immediately.
+
 ## Local AI Compose P25 - bounded live Xiaoyi keyframes
 
 Windows/backend verification:

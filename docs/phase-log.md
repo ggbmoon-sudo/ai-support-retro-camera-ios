@@ -8,9 +8,54 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Local AI Compose P25 - Bounded Live Xiaoyi Keyframes
-Status: implemented; 440/440 backend tests passed; Mac/Xcode, physical-device, and schema 1.1 real-provider verification required
-Latest implementation: P25 replaces the P24 one-shot handoff with an explicitly approved DEBUG/internal live-like session. After a long-press focus hint and one session-specific consent, Camera may send independent metadata-stripped keyframes through the backend to Xiaoyi `gpt-5.6-luna` at no more than 1 FPS. Exactly one request may be in flight and no frames are queued. Strict schema `1.1` grounds a safe subject box/kind to the photographer's focus hint and returns only supported composition enums; strategy changes require two matching later replies. Apple Vision carries the selected image-space subject at a nominal 15 FPS between replies and the existing 2D overlay provides movement and zoom/distance guidance. This is sequential HTTP keyframe analysis, not persistent Gemini Live/WebSocket streaming. Hardware zoom/focus/exposure/lens/shutter/capture remain manual. Stop, capture, Compose/lifecycle/context changes cancel the session and reject stale replies. There is no release/default Camera entry, iOS provider key/direct call, raw cloud artifact logging/persistence, training use, ARKit world anchor, or production rollout. `productionReady:false` stays locked.
+Current phase: Local AI Compose P25-R1 - Live Badge Xcode Scope Repair
+Status: implemented; reported `topControlInset` scope error repaired; 440/440 backend tests and focused static checks passed; Mac/Xcode rebuild verification pending
+Latest implementation: P25-R1 moves the DEBUG Live AI status badge from the independent `cameraFullscreenCanvas` computed view into the outer `captureContent` `GeometryReader`, where the existing safe-area-derived `topControlInset` is lexically available. The badge keeps its intended top offset, remains non-interactive, and no longer creates the reported Xcode compile error. No keyframe cadence, cloud contract, provider request, Vision tracking, camera control/capture, privacy, or rollout boundary changed.
+
+## Local AI Compose P25-R1 - Live Badge Xcode Scope Repair
+
+Status: implemented; 440/440 backend tests and focused static checks passed; Mac/Xcode rebuild required
+Date: 2026-07-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+P25-R1 fixes the reported `CameraView` build failure caused by referencing a local `GeometryReader` value from a separate computed view.
+
+### Completed Work
+
+- Removed the Live AI badge overlay from `cameraFullscreenCanvas`.
+- Rendered the same DEBUG-only badge inside the outer capture chrome that defines `topControlInset`.
+- Preserved its safe-area-derived top position and added non-interactive hit testing so preview gestures remain available.
+
+### Changed Files
+
+- iOS UI repair: `CameraView.swift`
+- Docs/manual QA: root README, camera pipeline, this phase log, and manual smoke tests
+
+### Verification
+
+- All six `topControlInset` references occur before the separate `cameraFullscreenCanvas` declaration; out-of-scope reference count is zero.
+- The Live AI indicator appears once, remains inside `#if DEBUG`, uses the existing safe-area inset, and disables hit testing.
+- `CameraView.swift` delimiter balance and `git diff --check` pass with only expected Windows line-ending notices.
+- Full backend/source-contract suite passes 440/440; backend runtime behavior is unchanged by this UI-only repair.
+- Xcode/Apple SDK compilation remains pending because this workspace is Windows-only.
+
+### Known TODOs
+
+- Clean-build DEBUG in Xcode and confirm the reported scope error is gone.
+- Confirm the Live AI badge sits below the top Camera controls on devices with and without a Dynamic Island and does not block focus/long-press gestures.
+
+### Boundary Confirmations
+
+- iOS source/UI changed: yes, one DEBUG badge placement repair only.
+- Camera cloud cadence/payload/provider contract: unchanged.
+- Direct iOS provider key/call, automatic camera control/capture, ARKit world anchor, production rollout: no.
+- `productionReady:false` remains locked.
+
+### Ready for Next Step
+
+Ready for Mac/Xcode rebuild after static verification: yes. Ready for production rollout: no.
 
 ## Local AI Compose P25 - Bounded Live Xiaoyi Keyframes
 
