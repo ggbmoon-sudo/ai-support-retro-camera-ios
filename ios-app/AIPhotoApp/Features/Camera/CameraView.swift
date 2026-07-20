@@ -46,6 +46,9 @@ struct CameraView: View {
     @State private var focusReticle: CameraFocusReticleState?
     @State private var focusReticleDismissTask: Task<Void, Never>?
     @State private var isHybridCompositionPlannerPresented = false
+    #if DEBUG
+    @State private var hasPresentedDefaultLiveAIConsent = false
+    #endif
     private let localAIComposeCoordinateMapper = CameraOverlayCoordinateMapper()
 
     init(
@@ -144,6 +147,9 @@ struct CameraView: View {
         }
         .task {
             await viewModel.prepareCamera()
+            #if DEBUG
+            presentDefaultLiveAIConsentIfReady()
+            #endif
         }
         .onAppear {
             isCameraViewVisible = true
@@ -163,9 +169,17 @@ struct CameraView: View {
                 await viewModel.importSelectedPhoto()
             }
         }
+        #if DEBUG
+        .onChange(of: viewModel.permissionState) { _, _ in
+            presentDefaultLiveAIConsentIfReady()
+        }
+        #endif
         .onChange(of: viewModel.selectedPhoto?.id) { _, newValue in
             if newValue == nil {
                 activeSelectedPhotoPanel = nil
+                #if DEBUG
+                presentDefaultLiveAIConsentIfReady()
+                #endif
             } else {
                 clearFocusReticle()
             }
@@ -214,6 +228,25 @@ struct CameraView: View {
             viewModel.stopCamera()
         }
     }
+
+    #if DEBUG
+    private func presentDefaultLiveAIConsentIfReady() {
+        guard !hasPresentedDefaultLiveAIConsent,
+              !isHybridCompositionPlannerPresented,
+              viewModel.permissionState == .authorized,
+              viewModel.selectedPhoto == nil,
+              viewModel.canRequestHybridCompositionPlan else {
+            return
+        }
+
+        viewModel.requestHybridCompositionPlannerConsent()
+        guard case .consentRequired = viewModel.hybridCompositionPlannerState else {
+            return
+        }
+        hasPresentedDefaultLiveAIConsent = true
+        isHybridCompositionPlannerPresented = true
+    }
+    #endif
 
     private var isFlashControlAvailable: Bool {
         viewModel.isUsingFrontCamera || viewModel.isHardwareFlashAvailable

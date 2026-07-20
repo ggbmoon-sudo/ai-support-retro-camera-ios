@@ -169,6 +169,22 @@ test("iOS live-like planner caps sequential cloud keyframes and keeps fast track
   assert.equal(cameraView.includes("#if DEBUG"), true);
   assert.equal(cameraView.includes("requestHybridCompositionPlannerConsent"), true);
   assert.equal(cameraView.includes("stopHybridCompositionLiveSession"), true);
+  assert.equal(cameraView.includes("presentDefaultLiveAIConsentIfReady()"), true);
+  assert.equal(cameraView.includes("hasPresentedDefaultLiveAIConsent"), true);
+  assert.equal(cameraViewModel.includes("var isLocalAIComposeEnabled = true"), true);
+  const startGate = cameraViewModel.slice(
+    cameraViewModel.indexOf("var canRequestHybridCompositionPlan"),
+    cameraViewModel.indexOf("var selectedDualFocalAspectRatioLabel")
+  );
+  assert.equal(startGate.includes("isLocalAIComposeEnabled"), true);
+  assert.equal(startGate.includes("hybridCompositionSubjectHint != nil"), false);
+  assert.equal(cameraViewModel.includes("ensureHybridCompositionSubjectHint()"), true);
+  assert.equal(cameraViewModel.includes("LiveFramePoint(x: 0.5, y: 0.5)"), true);
+  const clearPhotoPath = cameraViewModel.slice(
+    cameraViewModel.indexOf("func clearSelectedPhoto()"),
+    cameraViewModel.indexOf("func flipSelectedPhotoHorizontally()")
+  );
+  assert.equal(clearPhotoPath.includes("isLocalAIComposeEnabled = true"), true);
   assert.equal(cameraViewModel.includes("service.captureAnalysisSnapshot"), true);
   assert.equal(cameraViewModel.includes("hybridCompositionKeyframeIntervalNanoseconds"), true);
   assert.equal(cameraViewModel.includes("scheduleNextHybridCompositionKeyframe"), true);

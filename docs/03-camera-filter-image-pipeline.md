@@ -1,5 +1,9 @@
 # 相機、復古濾鏡與圖片處理技術報告
 
+## Local AI Compose P25-R2
+
+P25-R2 defaults Camera to local AI Compose and makes Live AI start reachable without a hidden gesture prerequisite. `canRequestHybridCompositionPlan` now depends on Compose/session/work state rather than a pre-existing subject hint. A long press still supplies the most precise focus hint; if absent, Start creates a center provisional candidate and the first strictly validated cloud keyframe grounds it. DEBUG presents the session consent once after Camera permission becomes authorized. It never starts upload before acceptance and does not repeatedly prompt after cancellation. Returning from a selected photo restores local Compose. Release retains no cloud entry, and the 1 FPS upper bound, one-in-flight/no-queue behavior, local 15 FPS tracking, manual camera control, and lifecycle cancellation remain unchanged.
+
 ## Local AI Compose P25-R1
 
 P25-R1 moves the DEBUG live-session badge out of the independent `cameraFullscreenCanvas` computed view and into the outer `captureContent` `GeometryReader` chrome. This restores lexical access to the existing safe-area-derived `topControlInset`, resolves the reported Xcode `Cannot find 'topControlInset' in scope` error, preserves the intended top placement, and prevents the decorative badge from intercepting preview touches. No Camera pipeline, keyframe cadence, tracking, payload, provider, or capture behavior changed.

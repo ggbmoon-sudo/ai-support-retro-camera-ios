@@ -8,9 +8,62 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Local AI Compose P25-R1 - Live Badge Xcode Scope Repair
-Status: implemented; reported `topControlInset` scope error repaired; 440/440 backend tests and focused static checks passed; Mac/Xcode rebuild verification pending
-Latest implementation: P25-R1 moves the DEBUG Live AI status badge from the independent `cameraFullscreenCanvas` computed view into the outer `captureContent` `GeometryReader`, where the existing safe-area-derived `topControlInset` is lexically available. The badge keeps its intended top offset, remains non-interactive, and no longer creates the reported Xcode compile error. No keyframe cadence, cloud contract, provider request, Vision tracking, camera control/capture, privacy, or rollout boundary changed.
+Current phase: Local AI Compose P25-R2 - Default Reachable Live AI Workflow
+Status: implemented; 440/440 backend tests and focused static/localization checks passed; Mac/Xcode and physical-device verification pending
+Latest implementation: P25-R2 makes local AI Compose the Camera default, removes the hidden subject-hint requirement from the Live AI Start gate, and presents the DEBUG session consent once after Camera authorization. No upload starts without acceptance. Starting without a long press creates a central provisional subject for first-keyframe Xiaoyi grounding; long press remains an optional precise override. Returning from a selected photo restores Compose, while cancelling consent does not create a repeated prompt. Release cloud entry remains absent and P25 cadence, local tracking, lifecycle, privacy, and manual-control boundaries are unchanged.
+
+## Local AI Compose P25-R2 - Default Reachable Live AI Workflow
+
+Status: implemented; 440/440 backend tests and focused static/localization checks passed; Mac/Xcode and physical-device verification pending
+Date: 2026-07-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+P25-R2 fixes the disabled Live AI action and makes Compose the default Camera workflow without treating default mode as permission to upload.
+
+### Completed Work
+
+- Defaulted `isLocalAIComposeEnabled` to true and restored it when returning from a selected photo.
+- Removed `hybridCompositionSubjectHint != nil` from the Start gate.
+- Added a center provisional subject fallback when Start is used without a long press.
+- Kept long press as an optional precise photographer grounding hint.
+- Added a one-time DEBUG consent presentation after Camera permission becomes authorized; cancellation does not loop.
+- Updated English/Traditional Chinese consent and failure copy to explain optional long press versus center analysis.
+- Added source-contract regression assertions for default Compose, reachable Start, center fallback, consent presentation, and return-to-Camera behavior.
+
+### Changed Files
+
+- Default/start flow: `CameraViewModel.swift` and `CameraView.swift`
+- Copy: both `Localizable.strings` files
+- Regression coverage: `composition-planner.test.mjs`
+- Docs/manual QA: root README, camera pipeline, decisions, this phase log, and manual smoke tests
+
+### Verification
+
+- Full backend/source-contract suite passes 440/440.
+- Static checks confirm Compose defaults on, the hidden hint gate is absent, center fallback exists, default consent is DEBUG-only, and return-to-Camera restores Compose.
+- `CameraView.swift` and `CameraViewModel.swift` delimiter checks pass; both localization files have no duplicate keys; `git diff --check` passes with expected Windows line-ending notices only.
+- Xcode/Apple SDK compilation and physical Camera behavior remain pending because this workspace is Windows-only.
+
+### Known TODOs
+
+- Clean-build DEBUG and confirm P25-R1 plus P25-R2 introduce no Swift diagnostics.
+- Verify initial permission flow presents consent only after authorization, accepts once, and does not re-prompt after cancel.
+- Verify direct Start, optional long-press override, return from captured/imported photo, Stop, background, and release build behavior.
+
+### Boundary Confirmations
+
+- Default local Compose: yes.
+- Default cloud upload without consent: no; explicit session acceptance remains required.
+- Release/default Camera cloud entry: no.
+- 1 FPS maximum, one in flight/no queue, local tracking, manual controls, lifecycle cancellation: unchanged.
+- iOS provider key/direct call, automatic camera actuation/capture, ARKit world anchor, production rollout: no.
+- `productionReady:false` remains locked.
+
+### Ready for Next Step
+
+Ready for Mac/Xcode DEBUG and physical-device verification: yes. Ready for production rollout: no.
 
 ## Local AI Compose P25-R1 - Live Badge Xcode Scope Repair
 

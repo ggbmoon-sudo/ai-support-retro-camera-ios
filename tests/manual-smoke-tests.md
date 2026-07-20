@@ -1,5 +1,26 @@
 # Manual Smoke Tests
 
+## Local AI Compose P25-R2 - default reachable Live AI workflow
+
+Windows/static verification:
+
+- [x] Confirm local AI Compose defaults to enabled and returning from a selected photo restores it.
+- [x] Confirm Start no longer requires a hidden `hybridCompositionSubjectHint` and direct Start seeds a center provisional candidate.
+- [x] Confirm the default consent presentation is DEBUG-only, permission-aware, and guarded to appear once per Camera view lifetime.
+- [x] Confirm long press remains available as a precise subject override.
+- [x] Confirm full 440/440 backend/source-contract tests, Swift delimiter checks, localization duplicate checks, and `git diff --check` pass.
+
+Mac/Xcode and physical-device verification:
+
+- [ ] Clean-build DEBUG and confirm no Swift diagnostic remains after P25-R1/R2.
+- [ ] Open Camera with existing permission. Confirm Compose is visibly on and the Live AI consent appears once without opening the policy menu.
+- [ ] Cancel consent. Confirm no upload, no immediate/repeated popup, local Compose continues, and manual Start is tappable.
+- [ ] Re-enter or manually start, accept consent, and confirm the session begins without any long press.
+- [ ] Start with a centered subject and confirm first-keyframe grounding plus local tracking. Stop, long-press an off-center subject, restart, and confirm the explicit subject wins.
+- [ ] On a fresh install, grant Camera permission and confirm Live AI consent appears only after the system permission result is authorized.
+- [ ] Capture/import a photo, return to Camera, and confirm local Compose is on by default while a new cloud session still requires explicit consent.
+- [ ] Build RELEASE and confirm local Compose may default on but no Live AI cloud entry or automatic upload exists.
+
 ## Local AI Compose P25-R1 - Live badge Xcode scope repair
 
 Windows/static verification:

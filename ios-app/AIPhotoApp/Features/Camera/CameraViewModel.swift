@@ -16,7 +16,7 @@ final class CameraViewModel: ObservableObject {
     @Published private(set) var liveGuidanceState: LiveGuidanceMockState = .suggestionAvailable
     @Published private(set) var liveGuidanceMode: LiveGuidanceMode = .local
     @Published private(set) var liveGuidanceSuggestions: [LiveGuidanceSuggestion] = []
-    @Published private(set) var isLocalAIComposeEnabled = false
+    @Published private(set) var isLocalAIComposeEnabled = true
     @Published private(set) var localAIComposeGuide = LocalAIComposeGuide.searching
     @Published private(set) var isLocalAIComposeDepthLayerCueActive = false
     @Published private(set) var localAIComposeDepthOcclusionMask: LiveFrameDepthOcclusionMask?
@@ -225,7 +225,6 @@ final class CameraViewModel: ObservableObject {
 
     var canRequestHybridCompositionPlan: Bool {
         isLocalAIComposeEnabled
-            && hybridCompositionSubjectHint != nil
             && !isHybridCompositionLiveSessionActive
             && !hybridCompositionPlannerState.isWorking
     }
@@ -487,6 +486,11 @@ final class CameraViewModel: ObservableObject {
         activeFilterRenderID = nil
         resetSaveState()
         resetCloudSnapshotGuidance()
+        isLocalAIComposeEnabled = true
+        liveGuidanceMode = .local
+        if liveGuidanceState == .off || liveGuidanceState == .paused {
+            liveGuidanceState = .suggestionAvailable
+        }
         updateFrameSignalAnalysisAvailability()
         if permissionState == .authorized {
             configureAndStart()
@@ -660,11 +664,18 @@ final class CameraViewModel: ObservableObject {
 
     func requestHybridCompositionPlannerConsent() {
         guard canRequestHybridCompositionPlan else { return }
+        guard ensureHybridCompositionSubjectHint() else {
+            hybridCompositionPlannerState = .failed(
+                messageKey: "camera.hybrid_compose.error.subject_required"
+            )
+            return
+        }
         hybridCompositionPlannerState = .consentRequired
     }
 
     func startHybridCompositionPlanner(consent: CloudAIConsent) {
         guard canRequestHybridCompositionPlan,
+              ensureHybridCompositionSubjectHint(),
               consent.imageUploadAccepted else {
             hybridCompositionPlannerState = .failed(
                 messageKey: "camera.hybrid_compose.error.subject_required"
@@ -687,6 +698,12 @@ final class CameraViewModel: ObservableObject {
 
     func retryHybridCompositionPlanner() {
         guard canRequestHybridCompositionPlan else { return }
+        guard ensureHybridCompositionSubjectHint() else {
+            hybridCompositionPlannerState = .failed(
+                messageKey: "camera.hybrid_compose.error.subject_required"
+            )
+            return
+        }
         hybridCompositionPlannerState = .consentRequired
     }
 
@@ -1704,6 +1721,20 @@ final class CameraViewModel: ObservableObject {
         )
         hybridCompositionSubjectHint = displayPoint
         return displayPoint
+    }
+
+    private func ensureHybridCompositionSubjectHint() -> Bool {
+        if hybridCompositionSubjectHint != nil {
+            return true
+        }
+
+        // A long press remains the precise photographer override. When the user
+        // starts Live AI directly, seed the center of the visible preview so the
+        // first cloud keyframe can ground a subject without leaving the action
+        // permanently disabled behind a hidden gesture prerequisite.
+        return selectLocalAIComposeSubject(
+            at: LiveFramePoint(x: 0.5, y: 0.5)
+        )
     }
 
     private func provisionalHybridSubjectCandidate(
