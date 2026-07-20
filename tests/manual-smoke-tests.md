@@ -1,5 +1,25 @@
 # Manual Smoke Tests
 
+## Local AI Compose P22-R1 - Xcode diagnostic repair
+
+Windows/static verification:
+
+- [x] Confirm `LocalAIComposeTemporalSubjectTracker.translated(...)` explicitly returns `LiveFrameNormalizedRect` after its two local bound calculations.
+- [x] Confirm `CameraCaptureService` has exactly one `@preconcurrency import AVFoundation` and no plain duplicate AVFoundation import.
+- [x] Confirm `startSession()` and `stopSession()` still dispatch `AVCaptureSession` work through the existing private serial `sessionQueue`.
+- [x] Confirm 65 Camera Swift files have balanced delimiters and `git diff --check` passes.
+- [x] Confirm no Camera UI, capture/depth/filter logic, provider/network route, secret, upload, persistence, logging, automatic capture, or `productionReady:true` path was introduced by this repair.
+
+Mac/Xcode verification:
+
+- [ ] Pull the repair and use Product > Clean Build Folder, then build the DEBUG app. Confirm the temporal tracker missing-return error and unused-initializer warning are gone.
+- [ ] Confirm the AVFoundation preconcurrency recommendation and the two `AVCaptureSession` capture-in-`@Sendable`-closure warnings are gone.
+- [ ] Start/stop Camera repeatedly, background/foreground the app, and switch front/back camera plus lenses; confirm no session hang, duplicate callback, frozen preview, or crash.
+- [ ] Capture with Original and one non-original live filter; confirm preview, shutter, saved orientation, selfie parity, flash, and focal crop remain unchanged.
+- [ ] Enable Compose on compatible depth hardware and confirm P22 foreground cutout behavior remains available after the compile repair.
+- [ ] Expand the separate Xcode "Update to recommended settings" issue and record each proposed setting before accepting anything. Do not bulk-apply it as part of P22-R1; send a screenshot/list for a scoped review if it remains.
+- [ ] Confirm Camera makes no network request, iOS contains no provider key/direct provider call, ARKit remains absent, and `productionReady:false` remains unchanged.
+
 ## Local AI Compose P22 - Foreground-aware AR guide occlusion
 
 Windows/static verification:

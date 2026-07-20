@@ -8,9 +8,61 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Local AI Compose P22 - foreground-aware AR guide occlusion
-Status: implemented; 20/20 deterministic mask/stability/mirroring/source/static/privacy checks passed; Mac/Xcode physical-device depth alignment/performance verification required
-Latest implementation: P22 reuses P20 synchronized absolute hardware depth and the current full-analysis Vision subject to form an ephemeral fixed 18-by-24 binary occupancy mask only under reliable high foreground/background separation. Private cleanup removes isolated cells and fills strongly enclosed gaps. Two compatible masks activate, one miss is tolerated, two clear, and a distant replacement requires two observations. P17 motion entry, P21 thermal protection, camera/lens/Compose/selected-photo resets, and Group Balance clear the mask. Front mirroring occurs only at display mapping. SwiftUI isolates grid/tint in a compositing group and applies `destinationOut`, so guides disappear behind foreground cells while subject/target/action/readiness UI remains visible. The mask contains no metric depth, pixels, confidence, identity, class, or semantics and is never logged, persisted, uploaded, analyzed remotely, or used for training. No ARKit, Xiaoyi/provider call, Camera route/upload, automatic camera control/capture, model/training, or production rollout is added. `productionReady:false` stays locked. Mac/iPhone validation and PT2-SF-R9-R16-R2 Core Image verification remain pending operator tasks.
+Current phase: Local AI Compose P22-R1 - Xcode diagnostic repair
+Status: implemented; focused source/session-queue/static/privacy checks passed; Mac/Xcode clean build and physical-device regression verification required
+Latest implementation: P22-R1 resolves the reported Xcode build failure by adding the required explicit `return` to the temporal tracker's multi-statement rectangle translation helper. It also scopes AVFoundation's legacy incomplete `Sendable` annotations through `@preconcurrency import AVFoundation`, removing the reported module/captured-`AVCaptureSession` concurrency warnings while leaving `startRunning()` and `stopRunning()` on the existing dedicated serial session queue. No preview, capture, filter, depth/AR, Camera lifecycle, provider/network, payload, privacy, automatic-control, model/training, or production behavior changed. The generic Xcode recommended-settings notice was not bulk-applied and remains pending scoped operator inspection. `productionReady:false` stays locked. Mac clean-build confirmation, P22 physical-device validation, and PT2-SF-R9-R16-R2 Core Image verification remain pending operator tasks.
+
+## Local AI Compose P22-R1 - Xcode Diagnostic Repair
+
+Status: implemented; focused source/session/static/privacy checks passed; pending Mac/Xcode clean-build and physical-device regression verification
+Date: 2026-07-20
+Production readiness: `productionReady:false`
+
+### Summary
+
+P22-R1 fixes the build-blocking temporal-tracker return error and the reported AVFoundation concurrency diagnostics without changing Camera runtime behavior.
+
+### Completed Work
+
+- Added an explicit `return` before the normalized rectangle constructed by `LocalAIComposeTemporalSubjectTracker.translated(...)`; the helper has two preceding local bound calculations and therefore cannot rely on single-expression implicit return.
+- Removed the paired unused-initializer diagnostic caused by the same missing return.
+- Changed `CameraCaptureService` to `@preconcurrency import AVFoundation`, limiting compatibility treatment to the SDK module's legacy/incomplete `Sendable` annotations.
+- Preserved the existing dedicated serial `sessionQueue` for both `AVCaptureSession.startRunning()` and `stopRunning()`; no main-thread blocking or session-lifecycle rewrite was introduced.
+- Deliberately left Xcode's separate generic recommended-settings notice untouched pending inspection of its proposed settings.
+
+### Changed Files
+
+- Compiler repair: `LocalAIComposeTemporalSubjectTracker.swift`
+- AVFoundation concurrency compatibility boundary: `CameraCaptureService.swift`
+- Docs/tests: root/iOS READMEs, camera pipeline, this phase log, and manual smoke tests
+
+### Verification
+
+- Static source contract confirms the multi-statement translation helper has an explicit `return`.
+- Import contract confirms exactly one `@preconcurrency import AVFoundation` and no duplicate plain AVFoundation import in `CameraCaptureService`.
+- Start/stop source contracts confirm both operations still use the private serial session queue.
+- `git diff --check` and delimiter balance across 65 Camera Swift files pass.
+- Focused diff contains only the explicit return and import compatibility change in runtime source.
+- No UI, capture/depth/filter algorithm, network/provider route, secret, upload, persistence, logging, automatic capture, model/training, or `productionReady:true` path was added.
+- Apple SDK compilation and confirmation that all five screenshot diagnostics disappear remain pending on Mac because `swiftc`, Xcode, and Apple SDKs are unavailable in this Windows workspace.
+
+### Known TODOs
+
+- Clean Build Folder and rebuild in Xcode; confirm the missing-return, unused-initializer, AVFoundation preconcurrency, and two captured-session warnings disappear.
+- Re-test Camera start/stop, background/foreground, front/back and lens switching, filtered capture, and P22 depth cutout on a physical iPhone.
+- Expand Xcode's recommended-settings notice and review the exact proposal before accepting it. Do not treat it as a compile blocker or bulk-apply unknown project changes.
+- If the clean build reveals another diagnostic, keep the next repair limited to that compiler evidence before starting a feature phase.
+
+### Boundary Confirmations
+
+- Camera runtime, preview, capture, filter, depth/AR, focus/exposure, zoom, flash, crop, or shutter behavior intentionally changed: no.
+- ARKit, Xiaoyi/provider call, Camera route/upload, direct iOS provider key/call, auto-trigger, or automatic camera control/capture: no.
+- Logging, persistence, analytics, raw frame/depth/mask handling, model/training, or production rollout added: no.
+- Camera remains local-only and `productionReady:false` remains locked: yes.
+
+### Ready for Next Step
+
+Ready for Mac/Xcode clean-build verification: yes. Ready to start another feature phase before that verification: no. Ready for production rollout: no.
 
 ## Local AI Compose P22 - Foreground-aware AR Guide Occlusion
 

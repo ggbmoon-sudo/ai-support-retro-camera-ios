@@ -1,5 +1,16 @@
 # 相機、復古濾鏡與圖片處理技術報告
 
+## Local AI Compose P22-R1
+
+P22-R1 is a focused Mac/Xcode diagnostic repair with no intended Camera runtime behavior change.
+
+- `LocalAIComposeTemporalSubjectTracker.translated(...)` computes two local bounds before constructing its result, so it is not a Swift single-expression function. The normalized rectangle now has an explicit `return`, resolving both the build-blocking missing-return diagnostic and the associated unused-initializer warning.
+- `CameraCaptureService` uses `@preconcurrency import AVFoundation`. This scopes the compatibility treatment to AVFoundation's legacy/incomplete `Sendable` annotations; it does not declare the service/session globally safe, move work to the main thread, or change start/stop sequencing.
+- `AVCaptureSession.startRunning()` and `stopRunning()` remain on the existing dedicated serial `sessionQueue`. Preview, configuration, depth synchronization, capture, and lifecycle behavior are unchanged.
+- Xcode's generic "Update to recommended settings" project notice is not a source compiler failure. It remains pending operator inspection because bulk-accepting it may change deployment, signing, asset, localization, or concurrency build settings beyond this repair.
+
+P22-R1 adds no new AR/depth analysis, camera control, network/provider path, logging, persistence, upload, model/training, or production rollout. Camera stays local-only and `productionReady:false` remains locked.
+
 ## Local AI Compose P22
 
 P22 makes the existing 2D AR composition grid visually respect a reliable hardware-depth foreground without turning Camera into a world-tracking or semantic-segmentation system.

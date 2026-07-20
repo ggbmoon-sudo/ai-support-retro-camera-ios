@@ -153,7 +153,7 @@ nonisolated struct LocalAIComposeTemporalSubjectTracker: Sendable {
     ) -> LiveFrameNormalizedRect {
         let maximumX = max(0, 1 - box.width)
         let maximumY = max(0, 1 - box.height)
-        LiveFrameNormalizedRect(
+        return LiveFrameNormalizedRect(
             CGRect(
                 x: clamp(box.x + velocity.x, minimum: 0, maximum: maximumX),
                 y: clamp(box.y + velocity.y, minimum: 0, maximum: maximumY),
