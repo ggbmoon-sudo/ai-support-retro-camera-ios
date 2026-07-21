@@ -47,7 +47,9 @@ struct CameraView: View {
     @State private var focusReticleDismissTask: Task<Void, Never>?
     @State private var isHybridCompositionPlannerPresented = false
     #if DEBUG
-    @State private var hasPresentedDefaultLiveAIConsent = false
+    @AppStorage(HybridCompositionConsentPreference.defaultsKey)
+    private var hasAcceptedLiveAIComposition = false
+    @State private var hasAttemptedDefaultLiveAIStart = false
     #endif
     private let localAIComposeCoordinateMapper = CameraOverlayCoordinateMapper()
 
@@ -121,13 +123,14 @@ struct CameraView: View {
                 state: viewModel.hybridCompositionPlannerState,
                 canAnalyze: viewModel.canRequestHybridCompositionPlan,
                 acceptConsent: { consent in
+                    hasAcceptedLiveAIComposition = true
                     viewModel.startHybridCompositionPlanner(consent: consent)
                     if viewModel.isHybridCompositionLiveSessionActive {
                         isHybridCompositionPlannerPresented = false
                     }
                 },
                 retry: {
-                    viewModel.retryHybridCompositionPlanner()
+                    startLiveAIComposition()
                 },
                 dismiss: {
                     isHybridCompositionPlannerPresented = false
@@ -242,7 +245,7 @@ struct CameraView: View {
 
     #if DEBUG
     private func presentDefaultLiveAIConsentIfReady() {
-        guard !hasPresentedDefaultLiveAIConsent,
+        guard !hasAttemptedDefaultLiveAIStart,
               !isHybridCompositionPlannerPresented,
               viewModel.permissionState == .authorized,
               viewModel.selectedPhoto == nil,
@@ -250,12 +253,23 @@ struct CameraView: View {
             return
         }
 
-        viewModel.requestHybridCompositionPlannerConsent()
-        guard case .consentRequired = viewModel.hybridCompositionPlannerState else {
-            return
+        hasAttemptedDefaultLiveAIStart = true
+        startLiveAIComposition()
+    }
+
+    private func startLiveAIComposition() {
+        if hasAcceptedLiveAIComposition {
+            viewModel.startHybridCompositionPlanner(consent: .acceptedLiveComposition)
+            if viewModel.isHybridCompositionLiveSessionActive {
+                isHybridCompositionPlannerPresented = false
+            }
+        } else {
+            viewModel.requestHybridCompositionPlannerConsent()
+            guard case .consentRequired = viewModel.hybridCompositionPlannerState else {
+                return
+            }
+            isHybridCompositionPlannerPresented = true
         }
-        hasPresentedDefaultLiveAIConsent = true
-        isHybridCompositionPlannerPresented = true
     }
     #endif
 
@@ -1084,13 +1098,9 @@ struct CameraView: View {
             }
 
             HStack(spacing: AppSpacing.xs) {
-                HStack(spacing: 5) {
-                    localAIComposeButton
-
-                    if viewModel.isLocalAIComposeEnabled {
-                        localAIComposePolicyMenu
-                    }
-                }
+                #if DEBUG
+                liveAIComposeButton
+                #endif
 
                 Spacer(minLength: AppSpacing.xs)
 
@@ -1110,27 +1120,36 @@ struct CameraView: View {
         .frame(height: 82)
     }
 
-    private var localAIComposeButton: some View {
+    #if DEBUG
+    private var liveAIComposeButton: some View {
         Button {
             activeCameraCallout = .none
             isLiveGuidanceExpanded = false
-            withAnimation(.snappy(duration: 0.2)) {
-                viewModel.toggleLocalAICompose()
+            if viewModel.isHybridCompositionLiveSessionActive {
+                viewModel.stopHybridCompositionLiveSession()
+            } else {
+                startLiveAIComposition()
             }
         } label: {
             VStack(spacing: 3) {
-                Image(systemName: viewModel.isLocalAIComposeEnabled ? "sparkles" : "viewfinder")
+                Image(
+                    systemName: viewModel.isHybridCompositionLiveSessionActive
+                        ? "stop.circle.fill"
+                        : "sparkles.rectangle.stack"
+                )
                     .font(.system(size: 17, weight: .bold))
 
-                Text("camera.ai_compose.short_title")
+                Text("camera.hybrid_compose.short_title")
                     .font(.caption2.weight(.semibold))
                     .lineLimit(1)
                     .minimumScaleFactor(0.72)
             }
-            .frame(width: 58, height: 48)
-            .foregroundStyle(viewModel.isLocalAIComposeEnabled ? Color.black : Color.white)
+            .frame(width: 86, height: 48)
+            .foregroundStyle(
+                viewModel.isHybridCompositionLiveSessionActive ? Color.black : Color.white
+            )
             .background(
-                viewModel.isLocalAIComposeEnabled
+                viewModel.isHybridCompositionLiveSessionActive
                     ? AppColors.accent
                     : Color.black.opacity(0.54)
             )
@@ -1138,7 +1157,7 @@ struct CameraView: View {
             .overlay {
                 RoundedRectangle(cornerRadius: 16, style: .continuous)
                     .stroke(
-                        viewModel.isLocalAIComposeEnabled
+                        viewModel.isHybridCompositionLiveSessionActive
                             ? Color.white.opacity(0.28)
                             : Color.white.opacity(0.16),
                         lineWidth: 1
@@ -1146,128 +1165,30 @@ struct CameraView: View {
             }
         }
         .buttonStyle(.plain)
-        .accessibilityLabel("camera.ai_compose.toggle_accessibility")
+        .disabled(
+            !viewModel.isHybridCompositionLiveSessionActive
+                && !viewModel.canRequestHybridCompositionPlan
+        )
+        .accessibilityLabel(
+            Text(
+                LocalizedStringKey(
+                    viewModel.isHybridCompositionLiveSessionActive
+                        ? "camera.hybrid_compose.stop_action"
+                        : "camera.hybrid_compose.action"
+                )
+            )
+        )
         .accessibilityValue(
             Text(
                 LocalizedStringKey(
-                    viewModel.isLocalAIComposeEnabled
+                    viewModel.isHybridCompositionLiveSessionActive
                         ? "camera.ai_compose.accessibility_on"
                         : "camera.ai_compose.accessibility_off"
                 )
             )
         )
-        .accessibilityAction(
-            named: Text("camera.ai_compose.clear_subject_accessibility")
-        ) {
-            guard viewModel.isLocalAIComposeSubjectLocked else { return }
-            viewModel.clearLocalAIComposeSubjectSelection()
-        }
     }
-
-    private var localAIComposePolicyMenu: some View {
-        Menu {
-            Button {
-                viewModel.selectLocalAIComposePolicyPreference(.automatic)
-            } label: {
-                policyMenuLabel(
-                    titleKey: LocalAIComposePolicyPreference.automatic.titleKey,
-                    systemImage: LocalAIComposePolicyPreference.automatic.systemImage,
-                    isSelected: viewModel.localAIComposePolicyPreference == .automatic
-                )
-            }
-
-            Divider()
-
-            ForEach(LocalAIComposePolicy.allCases) { policy in
-                Button {
-                    viewModel.selectLocalAIComposePolicyPreference(.fixed(policy))
-                } label: {
-                    policyMenuLabel(
-                        titleKey: policy.titleKey,
-                        systemImage: policy.systemImage,
-                        isSelected: viewModel.localAIComposePolicyPreference == .fixed(policy)
-                    )
-                }
-            }
-
-            if let activePolicy = viewModel.localAIComposeGuide.policy,
-               activePolicy.supportsHorizontalTargetFlip {
-                Divider()
-
-                Button {
-                    viewModel.toggleLocalAIComposeTargetSide()
-                } label: {
-                    Label(
-                        LocalizedStringKey("camera.ai_compose.policy.flip_target"),
-                        systemImage: "arrow.left.and.right"
-                    )
-                }
-                .disabled(viewModel.localAIComposeGuide.subjectBox == nil)
-            }
-
-            #if DEBUG
-            Divider()
-
-            Button {
-                if viewModel.isHybridCompositionLiveSessionActive {
-                    viewModel.stopHybridCompositionLiveSession()
-                } else {
-                    viewModel.requestHybridCompositionPlannerConsent()
-                    isHybridCompositionPlannerPresented = true
-                }
-            } label: {
-                Label(
-                    LocalizedStringKey(
-                        viewModel.isHybridCompositionLiveSessionActive
-                            ? "camera.hybrid_compose.stop_action"
-                            : "camera.hybrid_compose.action"
-                    ),
-                    systemImage: viewModel.isHybridCompositionLiveSessionActive
-                        ? "stop.circle"
-                        : "sparkles.rectangle.stack"
-                )
-            }
-            .disabled(
-                !viewModel.isHybridCompositionLiveSessionActive
-                    && !viewModel.canRequestHybridCompositionPlan
-            )
-            #endif
-        } label: {
-            VStack(spacing: 2) {
-                Image(systemName: viewModel.localAIComposePolicyPreference.systemImage)
-                    .font(.system(size: 14, weight: .bold))
-
-                Image(systemName: "chevron.up.chevron.down")
-                    .font(.system(size: 8, weight: .bold))
-            }
-            .frame(width: 38, height: 48)
-            .foregroundStyle(.white)
-            .background(Color.black.opacity(0.54))
-            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-            .overlay {
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .stroke(Color.white.opacity(0.18), lineWidth: 1)
-            }
-        }
-        .accessibilityLabel("camera.ai_compose.policy.menu_accessibility")
-        .accessibilityValue(
-            Text(LocalizedStringKey(viewModel.localAIComposePolicyPreference.titleKey))
-        )
-    }
-
-    private func policyMenuLabel(
-        titleKey: String,
-        systemImage: String,
-        isSelected: Bool
-    ) -> some View {
-        HStack {
-            Label(LocalizedStringKey(titleKey), systemImage: systemImage)
-
-            if isSelected {
-                Image(systemName: "checkmark")
-            }
-        }
-    }
+    #endif
 
     @ViewBuilder
     private var cameraModeRail: some View {

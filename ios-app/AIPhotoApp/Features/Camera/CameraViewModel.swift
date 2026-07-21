@@ -16,7 +16,7 @@ final class CameraViewModel: ObservableObject {
     @Published private(set) var liveGuidanceState: LiveGuidanceMockState = .suggestionAvailable
     @Published private(set) var liveGuidanceMode: LiveGuidanceMode = .local
     @Published private(set) var liveGuidanceSuggestions: [LiveGuidanceSuggestion] = []
-    @Published private(set) var isLocalAIComposeEnabled = true
+    @Published private(set) var isLocalAIComposeEnabled = false
     @Published private(set) var localAIComposeGuide = LocalAIComposeGuide.searching
     @Published private(set) var isLocalAIComposeDepthLayerCueActive = false
     @Published private(set) var localAIComposeDepthOcclusionMask: LiveFrameDepthOcclusionMask?
@@ -227,8 +227,7 @@ final class CameraViewModel: ObservableObject {
     }
 
     var canRequestHybridCompositionPlan: Bool {
-        isLocalAIComposeEnabled
-            && !isHybridCompositionLiveSessionActive
+        !isHybridCompositionLiveSessionActive
             && !hybridCompositionPlannerState.isWorking
     }
 
@@ -489,7 +488,7 @@ final class CameraViewModel: ObservableObject {
         activeFilterRenderID = nil
         resetSaveState()
         resetCloudSnapshotGuidance()
-        isLocalAIComposeEnabled = true
+        isLocalAIComposeEnabled = false
         liveGuidanceMode = .local
         if liveGuidanceState == .off || liveGuidanceState == .paused {
             liveGuidanceState = .suggestionAvailable
@@ -667,19 +666,20 @@ final class CameraViewModel: ObservableObject {
 
     func requestHybridCompositionPlannerConsent() {
         guard canRequestHybridCompositionPlan else { return }
-        guard ensureHybridCompositionSubjectHint() else {
-            hybridCompositionPlannerState = .failed(
-                messageKey: "camera.hybrid_compose.error.subject_required"
-            )
-            return
-        }
         hybridCompositionPlannerState = .consentRequired
     }
 
     func startHybridCompositionPlanner(consent: CloudAIConsent) {
         guard canRequestHybridCompositionPlan,
-              ensureHybridCompositionSubjectHint(),
               consent.imageUploadAccepted else {
+            hybridCompositionPlannerState = .failed(
+                messageKey: "camera.hybrid_compose.error.subject_required"
+            )
+            return
+        }
+
+        activateLocalAIComposeForHybridSession()
+        guard ensureHybridCompositionSubjectHint() else {
             hybridCompositionPlannerState = .failed(
                 messageKey: "camera.hybrid_compose.error.subject_required"
             )
@@ -715,11 +715,8 @@ final class CameraViewModel: ObservableObject {
 
     func dismissHybridCompositionPlanner() {
         guard !isHybridCompositionLiveSessionActive else { return }
-        hybridCompositionPlannerState = .idle
-        if hybridCompositionLiveGuideStage == .failed {
-            hybridCompositionLiveGuideStage = .idle
-            hybridCompositionLiveFailureMessageKey = nil
-        }
+        isLocalAIComposeEnabled = false
+        resetLocalAIComposeGuide()
     }
 
     func stopHybridCompositionLiveSession() {
@@ -728,6 +725,32 @@ final class CameraViewModel: ObservableObject {
             clearsSubjectHint: false
         )
         hybridCompositionPlannerState = .idle
+        isLocalAIComposeEnabled = false
+        resetLocalAIComposeGuide()
+    }
+
+    private func activateLocalAIComposeForHybridSession() {
+        guard !isLocalAIComposeEnabled else { return }
+
+        isLocalAIComposeEnabled = true
+        localAIComposePolicyPreference = .automatic
+        isLocalAIComposeTargetHorizontallyFlipped = false
+        resetLocalAIComposeHorizon()
+        resetLocalAIComposeSymmetry()
+        resetLocalAIComposeLeadingLines()
+        resetLocalAIComposeQuietSpace()
+        resetLocalAIComposeMotionGate()
+        resetLocalAIComposeThermalProtection()
+        clearLocalAIComposeSelectionState()
+        clearLocalAIComposeTargetGeometry()
+        localAIComposeGuide = .searching
+        liveGuidanceMode = .local
+        if liveGuidanceState == .off || liveGuidanceState == .paused {
+            liveGuidanceState = .suggestionAvailable
+        }
+        updateFrameSignalAnalysisAvailability()
+        refreshLiveGuidanceSuggestions(resetStability: true)
+        refreshLocalAIComposeGuide()
     }
 
     func toggleLiveGuidance() {
@@ -1385,6 +1408,9 @@ final class CameraViewModel: ObservableObject {
     }
 
     private func resetLocalAIComposeTarget() {
+        // Local Compose is now an implementation detail of a running Live AI
+        // session. Camera/lens/lifecycle resets must not expose it on its own.
+        isLocalAIComposeEnabled = false
         resetHybridCompositionPlanner()
         clearLocalAIComposeTargetGeometry()
         clearLocalAIComposeSelectionState()

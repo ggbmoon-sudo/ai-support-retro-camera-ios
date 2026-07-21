@@ -2,6 +2,8 @@
 
 AI Support Retro Camera iOS is an iOS-first retro film-style camera plus a single-photo AI photo coach.
 
+Current internal Camera experiment P25-R6 exposes one Live AI composition control only: the Local AI/manual-policy menu is removed, first explicit versioned image-processing acceptance is remembered locally and revocable in Settings, and every accepted session still sends exactly one metadata-free keyframe through the backend for one immutable plan. Release Camera cloud access and production rollout remain disabled.
+
 The MVP is intentionally focused. It is not a full AI photo editing studio. The first version should help photography beginners capture or import one photo, apply simple retro presets, receive short actionable AI advice, and keep basic Firebase-backed photo history.
 
 ## MVP Scope

@@ -1,5 +1,9 @@
 # 相機、復古濾鏡與圖片處理技術報告
 
+## P25-R6 Live AI-only composition entry
+
+The DEBUG/internal Camera composition surface now contains one Live AI start/stop button. The former Local AI toggle, automatic/manual policy menu, and target-side action are not exposed. Local Vision tracking and typed composition policies remain internal and run only after an accepted Live AI session begins, because the single validated GPT response must still map to one stable ring/frame target. The first explicit acceptance of the exact disclosure version is stored as a local boolean and can be reset in Settings; a new disclosure version must ask again. This does not change the single metadata-free keyframe, immutable response, backend-only provider boundary, manual camera control, Release block, or `productionReady:false`.
+
 ## Local AI Compose P25-R5
 
 P25-R5 addresses measured cloud wait time and unreliable Ring alignment without changing the one-shot cloud boundary.

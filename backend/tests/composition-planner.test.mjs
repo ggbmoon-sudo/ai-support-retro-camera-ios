@@ -164,6 +164,8 @@ test("iOS staged live planner sends one keyframe then freezes one plan", () => {
   const captureService = readIOSSource("Features/Camera/CameraCaptureService.swift");
   const remoteService = readIOSSource("Features/Camera/HybridCompositionPlannerService.swift");
   const consentView = readIOSSource("Features/Camera/HybridCompositionConsentView.swift");
+  const consentPreference = readIOSSource("Features/Camera/HybridCompositionConsentPreference.swift");
+  const settingsView = readIOSSource("Features/Settings/SettingsView.swift");
   const workloadPolicy = readIOSSource("Features/Camera/LocalCameraAIWorkloadPolicy.swift");
   const liveStage = readIOSSource("Features/Camera/HybridCompositionLiveGuideStage.swift");
   const liveOverlay = readIOSSource("Features/Camera/HybridCompositionLiveOverlayView.swift");
@@ -172,21 +174,50 @@ test("iOS staged live planner sends one keyframe then freezes one plan", () => {
   assert.equal(cameraView.includes("requestHybridCompositionPlannerConsent"), true);
   assert.equal(cameraView.includes("stopHybridCompositionLiveSession"), true);
   assert.equal(cameraView.includes("presentDefaultLiveAIConsentIfReady()"), true);
-  assert.equal(cameraView.includes("hasPresentedDefaultLiveAIConsent"), true);
-  assert.equal(cameraViewModel.includes("var isLocalAIComposeEnabled = true"), true);
+  assert.equal(cameraView.includes("hasAttemptedDefaultLiveAIStart"), true);
+  assert.equal(cameraView.includes("@AppStorage(HybridCompositionConsentPreference.defaultsKey)"), true);
+  assert.equal(cameraView.includes("hasAcceptedLiveAIComposition = true"), true);
+  assert.equal(cameraView.includes("private var liveAIComposeButton"), true);
+  assert.equal(cameraView.includes("private var localAIComposeButton"), false);
+  assert.equal(cameraView.includes("private var localAIComposePolicyMenu"), false);
+  assert.equal(cameraView.includes("ForEach(LocalAIComposePolicy.allCases)"), false);
+  assert.equal(cameraView.includes("selectLocalAIComposePolicyPreference"), false);
+  assert.equal(cameraView.includes("camera.ai_compose.clear_subject_accessibility"), false);
+  assert.equal(cameraViewModel.includes("var isLocalAIComposeEnabled = false"), true);
   const startGate = cameraViewModel.slice(
     cameraViewModel.indexOf("var canRequestHybridCompositionPlan"),
     cameraViewModel.indexOf("var selectedDualFocalAspectRatioLabel")
   );
-  assert.equal(startGate.includes("isLocalAIComposeEnabled"), true);
+  assert.equal(startGate.includes("isLocalAIComposeEnabled"), false);
   assert.equal(startGate.includes("hybridCompositionSubjectHint != nil"), false);
+  const consentGate = cameraViewModel.slice(
+    cameraViewModel.indexOf("func requestHybridCompositionPlannerConsent"),
+    cameraViewModel.indexOf("func startHybridCompositionPlanner")
+  );
+  assert.equal(consentGate.includes("ensureHybridCompositionSubjectHint"), false);
+  const sessionStart = cameraViewModel.slice(
+    cameraViewModel.indexOf("func startHybridCompositionPlanner"),
+    cameraViewModel.indexOf("func retryHybridCompositionPlanner")
+  );
+  assert.equal(sessionStart.includes("activateLocalAIComposeForHybridSession()"), true);
+  assert.equal(sessionStart.includes("ensureHybridCompositionSubjectHint()"), true);
+  const targetReset = cameraViewModel.slice(
+    cameraViewModel.indexOf("private func resetLocalAIComposeTarget"),
+    cameraViewModel.indexOf("private func resetLocalAIComposeGuide")
+  );
+  assert.equal(targetReset.includes("isLocalAIComposeEnabled = false"), true);
+  const dismissPlanner = cameraViewModel.slice(
+    cameraViewModel.indexOf("func dismissHybridCompositionPlanner"),
+    cameraViewModel.indexOf("func stopHybridCompositionLiveSession")
+  );
+  assert.equal(dismissPlanner.includes("isLocalAIComposeEnabled = false"), true);
   assert.equal(cameraViewModel.includes("ensureHybridCompositionSubjectHint()"), true);
   assert.equal(cameraViewModel.includes("LiveFramePoint(x: 0.5, y: 0.5)"), true);
   const clearPhotoPath = cameraViewModel.slice(
     cameraViewModel.indexOf("func clearSelectedPhoto()"),
     cameraViewModel.indexOf("func flipSelectedPhotoHorizontally()")
   );
-  assert.equal(clearPhotoPath.includes("isLocalAIComposeEnabled = true"), true);
+  assert.equal(clearPhotoPath.includes("isLocalAIComposeEnabled = false"), true);
   assert.equal(cameraViewModel.includes("service.captureAnalysisSnapshot"), true);
   assert.equal(cameraViewModel.includes("hybridCompositionKeyframeIntervalNanoseconds"), false);
   assert.equal(cameraViewModel.includes("hybridCompositionMaximumKeyframeCount"), false);
@@ -226,6 +257,8 @@ test("iOS staged live planner sends one keyframe then freezes one plan", () => {
   assert.equal(remoteService.includes("CloudAIEndpointClient(timeoutSeconds: 20)"), true);
   assert.equal(remoteService.includes("#else\n        throw CloudAIServiceError.remoteDisabled"), true);
   assert.equal(consentView.includes("camera.hybrid_compose.consent.message"), true);
+  assert.equal(consentPreference.includes(CloudConsentVersionForTest), true);
+  assert.equal(settingsView.includes("hasAcceptedLiveAIComposition = false"), true);
   assert.equal(workloadPolicy.includes("lockedSubjectTrackingInterval: 1.0 / 15.0"), true);
   assert.equal(liveStage.includes("case analyzing"), true);
   assert.equal(liveStage.includes("case aiming"), true);
@@ -244,6 +277,8 @@ test("iOS staged live planner sends one keyframe then freezes one plan", () => {
   assert.equal(cameraViewModel.includes("capturePhoto("), true);
   assert.equal(cameraViewModel.includes("setVideoZoomFactor"), false);
 });
+
+const CloudConsentVersionForTest = "2026-07-20.phase25.live-keyframes.v1";
 
 test("composition smoke tool reports only sanitized plan fields", () => {
   const script = readFileSync(

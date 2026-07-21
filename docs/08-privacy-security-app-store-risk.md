@@ -2,6 +2,10 @@
 
 ## 政策基線與核心結論
 
+### P25-R6 internal Live AI consent note
+
+The DEBUG/internal Live AI Camera experiment remembers the user's first explicit acceptance of one exact image-processing disclosure version. Only a version-scoped boolean is stored locally; no image, prompt, response, provider text, or training consent is persisted. The same disclosure is not repeated on every session, but Settings provides a reset action and any material disclosure change must use a new key and request consent again. No first-use upload occurs before acceptance, and this does not enable a Release/production Camera cloud route.
+
 截至 **2026 年 6 月 7 日**，以你描述的 MVP 路線來看，最穩妥、最符合官方政策與後續上架風險控制的做法，不是先讓用戶廣泛同意「照片可被拿去訓練模型」，而是把首個必需 consent 僅限於：**為了完成 AI 分析，照片會傳送到第三方 AI 服務**。原因很直接：Apple 現行《App Store Review Guidelines》已明確要求，若個人資料會分享給第三方，包含**第三方 AI**，App 必須清楚說明並取得使用者明示許可；同時，若 App 有帳戶建立功能，必須讓所有使用者都能在 App 內發起帳戶刪除。Apple 也要求隱私政策要說明收集、使用、分享、保留/刪除資料與撤回同意的方式。citeturn4view0turn38view0turn28view0
 
 就第三方 AI 供應商而言，你目前選的 **Gemini paid tier** 與你未來預留的 **OpenAI API business/API**，官方文件都指向同一個結論：**業務/API 資料預設不會被拿來訓練其產品或模型**。Google 的 Gemini API Additional Terms 說明，**Paid Services** 下，Google **不會**使用提示、快取內容、檔案（包括圖片）或回覆來改善產品；OpenAI 也說明，API/Business 資料預設**不會**用於訓練模型，除非你另外明確 opt in。這代表如果你的 MVP UI 一開始就把「照片可能會用作模型訓練」寫成預設或綁定條件，除了法律風險，也有**真實性與 App Review** 風險，因為它可能和你實際使用的付費 API 路徑不相符。citeturn17view0turn15search0turn14view1turn14view2

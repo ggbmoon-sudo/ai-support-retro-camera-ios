@@ -167,6 +167,8 @@
 "settings.ai.placeholder" = "AI advice is currently mock-only and local to the photo preview flow.";
 "settings.privacy.title" = "Privacy";
 "settings.privacy.placeholder" = "Deletion and consent flows arrive in later phases";
+"settings.privacy.live_ai_consent_reset" = "Reset Live AI agreement";
+"settings.privacy.live_ai_consent_reset.detail" = "Show the image-processing disclosure again before the next Live AI analysis.";
 "settings.privacy.delete_account" = "Delete account";
 "settings.privacy.delete_account.placeholder" = "Placeholder only; backend deletion arrives in a later privacy phase";
 "settings.subscription.title" = "Subscription";
@@ -357,6 +359,7 @@
 "camera.hybrid_compose.title" = "Cloud composition plan";
 "camera.hybrid_compose.action" = "Start Live AI Compose";
 "camera.hybrid_compose.stop_action" = "Stop Live AI Compose";
+"camera.hybrid_compose.short_title" = "Live AI";
 "camera.hybrid_compose.live_indicator" = "Live AI · cloud keyframes on";
 "camera.hybrid_compose.live.idle" = "Live AI Compose";
 "camera.hybrid_compose.live.analyzing" = "AI is analyzing · hold still";
@@ -385,7 +388,7 @@
 "camera.hybrid_compose.error.unavailable" = "The live cloud session stopped because the latest keyframe could not be analyzed. The last validated local guide remains available.";
 "camera.hybrid_compose.consent.title" = "Live cloud composition";
 "camera.hybrid_compose.consent.message" = "When analysis starts, the app sends exactly one metadata-free preview JPEG through our backend to a third-party AI service. Uploading stops after one valid composition position returns, then the same subject is tracked locally. A prior long press can choose a subject; otherwise analysis begins from the center area.";
-"camera.hybrid_compose.consent.footer" = "The session stops when you turn it off, leave Camera, take or select a photo, or the app becomes inactive. Images are not stored by this app or backend, and this consent does not opt them into model training. Third-party handling follows its service terms.";
+"camera.hybrid_compose.consent.footer" = "The session stops when you turn it off, leave Camera, take or select a photo, or the app becomes inactive. Images are not stored by this app or backend, and this consent does not opt them into model training. Third-party handling follows its service terms. This disclosure version is remembered until you reset it in Settings.";
 "camera.hybrid_compose.consent.accept" = "Start session";
 "camera.hybrid_compose.consent.cancel" = "Cancel";
 "camera.hybrid_compose.distance.closer" = "Move closer";

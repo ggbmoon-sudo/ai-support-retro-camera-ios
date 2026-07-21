@@ -2,6 +2,10 @@ import SwiftUI
 
 struct SettingsView: View {
     @ObservedObject var authViewModel: AuthViewModel
+    #if DEBUG
+    @AppStorage(HybridCompositionConsentPreference.defaultsKey)
+    private var hasAcceptedLiveAIComposition = false
+    #endif
 
     var body: some View {
         List {
@@ -59,6 +63,19 @@ struct SettingsView: View {
                     title: "settings.privacy.title",
                     detail: "settings.privacy.placeholder"
                 )
+                #if DEBUG
+                if hasAcceptedLiveAIComposition {
+                    Button {
+                        hasAcceptedLiveAIComposition = false
+                    } label: {
+                        settingsRow(
+                            icon: "arrow.counterclockwise.circle",
+                            title: "settings.privacy.live_ai_consent_reset",
+                            detail: "settings.privacy.live_ai_consent_reset.detail"
+                        )
+                    }
+                }
+                #endif
                 settingsRow(
                     icon: "trash",
                     title: "settings.privacy.delete_account",

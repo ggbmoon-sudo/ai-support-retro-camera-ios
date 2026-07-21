@@ -8,9 +8,73 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Local AI Compose P25-R5 - Latency and Ring Alignment Polish
-Status: implemented; 440/440 backend/source-contract tests passed; sanitized real-provider latency probes passed; Mac/Xcode and physical-device verification pending
-Latest implementation: P25-R5 removes avoidable payload/output delay with a 768px metadata-free keyframe, low-detail 256-token deterministic composition request, and fail-fast timeouts. Measurement shows the remaining wait is upstream Xiaoyi `gpt-5.6-luna` time to first byte, so the 2-second target is documented as unmet rather than faked. Ring acceptance now uses fresh nominal-15-FPS local sequence tracking, a narrow hit radius, five-sample hold, near-zone hysteresis, progress feedback, and haptic confirmation while final framing/Ready evidence remains on the slower authoritative path. The one-response frozen plan, manual Camera control, DEBUG boundary, and `productionReady:false` remain locked.
+Current phase: Local AI Compose P25-R6 - Live AI Only Entry and Remembered Consent
+Status: implemented; 440/440 backend/source-contract tests passed; Mac/Xcode and physical-device verification pending
+Latest implementation: P25-R6 removes the manual Local AI toggle, AI-choice row, seven policy rows, target-side row, and expandable composition menu from Camera. The only composition control is one DEBUG/internal Live AI start/stop button. The first explicit acceptance of the versioned image-processing disclosure is remembered locally so later Live AI starts go directly to the existing one-keyframe request; Settings can reset that acceptance. Local policy resolution remains internal so a validated GPT plan can still render its ring/frame guidance. No production Camera cloud entry, automatic camera actuation, second keyframe, or `productionReady:true` is added.
+
+## Local AI Compose P25-R6 - Live AI Only Entry and Remembered Consent
+
+Status: implemented; 440/440 backend/source-contract tests passed; Mac/Xcode and physical-device verification pending
+Date: 2026-07-22
+Production readiness: `productionReady:false`
+
+### Summary
+
+P25-R6 reduces the Camera composition surface to one Live AI control and remembers the user's first explicit, versioned Live AI image-processing acceptance.
+
+### Completed Work
+
+- Replaced the Local AI toggle plus expandable policy menu with one DEBUG/internal Live AI start/stop button.
+- Removed Camera UI access to AI Choice, Rule of Thirds, Centered Balance, Symmetry, Leading Lines, Lead Room, Group Balance, Negative Space, and target-side flipping.
+- Kept those policy types internal because the strict GPT plan must still map to a supported local ring/frame target.
+- Made local Vision composition analysis inactive unless a consented Live AI session starts, and disabled it again on Stop, camera/lens change, capture context reset, or lifecycle stop.
+- Persisted only one boolean for the exact consent-disclosure version in `UserDefaults`; no image, prompt, response, or provider value is stored.
+- Added a DEBUG Settings action that forgets the remembered acceptance so the disclosure appears again.
+- Preserved first-use explicit consent, the exact one-keyframe/one-response contract, backend-only provider access, immutable plan, and manual shutter/zoom/lens control.
+
+### Changed Files
+
+- Camera entry/workflow: `CameraView.swift`, `CameraViewModel.swift`, and `HybridCompositionConsentPreference.swift`
+- Consent reset UI: `SettingsView.swift`
+- Localized button/disclosure/reset copy: both `Localizable.strings` files
+- Regression coverage: `backend/tests/composition-planner.test.mjs`
+- Documentation: root/iOS README, Camera pipeline, privacy notes, decisions, and this phase log
+
+### Verification
+
+- Full backend/source-contract suite passes 440/440.
+- Source-contract checks require a single Live AI button and reject the old policy menu, Local AI button, manual policy loop, and Camera policy-selection call.
+- Tests verify local Compose defaults off, is activated only by an accepted Live AI start, returns off on context reset, and retains exactly one keyframe/one immutable plan.
+- Localization delimiter and diff checks pass; Xcode/Apple SDK compilation remains pending on Mac.
+
+### Manual Xcode / Device Checklist
+
+- Fresh install: open Camera and confirm the versioned disclosure appears before any keyframe upload.
+- Accept once, stop/reopen Live AI, and confirm it starts directly without repeating the same disclosure.
+- Open Settings, tap Reset Live AI agreement, return to Camera, and confirm the disclosure appears again.
+- Confirm Camera shows one Live AI button only and no dropdown containing AI Choice or manual composition policies.
+- Confirm Stop, background, camera/lens change, photo capture, and selected-photo transitions leave no standalone local composition overlay.
+- Confirm one start still produces one upload, one frozen plan, Ring, composition frame, and local tracking only afterward.
+
+### Known TODOs
+
+- Build and test the SwiftUI changes on the MacBook with a physical iPhone.
+- A future disclosure text/version change must use a new preference key so users are asked again.
+
+### Boundary Confirmations
+
+- First-use image-processing disclosure: retained and explicit.
+- Remembered acceptance: local boolean only, versioned, and revocable in Settings.
+- Manual composition choices visible in Camera: no.
+- Exactly one Camera keyframe and one immutable AI response: unchanged.
+- Direct iOS provider call/key/URL/SDK: no; backend only.
+- Automatic zoom/lens/focus/exposure/crop/shutter/capture: no.
+- Release/default Camera cloud entry or production rollout: no.
+- `productionReady:false` remains locked.
+
+### Ready for Next Step
+
+Ready for Mac/Xcode physical-device verification: yes. Ready for production rollout: no.
 
 ## Local AI Compose P25-R5 - Latency and Ring Alignment Polish
 

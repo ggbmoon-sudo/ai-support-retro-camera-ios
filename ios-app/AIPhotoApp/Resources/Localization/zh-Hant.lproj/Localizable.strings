@@ -159,6 +159,8 @@
 "settings.ai.placeholder" = "AI 建議目前只限 mock，並且只存在於照片預覽流程。";
 "settings.privacy.title" = "私隱";
 "settings.privacy.placeholder" = "刪除與 consent 流程會在後續階段加入";
+"settings.privacy.live_ai_consent_reset" = "重設 Live AI 同意";
+"settings.privacy.live_ai_consent_reset.detail" = "下次 Live AI 分析前重新顯示圖片處理聲明。";
 "settings.subscription.title" = "訂閱";
 "settings.subscription.placeholder" = "此 polish phase 尚未接上訂閱或 StoreKit。";
 "settings.auth.signed_in" = "已使用 mock Auth 登入";
@@ -356,6 +358,7 @@
 "camera.hybrid_compose.title" = "雲端構圖計劃";
 "camera.hybrid_compose.action" = "開始 Live AI 構圖";
 "camera.hybrid_compose.stop_action" = "停止 Live AI 構圖";
+"camera.hybrid_compose.short_title" = "Live AI 構圖";
 "camera.hybrid_compose.live_indicator" = "Live AI · 正傳送雲端關鍵幀";
 "camera.hybrid_compose.live.idle" = "Live AI 構圖";
 "camera.hybrid_compose.live.analyzing" = "AI 正在分析 · 請保持穩定";
@@ -384,7 +387,7 @@
 "camera.hybrid_compose.error.unavailable" = "最新關鍵幀未能完成分析，Live 雲端 session 已停止；最後一個已驗證的本機指引會保留。";
 "camera.hybrid_compose.consent.title" = "Live 雲端構圖";
 "camera.hybrid_compose.consent.message" = "開始分析後，App 只會經由我哋的 backend，把一張已移除中繼資料的預覽 JPEG 傳送至第三方 AI。收到一次有效構圖位置後立即停止上傳，再由本機追蹤同一主體。事前長按可指定主體；否則由畫面中央開始分析。";
-"camera.hybrid_compose.consent.footer" = "當你停止功能、離開相機、拍攝或選取照片，或 App 進入非使用狀態時，session 會停止。App 與 backend 不會儲存圖片，而這次同意不代表你選擇把圖片用於模型訓練；第三方處理受其服務條款約束。";
+"camera.hybrid_compose.consent.footer" = "當你停止功能、離開相機、拍攝或選取照片，或 App 進入非使用狀態時，session 會停止。App 與 backend 不會儲存圖片，而這次同意不代表你選擇把圖片用於模型訓練；第三方處理受其服務條款約束。這個聲明版本會記住你的選擇，直至你在設定重設。";
 "camera.hybrid_compose.consent.accept" = "開始 session";
 "camera.hybrid_compose.consent.cancel" = "取消";
 "camera.hybrid_compose.distance.closer" = "行近一點";
