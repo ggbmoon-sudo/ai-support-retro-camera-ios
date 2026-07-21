@@ -782,8 +782,8 @@ test("xiaoyi provider uses a strict grounded composition keyframe request", asyn
 
   assert.deepEqual(response, plan);
   assert.equal(capturedRequest.model, "gpt-5.6-luna");
-  assert.equal(capturedRequest.max_tokens, 700);
-  assert.equal(capturedRequest.temperature, 0.2);
+  assert.equal(capturedRequest.max_tokens, 256);
+  assert.equal(capturedRequest.temperature, 0);
   assert.equal(capturedRequest.stream, false);
   assert.deepEqual(capturedRequest.response_format, { type: "json_object" });
   assert.equal(capturedRequest.messages[0].content.includes("sensitive"), true);
@@ -791,7 +791,7 @@ test("xiaoyi provider uses a strict grounded composition keyframe request", asyn
   assert.equal(capturedRequest.messages[0].content.includes("one user-authorized still image"), true);
   assert.equal(capturedRequest.messages[0].content.includes("bounding box"), true);
   assert.equal(capturedRequest.messages[1].content[0].text.includes("focusHint"), true);
-  assert.equal(capturedRequest.messages[1].content[1].image_url.detail, "high");
+  assert.equal(capturedRequest.messages[1].content[1].image_url.detail, "low");
 });
 
 test("xiaoyi generated filter parser rejects invalid recipe schema without raw output", () => {

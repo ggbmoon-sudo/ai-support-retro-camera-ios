@@ -323,3 +323,13 @@ Decision 038 supersedes Decision 037's two-to-three-keyframe consensus behavior.
 The animated reading state exists only to show that the single keyframe is being prepared/analyzed. After the response, the colored ring, fixed reticle, composition frame, manual zoom/distance guidance, subject reacquisition, and Ready state use local Apple Vision and the immutable plan only. Failure is explicit and fail-closed; a new cloud attempt requires a new user-started, newly consented session.
 
 This remains a DEBUG/internal backend-mediated experiment. It adds no automatic zoom/lens/focus/exposure/crop/shutter/capture, ARKit world anchor, direct iOS provider call/key/URL/SDK, raw image/prompt/provider-response persistence or logging, identity/sensitive inference, training use, release Camera cloud entry, or production rollout. `productionReady:false` remains locked.
+
+## Decision 039 - Measured latency budget and fast local Ring hold
+
+Status: Accepted on 2026-07-21 in response to the reported slow analysis and unreliable Ring alignment
+
+The one cloud keyframe may use a reduced geometry-oriented representation: complete-frame, metadata-free JPEG with a 768px long edge, low-detail compatible vision input, deterministic JSON output, and a 256-token cap. Composition-specific backend and client timeouts may fail fast at 18 and 20 seconds respectively. These limits do not authorize lower-quality Filter Lab analysis, repeated Camera uploads, fallback provider substitution, or a production Camera rollout.
+
+Latency claims must be measured rather than inferred from the loading animation. Sanitized real-provider probes may retain only elapsed timing, pass/fail/error buckets, and `productionReady:false`; they must never print or persist the key, prompt, image payload, provider text, or raw plan. Current single-sample diagnostics show an approximately 10.7-second upstream time to headers/first SSE content and 12.1 seconds to validated JSON, so the app must not claim a two-second GPT result on this model/relay. A future two-second target requires explicit approval for a faster provider/model or a distinct local provisional architecture.
+
+After the immutable GPT plan locks, accepted local sequence-tracker geometry may advance a dedicated Ring-only hold at its bounded nominal cadence. It must not count as fresh ambiguity, scene-policy, pose, framing-action, or final Ready evidence. Ring acceptance requires a narrow display-space center distance and five aligned samples; a larger near zone may decay progress by one sample to tolerate jitter. The UI may show seeking/near/holding feedback, a nonnumeric progress arc, and one haptic on transition. This remains 2D image-space guidance, not ARKit or automatic camera actuation.

@@ -17,6 +17,7 @@ export const XIAOYI_LUNA_BASE_URL = "https://xiaoyiapi.xyz";
 export const XIAOYI_LUNA_CHAT_COMPLETIONS_PATH = "/v1/chat/completions";
 export const XIAOYI_LUNA_MODEL = "gpt-5.6-luna";
 export const XIAOYI_LUNA_TOTAL_TIMEOUT_MS = 90_000;
+export const XIAOYI_LUNA_COMPOSITION_TIMEOUT_MS = 18_000;
 export const XIAOYI_LUNA_ENDPOINT_BUCKET = "xiaoyi_chat_completions";
 
 const SUPPORTED_MODELS = new Set([XIAOYI_LUNA_MODEL]);
@@ -57,7 +58,10 @@ export class XiaoyiLunaRelayProvider extends CloudAIProvider {
 
   async analyzeCompositionPlan(input) {
     this.assertReady(this.compositionPlannerModel);
-    const payload = await this.sendChatCompletion(this.compositionPlannerRequestBody(input));
+    const payload = await this.sendChatCompletion(
+      this.compositionPlannerRequestBody(input),
+      Math.min(this.totalTimeoutMs, XIAOYI_LUNA_COMPOSITION_TIMEOUT_MS)
+    );
     return parseXiaoyiLunaCompositionPlanResponse(payload, input.localContext?.focusHint);
   }
 
@@ -107,20 +111,21 @@ export class XiaoyiLunaRelayProvider extends CloudAIProvider {
   compositionPlannerRequestBody(input) {
     return buildRequestBody({
       model: this.compositionPlannerModel,
-      maxTokens: 700,
+      maxTokens: 256,
       systemPrompt: buildCompositionPlannerSystemPrompt(),
       userPrompt: buildCompositionPlannerUserPrompt({
         locale: input.locale,
         localContext: input.localContext
       }),
       image: input.image,
-      imageDetail: "high"
+      imageDetail: "low",
+      temperature: 0
     });
   }
 
-  async sendChatCompletion(body) {
+  async sendChatCompletion(body, timeoutMs = this.totalTimeoutMs) {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), this.totalTimeoutMs);
+    const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
     try {
       const response = await this.fetchImpl(this.endpointURL(), {
@@ -218,7 +223,15 @@ export function parseJsonFromXiaoyiLunaPayload(payload) {
   }
 }
 
-function buildRequestBody({ model, maxTokens, systemPrompt, userPrompt, image, imageDetail }) {
+function buildRequestBody({
+  model,
+  maxTokens,
+  systemPrompt,
+  userPrompt,
+  image,
+  imageDetail,
+  temperature = 0.2
+}) {
   return {
     model,
     messages: [
@@ -237,7 +250,7 @@ function buildRequestBody({ model, maxTokens, systemPrompt, userPrompt, image, i
         ]
       }
     ],
-    temperature: 0.2,
+    temperature,
     stream: false,
     max_tokens: maxTokens,
     response_format: { type: "json_object" }

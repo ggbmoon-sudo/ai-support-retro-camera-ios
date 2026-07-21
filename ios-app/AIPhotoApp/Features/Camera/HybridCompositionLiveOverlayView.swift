@@ -10,6 +10,8 @@ struct HybridCompositionLiveOverlayView: View {
 
     let stage: HybridCompositionLiveGuideStage
     let guide: LocalAIComposeGuide
+    let aimFeedback: HybridCompositionAimFeedback
+    let aimHoldProgress: Double
     let isMirrored: Bool
     let failureMessageKey: String?
 
@@ -210,27 +212,48 @@ struct HybridCompositionLiveOverlayView: View {
     }
 
     private var coloredRing: some View {
-        Circle()
-            .stroke(
-                AngularGradient(
-                    colors: [.cyan, .mint, AppColors.accent, .pink, .cyan],
-                    center: .center
-                ),
-                lineWidth: 4
-            )
-            .frame(width: 42, height: 42)
-            .overlay {
+        ZStack {
+            Circle()
+                .stroke(
+                    AngularGradient(
+                        colors: aimRingColors,
+                        center: .center
+                    ),
+                    lineWidth: aimFeedback == .holding ? 5 : 4
+                )
+
+            if aimHoldProgress > 0 {
                 Circle()
-                    .stroke(Color.white.opacity(0.72), lineWidth: 1)
-                    .padding(6)
+                    .trim(from: 0, to: CGFloat(aimHoldProgress))
+                    .stroke(
+                        Color.mint,
+                        style: StrokeStyle(lineWidth: 3, lineCap: .round)
+                    )
+                    .rotationEffect(.degrees(-90))
+                    .padding(-6)
             }
-            .shadow(color: Color.cyan.opacity(0.50), radius: 7)
+
+            Circle()
+                .stroke(Color.white.opacity(0.72), lineWidth: 1)
+                .padding(6)
+        }
+        .frame(width: 42, height: 42)
+        .scaleEffect(aimFeedback == .holding ? 0.88 : 1)
+        .shadow(color: aimRingShadowColor, radius: aimFeedback == .holding ? 10 : 7)
+        .animation(
+            accessibilityReduceMotion ? nil : .easeInOut(duration: 0.16),
+            value: aimFeedback
+        )
+        .animation(
+            accessibilityReduceMotion ? nil : .linear(duration: 0.08),
+            value: aimHoldProgress
+        )
     }
 
     private var targetReticle: some View {
         ZStack {
             Circle()
-                .stroke(Color.white.opacity(0.94), lineWidth: 2)
+                .stroke(targetReticleColor, lineWidth: 2)
                 .frame(width: 18, height: 18)
 
             Path { path in
@@ -243,7 +266,7 @@ struct HybridCompositionLiveOverlayView: View {
                 path.move(to: CGPoint(x: 17, y: 12))
                 path.addLine(to: CGPoint(x: 24, y: 12))
             }
-            .stroke(Color.white.opacity(0.94), lineWidth: 2)
+            .stroke(targetReticleColor, lineWidth: 2)
             .frame(width: 24, height: 24)
         }
         .frame(width: 30, height: 30)
@@ -343,9 +366,17 @@ struct HybridCompositionLiveOverlayView: View {
         case .analyzing:
             return "camera.hybrid_compose.live.analyzing_detail"
         case .aiming:
-            return guide.subjectBox == nil
-                ? "camera.hybrid_compose.live.reacquiring"
-                : "camera.hybrid_compose.live.aim_detail"
+            if guide.subjectBox == nil {
+                return "camera.hybrid_compose.live.reacquiring"
+            }
+            switch aimFeedback {
+            case .seeking:
+                return "camera.hybrid_compose.live.aim_detail"
+            case .near:
+                return "camera.hybrid_compose.live.aim_near"
+            case .holding:
+                return "camera.hybrid_compose.live.aim_hold"
+            }
         case .framing:
             return guide.subjectBox == nil
                 ? "camera.hybrid_compose.live.reacquiring"
@@ -378,6 +409,9 @@ struct HybridCompositionLiveOverlayView: View {
     }
 
     private var statusStroke: Color {
+        if stage == .aiming, aimFeedback == .holding {
+            return .mint.opacity(0.82)
+        }
         switch stage {
         case .ready:
             return .mint.opacity(0.72)
@@ -387,6 +421,39 @@ struct HybridCompositionLiveOverlayView: View {
             return .cyan.opacity(0.52)
         case .idle:
             return .clear
+        }
+    }
+
+    private var aimRingColors: [Color] {
+        switch aimFeedback {
+        case .seeking:
+            return [.cyan, .mint, AppColors.accent, .pink, .cyan]
+        case .near:
+            return [.yellow, .cyan, .yellow]
+        case .holding:
+            return [.mint, .white, .mint]
+        }
+    }
+
+    private var aimRingShadowColor: Color {
+        switch aimFeedback {
+        case .seeking:
+            return .cyan.opacity(0.50)
+        case .near:
+            return .yellow.opacity(0.58)
+        case .holding:
+            return .mint.opacity(0.72)
+        }
+    }
+
+    private var targetReticleColor: Color {
+        switch aimFeedback {
+        case .seeking:
+            return .white.opacity(0.94)
+        case .near:
+            return .yellow
+        case .holding:
+            return .mint
         }
     }
 

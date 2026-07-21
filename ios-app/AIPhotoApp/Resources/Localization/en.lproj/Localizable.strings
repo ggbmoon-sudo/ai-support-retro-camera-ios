@@ -364,6 +364,8 @@
 "camera.hybrid_compose.live.analyzing_detail" = "Sending only this keyframe; uploading stops after one valid composition position returns.";
 "camera.hybrid_compose.live.aim" = "Aim the colored ring at the reticle";
 "camera.hybrid_compose.live.aim_detail" = "Move the camera to align them. The subject is locked and will not switch.";
+"camera.hybrid_compose.live.aim_near" = "Almost there. Ease the colored ring onto the center of the reticle.";
+"camera.hybrid_compose.live.aim_hold" = "Aligned. Hold the camera briefly.";
 "camera.hybrid_compose.live.reacquiring" = "Hold the camera while the same locked subject is reacquired.";
 "camera.hybrid_compose.live.frame" = "Composition position locked";
 "camera.hybrid_compose.live.frame_detail" = "Follow the distance or lens cue until the subject fits the colored frame.";

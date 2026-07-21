@@ -1,5 +1,19 @@
 # 相機、復古濾鏡與圖片處理技術報告
 
+## Local AI Compose P25-R5
+
+P25-R5 addresses measured cloud wait time and unreliable Ring alignment without changing the one-shot cloud boundary.
+
+- The Camera keyframe remains the complete scene but is redrawn as a metadata-free 768px-long-edge JPEG at 0.62 quality for this geometry-only request.
+- Backend composition uses `detail: low`, `max_tokens: 256`, and `temperature: 0`; Filter Lab and Photo Advisor request quality remain unchanged.
+- Composition has an 18-second provider abort and a 20-second iOS request timeout so a stalled internal experiment fails explicitly instead of appearing connected indefinitely.
+- A sanitized ignored-sample baseline measured about 13.7 seconds end to end. The trimmed non-streaming request measured about 11.3 seconds. A separate SSE diagnostic measured about 10.7 seconds to headers/first content and 12.1 seconds to the first complete validated JSON object. Streaming therefore does not solve the current upstream time-to-first-byte bottleneck.
+- Ring alignment no longer waits only for the approximately 2 FPS full detector. Accepted updates from the existing nominal 15 FPS `VNTrackObjectRequest` may advance only the dedicated Ring hold; they still cannot advance ambiguity, pose, framing action, final Ready, or scene-policy evidence.
+- The old independent 0.065/0.075 axis tolerance is replaced by a 0.028 normalized display-distance radius. Five aligned tracker samples are required, with a 0.075 near zone that decays rather than instantly destroys progress when local tracking jitters.
+- The overlay changes from seeking to near to holding, renders a progress arc, and confirms the Ring-to-frame transition with one haptic.
+
+The measured 2-second target remains unmet by Xiaoyi `gpt-5.6-luna`; reaching it requires an explicitly approved faster upstream model/service or a separately designed local provisional result that never replaces the final cloud target. P25-R5 does not fake completion, stream repeated frames, or silently switch models. The frozen response, manual camera control, DEBUG/internal-only route, privacy boundaries, and `productionReady:false` remain unchanged.
+
 ## Local AI Compose P25-R4
 
 P25-R4 supersedes P25-R3's bounded multi-keyframe consensus with an exact one-request contract.

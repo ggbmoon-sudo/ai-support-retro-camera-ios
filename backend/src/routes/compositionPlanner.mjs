@@ -6,7 +6,7 @@ import { checkDevQuota } from "../security/quota.mjs";
 import { checkDevRateLimit } from "../security/rateLimit.mjs";
 import { withProviderTimeout } from "../security/timeout.mjs";
 import { validateCompositionPlannerRequest } from "../validators/validateCompositionPlannerRequest.mjs";
-import { XIAOYI_LUNA_TOTAL_TIMEOUT_MS } from "../providers/XiaoyiLunaRelayProvider.mjs";
+import { XIAOYI_LUNA_COMPOSITION_TIMEOUT_MS } from "../providers/XiaoyiLunaRelayProvider.mjs";
 
 export async function handleCompositionPlannerRequest(requestBody, options = {}) {
   const config = options.config ?? cloudAIConfig();
@@ -38,7 +38,7 @@ export async function handleCompositionPlannerRequest(requestBody, options = {})
   try {
     const candidate = await withProviderTimeout(
       provider.analyzeCompositionPlan(providerInputFromRequest(requestBody)),
-      options.timeoutMs ?? XIAOYI_LUNA_TOTAL_TIMEOUT_MS
+      options.timeoutMs ?? XIAOYI_LUNA_COMPOSITION_TIMEOUT_MS
     );
     const validation = validateCompositionPlanGrounding(
       candidate,

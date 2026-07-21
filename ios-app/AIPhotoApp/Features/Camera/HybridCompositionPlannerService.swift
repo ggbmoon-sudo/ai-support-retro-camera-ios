@@ -7,7 +7,7 @@ protocol HybridCompositionPlannerService: Sendable {
 struct RemoteHybridCompositionPlannerService: HybridCompositionPlannerService {
     let endpointClient: CloudAIEndpointClient
 
-    init(endpointClient: CloudAIEndpointClient = CloudAIEndpointClient(timeoutSeconds: 95)) {
+    init(endpointClient: CloudAIEndpointClient = CloudAIEndpointClient(timeoutSeconds: 20)) {
         self.endpointClient = endpointClient
     }
 

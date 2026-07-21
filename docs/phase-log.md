@@ -8,9 +8,77 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Local AI Compose P25-R4 - One Keyframe, One Immutable Plan
-Status: implemented; 440/440 backend/source-contract tests and static/localization checks passed; Mac/Xcode and physical-device verification pending
-Latest implementation: P25-R4 keeps the staged animated analysis → ring/reticle → composition frame/zoom-distance → Ready interaction but makes cloud analysis exactly one-shot. One explicit consent sends one metadata-free keyframe, one validated GPT response becomes the immutable subject/plan, and cloud analysis ends immediately. There is no request loop, consensus counter, second keyframe, or later target replacement; all post-response movement is local Vision tracking. Hardware/capture remain manual and `productionReady:false` stays locked.
+Current phase: Local AI Compose P25-R5 - Latency and Ring Alignment Polish
+Status: implemented; 440/440 backend/source-contract tests passed; sanitized real-provider latency probes passed; Mac/Xcode and physical-device verification pending
+Latest implementation: P25-R5 removes avoidable payload/output delay with a 768px metadata-free keyframe, low-detail 256-token deterministic composition request, and fail-fast timeouts. Measurement shows the remaining wait is upstream Xiaoyi `gpt-5.6-luna` time to first byte, so the 2-second target is documented as unmet rather than faked. Ring acceptance now uses fresh nominal-15-FPS local sequence tracking, a narrow hit radius, five-sample hold, near-zone hysteresis, progress feedback, and haptic confirmation while final framing/Ready evidence remains on the slower authoritative path. The one-response frozen plan, manual Camera control, DEBUG boundary, and `productionReady:false` remain locked.
+
+## Local AI Compose P25-R5 - Latency and Ring Alignment Polish
+
+Status: implemented; 440/440 backend/source-contract tests passed; sanitized real-provider latency probes passed; Mac/Xcode and physical-device verification pending
+Date: 2026-07-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+P25-R5 measures why the one-shot AI wait cannot meet two seconds on the current relay, safely trims avoidable request work, and replaces the Ring's loose/slow acceptance with precise fast local hold feedback.
+
+### Completed Work
+
+- Reduced only the composition keyframe path to 768px long edge / JPEG 0.62 while preserving the complete frame and metadata stripping.
+- Changed only the Xiaoyi composition request to low detail, 256 maximum output tokens, and temperature zero.
+- Added an 18-second provider abort and 20-second iOS timeout for explicit fail-fast behavior.
+- Added a sanitized SSE latency diagnostic that reports only headers, first-content, valid-JSON timing, safe error bucket, and `productionReady:false`.
+- Measured approximately 13.7s for the original path, 11.3s for the trimmed non-streaming path, 10.7s to streamed first content, and 12.1s to complete validated streamed JSON on the ignored synthetic sample.
+- Replaced loose axis alignment with a 0.028 display-distance hit radius, five accepted samples, and a 0.075 near-zone one-step decay.
+- Allowed the existing nominal 15 FPS accepted sequence track to advance only Ring hold evidence; final frame actions and Ready remain full-analysis-only.
+- Added seeking/near/holding ring color, progress arc, localized copy, and a haptic when Ring alignment locks.
+
+### Changed Files
+
+- iOS latency/payload: `CameraViewModel.swift` and `HybridCompositionPlannerService.swift`
+- Ring controller/UI: `HybridCompositionLiveGuideStage.swift`, `HybridCompositionLiveOverlayView.swift`, and `CameraView.swift`
+- Localized feedback: both `Localizable.strings` files
+- Backend request/timeout: `XiaoyiLunaRelayProvider.mjs` and `compositionPlanner.mjs`
+- Sanitized timing tool: `run-xiaoyi-composition-latency-smoke.mjs` and `backend/package.json`
+- Regression coverage: `cloud-ai-boundary.test.mjs` and `composition-planner.test.mjs`
+- Docs: root/iOS READMEs, camera pipeline, decisions, and this phase log
+
+### Verification
+
+- Focused composition/provider suite passes 82/82.
+- Full backend/source-contract suite passes 440/440.
+- Sanitized real-provider non-streaming smoke succeeds in about 11.3s after the request trim.
+- Sanitized SSE latency smoke succeeds with about 10.7s to first content and 12.1s to valid JSON, confirming streaming is not the current bottleneck.
+- `git diff --check` passes except expected Windows line-ending notices.
+- Xcode/Apple SDK compilation and physical Camera behavior remain pending because this workspace is Windows-only.
+
+### Manual Xcode / Device Checklist
+
+- Start one consented session and confirm only one keyframe uploads and the immutable result still enters Ring mode.
+- Approach the reticle: Ring should show seeking, then near, then holding with a short progress arc.
+- Sweep past the reticle quickly and confirm it does not lock early; settle centrally for roughly 0.3–0.6 seconds and confirm one haptic plus the composition frame.
+- Test slow movement, normal hand jitter, nominal and Low Power tracking cadence, brief occlusion/reacquisition, front-camera mirroring, and device rotation.
+- Confirm final framing/Ready does not advance from fast tracking alone.
+- Test offline/provider stall: failure should appear within the bounded timeout and must not send a replacement keyframe.
+
+### Known TODOs
+
+- The current Xiaoyi `gpt-5.6-luna` relay does not meet the requested two-second result. Compare a separately approved faster vision model/service or explicitly design a local provisional planner before promising that target.
+- Validate the 0.028 hit radius and five-sample hold on multiple physical iPhone sizes; tune only from device evidence.
+
+### Boundary Confirmations
+
+- Exactly one consented Camera keyframe and one immutable response: unchanged.
+- Direct iOS provider call/key/URL/SDK: no; backend only.
+- Repeated streaming frames, automatic retry, or replacement target: no.
+- Automatic zoom/lens/focus/exposure/crop/shutter/capture or ARKit world anchor: no.
+- Raw image/prompt/provider-response/timing artifact persistence or unsafe logs: no.
+- Release/default Camera cloud entry or production rollout: no.
+- `productionReady:false` remains locked.
+
+### Ready for Next Step
+
+Ready for Mac/Xcode physical-device verification: yes. Ready to claim a two-second cloud result: no. Ready for production rollout: no.
 
 ## Local AI Compose P25-R4 - One Keyframe, One Immutable Plan
 

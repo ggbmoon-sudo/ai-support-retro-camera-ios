@@ -206,6 +206,14 @@ struct CameraView: View {
             let feedback = UINotificationFeedbackGenerator()
             feedback.notificationOccurred(.success)
         }
+        .onChange(of: viewModel.hybridCompositionLiveGuideStage) { previous, current in
+            guard previous == .aiming,
+                  current == .framing else {
+                return
+            }
+            let feedback = UIImpactFeedbackGenerator(style: .medium)
+            feedback.impactOccurred()
+        }
         .onChange(of: toneSettings.languageMode) { _, _ in
             viewModel.refreshLiveGuidanceCopyForCurrentTone()
         }
@@ -464,6 +472,8 @@ struct CameraView: View {
                             HybridCompositionLiveOverlayView(
                                 stage: viewModel.hybridCompositionLiveGuideStage,
                                 guide: viewModel.localAIComposeGuide,
+                                aimFeedback: viewModel.hybridCompositionAimFeedback,
+                                aimHoldProgress: viewModel.hybridCompositionAimHoldProgress,
                                 isMirrored: viewModel.isUsingFrontCamera,
                                 failureMessageKey: viewModel.hybridCompositionLiveFailureMessageKey
                             )

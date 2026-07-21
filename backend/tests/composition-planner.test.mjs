@@ -216,9 +216,14 @@ test("iOS staged live planner sends one keyframe then freezes one plan", () => {
   assert.equal(oneShotApplyPath.includes("finishHybridCompositionCloudAnalysisAfterPlanLock()"), true);
   assert.equal(oneShotApplyPath.includes("scheduleNextHybridCompositionKeyframe"), false);
   assert.equal(cameraViewModel.includes("refreshLocalAIComposeGuide()"), true);
+  assert.equal(cameraViewModel.includes("consumesFreshAimTrackingSample"), true);
+  assert.equal(cameraViewModel.includes("update.phase == .tracked"), true);
+  assert.equal(cameraViewModel.includes("maxLongEdge: 768"), true);
+  assert.equal(cameraViewModel.includes("jpegQuality: 0.62"), true);
   assert.equal(cameraViewModel.includes("isFrontCameraMirrored: isUsingFrontCamera"), true);
   assert.equal(captureService.includes("requestNextFrame"), true);
   assert.equal(remoteService.includes("response.safety.containsSensitiveInference == false"), true);
+  assert.equal(remoteService.includes("CloudAIEndpointClient(timeoutSeconds: 20)"), true);
   assert.equal(remoteService.includes("#else\n        throw CloudAIServiceError.remoteDisabled"), true);
   assert.equal(consentView.includes("camera.hybrid_compose.consent.message"), true);
   assert.equal(workloadPolicy.includes("lockedSubjectTrackingInterval: 1.0 / 15.0"), true);
@@ -226,9 +231,14 @@ test("iOS staged live planner sends one keyframe then freezes one plan", () => {
   assert.equal(liveStage.includes("case aiming"), true);
   assert.equal(liveStage.includes("case framing"), true);
   assert.equal(liveStage.includes("case ready"), true);
+  assert.equal(liveStage.includes("requiredAlignedSamples: Int = 5"), true);
+  assert.equal(liveStage.includes("alignedDisplayDistance: Double = 0.028"), true);
+  assert.equal(liveStage.includes("nearDisplayDistance: Double = 0.075"), true);
   assert.equal(liveOverlay.includes("TimelineView"), true);
   assert.equal(liveOverlay.includes("camera.hybrid_compose.live.single_keyframe"), true);
   assert.equal(liveOverlay.includes("coloredRing"), true);
+  assert.equal(liveOverlay.includes("aimHoldProgress"), true);
+  assert.equal(liveOverlay.includes("camera.hybrid_compose.live.aim_hold"), true);
   assert.equal(liveOverlay.includes("compositionFrame"), true);
   assert.equal(cameraView.includes("HybridCompositionLiveOverlayView"), true);
   assert.equal(cameraViewModel.includes("capturePhoto("), true);
@@ -247,6 +257,17 @@ test("composition smoke tool reports only sanitized plan fields", () => {
   assert.equal(script.includes("console.log"), false);
   assert.equal(script.includes("XIAOYI_API_KEY"), false);
   assert.equal(script.includes("authorization"), false);
+
+  const latencyScript = readFileSync(
+    new URL("../scripts/run-xiaoyi-composition-latency-smoke.mjs", import.meta.url),
+    "utf8"
+  );
+  assert.equal(latencyScript.includes("--run-provider"), true);
+  assert.equal(latencyScript.includes("requestBody.stream = true"), true);
+  assert.equal(latencyScript.includes("firstContentMs"), true);
+  assert.equal(latencyScript.includes("validJSONMs"), true);
+  assert.equal(latencyScript.includes("console.log"), false);
+  assert.equal(latencyScript.includes("productionReady: false"), true);
 });
 
 function readIOSSource(relativePath) {

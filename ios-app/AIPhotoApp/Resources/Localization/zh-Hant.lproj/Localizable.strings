@@ -363,6 +363,8 @@
 "camera.hybrid_compose.live.analyzing_detail" = "只傳送目前一個關鍵畫面；收到一次構圖位置後立即停止上傳。";
 "camera.hybrid_compose.live.aim" = "將彩色圓環移到準星";
 "camera.hybrid_compose.live.aim_detail" = "移動相機對準位置；主體已鎖定，不會轉去其他目標。";
+"camera.hybrid_compose.live.aim_near" = "接近了，慢慢把彩色圓環移到準星中央。";
+"camera.hybrid_compose.live.aim_hold" = "已對準，保持鏡頭一會。";
 "camera.hybrid_compose.live.reacquiring" = "保持鏡頭，正在找回同一個已鎖定主體。";
 "camera.hybrid_compose.live.frame" = "構圖位置已鎖定";
 "camera.hybrid_compose.live.frame_detail" = "按導引調整距離或焦段，讓主體貼近彩色構圖框。";
