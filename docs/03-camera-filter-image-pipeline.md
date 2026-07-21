@@ -1,5 +1,31 @@
 # 相機、復古濾鏡與圖片處理技術報告
 
+## Local AI Compose P25-R4
+
+P25-R4 supersedes P25-R3's bounded multi-keyframe consensus with an exact one-request contract.
+
+- After explicit DEBUG session consent, Camera captures and uploads exactly one metadata-free preview JPEG through the backend.
+- The animated analysis overlay remains visible only while that one request is being prepared and analyzed; it is labelled as one keyframe rather than progress toward a batch.
+- The first valid schema `1.1` response supplies the only GPT subject rectangle and composition plan. Camera applies both immediately and ends cloud analysis without scheduling another keyframe.
+- No later cloud coordinate or strategy can exist in that session. The colored ring, fixed reticle, composition frame, zoom/distance cue, reacquisition, and Ready state all use the frozen plan plus local Apple Vision tracking.
+- Snapshot, timeout, invalid-schema, unsafe-output, and network failure fail closed instead of silently sending a replacement frame.
+
+This keeps the P25-R3 staged viewfinder but removes its cadence loop, consensus counters, and multi-response fallback. No payload/schema/provider change, automatic camera actuation, direct iOS provider access, raw artifact persistence, release Camera cloud entry, or production rollout is added. `productionReady:false` remains locked.
+
+## Local AI Compose P25-R3
+
+P25-R3 turns the Live AI experiment into a deterministic one-way viewfinder flow instead of rendering every detector and guidance state at once.
+
+- Consent acceptance closes the planner sheet immediately so Camera can show a dynamic analysis field while keyframes are captured and processed.
+- Analysis sends sequential metadata-free JPEGs at the existing maximum of one per second, one in flight and no queue, but is now finite: two matching strategy observations lock the plan, with a hard maximum of three valid keyframes.
+- The first validated GPT subject box replaces the center preflight candidate exactly and seeds the local `VNTrackObjectRequest`. Later cloud boxes cannot replace it.
+- Once the plan locks, the cloud loop stops. The active session retains only one frozen subject/strategy/target and uses local Vision geometry afterward.
+- The overlay then advances in one direction: animated analysis, colored subject ring toward one fixed reticle, one gradient composition frame with move/zoom/distance guidance, then a latched Ready state. Alternative detector boxes and changing grids are hidden during the Live AI flow.
+- Aim requires three fresh local frame samples near the target. Ready still depends on the existing fresh-frame action/readiness controller and cannot regress because of a noisy sample.
+- The ring is a 2D image-space guide tied to the same local subject track, not an ARKit world anchor. Camera movement, lens/zoom choice, shutter, and capture remain photographer-controlled.
+
+The provider payload/schema remains `1.1`; no new raw prompt/image/response logging or persistence exists. Release has no Camera cloud entry, iOS has no provider key/direct call, and `productionReady:false` remains locked.
+
 ## Local AI Compose P25-R2
 
 P25-R2 defaults Camera to local AI Compose and makes Live AI start reachable without a hidden gesture prerequisite. `canRequestHybridCompositionPlan` now depends on Compose/session/work state rather than a pre-existing subject hint. A long press still supplies the most precise focus hint; if absent, Start creates a center provisional candidate and the first strictly validated cloud keyframe grounds it. DEBUG presents the session consent once after Camera permission becomes authorized. It never starts upload before acceptance and does not repeatedly prompt after cancellation. Returning from a selected photo restores local Compose. Release retains no cloud entry, and the 1 FPS upper bound, one-in-flight/no-queue behavior, local 15 FPS tracking, manual camera control, and lifecycle cancellation remain unchanged.

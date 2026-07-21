@@ -158,13 +158,15 @@ test("composition planner falls back safely on invalid provider output", async (
   assert.equal(result.body.error.code, "provider_invalid_schema");
 });
 
-test("iOS live-like planner caps sequential cloud keyframes and keeps fast tracking local", () => {
+test("iOS staged live planner sends one keyframe then freezes one plan", () => {
   const cameraView = readIOSSource("Features/Camera/CameraView.swift");
   const cameraViewModel = readIOSSource("Features/Camera/CameraViewModel.swift");
   const captureService = readIOSSource("Features/Camera/CameraCaptureService.swift");
   const remoteService = readIOSSource("Features/Camera/HybridCompositionPlannerService.swift");
   const consentView = readIOSSource("Features/Camera/HybridCompositionConsentView.swift");
   const workloadPolicy = readIOSSource("Features/Camera/LocalCameraAIWorkloadPolicy.swift");
+  const liveStage = readIOSSource("Features/Camera/HybridCompositionLiveGuideStage.swift");
+  const liveOverlay = readIOSSource("Features/Camera/HybridCompositionLiveOverlayView.swift");
 
   assert.equal(cameraView.includes("#if DEBUG"), true);
   assert.equal(cameraView.includes("requestHybridCompositionPlannerConsent"), true);
@@ -186,12 +188,33 @@ test("iOS live-like planner caps sequential cloud keyframes and keeps fast track
   );
   assert.equal(clearPhotoPath.includes("isLocalAIComposeEnabled = true"), true);
   assert.equal(cameraViewModel.includes("service.captureAnalysisSnapshot"), true);
-  assert.equal(cameraViewModel.includes("hybridCompositionKeyframeIntervalNanoseconds"), true);
-  assert.equal(cameraViewModel.includes("scheduleNextHybridCompositionKeyframe"), true);
+  assert.equal(cameraViewModel.includes("hybridCompositionKeyframeIntervalNanoseconds"), false);
+  assert.equal(cameraViewModel.includes("hybridCompositionMaximumKeyframeCount"), false);
+  assert.equal(cameraViewModel.includes("hybridCompositionRequiredStrategyMatches"), false);
+  assert.equal(cameraViewModel.includes("scheduleNextHybridCompositionKeyframe"), false);
+  assert.equal(cameraViewModel.includes("requestNextHybridCompositionKeyframe"), false);
+  assert.equal(cameraViewModel.includes("pendingHybridCompositionPlan"), false);
+  assert.equal(
+    (cameraViewModel.match(/requestHybridCompositionKeyframe/g) ?? []).length,
+    2
+  );
+  assert.equal(cameraViewModel.includes("finishHybridCompositionCloudAnalysisAfterPlanLock"), true);
   assert.equal(cameraViewModel.includes("hybridCompositionNetworkTask?.cancel()"), true);
   assert.equal(cameraViewModel.includes("focusHint: HybridCompositionFocusHint"), true);
   assert.equal(cameraViewModel.includes("groundedSubjectCandidate"), true);
   assert.equal(cameraViewModel.includes("activeHybridCompositionPlan"), true);
+  assert.equal(cameraViewModel.includes("let liveCandidate = cloudCandidate"), true);
+  assert.equal(cameraViewModel.includes("guard !hasGroundedHybridCompositionSubject"), true);
+  assert.equal(cameraViewModel.includes("hybridCompositionLiveGuideStage = .aiming"), true);
+  assert.equal(cameraViewModel.includes("hybridCompositionLiveGuideStage = .framing"), true);
+  assert.equal(cameraViewModel.includes("hybridCompositionLiveGuideStage = .ready"), true);
+  const oneShotApplyPath = cameraViewModel.slice(
+    cameraViewModel.indexOf("applyHybridCompositionGrounding(cloudCandidate)"),
+    cameraViewModel.indexOf("} catch is CancellationError")
+  );
+  assert.equal(oneShotApplyPath.includes("lockHybridCompositionPlan(plan)"), true);
+  assert.equal(oneShotApplyPath.includes("finishHybridCompositionCloudAnalysisAfterPlanLock()"), true);
+  assert.equal(oneShotApplyPath.includes("scheduleNextHybridCompositionKeyframe"), false);
   assert.equal(cameraViewModel.includes("refreshLocalAIComposeGuide()"), true);
   assert.equal(cameraViewModel.includes("isFrontCameraMirrored: isUsingFrontCamera"), true);
   assert.equal(captureService.includes("requestNextFrame"), true);
@@ -199,6 +222,15 @@ test("iOS live-like planner caps sequential cloud keyframes and keeps fast track
   assert.equal(remoteService.includes("#else\n        throw CloudAIServiceError.remoteDisabled"), true);
   assert.equal(consentView.includes("camera.hybrid_compose.consent.message"), true);
   assert.equal(workloadPolicy.includes("lockedSubjectTrackingInterval: 1.0 / 15.0"), true);
+  assert.equal(liveStage.includes("case analyzing"), true);
+  assert.equal(liveStage.includes("case aiming"), true);
+  assert.equal(liveStage.includes("case framing"), true);
+  assert.equal(liveStage.includes("case ready"), true);
+  assert.equal(liveOverlay.includes("TimelineView"), true);
+  assert.equal(liveOverlay.includes("camera.hybrid_compose.live.single_keyframe"), true);
+  assert.equal(liveOverlay.includes("coloredRing"), true);
+  assert.equal(liveOverlay.includes("compositionFrame"), true);
+  assert.equal(cameraView.includes("HybridCompositionLiveOverlayView"), true);
   assert.equal(cameraViewModel.includes("capturePhoto("), true);
   assert.equal(cameraViewModel.includes("setVideoZoomFactor"), false);
 });

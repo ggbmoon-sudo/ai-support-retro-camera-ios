@@ -303,3 +303,23 @@ Status: Accepted on 2026-07-20 by explicit user request to make Live AI Compose 
 Camera may default to local AI Compose and, in the approved DEBUG/internal build only, present the bounded Live AI session consent once after Camera permission is ready. Default workflow does not mean default upload: no image may leave the device until the user accepts that session consent. Cancellation must not create a repeated consent loop, and manual Start remains available.
 
 A long press is an optional precise-subject override rather than an enablement prerequisite. If the photographer starts directly, Camera may seed one center provisional image-space candidate for the first strictly validated keyframe to ground. This does not authorize automatic provider selection of identity or sensitive attributes, automatic camera actuation/capture, consent reuse across stopped sessions, release/default cloud access, or production rollout. All Decision 035 cadence, single-in-flight, no-queue, backend-only, privacy, lifecycle cancellation, and `productionReady:false` boundaries remain in force.
+
+## Decision 037 - Finite consensus then one-way Live AI composition guidance
+
+Status: Accepted on 2026-07-21 by explicit user request for the staged Doka-like interaction shown in seven supplied references
+
+The internal Live AI Camera experiment must separate cloud analysis from local guidance. After explicit consent, Camera may send sequential metadata-free keyframes under the existing one-frame-per-second maximum, exactly-one-in-flight, and no-queue rules. Two matching safe strategy observations lock the plan; analysis has a hard ceiling of three valid keyframes. If the first plan is the only validated result before a later request fails, it may be used as a bounded degraded fallback. Once a plan locks, uploads stop and no later cloud box or strategy may replace it during that session.
+
+The center candidate is only a preflight focus hint. The first validated GPT grounding rectangle must replace it and seed the local Vision tracker. Presentation then advances only from analysis to aim, framing, and ready: an animated keyframe field; one colored ring attached to the locked image-space subject and one fixed target reticle; one recommended composition frame with manual distance/lens guidance; and a latched Ready state. Alternative candidate boxes, rapidly changing grids, confidence, and score are not shown in this Live AI surface.
+
+This is a functional interaction inspired by the supplied reference, not copied branding, assets, or code. The ring is local 2D image-space tracking rather than an ARKit world anchor. This decision adds no automatic zoom/lens/focus/exposure/crop/shutter/capture, release/default Camera cloud entry, direct iOS provider call/key/URL/SDK, raw image/prompt/provider-response persistence or logging, identity/sensitive inference, training use, or production rollout. `productionReady:false` remains locked.
+
+## Decision 038 - Exactly one keyframe and one immutable AI composition response
+
+Status: Accepted on 2026-07-21 by explicit user clarification that Live AI needs only one keyframe and one answer
+
+Decision 038 supersedes Decision 037's two-to-three-keyframe consensus behavior. Each explicitly consented internal Live AI session may capture and upload exactly one metadata-free preview JPEG through the backend. The first valid schema `1.1` response is the only cloud grounding and composition plan for that session. Camera must immediately freeze it and end cloud analysis; it must not schedule a second keyframe, retry by silently uploading a replacement frame, or accept a later plan that could move the target.
+
+The animated reading state exists only to show that the single keyframe is being prepared/analyzed. After the response, the colored ring, fixed reticle, composition frame, manual zoom/distance guidance, subject reacquisition, and Ready state use local Apple Vision and the immutable plan only. Failure is explicit and fail-closed; a new cloud attempt requires a new user-started, newly consented session.
+
+This remains a DEBUG/internal backend-mediated experiment. It adds no automatic zoom/lens/focus/exposure/crop/shutter/capture, ARKit world anchor, direct iOS provider call/key/URL/SDK, raw image/prompt/provider-response persistence or logging, identity/sensitive inference, training use, release Camera cloud entry, or production rollout. `productionReady:false` remains locked.

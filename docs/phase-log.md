@@ -8,9 +8,141 @@ Every Codex task must update this file before finishing.
 
 ## Current Status
 
-Current phase: Local AI Compose P25-R2 - Default Reachable Live AI Workflow
-Status: implemented; 440/440 backend tests and focused static/localization checks passed; Mac/Xcode and physical-device verification pending
-Latest implementation: P25-R2 makes local AI Compose the Camera default, removes the hidden subject-hint requirement from the Live AI Start gate, and presents the DEBUG session consent once after Camera authorization. No upload starts without acceptance. Starting without a long press creates a central provisional subject for first-keyframe Xiaoyi grounding; long press remains an optional precise override. Returning from a selected photo restores Compose, while cancelling consent does not create a repeated prompt. Release cloud entry remains absent and P25 cadence, local tracking, lifecycle, privacy, and manual-control boundaries are unchanged.
+Current phase: Local AI Compose P25-R4 - One Keyframe, One Immutable Plan
+Status: implemented; 440/440 backend/source-contract tests and static/localization checks passed; Mac/Xcode and physical-device verification pending
+Latest implementation: P25-R4 keeps the staged animated analysis → ring/reticle → composition frame/zoom-distance → Ready interaction but makes cloud analysis exactly one-shot. One explicit consent sends one metadata-free keyframe, one validated GPT response becomes the immutable subject/plan, and cloud analysis ends immediately. There is no request loop, consensus counter, second keyframe, or later target replacement; all post-response movement is local Vision tracking. Hardware/capture remain manual and `productionReady:false` stays locked.
+
+## Local AI Compose P25-R4 - One Keyframe, One Immutable Plan
+
+Status: implemented; 440/440 backend/source-contract tests and static/localization checks passed; Mac/Xcode and physical-device verification pending
+Date: 2026-07-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+P25-R4 applies the user's clarification that dynamic reading should send one keyframe once, receive one AI-selected composition position once, and never risk moving the target because of a later AI response.
+
+### Completed Work
+
+- Removed the one-second repeat scheduler, maximum-keyframe counter, valid-observation counter, pending-plan state, and two-match consensus logic.
+- Kept exactly one snapshot capture and one backend request per explicitly consented session.
+- Made the first valid response immediately ground the subject, freeze the plan, end cloud analysis, and enter the ring-aim stage.
+- Kept the P25-R3 animated scan field but relabelled it `One keyframe` / `單次關鍵幀` instead of batch progress.
+- Made snapshot, timeout, invalid, unsafe, and network failure fail closed without uploading a replacement image.
+- Updated English/Traditional Chinese consent and status copy to promise exactly one uploaded JPEG and one response.
+- Updated regression assertions to require the repeat scheduler, cadence constants, consensus state, and pending-plan state to remain absent.
+
+### Changed Files
+
+- One-shot session: `CameraViewModel.swift`
+- One-shot overlay status: `CameraView.swift` and `HybridCompositionLiveOverlayView.swift`
+- Copy: both `Localizable.strings` files
+- Regression coverage: `backend/tests/composition-planner.test.mjs`
+- Docs: root/iOS READMEs, camera pipeline, decisions, and this phase log
+
+### Verification
+
+- Focused composition planner/source-contract tests pass 9/9.
+- Full backend/source-contract suite passes 440/440.
+- Static scans confirm there is no repeat scheduler, `requestNext...` path, cadence/max/consensus state, pending plan, or `2/3` batch progress in the iOS Camera implementation.
+- New overlay localization keys exist in English and Traditional Chinese; delimiter and `git diff --check` checks pass with expected Windows line-ending notices only.
+- Xcode/Apple SDK compilation and physical Camera behavior remain pending because this workspace is Windows-only.
+
+### Manual Xcode / Device Checklist
+
+- Accept consent and confirm one animated analysis state appears while exactly one network request runs.
+- Confirm no `2/3` or repeated upload appears and the server receives no second Camera request.
+- Confirm the returned subject/ring and composition position never change because of cloud output afterward.
+- Pan to align the colored ring, then adjust distance/zoom manually inside the single composition frame.
+- Test timeout/offline/invalid response: show failure and require a new explicit session rather than automatic replacement upload.
+- Test Stop/restart, front/rear mirroring, brief occlusion/reacquisition, background, capture, and Release build behavior.
+
+### Boundary Confirmations
+
+- Cloud request count: exactly one per explicitly consented session.
+- Automatic retry/replacement keyframe: no.
+- Post-response tracking: local Apple Vision only, using one immutable plan.
+- Automatic camera actuation/capture or ARKit world anchor: no.
+- Direct iOS provider access/key/URL/SDK: no; backend boundary only.
+- Raw artifact persistence/logging, sensitive inference, or training use: no.
+- Release/default Camera cloud entry and production rollout: no.
+- `productionReady:false` remains locked.
+
+### Ready for Next Step
+
+Ready for Mac/Xcode physical-device verification after the passing full suite: yes. Ready for production rollout: no.
+
+## Local AI Compose P25-R3 - Finite Staged Subject-Locked Live Guide
+
+Status: implemented; 440/440 backend/source-contract tests and static/localization checks passed; Mac/Xcode and physical-device verification pending
+Date: 2026-07-21
+Production readiness: `productionReady:false`
+
+### Summary
+
+P25-R3 fixes the visible target jumping and implements the requested four-step interaction: dynamic keyframe analysis, one ring to aim, one AI-selected composition frame, then manual zoom/distance refinement and Ready.
+
+### Completed Work
+
+- Added a one-way `idle/analyzing/aiming/framing/ready/failed` Live guide state.
+- Added a dedicated SwiftUI overlay with animated scan points, keyframe progress, one colored subject ring, one fixed reticle, a dimmed recommended frame, localized manual zoom/distance prompts, and a latched Ready state.
+- Changed the first validated GPT grounding to replace the temporary center box exactly and seed the local sequence tracker.
+- Added two-match strategy consensus with a three-valid-keyframe hard ceiling and a safe one-plan fallback if a later request fails.
+- Stopped the cloud loop as soon as one plan locks; later cloud coordinates and strategies cannot replace the session target.
+- Required three fresh local position samples before the UI advances from ring aiming to framing; existing fresh-frame readiness still controls the final Ready transition.
+- Closed the consent/result sheet immediately after Start so the analysis animation is visible in Camera.
+- Updated English/Traditional Chinese consent and guidance copy to describe the finite upload and staged interaction.
+- Added regression source-contract assertions for the finite consensus, first-cloud-box grounding, stage model, scan animation, ring, frame, and retained local 15 FPS/manual-control boundaries.
+
+### Changed Files
+
+- New stage/UI: `HybridCompositionLiveGuideStage.swift` and `HybridCompositionLiveOverlayView.swift`
+- Session/consensus/transitions: `CameraViewModel.swift`
+- Camera presentation: `CameraView.swift`
+- Copy: both `Localizable.strings` files
+- Regression coverage: `backend/tests/composition-planner.test.mjs`
+- Docs: root README, camera pipeline, decisions, and this phase log
+
+### Verification
+
+- Focused composition planner/source-contract tests pass 9/9.
+- Full backend/source-contract suite passes 440/440.
+- `CameraView.swift`, `CameraViewModel.swift`, and both new Swift files have balanced delimiters.
+- Both localization files have no duplicate keys.
+- `git diff --check` passes with expected Windows line-ending notices only.
+- Xcode/Apple SDK compilation and physical Camera behavior remain pending because this workspace is Windows-only.
+
+### Manual Xcode / Device Checklist
+
+- Clean-build DEBUG and accept the per-session consent; the sheet should close and show animated analysis immediately.
+- Hold the camera steady: at most three keyframes should appear, never overlap, and uploads should stop once the plan locks.
+- Confirm the provisional center box is never shown during analysis and the chosen ring stays on one subject rather than switching to other people/objects.
+- Pan until the colored ring meets the reticle; after three stable fresh samples, one composition frame should replace the ring.
+- Follow move/zoom/distance guidance manually; Ready should latch without auto-zoom or auto-capture.
+- Test brief occlusion/reacquisition, front-camera mirroring, Stop/restart, background, capture, offline/failure, reduced-motion, and Release build behavior.
+
+### Known TODOs
+
+- Compile on Mac/Xcode and correct any Apple-SDK-only SwiftUI diagnostic.
+- Validate target/ring coordinate parity and tolerances on physical rear/front cameras.
+- Confirm real network request count is two when strategies agree and never exceeds three valid keyframes.
+- Tune ring alignment and target-frame sizing only from multi-scene device evidence; do not reintroduce target replacement.
+
+### Boundary Confirmations
+
+- Cloud analysis: explicit-consent DEBUG/internal only, finite and stopped after plan lock.
+- Cloud cadence: at most 1 FPS, exactly one in flight, no queue/backlog/catch-up.
+- Post-lock tracking: local Apple Vision only; no later cloud target replacement.
+- Automatic zoom/lens/focus/exposure/crop/shutter/capture: no.
+- ARKit/world anchor: no; local 2D image-space ring only.
+- iOS provider key/direct call/URL/SDK: no; backend boundary only.
+- Raw image/prompt/provider-response persistence/logging, identity/sensitive inference, or training use: no.
+- Release/default Camera cloud entry and production rollout: no.
+- `productionReady:false` remains locked.
+
+### Ready for Next Step
+
+Ready for Mac/Xcode physical-device verification after the passing full suite: yes. Ready for production rollout: no.
 
 ## Local AI Compose P25-R2 - Default Reachable Live AI Workflow
 

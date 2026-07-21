@@ -122,6 +122,9 @@ struct CameraView: View {
                 canAnalyze: viewModel.canRequestHybridCompositionPlan,
                 acceptConsent: { consent in
                     viewModel.startHybridCompositionPlanner(consent: consent)
+                    if viewModel.isHybridCompositionLiveSessionActive {
+                        isHybridCompositionPlannerPresented = false
+                    }
                 },
                 retry: {
                     viewModel.retryHybridCompositionPlanner()
@@ -344,28 +347,6 @@ struct CameraView: View {
                 }
                 .zIndex(2)
 
-                #if DEBUG
-                if viewModel.isHybridCompositionLiveSessionActive {
-                    VStack(spacing: 0) {
-                        Label(
-                            "camera.hybrid_compose.live_indicator",
-                            systemImage: "cloud.fill"
-                        )
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, AppSpacing.sm)
-                        .padding(.vertical, AppSpacing.xs)
-                        .background(.black.opacity(0.68), in: Capsule())
-                        .padding(.top, topControlInset + 52)
-                        .accessibilityAddTraits(.isStaticText)
-
-                        Spacer()
-                    }
-                    .allowsHitTesting(false)
-                    .zIndex(4)
-                }
-                #endif
-
                 VStack(spacing: 0) {
                     if let activePose = poseOverlayState.activePoseGuide,
                        activeCameraCallout != .pose {
@@ -478,6 +459,23 @@ struct CameraView: View {
                         focusReticleOverlay
                     }
                     .overlay {
+                        #if DEBUG
+                        if viewModel.hybridCompositionLiveGuideStage != .idle {
+                            HybridCompositionLiveOverlayView(
+                                stage: viewModel.hybridCompositionLiveGuideStage,
+                                guide: viewModel.localAIComposeGuide,
+                                isMirrored: viewModel.isUsingFrontCamera,
+                                failureMessageKey: viewModel.hybridCompositionLiveFailureMessageKey
+                            )
+                        } else if viewModel.isLocalAIComposeEnabled {
+                            LocalAIComposeOverlayView(
+                                guide: viewModel.localAIComposeGuide,
+                                isMirrored: viewModel.isUsingFrontCamera,
+                                showsDepthLayerCue: viewModel.isLocalAIComposeDepthLayerCueActive,
+                                depthOcclusionMask: viewModel.localAIComposeDepthOcclusionMask
+                            )
+                        }
+                        #else
                         if viewModel.isLocalAIComposeEnabled {
                             LocalAIComposeOverlayView(
                                 guide: viewModel.localAIComposeGuide,
@@ -486,6 +484,7 @@ struct CameraView: View {
                                 depthOcclusionMask: viewModel.localAIComposeDepthOcclusionMask
                             )
                         }
+                        #endif
                     }
                     .overlay {
                         if viewModel.isDualFocalZoomEnabled {
